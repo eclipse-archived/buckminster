@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Perforce UI Plug-in
+Bundle-SymbolicName: org.eclipse.buckminster.p4.ui; singleton:=true
+Bundle-Version: 1.0.0.v20070124
+Bundle-Activator: org.eclipse.buckminster.p4.ui.P4UiPlugin
+Bundle-Vendor: The Buckminster Project
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.buckminster.p4,
+ org.eclipse.buckminster.ui,
+ org.eclipse.buckminster.core,
+ org.eclipse.buckminster.sax,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.core.runtime,
+ org.eclipse.ui
+Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
