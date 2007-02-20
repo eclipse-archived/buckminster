@@ -1,0 +1,32 @@
+Import or export Perforce settings
+
+usage: p4settings
+       [{ -? | --help }]
+       [{ -L | --list} ]
+       [{ -I | --import} [ { -O --overwrite } ] [ { -C | --current } | <filename> ]]
+       [{ -E | --export} <server name> [ <filename> ]]
+       [{ -D | --default} <server name> ]
+       [{ -R | --remove} <server name> ]
+
+ -?
+--help
+  Show this help text
+ -L
+--list
+  List configured P4 servers
+ -I
+--import
+  Import a P4 server configuration from current OS settings, from stdin, or from <file name>
+ -E
+--export
+  Export a P4 server configuration to stdout or to <file name>
+ -D
+--default
+  Assign a P4 server configuration as the default
+ -R
+--remove
+  Remove an existing P4 server configuration
+<server name>
+  The name of the server to export or delete
+<file name>
+  The name of the optional file to use for import or export

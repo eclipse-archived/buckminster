@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:p4="http://www.eclipse.org/buckminster/P4Server-1.0" attributeFormDefault="unqualified"
+	elementFormDefault="qualified" targetNamespace="http://www.eclipse.org/buckminster/P4Server-1.0">
+
+	<complexType name="Server">
+		<sequence>
+			<element name="client" type="p4:Client" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="name" type="string" use="required" />
+		<attribute name="user" type="string" use="required" />
+		<attribute name="password" type="string" use="optional" />
+		<attribute name="defaultClient" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="Client">
+		<sequence>
+			<element name="depotMapping" type="p4:DepotMapping" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="name" type="string" use="required" />
+		<attribute name="localRoot" type="string" use="required" />
+	</complexType>
+
+	<complexType name="DepotMapping">
+		<attribute name="name" type="string" use="required" />
+		<attribute name="depotPattern" type="string" use="required" />
+		<attribute name="localReplacement" type="string" use="required" />
+	</complexType>
+
+	<element name="server" type="p4:Server" />
+
+</schema>

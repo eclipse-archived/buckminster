@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Perforce Plug-in
+Bundle-SymbolicName: org.eclipse.buckminster.p4; singleton:=true
+Bundle-Version: 1.0.0.v20070210
+Bundle-Activator: org.eclipse.buckminster.p4.P4Plugin
+Bundle-Vendor: The Buckminster Project
+Bundle-Localization: plugin
+Export-Package: org.eclipse.buckminster.p4,
+ org.eclipse.buckminster.p4.internal;x-friends:="org.eclipse.buckminster.tests",
+ org.eclipse.buckminster.p4.preferences,
+ org.eclipse.buckminster.p4.scheme.p4,
+ org.eclipse.buckminster.p4.test
+Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.cmdline,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.buckminster.sax,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.junit4
+Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
