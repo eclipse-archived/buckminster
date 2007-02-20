@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspecExtension xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+<cs:dependencies>
+	<cs:dependency name="org.apache.axis2.adb-codegen"/>
+	<cs:dependency name="org.apache.axis2.codegen"/>
+	<cs:dependency name="org.apache.axis2.java2wsdl"/>
+	<cs:dependency name="org.apache.axis2.tools"/>
+	<cs:dependency name="org.codehaus.annogen"/>
+</cs:dependencies>
+<cs:actions>
+	<cs:public name="codegen-all.jar" actor="ant">
+		<cs:actorProperties>
+			<cs:property key="buildFile" value="make/build.xml" />
+		</cs:actorProperties>
+		<cs:prerequisites alias="required.jars">
+			<cs:attribute component="org.apache.axis2.adb-codegen" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2.codegen" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2.java2wsdl" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2.tools" name="java.binaries"/>
+			<cs:attribute component="org.codehaus.annogen" name="java.binaries"/>
+		</cs:prerequisites>
+		<cs:products alias="output">
+			<cs:path path="codegen-all.jar"/>
+		</cs:products>
+	</cs:public>
+</cs:actions>
+<cs:groups>
+	<cs:public name="buckminster.prebind">
+		<cs:attribute name="codegen-all.jar"/>
+	</cs:public>
+	<cs:public name="codegen.classpath">
+		<cs:attribute name="codegen-all.jar"/>
+		<cs:attribute component="org.eclipse.buckminster.axis2" name="java.binaries"/>
+	</cs:public>
+</cs:groups>
+</cs:cspecExtension>
