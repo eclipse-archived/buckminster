@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.1"?>
+
+<product name="Buckminster" id="org.eclipse.buckminster.cmdline.product" application="org.eclipse.buckminster.cmdline.headless" useFeatures="true">
+
+
+   <configIni use="default"/>
+
+   <launcherArgs>
+   </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="_removethisfile">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.buckminster.product" version="1.0.0.v20070220"/>
+   </features>
+
+</product>
