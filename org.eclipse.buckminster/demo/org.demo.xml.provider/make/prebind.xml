@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<project name="project">
+	<target name="buckminster.prebind">
+    	<mkdir dir="${output}"/>
+		<copy file="${tada-sax.jar}" tofile="${output}/tada-sax.jar"/>
+		<copy file="${worlds.jar}" tofile="${output}/worlds.jar"/>
+	</target>
+</project>

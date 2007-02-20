@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project name="project" default="default">
+	<import file="macros.xml"/>
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="ant-contrib.jar"/>
+	  </classpath>
+	</taskdef>
+	<property name="workspace" location="/workspaces/Buckminster"/>
+
+	<macrodef name="printLine">
+		<attribute name="component"/>
+		<attribute name="timestamp"/>
+		<attribute name="version"/>
+		<sequential>
+			<buckminster.substitute pattern="^\d+\.\d+\.\d+\.v(.*)$" property="@{component}.vts" value="@{version}" replacement="$1"/>
+			<if>
+				<equals arg1="@{timestamp}" arg2="${@{component}.vts}"/>
+				<else>
+					<echo message="@{component}: version = @{version}, Timestamp = @{timestamp}"/>
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="listPluginTimestamp">
+		<attribute name="component"/>
+		<sequential>
+			<cvsDatestamp property="@{component}.timestamp" component="@{component}"/>
+			<extractBundleVersion property="@{component}.version" file="${workspace}/plugins/@{component}/META-INF/MANIFEST.MF"/>
+			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="listFeatureTimestamp">
+		<attribute name="component"/>
+		<sequential>
+			<cvsDatestamp property="@{component}.timestamp" component="@{component}"/>
+			<extractFeatureVersion property="@{component}.version" file="${workspace}/features/@{component}/feature.xml"/>
+			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
+		</sequential>
+	</macrodef>
+
+	<target name="list.timestamps">
+		<listPluginTimestamp component="org.eclipse.buckminster.ant"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.ant.ui"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.cmdline"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.core"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.cvs"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.installer"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.jdt"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.maven"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.p4"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.pde"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.runtime"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.sax"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.svn"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.ui"/>
+
+		<listFeatureTimestamp component="org.eclipse.buckminster.core.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.core.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.cvs.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.cvs.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.maven.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.p4.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.p4.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.pde.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.pde.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.product"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.svn.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.svn.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.update"/>
+	</target>
+
+	<target name="default" depends="list.timestamps"/>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>

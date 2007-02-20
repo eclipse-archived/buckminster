@@ -1,0 +1,41 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>se.tada</groupId>
+  <artifactId>tada-sax</artifactId>
+  <name>tada-sax</name>
+  <version>1.0.0</version>
+  <description>A Java package containing abstract ContentHandlers that will aid the build of efficient SAX parsers</description>
+  <url>http://tada-sax.tigris.org/</url>
+  <inceptionYear>2004</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>dev@tada-sax.tigris.org</name>
+      <subscribe>mailto:dev-subscribe@tada-sax.tigris.org</subscribe>
+      <unsubscribe>mailto:dev-unsubscribe@tada-sax.tigris.org</unsubscribe>
+      <archive>http://tada-sax.tigris.org/servlets/SummarizeList?listName=dev</archive>
+    </mailingList>
+    <mailingList>
+      <name>users@tada-sax.tigris.org</name>
+      <subscribe>mailto:users-subscribe@tada-sax.tigris.org</subscribe>
+      <unsubscribe>mailto:users-unsubscribe@tada-sax.tigris.org</unsubscribe>
+      <archive>http://tada-sax.tigris.org/servlets/SummarizeList?listName=users</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>thhal</id>
+      <name>Thomas Hallgren</name>
+      <email>mailto:thhal@tigris.org</email>
+      <timezone>CET</timezone>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>BSD</name>
+    </license>
+  </licenses>
+  <organization>
+    <name>Tada AB, Taby Sweden</name>
+    <url>http://www.tada.se</url>
+  </organization>
+</project>

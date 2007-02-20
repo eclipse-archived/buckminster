@@ -1,0 +1,556 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>sample configuration</title>
+</head>
+<body>
+
+
+
+
+<p class="MsoNormal">[TODO: fix this up a bit so it's cleaner]</p>
+<p class="MsoNormal">The ultimate goal for this description is to install the
+rest of Buckminster, specifically in order to install Buckminster commands
+beyond the basic ones. But, to do this, a number of dependencies must be
+fulfilled first.<o:p></o:p></p>
+
+
+<p class="MsoNormal">The dependencies are on other features (and their plugins).
+These features can be downloaded from their update sites (or actually, from
+other &lsquo;things&rsquo; that are usable as &lsquo;sites&rsquo;). Three comments on this at this
+point:</p>
+
+
+<p class="MsoNormal" style="margin-left: 36pt; text-indent: -18pt;"><!--[if !supportLists]--><span style="">1)<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><!--[endif]-->Some
+of the features are unfortunately somewhat coarse-grained and there are many
+plugins installed that you sometimes don&rsquo;t need &ndash; if final size matters
+greatly, there are advanced ways of pruning the final result.</p>
+
+
+<p class="MsoNormal" style="margin-left: 36pt; text-indent: -18pt;"><!--[if !supportLists]--><span style="">2)<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><!--[endif]-->As
+we&rsquo;re presently basing Buckminster on Eclipse 3.2Mn, i.e. a beta, there is no
+actual update site posted for this. When 3.2 is released the update site will
+be located at <a href="http://update.eclipse.org/updates/3.2">http://update.eclipse.org/updates/3.2</a>.
+For the moment though we will use a 3.2 Mn Eclipse IDE installation as our
+resource for 3.2 material &ndash; thus, unless you already have an installation of
+3.2 Mn please download and unpack.</p>
+
+
+<p class="MsoNormal" style="margin-left: 36pt; text-indent: -18pt;"><!--[if !supportLists]--><span style="">3)<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><!--[endif]-->Also,
+large parts of the API for interaction with update manager sites is marked as &lsquo;interim&rsquo;,
+i.e. made available with the understanding that it will/may change before being
+final &ndash; thus, instructions here can only be said to have been accurate for 3.2
+Mn. Also, as the API lacks more in-depth documentation, some things are not
+completely understood and will be revisited later to improve this prodecure.</p>
+
+
+
+
+<h4><o:p>&nbsp;</o:p>Using the update mechanisms</h4>
+
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>There are three commands available: listsite, install and
+uninstall. Actually, there is also a command (currently hidden) that may be of
+use during configuration: &lsquo;dumpinfo&rsquo;. This command is generally for support
+reasons and will dump various information including features and plugins
+installed.</p>
+
+
+
+
+<p class="MsoNormal">Using listsite is very simple &ndash; just provide it with a path
+or URL and it will list any features it finds there. Sample:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre><span style="" lang="SV">buckminster listsite http://download.eclipse.org/technology/buckminster/updates</span><br><br>Searching
+http://download.eclipse.org/technology/buckminster/updates...<br>|**************************************************************| 100,0%<span style="">&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;</span>17<br>Features:<span style=""><br></span>org.eclipse.buckminster.feature_1.0.0.M2sp001 (Buckminster)<span style="">
+</span>org.eclipse.buckminster.headless.feature_1.0.0.M2sp001 (Buckminster Headless)<span style="">&nbsp;
+</span>org.eclipse.buckminster.p4.feature_1.0.0.M2sp001 (Buckminster - Perforce support)<br><span style=""></span>org.eclipse.buckminster.p4.ui.feature_1.0.0.M2sp001 (Buckminster - Perforce support (UI))<span style="">&nbsp;
+</span>org.eclipse.buckminster.svn.feature_1.0.0.M2sp001 (Buckminster - Subversion support)<span style="">&nbsp;
+</span>org.eclipse.buckminster.ui.feature_1.0.0.M2sp001 (Buckminster (UI))</pre>
+
+
+
+
+<p class="MsoNormal">Note that it works just as well for the product itself:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>buckminster.exe listsite c:\buckminster<br><br>Searching file:/C:/buckminster/...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>4<br>Features:<span style="">&nbsp;
+</span>org.eclipse.buckminster.headless.feature_1.0.0.M2sp002 (Buckminster Headless)<span style="">&nbsp;
+</span>org.eclipse.buckminster.headless.platform.feature_1.0.0.M2sp002 (Headless Platform)<span style="">&nbsp;
+</span>org.eclipse.buckminster.product_1.0.0.M2sp002 (Buckminster Product)</pre>
+
+
+
+
+<p class="MsoNormal">Commands for install/uninstall are very similar: for
+install, point to a site and a feature you wish to install (and an optional
+version of it if there are multiple, default is to take the latest). For
+uninstall, just give the feature name and optional version.</p>
+
+
+
+
+<h4>Installing required features</h4>
+
+
+
+
+<p class="MsoNormal">The org.eclipse.platform feature is fairly big but Buckminster
+is dependent on several of the plugins. Installing it can be done through
+pointing it at the site which has a 3.2 version of it (i.e. currently only your
+installed 3.2 Mn Eclipse IDE):</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>buckminster.exe install c:\etc\eclipse org.eclipse.platform<br><br>Searching for org.eclipse.platform_0.0.0 in file:/c:/eclipse/...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>21<br>Installing org.eclipse.platform_3.2.0.v20051214-5wrXvetwgj...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>57</pre>
+
+
+
+
+<p class="MsoNormal">Now we can install the real Buckminster core feature:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>buckminster install http://download.eclipse.org/technology/buckminster/updates org.eclipse.buckminster.feature<br><br>Searching for org.eclipse.buckminster.feature_0.0.0 in http://download.eclipse.org/technology/buckminster/updates/...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>13<br>Installing org.eclipse.buckminster.feature_1.0.0.M2sp002...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>19</pre>
+
+
+
+
+<p class="MsoNormal">At this point we have a functional setup; loading a
+workspace with some very simple test components should work&nbsp;:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>buckminster.exe getcfg http://www.eclipse.org/buckminster/samples/queries/build_a.cquery<br><br>Using workspace at file:/C:/Documents and Settings/kolwing/workspace/...<br>Running query...<br>=== START: Assembly (Ant Builder) - buckminster.test.build_a ===<span style="">&nbsp; </span>86,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp; </span>859 <br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_a\assembly_buckminster.ant<o:p>&nbsp;</o:p></pre>
+
+
+<pre>assembly:</pre>
+
+
+<pre>Entrypoint: ASSEMBLY</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>Created dir: C:\Documents and
+Settings\kolwing\workspace\buckminster.test.build_a\assembled<o:p><br></o:p><br>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: Assembly (Ant Builder) - buckminster.test.build_a ===</pre>
+
+
+<pre>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp; </span>1000</pre>
+
+
+<pre>Query complete.</pre>
+
+
+
+
+<p class="MsoNormal"><o:p></o:p>And, it can be &lsquo;built&rsquo;:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre><o:p></o:p>buckminster build &ndash;clean<br><br>Building projects<br>|..............................................................|<span style="">&nbsp;&nbsp; </span>0,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>0<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_d ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_d\buckminster.ant<o:p><br><br></o:p>clean:</pre>
+
+
+<pre>Entrypoint: CLEAN</pre>
+
+
+
+
+<pre>Deleting directory C:\Documents and Settings\kolwing\workspace\buckminster.test.build_d\derived<o:p>&nbsp;</o:p></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_d ===<br>|*******.......................................................|<span style="">&nbsp; </span>12,5%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>1<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_c ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_c\buckminster.ant<o:p><br><br></o:p>clean:<br><br>Entrypoint: CLEAN</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>Deleting directory C:\Documents and Settings\kolwing\workspace\buckminster.test.build_c\derived<o:p><br><br></o:p>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_c ===<br>|***************...............................................|<span style="">&nbsp; </span>25,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>2<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal </st1:place></st1:City>(Ant Builder) - buckminster.test.build_b ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_b\buckminster.ant<o:p>&nbsp;</o:p></pre>
+
+
+<pre>clean:</pre>
+
+
+<pre>Entrypoint: CLEAN</pre>
+
+
+
+
+<pre>Deleting directory C:\Documents and Settings\kolwing\workspace\buckminster.test.build_b\derived<o:p>&nbsp;</o:p></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_b ===<br>|***********************.......................................|<span style="">&nbsp; </span>37,5%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>3<br>|***************************...................................|<span style="">&nbsp; </span>43,8%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>3<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_a ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_a\normal_buckminster.ant<o:p>&nbsp;</o:p></pre>
+
+
+<pre>clean:</pre>
+
+
+<pre>Entrypoint: CLEAN</pre>
+
+
+
+
+<pre>Deleting directory C:\Documents and Settings\kolwing\workspace\buckminster.test.build_a\derived<o:p>&nbsp;</o:p></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_a ===<br>|*******************************...............................|<span style="">&nbsp; </span>50,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>4<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal </st1:place></st1:City>(Ant Builder) - buckminster.test.build_d ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_d\buckminster.ant<o:p>&nbsp;</o:p></pre>
+
+
+<pre>full:</pre>
+
+
+<pre>Entrypoint: FULL</pre>
+
+
+
+
+
+
+<pre>build:<o:p>&nbsp;</o:p></pre>
+
+
+<pre>Property for component is: 'buckminster.test.build_d'</pre>
+
+
+
+
+<pre>Property for kind is: 'FULL'<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre>
+
+
+<pre>Copying 1 file to C:\Documents and Settings\kolwing\workspace\buckminster.test.build_d\derived</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_d ===<br>|**************************************........................|<span style="">&nbsp; </span>62,5%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>5<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_c ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_c\buckminster.ant<o:p><br><br></o:p>full:</pre>
+
+
+
+
+<pre>Entrypoint: FULL<o:p>&nbsp;</o:p></pre>
+
+
+
+
+<pre>build:<o:p>&nbsp;</o:p></pre>
+
+
+<pre>Property for component is: 'buckminster.test.build_c'</pre>
+
+
+
+
+<pre>Property for kind is: 'FULL'<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre>
+
+
+
+
+<pre>Copying 1 file to C:\Documents and Settings\kolwing\workspace\buckminster.test.build_c\derived<o:p>&nbsp;</o:p></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_c ===<br>|**********************************************................|<span style="">&nbsp; </span>75,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>6<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_b ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_b\buckminster.ant<o:p>&nbsp;</o:p></pre>
+
+
+<pre>full:</pre>
+
+
+
+
+<pre>Entrypoint: FULL<o:p>&nbsp;</o:p></pre>
+
+
+
+
+<pre>build:<o:p>&nbsp;</o:p></pre>
+
+
+<pre>Property for component is: 'buckminster.test.build_b'</pre>
+
+
+
+
+<pre>Property for kind is: 'FULL'<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre>
+
+
+
+
+<pre>Copying 1 file to C:\Documents and Settings\kolwing\workspace\buckminster.test.build_b\derived<o:p>&nbsp;</o:p></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_b ===<br>|******************************************************........|<span style="">&nbsp; </span>87,5%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>7<br>=== START: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_a ===<br>Buildfile: C:\Documents and Settings\kolwing\workspace\buckminster.test.build_a\normal_buckminster.ant<o:p><br><br></o:p>full:</pre>
+
+
+
+
+<pre>Entrypoint: FULL<o:p>&nbsp;</o:p></pre>
+
+
+
+
+<pre>build:<o:p>&nbsp;</o:p></pre>
+
+
+<pre>Property for component is: 'buckminster.test.build_a'</pre>
+
+
+
+
+<pre>Property for kind is: 'FULL'<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre>
+
+
+
+
+<pre>Copying 1 file to C:\Documents and Settings\kolwing\workspace\buckminster.test.build_a\derived<o:p>&nbsp;</o:p></pre>
+
+
+
+
+
+
+
+
+<pre>BUILD SUCCESSFUL<br>Total time: 0 seconds<br>=== END: <st1:City w:st="on"><st1:place w:st="on">Normal</st1:place></st1:City> (Ant Builder) - buckminster.test.build_a ===<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>8</pre>
+
+
+
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>In case we need Subversion support we need to install the
+Buckminster svn feature, but also the Subclipse feature. For Perforce, we only
+need the appropriate Buckminster feature:<o:p>&nbsp;</o:p></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre><span style="" lang="SV">C:\tmp\bm\M2sp002\buckminster&gt;buckminster install http://subclipse.tigris.org/up</span>date org.tigris.subversion.subclipse<br><br>Searching for org.tigris.subversion.subclipse_0.0.0 in http://subclipse.tigris.org/update...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>11<br>Installing org.tigris.subversion.subclipse_0.9.105...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>11<br><br>C:\tmp\bm\M2sp002\buckminster&gt;buckminster install c:\eclipse.workspace\org.eclipse.buckminster.update org.eclipse.buckminster.svn.feature<br><br>Searching for org.eclipse.buckminster.svn.feature_0.0.0 in file:/c:/eclipse.workspace/org.eclipse.buckminster.update/...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>13<br>Installing org.eclipse.buckminster.svn.feature_1.0.0.M2sp002...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>5<o:p><br><br></o:p>C:\tmp\bm\M2sp002\buckminster&gt;buckminster install c:\eclipse.workspace\org.eclipse.buckminster.update org.eclipse.buckminster.p4.feature<br><br>Searching for org.eclipse.buckminster.p4.feature_0.0.0 in file:/c:/eclipse.workspace/org.eclipse.buckminster.update/...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>13<br>Installing org.eclipse.buckminster.p4.feature_1.0.0.M2sp002...<br>|**************************************************************| 100,0%<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>5<br></pre>
+
+</body>
+</html>

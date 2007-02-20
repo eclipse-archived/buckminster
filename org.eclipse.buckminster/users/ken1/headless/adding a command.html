@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>adding a command</title>
+</head>
+<body>
+Not surprisingly, the framework deals with making it possible to add a new command, for example 'helloworld', so you can write<br>
+<br>
+buckminster helloworld<br>
+<br>
+The name, an optional namespace (in addition to the plugin namespace,
+which is always prefixed to the name) and 0-M aliases are declared in
+the extension point along with an implementation class. The
+implementation class must derive from the base class AbstractCommand.
+In principle, only the method 'run' needs to be overridden, but likely
+you wish to override others, for example to declare option support and
+callbacks for detection of them. Also, the declaration can tag the
+command as 'hidden' (works, but not shown on listings) or 'disabled'
+(doesn't work). Finally, you may indicate whether the framework should
+automatically add support for the option flags '-?'/'--help'
+(recommended).<br>
+<br>
+Assuming the framework manages the help options, you should add a file
+with the same name as the command class name, but with a '.help'
+extension with the help text.<br>
+<br>
+As noted, the long name of a command is always prefixed with the plugin
+id. Thus, a plugin with the id 'org.somedomain.plugin' declaring a
+command with the name 'helloworld' and alias 'hw' will in reality be
+known as 'org.somedomain.plugin.helloworld' and
+'org.somedomain.plugin.hw'. As another example, the name can contain
+further namespace levels - e.g. 'my.name.space.helloworld', leading to
+'org.somedomain.plugin.my.name.space.helloworld'. However, note that
+any aliases do&nbsp;<span style="font-weight: bold;">not</span> contain a namespace - they will just work in the same namespace as the main/real name.<br>
+<br>
+Commands are supposed to cooperate with some settings&nbsp;supplied by
+the framework (which may be reflections of user selections): currently
+this deals with a suggested location for storing tmp files, and an
+implementation of progress monitor to provide to lower layers. See the
+'context' for details.<br>
+<br>
+Commands can typically write freely to System.out and System.err. Note
+that both or either may have been trapped by the frameworks logging
+mechanism.<br>
+<br>
+Here is an example of adding a sample command called 'helloworld'
+</body>
+</html>

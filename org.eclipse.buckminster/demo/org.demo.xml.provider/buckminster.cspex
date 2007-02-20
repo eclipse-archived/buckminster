@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspecExtension
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+	<cs:dependencies>
+		<cs:dependency name="org.demo.worlds"/>
+		<cs:dependency name="se.tada.util.sax"  versionDesignator="1.0.0" versionType="OSGi"/>
+	</cs:dependencies>
+
+	<cs:actions>
+
+		<cs:private name="buckminster.prebind" actor="ant">
+
+			<cs:actorProperties>
+				<cs:property key="buildFile" value="make/prebind.xml" />
+			</cs:actorProperties>
+
+			<cs:prerequisites>
+				<cs:attribute component="se.tada.util.sax" alias="tada-sax.jar" name="java.binary.archives"/>
+				<cs:attribute component="org.demo.worlds" alias="worlds.jar" name="java.binary.archives"/>
+			</cs:prerequisites>
+
+			<cs:products alias="output">
+				<cs:path path="jars/" />
+			</cs:products>
+
+		</cs:private>
+		
+	</cs:actions>
+
+</cs:cspecExtension>

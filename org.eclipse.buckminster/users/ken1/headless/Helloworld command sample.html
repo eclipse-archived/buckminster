@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Helloworld command sample</title>
+</head>
+<body>
+Here I will describe how to build a sample new command called 'helloworld' and will then add some simple functionality.<br>
+<br>
+As a prerequisite, we need a plugin project - use the new plugin
+project wizard. Most likely you wish to deselect the option 'This
+plugin will make contributions to the UI'.<br>
+<h3>Declare the command using the command extension point</h3>
+First, the plugin must be dependent on the <span style="font-style: italic;">org.eclipse.buckminster.headless</span> plugin in order to see the extension point. Use the plugin manifest editor to add this dependency.<br>
+<br>
+Now you can select the Extensions tab, and add the extension point&nbsp;<span style="font-style: italic;">org.eclipse.buckminster.headless.command</span>.
+This extension point can describe multiple commands; right click and
+select 'New &gt; command'. To the right you will see the possible
+things you can set for the command. If you wish, you may change the
+class name, but it is not necessary - I will use 'HWCommand'. Set the
+'name' attribute to 'helloworld'. The others can be left to the default.<br>
+<h3>Implement the command</h3>
+Click on the 'class*' attribute name - this will open New Java Class
+dialog. Note that the super class is set to
+org.eclipse.buckminster.headless.AbstractCommand. You don't need any
+method stubs (you may uncheck those boxes). Now click Finish and you
+will end up with a new class somewhat like this:<br>
+<br>
+<pre>import org.eclipse.buckminster.headless.AbstractCommand;<br><br>public class HWCommand extends AbstractCommand<br>{</pre>
+<pre>}<br><br></pre>
+At this point you're almost done - add a run method:<br>
+<br>
+<pre>&nbsp;&nbsp;&nbsp; @Override<br>&nbsp;&nbsp;&nbsp; protected int run() throws Exception<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; System.out.println("Hello world");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>&nbsp;&nbsp;&nbsp; }</pre>
+That's it! Now let's run it.<br>
+<h3>Run the command</h3>
+Normally, the finished plugin will be installed into a Buckminster
+product, or be part of an Eclipse IDE installation together with the
+Buckminster plugins. This will make it easy to start the command using
+the command line (e.g. 'buckminster helloworld').<br>
+<br>
+However, as you're in this case in a development mode, you want to run
+the command in the 'self-hosting' mode in order to enable debugging
+etc. However, this bypasses some activity that normally is done by the
+Buckminster launcher (see the description on booting), and hence we
+have to manually prepare a 'cmdline' file.<br>
+<br>
+First, create a file called 'helloworld.cmdline'. This file is
+essentially a command line, but with each distinct argument on a line
+by itself. For convenience, it can also accept comments:<br>
+<pre># helloworld.cmdline - for testing the helloworld command<br>helloworld</pre>
+Now, you have to create a launch configuration to use this. Use
+'Run/Run...' to open the launch configurations dialog. You want to
+create an 'Eclipse application'. The name isn't important. However, in
+'Program to run', it must select the product
+'org.eclipse.buckminster.headless.product'. Also, on the tab
+'Arguments', pass in the path and name of the cmdline file you created.<br>
+<br>
+Running this configuration should print 'Hello world' in a Console view.<br>
+<br>
+<h3>Adding an alias</h3>
+Open the plugin manifest and activate the command extension point for
+helloworld. Right click on it and add an alias - for example 'hw'.<br>
+Now you can interchangeably use either 'helloworld' or 'hw' to run your command.<br>
+<br>
+<h3>Adding help text</h3>
+Change the cmdline file, adding a request for help:<br>
+<pre># helloworld.cmdline - for testing the helloworld command<br>hw<br>-?<br><br><br></pre>
+Running the command now will just declare:<br>
+<pre>Help missing for HWPlugin.helloworld</pre>
+The framework has recognized the -? option but can't find the help
+text. Add a file called HWCommand.help alongside your java file:<br>
+<pre>Prints out 'Hello world'<br><br>usage: helloworld<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [{ -? | --help }]<br>&nbsp;-?<br>--help<br>&nbsp; Show this help text</pre>
+Running the command again should now print the help text.<br>
+<br>
+<h3>Adding option handling</h3>
+We now want the command to recognize the option --goodbye &lt;text&gt;.<br>
+<br>
+First we need to add a descriptor:<br>
+<pre>&nbsp;&nbsp;&nbsp; static private final OptionDescriptor GOODBYE_DESCRIPTOR = new OptionDescriptor(null, "goodbye", OptionValueType.REQUIRED);</pre>
+The 'null' in this particular descriptor says that there are no
+equivalent single letter option flag. We also describe that this option
+requires a value.<br>
+<br>
+We also add a variable to hold the value we (might) receive, and a default value:<br>
+<pre>&nbsp;&nbsp;&nbsp; private String m_goodbye = "Goodbye!";</pre>
+Now we need to override a method so the framework can get our descriptor(s):<br>
+<br>
+<pre>&nbsp;&nbsp;&nbsp; @Override<br>&nbsp;&nbsp;&nbsp; protected OptionDescriptor[] getOptionDescriptors() throws Exception<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return new OptionDescriptor[] { GOODBYE_DESCRIPTOR };<br>&nbsp;&nbsp;&nbsp; }</pre>
+We also need to override a method so the framework can tell us about received options:<br>
+<br>
+<pre>&nbsp;&nbsp;&nbsp; @Override<br>&nbsp;&nbsp;&nbsp; protected void handleOption(Option option, boolean defaults) throws Exception<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (option.is(GOODBYE_DESCRIPTOR))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_goodbye = option.getValue();<br>&nbsp;&nbsp;&nbsp; }</pre>
+Finally, let's add a print out of the value:<br>
+<br>
+<pre>import org.eclipse.buckminster.headless.AbstractCommand;</pre>
+<pre>import org.eclipse.buckminster.headless.parser.Option;</pre>
+<pre>import org.eclipse.buckminster.headless.parser.OptionDescriptor;</pre>
+<pre>import org.eclipse.buckminster.headless.parser.OptionValueType;</pre>
+<br>
+<pre>public class HWCommand extends AbstractCommand</pre>
+<pre>{</pre>
+<pre>&nbsp;&nbsp;&nbsp; static private final OptionDescriptor GOODBYE_DESCRIPTOR = new OptionDescriptor(null, "goodbye", OptionValueType.REQUIRED);</pre>
+<pre><br>&nbsp;&nbsp;&nbsp; private String m_goodbye = "Goodbye!";</pre>
+<pre>&nbsp;&nbsp;&nbsp; </pre>
+<pre>&nbsp;&nbsp;&nbsp; @Override</pre>
+<pre>&nbsp;&nbsp;&nbsp; protected OptionDescriptor[] getOptionDescriptors() throws Exception</pre>
+<pre>&nbsp;&nbsp;&nbsp; {</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return new OptionDescriptor[] { GOODBYE_DESCRIPTOR };</pre>
+<pre>&nbsp;&nbsp;&nbsp; }</pre>
+<pre><br>&nbsp;&nbsp;&nbsp; @Override</pre>
+<pre>&nbsp;&nbsp;&nbsp; protected int run() throws Exception</pre>
+<pre>&nbsp;&nbsp;&nbsp; {</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; System.out.println("Hello world");</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; System.out.println(m_goodbye);</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;</pre>
+<pre>&nbsp;&nbsp;&nbsp; }</pre>
+<pre><br>&nbsp;&nbsp;&nbsp; @Override</pre>
+<pre>&nbsp;&nbsp;&nbsp; protected void handleOption(Option option, boolean defaults) throws Exception</pre>
+<pre>&nbsp;&nbsp;&nbsp; {</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (option.is(GOODBYE_DESCRIPTOR))</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_goodbye = option.getValue();</pre>
+<pre>&nbsp;&nbsp;&nbsp; }</pre>
+<pre>}</pre>
+Edit the cmdline file to read something like this to test:<br>
+<br>
+<pre># helloworld.cmdline - for testing the helloworld command</pre>
+<pre>hw</pre>
+<pre>--goodbye</pre>
+<pre>Don't go!</pre>
+</body>
+</html>

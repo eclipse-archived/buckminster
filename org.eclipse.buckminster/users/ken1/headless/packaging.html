@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+  
+  <title>packaging</title>
+</head>
+
+
+<body>
+
+Buckminster is available in two distribution formats.<br>
+<ul>
+  <li>As an Eclipse Update site<br>
+This is obviously the main format: a set of features where each in turn
+consists of one or many plugins. It is convenient to use; all you need
+to do is point the Update Manager to the site and select the features
+you wish to install. However, to use it fully you need to have the
+Eclipse IDE already installed, and not be overly concerned with disk
+space requirements for example. By installing features into the IDE you
+automatically gain both the regular graphical UI based interaction
+mechanisms as well as the <a href="headless.html">Headless</a> command
+framework. No extra work by the user is required to make this
+functional; it will automatically initialize itself when the IDE starts
+(such as when restarting after a feature installation). The Buckminster
+features/plugins have been carefully designed to avoid dependencies on
+UI packages when not required so as to be possible to use even in
+environments where it's not possible to use a&nbsp; graphical UI. In
+such situations it may make more sense to use the <a href="#As_an_Eclipse_Product">product build</a>.<br>
+The Buckminster update site is located at&nbsp;<a href="http://download.eclipse.org/technology/buckminster/updates">http://download.eclipse.org/technology/buckminster/updates</a>. If you wish to download a zip archive of &nbsp;the update site (for a given version x.y.z.dt), such are available in <a href="http://download.eclipse.org/technology/buckminster/archivedsites">http://download.eclipse.org/technology/buckminster/archivedsites</a> (for example as buckminster.archivedsite-x.y.z.dt.zip).<br>
+  </li>
+  <li><a name="As_an_Eclipse_Product"></a>
+As an Eclipse Product<br>
+This format is for&nbsp;specialized situations; it is called the
+'product' format as it is built using the Eclipse Product packaging
+paradigm. Beyond the fact that is intended as a standalone package, you
+can view it as a subset of the functionality gained through the update
+site. Specifically, it is intended to be used in <a href="headless.html">Headless</a>
+mode situations only (though given it's design it can serve as a
+foundation for achieveing a graphical startup as well). It only
+contains the bare essentials to begin with, so before it can be used
+for anything useful, it needs to be <a href="product.html">customized</a>
+by you. The benefit is that you can be very selective on what it
+contains, and thus bring down the disk requirements. Actually, it is
+likely you may wish to use install further Buckminster features from
+the Buckminster update site.<br>
+Product builds are available as zip archives (for a given version x.y.z.dt) in <a href="http://download.eclipse.org/technology/buckminster/products">http://download.eclipse.org/technology/buckminster/products</a> (for example as buckminster.product-x.y.z.dt.zip).</li>
+</ul>
+Note that Buckminster has many possible extension points. This is also true for the <a href="headless.html">Headless</a>
+framework. In fact, it is entirely possible to use this framework only
+and produce your very own headless application which has nothing to do
+with what Buckminster can do otherwise. More on extending the Headless
+framework <a href="headless%20integration.html">here</a>.
+</body>
+</html>

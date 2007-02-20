@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspec xmlns="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" version="1.0.0" versionType="OSGi">
+	<dependencies>
+ 		<dependency name="org.eclipse.buckminster.update" category="feature"/>
+		<dependency name="org.eclipse.buckminster.product" category="feature"/>
+	</dependencies>
+
+	<actions>
+		<public name="build.site" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/build.xml" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="site.source" alias="site"/>
+				<attribute component="org.eclipse.buckminster.update" name="feature.xml" alias="site.feature.xml"/>
+			</prerequisites>
+            <products base="${buckminster.output}/site"/>
+		</public>
+
+		<public name="build.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/build.xml" />
+			</actorProperties>
+			<prerequisites>
+				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
+				<attribute component="org.eclipse.buckminster.product" name="feature.xml" alias="product.feature.xml"/>
+			</prerequisites>
+            <products base="${buckminster.output}/product"/>
+		</public>
+
+		<public name="clean" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/build.xml" />
+			</actorProperties>
+			<prerequisites>
+				<attribute component="org.eclipse.buckminster.product" name="buckminster.clean"/>
+				<attribute component="org.eclipse.buckminster.update" name="buckminster.clean"/>
+			</prerequisites>
+		</public>
+	</actions>
+
+	<groups>
+		<public name="build.all">
+			<attribute name="build.site"/>
+			<attribute name="build.product"/>
+		</public>
+		<private name="site.source">
+			<attribute component="org.eclipse.buckminster.update" name="feature.exports"/>
+			<attribute component="org.eclipse.buckminster.update" name="site.files"/>
+		</private>
+ 	</groups>
+</cspec>

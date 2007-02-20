@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+  
+  <title>booting</title>
+</head>
+
+
+<body>
+Below is a reasonably current version of an early design document for
+headless, describing reasons why the boot process, in particular, is
+somewhat convoluted.<br>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<b style="">Goal: Buckminster
+must be possible to run from the command line, a.k.a. headless.<o:p></o:p></b>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Effectively, there should be a reasonable set of commands to
+do many of the relevant things you can do with Buckminster for two main reasons:</p>
+
+
+<ol style="margin-top: 0cm;" start="1" type="1">
+  <li class="MsoNormal" style="">To
+     allow automation of things that you would otherwise be required to
+     do interactively in the Eclipse IDE.</li>
+  <li class="MsoNormal" style="">Allow
+     someone who absolutely does not wish to use the Eclipse IDE at all, a way
+     to at least set up and work with a workspace with the help of Buckminster
+     for further use with other tools (e.g. Emacs).</li>
+</ol>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">This mechanism will be supplied in two forms:</p>
+
+
+<ol style="margin-top: 0cm;" start="1" type="1">
+  <li class="MsoNormal" style="">An
+     ordinary Buckminster feature/plugin set for installation into an Eclipse IDE instance will also
+     more or less automatically allow the headless invocations to be done using
+     that instance.</li>
+  <li class="MsoNormal" style="">A
+     self-contained package of Buckminster with just as much of the Eclipse
+     infrastructure and plugins/features required to run. I.e. this is a
+     &lsquo;product&rsquo; in Eclipse parlance.</li>
+</ol>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Apart from the UI aspects present in the first form, the two
+forms should perform identically in core functionality. However, as both forms
+are bona fide Eclipse instances, optional plugins/features can be installed and
+make behavior and available mechanisms differ.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Not surprisingly, there are a number of challenges to
+overcome in order to make it work smoothly for the end user in various
+settings; differing platforms etc. Also, from a look-and-feel perspective the
+commands should behave exactly as any other command line tool &ndash; scriptable,
+transparent stdout/in/err handling etc.</p>
+
+
+<h2>Look and feel</h2>
+
+
+<p class="MsoNormal">Here we will focus on how the user perceives the command
+line.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">A common pattern suggested for adoption is the &lsquo;launcher +
+command&rsquo; pattern. This is evidenced by various product toolsets such as
+&lsquo;cleartool&rsquo;, &lsquo;p4&rsquo;, &lsquo;cvs&rsquo; just to name a few. </p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Basically, there is the &lsquo;launcher&rsquo;, which is the actual
+executable. The launcher can accept a number of option flags, which controls
+the launch and/or provides settings for a common context that all installed
+commands can make use of. As the launcher parses its command line, it may
+eventually hit on a non-option argument &ndash; this should be treated as the command
+name.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">The command name can also have option flags, and/or
+arguments. As this is still a part of the full command line seen by the launcher,
+it is the launchers responsibility to internally look up the implementation for
+the command and dispatch control to it, providing the rest of the command line
+in a suitable fashion for command parsing.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Thus, a format for using the launcher is something like
+this:</p>
+
+
+<p class="MsoNormal"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>launcher
+[launcher-options] [command] [command-options]</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Beyond the split between launcher-options vs
+command-options, from a user perspective it should be essentially opaque as to
+which options are parsed/handled where. In the general case, there should be no
+required order options must be specified in.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">For Buckminster, there should be a launcher that is accessed
+by simple typing &lsquo;buckminster&rsquo;. This should work on any supported platform. An
+important point is that it also must be accessible from scripting
+languages/environments without the need to &lsquo;know&rsquo; more (e.g. it must not
+require use of some platform specifics).</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><b style="">Option format<o:p></o:p></b></p>
+
+
+<p class="MsoNormal">The format for how to give options will benefit from
+following some form of common convention, and above all, be consistent (equally
+applies to both launcher-options and command-options).</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">A suggestion is to go with the convention of using one
+letter option names with one dash, and arbitrarily long (but abbreviatable)
+option names with two dashes. These two variants can be used interchangeably
+(or the developer only adds recognition of one of them). There is no implied
+correspondence with the short form letter and the initial letter in the long
+version.</p>
+
+
+<p class="MsoNormal">An example from &lsquo;ls&rsquo;:</p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;">C:\tmp&gt;ls
+--help<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;">Usage:
+ls [OPTION]... [PATH]...<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><o:p>&nbsp;</o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-A, --almost-all<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>do not list implied . and ..<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-a, --all<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>do not hide entries starting
+with .<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-B, --ignore-backups<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>do not list implied entries ending with
+~<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-b, --escape<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>print octal escapes for nongraphic
+characters<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-C<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>list entries by
+columns<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-c<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>sort by change time;
+with -l: show ctime<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-D, --dired<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>generate output well suited to
+Emacs' dired mode<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-d, --directory<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>list directory entries instead of
+contents<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-F, --classify<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>append a character for typing each
+entry<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp; </span>-f<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>do not sort, enable
+-aU, disable -lst<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>--format=WORD<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>across -x, commas -m, horizontal -x,
+long -l,<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>single-column -1,
+verbose -l, vertical -C<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>--full-time<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>list both full date and full time<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;">&hellip;<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span style="font-size: 8pt; font-family: &quot;Courier New&quot;;"><o:p>&nbsp;</o:p></span></p>
+
+
+<p class="MsoNormal">Option names are always case-sensitive though.</p>
+
+
+<h2>Implementation</h2>
+
+
+<p class="MsoNormal">The ultimate objective is to reach the
+org.eclipse.buckminster.headless plugin, more specifically its &lsquo;application&rsquo;
+extension point. It is this entry point that gains control and which will
+interpret and handle (many, but not all, see below) launcher-options and then
+recognize any command name and dispatch to that, presenting it with the
+command-options only.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">There are a number of design limitations arising from the
+use of Eclipse as the environment to work in, making the final solution
+somewhat convoluted.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">First, on Windows, any direct use of the &lsquo;eclipse.exe&rsquo; is not
+possible. It has a few main flaws:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">It
+     is linked as a &lsquo;windows&rsquo; application. This means it will start as a GUI
+     application, i.e. no stdin/stdout, as well as having the effect of
+     returning control to the calling application (the shell, typically) as
+     soon as it is running under the control of the GUI. Also, it will
+     eventually spawn &lsquo;javaw&rsquo; instead of &lsquo;java&rsquo; which are similar in problems.
+     All this is unacceptable for a command-line tool, obviously.</li>
+  <li class="MsoNormal" style="">Even
+     if this flag is switched to being a &lsquo;console&rsquo; application, it further
+     exhibits issues in not properly managing stdin/out/err to any child
+     process as well as not propagating a child process exit code to callers.
+     These are also serious impediments to a command-line tool.</li>
+</ul>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">An alternative to using the Eclipse supplied executable is
+to call the same things it does. The really important thing it does is actually
+calling a java &lsquo;main&rsquo; entry point in the supplied startup.jar. Thus, the same
+thing can easily be done directly, approximately like this: &lsquo;java &ndash;jar startup.jar
+&ndash;application &lt;the application extension point name&gt;&rsquo;. On the surface,
+this should work. However, once again problems arise:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">While
+     eclipse.exe would help manage any specific java options to send to the VM,
+     this form would require a user to manage this him/herself. Small problem
+     to be sure.</li>
+  <li class="MsoNormal" style="">Some
+     (many) options will be acted upon by the startup.jar code before
+     dispatching to the application. Especially this means the &lsquo;-data
+     &lt;some_location_for_a_workspace&gt;&rsquo;. While that might be ok, the option
+     is arguably a bit badly named &ndash; &lsquo;-workspace&rsquo; would have felt more natural.
+     On a related note &ndash; it is generally impossible for a plugin to later
+     change the workspace once startup.jar has established it (not exactly
+     true, but close enough). This restriction implies that whatever the
+     solution, selection of a workspace must be somehow specified before
+     actually running startup.jar.</li>
+  <li class="MsoNormal" style="">What
+     is absolutely worst however is that the startup.jar code appears to
+     indiscriminately walk the command line and interpret any options anywhere
+     it recognizes them and then remove them&hellip;a typical example of this is to
+     say the imaginary &lsquo;buckminster build &ndash;clean&rsquo;. If this is done directly
+     through startup.jar, end result is that &lsquo;-clean&rsquo; is acted on by
+     startup.jar and when the &lsquo;build&rsquo; command gets control, there no longer is
+     any &lsquo;-clean&rsquo; to see.</li>
+</ul>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Hence, to make this work the way it needs to, Buckminster
+code must be in control all the way. A suggested implementation:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">A
+     Buckminster boot startup class (BOOT)<br>
+
+     This class is a regular Java class that is run completely without relying
+     on anything in Eclipse (except for startup.jar). The objective for this
+     class is to interpret the raw command line and preprocess it similar to
+     what startup.jar does (but with Buckminster semantics and awareness of the
+     issues described above) and then run startup.jar after the preprocessing.
+     Specifically, this class and the internal APPEXT class below follow a
+     common protocol to transfer various information without having it mangled
+     by startup.jar</li>
+  <ul style="margin-top: 0cm;" type="circle">
+    <li class="MsoNormal" style="">This
+      jar is started using the full incantation of &lsquo;java &ndash;classpath &hellip;&rsquo; etc. For
+      convenience, a suitable &lsquo;buckminster&rsquo; executable should be provided for
+      various platform in order to give the user the experience of using &lsquo;just
+      another tool&rsquo;.</li>
+  </ul>
+  <li class="MsoNormal" style="">The
+     internal application extension class (APPEXT)<br>
+
+     This is the regular Buckminster plugin to which startup.jar eventually
+     transfers control. Again, this knows about the protocol BOOT uses and will
+     do what&rsquo;s necessary to get the real data, eventually transferring control
+     to a COMMAND</li>
+  <li class="MsoNormal" style="">The
+     set of installed commands (COMMAND)<br>
+
+     A command is dynamically installed through the use of an extension point.
+     The APPEXT will present such commands with what seems to be a clean, nice
+     command line for them to process in whatever manner they choose.</li>
+</ul>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Each of these has it own set of options they will respond
+to, most likely modifying the initial raw command line as it goes. As BOOT will
+have to recognize all APPEXT options, and the parsing behavior should be the
+same, it is beneficial to ensure that BOOT and APPEXT share relevant code.</p>
+
+
+<h3>BOOT</h3>
+
+
+<p class="MsoNormal">As the BOOT class provides a parser for the raw command
+line, it can do anything with it and hence, Buckminster can define all of the
+option names as needed.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">There are a few separate classes of options/information:</p>
+
+
+<ol style="margin-top: 0cm;" start="1" type="1">
+  <li class="MsoNormal" style="">influencing
+     the behavior of the BOOT code</li>
+  <li class="MsoNormal" style="">front
+     ends to influence behavior of whatever BOOT is starting</li>
+  <li class="MsoNormal" style="">influencing
+     the behavior of the APPEXT code</li>
+  <li class="MsoNormal" style="">transparently
+     passed on to COMMAND</li>
+</ol>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><u>Class 1 &amp; 2<o:p></o:p></u></p>
+
+
+<p class="MsoNormal">Given the current Java BOOT implementation, it only
+understands one class 1 option: &lsquo;-&#8209;forcenewvm&rsquo;. This pertains to the fact that
+BOOT defaults to running the startup.jar code in the same VM as itself. But if
+forceNewVM is specified, it spawns a completely new process.</p>
+
+
+<p class="MsoNormal">Future additions should be made here in order to support
+transparent specialization of VM options (e.g. using &lsquo;-vmargs &ndash;Xmx512M); using
+such flags requires it to internally force a new VM. This is especially
+necessary if the &lsquo;buckminster&rsquo; executable is used; since that is merely an
+embedded command line starting java, it&rsquo;s difficult to insert special VM
+options there.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Also, it currently understands one class 2 option: &lsquo;&#8209;-workspace
+&lt;path&gt;&rsquo;. This is merely a more sensible (?) name for the &lsquo;-data&rsquo; option
+that startup.jar knows about &ndash; thus, --workspace will be transformed to &ndash;data
+and inserted at the proper place.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Suggested class 1 options to use here:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">--bootlog<br>
+
+     This causes the boot process to log what happens internally and then via
+     internal protocol make the APPEXT aware of this log so that APPEXT can log
+     it &lsquo;properly&rsquo; using the core logging mechanisms.<br>
+
+     This behavior is default, hidden from the user and useful in after the
+     fact debugging. Can be turned off with &ndash;nobootlog.</li>
+  <li class="MsoNormal" style="">--boottrace<br>
+
+     This causes the boot process to trace what it&rsquo;s doing directly to stdout.
+     This is not default; useful in debugging things if it never even gets to
+     the point of starting APPEXT (i.e. not even the bootlog is present).</li>
+  <li class="MsoNormal" style="">--forcenewvm<br>
+
+     Regardless of what the decision is, always force a new VM.</li>
+</ul>
+
+
+<p class="MsoNormal">Common to class 1 options are that they will be removed from
+the command line as they are acted upon by BOOT. Note that this only happens up
+to the first argument on the command line that doesn&rsquo;t start with a dash
+(signifying that it&rsquo;s actually a command name) &ndash; a COMMAND is free to use these
+option names if they so wish.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Suggested class 2 options:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">--workspace
+     &lt;path&gt;<br>
+
+     Will be transformed to &ndash;data when sent to startup.jar.</li>
+  <li class="MsoNormal" style="">--vm
+     &lt;path to java executable&gt;<br>
+
+     This is useful if the user specifically wants to run with another VM than
+     the one selected by using just &lsquo;java&rsquo;. Will force a new VM regardless.</li>
+  <li class="MsoNormal" style="">--vmarg
+     &lt;some regular VM arg&gt; [--vmarg &lt;another VM arg&gt;] &hellip;<br>
+
+     This allows the user to customize the VM settings for the new process.
+     These are location dependent in that they will be fed to the new VM (use
+     of these flags forces a new VM regardless) in the order they&rsquo;re seen on
+     the cmdline.</li>
+</ul>
+
+
+<p class="MsoNormal">Common to class 2 options are that they will be removed from
+the command line as they are acted upon by BOOT, generally transformed into
+something else that BOOT starts. Note that this only happens up to the first
+argument on the command line that doesn&rsquo;t start with a dash (signifying that
+it&rsquo;s actually a command name) &ndash; a COMMAND is free to use these option names if
+they so wish.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><u>Class 3</u></p>
+
+
+<p class="MsoNormal">The only reason for BOOT to recognize these is to be able to
+correctly find the supposed COMMAND name (instead of thinking that an option
+argument is the command name).</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><u>Class 4</u></p>
+
+
+<p class="MsoNormal">BOOT never touches these; it&rsquo;s sent along unchanged to
+APPEXT.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><b style="">BOOT/APPEXT protocol<o:p></o:p></b></p>
+
+
+<p class="MsoNormal">The primary need here is to transmit an arbitrary command
+line from BOOT to APPEXT without startup.jar destroying it or inappropriately
+acting on something not intended for it. BOOT solves this by simply writing
+class 3 &amp; 4 data (i.e. after removing class 1 &amp; 2 data) to a temporary
+file, one line per command line argument. It then sends the name of the command
+line file to APPEXT.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">APPEXT in turn knows it will receive a file name, and thus
+simply reads the file, and treats the result as if it was a regular command
+line.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">However, there are some minor things APPEXT must handle:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">If
+     (as noted, it&rsquo;s optional) BOOT has produced a boot log file, it will send
+     along that filename as well so APPEXT can properly log it. Note that this
+     happens before the cmdline file is read, so the information can not be
+     placed there.</li>
+  <li class="MsoNormal" style="">If
+     the application extension point is invoked by the PDE, i.e. interactively
+     through the Eclipse IDE, it always sends along &lsquo;-pdelaunch&rsquo;. APPEXT must
+     be able to parse this (and simply discard it or do something whatever with
+     it).</li>
+</ul>
+
+
+<h3>APPEXT</h3>
+
+
+<p class="MsoNormal">APPEXT takes a number of options. Part of the APPEXT
+responsibilities is to provide a common context for all commands, i.e. somewhat
+like metadata settings applicable to all commands. Some settings sets up things
+that a COMMAND can ignore (intentionally or non-intentionally &ndash; e.g. a default
+progress monitor is set up depending on settings and a COMMAND is expected to
+use that if they need a progress monitor) and others simply sets internal
+things that all COMMAND&rsquo;s unwittingly become subject to (e.g. turning on
+logging so that System.out is trapped and logged).</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Common to both APPEXT and COMMAND is that they are currently
+subjected to automatic recognition of &lsquo;-?&rsquo; and &lsquo;-help&rsquo;, i.e. to print out help
+on their respective subjects.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><u>Options in general<o:p></o:p></u></p>
+
+
+<p class="MsoNormal">The APPEXT options can be loosely grouped in debugging,
+logging and context setting options. Current options given below, bold are
+defaults:</p>
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style="">-displaystacktrace<br>
+
+     To avoid frightening the average user with really ugly output for
+     sometimes very harmless errors, APPEXT won&rsquo;t print full stacktraces. This
+     can be turned on with this option.</li>
+  <li class="MsoNormal" style=""><b style="">-showprogress</b><br>
+
+     -noshowprogress<br>
+
+     By default makes available instances of a progress monitor implementation
+     somewhat suitable for console use. If turned off, produces
+     NullProgressMonitor instances. Individual commands must ask the context
+     for an instance when needed.</li>
+  <li class="MsoNormal" style="">-tmpdir
+     &lt;path&gt;<br>
+
+     Defaults to the value of java.io.tmpdir, but can be set by the user to
+     directory tmp files to another location. Individual commands must ask the
+     context for the value and use it.</li>
+  <li class="MsoNormal" style="">-log<br>
+
+     This is shorthand for turning on all logging and send it to stdout.</li>
+  <li class="MsoNormal" style="">-logtofile<br>
+
+     Similar to &ndash;log but directs logging to a specific file.</li>
+  <li class="MsoNormal" style="">-logconfiguration
+     &lt;properties or xml file name&gt;<br>
+
+     Allows the user to specify a specific log4j configuration rather than the
+     defaults</li>
+  <li class="MsoNormal" style=""><b style="">-appendtolog</b><br>
+
+     -noappendtolog<br>
+
+     Only applicable when &ndash;logtofile is used &ndash; either appends to the file or
+     overwrites it.</li>
+  <li class="MsoNormal" style=""><b style="">-trapouttolog</b><br>
+
+     -notrapouttolog<br>
+
+     Turns on/off trapping of System.out</li>
+  <li class="MsoNormal" style="">-trapoutloggername
+     &lt;name&gt;<br>
+
+     In case the user has some exotic log configuration set by
+     &ndash;logconfiguration, the name used to log System.out traps can be customized</li>
+  <li class="MsoNormal" style=""><b style="">-traperrtolog</b><br>
+
+     -notraperrtolog<br>
+
+     Turns on/off trapping of System.err</li>
+  <li class="MsoNormal" style="">-traperrloggername
+     &lt;name&gt;<br>
+
+     In case the user has some exotic log configuration set by &ndash;logconfiguration,
+     the name used to log System.err traps can be customized</li>
+  <li class="MsoNormal" style=""><b style="">-trapeclipselogtolog</b><br>
+
+     -notrapeclipselogtolog<br>
+
+     Turns on/off trapping of the regular Eclipse log</li>
+  <li class="MsoNormal" style="">-trapeclipselogloggername
+     &lt;name&gt;<br>
+
+     In case the user has some exotic log configuration set by &ndash;logconfiguration,
+     the name used to log Eclipse log traps can be customized</li>
+  <li class="MsoNormal" style="">-pdelaunch<br>
+
+     (as described above)</li>
+</ul>
+
+
+<p class="MsoNormal" style="margin-left: 18pt;"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal"><u>Command names<o:p></o:p></u></p>
+
+
+<p class="MsoNormal">Command names follow a namespace mechanism, as usual to
+avoid clashes in case more than one command wants to be known as &lsquo;foo&rsquo;. The
+namespace for a given command is usually the same namespace as the enveloping
+plugin, but a plugin can also add levels to the namespace in case it wants to
+group commands inside it &ndash; this is all described in the extension point.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">But also as usual, users dislike typing so much &ndash; thus,
+APPEXT will attempt to match command names bottom up; as long as there&rsquo;s only
+one possible match, APPEXT is happy and will dispatch. But, if collisions
+arise, the user may need to become specific. E.g. the commands com.domain_a.pluginX.foo
+and com.domain_b.pluginY.foo can&rsquo;t be reached as &lsquo;foo&rsquo;; they will have to be
+used as &lsquo;pluginX.foo&rsquo; and &lsquo;pluginY.foo&rsquo; respectively (or, obviously using the
+full names).</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Finally, a command can in the extensionpoint define one or
+more alias names; such names are also subject to the namespace.</p>
+
+
+</body>
+</html>

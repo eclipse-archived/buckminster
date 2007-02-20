@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!--***************************************************************
+* Copyright (c) 2006-2007, Cloudsmith Inc.
+* The code, documentation and other materials contained herein have been
+* licensed under the Eclipse Public License - v 1.0 by the copyright holder
+* listed above, as the Initial Contributor under such license. The text of
+* such license is available at www.eclipse.org.
+****************************************************************-->
+
+<project name="org.eclipse.buckminster" default="build.site" basedir="..">
+	<!-- Extract the version of a feature from the feature element found in a
+	     feature.xml file.
+	     Parameters:
+	         file: The full path to the feature.xml file
+	         property: The property that will receive the version string
+	  -->
+	<macrodef name="extractFeatureVersion">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<striplinebreaks/>
+					<replaceregex
+						pattern="^.*&lt;feature[^&gt;]*version=&quot;([^&quot;]*)&quot;.*$"
+						replace="\1"/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<property name="site.output" location="${buckminster.output}/site"/>
+	<property name="product.output" location="${buckminster.output}/product"/>
+
+	<target name="clean">
+		<delete dir="${product.output}" failonerror="false" quiet="false"/>
+		<delete dir="${site.output}" failonerror="false" quiet="false"/>
+	</target>
+
+	<target name="build.product">
+		<extractFeatureVersion property="product.version" file="${product.feature.xml}"/>
+		<property name="zipped.product" location="${product.output}/buckminster.product-${product.version}.zip"/>
+
+		<mkdir dir="${product.output}"/>
+		<buckminster.zip destfile="${zipped.product}">
+			<buckminster.filesetgroup refid="product.filesetgroup"/>
+		</buckminster.zip>
+	</target>
+
+	<target name="build.site">
+		<extractFeatureVersion property="site.version" file="${site.feature.xml}"/>
+		<property name="deployed.site" location="${site.output}/buckminster.site-${site.version}"/>
+		<property name="archived.site" location="${site.output}/buckminster.archivedsite-${site.version}.zip"/>
+
+		<mkdir dir="${deployed.site}"/>
+		<buckminster.copy todir="${deployed.site}">
+			<buckminster.filesetgroup refid="site.filesetgroup"/>
+		</buckminster.copy>
+		<delete>
+			<fileset dir="${deployed.site}/plugins" excludes="org.eclipse.buckminster.*"/>
+		</delete>
+		<zip destfile="${archived.site}">
+			<fileset dir="${deployed.site}"/>
+		</zip>
+	</target>
+</project>

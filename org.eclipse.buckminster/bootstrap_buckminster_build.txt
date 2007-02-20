@@ -1,0 +1,58 @@
+This document describes how to create a workspace that is suitable for building
+a Buckminster update site + product as described in 'make_a_new_release.txt'
+and you are armed with only a basic Eclipse installation (in this document,
+Eclipse 3.2 M2 was used).
+
+Normally Buckminster needs Buckminster to build, but the procedure described
+below can be necessary if you don't have access to a prior Buckminster release
+that you can install, or if there are other reasons such an installation is
+unsuitable.
+
+1) Make sure Subclipse is installed.
+Use Help/Software updates/Find and Install/Search for new features to install.
+Add a new remote site: 'http://subclipse.tigris.org/update', and make sure it's
+checked before Finish. Install and restart.
+
+2) Retrieve the individual components from CVS by using the bootstrap.psf file 
+(import team project set). When completed, the org.eclipse.buckminster.core
+indicates build problems - this is normal.
+
+3) Download external dependencies from a Maven repository.
+The org.eclipse.buckminster.core component depends on two jar files normally
+downloaded by Buckminster from a maven repository: log4j and tada-sax.
+	a) Download 'http://www.ibiblio.org/maven/log4j/jars/log4j-1.2.9.jar' and
+	   place it as '<workspace>/org.eclipse.buckminster.core/jars/log4j.jar'
+	b) Download 'http://www.ibiblio.org/maven/se.tada/jars/tada-sax-0.2.0.jar'
+	   and place it as
+       '<workspace>/org.eclipse.buckminster.core/jars/tada-sax.jar'
+Note that version information is stripped from the jar names.
+
+4) Refresh the org.eclipse.buckminster.core component and make it build.
+	a) First refresh the entire workspace
+	b) Open the org.eclipse.buckminster.core project properties
+	   Select the 'Java Build Path' and the 'Libraries' tab. Use 'Add JARs...'
+	   to add the two jar files under 'jars'.
+	c) Trigger a full build by 'Project/Clean.../Clean all projects'.
+	   When the build is complete, there should be no build errors present (but
+	   possibly some minor build warnings).
+	   
+5) Run Ant script in org.eclipse.buckminster.ant.
+Open the org.eclipse.buckminster.ant/make folder, and right-click on
+'build.xml'. Select 'Run As.../Ant build...'. Select the 'Classpath' tab. Click
+on 'User Entries' and then on 'Add External JARs...'. Navigate to the Eclipse
+instance you are running and in 'plugins', find and select
+'org.eclipse.ant.core_3.1.0.jar' and 'org.eclise.core.runtime_3.1.0.jar'. Now
+'Apply' and 'Run'. This should report a 'BUILD SUCCESSFUL' Ant run.
+
+6) Run Ant script in org.eclipse.buckminster.pde.
+Repeat instructions in #5 for this component but here add the following jars:
+	org.eclipse.core.runtime_3.1.0.jar
+	org.eclipse.core.resources_3.1.0.jar
+	org.eclipse.jdt.core_3.1.0.jar
+	org.eclipse.pde.core_3.1.0.jar
+
+7) You should now be able to build an update site from the workspace. In
+principle, follow the 'make_a_new_release.txt' instructions (but you should be
+able to stay with the Eclipse instance you already have running in this case).
+
+

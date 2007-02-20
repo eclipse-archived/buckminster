@@ -1,0 +1,55 @@
+Scenario: getting started
+	Start a fresh eclipse
+		- explain the current eclipse dl/install model
+		- explain the update mechanism
+		- close the welcome screen
+	Create an archive update location to \\ken1pc\pub\buckminster-0.2.x-updatesite.zip
+		- walk through the update process and install buckminster 0.2.1
+	Demonstrate various hooks we use
+		Preferences, Project wizard, Help...
+	Start 'open project'
+		- briefly describe pg1
+		- enter 'svn_simple_d' as the component
+			* explain how the resolver map will be used
+		- show that it simultaneously builds an URL, which is one way to interact with bm for batch purposes
+		- IMPORTANT: deselect 'Resolve immediately on Next'
+		- IMPORTANT: click Next (not Finish)
+			* now svn_simple_d is loaded only - stress that this is the only part that I know and care about
+			* highlight the color indicator
+			* highlight the available target and requirements for it
+			* describe that each requirement can be tweaked beyond the defaults if desired (and that this can affect what dependencies occur at next stage)
+			* Deselect the 'Resolve recursively'
+			* Resolve
+			* One step down done - svn_simple_a is complete (only one target with no requirements).
+			* Resolve svn_simple_b
+			* Note that b has a dep (a) but that's already fulfilled
+			* Resolve svn_simple_c
+			* Again not that c has fulfilled deps.
+			* Now show the true state of affairs - select 'Show exact duplicates'
+			* Also describe what would happen if a *different* version of a would have been specified - it becomes a name dup
+			* IMPORTANT: click Next
+			* Discuss the difference between selection, materialization and bind stages
+			* complete the wizard - Finish
+		- Demonstrate a cspec
+			* explain that it is the way bm sees things, but is not necessarily a 'real' file
+	Now demonstrate the really cool things...:-)
+		- Open project 'org.eclipse.buckminster' (click Next, with 'Resolve immediately')
+			* Demonstrate the amount of dependencies followed (also 'Show exact duplicates')
+			* Note that I neither want nor can know all these things
+			* Explain that there are no 'real' cspecs involved, only other formats recognized
+			* All org. components found in the eclipse instance itself
+		- Press Next
+			* show that only some need materialization - others are already there
+		- Press Finish
+	Show that since Eclipse knows what to do with them, they immediately build and a new IDE can be started
+Command line:
+	Unzip the product into 'c:\'
+		- a custom application wrapped around the eclipse framework, only containing required plugins
+		- comparison is about 10 Mb vs 100 Mb
+	run 'c:\buckminster\buckminster getcfg -component svn_simple_d'
+	Basically the same as the ui
+	Note that this commandline stuff also works if you have a regular Eclipse installation
+	
+		
+		
+		

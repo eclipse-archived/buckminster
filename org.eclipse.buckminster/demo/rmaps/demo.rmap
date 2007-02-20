@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:pv="http://www.eclipse.org/buckminster/Provider-1.0"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
+
+	<rm:searchPath name="default">
+		<rm:provider readerType="cvs" componentType="eclipse-project" mutable="true" source="true">
+			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster/demo/{0}">
+				<bc:propertyRef key="buckminster.component" />
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="maven">
+		<rm:provider xsi:type="mp:MavenProvider" readerType="cvs" componentType="maven" mutable="false" source="false">
+			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster/demo/maven"/>
+			<mp:mappings>
+				<mp:entry name="se.tada.util.sax" groupId="se.tada" artifactId="tada-sax"/>
+			</mp:mappings>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:locator searchPathRef="maven" pattern="^se\.tada\..*" />
+	<rm:locator searchPathRef="default" pattern="^org\.demo\..*" />
+
+</rm:rmap>

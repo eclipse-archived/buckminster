@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.buckminster.cmdline.commands">
+      <command
+            addhelpflags="true"
+            class="org.demo.hwcommand.HWCommand"
+            name="helloworld"
+            status="NORMAL">
+         <alias name="hw"/>
+      </command>
+   </extension>
+
+</plugin>

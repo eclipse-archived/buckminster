@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Core commands</title>
+</head>
+<body>
+
+
+<p class="MsoNormal">To allow a user to do anything useful with a 'raw' Buckminster headless. Buckminster has a minimum, core command
+set.</p>
+<br>
+The main commands are basically intended for bootstrapping;
+specifically, to interact with the Update Manager mechanism and install
+features/plugins - thereby gaining the actual commands desired. Also, a
+number of commands allow querying the system (for example 'what
+commands are installed'), and interaction with an extendable
+'preference' system (e.g. manipulating persisted preferences in a given
+workspace, activities usually performed by using various GUI dialogs).
+Finally some mostly internal diagnostics command(s) useful for dumping
+information (e.g. what features/plugins are installed etc).<br>
+<p class="MsoNormal">At present, these commands are available. Here I will only
+make a brief description:</p>
+
+
+
+
+<ul style="margin-top: 0cm;" type="disc">
+  <li class="MsoNormal" style=""><span style="font-weight: bold;">listcommand</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">
+     lscmd</span><br>
+
+     This command will list the commands that are currently available, i.e.
+     it&rsquo;s a fast way to get a reminder on what command to use. Or, to verify
+     that the extension command just written was actually linked in properly. </li>
+  <li class="MsoNormal" style=""><span style="font-weight: bold;">listprogressmonitor</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">
+     lspm</span><br style="font-weight: bold;">
+
+     In order to make sense of the &ndash;progressconfiguration flag using lspm will
+     help. It lists installed progress monitors and any specific configurations
+     available for each monitor implementation.</li>
+  <li class="MsoNormal" style=""><span style="font-weight: bold;">install</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">
+     uninstall</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">
+     listsite</span><br style="font-weight: bold;">
+
+     These commands is the interface to Update Manager.</li>
+  <li class="MsoNormal" style=""><span style="font-weight: bold;">getpreference</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">setpreference</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">unsetpreference</span><br style="font-weight: bold;">
+    <span style="font-weight: bold;">listpreferences</span><br style="font-weight: bold;">
+These commands interface with the preference mechanism.</li>
+</ul>
+
+</body>
+</html>

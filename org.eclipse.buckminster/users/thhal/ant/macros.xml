@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="helpful.macros">
+
+	<macrodef name="cvsDatestamp">
+		<attribute name="component"/>
+		<attribute name="property"/>
+		<sequential>
+			<buckminster.cvs.lastTimestamp
+				property="@{property}"
+				dateformat="yyyyMMdd"
+				cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/@{component}"/>
+		</sequential>
+	</macrodef>
+
+	<!-- Extract the version of a feature from the feature element found in a
+	     feature.xml file.
+	     Parameters:
+	         file: The full path to the feature.xml file
+	         property: The property that will receive the version string
+	  -->
+	<macrodef name="extractFeatureVersion">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<striplinebreaks/>
+					<replaceregex
+						pattern="^.*&lt;feature[^&gt;]*version=&quot;([^&quot;]*)&quot;.*$"
+						replace="\1"/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<!-- Extract the version of a bundle from its MANIFEST.MF file.
+	     Parameters:
+	         file: The full path to the manifest file
+	         property: The property that will receive the version string
+	  -->
+	<macrodef name="extractBundleVersion">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<linecontains>
+						<contains value="Bundle-Version:"/>
+					</linecontains>
+					<replaceregex pattern="Bundle-Version: (.*)$" replace="\1"/>
+					<striplinebreaks/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+</project>

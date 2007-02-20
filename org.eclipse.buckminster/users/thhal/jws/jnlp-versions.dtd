@@ -1,0 +1,11 @@
+<!ELEMENT jnlp-versions (resource*, platform*)>
+<!ELEMENT resource (pattern, file)>
+<!ELEMENT platform (pattern, file, product-version-id)>
+<!ELEMENT pattern (name, version-id, os*, arch*, locale*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT version-id (#PCDATA)>
+<!ELEMENT os (#PCDATA)>
+<!ELEMENT arch (#PCDATA)>
+<!ELEMENT locale (#PCDATA)>
+<!ELEMENT file (#PCDATA)>
+<!ELEMENT product-version-id (#PCDATA)>

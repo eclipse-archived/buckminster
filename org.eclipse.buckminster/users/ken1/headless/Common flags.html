@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+
+  
+  
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+
+
+  
+  
+  
+  <title>Common flags</title>
+</head>
+
+
+<body>
+
+
+Buckminster headless has a set of flags applicable to the basic
+entrypoint, rather than an individual command. They essentially
+influence the context in which the commands run and/or provide a
+meta-way to customize the startup.<br>
+
+
+<br>
+
+
+The available flags can be roughly
+divided into a couple of groups:
+
+<ul style="margin-top: 0cm;" type="disc">
+
+
+  <li class="MsoNormal" style="">Workspace
+     management</li>
+
+
+  <li class="MsoNormal" style="">Logging</li>
+
+
+  <li class="MsoNormal" style="">User
+     interaction</li>
+
+
+  <li class="MsoNormal" style="">JVM
+     specialization</li>
+
+
+</ul>
+
+
+Below follows an introduction to what the various flags do. See the --help for more details at this point.
+
+<h3><o:p></o:p>Workspace management</h3>
+
+
+
+
+
+
+<p class="MsoNormal">As Buckminster at its heart uses the Eclipse framework, this
+exhibits itself in a couple of ways. One of these ways is that an ingrained
+concept is to work with a &lsquo;workspace&rsquo;, just like the Eclipse IDE does.</p>
+
+
+<p class="MsoNormal">As it happens, the location of this workspace must
+be set very early in the lifecycle of an Eclipse application, and this is thus
+the interface to it. The flag(s) are either &lsquo;-W&rsquo; or &lsquo;&mdash;workspace&rsquo; and should
+point to a directory (automatically created if not existing). By default, a
+workspace called &lsquo;workspace&rsquo; will be used (created when first referenced)&nbsp;in the user&rsquo;s home directory.</p>
+
+
+
+
+
+
+<h3>Logging</h3>
+
+
+
+
+
+
+<p class="MsoNormal">Buckminster internally has a logging system. This is clearly
+visible when in the IDE (from the preferences pages). From the command line
+there are a number of flags to control logging behavior. A basic idea is that
+Buckminster goes to some lengths to trap writes to System.out/err as
+well as the Eclipse internal log, and to do so in a synchronous fashion with
+specific log writes. A full log from a run which mysteriously fails will help a
+great deal in isolating the problem in an &lsquo;after-the-fact&rsquo; fashion.</p>
+
+
+
+
+
+
+<ul style="margin-top: 0cm;" type="disc">
+
+
+  <li class="MsoNormal" style="">-L<br>
+
+
+
+     --log<br>
+
+
+
+     This is the most basic of the logging flags &ndash; they turn on logging
+     directly to stdout.</li>
+
+
+  <li class="MsoNormal" style="">--logtofile<br>
+
+
+
+     This turns on logging to a log file. Using &lsquo;&mdash;appendtolog&rsquo; will turn on
+     append mode.</li>
+
+
+  <li class="MsoNormal" style="">--[no]trapouttolog<br>
+
+
+
+     --[no]traperrtolog<br>
+
+
+
+     --[no]trapeclipselogtolog<br>
+
+
+
+     Turns on or off trapping of System.out/err, Eclipse log. Default, they are all turned on.</li>
+
+
+  <li class="MsoNormal" style="">--trapoutloggername<br>
+
+
+
+     --traperrloggername<br>
+
+
+
+     --trapeclipselogloggername<br>
+
+
+
+     --logconfiguration<br>
+
+
+
+     Buckminster (currently) uses Log4J as its engine. This advanced capability
+     can be used to customize the actual logging configuration used.</li>
+
+
+  <li class="MsoNormal" style="">--nobootlog<br>
+
+
+The <a href="booting.html">boot</a> process is somewhat convoluted so
+by default the launcher logs what it is doing and later provides this
+information to the finished application so it can be channeled to the
+'real' log. This information is crucial to understand exactly how the
+app was started. Using this options turns this off logging off. Note
+that the '--boottrace' flag differs from this - tracing is always done
+straight to stdout and may be necessary to debug the boot (logging)
+itself... </li>
+
+
+</ul>
+
+
+
+
+<h3><o:p></o:p>User interaction</h3>
+
+
+
+
+
+
+
+
+<p class="MsoNormal">There are some aspects that touches on how the user sees the
+results etc of running commands.<br>
+
+
+<o:p></o:p></p>
+
+
+
+
+<ul style="margin-top: 0cm;" type="disc">
+
+
+  <li class="MsoNormal" style="">--displaystacktrace<br>
+
+
+
+     This option can be given if the user desires a full stack trace printout
+     in case of actual code problems &ndash; normally it just prints a less daunting
+     problem report if that happens. Regular &lsquo;errors&rsquo; (e.g. bad usage of flags or similar
+     should obviously be reported to the user in a more understandable manner).</li>
+
+
+  <li class="MsoNormal" style="">--[no]progress<br>
+
+
+
+     --progressconfiguration<br>
+
+
+
+     Ingrained into the Eclipse architecture is frequent use of an abstract
+     &lsquo;progress monitor&rsquo;. Normally, there are various implementations for this
+     available when using the GUI &ndash; dialogs with progress bars etc. In a
+     command line setting though, all we have to work with is essentially
+     stdout. So, the Buckminster framework provides (at least one) progress
+     monitor implementation that gives a credible representation on stdout.
+     Which implementation is chosen is defined by the user and thus transparent
+     to the individual commands. By default it&rsquo;s turned on using a default
+     implementation. The configuration flag allows a user to switch
+     implementations, and/or configure the selected progress monitor itself.<br>
+
+
+This is an extension point and new monitors can thus be added. Note
+that it is up to a command to actually use the implementations here -
+internally the command must request a monitor from 'the context'.</li>
+
+
+  <li class="MsoNormal" style="">--tmpdir<br>
+
+
+
+     Occasionally, the framework and/or a command needs to use temporary files.
+     This is just a convenient way for a user to express a desire to steer such
+     tmp files to a specific location. It is up to a command to use this
+     information.</li>
+
+  <li class="MsoNormal" style="">--notrapctrlc<br>
+By default, Buckminster attempts to trap Ctrl-C. This trapping can be
+turned off entirely with this flag. The reason for trapping Ctrl-C is
+that, since below the Eclipse
+framework may be active doing something to the workspace or other
+managed resource when Ctrl-C is pressed. Since Ctrl-C will by default
+simply interrupt the application and exit, this can occur such that the
+workspace is left in an inconsistent state. This is frequently less of
+a problem when using the IDE since a user has to knowingly kill the
+entire process. Instead, the Ctrl-C trap tries to send proper 'cancel'
+requests to known/active progress monitors which should cause the code
+using those monitors to cleanly exit. In case this still doesn't work,
+see --ctrlcforceexitcount for a way out.</li>
+  <li class="MsoNormal" style="">--ctrlcforceexitcount<br>
+In case an app doesn't cleanly exit, pressing Ctrl-C repeatedly will
+exit the VM anyway. This flag allows specifying the number of required
+Ctrl-C presses for this to happen. Defaults to 5.</li>
+  <li class="MsoNormal" style="">--boottrace<br>
+
+
+
+     This is normally used for solving problems with the launcher but may be
+     important to understand how a given sequence of JVM arguments are passed
+     on &ndash; see below.</li>
+
+
+</ul>
+
+
+
+
+<h3><o:p>&nbsp;</o:p>JVM specialization
+
+</h3>
+
+
+Buckminster is a Java application, and thus needs a JVM. By
+default, Buckminster will be started assuming the regular operating system
+command &lsquo;java&rsquo; works. There are two reasons why this may not be adequate:
+either the JVM selected by that command is not the one wanted, and/or the user
+wants to pass in flags intended for the JVM (e.g. manipulating the memory
+sizes).<o:p><br>
+
+
+&nbsp;</o:p>
+
+<ul style="margin-top: 0cm;" type="disc">
+
+
+  <li class="MsoNormal" style="">--vm<br>
+
+
+
+     This can be used to specifically select a JVM.</li>
+
+
+  <li class="MsoNormal" style="">--vmarg<br>
+
+
+
+     This can be used to send flags to the VM to run. This flag works a bit
+     unusually in that it is important to use it in the correct sequence. Also,
+     to minimize issues where command line escaping must be used, one &ndash;vmarg
+     per actual argument must be used, and they will internally be reformatted
+     to be actual flags to the JVM. To understand this process the &ndash;boottrace
+     flag may be useful.</li>
+
+
+  <li class="MsoNormal" style="">--forcenewvm<br>
+
+
+
+     If the launcher finds that it must start a new VM to accommodate the
+     &ndash;vm/--vmarg flags used, it will do so, otherwise it will attempt to run in
+     the same VM as the launcher. If necessary a new VM can be forced,
+     regardless.</li>
+
+
+</ul>
+
+
+
+
+<p class="MsoNormal"><o:p></o:p></p>
+
+
+
+
+</body>
+</html>
