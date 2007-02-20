@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster UI Plug-in
+Bundle-SymbolicName: org.eclipse.buckminster.ui; singleton:=true
+Bundle-Version: 1.0.0.v20070220
+Bundle-Activator: org.eclipse.buckminster.ui.UiPlugin
+Bundle-Vendor: The Buckminster Project
+Bundle-Localization: plugin
+Export-Package: org.eclipse.buckminster.ui,
+ org.eclipse.buckminster.ui.actions,
+ org.eclipse.buckminster.ui.build,
+ org.eclipse.buckminster.ui.editor,
+ org.eclipse.buckminster.ui.editor.rmap,
+ org.eclipse.buckminster.ui.prefs,
+ org.eclipse.buckminster.ui.wizards
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.console,
+ org.eclipse.ui.editors,
+ org.eclipse.buckminster.core,
+ org.eclipse.buckminster.sax,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jface.text
+Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

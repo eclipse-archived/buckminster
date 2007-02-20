@@ -1,0 +1,32 @@
+/*****************************************************************************
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
+package org.eclipse.buckminster.ui.wizards;
+
+import org.eclipse.jface.viewers.ISelection;
+
+/**
+ * The "New" wizard page allows setting the container for the new file as well as the file name. The page will only
+ * accept file name without the extension OR with the extension that matches the expected one (cspex).
+ */
+
+public class NewCSPEXWizardPage extends NewBMFileWizardPage
+{
+	/**
+	 * Constructor for NewCSPEXWizardPage.
+	 * 
+	 * @param pageName
+	 */
+	public NewCSPEXWizardPage(ISelection selection)
+	{
+		super(selection, "new_cspex.cspex", "cspex");
+		setTitle("New Buckminster Component Specification Extension File");
+		setDescription("This wizard creates a new file with *.cspex extension that can be opened by an XML or text editor. "
+				+ "A CSPEX allows you to extend a generated specification.");
+	}
+
+}

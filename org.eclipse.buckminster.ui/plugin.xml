@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension-point id="incrementalBuilderEditors"
+		name="%IncrementalBuilderEditors"
+		schema="schema/incrementalBuilderEditors.exsd" />
+
+	<extension point="org.eclipse.ui.importWizards">
+		<wizard id="org.eclipse.buckminster.ui.ImportBOM"
+			name="%ImportBOMWizardShortDescription" icon="icons/materialize.gif"
+			class="org.eclipse.buckminster.ui.wizards.QueryWizard">
+			<description>%ImportBOMWizardLongDescription</description>
+		</wizard>
+	</extension>
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			id="org.eclipse.buckminster.ui.projectaction"
+			objectClass="org.eclipse.core.resources.IResource"
+			adaptable="true">
+			<menu id="org.eclipse.buckminster.ui.popup.menu"
+				label="Buckminster">
+				<separator name="cspec" />
+			</menu>
+			<action
+				class="org.eclipse.buckminster.ui.actions.ViewCSpecAction"
+				id="org.eclipse.buckminster.ui.viewCSpec" enablesFor="1"
+				label="View CSpec..."
+				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec">
+			</action>
+			<action
+				class="org.eclipse.buckminster.ui.actions.InvokeAction"
+				enablesFor="1" id="org.eclipse.buckminster.ui.invokeAction"
+				label="Invoke action"
+				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec" />
+		</objectContribution>
+	</extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			class="org.eclipse.buckminster.ui.prefs.DynamicPreferencePage"
+			id="org.eclipse.buckminster.ui.prefs.BuckminsterPreferencePage"
+			name="%PreferencePage.name">
+		</page>
+	</extension>
+	<extension point="org.eclipse.ui.propertyPages">
+		<page adaptable="true"
+			class="org.eclipse.buckminster.ui.internal.properties.ProjectPropertyPage"
+			id="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
+			name="%ProjectPropertyPage.name"
+			objectClass="org.eclipse.core.resources.IProject" />
+		<page adaptable="true"
+			category="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
+			class="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
+			id="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
+			name="%ProjectBuildersPropertyPage.name"
+			objectClass="org.eclipse.core.resources.IProject" />
+	</extension>
+	<extension
+		point="org.eclipse.buckminster.ui.incrementalBuilderEditors">
+		<editor builder="org.eclipse.buckminster.core.SimulationBuilder"
+			class="org.eclipse.buckminster.ui.internal.build.SimulationBuilderEditor" />
+		<editor
+			builder="org.eclipse.buckminster.core.ExternalCommandBuilder"
+			class="org.eclipse.buckminster.ui.internal.build.ExternalCommandBuilderEditor" />
+	</extension>
+	<extension point="org.eclipse.buckminster.runtime.logReceivers">
+		<logreceiver
+			class="org.eclipse.buckminster.ui.EclipseConsoleLogReceiver" />
+	</extension>
+	<extension point="org.eclipse.ui.editors">
+		<editor
+        class="org.eclipse.buckminster.ui.editor.query.QueryEditor"
+        contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+        extensions="cquery"
+        icon="icons/cquery.gif"
+        id="org.eclipse.buckminster.ui.editor.QueryEditor"
+        name="Component Query Editor">
+		</editor>
+  <editor
+        class="org.eclipse.buckminster.ui.editor.rmap.RMAPEditor"
+        contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+        default="true"
+        extensions="rmap"
+        icon="icons/rmap.gif"
+        id="org.eclipse.buckminster.ui.editors.RMAPEditor"
+        name="Buckminster Resource Map Editor"/>
+<editor
+        class="org.eclipse.buckminster.ui.editor.rmap.RMAPEditor"
+        contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+        default="true"
+        extensions="cspec"
+        icon="icons/cspec.png"
+        id="org.eclipse.buckminster.ui.editors.CSPECEditor"
+        name="Buckminster CSPEC Editor"/>
+<editor
+        class="org.eclipse.buckminster.ui.editor.rmap.RMAPEditor"
+        contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+        default="true"
+        extensions="cspex"
+        icon="icons/cspex.png"
+        id="org.eclipse.buckminster.ui.editors.CSPEXEditor"
+        name="Buckminster CSPEC Editor"/>
+	</extension>
+	<extension point="org.eclipse.ui.actionSets">
+		<actionSet id="org.eclipse.buckminster.ui.project"
+			label="%BuckminsterProjectActions" visible="true">
+			<menu id="org.eclipse.buckminster.ui.menu"
+				label="%Buckminster">
+				<separator name="group1" />
+				<separator name="group2" />
+			</menu>
+			<menu id="org.eclipse.buckminster.ui.debug.menu"
+				label="%Debug" path="org.eclipse.buckminster.ui.menu/group2">
+				<separator name="group1" />
+			</menu>
+			<action
+				class="org.eclipse.buckminster.ui.actions.OpenQueryAction"
+				definitionId="org.eclipse.buckminster.ui.actions.OpenQueryAction"
+				id="org.eclipse.buckminster.ui.openQuery" label="%OpenQuery"
+				menubarPath="org.eclipse.buckminster.ui.menu/group1" />
+			<action
+				class="org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction"
+				definitionId="org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction"
+				id="org.eclipse.buckminster.ui.viewChosenCSpec"
+				label="%ViewChosenCSpec"
+				menubarPath="org.eclipse.buckminster.ui.menu/group1" />
+			<action
+				class="org.eclipse.buckminster.ui.actions.debug.ForceWorkspaceInfoChangedAction"
+				definitionId="org.eclipse.buckminster.ui.actions.debug.ForceWorkspaceInfoChangedAction"
+				id="org.eclipse.buckminster.ui.forceWorkspaceInfoChanged"
+				label="%ForceWorkspaceInfoChanged"
+				menubarPath="org.eclipse.buckminster.ui.menu/org.eclipse.buckminster.ui.debug.menu/group1" />
+			<action
+				class="org.eclipse.buckminster.ui.actions.debug.ClearURLCacheAction"
+				definitionId="org.eclipse.buckminster.ui.actions.debug.ClearURLCacheAction"
+				id="org.eclipse.buckminster.ui.clearURLCache" label="%ClearURLCache"
+				menubarPath="org.eclipse.buckminster.ui.menu/org.eclipse.buckminster.ui.debug.menu/group1" />
+		</actionSet>
+	</extension>
+
+	<extension point="org.eclipse.ui.themes">
+		<themeElementCategory
+			id="org.eclipse.buckminster.ui.fontsandcolors" label="Buckminster" />
+		<fontDefinition
+			categoryId="org.eclipse.buckminster.ui.fontsandcolors"
+			id="processresultdialog_font" isEditable="true"
+			defaultsTo="org.eclipse.jface.textfont"
+			label="Process Result Dialog font" />
+		<theme id="org.eclipse.buckminster.ui.theme" />
+	</extension>
+	<extension point="org.eclipse.ui.startup">
+		<startup
+			class="org.eclipse.buckminster.ui.internal.EarlyStartup" />
+	</extension>
+    <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.buckminster"
+            name="Buckminster"/>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.ui.wizards.NewResourceMapWizard"
+            icon="icons/rmap.gif"
+            id="org.eclipse.buckminster.ui.wizards.NewResourceMapWizard"
+            name="Resource Map  file"/>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.ui.wizards.NewCQueryWizard"
+            icon="icons/cquery.gif"
+            id="org.eclipse.buckminster.ui.wizards.NewCQueryWizard"
+            name="Component Query file"/>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.ui.wizards.NewCSPEXWizard"
+            icon="icons/cspex.png"
+            id="org.eclipse.buckminster.ui.wizards.NewCSPEXWizard"
+            name="Component Specification Extension file"/>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.ui.wizards.NewCSPECWizard"
+            icon="icons/cspec.png"
+            id="org.eclipse.buckminster.ui.wizards.NewCSPECWizard"
+            name="Component Specification file"/>
+   </extension>
+</plugin>
