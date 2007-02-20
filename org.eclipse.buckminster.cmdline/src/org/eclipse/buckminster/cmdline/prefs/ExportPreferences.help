@@ -1,0 +1,20 @@
+Exports preferences to a file or standard output.
+
+usage: exportpreferences
+       [{ -? | --help }]
+       [{ -F | --file } <filename> ]
+       [{ -S | --scope } <scope> ]
+       [ <rootKey>[#<subKeys>] [ <rootKey>[#<subKeys>] ... ] ]
+ -?
+--help
+  Show this help text
+<filename>
+  The name of the file that receives the exported preferences.
+<rootKey>
+  Qualifies with the key to a root node to include
+<subKeys>
+  Qualifies a root key with the name of a sub key
+<scope>
+  Qualifies with scope. Valid values are 'configuration' and 'instance'.
+
+TBD

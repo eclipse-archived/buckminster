@@ -1,0 +1,15 @@
+This lists the commands installed in the currently running instance.
+
+usage: listcommand
+       [{ -? | --help }]
+       [--style <name>]
+       
+ -?
+--help
+  Show this help text
+--style <name>
+  Select the style of the printout; where <name> is:
+    normal: All names are shown.
+    short : Only the full/basic name of commands are shown.
+    long  : A verbose listing detailing aliases etc are shown.
+  Default is 'normal'.

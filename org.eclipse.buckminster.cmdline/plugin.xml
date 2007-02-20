@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+     <extension-point id="commands" name="%commands" schema="schema/commands.exsd"/>
+     <extension-point id="prefmappings" name="%prefmappings" schema="schema/prefmappings.exsd"/>
+
+   <extension
+         id="headless"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.buckminster.cmdline.Headless">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.buckminster.cmdline.headless"
+            name="Buckminster Headless Launcher"/>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.cmdline.commands">
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.internal.ListCommands"
+            name="listcommands"
+            status="NORMAL">
+         <alias name="lscmds"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.prefs.SetPreference"
+            name="prefs.setpreference"
+            status="NORMAL">
+         <alias name="setpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.prefs.ExportPreferences"
+            name="prefs.exportpreferences"
+            status="NORMAL">
+         <alias name="exportprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.prefs.ImportPreferences"
+            name="prefs.importpreferences"
+            status="NORMAL">
+         <alias name="importprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.prefs.GetPreference"
+            name="prefs.getpreference"
+            status="NORMAL">
+         <alias name="getpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.prefs.UnsetPreference"
+            name="prefs.unsetpreference"
+            status="NORMAL">
+         <alias name="unsetpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.cmdline.prefs.ListPreferences"
+            name="prefs.listpreferences"
+            status="NORMAL">
+         <alias name="lsprefs"/>
+      </command>
+   </extension>
+
+</plugin>
