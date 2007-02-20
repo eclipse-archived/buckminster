@@ -1,0 +1,18 @@
+<rm:rmap
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:pv="http://www.eclipse.org/buckminster/Provider-1.0"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
+
+	<rm:site name="default">
+	</rm:site>
+
+	<rm:searchPath name="subclipse-core">
+		<rm:provider readerType="svn" componentType="eclipse.project" mutable="false" source="true">
+			<pv:uri format="http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core"/>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:locator searchPathRef="subclipse-core" pattern="^org\.tigris\.subversion\.subclipse\.core$" />
+</rm:rmap>
