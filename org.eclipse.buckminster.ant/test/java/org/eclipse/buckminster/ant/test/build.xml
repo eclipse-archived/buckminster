@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Aug 18, 2006 11:00:47 AM                                                        
+
+     project    
+     description
+                   
+     thhal                                                                
+     ====================================================================== -->
+<project name="project" default="default">
+    <description>
+            description
+    </description>
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" depends="depends" description="--> description">
+        <echo message="Invoking TARGET default, test.prop = ${test.prop}"/>
+    	<pathconvert property="pathstring" refid="test.path.fileset"/>
+    	<echo message="Path is ${pathstring}"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>
