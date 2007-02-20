@@ -1,0 +1,14 @@
+Uninstalls a feature.
+
+usage: Uninstall
+       [{ -? | --help }]
+       <feature> [<version>]
+       
+ -?
+--help
+  Show this help text
+<feature>
+  The feature id
+<version>
+  The version to install. If not given, an error will be generated if there
+  are more than possibility.

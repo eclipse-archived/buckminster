@@ -1,0 +1,11 @@
+Lists the features available on a site.
+
+usage: ListSite
+       [{ -? | --help }]
+       <site>
+       
+ -?
+--help
+  Show this help text
+<site>
+	A path/URL to a site.

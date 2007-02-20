@@ -1,0 +1,15 @@
+Installs a feature.
+
+usage: Install
+       [{ -? | --help }]
+       <site> <feature> [<version>]
+       
+ -?
+--help
+  Show this help text
+<site>
+  A path/URL to a site.
+<feature>
+  The feature id
+<version>
+  The version to install. If not given, the latest is chosen.
