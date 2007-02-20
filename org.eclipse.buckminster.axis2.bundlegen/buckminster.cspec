@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.axis2.bundlegen" version="1.0.0">
+<cs:dependencies>
+	<cs:dependency name="com.ctc.wstx.asl"/>
+	<cs:dependency name="com.ibm.wsdl"/>
+	<cs:dependency name="javax.mail"/>
+	<cs:dependency name="javax.activation"/>
+	<cs:dependency name="org.apache.axiom.api"/>
+	<cs:dependency name="org.apache.axiom.impl"/>
+	<cs:dependency name="org.apache.axis2.adb"/>
+	<cs:dependency name="org.apache.axis2.addressing"/>
+	<cs:dependency name="org.apache.axis2.kernel"/>
+	<cs:dependency name="org.apache.commons.httpclient"/>
+	<cs:dependency name="org.apache.commons.fileupload"/>
+	<cs:dependency name="org.apache.neethi"/>
+	<cs:dependency name="com.bea.xml.stream.api"/>
+	<cs:dependency name="org.apache.ws.commons.schema"/>
+</cs:dependencies>
+<cs:actions>
+	<cs:public name="generate.bundle" actor="ant">
+		<cs:actorProperties>
+			<cs:property key="buildFile" value="make/build.xml" />
+		</cs:actorProperties>
+		<cs:properties>
+			<cs:property key="generated.name" value="org.eclipse.buckminster.axis2" />
+			<cs:property key="generated.version" value="${buckminster.version}" />
+		</cs:properties>
+		<cs:prerequisites alias="required.jars">
+			<cs:attribute component="com.ctc.wstx.asl" name="java.binaries"/>
+			<cs:attribute component="com.ibm.wsdl" name="java.binaries"/>
+			<cs:attribute component="javax.mail" name="java.binaries"/>
+			<cs:attribute component="javax.activation" name="java.binaries"/>
+			<cs:attribute component="org.apache.axiom.api" name="java.binaries"/>
+			<cs:attribute component="org.apache.axiom.impl" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2.adb" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2.addressing" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2.kernel" name="java.binaries"/>
+			<cs:attribute component="org.apache.commons.httpclient" name="java.binaries"/>
+			<cs:attribute component="org.apache.commons.fileupload" name="java.binaries"/>
+			<cs:attribute component="org.apache.neethi" name="java.binaries"/>
+			<cs:attribute component="com.bea.xml.stream.api" name="java.binaries"/>
+			<cs:attribute component="org.apache.ws.commons.schema" name="java.binaries"/>
+		</cs:prerequisites>
+		<cs:products alias="output" base="../plugins">
+			<cs:path path="org.eclipse.buckminster.axis2"/>
+		</cs:products>
+	</cs:public>
+</cs:actions>
+</cs:cspec>
