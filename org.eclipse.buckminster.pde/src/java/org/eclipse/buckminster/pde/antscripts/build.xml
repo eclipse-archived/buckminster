@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2006-2007, Cloudsmith Inc.
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the copyright holder
+	listed above, as the Initial Contributor under such license. The text of
+	such license is available at www.eclipse.org.
+-->
+<project name="org.eclipse.buckminster.pde.misc">
+
+	<target name="create.output.dir">
+		<dirname property="output.dir" file="${action.output}"/>
+		<mkdir dir="${output.dir}"/>
+	</target>
+
+	<target name="create.jar" depends="create.output.dir">
+		<buckminster.jar jarfile="${action.output}">
+			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
+		</buckminster.jar>
+	</target>
+
+	<target name="create.jar.with.manifest" depends="create.output.dir">
+		<buckminster.jar jarfile="${action.output}" manifest="${buckminster.jar.manifest}" duplicate="preserve">
+			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
+		</buckminster.jar>
+	</target>
+
+	<target name="create.zip" depends="create.output.dir">
+		<buckminster.zip zipfile="${action.output}">
+			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
+		</buckminster.zip>
+	</target>
+
+	<target name="create.eclipse.product">
+		<mkdir dir="${action.output}"/>
+		<buckminster.createProductBase
+			productFile="${buckminster.eclipse.productFile}"
+			outputDir="${action.output}"/>
+
+		<buckminster.copy todir="${action.output}">
+			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
+		</buckminster.copy>
+
+		<buckminster.multichmod dir="${action.output}">
+			<propertyset>
+				<propertyref prefix="buckminster.install.permissions."/>
+			</propertyset>
+		</buckminster.multichmod>
+	</target>
+
+	<target name="create.packed.feature" depends="create.output.dir">
+		<buckminster.copy todir="${feature.dir}">
+			<buckminster.filesetgroup refid="feature.contents.filesetgroup"/>
+		</buckminster.copy>
+		<buckminster.consolidateFeature featureFile="${feature.dir}/feature.xml">
+			<featureAndPluginPath refid="referenced.artifacts"/>
+		</buckminster.consolidateFeature>
+		<jar jarfile="${action.output}" basedir="${feature.dir}"/>
+		<delete includeemptydirs="true" dir="${feature.dir}"/>
+	</target>
+
+	<target name="create.unpacked.feature">
+		<mkdir dir="${action.output}"/>
+		<buckminster.copy todir="${action.output}">
+			<buckminster.filesetgroup refid="feature.contents.filesetgroup"/>
+		</buckminster.copy>
+		<buckminster.consolidateFeature featureFile="${action.output}/feature.xml">
+			<featureAndPluginPath refid="referenced.artifacts"/>
+		</buckminster.consolidateFeature>
+	</target>
+
+	<target name="copy.group">
+		<mkdir dir="${action.output}"/>
+		<buckminster.copy todir="${action.output}">
+			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
+		</buckminster.copy>
+	</target>
+
+	<target name="delete.group">
+		<buckminster.delete>
+			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
+		</buckminster.delete>
+	</target>
+
+	<target name="delete.dir">
+		<delete dir="${dir.to.delete}" includeemptydirs="true"/>
+	</target>
+
+	<target name="delete.file">
+		<delete file="${file.to.delete}"/>
+	</target>
+
+	<target name="unzip" depends="create.output.dir">
+		<pathconvert property="zip.input.file" refid="action.requirements.fileset"/>
+		<unzip dest="${action.output}" src="${zip.input.file}"/>
+	</target>
+
+	<target name="unjar.named" depends="create.output.dir">
+		<pathconvert property="jar.input.file" refid="action.requirements.fileset"/>
+		<basename property="jar.output.folder" file="${jar.input.file}" suffix=".jar"/>		
+		<unjar dest="${jar.output.folder}" src="${jar.input.file}"/>
+	</target>
+</project>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+    	<!-- Define known builders -->
+	<extension
+		point="org.eclipse.buckminster.core.cspecBuilders">
+		<builder id="plugin2cspec" class="org.eclipse.buckminster.pde.internal.PluginBuilder" />
+		<builder id="feature2cspec" class="org.eclipse.buckminster.pde.internal.FeatureBuilder" />
+	</extension>
+ <extension
+       point="org.eclipse.buckminster.core.componentTypes">
+    <componentType
+          class="org.eclipse.buckminster.pde.internal.EclipseInstalledType"
+          id="eclipse-installed"/>
+    <componentType
+          class="org.eclipse.buckminster.pde.internal.EclipseInstalledType"
+          id="eclipse.installed"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.readerTypes">
+    <readerType
+          class="org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType"
+          id="eclipse.platform"/>
+    <readerType
+          class="org.eclipse.buckminster.pde.internal.EclipseImportReaderType"
+          id="eclipse.import"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.ant.buildScripts">
+    <buildScript
+          id="buckminster.pdetasks"
+          resource="/org/eclipse/buckminster/pde/antscripts/build.xml"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.componentCategories">
+    <componentCategory
+          name="plugin"
+          relativeLocation="plugins"/>
+    <componentCategory
+          desiredNamePattern="feature"
+          name="feature"
+          nameSubstitution="$1-feature"
+          relativeLocation="features"
+          substituteNamePattern="^(.*)$"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.actors">
+    <actor
+          ID="pde.ant"
+          class="org.eclipse.buckminster.pde.internal.actor.PdeAntActor"
+          name="PDE Ant Actor"/>
+    <actor
+          ID="plugin.script.generator"
+          class="org.eclipse.buckminster.pde.internal.actor.PluginScriptGenerator"
+          name="Plugin Script Generator"/>
+    <actor
+          ID="feature.script.generator"
+          class="org.eclipse.buckminster.pde.internal.actor.FeatureScriptGenerator"
+          name="Feature Script Generator"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.parserExtensions">
+      <parserExtension
+            namespace="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
+            parserIds="provider"
+            resource="/map-provider-1.0.xsd">
+         <handler
+               class="org.eclipse.buckminster.pde.internal.mapprovider.PDEMapProviderHandler"
+               type="PDEMapProvider"/>
+      </parserExtension>
+ </extension>
+	<extension point="org.eclipse.ant.core.antTasks">
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.TargetPlatformLocation"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.targetPlatformLocation"/>
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.CreateProductBaseTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.createProductBase"/>
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.FeatureConsolidatorTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.consolidateFeature"/>
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.ImportBundleTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.importBundle"/>
+	</extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.prefmappings">
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.TargetPlatformHandler"
+          description="The preference used by PDE to select linkages to platform components. Set to a directory root (e.g. /eclipse)."
+          name="targetPlatformPath"/>
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.TargetOSHandler"
+          description="Sets the operating system of the PDE target platform"
+          name="targetOS"/>
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.TargetWSHandler"
+          description="Sets the window system of the PDE target platform"
+          name="targetWS"/>
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.TargetArchHandler"
+          description="Sets the operating system architecture of the PDE target platform"
+          name="targetOS"/>
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.TargetNLHandler"
+          description="Sets the locale of the PDE target platform"
+          name="targetOS"/>
+ </extension>
+</plugin>

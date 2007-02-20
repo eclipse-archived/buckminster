@@ -1,0 +1,15 @@
+<project name="org.eclipse.buckminster.pde" default="ant-tasks">
+	<property file="bm.properties"/>
+	<target name="ant-tasks">
+		<mkdir dir="../bin/ant_tasks" />
+		<mkdir dir="../ant_tasks" />
+		<javac classpath="${bm.classpath}" srcdir="../src/ant_tasks" destdir="../bin/ant_tasks" />
+		<jar basedir="../bin/ant_tasks" destfile="../ant_tasks/ant_tasks.jar" />
+	</target>
+
+	<target name="clean">
+		<delete dir="../bin/ant_tasks"/>
+		<delete dir="../ant_tasks"/>
+	</target>
+
+</project>
