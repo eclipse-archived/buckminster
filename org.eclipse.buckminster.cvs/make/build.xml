@@ -1,0 +1,23 @@
+<project name="org.eclipse.buckminster.cvs.ant" default="ant-support">
+	<description>
+		This script builds the classes that will be loaded by the ant
+		class loader. They must be built using this script since we
+		NEVER can make a plugin dependent on org.apache.ant. Doing so
+		violates the classloader and you get several versions of all
+		classes that are included.
+	</description>
+	<property file="bm.properties"/>
+
+	<target name="ant-support">
+		<property name="classes.dir" location="../bin/ant_tasks/classes"/>
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="../ant_tasks"/>
+		<javac classpath="${bm.classpath}" includeantruntime="true" srcdir="../src/ant_tasks" destdir="${classes.dir}"/>
+		<jar basedir="${classes.dir}" destfile="../ant_tasks/ant_tasks.jar" />
+	</target>
+
+	<target name="clean">
+		<delete dir="../ant_tasks"/>
+		<delete dir="../bin/ant_tasks"/>
+	</target>
+</project>
