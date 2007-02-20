@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:exportedBillOfMaterials xmlns:md="http://www.eclipse.org/buckminster/MetaData-1.0" topNodeId="90371e1e-7785-33db-a5af-1d029a62b48b" componentQueryId="6762cdef-81ea-3e1e-981d-84b49700e926" timestamp="2007-01-05T20:33:32.973+0000" id="e84dedb2-b0ce-33bf-ad1a-3e10d61b6bd4">
+    <md:idwrapper id="6762cdef-81ea-3e1e-981d-84b49700e926">
+        <md:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="bundleresource://292/org/eclipse/buckminster/core/test/rmap/test.rmap" failOnResolveException="false">
+            <cq:rootRequest name="buckminster.test.simple_d"/>
+        </md:componentQuery>
+    </md:idwrapper>
+    <md:idwrapper id="3230f0c9-e1da-3c7a-8940-a492633af3f3">
+        <md:provider readerType="cvs" componentType="eclipse.project" mutable="true" source="true">
+            <rm:uri xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" format=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/test/{0}">
+                <com:replace xmlns:com="http://www.eclipse.org/buckminster/Common-1.0" pattern="^buckminster\.test\.(.+)" replacement="$1">
+                    <com:propertyRef key="buckminster.component"/>
+                </com:replace>
+            </rm:uri>
+        </md:provider>
+    </md:idwrapper>
+    <md:idwrapper id="49de501f-d7af-3065-aa11-5776fe9cf440">
+        <md:cspec name="buckminster.test.simple_d">
+            <cs:dependencies xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+                <cs:dependency name="buckminster.test.simple_a"/>
+                <cs:dependency name="buckminster.test.simple_b"/>
+                <cs:dependency name="buckminster.test.simple_c"/>
+            </cs:dependencies>
+        </md:cspec>
+    </md:idwrapper>
+    <md:idwrapper id="09bad5dc-24da-370b-9200-df6aac4fcf8c">
+        <md:resolution cspecId="49de501f-d7af-3065-aa11-5776fe9cf440" fixedVersionSelector="@2006-12-06T10:29:19.000+0000" materializable="true" providerId="3230f0c9-e1da-3c7a-8940-a492633af3f3" repository=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/test/simple_d">
+            <md:request name="buckminster.test.simple_d"/>
+        </md:resolution>
+    </md:idwrapper>
+    <md:idwrapper id="794f4a30-846b-37d5-b458-5c45ed3d58cd">
+        <md:cspec name="buckminster.test.simple_b">
+            <cs:dependencies xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+                <cs:dependency name="buckminster.test.simple_a"/>
+            </cs:dependencies>
+        </md:cspec>
+    </md:idwrapper>
+    <md:idwrapper id="23fd3cf3-2800-383e-a889-06e805a8c206">
+        <md:resolution cspecId="794f4a30-846b-37d5-b458-5c45ed3d58cd" fixedVersionSelector="@2006-12-06T10:29:19.000+0000" materializable="true" providerId="3230f0c9-e1da-3c7a-8940-a492633af3f3" repository=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/test/simple_b">
+            <md:request name="buckminster.test.simple_b"/>
+        </md:resolution>
+    </md:idwrapper>
+    <md:idwrapper id="0b70a2b0-a584-33eb-bcd2-a9f809fde0c4">
+        <md:cspec name="buckminster.test.simple_a"/>
+    </md:idwrapper>
+    <md:idwrapper id="ef86c8bd-02bd-3f8f-9de8-fbfdbad3f86c">
+        <md:resolution cspecId="0b70a2b0-a584-33eb-bcd2-a9f809fde0c4" fixedVersionSelector="@2006-12-06T10:29:19.000+0000" materializable="true" providerId="3230f0c9-e1da-3c7a-8940-a492633af3f3" repository=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/test/simple_a">
+            <md:request name="buckminster.test.simple_a"/>
+        </md:resolution>
+    </md:idwrapper>
+    <md:idwrapper id="5a52eea2-bf5b-3c5b-8757-543c1b4c9d0d">
+        <md:resolvedNode resolutionId="ef86c8bd-02bd-3f8f-9de8-fbfdbad3f86c"/>
+    </md:idwrapper>
+    <md:idwrapper id="cd17fb9b-c290-3c7c-8848-41b1b4bf6e9c">
+        <md:resolvedNode resolutionId="23fd3cf3-2800-383e-a889-06e805a8c206">
+            <md:child refId="5a52eea2-bf5b-3c5b-8757-543c1b4c9d0d"/>
+        </md:resolvedNode>
+    </md:idwrapper>
+    <md:idwrapper id="1217e050-92c2-30c8-b31d-a83ad8e22ddf">
+        <md:cspec name="buckminster.test.simple_c">
+            <cs:dependencies xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+                <cs:dependency name="buckminster.test.simple_a"/>
+                <cs:dependency name="buckminster.test.simple_b"/>
+            </cs:dependencies>
+        </md:cspec>
+    </md:idwrapper>
+    <md:idwrapper id="84a591df-b6a9-37f6-a9da-9305c18b95e4">
+        <md:resolution cspecId="1217e050-92c2-30c8-b31d-a83ad8e22ddf" fixedVersionSelector="@2006-12-06T10:29:19.000+0000" materializable="true" providerId="3230f0c9-e1da-3c7a-8940-a492633af3f3" repository=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/test/simple_c">
+            <md:request name="buckminster.test.simple_c"/>
+        </md:resolution>
+    </md:idwrapper>
+    <md:idwrapper id="24cebdac-2fb4-3c75-a7d2-b242967daa29">
+        <md:resolvedNode resolutionId="84a591df-b6a9-37f6-a9da-9305c18b95e4">
+            <md:child refId="cd17fb9b-c290-3c7c-8848-41b1b4bf6e9c"/>
+            <md:child refId="5a52eea2-bf5b-3c5b-8757-543c1b4c9d0d"/>
+        </md:resolvedNode>
+    </md:idwrapper>
+    <md:idwrapper id="90371e1e-7785-33db-a5af-1d029a62b48b">
+        <md:resolvedNode resolutionId="09bad5dc-24da-370b-9200-df6aac4fcf8c">
+            <md:child refId="cd17fb9b-c290-3c7c-8848-41b1b4bf6e9c"/>
+            <md:child refId="5a52eea2-bf5b-3c5b-8757-543c1b4c9d0d"/>
+            <md:child refId="24cebdac-2fb4-3c75-a7d2-b242967daa29"/>
+        </md:resolvedNode>
+    </md:idwrapper>
+</md:exportedBillOfMaterials>

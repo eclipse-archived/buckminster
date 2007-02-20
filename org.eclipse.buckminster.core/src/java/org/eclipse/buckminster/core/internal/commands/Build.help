@@ -1,0 +1,14 @@
+This command invokes the build system on the workspace.
+
+Optionally, the build can begin with running the clean targets.
+
+usage: build
+       [{ -? | --help }]
+       [-c | --clean]
+       
+ -?
+--help
+  Show this help text
+ -c
+--clean
+  Runs the clean targets before the regular build targets.

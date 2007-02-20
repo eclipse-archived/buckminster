@@ -1,0 +1,10 @@
+This command invokes the clean targets in the workspace.
+
+It takes no options or arguments.
+
+usage: clean
+       [{ -? | --help }]
+       
+ -?
+--help
+  Show this help text

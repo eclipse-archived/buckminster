@@ -1,0 +1,291 @@
+/*****************************************************************************
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
+package org.eclipse.buckminster.core.internal.actor;
+
+import java.io.File;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.PathGroup;
+import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Group;
+import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+
+/**
+ * @author kolwing
+ * 
+ */
+public class PerformContext implements IActionContext
+{
+	final static String PRODUCT_PREFIX = Attribute.PROPERTY_PREFIX + "product.";
+	final static String REQUIREMENT_PREFIX = Attribute.PROPERTY_PREFIX + "requirement.";
+
+	private static PathGroup[] normalizePathGroups(PathGroup[] pathGroups) throws CoreException
+	{
+		HashMap<IPath, ArrayList<IPath>> newPathGroups = new HashMap<IPath, ArrayList<IPath>>();
+		for(PathGroup pathGroup : pathGroups)
+		{
+			IPath base = pathGroup.getBase();
+			ArrayList<IPath> currentGroup = newPathGroups.get(base);
+			if(currentGroup == null)
+			{
+				currentGroup = new ArrayList<IPath>();
+				newPathGroups.put(base, currentGroup);
+			}
+			for(IPath path : pathGroup.getPaths())
+				currentGroup.add(path);
+		}
+
+		ArrayList<PathGroup> normalized = new ArrayList<PathGroup>();
+		for(Map.Entry<IPath, ArrayList<IPath>> entry : newPathGroups.entrySet())
+		{
+			ArrayList<IPath> paths = entry.getValue();
+			normalizePaths(paths);
+			normalized.add(new PathGroup(entry.getKey(), paths.toArray(new IPath[paths.size()])));
+		}
+		return normalized.toArray(new PathGroup[normalized.size()]);
+	}
+
+	private static void normalizePaths(ArrayList<IPath> paths)
+	{
+		// Remove all paths that has a parent path in the array
+		//
+		int topDown = paths.size();
+		while(--topDown >= 0)
+		{
+			IPath path = paths.get(topDown);
+			if(path.segmentCount() == 1 && ".".equals(path.lastSegment()))
+			{
+				paths.clear();
+				return;
+			}
+
+			int top = paths.size();
+			for(int idx = 0; idx < top; ++idx)
+			{
+				if(idx != topDown && paths.get(idx).isPrefixOf(path))
+				{
+					paths.remove(topDown);
+					break;
+				}
+			}	
+		}
+	}
+
+	private final Action m_action;
+
+	private final PrintStream m_errorStream;
+
+	private final boolean m_forced;
+
+	private final GlobalContext m_globalCtx;
+
+	private final PrintStream m_outputStream;
+
+	private final Map<String, String> m_properties;
+
+	public PerformContext(GlobalContext globalCtx, Action action, Map<String, String> properties, boolean forced, PrintStream out, PrintStream err) throws CoreException
+	{
+		m_globalCtx = globalCtx;
+		m_action = action;
+		m_properties = new ExpandingProperties(properties);
+		m_forced = forced;
+		m_outputStream = out;
+		m_errorStream = err;
+	}
+
+	public void addPrerequisitePathGroups(Map<String, PathGroup[]> pgas) throws CoreException
+	{
+		Action action = getAction();
+		Collection<Prerequisite> prereqs = action.getPrerequisites();
+		if(prereqs.size() == 0)
+			return;
+
+		CSpec cspec = action.getCSpec();
+		Map<String,String> properties = getProperties();
+		IPath prereqRebase = action.getPrerequisiteRebase();
+		if(prereqRebase != null)
+		{
+			prereqRebase = PerformManager.expandPath(properties, prereqRebase);
+			if(prereqRebase.isAbsolute())
+				throw new BuckminsterException("Action prerequisite base can not be absolute");
+			prereqRebase = cspec.getComponentLocation().append(prereqRebase);
+		}
+
+		String mainRQ = REQUIREMENT_PREFIX + action.getName();
+		String prefix = mainRQ + '.';
+		ArrayList<PathGroup> allRequiredPaths = new ArrayList<PathGroup>();
+		for(Prerequisite prereq : prereqs)
+		{
+			Attribute ag = prereq.getReferencedAttribute(cspec, this);
+			PathGroup[] paths = ag.getPathGroups(this);
+			if(paths.length > 0)
+			{
+				paths = normalizePathGroups(paths);
+				if(!prereq.isExternal())
+				{
+					if(prereqRebase != null)
+						paths = Group.rebase(prereqRebase, paths);
+				}
+				String alias = prereq.getAlias();
+				if(alias != null)
+					pgas.put(alias, paths);
+				else
+					pgas.put(prefix + prereq, paths);
+
+				for(PathGroup path : paths)
+					allRequiredPaths.add(path);
+			}
+		}
+
+		if(allRequiredPaths.size() > 0)
+		{
+			PathGroup[] pathGroups = normalizePathGroups(allRequiredPaths
+					.toArray(new PathGroup[allRequiredPaths.size()]));
+			String alias = action.getPrerequisitesAlias();
+			if(alias != null)
+				pgas.put(alias, pathGroups);
+			else
+				pgas.put(mainRQ, pathGroups);
+		}
+	}
+
+	public void addProductPathGroup(Map<String, PathGroup[]> pgas) throws CoreException
+	{
+		Action action = getAction();
+		PathGroup[] product = action.getPathGroups(this);
+		if(product.length > 0)
+		{
+			PathGroup[] pathGroups = normalizePathGroups(product);
+			String alias = action.getProductAlias();
+			if(alias != null)
+				pgas.put(alias, pathGroups);
+			else
+				pgas.put(PRODUCT_PREFIX + action.getName(), pathGroups);
+		}
+	}
+
+	public CSpec findCSpec(CSpec ownerCSpec, ComponentRequest request) throws CoreException
+	{
+		return m_globalCtx.findCSpec(ownerCSpec, request);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.actor.IActionContext#getAction()
+	 */
+	public Action getAction()
+	{
+		return m_action;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.actor.IActionContext#getComponentLocation()
+	 */
+	public IPath getComponentLocation() throws CoreException
+	{
+		return getCSpec().getComponentLocation();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.actor.IActionContext#getCSpec()
+	 */
+	public CSpec getCSpec() throws CoreException
+	{
+		return m_action.getCSpec();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.actor.IActionContext#getErrorStream()
+	 */
+	public PrintStream getErrorStream()
+	{
+		return m_errorStream;
+	}
+
+	public GlobalContext getGlobalContext()
+	{
+		return m_globalCtx;
+	}
+
+	public Map<UUID, Object> getInvocationCache()
+	{
+		return m_globalCtx.getInvocationCache();
+	}
+
+	public Map<String, PathGroup[]> getNamedPathGroupArrays() throws CoreException
+	{
+		HashMap<String, PathGroup[]> pgas = new HashMap<String, PathGroup[]>();
+		addPrerequisitePathGroups(pgas);
+		addProductPathGroup(pgas);
+		return pgas;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.actor.IActionContext#getOutputStream()
+	 */
+	public PrintStream getOutputStream()
+	{
+		return m_outputStream;
+	}
+
+	public Map<Attribute,PathGroup[]> getPathGroupsCache()
+	{
+		return m_globalCtx.getPathGroupsCache();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.actor.IActionContext#getProperties()
+	 */
+	public Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
+	/**
+	 * Returns <code>true</code> if the action is forced. An action that is
+	 * forced is executed regardless of if the product is newer then all
+	 * prerequisites.
+	 *
+	 * @return <code>true</code> if the build is forced.
+	 */
+	public boolean isForced()
+	{
+		return m_forced || m_action.isAlways();
+	}
+
+	public File makeAbsolute(File file) throws CoreException
+	{
+		if(!file.isAbsolute())
+			file = getComponentLocation().append(file.toString()).toFile();
+		return file;
+	}
+
+	public IPath makeAbsolute(IPath path) throws CoreException
+	{
+		if(!path.isAbsolute())
+			path = getComponentLocation().append(path);
+		return path;
+	}
+
+	public void scheduleRemoval(IPath path) throws CoreException
+	{
+		m_globalCtx.scheduleRemoval(makeAbsolute(path));
+	}
+}

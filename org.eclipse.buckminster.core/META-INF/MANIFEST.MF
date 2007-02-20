@@ -1,0 +1,43 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Core
+Bundle-SymbolicName: org.eclipse.buckminster.core; singleton:=true
+Bundle-Version: 1.0.0.v20070220
+Bundle-Activator: org.eclipse.buckminster.core.CorePlugin
+Bundle-Vendor: The Buckminster Project
+Bundle-Localization: plugin
+Export-Package: .,
+ org.eclipse.buckminster.core,
+ org.eclipse.buckminster.core.actor,
+ org.eclipse.buckminster.core.build,
+ org.eclipse.buckminster.core.common.model,
+ org.eclipse.buckminster.core.common.parser,
+ org.eclipse.buckminster.core.cspec,
+ org.eclipse.buckminster.core.cspec.builder,
+ org.eclipse.buckminster.core.cspec.model,
+ org.eclipse.buckminster.core.ctype,
+ org.eclipse.buckminster.core.helpers,
+ org.eclipse.buckminster.core.manifest,
+ org.eclipse.buckminster.core.materializer,
+ org.eclipse.buckminster.core.metadata,
+ org.eclipse.buckminster.core.metadata.model,
+ org.eclipse.buckminster.core.parser,
+ org.eclipse.buckminster.core.prefs,
+ org.eclipse.buckminster.core.query.builder,
+ org.eclipse.buckminster.core.query.model,
+ org.eclipse.buckminster.core.reader,
+ org.eclipse.buckminster.core.resolver,
+ org.eclipse.buckminster.core.rmap.model,
+ org.eclipse.buckminster.core.rmap.parser,
+ org.eclipse.buckminster.core.test,
+ org.eclipse.buckminster.core.version
+Require-Bundle: org.eclipse.buckminster.cmdline,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.buckminster.sax,
+ org.eclipse.update.core,
+ org.eclipse.core.resources,
+ org.eclipse.core.variables,
+ org.eclipse.core.runtime,
+ org.junit4
+Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

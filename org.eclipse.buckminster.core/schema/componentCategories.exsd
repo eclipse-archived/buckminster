@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.buckminster.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.buckminster.core" id="componentCategories" name="%ComponentCategories"/>
+      </appInfo>
+      <documentation>
+         Describes a component category such as &quot;feature&quot; or &quot;plugin&quot;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="componentCategory"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="componentCategory">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the component category
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="relativeLocation" type="string">
+            <annotation>
+               <documentation>
+                  Relative location to use when downloading, i.e. suggest &amp;lt;workspace&amp;gt;/&amp;lt;relativeLocation&amp;gt;/&amp;lt;component name&amp;gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="desiredNamePattern" type="string">
+            <annotation>
+               <documentation>
+                  A regular expression that should match the name of the component
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="substituteNamePattern" type="string">
+            <annotation>
+               <documentation>
+                  A regular expression used for substitution when the &lt;tt&gt;desiredName&lt;/tt&gt; does not match
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="nameSubstitution" type="string">
+            <annotation>
+               <documentation>
+                  The substitution string for the &lt;tt&gt;substituteNamePattern&lt;/tt&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;Copyright (c) 2004-2005, Cloudsmith Inc.&lt;/p&gt;
+&lt;p&gt;The code, documentation and other materials contained herein have been
+licensed under the Eclipse Public License - v 1.0 by the copyright holder
+listed above, as Initial Contributors under such license. The text of
+such license is available at &lt;a href=&quot;http://www.eclipse.org&quot;&gt;www.eclipse.org&lt;/a&gt;&lt;/p&gt;.
+      </documentation>
+   </annotation>
+
+</schema>

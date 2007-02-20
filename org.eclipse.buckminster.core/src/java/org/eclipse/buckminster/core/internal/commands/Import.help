@@ -1,0 +1,22 @@
+This command will populate the workspace from a Bill of Materials (BOM)
+
+usage: import
+       [{ -? | --help }]
+       [{ -C | --continueonerror}]
+       [{ -T | --template } <template workspace> ]
+       <url_or_path>
+
+ -?
+--help
+  Show this help text
+
+ -C
+--continueonerror
+  Continue even if not all components can be imported.
+
+ -T <template workspace>
+--template <template workspace>
+  Initialize the workspace from a template workspace prior to import.
+
+<url_or_path>
+  An url/path to a component BOM file

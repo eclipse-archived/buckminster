@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2004, 2005
+	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+	Pontus Rydin, Nils Unden, Peer Torngren
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the individual
+	copyright holders listed above, as Initial Contributors under such license.
+	The text of such license is available at www.eclipse.org.
+-->
+<schema
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:xh="http://www.w3.org/1999/xhtml"
+	targetNamespace="http://www.eclipse.org/buckminster/Common-1.0"
+	attributeFormDefault="unqualified"
+	elementFormDefault="qualified">
+
+	<import namespace="http://www.w3.org/1999/xhtml" />
+
+    <complexType name="Documentation" mixed="true">
+      <complexContent>
+        <extension base="xh:Flow">
+          <attributeGroup ref="xh:attrs"/>
+        </extension>
+      </complexContent>
+    </complexType>
+
+	<annotation>
+		<documentation>
+			The common schema contains generic type definitions that are expected to be reused in more then one schema.
+		</documentation>
+	</annotation>
+	<simpleType name="URL">
+		<annotation>
+			<documentation>
+				A type that describes an URL. TODO: Needs patterns that restrict the URL. Must be available from
+				somewhere.
+			</documentation>
+		</annotation>
+		<restriction base="anyURI" />
+	</simpleType>
+
+	<simpleType name="propertyKey">
+		<restriction base="string">
+			<pattern value="[A-Za-z0-9_.${}]+" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="uuid">
+		<restriction base="string">
+			<pattern value="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="splitType">
+		<annotation>
+			<documentation>
+				A split can be done using a delimiter or a pattern containing capturing groups. In case of delimiter it
+				can be quoted or not quoted.
+			</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="delimiter" />
+			<enumeration value="quotedDelimiter" />
+			<enumeration value="capturingGroups" />
+		</restriction>
+	</simpleType>
+
+	<complexType name="Property">
+		<annotation>
+			<documentation>
+				A property that maps a key to a value. Several
+				attributes in the cspec and rmap may be subject to
+				property expansion. TODO: Should subjected attributes
+				use a special naming convention in order to clarify that
+				they will be property expanded?
+			</documentation>
+		</annotation>
+		<attribute name="key" type="com:propertyKey" use="required" />
+		<attribute name="mutable" type="boolean" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="PropertyConstant">
+		<annotation>
+			<documentation>A simple property that maps a key to a constant value.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="com:Property">
+				<attribute
+					name="value"
+					type="string"
+					use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="PropertyElement">
+		<annotation>
+			<documentation>A simple property that maps a key to a constant value.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="com:Property">
+				<sequence>
+					<choice
+						minOccurs="1"
+						maxOccurs="1">
+						<element
+							name="constant"
+							type="com:Constant" />
+						<element
+							name="format"
+							type="com:Format" />
+						<element
+							name="propertyRef"
+							type="com:PropertyRef" />
+						<element
+							name="replace"
+							type="com:Replace" />
+						<element
+							name="toLower"
+							type="com:ToLower" />
+						<element
+							name="toUpper"
+							type="com:ToUpper" />
+					</choice>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType
+		name="Value"
+		abstract="true" />
+
+	<complexType
+		name="ValueFilter"
+		abstract="true">
+		<complexContent>
+			<extension base="com:Value">
+				<sequence>
+					<choice
+						minOccurs="0"
+						maxOccurs="unbounded">
+						<element
+							name="constant"
+							type="com:Constant" />
+						<element
+							name="format"
+							type="com:Format" />
+						<element
+							name="propertyRef"
+							type="com:PropertyRef" />
+						<element
+							name="replace"
+							type="com:Replace" />
+						<element
+							name="split"
+							type="com:Split" />
+						<element
+							name="toLower"
+							type="com:ToLower" />
+						<element
+							name="toUpper"
+							type="com:ToUpper" />
+					</choice>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Format">
+		<annotation>
+			<documentation>
+				A Format is the base for a java.text.Format that in turn is used when creating a string from a set of
+				parameter values. A parameter is denoted by {&lt;n&gt;} where &lt;n&gt; denotes n'th parameter element
+				using zero for the first parameter.
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="com:ValueFilter">
+				<attribute
+					name="format"
+					type="string"
+					use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="PropertyRef">
+		<complexContent>
+			<extension base="com:Value">
+				<attribute
+					name="key"
+					type="com:propertyKey"
+					use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Constant">
+		<complexContent>
+			<extension base="com:Value">
+				<attribute
+					name="value"
+					type="string"
+					use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Replace">
+		<complexContent>
+			<extension base="com:ValueFilter">
+				<sequence>
+					<element
+						name="match"
+						type="com:Match"
+						minOccurs="0"
+						maxOccurs="unbounded" />
+
+				</sequence>
+				<attribute
+					name="pattern"
+					type="string"
+					use="optional" />
+				<attribute
+					name="replacement"
+					type="string"
+					use="optional" />
+				<attribute
+					name="quotePattern"
+					type="boolean"
+					use="optional"
+					default="false" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Split">
+		<complexContent>
+			<extension base="com:ValueFilter">
+				<attribute
+					name="pattern"
+					type="string"
+					use="required" />
+				<attribute
+					name="style"
+					type="com:splitType"
+					use="optional"
+					default="quotedDelimiter" />
+				<attribute
+					name="limit"
+					type="integer"
+					use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ToLower">
+		<complexContent>
+			<extension base="com:ValueFilter" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ToUpper">
+		<complexContent>
+			<extension base="com:ValueFilter" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="Match">
+		<attribute
+			name="pattern"
+			type="string"
+			use="required" />
+
+		<attribute
+			name="replacement"
+			type="string"
+			use="required" />
+
+		<attribute
+			name="quotePattern"
+			type="boolean"
+			use="optional"
+			default="false" />
+
+	</complexType>
+
+</schema>

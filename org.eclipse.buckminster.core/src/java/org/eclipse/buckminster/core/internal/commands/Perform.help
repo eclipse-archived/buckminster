@@ -1,0 +1,26 @@
+This command performs actions on components
+
+usage: perform
+       [{ -? | --help }]
+       [{-D | --define} <key>[=<value>]]
+       [{-W | --maxWarnings} <n>]
+       <component>#<action> [<component>#<action> ...]
+       
+ -?
+--help
+  Show this help text
+ -D
+--define
+  Defines properties to be used during the perform
+ -W
+--maxwarnings
+  Give the number of warnings acceptable. If the number of warnings are higher,
+  treat as error and exit with 1.
+  Default is infite warnings.
+ -F
+--forced
+  Force all actions regardless of timestamps
+<component>#<action>
+  The component name and the action name to perform.
+  Can be given multiple times in order to perform many actions in the most
+  optimized way. (NOTE: the multiplicity is not yet implemented!)

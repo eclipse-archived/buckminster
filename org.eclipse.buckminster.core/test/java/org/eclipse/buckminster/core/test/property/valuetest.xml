@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testElement xmlns:com="http://www.eclipse.org/buckminster/Common-1.0">
+	<!-- Declare the verbose one first. This tests the late resolve feature -->
+	<com:property key="verbose.maven.url" value="The created URL is &quot;${maven.url}&quot;"/>
+
+	<!-- A sample property that forms a maven http based on some propertis -->
+	<com:propertyElement key="maven.url">
+		<com:format format="http://www.ibiblio.org/maven/{0}/jars/{1}-{2}.jar">
+			<com:replace pattern=".*\.(\w+)" replacement="$1">
+				<com:property key="buckminster.component.name"/>
+			</com:replace>
+
+			<com:property key="buckminster.component.target"/>
+
+			<!-- Strip of trailing "beta1". It's just an example Helge -->
+			<com:replace pattern="(\d+\.\d+\.\d+).*" replacement="$1">
+				<com:property key="buckminster.component.version"/>
+			</com:replace>
+		</com:format>
+	</com:propertyElement>
+</testElement>

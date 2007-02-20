@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2004, 2005
+	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+	Pontus Rydin, Nils Unden, Peer Torngren
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the individual
+	copyright holders listed above, as Initial Contributors under such license.
+	The text of such license is available at www.eclipse.org.
+-->
+<schema
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+	targetNamespace="http://www.eclipse.org/buckminster/RMap-1.0"
+	attributeFormDefault="unqualified"
+	elementFormDefault="qualified">
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
+	<element
+		name="rmap"
+		type="rm:ResourceMap">
+	</element>
+	<element
+		name="provider"
+		type="rm:Provider" />
+	<complexType name="SearchPath">
+		<sequence>
+			<element
+				name="provider"
+				type="rm:Provider"
+				minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute
+			name="name"
+			type="string"
+			use="required" />
+	</complexType>
+	<complexType name="ResourceMap">
+		<sequence>
+			<element
+				name="documentation"
+				type="com:Documentation"
+				minOccurs="0"
+				maxOccurs="1" />
+			<choice
+				minOccurs="0"
+				maxOccurs="unbounded">
+				<element
+					name="property"
+					type="com:PropertyConstant" />
+				<element
+					name="propertyElement"
+					type="com:PropertyElement" />
+				<element
+					name="searchPath"
+					type="rm:SearchPath" />
+				<element
+					name="locator"
+					type="rm:Locator" />
+				<element
+					name="redirect"
+					type="rm:Redirect" />
+			</choice>
+		</sequence>
+	</complexType>
+	<complexType
+		name="Matcher"
+		abstract="true">
+		<attribute
+			name="pattern"
+			type="string"
+			use="required" />
+	</complexType>
+	<complexType name="Locator">
+		<complexContent>
+			<extension base="rm:Matcher">
+				<attribute
+					name="searchPathRef"
+					type="string"
+					use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Redirect">
+		<complexContent>
+			<extension base="rm:Matcher">
+				<attribute
+					name="href"
+					type="com:URL"
+					use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Provider">
+		<sequence>
+			<element
+				name="documentation"
+				type="com:Documentation"
+				minOccurs="0"
+				maxOccurs="1" />
+			<element
+				name="uri"
+				type="com:Format"
+				minOccurs="1"
+				maxOccurs="1" />
+			<element
+				name="versionConverter"
+				type="rm:VersionConverter"
+				minOccurs="0"
+				maxOccurs="1" />
+		</sequence>
+		<attribute
+			name="managedCategories"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					The provider will only handle requests that have no category defined or a category that
+					matches one of the categories listed here. If no managed categories are specified, the
+					provider is considered a handler for all categories.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute
+			name="readerType"
+			type="string"
+			use="required" />
+		<attribute
+			name="componentType"
+			type="string"
+			use="required" />
+		<attribute
+			name="mutable"
+			type="boolean"
+			use="optional" />
+		<attribute
+			name="source"
+			type="boolean"
+			use="optional" />
+	</complexType>
+	<complexType name="VersionConverter">
+		<sequence>
+			<element
+				name="transform"
+				type="rm:Transform"
+				minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute
+			name="type"
+			type="string"
+			use="required" />
+	</complexType>
+	<complexType name="Transform">
+		<attribute
+			name="toPattern"
+			type="string"
+			use="required" />
+		<attribute
+			name="toReplacement"
+			type="string"
+			use="required" />
+		<attribute
+			name="fromPattern"
+			type="string"
+			use="required" />
+		<attribute
+			name="fromReplacement"
+			type="string"
+			use="required" />
+	</complexType>
+</schema>

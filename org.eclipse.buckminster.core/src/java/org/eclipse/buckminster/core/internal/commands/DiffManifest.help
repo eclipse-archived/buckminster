@@ -1,0 +1,17 @@
+This command differences two manifests.
+
+usage: diffmanifest
+       [{ -? | --help }]
+       [{ -a | --algorithm} <name>]
+       [{ -l | --assumedlineseparator} <symbcode_or_hexcode>]
+       [{ -r | --report }]
+       [{ -d | --differencesonly }]
+       [{ -s | --setstatus }]
+       <directory_or_manifest_file>
+       <directory_or_manifest_file>
+       
+ -?
+--help
+  Show this help text
+
+TO BE WRITTEN
