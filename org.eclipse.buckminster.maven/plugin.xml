@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.buckminster.core.readerTypes">
+      <readerType
+            class="org.eclipse.buckminster.maven.internal.MavenReaderType"
+            id="maven"/>
+      <readerType
+            class="org.eclipse.buckminster.maven.internal.Maven2ReaderType"
+            id="maven2"/>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.core.componentTypes">
+      <componentType
+            class="org.eclipse.buckminster.maven.internal.MavenComponentType"
+            id="maven">
+         <metaFile path="project.xml"/>
+      </componentType>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.core.parserExtensions">
+      <parserExtension
+            namespace="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+            parserIds="provider"
+            resource="/maven-provider-1.0.xsd">
+         <handler
+               class="org.eclipse.buckminster.maven.internal.MavenProviderHandler"
+               type="MavenProvider"/>
+      </parserExtension>
+   </extension>
+
+</plugin>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2004, 2005
+	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+	Pontus Rydin, Nils Unden, Peer Torngren
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the individual
+	copyright holders listed above, as Initial Contributors under such license.
+	The text of such license is available at www.eclipse.org.
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:mpv="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+	attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" />
+
+	<complexType name="MavenProvider">
+		<complexContent>
+			<extension base="rm:Provider">
+				<sequence>
+					<element name="mappings" type="mpv:Mappings"
+						minOccurs="0" maxOccurs="1" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Mappings">
+		<sequence>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="entry" type="mpv:MapEntry" />
+				<element name="rule" type="rm:Transform" />
+			</choice>
+		</sequence>
+	</complexType>
+
+	<complexType name="GroupAndArtifact">
+		<attribute name="groupId" type="string" use="required" />
+		<attribute name="artifactId" type="string" use="required" />
+	</complexType>
+
+	<complexType name="MapEntry">
+		<complexContent>
+			<extension base="mpv:GroupAndArtifact">
+				<sequence>
+					<element name="alias" type="mpv:GroupAndArtifact"
+						minOccurs="0" maxOccurs="unbounded" />
+				</sequence>
+				<attribute name="name" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+</schema>
