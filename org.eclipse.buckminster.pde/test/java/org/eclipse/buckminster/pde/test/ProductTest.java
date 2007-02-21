@@ -9,14 +9,13 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.build.AbstractScriptGenerator;
 import org.eclipse.pde.internal.build.BrandingIron;
 import org.eclipse.pde.internal.build.ProductFile;
 import org.eclipse.pde.internal.build.ProductGenerator;
-import org.eclipse.pde.internal.core.ExternalModelManager;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
-import org.eclipse.pde.internal.core.TargetPlatform;
 
 @SuppressWarnings("restriction")
 public class ProductTest extends TestCase
@@ -37,7 +36,7 @@ public class ProductTest extends TestCase
 		}
 
 		if(targetPath == null)
-			targetPath = new Path(ExternalModelManager.computeDefaultPlatformPath());
+			targetPath = new Path(TargetPlatform.getDefaultLocation());
 		return targetPath;
 	}
 

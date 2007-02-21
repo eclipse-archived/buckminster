@@ -33,13 +33,14 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.build.AbstractScriptGenerator;
 import org.eclipse.pde.internal.build.BrandingIron;
 import org.eclipse.pde.internal.build.PDEUIStateWrapper;
 import org.eclipse.pde.internal.build.ProductGenerator;
 import org.eclipse.pde.internal.build.site.BuildTimeSiteFactory;
 import org.eclipse.pde.internal.core.PDECore;
-import org.eclipse.pde.internal.core.TargetPlatform;
+import org.eclipse.pde.internal.core.TargetPlatformHelper;
 import org.eclipse.pde.internal.core.iproduct.ILauncherInfo;
 import org.eclipse.pde.internal.core.iproduct.IProduct;
 import org.eclipse.pde.internal.core.product.ProductModel;
@@ -160,7 +161,7 @@ public class CreateProductBase
 		// Initialize a BuildTimeSiteFactory
 		//
 		BuildTimeSiteFactory siteFactory = new BuildTimeSiteFactory();
-		siteFactory.setSitePaths(TargetPlatform.getFeaturePaths());
+		siteFactory.setSitePaths(TargetPlatformHelper.getFeaturePaths());
 		siteFactory.setInitialState(stateWrapper);
 
 		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
@@ -385,7 +386,7 @@ public class CreateProductBase
 
 	private State getState()
 	{
-		State main = TargetPlatform.getState();
+		State main = TargetPlatformHelper.getState();
 		if(m_os.equals(TargetPlatform.getOS()) && m_ws.equals(TargetPlatform.getWS())
 				&& m_arch.equals(TargetPlatform.getOSArch()))
 			return main;

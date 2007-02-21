@@ -59,7 +59,7 @@ import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.ISharedPluginModel;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
-import org.eclipse.pde.internal.core.TargetPlatform;
+import org.eclipse.pde.internal.core.TargetPlatformHelper;
 import org.eclipse.pde.internal.core.bundle.BundleFragmentModel;
 import org.eclipse.pde.internal.core.bundle.BundleModel;
 import org.eclipse.pde.internal.core.bundle.BundlePlugin;
@@ -232,7 +232,7 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 
 		try
 		{
-			return FrameworkUtil.createFilter(platformFilter).match(TargetPlatform.getTargetEnvironment());
+			return FrameworkUtil.createFilter(platformFilter).match(TargetPlatformHelper.getTargetEnvironment());
 		}
 		catch(InvalidSyntaxException e)
 		{

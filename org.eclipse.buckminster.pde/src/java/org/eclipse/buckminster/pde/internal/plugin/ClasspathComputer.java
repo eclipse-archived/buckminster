@@ -257,7 +257,7 @@ public class ClasspathComputer {
 	}
 	
 	public static IClasspathEntry createContainerEntry() {
-		return JavaCore.newContainerEntry(new Path(PDECore.CLASSPATH_CONTAINER_ID));
+		return JavaCore.newContainerEntry(PDECore.REQUIRED_PLUGINS_CONTAINER_PATH);
 	}
 
 }

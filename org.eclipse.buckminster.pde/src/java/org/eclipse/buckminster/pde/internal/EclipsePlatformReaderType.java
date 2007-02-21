@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
-import org.eclipse.pde.internal.core.ModelEntry;
+import org.eclipse.pde.core.plugin.ModelEntry;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -100,12 +100,8 @@ public class EclipsePlatformReaderType extends AbstractReaderType
 		ModelEntry entry = manager.findEntry(componentName);
 		if(entry != null)
 		{
-			IPluginModelBase model = entry.getActiveModel();
+			IPluginModelBase model = entry.getModel();
 			if(desiredVersion == null || desiredVersion.equals(model.getPluginBase().getVersion()))
-				return model;
-
-			model = entry.getExternalModel();
-			if(model != null && desiredVersion.equals(model.getPluginBase().getVersion()))
 				return model;
 		}
 		return null;
@@ -118,9 +114,8 @@ public class EclipsePlatformReaderType extends AbstractReaderType
 			return Collections.<IFragmentModel> emptyList();
 
 		ArrayList<IFragmentModel> frags = null;
-		for(ModelEntry entry : PDECore.getDefault().getModelManager().getEntries())
+		for(IPluginModelBase candidate : PDECore.getDefault().getModelManager().getActiveModels(true))
 		{
-			IPluginModelBase candidate = entry.getActiveModel();
 			if(candidate.isFragmentModel())
 			{
 				IFragmentModel frag = (IFragmentModel)candidate;

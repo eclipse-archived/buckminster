@@ -8,7 +8,7 @@
 package org.eclipse.buckminster.pde.prefs;
 
 import org.eclipse.buckminster.cmdline.prefs.BasicPreferenceHandler;
-import org.eclipse.pde.internal.core.IEnvironmentVariables;
+import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -18,7 +18,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-abstract class TargetVariableHandler extends BasicPreferenceHandler implements IEnvironmentVariables
+abstract class TargetVariableHandler extends BasicPreferenceHandler implements ICoreConstants
 {
 	private final String m_prefName;
 

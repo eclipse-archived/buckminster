@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.IXMLConstants;
-import org.eclipse.pde.internal.core.TargetPlatform;
 import org.eclipse.pde.internal.core.exports.FeatureExportInfo;
 import org.eclipse.pde.internal.core.exports.FeatureExportOperation;
 

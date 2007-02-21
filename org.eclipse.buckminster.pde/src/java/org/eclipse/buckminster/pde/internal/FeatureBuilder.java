@@ -40,7 +40,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.build.IBuildEntry;
-import org.eclipse.pde.internal.core.TargetPlatform;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;

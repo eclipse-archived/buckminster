@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.build.AssemblyInformation;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.IXMLConstants;
@@ -30,7 +31,7 @@ import org.eclipse.pde.internal.build.builder.ModelBuildScriptGenerator;
 import org.eclipse.pde.internal.build.site.BuildTimeSiteFactory;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PDEState;
-import org.eclipse.pde.internal.core.TargetPlatform;
+import org.eclipse.pde.internal.core.TargetPlatformHelper;
 import org.eclipse.pde.internal.core.exports.FeatureExportInfo;
 import org.eclipse.pde.internal.core.exports.FeatureExportOperation;
 
@@ -62,9 +63,9 @@ public class ScriptGenTest extends PDETestCase implements IXMLConstants, IPDEBui
 		PDEUIStateWrapper wrapper = new PDEUIStateWrapper();
 		wrapper.setState(pdeState.getState());
 		wrapper.setNextId(pdeState.getNextId());
-		wrapper.setExtraData(TargetPlatform.getBundleClasspaths(pdeState),
-			TargetPlatform.getPatchMap(pdeState));
-		factory.setSitePaths(TargetPlatform.getFeaturePaths());
+		wrapper.setExtraData(TargetPlatformHelper.getBundleClasspaths(pdeState),
+				TargetPlatformHelper.getPatchMap(pdeState));
+		factory.setSitePaths(TargetPlatformHelper.getFeaturePaths());
 		factory.setInitialState(wrapper);
 
 		AssemblyInformation assemblyInfo = new AssemblyInformation();
@@ -107,9 +108,9 @@ public class ScriptGenTest extends PDETestCase implements IXMLConstants, IPDEBui
 		PDEUIStateWrapper wrapper = new PDEUIStateWrapper();
 		wrapper.setState(pdeState.getState());
 		wrapper.setNextId(pdeState.getNextId());
-		wrapper.setExtraData(TargetPlatform.getBundleClasspaths(pdeState),
-			TargetPlatform.getPatchMap(pdeState));
-		factory.setSitePaths(TargetPlatform.getFeaturePaths());
+		wrapper.setExtraData(TargetPlatformHelper.getBundleClasspaths(pdeState),
+				TargetPlatformHelper.getPatchMap(pdeState));
+		factory.setSitePaths(TargetPlatformHelper.getFeaturePaths());
 		factory.setInitialState(wrapper);
 
 		String scriptFile = "build-plugin.xml";

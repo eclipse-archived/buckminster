@@ -10,8 +10,9 @@ package org.eclipse.buckminster.pde.prefs;
 import org.eclipse.buckminster.cmdline.prefs.BasicPreferenceHandler;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.pde.internal.core.ExternalModelManager;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 
@@ -37,8 +38,9 @@ public class TargetPlatformHandler extends BasicPreferenceHandler
 		PDECore pdePlugin = PDECore.getDefault();
 		Preferences preferences = pdePlugin.getPluginPreferences();
 		IPath newPath = new Path(targetPlatform);
-		IPath defaultPath = new Path(ExternalModelManager.computeDefaultPlatformPath());
-		String mode = ExternalModelManager.arePathsEqual(newPath, defaultPath)
+		Platform.getInstallLocation();
+		IPath defaultPath = new Path(TargetPlatform.getDefaultLocation());
+		String mode = defaultPath.equals(newPath)
 				? ICoreConstants.VALUE_USE_THIS
 				: ICoreConstants.VALUE_USE_OTHER;
 		preferences.setValue(ICoreConstants.TARGET_MODE, mode);
@@ -49,6 +51,6 @@ public class TargetPlatformHandler extends BasicPreferenceHandler
 	@Override
 	public void unset()
 	{
-		this.set(ExternalModelManager.computeDefaultPlatformPath());
+		this.set(TargetPlatform.getDefaultLocation());
 	}
 }

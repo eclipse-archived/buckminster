@@ -12,6 +12,7 @@ package org.eclipse.buckminster.pde.internal.model;
 
 import java.net.URL;
 
+import org.eclipse.pde.internal.core.NLResourceHelper;
 import org.eclipse.pde.internal.core.plugin.AbstractExtensionsModel;
 
 /**
@@ -53,5 +54,11 @@ public class ExternalExtensionsModel extends AbstractExtensionsModel
 	public boolean isEditable()
 	{
 		return false;
+	}
+
+	@Override
+	protected NLResourceHelper createNLResourceHelper()
+	{
+		return null;
 	}
 }

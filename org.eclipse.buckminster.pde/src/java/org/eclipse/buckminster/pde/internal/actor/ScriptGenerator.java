@@ -37,7 +37,7 @@ import org.eclipse.pde.internal.build.PDEUIStateWrapper;
 import org.eclipse.pde.internal.build.builder.AbstractBuildScriptGenerator;
 import org.eclipse.pde.internal.build.site.BuildTimeSiteFactory;
 import org.eclipse.pde.internal.core.PDEState;
-import org.eclipse.pde.internal.core.TargetPlatform;
+import org.eclipse.pde.internal.core.TargetPlatformHelper;
 
 /**
  * This abstract actor implements functionality common to all PDE script generating
@@ -91,8 +91,8 @@ public abstract class ScriptGenerator extends AbstractActor implements IXMLConst
 		PDEUIStateWrapper wrapper = new PDEUIStateWrapper();
 		wrapper.setState(state);
 		wrapper.setNextId(pdeState.getNextId());
-		wrapper.setExtraData(TargetPlatform.getBundleClasspaths(pdeState), TargetPlatform.getPatchMap(pdeState));
-		factory.setSitePaths(TargetPlatform.getFeaturePaths());
+		wrapper.setExtraData(TargetPlatformHelper.getBundleClasspaths(pdeState), TargetPlatformHelper.getPatchMap(pdeState));
+		factory.setSitePaths(TargetPlatformHelper.getFeaturePaths());
 		factory.setInitialState(wrapper);
 
 		generator.setBuildingOSGi(getBooleanProperty(ctx.getProperties(), PROPERTY_BUILDING_OSGI, true));
