@@ -19,9 +19,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
-import org.tigris.subversion.subclipse.core.client.OperationManager;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
@@ -159,7 +157,6 @@ public class SvnSession
 			m_moduleAfterBranch = moduleAfterBranch;
 			m_branch = branch;
 			m_tag = tag;
-			OperationManager.getInstance().beginOperation(m_clientAdapter);
 		}
 		catch(MalformedURLException e)
 		{
@@ -173,18 +170,6 @@ public class SvnSession
 
 	public void close()
 	{
-		if(m_clientAdapter != null)
-		{
-			try
-			{
-				m_clientAdapter = null;
-				OperationManager.getInstance().endOperation();
-			}
-			catch(SVNException e)
-			{
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public long getLastChangeNumber() throws CoreException
