@@ -179,13 +179,17 @@ class ResolverNodeWithJob extends ResolverNode
 		return didSchedule;
 	}
 
-	private synchronized DepNode resolve(IProgressMonitor monitor) throws CoreException
+	private DepNode resolve(IProgressMonitor monitor) throws CoreException
 	{
-		NodeQuery query = getQuery();
-		if(query.skipComponent() || isResolved())
+		NodeQuery query;
+		synchronized(this)
 		{
-			MonitorUtils.complete(monitor);
-			return null;
+			query = getQuery();
+			if(query.skipComponent() || isResolved())
+			{
+				MonitorUtils.complete(monitor);
+				return null;
+			}
 		}
 		return m_resolver.innerResolve(query, monitor);
 	}
