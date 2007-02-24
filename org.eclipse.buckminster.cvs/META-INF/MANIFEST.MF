@@ -2,10 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster CVS Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.cvs; singleton:=true
-Bundle-Version: 1.0.0.v20070220
+Bundle-Version: 1.0.0.v20070223
 Bundle-Activator: org.eclipse.buckminster.cvspkg.CVSPlugin
 Bundle-Vendor: The Buckminster Project
-Bundle-Localization: plugin
+Export-Package: .,
+ org.eclipse.buckminster.cvspkg,
+ org.eclipse.buckminster.cvspkg.internal;x-friends:="org.eclipse.buckminster.tests"
 Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.buckminster.runtime,
  org.eclipse.team.cvs.core,
@@ -15,7 +17,4 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.core.runtime,
  org.junit4
 Eclipse-LazyStart: true
-Bundle-ClassPath: cvspkg.jar
-Export-Package: org.eclipse.buckminster.cvspkg,
- org.eclipse.buckminster.cvspkg.internal;x-friends:="org.eclipse.buckminster.tests"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

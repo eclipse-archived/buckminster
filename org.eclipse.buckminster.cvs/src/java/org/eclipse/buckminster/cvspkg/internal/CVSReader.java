@@ -17,16 +17,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Date;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorType;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -60,45 +54,8 @@ public class CVSReader extends AbstractRemoteReader
 	{
 		super(readerType, rInfo);
 		m_session = new CVSSession(rInfo.getRepositoryURI());
-
 		VersionMatch match = rInfo.getVersionMatch();
-		IVersionSelector fixedVS = match.getFixedVersionSelector();
-
-		CVSTag fixed = CVSTag.DEFAULT;
-		Date fixedDate = null;
-
-		switch(fixedVS.getType())
-		{
-		case TAG:
-			fixed = new CVSTag(fixedVS.getQualifier(), CVSTag.VERSION);
-			break;
-
-		case TIMESTAMP:
-			fixedDate = new Date(fixedVS.getNumericQualifier());
-			fixed = new CVSTag(fixedDate);
-
-			// Fall through to LATEST
-		case LATEST:
-			IVersion version = match.getVersion();
-			if(version.isDefault())
-				break;
-
-			IVersionConverter vc = rInfo.getVersionConverter();
-			if(vc == null)
-				break;
-
-			IVersionSelector vs = vc.createSelector(version);
-			if(vs.getType() == VersionSelectorType.LATEST && !vs.isDefaultBranch())
-				//
-				// Pick branch from the version
-				//
-				fixed = new CVSTag(vs.getBranchName(), CVSTag.BRANCH);
-			break;
-
-		default:
-			throw new BuckminsterException("CVSReader cannot understand fixed version selector " + fixedVS);
-		}
-		m_fixed = fixed;
+		m_fixed = CVSReaderType.getCVSTag(match.getFixedVersionSelector(), match.getVersion(), rInfo.getVersionConverter());
 	}
 
 	@Override

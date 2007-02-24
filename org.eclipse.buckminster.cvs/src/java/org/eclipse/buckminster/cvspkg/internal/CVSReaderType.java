@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -25,8 +26,11 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionSelectorType;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -43,6 +47,7 @@ import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSMessages;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSStatus;
+import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
@@ -366,6 +371,24 @@ public class CVSReaderType extends AbstractReaderType
 	}
 
 	@Override
+	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor)
+	throws CoreException
+	{
+		CVSSession session = null;
+		try
+		{
+			session = new CVSSession(repositoryLocation);
+			RepositoryMetaData metaData = RepositoryMetaData.getMetaData(session, getCVSTag(versionSelector, null, null), monitor);
+			return metaData.getLastModification();
+		}
+		finally
+		{
+			if(session != null)
+				session.close();
+		}
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
@@ -401,5 +424,38 @@ public class CVSReaderType extends AbstractReaderType
 		RepositoryProvider.map(project, cvsTypeID);
 		((CVSTeamProvider)RepositoryProvider.getProvider(project, cvsTypeID)).setWatchEditEnabled(CVSProviderPlugin
 				.getPlugin().isWatchEditEnabled());
+	}
+
+	static CVSTag getCVSTag(IVersionSelector versionSelector, IVersion version, IVersionConverter vc) throws CoreException
+	{
+		CVSTag tag = CVSTag.DEFAULT;
+		if(versionSelector == null)
+			return tag;
+	
+		switch(versionSelector.getType())
+		{
+		case TAG:
+			tag = new CVSTag(versionSelector.getQualifier(), CVSTag.VERSION);
+			break;
+	
+		case TIMESTAMP:
+			tag = new CVSTag(new Date(versionSelector.getNumericQualifier()));
+	
+			// Fall through to LATEST
+		case LATEST:
+			if(!(version == null || version.isDefault() || vc == null))
+				versionSelector = vc.createSelector(version);
+
+			if(versionSelector.getType() == VersionSelectorType.LATEST && !versionSelector.isDefaultBranch())
+				//
+				// Pick branch from the version
+				//
+				tag = new CVSTag(versionSelector.getBranchName(), CVSTag.BRANCH);
+			break;
+
+		default:
+			throw new BuckminsterException("CVSReader cannot understand fixed version selector " + versionSelector);
+		}
+		return tag;
 	}
 }

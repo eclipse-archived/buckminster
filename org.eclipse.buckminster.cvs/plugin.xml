@@ -8,13 +8,6 @@
             class="org.eclipse.buckminster.cvspkg.internal.CVSReaderType"
             id="cvs"/>
    </extension>
-   	<extension point="org.eclipse.ant.core.antTasks">
-		<antTask
-			library="ant_tasks/ant_tasks.jar"
-			name="buckminster.cvs.lastTimestamp"
-			class="org.eclipse.buckminster.cvspkg.ant.LastTimestamp">
-		</antTask>
-   </extension>
     <extension
           point="org.eclipse.buckminster.core.forcedActivations">
        <forcedActivation
