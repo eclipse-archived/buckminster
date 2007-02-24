@@ -59,6 +59,10 @@
 			name="buckminster.importResource"
 			class="org.eclipse.buckminster.ant.taskdefs.ImportResource" />
 		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.lastTimestamp"
+			class="org.eclipse.buckminster.ant.taskdefs.LastTimestamp" />
+		<antTask
 			class="org.eclipse.buckminster.ant.taskdefs.Jar"
 			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.jar" />
