@@ -214,12 +214,12 @@ public class Headless implements IPlatformRunnable, OptionValueType
 			}
 		};
 		waiter.start();
-		waiter.join(1000);
+		waiter.join(5000);
 		if(waiter.isAlive())
 		{
 			System.err.println("Cancelling wait for remaning jobs");
 			waitMonitor.setCanceled(true);
-			waiter.join(1000);
+			waiter.join(3000);
 			if(waiter.isAlive())
 			{
 				System.err.println("Forced kill of wait for remaning jobs");
