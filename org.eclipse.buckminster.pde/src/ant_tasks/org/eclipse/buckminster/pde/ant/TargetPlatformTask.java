@@ -14,7 +14,7 @@ import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.pde.internal.core.ExternalModelManager;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 
@@ -24,6 +24,7 @@ import org.eclipse.pde.internal.core.PDECore;
  *
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public abstract class TargetPlatformTask extends Task
 {
 	/**
@@ -42,7 +43,7 @@ public abstract class TargetPlatformTask extends Task
 		}
 
 		if(targetPath == null)
-			targetPath = new Path(ExternalModelManager.computeDefaultPlatformPath());
+			targetPath = new Path(TargetPlatform.getDefaultLocation());
 		return targetPath;
 	}
 
