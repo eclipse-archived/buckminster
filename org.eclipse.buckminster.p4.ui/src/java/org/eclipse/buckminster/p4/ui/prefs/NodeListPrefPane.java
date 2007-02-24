@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -60,7 +60,7 @@ abstract class NodeListPrefPane extends Composite
 	static
 	{
 		s_tooltipScope = new BMProperties(BMProperties.getSystemProperties());
-		s_tooltipScope.putAll(ComponentQueryBuilder.getGlobalPropertyAdditions());
+		s_tooltipScope.putAll(ComponentQuery.getGlobalPropertyAdditions());
 	}
 
 	public NodeListPrefPane(PreferencePage prefPage, Composite parent, int colSpan)
