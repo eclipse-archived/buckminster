@@ -2,8 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Maven Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.maven; singleton:=true
-Bundle-Version: 1.0.0.v20070220
-Bundle-Localization: plugin
+Bundle-Version: 1.0.0.v20070223
 Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.buckminster.sax,
  org.eclipse.buckminster.runtime,

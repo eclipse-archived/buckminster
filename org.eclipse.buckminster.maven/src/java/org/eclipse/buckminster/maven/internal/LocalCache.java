@@ -292,7 +292,7 @@ public class LocalCache
 				// The maven repo is not perfect. Sometimes the MD5 and SHA1 are incorrect
 				// due to replace of the actual jar
 				//
-				MavenPlugin.getLogger().warning("Digest still doesn't match after " + MAX_FAILURES + " download attempts. Corrupt repo?");
+				MavenPlugin.getLogger().warning("Digest for " + remoteURL + " still doesn't match after " + MAX_FAILURES + " download attempts. Corrupt repo?");
 
 			try
 			{
