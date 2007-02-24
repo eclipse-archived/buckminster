@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -66,6 +67,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 	throws CoreException
 	{
 		return fetchFactoryLocator + '/' + componentName;
+	}
+
+	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
+	{
+		return null;
 	}
 
 	public void prepareMaterialization(List<Materialization> mtr, RMContext context, IProgressMonitor monitor) throws CoreException

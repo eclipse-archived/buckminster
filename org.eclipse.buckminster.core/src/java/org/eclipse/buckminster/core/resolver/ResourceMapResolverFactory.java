@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.resolver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
@@ -27,15 +26,14 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author Thomas Hallgren
  */
 public class ResourceMapResolverFactory extends AbstractExtension implements IResolverFactory
 {
-	private static final IEclipsePreferences s_prefsNode = new InstanceScope().getNode(CorePlugin.getID());
-	private static final IEclipsePreferences s_defaultNode = new DefaultScope().getNode(CorePlugin.getID());
+	private static final IEclipsePreferences s_prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
+	private static final IEclipsePreferences s_defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
 
 	public static void addListener(IPreferenceChangeListener listener)
 	{
@@ -75,24 +73,8 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	{
 		if(m_prefsNode == null)
 		{
-			m_prefsNode = (IEclipsePreferences)s_prefsNode.node(getId());		
-			IEclipsePreferences defaultNode = (IEclipsePreferences)s_defaultNode.node(getId());
-			if(defaultNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0)
-			{
-				// Defaults not initialized. Do it now
-				//
-				defaultNode.putBoolean(OVERRIDE_QUERY_URL_PARAM, OVERRIDE_QUERY_URL_DEFAULT);
-				defaultNode.putBoolean(LOCAL_RESOLVE_PARAM, LOCAL_RESOLVE_DEFAULT);
-				defaultNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
-				try
-				{
-					defaultNode.flush();
-				}
-				catch(BackingStoreException e)
-				{
-					Buckminster.getLogger().error(e.toString(), e);
-				}
-			}
+			m_prefsNode = (IEclipsePreferences)s_prefsNode.node(getId());
+			initDefaultPreferences();
 		}
 		return m_prefsNode;
 	}
@@ -220,5 +202,18 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	public void setResourceMapURL(URL resourceMapURL)
 	{
 		getPreferences().put(RESOURCE_MAP_URL_PARAM, resourceMapURL.toExternalForm());
+	}
+
+	public void initDefaultPreferences()
+	{
+		IEclipsePreferences defaultNode = (IEclipsePreferences)s_defaultNode.node(getId());
+		if(defaultNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0)
+		{
+			// Defaults not initialized. Do it now
+			//
+			defaultNode.putBoolean(OVERRIDE_QUERY_URL_PARAM, OVERRIDE_QUERY_URL_DEFAULT);
+			defaultNode.putBoolean(LOCAL_RESOLVE_PARAM, LOCAL_RESOLVE_DEFAULT);
+			defaultNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
+		}
 	}
 }

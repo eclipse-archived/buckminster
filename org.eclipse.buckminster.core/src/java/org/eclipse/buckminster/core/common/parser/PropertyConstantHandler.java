@@ -10,13 +10,13 @@
 
 package org.eclipse.buckminster.core.common.parser;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-
 
 public class PropertyConstantHandler extends PropertyHandler
 {
@@ -34,7 +34,8 @@ public class PropertyConstantHandler extends PropertyHandler
 	throws SAXException
 	{
 		super.handleAttributes(attrs);
-		// FIXME: used to be 'this.getStringValue(...)', but that throws an exception 
+
+		// Used to be 'getStringValue(...)', but that throws an exception 
 		// if the value is empty string or just whitespace...
 		//
 		String qname = "value";
@@ -45,11 +46,11 @@ public class PropertyConstantHandler extends PropertyHandler
 	}
 
 	@Override
-	void addYourself(ExpandingProperties props)
+	void addYourself(Map<String,String> props)
 	{
-		String key = this.getKey();
+		String key = getKey();
 		props.put(key, m_value);
-		props.setMutable(key, this.getMutable());
+		if(props instanceof ExpandingProperties)
+			((ExpandingProperties)props).setMutable(key, getMutable());
 	}
 }
-

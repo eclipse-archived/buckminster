@@ -23,11 +23,13 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 
 /**
  * The maintainer of all component query resolver factories and their sort order
+ * 
  * @author Thomas Hallgren
  */
 public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 {
 	public static final String QUERY_RESOLVERS_POINT = CorePlugin.CORE_NAMESPACE + ".queryResolvers";
+
 	static final String FACTORY_ELEM = "factory";
 
 	private static final ResolverFactoryMaintainer s_instance;
@@ -56,7 +58,7 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 	public synchronized IResolverFactory[] getResolverFactories()
 	{
 		if(m_resolverFactories == null)
-			m_resolverFactories = ResolverFactoryMaintainer.createFactoriesByExtension();
+			m_resolverFactories = createFactoriesByExtension();
 		return m_resolverFactories;
 	}
 
@@ -67,7 +69,8 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 
 	public static String[] getRegisterFactoryIDs()
 	{
-		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
+		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
 		int idx = elems.length;
 		String[] factoryIDs = new String[idx];
 		while(--idx >= 0)
@@ -77,39 +80,53 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 
 	private static IResolverFactory[] createFactoriesByExtension()
 	{
-		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
-		HashMap<String,IConfigurationElement> elemsById = new HashMap<String, IConfigurationElement>();
-		for(IConfigurationElement elem : elems)
-			elemsById.put(elem.getAttribute("id"), elem);
-	
 		Logger logger = CorePlugin.getLogger();
-		String[] sortOrder = BuckminsterPreferences.getQueryResolverSortOrder();
-		int numFactories = sortOrder.length;
-	
-		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(numFactories);
-		for(String factoryName : sortOrder)
+		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
+
+		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(elems.length);
+		for(IConfigurationElement elem : elems)
 		{
-			IConfigurationElement elem = elemsById.remove(factoryName);
-			if(elem == null)
-			{
-				logger.warning("Resolver factory " + factoryName +
-					" defined in the Query Resolver Sort Order preference was skipped" +
-					" since it has not been registered by any extension point.");
-				continue;
-			}
 			try
 			{
 				factories.add((IResolverFactory)elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM));
 			}
 			catch(CoreException e)
 			{
-				logger.error("Unable to instantiate Query Resolver Factory " + factoryName, e);
+				logger.error("Unable to instantiate Query Resolver Factory " + elem.getAttribute("id"), e);
 			}
 		}
-		int numNotInSortOrder = elemsById.size();
+		return factories.toArray(new IResolverFactory[factories.size()]);
+	}
+
+	public IResolverFactory[] getActiveResolverFactories()
+	{
+		IResolverFactory[] allFactories = getResolverFactories();
+		HashMap<String, IResolverFactory> factoriesById = new HashMap<String, IResolverFactory>();
+		for(IResolverFactory factory : allFactories)
+			factoriesById.put(factory.getId(), factory);
+
+		Logger logger = CorePlugin.getLogger();
+		String[] sortOrder = BuckminsterPreferences.getQueryResolverSortOrder();
+		int numFactories = sortOrder.length;
+
+		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(numFactories);
+		for(String factoryName : sortOrder)
+		{
+			IResolverFactory factory = factoriesById.remove(factoryName);
+			if(factory == null)
+			{
+				logger.warning("Resolver factory " + factoryName
+						+ " defined in the Query Resolver Sort Order preference was skipped"
+						+ " since it has not been registered by any extension point.");
+				continue;
+			}
+			factories.add(factory);
+		}
+		int numNotInSortOrder = factoriesById.size();
 		if(numNotInSortOrder > 0)
 		{
-			Iterator<String> keys = elemsById.keySet().iterator();
+			Iterator<String> keys = factoriesById.keySet().iterator();
 			StringBuilder bld = new StringBuilder();
 			bld.append("Resolver factor");
 			boolean first = true;
@@ -140,9 +157,13 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 				}
 				bld.append(factoryName);
 			}
-			bld.append(plural ? " were" : " was");
+			bld.append(plural
+					? " were"
+					: " was");
 			bld.append(" skipped since ");
-			bld.append(plural ? "they were" : "it was");
+			bld.append(plural
+					? "they were"
+					: "it was");
 			bld.append(" not included in the Query Resolver Sort Order preference");
 			logger.info(bld.toString());
 		}

@@ -7,55 +7,23 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.query.builder;
 
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Platform;
-
 
 /**
  * @author Thomas Hallgren
  */
 public class ComponentQueryBuilder
 {
-	private static final Map<String,String> s_globalAdditions;
-
-	static
-	{
-		s_globalAdditions = new HashMap<String,String>();
-		URL eclipseHome = Platform.getInstallLocation().getURL();
-		assert ("file".equals(eclipseHome.getProtocol()));
-		s_globalAdditions.put("eclipse.home", FileUtils.getFile(eclipseHome).toString());
-		s_globalAdditions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString());
-		try
-		{
-			s_globalAdditions.put("localhost", InetAddress.getLocalHost().getHostName());
-		}
-		catch(UnknownHostException e1)
-		{
-			// We'll just have to do without it.
-		}
-	}
-
-	public static Map<String,String> getGlobalPropertyAdditions()
-	{
-		return s_globalAdditions;
-	}
-
 	private final ArrayList<AdvisorNodeBuilder> m_advisorNodes = new ArrayList<AdvisorNodeBuilder>();
 
 	private Documentation m_documentation;
@@ -83,8 +51,7 @@ public class ComponentQueryBuilder
 	public void clear()
 	{
 		m_advisorNodes.clear();
-		m_properties = new ExpandingProperties(BMProperties.getSystemProperties());
-		m_properties.putAll(s_globalAdditions);
+		m_properties = null;
 		m_propertiesURL = null;
 		m_resourceMapURL = null;
 		m_rootRequest = null;
@@ -97,7 +64,9 @@ public class ComponentQueryBuilder
 		ArrayList<AdvisorNode> nodes = new ArrayList<AdvisorNode>(m_advisorNodes.size());
 		for(AdvisorNodeBuilder bld : m_advisorNodes)
 			nodes.add(bld.create());
-		return new ComponentQuery(m_documentation, m_shortDesc, nodes, m_properties, m_propertiesURL, m_resourceMapURL, m_rootRequest);
+
+		return new ComponentQuery(m_documentation, m_shortDesc, nodes, m_properties, m_propertiesURL, m_resourceMapURL,
+				m_rootRequest);
 	}
 
 	public List<AdvisorNodeBuilder> getAdvisoryNodeList()
@@ -114,13 +83,15 @@ public class ComponentQueryBuilder
 	{
 		for(AdvisorNodeBuilder node : m_advisorNodes)
 			if(node.getNamePattern().toString().equals(pattern)
-			&& Trivial.equalsAllowNull(node.getCategory(), category))
+					&& Trivial.equalsAllowNull(node.getCategory(), category))
 				return node;
 		return null;
 	}
 
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
+		if(m_properties == null)
+			m_properties = new HashMap<String,String>();
 		return m_properties;
 	}
 
@@ -153,7 +124,11 @@ public class ComponentQueryBuilder
 			bld.initFrom(node);
 			m_advisorNodes.add(bld);
 		}
-		m_properties = new ExpandingProperties(query.getDeclaredProperties());
+
+		Map<String,String> props = query.getDeclaredProperties();
+		if(props.size() > 0)
+			m_properties = new HashMap<String,String>(props);
+
 		m_propertiesURL = query.getPropertiesURL();
 		m_resourceMapURL = query.getResourceMapURL();
 		m_rootRequest = query.getRootRequest();

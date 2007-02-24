@@ -16,9 +16,12 @@ import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_PREFIX;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,11 +33,13 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.IProperties;
+import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -53,6 +58,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -63,6 +69,33 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableElement
 {
+	private static final Map<String, String> s_globalAdditions;
+
+	static
+	{
+		s_globalAdditions = new HashMap<String, String>();
+		s_globalAdditions.putAll(BMProperties.getSystemProperties());
+
+		URL eclipseHome = Platform.getInstallLocation().getURL();
+		assert ("file".equals(eclipseHome.getProtocol()));
+		s_globalAdditions.put("eclipse.home", FileUtils.getFile(eclipseHome).toString());
+		s_globalAdditions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation()
+				.toPortableString());
+		try
+		{
+			s_globalAdditions.put("localhost", InetAddress.getLocalHost().getHostName());
+		}
+		catch(UnknownHostException e1)
+		{
+			// We'll just have to do without it.
+		}
+	}
+
+	public static Map<String, String> getGlobalPropertyAdditions()
+	{
+		return s_globalAdditions;
+	}
+
 	public static final String ATTR_PROPERTIES = "properties";
 
 	public static final String ATTR_RESOURCE_MAP = "resourceMap";
@@ -178,27 +211,38 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		if(m_allProperties != null)
 			return m_allProperties;
-		
-		if(m_propertiesURL == null)
-			return m_properties;
 
-		InputStream input = null;
-		try
+		m_allProperties = getGlobalPropertyAdditions();
+		if(m_properties.size() > 0)
 		{
-			input = new BufferedInputStream(URLUtils.openStream(m_propertiesURL, null));
-			m_allProperties = new ExpandingProperties(new BMProperties(input));
+			m_allProperties = new ExpandingProperties(m_allProperties);
 			m_allProperties.putAll(m_properties);
 		}
-		catch(Exception e)
+
+		if(m_propertiesURL != null)
 		{
-			// We allow missing properties but we log it nevertheless
-			//
-			Logger.getLogger(getClass().getName()).info("Unable to read property file '"
-				+ m_propertiesURL + "' : " + e.toString());
-		}
-		finally
-		{
-			IOUtils.close(input);
+			InputStream input = null;
+			try
+			{
+				input = new BufferedInputStream(URLUtils.openStream(m_propertiesURL, null));
+				Map<String,String> urlProps = new BMProperties(input);
+				if(urlProps.size() > 0)
+				{
+					m_allProperties = new ExpandingProperties(m_allProperties);
+					m_allProperties.putAll(urlProps);
+				}
+			}
+			catch(Exception e)
+			{
+				// We allow missing properties but we log it nevertheless
+				//
+				Logger.getLogger(getClass().getName()).info("Unable to read property file '"
+					+ m_propertiesURL + "' : " + e.toString());
+			}
+			finally
+			{
+				IOUtils.close(input);
+			}
 		}
 		return m_allProperties;
 	}
@@ -463,6 +507,8 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 
 		m_rootRequest.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, ELEM_ROOT_REQUEST);
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
 		for(AdvisorNode node : m_advisorNodes)
 			node.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, node.getDefaultTag());
 

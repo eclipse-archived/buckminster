@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.common.parser;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.model.ValueHolder;
@@ -97,11 +99,16 @@ public class PropertyElementHandler extends PropertyHandler implements ChildPopp
 	}
 
 	@Override
-	void addYourself(ExpandingProperties props)
+	void addYourself(Map<String,String> props)
 	{
-		String key = this.getKey();
-		m_source.setMutable(this.getMutable());
-		props.setProperty(key, m_source);
+		String key = getKey();
+		if(props instanceof ExpandingProperties)
+		{
+			m_source.setMutable(getMutable());
+			((ExpandingProperties)props).setProperty(key, m_source);
+		}
+		else
+			props.put(key, m_source.getValue(props));
 	}
 }
 

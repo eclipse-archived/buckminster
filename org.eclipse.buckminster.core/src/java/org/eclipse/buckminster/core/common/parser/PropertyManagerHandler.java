@@ -10,7 +10,8 @@
 
 package org.eclipse.buckminster.core.common.parser;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import java.util.Map;
+
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -61,8 +62,8 @@ public abstract class PropertyManagerHandler extends ExtensionAwareHandler imple
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child instanceof PropertyHandler)
-			((PropertyHandler)child).addYourself(this.getProperties());
+			((PropertyHandler)child).addYourself(getProperties());
 	}
 
-	public abstract ExpandingProperties getProperties();
+	public abstract Map<String,String> getProperties();
 }

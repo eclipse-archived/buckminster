@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
@@ -135,6 +136,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 * Returns a reader type that can read a local component materialized by this
 	 * a reader of this type.
 	 * @return A local reader type that corresponds to this type.
+	 * @throws CoreException
 	 */
 	IReaderType getLocalReaderType(boolean isFile) throws CoreException;
 
@@ -147,12 +149,15 @@ public interface IReaderType extends IBuckminsterExtension
 
 	/**
 	 * Called when all reader types have performed their materialization
+	 * @param monitor The monitor used for progress reporting
+	 * @throws CoreException
 	 */
 	void postMaterialization(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Convert a team project set style locator into a URL.
 	 * @param repositoryLocator The locator to convert
+	 * @param versionSelector The version selector used
 	 * @return The URL or <code>null</code> if this reader type does not support URL retrieval.
 	 * @throws CoreException
 	 */
@@ -165,6 +170,18 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @param fetchFactoryLocator The locator in IFetchFactory format.
 	 * @param componentName The name of the component
 	 * @return The locator in team repository format.
+	 * @throws CoreException
 	 */
 	String convertFetchFactoryLocator(String fetchFactoryLocator, String componentName) throws CoreException;
+
+	/**
+	 * Returns the last modification date for the repository or null if that cannot
+	 * be determined.
+	 * @param repositoryLocation
+	 * @param versionSelect the desired version to check for or <code>null</code> if none.
+	 * @param monitor The monitor used for progress reporting
+	 * @return The last modification timestamp.
+	 * @throws CoreException
+	 */
+	Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
 }

@@ -10,7 +10,8 @@
 
 package org.eclipse.buckminster.core.common.parser;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import java.util.Map;
+
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
@@ -45,6 +46,6 @@ public abstract class PropertyHandler extends ExtensionAwareHandler
 		return m_mutable;
 	}
 
-	abstract void addYourself(ExpandingProperties props);
+	abstract void addYourself(Map<String,String> props);
 }
 

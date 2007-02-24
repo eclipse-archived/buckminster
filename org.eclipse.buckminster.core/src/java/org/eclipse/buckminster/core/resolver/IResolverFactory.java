@@ -12,6 +12,11 @@ import org.eclipse.core.runtime.CoreException;
 public interface IResolverFactory extends IBuckminsterExtension
 {
 	/**
+	 * Initialize default preferences (if any)
+	 */
+	void initDefaultPreferences();
+
+	/**
 	 * Create an IResolver implementation and associate it with
 	 * the context
 	 * @param context The context to associate with the new resolver

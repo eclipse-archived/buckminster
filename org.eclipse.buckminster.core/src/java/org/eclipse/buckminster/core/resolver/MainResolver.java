@@ -60,7 +60,7 @@ public class MainResolver implements IResolver
 		if(bom.isFullyResolved())
 			return bom;
 
-		IResolverFactory[] resolverFactories = ResolverFactoryMaintainer.getInstance().getResolverFactories();
+		IResolverFactory[] resolverFactories = ResolverFactoryMaintainer.getInstance().getActiveResolverFactories();
 		int numFactories = resolverFactories.length;
 		if(numFactories == 1)
 			//
