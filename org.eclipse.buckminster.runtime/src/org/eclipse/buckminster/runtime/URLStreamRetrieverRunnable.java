@@ -44,7 +44,7 @@ class URLStreamRetrieverRunnable extends Thread
 			int idx = elems.length;
 			if(idx == 0)
 			{
-				s_providers = Collections.emptyMap();
+				s_providers = Collections.EMPTY_MAP;
 				return DefaultURLConnectionProvider.INSTANCE;
 			}
 			s_providers = new HashMap();
