@@ -21,6 +21,7 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -62,9 +63,10 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 
 	protected void addDynamicFieldEditors(Composite parent, String nodeName, IPreferenceDescriptor[] descriptors)
 	{
+		final IPreferenceStore nodePrefs = UiPlugin.getDefault().getBuckminsterPreferenceStore(nodeName);
 		for(final IPreferenceDescriptor descriptor : descriptors)
 		{
-			String name = nodeName + '/' + descriptor.getName();
+			String name = descriptor.getName();
 			String label = descriptor.getLabel();
 			IPreferenceValidator descValidator = descriptor.getValidator();
 			if(descValidator == null)
@@ -74,7 +76,14 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 			switch(descriptor.getType())
 			{
 			case Boolean:
-				editor = new BooleanFieldEditor(name, label, parent);
+				editor = new BooleanFieldEditor(name, label, parent)
+				{
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
+					}
+				};
 				break;
 			case Directory:
 				editor = new DirectoryFieldEditor(name, label, parent)
@@ -83,6 +92,12 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 					protected boolean checkState()
 					{
 						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
+					}
+
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
 					}
 				};
 				break;
@@ -95,7 +110,14 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 					labelsAndValues[idx][0] = enums[idx].toString();
 					labelsAndValues[idx][1] = enums[idx].name();
 				}
-				editor = new RadioGroupFieldEditor(name, label, 1, labelsAndValues, parent);
+				editor = new RadioGroupFieldEditor(name, label, 1, labelsAndValues, parent)
+				{
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
+					}
+				};
 				break;
 			case File:
 				editor = new FileFieldEditor(name, label, parent)
@@ -104,6 +126,12 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 					protected boolean checkState()
 					{
 						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
+					}
+
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
 					}
 				};
 				break;
@@ -115,10 +143,23 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 					{
 						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
 					}
+
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
+					}
 				};
 				break;
 			case Path:
-				editor = new PathEditor(name, label, label, parent);
+				editor = new PathEditor(name, label, label, parent)
+				{
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
+					}
+				};
 				break;
 			default:
 				editor = new StringFieldEditor(name, label, descriptor.getTextWidth(), parent)
@@ -127,6 +168,12 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 					protected boolean checkState()
 					{
 						return validator.validate(UiUtils.trimmedValue(getTextControl()));
+					}
+
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
 					}
 				};
 			}
@@ -183,6 +230,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		if(top == 1)
 		{
 			IResolverFactory factory = factories[0];
+			factory.initDefaultPreferences();
 			NestedFieldEditor nfe = new NestedFieldEditor(factory.getId(), getFieldEditorParent());
 			addDynamicFieldEditors(nfe.getControl(), factory.getId(), factory.getPreferenceDescriptors());
 			addField(nfe);
