@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.svn.feature"
       label="%featureName"
-      version="1.0.0.v20070207"
+      version="1.0.0.v20070223"
       provider-name="%providerName"
       plugin="org.eclipse.buckminster.svn">
 
