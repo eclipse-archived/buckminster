@@ -15,7 +15,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.p4.internal.ClientSpec;
 import org.eclipse.buckminster.p4.internal.Connection;
 import org.eclipse.buckminster.p4.internal.ConnectionInfo;
@@ -51,7 +51,7 @@ public class P4Test extends TestCase
 	public Map<String,String> getScope()
 	{
 		Map<String,String> scope = new BMProperties(BMProperties.getSystemProperties());
-		scope.putAll(ComponentQueryBuilder.getGlobalPropertyAdditions());
+		scope.putAll(ComponentQuery.getGlobalPropertyAdditions());
 		return scope;
 	}
 
