@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.pde.internal.actor;
 
 import java.io.File;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +39,9 @@ import org.eclipse.pde.internal.build.builder.AbstractBuildScriptGenerator;
 import org.eclipse.pde.internal.build.site.BuildTimeSiteFactory;
 import org.eclipse.pde.internal.core.PDEState;
 import org.eclipse.pde.internal.core.TargetPlatformHelper;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * This abstract actor implements functionality common to all PDE script generating
@@ -181,13 +185,40 @@ public abstract class ScriptGenerator extends AbstractActor implements IXMLConst
 				return pdeState;
 
 			boolean didAdd = false;
+			Dictionary<?,?>[] platformProperties = pdeState.getState().getPlatformProperties();
 			for(File file : ofInterest.toArray(new File[ofInterest.size()]))
 			{
-				if(pdeState.addBundle(file, pdeState.getNextId()) == null)
+				BundleDescription bundle = pdeState.addBundle(file, pdeState.getNextId());
+				if(bundle == null)
 					continue;
-				didAdd = true;
-				knownLocations.add(file);
+
+				String platformFilter = bundle.getPlatformFilter();
+				boolean filterMatch = (platformFilter == null);
+				if(!filterMatch)
+				{
+					try
+					{
+						Filter filter = FrameworkUtil.createFilter(platformFilter);
+						for(int i = 0; i < platformProperties.length; i++)
+							if (filter.match(platformProperties[i]))
+							{
+								filterMatch = true;
+								break;
+							}
+					}
+					catch (InvalidSyntaxException e)
+					{
+					}
+				}
+				if(filterMatch)
+				{
+					didAdd = true;
+					knownLocations.add(file);
+				}
+				else
+					pdeState.removeBundleDescription(bundle);
 			}
+
 			if(!didAdd)
 				return pdeState;
 
