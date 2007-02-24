@@ -13,6 +13,7 @@ package org.eclipse.buckminster.svn.internal;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -178,6 +179,23 @@ public class SvnSession
 		{
 			ISVNDirEntry root = m_clientAdapter.getDirEntry(this.getSVNUrl(null), SVNRevision.HEAD);
 			return root.getLastChangedRevision().getNumber();
+		}
+		catch(SVNClientException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public Date getLastTimestamp() throws CoreException
+	{
+		try
+		{
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(this.getSVNUrl(null), SVNRevision.HEAD);
+			return root.getLastChangedDate();
 		}
 		catch(SVNClientException e)
 		{

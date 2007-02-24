@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Subversion Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.svn; singleton:=true
-Bundle-Version: 1.0.0.v20070207
+Bundle-Version: 1.0.0.v20070223
 Bundle-Activator: org.eclipse.buckminster.svn.SvnPlugin
 Bundle-Vendor: The Buckminster Project
-Bundle-Localization: plugin
 Export-Package: org.eclipse.buckminster.svn
 Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.buckminster.sax,

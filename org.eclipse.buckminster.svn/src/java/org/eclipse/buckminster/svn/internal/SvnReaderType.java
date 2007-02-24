@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionSelectorType;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,6 +33,29 @@ public class SvnReaderType extends AbstractReaderType
 	{
 		MonitorUtils.complete(monitor);
 		return new SvnRemoteFileReader(this, providerMatch);
+	}
+
+	@Override
+	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor)
+	throws CoreException
+	{
+		String branch = null;
+		String tag = null;
+		if(versionSelector != null)
+		{
+			branch = versionSelector.getBranchName();
+			if(versionSelector.getType() == VersionSelectorType.TAG)
+				tag = versionSelector.getQualifier();
+		}
+		SvnSession session = new SvnSession(repositoryLocation, branch, tag);
+		try
+		{
+			return session.getLastTimestamp();
+		}
+		finally
+		{
+			session.close();
+		}
 	}
 
 	@Override
