@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
 <project name="helpful.macros">
 
-	<macrodef name="cvsDatestamp">
+	<macrodef name="svnDatestamp">
 		<attribute name="component"/>
 		<attribute name="property"/>
+		<attribute name="versionSelector"/>
 		<sequential>
-			<buckminster.cvs.lastTimestamp
+			<buckminster.lastTimestamp
 				property="@{property}"
 				dateformat="yyyyMMdd"
-				cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/@{component}"/>
+				readerType="svn"
+				versionSelector="@{versionSelector}"
+				repositoryLocation="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/@{component}?moduleAfterTag&amp;moduleAfterBranch"/>
 		</sequential>
 	</macrodef>
 

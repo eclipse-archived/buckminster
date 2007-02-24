@@ -2,12 +2,14 @@
 <project name="project" default="default">
 	<import file="macros.xml"/>
 
+	<property name="versionSelector" value="3.2.x/"/>
+	<property name="workspace" location="/workspaces/Buck-3.2.x"/>
+
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 	  <classpath>
 	    <pathelement location="ant-contrib.jar"/>
 	  </classpath>
 	</taskdef>
-	<property name="workspace" location="/workspaces/Buckminster"/>
 
 	<macrodef name="printLine">
 		<attribute name="component"/>
@@ -27,7 +29,7 @@
 	<macrodef name="listPluginTimestamp">
 		<attribute name="component"/>
 		<sequential>
-			<cvsDatestamp property="@{component}.timestamp" component="@{component}"/>
+			<svnDatestamp property="@{component}.timestamp" component="@{component}" versionSelector="${versionSelector}"/>
 			<extractBundleVersion property="@{component}.version" file="${workspace}/plugins/@{component}/META-INF/MANIFEST.MF"/>
 			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
 		</sequential>
@@ -36,7 +38,7 @@
 	<macrodef name="listFeatureTimestamp">
 		<attribute name="component"/>
 		<sequential>
-			<cvsDatestamp property="@{component}.timestamp" component="@{component}"/>
+			<svnDatestamp property="@{component}.timestamp" component="@{component}" versionSelector="${versionSelector}"/>
 			<extractFeatureVersion property="@{component}.version" file="${workspace}/features/@{component}/feature.xml"/>
 			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
 		</sequential>
