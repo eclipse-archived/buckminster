@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.update"
       label="The Site backing feature (don&apos;t install)"
-      version="1.0.0.v20070223"
+      version="1.0.0.v20070225"
       provider-name="The Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
