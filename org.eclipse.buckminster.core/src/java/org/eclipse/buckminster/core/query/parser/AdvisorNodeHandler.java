@@ -11,12 +11,12 @@
 package org.eclipse.buckminster.core.query.parser;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -76,9 +76,9 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ExpandingProperties getProperties()
+	public Map<String,String> getProperties()
 	{
-		return (ExpandingProperties)m_builder.getProperties();
+		return m_builder.getProperties();
 	}
 
 	@Override

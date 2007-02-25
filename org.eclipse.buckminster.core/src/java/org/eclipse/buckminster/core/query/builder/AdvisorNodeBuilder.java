@@ -9,12 +9,12 @@ package org.eclipse.buckminster.core.query.builder;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.NotEmptyAction;
@@ -39,7 +39,7 @@ public class AdvisorNodeBuilder
 
 	private URL m_overlayFolder;
 
-	private final ExpandingProperties m_properties = new ExpandingProperties();
+	private Map<String,String> m_properties;
 
 	private boolean m_prune;
 
@@ -84,7 +84,7 @@ public class AdvisorNodeBuilder
 	public void clear()
 	{
 		m_attributes.clear();
-		m_properties.clear();
+		m_properties = null;
 		m_documentation = null;
 		m_category = null;
 		m_mutableLevel = MutableLevel.INDIFFERENT;
@@ -150,6 +150,8 @@ public class AdvisorNodeBuilder
 
 	public Map<String,String> getProperties()
 	{
+		if(m_properties == null)
+			m_properties = new HashMap<String,String>();
 		return m_properties;
 	}
 
@@ -188,7 +190,9 @@ public class AdvisorNodeBuilder
 		m_mutableLevel = node.getMutableLevel();
 		m_namePattern = node.getNamePattern();
 		m_overlayFolder = node.getOverlayFolder();
-		m_properties.putAll(node.getProperties());
+		Map<String,String> props = node.getProperties();
+		if(props.size() > 0)
+			m_properties = new HashMap<String,String>(props);
 		m_prune = node.isPrune();
 		m_replaceFrom = node.getReplaceFrom();
 		m_replaceTo = node.getReplaceTo();
