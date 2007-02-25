@@ -12,9 +12,9 @@ package org.eclipse.buckminster.core.query.parser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -89,9 +89,9 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ExpandingProperties getProperties()
+	public Map<String,String> getProperties()
 	{
-		return (ExpandingProperties)m_builder.getProperties();
+		return m_builder.getProperties();
 	}
 
 	@Override
