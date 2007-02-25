@@ -10,6 +10,7 @@ package org.eclipse.buckminster.pde.internal;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -17,12 +18,16 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.IResource;
@@ -363,6 +368,8 @@ public class CreateProductBase
 			this.copyFileOrFolderToRoot(tokenizer.nextToken().trim(), featureDir);
 	}
 
+	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
+
 	private void getInstalledRootFiles() throws CoreException
 	{
 		File targetRoot = m_targetLocation.toFile();
@@ -381,7 +388,36 @@ public class CreateProductBase
 		File outputDirFile = m_outputDir.toFile();
 		IProgressMonitor nullMonitor = new NullProgressMonitor();
 		FileUtils.copyFile(launcherFile, outputDirFile, originalLauncher, nullMonitor);
-		FileUtils.copyFile(new File(targetRoot, "startup.jar"), outputDirFile, "startup.jar", nullMonitor);
+		
+		// Eclipse 3.3 no longer have a startup.jar in the root. Instead, they have a
+		// org.eclipse.equinox.launcher_xxxx.jar file under plugins. Let's find
+		// it.
+		//
+		File pluginsDir = new File(targetRoot, "plugins");
+		String[] names = pluginsDir.list();
+		if(names == null)
+			throw BuckminsterException.wrap(new IOException(pluginsDir + " is not a directory"));
+
+		String found = null;
+		IVersion foundVer = null;
+		int idx = names.length;
+		while(--idx >= 0)
+		{
+			String name = names[idx];
+			Matcher matcher = s_launcherPattern.matcher(name);
+			if(matcher.matches())
+			{
+				IVersion version = VersionFactory.OSGiType.fromString(matcher.group(1));
+				if(foundVer == null || foundVer.compareTo(version) > 0)
+				{
+					found = name;
+					foundVer = version;
+				}
+			}
+		}
+		if(found == null)
+			throw BuckminsterException.wrap(new FileNotFoundException(pluginsDir + "org.eclipse.equinox.launcher_<version>.jar"));
+		FileUtils.copyFile(new File(pluginsDir, found), outputDirFile, "startup.jar", nullMonitor);
 	}
 
 	private State getState()
