@@ -63,6 +63,14 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public static final String ATTR_ALLOW_CIRCULAR_DEPENDENCY = "allowCircularDependency";
 
 	public static final String ATTR_WHEN_NOT_EMPTY = "whenNotEmpty";
+	
+	public static final String ATTR_USE_RESOLUTION_SCHEMA = "useResolutionSchema";
+
+	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery";
+
+	public static final String ATTR_BRANCH = "branch";
+
+	public static final String ATTR_RESOLUTION_PATH = "resolutionPath";
 
 	public static final String TAG = "advisorNode";
 
@@ -101,11 +109,20 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	private final IVersionDesignator m_versionOverride;
 
 	private final NotEmptyAction m_whenNotEmpty;
+	
+	private final boolean m_useResolutionSchema;
+
+	private final boolean m_systemDiscovery;
+	
+	private final String m_branch;
+	
+	private final String m_resolutionPath;
 
 	public AdvisorNode(Documentation documentation, boolean allowCircularDependency, List<String> attributes, String category, MutableLevel mutableLevel, Pattern namePattern,
 			URL overlayFolder, Map<String, String> properties, boolean prune, Pattern replaceFrom, String replaceTo,
 			boolean skipComponent, SourceLevel sourceLevel, boolean useInstalled, boolean useMaterialization,
-			boolean useProject, IVersionDesignator versionOverride, NotEmptyAction notEmptyAction)
+			boolean useProject, IVersionDesignator versionOverride, NotEmptyAction notEmptyAction,
+			boolean useResolutionSchema, boolean systemDiscovery, String branch, String resolutionPath)
 	{
 		m_documentation = documentation;
 		m_allowCircularDependency = allowCircularDependency;
@@ -123,6 +140,10 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		m_useMaterialization = useMaterialization;
 		m_useProject = useProject;
 		m_versionOverride = versionOverride;
+		m_useResolutionSchema = useResolutionSchema;
+		m_systemDiscovery = systemDiscovery;
+		m_branch = branch;
+		m_resolutionPath = resolutionPath;
 
 		if(attributes == null || attributes.size() == 0)
 			m_attributes = Collections.emptyList();
@@ -274,6 +295,16 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, TextUtils.toCommaSeparatedList(m_attributes));
 		if(m_prune)
 			Utils.addAttribute(attrs, ATTR_PRUNE, "true");
+		if(!m_useResolutionSchema)
+			Utils.addAttribute(attrs, ATTR_USE_RESOLUTION_SCHEMA, "false");
+		if(!m_systemDiscovery)
+			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
+		if(m_branch != null)
+			Utils.addAttribute(attrs, ATTR_BRANCH, m_branch);
+		if(m_resolutionPath != null)
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_PATH, m_resolutionPath);
+			
+			
 		handler.startElement(namespace, localName, qName, attrs);
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
@@ -299,5 +330,25 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public final NotEmptyAction whenNotEmpty()
 	{
 		return m_whenNotEmpty;
+	}
+	
+	public final boolean isUseResolutionSchema()
+	{
+		return m_useResolutionSchema;
+	}
+	
+	public final boolean isSystemDiscovery()
+	{
+		return m_systemDiscovery;
+	}
+	
+	public final String getBranch()
+	{
+		return m_branch;
+	}
+	
+	public final String getResolutionPath()
+	{
+		return m_resolutionPath;
 	}
 }

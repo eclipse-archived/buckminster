@@ -61,6 +61,14 @@ public class AdvisorNodeBuilder
 
 	private NotEmptyAction m_whenNotEmpty;
 
+	private boolean m_useResolutionSchema;
+
+	private boolean m_systemDiscovery;
+	
+	private String m_branch;
+	
+	private String m_resolutionPath;
+
 	public AdvisorNodeBuilder()
 	{
 		this.clear();
@@ -101,6 +109,10 @@ public class AdvisorNodeBuilder
 		m_useProject = true;
 		m_versionOverride = null;
 		m_whenNotEmpty = NotEmptyAction.FAIL;
+		m_useResolutionSchema = true;
+		m_systemDiscovery = true;
+		m_branch = null;
+		m_resolutionPath = null;
 	}
 
 	public AdvisorNode create()
@@ -109,7 +121,8 @@ public class AdvisorNodeBuilder
 				m_namePattern, m_overlayFolder, m_properties, m_prune,
 				m_replaceFrom, m_replaceTo, m_skipComponent,
 				m_sourceLevel, m_useInstalled, m_useMaterialization,
-				m_useProject, m_versionOverride, m_whenNotEmpty);
+				m_useProject, m_versionOverride, m_whenNotEmpty,
+				m_useResolutionSchema, m_systemDiscovery, m_branch, m_resolutionPath);
 	}
 	
 	public List<String> getAttributes()
@@ -203,6 +216,10 @@ public class AdvisorNodeBuilder
 		m_useProject = node.isUseProject();
 		m_versionOverride = node.getVersionOverride();
 		m_whenNotEmpty = node.getWhenNotEmpty();
+		m_useResolutionSchema = node.isUseResolutionSchema();
+		m_systemDiscovery = node.isSystemDiscovery();
+		m_branch = node.getBranch();
+		m_resolutionPath = node.getResolutionPath();
 	}
 
 	public boolean isPrune()
@@ -225,6 +242,26 @@ public class AdvisorNodeBuilder
 		return m_useProject;
 	}
 
+	public boolean isUseResolutionSchema()
+	{
+		return m_useResolutionSchema;
+	}
+	
+	public boolean isSystemDiscovery()
+	{
+		return m_systemDiscovery;
+	}
+	
+	public String getBranch()
+	{
+		return m_branch;
+	}
+	
+	public String getResolutionPath()
+	{
+		return m_resolutionPath;
+	}
+	
 	public void setAllowCircularDependency(boolean allowCircularDependency)
 	{
 		m_allowCircularDependency = allowCircularDependency;
@@ -304,6 +341,26 @@ public class AdvisorNodeBuilder
 		m_whenNotEmpty = whenNotEmpty == null ? NotEmptyAction.FAIL : whenNotEmpty;
 	}
 
+	public void setUseResolutionSchema(boolean useResolutionSchema)
+	{
+		m_useResolutionSchema = useResolutionSchema;
+	}
+	
+	public void setSystemDiscovery(boolean systemDiscovery)
+	{
+		m_systemDiscovery = systemDiscovery;
+	}
+	
+	public void setBranch(String branch)
+	{
+		m_branch = branch;
+	}
+	
+	public void setResolutionPath(String resolutionPath)
+	{
+		m_resolutionPath = resolutionPath;
+	}
+	
 	public boolean skipComponent()
 	{
 		return m_skipComponent;

@@ -70,212 +70,184 @@
 	</complexType>
 	<complexType name="AdvisorNode">
 		<sequence>
-			<element
-				name="documentation"
-				type="com:Documentation"
-				minOccurs="0"
-				maxOccurs="1" />
-			<choice
-				minOccurs="0"
-				maxOccurs="unbounded">
-				<element
-					name="property"
-					type="com:PropertyConstant" />
-				<element
-					name="propertyElement"
+			<element name="documentation" type="com:Documentation"
+				minOccurs="0" maxOccurs="1" />
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="property" type="com:PropertyConstant" />
+				<element name="propertyElement"
 					type="com:PropertyElement" />
 			</choice>
 		</sequence>
-		<attribute
-			name="namePattern"
-			type="string"
-			use="required">
+		<attribute name="namePattern" type="string" use="required">
 			<annotation>
 				<documentation>
-					A regular expression pattern that will be matched against component names. The matching
-					occurs in the order that the nodes are declared. The first node that matches a given
-					component is used. No further matching takes place once a node is found.
+					A regular expression pattern that will be matched
+					against component names. The matching occurs in the
+					order that the nodes are declared. The first node
+					that matches a given component is used. No further
+					matching takes place once a node is found.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="category"
-			type="string"
-			use="optional">
+		<attribute name="category" type="string" use="optional">
 			<annotation>
 				<documentation>
-					If set, this advisor node will only match requests that has this category.
+					If set, this advisor node will only match requests
+					that has this category.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="overlayFolder"
-			type="string"
-			use="optional">
+		<attribute name="overlayFolder" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Appoints a folder that will act as an overlay to components found by this node. Overlays
-					are ment to assist when prototyping so that Buckminster gets the notion of added files
-					although they are not really checked in. If the path is relative it will be treated as
-					relative to the current workspace.
+					Appoints a folder that will act as an overlay to
+					components found by this node. Overlays are ment to
+					assist when prototyping so that Buckminster gets the
+					notion of added files although they are not really
+					checked in. If the path is relative it will be
+					treated as relative to the current workspace.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="attributes"
-			type="string"
-			use="optional">
+		<attribute name="attributes" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Comma separated list of attribute names that will imply dependencies during resolvement
+					Comma separated list of attribute names that will
+					imply dependencies during resolvement
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="prune"
-			type="boolean"
-			use="optional">
+		<attribute name="prune" type="boolean" use="optional">
 			<annotation>
 				<documentation>
-					If true, prune the extenral dependency list to include only those dependencies that have
-					purposes
+					If true, prune the extenral dependency list to
+					include only those dependencies that have purposes
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="mutableLevel"
-			type="cq:Feasibility"
-			default="INDIFFERENT"
-			use="optional">
+		<attribute name="mutableLevel" type="cq:Feasibility"
+			default="INDIFFERENT" use="optional">
 			<annotation>
 				<documentation>
-					The mutable level used when the feasibility of a provider is determined.
+					The mutable level used when the feasibility of a
+					provider is determined.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="sourceLevel"
-			type="cq:Feasibility"
-			default="INDIFFERENT"
-			use="optional">
+		<attribute name="sourceLevel" type="cq:Feasibility"
+			default="INDIFFERENT" use="optional">
 			<annotation>
 				<documentation>
-					The source level used when the feasibility of a provider is determined.
+					The source level used when the feasibility of a
+					provider is determined.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="replaceFrom"
-			type="string"
-			use="optional">
+		<attribute name="replaceFrom" type="string" use="optional">
 			<annotation>
 				<documentation>
-					A replacement pattern matching the component name when creating a workspace project name.
-					The result is then produced by replaceTo.
+					A replacement pattern matching the component name
+					when creating a workspace project name. The result
+					is then produced by replaceTo.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="replaceTo"
-			type="string"
-			use="optional">
+		<attribute name="replaceTo" type="string" use="optional">
 			<annotation>
 				<documentation>
-					A replacement string that produces the resulting project name from a name matched by
-					pattern replaceFrom.
+					A replacement string that produces the resulting
+					project name from a name matched by pattern
+					replaceFrom.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="whenNotEmpty"
-			type="cq:NotEmptyAction"
-			default="FAIL"
-			use="optional">
+		<attribute name="whenNotEmpty" type="cq:NotEmptyAction"
+			default="FAIL" use="optional">
 			<annotation>
 				<documentation>
-					Action to take when the location intended for a materialization is found to be non-empty.
+					Action to take when the location intended for a
+					materialization is found to be non-empty.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="allowCircularDependency"
-			type="boolean"
-			default="false"
-			use="optional">
+		<attribute name="allowCircularDependency" type="boolean"
+			default="false" use="optional">
 			<annotation>
 				<documentation>
-					Allow that matched components participate in circular dependency chains
+					Allow that matched components participate in
+					circular dependency chains
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="skipComponent"
-			type="boolean"
-			default="false"
+		<attribute name="skipComponent" type="boolean" default="false"
 			use="optional">
 			<annotation>
 				<documentation>
-					Skip components that are matched altogether if this attribute is true
+					Skip components that are matched altogether if this
+					attribute is true
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="useInstalled"
-			type="boolean"
-			default="true"
+		<attribute name="useInstalled" type="boolean" default="true"
 			use="optional">
 			<annotation>
 				<documentation>
-					Regulates how to treat components that are matched by installed features and plugins.
-					Setting this attribute to false will cause the resolver to omitt installed components.
+					Regulates how to treat components that are matched
+					by installed features and plugins. Setting this
+					attribute to false will cause the resolver to omitt
+					installed components.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="useMaterialization"
-			type="boolean"
-			default="true"
+		<attribute name="useMaterialization" type="boolean"
+			default="true" use="optional">
+			<annotation>
+				<documentation>
+					Regulates how the resolver will treat existing
+					materializations. Setting this flag to false will
+					cause existing material to be overwritten.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useProject" type="boolean" default="true"
 			use="optional">
 			<annotation>
 				<documentation>
-					Regulates how the resolver will treat existing materializations. Setting this flag to
-					false will cause existing material to be overwritten.
+					Regulates how the resolver will treat workspace
+					projects that fulfills the component request.
+					Setting this flag to false will cause the resolver
+					to omitt existing projects (and thus overwrite
+					them).
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="useProject"
-			type="boolean"
-			default="true"
+		<attribute name="versionOverride" type="string"
 			use="optional">
 			<annotation>
 				<documentation>
-					Regulates how the resolver will treat workspace projects that fulfills the component
-					request. Setting this flag to false will cause the resolver to omitt existing projects
-					(and thus overwrite them).
+					A version that should be used in place of the
+					version stipulated by the component request. This is
+					typically used when there is a desire to load the
+					LATEST from a branch rather than a tagged version.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="versionOverride"
-			type="string"
+		<attribute name="versionOverrideType" type="string"
 			use="optional">
 			<annotation>
 				<documentation>
-					A version that should be used in place of the version stipulated by the component request.
-					This is typically used when there is a desire to load the LATEST from a branch rather than
-					a tagged version.
+					The version type for the versionOverride.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute
-			name="versionOverrideType"
-			type="string"
+		<attribute name="useResolutionSchema" type="boolean"
 			use="optional">
-			<annotation>
-				<documentation>The version type for the versionOverride.</documentation>
-			</annotation>
 		</attribute>
+		<attribute name="systemDiscovery" type="boolean"
+			use="optional">
+		</attribute>
+		<attribute name="branch" type="string" use="optional"></attribute>
+		<attribute name="resolutionPath" type="string" use="optional"></attribute>
 	</complexType>
 	<simpleType name="Feasibility">
 		<restriction base="string">
