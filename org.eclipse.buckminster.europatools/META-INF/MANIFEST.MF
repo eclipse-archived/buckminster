@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.buckminster.europatools;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.buckminster.runtime,
+ org.eclipse.buckminster.sax,
+ org.eclipse.buckminster.cmdline,
+ org.eclipse.buckminster.core,
+ org.eclipse.update.core,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.eclipse.buckminster.europatools.EuropaTools
+Eclipse-LazyStart: true
