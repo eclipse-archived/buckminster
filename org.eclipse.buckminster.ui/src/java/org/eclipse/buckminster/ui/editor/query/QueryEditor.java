@@ -1,12 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
- * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
+/*******************************************************************
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein
+ * are the sole and exclusive property of Cloudsmith Inc. and may
+ * not be disclosed, used, modified, copied or distributed without
+ * prior written consent or license from Cloudsmith Inc.
+ ******************************************************************/
 
 package org.eclipse.buckminster.ui.editor.query;
 
@@ -17,12 +15,14 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
@@ -34,7 +34,6 @@ import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
@@ -43,14 +42,16 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
-import org.eclipse.buckminster.ui.ChangeAdapter;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
-import org.eclipse.buckminster.ui.LabeledCombo;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
-import org.eclipse.buckminster.ui.editor.ComponentRequestGroup;
+import org.eclipse.buckminster.ui.editor.Properties;
+import org.eclipse.buckminster.ui.editor.PropertiesModifyEvent;
+import org.eclipse.buckminster.ui.editor.PropertiesModifyListener;
 import org.eclipse.buckminster.ui.editor.SaveRunnable;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
+import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
+import org.eclipse.buckminster.ui.editor.VersionDesignatorListener;
 import org.eclipse.buckminster.ui.wizards.QueryWizard;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -66,6 +67,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -73,24 +76,34 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -104,26 +117,11 @@ import org.eclipse.ui.part.EditorPart;
 import org.xml.sax.SAXException;
 
 /**
- * Editor for <code>ComponentQuery</code>.
+ * @author Karel Brezina
  * 
- * @author Thomas Hallgren
  */
 public class QueryEditor extends EditorPart
 {
-	public class EditorComponentRequestGroup extends ComponentRequestGroup
-	{
-		public EditorComponentRequestGroup(Composite parent, int style)
-		{
-			super(parent, style);
-		}
-
-		@Override
-		protected ChangeAdapter getChangeAdapter()
-		{
-			return new TriggerChangedRequestListener();
-		}
-	}
-
 	class AdvisorNodeLabelProvider extends LabelProvider implements ITableLabelProvider
 	{
 		public Image getColumnImage(Object element, int columnIndex)
@@ -150,713 +148,45 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
-	class TriggerChangedRequestListener extends ChangeAdapter
+	class CompoundModifyListener implements VersionDesignatorListener, ModifyListener, PropertiesModifyListener
 	{
-		@Override
-		protected void onChange(TypedEvent e)
+
+		public void modifyProperties(PropertiesModifyEvent e)
+		{
+			setDirty(true);
+		}
+
+		public void modifyText(ModifyEvent e)
+		{
+			setDirty(true);
+		}
+
+		public void modifyVersionDesignator(VersionDesignatorEvent e)
 		{
 			setDirty(true);
 		}
 	}
 
-	private ComponentQueryBuilder m_componentQuery;
-
-	private ComponentRequestGroup m_componentRequestGroup;
-
-	private Button m_editOrCancelButton;
-
-	private Button m_enableOverride;
-
-	private boolean m_nodeEditMode;
-
-	private boolean m_hasChanges;
-
-	private Button m_resolveButton;
-
-	private Button m_materializeButton;
-
-	private Button m_externalSaveAsButton;
-
-	private Button m_moveDownButton;
-
-	private Button m_moveUpButton;
-
-	private boolean m_mute;
-
-	private LabeledCombo m_mutableLevel;
-
-	private Text m_namePattern;
-
-	private LabeledCombo m_category;
-
-	private Text m_overlayFolder;
-
-	private Button m_overlayBrowseButton;
-
-	private Text m_wantedAttributes;
-
-	private Button m_prune;
-
-	private Text m_replaceFrom;
-
-	private Text m_replaceTo;
-
-	private boolean m_needsRefresh;
-
-	private Button m_newOrSaveButton;
-
-	private TableViewer m_nodeTable;
-
-	private Button m_removeButton;
-
-	private Text m_requestURL;
-
-	private Text m_propertyURL;
-
-	private LabeledCombo m_sourceLevel;
-
-	private Button m_skipComponent;
-
-	private Button m_allowCircular;
-
-	private Label m_known;
-
-	private Button m_useInstalled;
-
-	private Button m_useMaterialization;
-
-	private Button m_useProject;
-
-	private VersionDesignator m_versionOverride;
-
-	private LabeledCombo m_whenNotEmpty;
-
-	private boolean m_continueOnError;
-
-	@Override
-	public void createPartControl(Composite parent)
+	class CheckboxSelectionListener extends SelectionAdapter
 	{
-	    parent.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-	    parent.setBackgroundMode(SWT.INHERIT_FORCE);
-		ScrolledComposite sc1 = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		Composite self = new Composite(sc1, SWT.NONE);
-		sc1.setContent(self);
-		self.setLayout(new GridLayout(1, true));
+		private Control[] m_controlsToEnable;
 
-		createGlobalGroup(self);
-
-		Group advisorNodes = new Group(self, SWT.NONE);
-		advisorNodes.setText("Advisor Nodes");
-		GridLayout layout = new GridLayout(2, false);
-		layout.marginHeight = layout.marginWidth = 3;
-		advisorNodes.setLayout(layout);
-		advisorNodes.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		createNodeTableGroup(advisorNodes);
-		createButtonBox(advisorNodes);
-		createNodeFields(advisorNodes);
-
-		createActionButtons(self);
-	    self.setSize(self.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor)
-	{
-		if(!commitChangesToQuery())
-			return;
-
-		IEditorInput input = getEditorInput();
-		if(input == null)
-			return;
-
-		IPath path = (input instanceof ILocationProvider) ? ((ILocationProvider)input).getPath(input)
-				: ((IPathEditorInput)input).getPath();
-
-		saveToPath(path);
-	}
-
-	@Override
-	public void doSaveAs()
-	{
-		if(!commitChangesToQuery())
-			return;
-
-		IEditorInput input = getEditorInput();
-		if(input == null)
-			return;
-
-		SaveAsDialog dialog = new SaveAsDialog(getSite().getShell());
-		IFile original = (input instanceof IFileEditorInput) ? ((IFileEditorInput)input).getFile() : null;
-		if(original != null)
-			dialog.setOriginalFile(original);
-
-		if(dialog.open() == Window.CANCEL)
-			return;
-
-		IPath filePath = dialog.getResult();
-		if(filePath == null)
-			return;
-
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IFile file = workspace.getRoot().getFile(filePath);
-		saveToPath(file.getLocation());
-	}
-
-	public void doExternalSaveAs()
-	{
-		if(!commitChangesToQuery())
-			return;
-		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.cquery" });
-		final String location = dlg.open();
-		if(location == null)
-			return;
-		saveToPath(new Path(location));
-	}
-
-	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException
-	{
-		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput))
-			throw new PartInitException("Invalid Input");
-		setSite(site);
-
-		InputStream stream = null;
-		try
+		public CheckboxSelectionListener(Control[] controlsToEnable)
 		{
-			IPath path = (input instanceof ILocationProvider) ? ((ILocationProvider)input).getPath(input)
-					: ((IPathEditorInput)input).getPath();
-
-			File file = path.toFile();
-			m_componentQuery = new ComponentQueryBuilder();
-			if(file.length() == 0)
-			{
-				String defaultName = file.getName();
-				if(defaultName.startsWith(BlankQueryAction.TEMP_FILE_PREFIX))
-					defaultName = "";
-				else
-				{
-					int lastDot = defaultName.lastIndexOf('.');
-					if(lastDot > 0)
-						defaultName = defaultName.substring(0, lastDot);
-				}
-				m_componentQuery.setRootRequest(new ComponentRequest(defaultName, null, null));
-			}
-			else
-			{
-				String systemId = file.toString();
-				stream = new FileInputStream(file);
-				IParser<ComponentQuery> parser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(true);
-				m_componentQuery.initFrom(parser.parse(systemId, stream));
-			}
-			m_needsRefresh = true;
-			if(m_componentRequestGroup != null)
-				refreshQuery();
-			setInputWithNotify(input);
-			setPartName(input.getName());
-		}
-		catch(SAXException e)
-		{
-			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new PartInitException(e.getMessage());
-		}
-		finally
-		{
-			IOUtils.close(stream);
-		}
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return m_hasChanges;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed()
-	{
-		return true;
-	}
-
-	@Override
-	public void setFocus()
-	{
-		if(m_needsRefresh)
-			refreshQuery();
-	}
-
-	private void cancelNode()
-	{
-		m_nodeEditMode = false;
-		enableDisableButtonGroup();
-		refreshNodeFields();
-	}
-
-	private boolean commitChangesToQuery()
-	{
-		if(m_nodeEditMode)
-		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null,
-					"Do you want to discard the current node edit?"))
-				return false;
-			cancelNode();
+			m_controlsToEnable = controlsToEnable;
 		}
 
-		try
+		@Override
+		public void widgetSelected(SelectionEvent e)
 		{
-			String tmp = UiUtils.trimmedValue(m_requestURL);
-			m_componentQuery.setResourceMapURL(URLUtils.normalizeToURL(tmp));
-			
-			tmp = UiUtils.trimmedValue(m_propertyURL);
-			m_componentQuery.setPropertiesURL(URLUtils.normalizeToURL(tmp));
+			Button button = (Button)e.widget;
+			boolean enable = button.getSelection();
+
+			for(Control control : m_controlsToEnable)
+			{
+				control.setEnabled(enable);
+			}
 		}
-		catch(MalformedURLException e)
-		{
-			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
-			return false;
-		}
-
-		ComponentRequest[] requestRet = new ComponentRequest[1];
-		String error = m_componentRequestGroup.commitChanges(requestRet);
-		if(error == null)
-			m_componentQuery.setRootRequest(requestRet[0]);
-		else
-		{
-			MessageDialog.openError(getSite().getShell(), null, error);
-			return false;
-		}
-		return true;
-	}
-
-	private void createActionButtons(Composite parent)
-	{
-		Composite buttonBox = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(5, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		buttonBox.setLayout(layout);
-		buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-		UiUtils.createCheckButton(buttonBox, "Continue on error", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				m_continueOnError = ((Button)e.getSource()).getSelection();
-			}
-		});
-
-		m_resolveButton = UiUtils.createPushButton(buttonBox, "Resolve to Wizard", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				loadComponent(false);
-			}
-		});
-		m_resolveButton.setLayoutData(new GridData(SWT.END, SWT.FILL, false, false));
-
-		m_materializeButton = UiUtils.createPushButton(buttonBox, "Resolve and Materialize", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				loadComponent(true);
-			}
-		});
-		m_materializeButton.setLayoutData(new GridData(SWT.END, SWT.FILL, false, false));
-
-		m_externalSaveAsButton = UiUtils.createPushButton(buttonBox, "External Save As...", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				doExternalSaveAs();
-			}
-		});
-		m_externalSaveAsButton.setLayoutData(new GridData(SWT.END, SWT.FILL, false, false));
-	}
-
-	private void createButtonBox(Composite parent)
-	{
-		Composite buttonBox = new Composite(parent, SWT.NULL);
-		buttonBox.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
-		RowLayout buttonBoxLayout = new RowLayout(SWT.VERTICAL);
-		buttonBoxLayout.marginWidth = 0;
-		buttonBoxLayout.fill = true;
-		buttonBox.setLayout(buttonBoxLayout);
-
-		m_newOrSaveButton = UiUtils.createPushButton(buttonBox, "New", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				newOrSaveNode();
-			}
-		});
-
-		m_editOrCancelButton = UiUtils.createPushButton(buttonBox, "Edit", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				editOrCancelNode();
-			}
-		});
-
-		m_removeButton = UiUtils.createPushButton(buttonBox, "Remove", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				removeNode();
-			}
-		});
-
-		m_moveUpButton = UiUtils.createPushButton(buttonBox, "Move up", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				swapAndReselect(0, -1);
-			}
-		});
-
-		m_moveDownButton = UiUtils.createPushButton(buttonBox, "Move down", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				swapAndReselect(1, 0);
-			}
-		});
-	}
-
-	private void createGlobalGroup(Composite parent)
-	{
-		Composite global = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(3, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		global.setLayout(layout);
-		global.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-		m_componentRequestGroup = new EditorComponentRequestGroup(global, SWT.NONE);
-		m_componentRequestGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
-
-		m_propertyURL = UiUtils.createLabeledText(global, "Properties:", SWT.NONE, new TriggerChangedRequestListener());
-		Button browseButton = new Button(global, SWT.PUSH);
-		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		browseButton.setText("Browse...");
-		browseButton.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
-				FileDialog dlg = new FileDialog(getSite().getShell());
-				dlg.setFilterExtensions(new String[] { "*.properties" });
-				String name = dlg.open();
-				if(name == null)
-					return;
-				try
-				{
-					m_propertyURL.setText(TextUtils.notNullString(new URL(name)));
-				}
-				catch(MalformedURLException e)
-				{
-					try
-					{
-						m_propertyURL.setText(TextUtils.notNullString(new File(name).toURI().toURL()));
-					}
-					catch(MalformedURLException e1)
-					{
-					}
-				}
-			}
-		});
-
-		m_requestURL = UiUtils.createLabeledText(global, "Resource map:", SWT.NONE, new TriggerChangedRequestListener());
-		browseButton = new Button(global, SWT.PUSH);
-		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		browseButton.setText("Browse...");
-		browseButton.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
-				FileDialog dlg = new FileDialog(getSite().getShell());
-				dlg.setFilterExtensions(new String[] { "*.rmap" });
-				String name = dlg.open();
-				if(name == null)
-					return;
-				try
-				{
-					m_requestURL.setText(TextUtils.notNullString(new URL(name)));
-				}
-				catch(MalformedURLException e)
-				{
-					try
-					{
-						m_requestURL.setText(TextUtils.notNullString(new File(name).toURI().toURL()));
-					}
-					catch(MalformedURLException e1)
-					{
-					}
-				}
-			}
-		});
-	}
-
-	private void createNodeFields(Composite parent)
-	{
-		Composite nameGroup = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(3, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		nameGroup.setLayout(layout);
-		nameGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-		m_namePattern = UiUtils.createLabeledText(nameGroup, "Name pattern:", SWT.NONE, null);
-		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gd.widthHint = 200;
-		m_namePattern.setLayoutData(gd);
-
-		m_category = new LabeledCombo(nameGroup, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gd.widthHint = 50;
-		m_category.setLayoutData(gd);
-		m_category.setLabel("Matched category:");
-		m_category.setItems(ComponentCategory.getCategoryNames(true));
-
-		m_skipComponent = UiUtils.createCheckButton(nameGroup, "Skip Component", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				enableDisableSkipSensitive();
-			}
-		});
-		m_allowCircular = UiUtils.createCheckButton(nameGroup, "Allow Circular Dependency", null);
-		GridData td = new GridData(SWT.FILL, SWT.FILL, true, false);
-		td.horizontalSpan = 2;
-		m_allowCircular.setLayoutData(td);
-
-		Group targetGroup = new Group(nameGroup, SWT.NONE);
-		targetGroup.setText("Attribute qualification");
-		layout = new GridLayout(5, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 3;
-		targetGroup.setLayout(layout);
-		td = new GridData(SWT.FILL, SWT.FILL, true, false);
-		td.horizontalSpan = 3;
-		targetGroup.setLayoutData(td);
-		m_wantedAttributes = UiUtils.createLabeledText(targetGroup, "Attributes:", SWT.NONE, null);
-		m_prune = UiUtils.createCheckButton(targetGroup, "Prune according to Attributes", null);
-
-		Group replaceGroup = new Group(nameGroup, SWT.NONE);
-		replaceGroup.setText("Project Name Mapping");
-		layout = new GridLayout(4, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 3;
-		replaceGroup.setLayout(layout);
-		td = new GridData(SWT.FILL, SWT.FILL, true, false);
-		td.horizontalSpan = 3;
-		replaceGroup.setLayoutData(td);
-
-		m_replaceFrom = UiUtils.createLabeledText(replaceGroup, "Source pattern:", SWT.NONE, null);
-		m_replaceTo = UiUtils.createLabeledText(replaceGroup, "Replacement:", SWT.NONE, null);
-
-		Group levelGroup = new Group(nameGroup, SWT.NONE);
-		levelGroup.setText("Special Requirements");
-		layout = new GridLayout(3, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 3;
-		levelGroup.setLayout(layout);
-		td = new GridData(SWT.FILL, SWT.FILL, true, false);
-		td.horizontalSpan = 5;
-		levelGroup.setLayoutData(td);
-
-		m_mutableLevel = UiUtils.createEnumCombo(levelGroup, "Mutable level", MutableLevel.values(), null);
-		m_sourceLevel = UiUtils.createEnumCombo(levelGroup, "Source level", SourceLevel.values(), null);
-
-		Group useGroup = new Group(parent, SWT.NONE);
-		useGroup.setText("Use Known/Unknown");
-		layout = new GridLayout(5, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 3;
-		useGroup.setLayout(layout);
-		useGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-
-		m_known = new Label(useGroup, SWT.NONE);
-		m_known.setText("Known:");
-		m_useInstalled = UiUtils.createCheckButton(useGroup, "Plugins and Features", null);
-		m_useMaterialization = UiUtils.createCheckButton(useGroup, "Materializations", null);
-		m_useProject = UiUtils.createCheckButton(useGroup, "Projects", null);
-		m_whenNotEmpty = UiUtils.createEnumCombo(useGroup, "Unknown:", NotEmptyAction.values(), null);
-		td = new GridData(SWT.FILL, SWT.FILL, true, true);
-		td.horizontalIndent = 10;
-		m_whenNotEmpty.setLayoutData(td);
-
-		Group overrideGroup = new Group(parent, SWT.NONE);
-		overrideGroup.setText("Override");
-		layout = new GridLayout(2, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 3;
-		overrideGroup.setLayout(layout);
-		overrideGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-
-		m_enableOverride = UiUtils.createCheckButton(overrideGroup, "Override version", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				boolean selected = ((Button)e.getSource()).getSelection();
-				m_versionOverride.setEnabled(selected);
-			}
-		});
-
-		m_versionOverride = new VersionDesignator(overrideGroup, SWT.NONE);
-		m_versionOverride.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		m_nodeEditMode = false;
-
-		Group addOnGroup = new Group(parent, SWT.NONE);
-		addOnGroup.setText("Overlay folder (for prototyping)");
-		layout = new GridLayout(3, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 3;
-		addOnGroup.setLayout(layout);
-		addOnGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-		m_overlayFolder = UiUtils.createLabeledText(addOnGroup, "Folder:", SWT.NONE, null);
-		m_overlayBrowseButton = new Button(addOnGroup, SWT.PUSH);
-		m_overlayBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		m_overlayBrowseButton.setText("Browse...");
-		m_overlayBrowseButton.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
-				DirectoryDialog dlg = new DirectoryDialog(getSite().getShell());
-				m_overlayFolder.setText(TextUtils.notNullString(dlg.open()));
-			}
-		});
-
-	}
-
-	private void createNodeTableGroup(Composite parent)
-	{
-		Composite componentTableGroup = new Composite(parent, SWT.NONE);
-		GridLayout gl = new GridLayout();
-		gl.marginHeight = gl.marginWidth = 0;
-		componentTableGroup.setLayout(gl);
-		componentTableGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		Table table = new Table(componentTableGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
-
-		table.setHeaderVisible(false);
-
-		String[] columnNames = new String[] { "Component Name Pattern", "Matching Category" };
-		int[] columnWeights = new int[] { 15, 5 };
-
-		table.setHeaderVisible(true);
-		DynamicTableLayout layout = new DynamicTableLayout(50);
-		for(int idx = 0; idx < columnNames.length; idx++)
-		{
-			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, idx);
-			tableColumn.setText(columnNames[idx]);
-			layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
-		}
-		table.setLayout(layout);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		m_nodeTable = new TableViewer(table);
-		m_nodeTable.setLabelProvider(new AdvisorNodeLabelProvider());
-		m_nodeTable.setContentProvider(new ArrayContentProvider());
-		m_nodeTable.addSelectionChangedListener(new ISelectionChangedListener()
-		{
-			public void selectionChanged(SelectionChangedEvent event)
-			{
-				nodeSelectionEvent();
-			}
-		});
-	}
-
-	private void editNode()
-	{
-		m_nodeEditMode = true;
-		enableDisableButtonGroup();
-		setDirty(true);
-	}
-
-	private void editOrCancelNode()
-	{
-		if(m_nodeEditMode)
-			cancelNode();
-		else
-			editNode();
-	}
-
-	private void enableDisableButtonGroup()
-	{
-		if(m_nodeEditMode)
-		{
-			// A node is being edited
-			//
-			m_newOrSaveButton.setText("Save");
-			m_editOrCancelButton.setText("Cancel");
-			m_editOrCancelButton.setEnabled(true);
-			m_removeButton.setEnabled(false);
-			m_moveUpButton.setEnabled(false);
-			m_moveDownButton.setEnabled(false);
-		}
-		else
-		{
-			Table table = m_nodeTable.getTable();
-			int top = table.getItemCount();
-			int idx = table.getSelectionIndex();
-			m_newOrSaveButton.setText("New");
-			m_editOrCancelButton.setText("Edit");
-			m_editOrCancelButton.setEnabled(idx >= 0);
-			m_removeButton.setEnabled(idx >= 0);
-			m_moveUpButton.setEnabled(idx > 0);
-			m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
-		}
-		m_nodeTable.getTable().setEnabled(!m_nodeEditMode);
-
-		m_namePattern.setEnabled(m_nodeEditMode);
-		m_category.setEnabled(m_nodeEditMode);
-		m_skipComponent.setEnabled(m_nodeEditMode);
-		enableDisableSkipSensitive();
-	}
-
-	private void enableDisableSkipSensitive()
-	{
-		boolean enableRest = m_nodeEditMode && !m_skipComponent.getSelection();
-
-		m_allowCircular.setEnabled(enableRest);
-		m_overlayFolder.setEnabled(enableRest);
-		m_overlayBrowseButton.setEnabled(enableRest);
-		m_wantedAttributes.setEnabled(enableRest);
-		m_prune.setEnabled(enableRest);
-
-		m_replaceFrom.setEnabled(enableRest);
-		m_replaceTo.setEnabled(enableRest);
-
-		m_mutableLevel.setEnabled(enableRest);
-		m_sourceLevel.setEnabled(enableRest);
-		m_whenNotEmpty.setEnabled(enableRest);
-
-		m_known.setEnabled(enableRest);
-		m_useInstalled.setEnabled(enableRest);
-		m_useMaterialization.setEnabled(enableRest);
-		m_useProject.setEnabled(enableRest);
-
-		m_enableOverride.setEnabled(enableRest);
-		m_versionOverride.setEnabled(enableRest && m_enableOverride.getSelection());
-	}
-
-	private AdvisorNodeBuilder getSelectedNode()
-	{
-		int idx = m_nodeTable.getTable().getSelectionIndex();
-		return idx >= 0 ? (AdvisorNodeBuilder)m_nodeTable.getElementAt(idx) : null;
 	}
 
 	class ResolveJob extends Job
@@ -938,6 +268,1139 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
+	private static Label createHeaderLabel(Composite parent, String headerText, int horizontalSpan)
+	{
+		Label label = UiUtils.createGridLabel(parent, headerText, horizontalSpan, 0, SWT.NONE);
+		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+
+		return label;
+	}
+
+	private CTabFolder m_tabFolder;
+
+	private Text m_componentName;
+
+	private Combo m_componentCategory;
+
+	private VersionDesignator m_versionDesignator;
+
+	private ComponentQueryBuilder m_componentQuery;
+
+	private Button m_editOrCancelButton;
+
+	private Button m_enableOverride;
+
+	private boolean m_nodeEditMode;
+
+	private boolean m_hasChanges;
+
+	private Button m_resolveButton;
+
+	private Button m_materializeButton;
+
+	private Button m_externalSaveAsButton;
+
+	private Button m_moveDownButton;
+
+	private Button m_moveUpButton;
+
+	private boolean m_mute;
+
+	private Combo m_mutableLevel;
+
+	private Text m_namePattern;
+
+	private Combo m_category;
+
+	private Text m_overlayFolder;
+
+	private Button m_overlayBrowseButton;
+
+	private Text m_wantedAttributes;
+
+	private Button m_prune;
+
+	private Text m_replaceFrom;
+
+	private Text m_replaceTo;
+
+	private boolean m_needsRefresh;
+
+	private Button m_newOrSaveButton;
+
+	private TableViewer m_nodeTable;
+
+	private Button m_removeButton;
+
+	private Button m_requestURLCheckbox;
+
+	private Text m_requestURL;
+
+	private Button m_propertyURLCheckbox;
+
+	private Text m_propertyURL;
+
+	private Tree m_nodeTree;
+
+	private Combo m_sourceLevel;
+
+	private Button m_skipComponent;
+
+	private Button m_allowCircular;
+
+	private Composite m_nodesStackComposite;
+
+	private StackLayout m_nodesStackLayout;
+
+	private HashMap<String, Control> m_nodesHash;
+
+	private Button m_useInstalled;
+
+	private Button m_useMaterialization;
+
+	private Button m_useResolutionService;
+
+	private VersionDesignator m_versionOverride;
+
+	private boolean m_continueOnError;
+
+	private Properties m_nodeProperties;
+
+	private Text m_nodeDocumentation;
+
+	private Properties m_properties;
+
+	private Text m_shortDesc;
+
+	private Text m_documentation;
+
+	private CompoundModifyListener compoundModifyListener;
+
+	public String commitChanges(ComponentRequest[] requestRet)
+	{
+		String name = UiUtils.trimmedValue(m_componentName);
+		if(name == null)
+			return "The component must have a name";
+
+		String category = m_componentCategory.getItem(m_componentCategory.getSelectionIndex());
+		if(category.length() == 0)
+			category = null;
+
+		requestRet[0] = new ComponentRequest(name, category, m_versionDesignator.getVersionDesignator());
+		return null;
+	}
+
+	@Override
+	public void createPartControl(Composite parent)
+	{
+		Composite topComposite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(1, true);
+		layout.marginHeight = layout.marginWidth = 0;
+		topComposite.setLayout(layout);
+
+		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
+		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
+		mainTab.setText("Main");
+		mainTab.setControl(getMainTabControl(m_tabFolder));
+
+		CTabItem advisorTab = new CTabItem(m_tabFolder, SWT.NONE);
+		advisorTab.setText("Advisor Nodes");
+		advisorTab.setControl(getAdvisorTabControl(m_tabFolder));
+
+		CTabItem propertiesTab = new CTabItem(m_tabFolder, SWT.NONE);
+		propertiesTab.setText("Properties");
+		propertiesTab.setControl(getPropertiesTabControl(m_tabFolder));
+
+		CTabItem documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
+		documentationTab.setText("Documentation");
+		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
+
+		createActionButtons(topComposite);
+
+	}
+
+	public void doExternalSaveAs()
+	{
+		if(!commitChangesToQuery())
+			return;
+		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
+		dlg.setFilterExtensions(new String[] { "*.cquery" });
+		final String location = dlg.open();
+		if(location == null)
+			return;
+		saveToPath(new Path(location));
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor)
+	{
+		if(!commitChangesToQuery())
+			return;
+
+		IEditorInput input = getEditorInput();
+		if(input == null)
+			return;
+
+		IPath path = (input instanceof ILocationProvider)
+				? ((ILocationProvider)input).getPath(input)
+				: ((IPathEditorInput)input).getPath();
+
+		saveToPath(path);
+	}
+
+	@Override
+	public void doSaveAs()
+	{
+		if(!commitChangesToQuery())
+			return;
+
+		IEditorInput input = getEditorInput();
+		if(input == null)
+			return;
+
+		SaveAsDialog dialog = new SaveAsDialog(getSite().getShell());
+		IFile original = (input instanceof IFileEditorInput)
+				? ((IFileEditorInput)input).getFile()
+				: null;
+		if(original != null)
+			dialog.setOriginalFile(original);
+
+		if(dialog.open() == Window.CANCEL)
+			return;
+
+		IPath filePath = dialog.getResult();
+		if(filePath == null)
+			return;
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IFile file = workspace.getRoot().getFile(filePath);
+		saveToPath(file.getLocation());
+	}
+
+	@Override
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException
+	{
+		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput))
+			throw new PartInitException("Invalid Input");
+		setSite(site);
+
+		InputStream stream = null;
+		try
+		{
+			IPath path = (input instanceof ILocationProvider)
+					? ((ILocationProvider)input).getPath(input)
+					: ((IPathEditorInput)input).getPath();
+
+			File file = path.toFile();
+			m_componentQuery = new ComponentQueryBuilder();
+			if(file.length() == 0)
+			{
+				String defaultName = file.getName();
+				if(defaultName.startsWith(BlankQueryAction.TEMP_FILE_PREFIX))
+					defaultName = "";
+				else
+				{
+					int lastDot = defaultName.lastIndexOf('.');
+					if(lastDot > 0)
+						defaultName = defaultName.substring(0, lastDot);
+				}
+				m_componentQuery.setRootRequest(new ComponentRequest(defaultName, null, null));
+			}
+			else
+			{
+				String systemId = file.toString();
+				stream = new FileInputStream(file);
+				IParser<ComponentQuery> parser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
+						true);
+				m_componentQuery.initFrom(parser.parse(systemId, stream));
+			}
+			m_needsRefresh = true;
+			if(m_componentName != null)
+			{
+				refreshQuery();
+			}
+			setInputWithNotify(input);
+			setPartName(input.getName());
+		}
+		catch(SAXException e)
+		{
+			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
+		}
+		catch(FileNotFoundException e)
+		{
+			throw new PartInitException(e.getMessage());
+		}
+		finally
+		{
+			IOUtils.close(stream);
+		}
+
+		compoundModifyListener = new CompoundModifyListener();
+	}
+
+	@Override
+	public boolean isDirty()
+	{
+		return m_hasChanges;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed()
+	{
+		return true;
+	}
+
+	@Override
+	public void setFocus()
+	{
+		m_tabFolder.setFocus();
+
+		if(m_needsRefresh)
+			refreshQuery();
+	}
+
+	private void cancelNode()
+	{
+		m_nodeEditMode = false;
+		enableDisableButtonGroup();
+		refreshNodeFields();
+	}
+
+	private boolean commitChangesToQuery()
+	{
+		if(m_nodeEditMode)
+		{
+			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current node edit?"))
+				return false;
+			cancelNode();
+		}
+
+		try
+		{
+			String tmp = UiUtils.trimmedValue(m_requestURL);
+			m_componentQuery.setResourceMapURL(URLUtils.normalizeToURL(tmp));
+
+			tmp = UiUtils.trimmedValue(m_propertyURL);
+			m_componentQuery.setPropertiesURL(URLUtils.normalizeToURL(tmp));
+		}
+		catch(MalformedURLException e)
+		{
+			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+			return false;
+		}
+
+		m_properties.fillProperties(m_componentQuery.getProperties());
+		m_componentQuery.setShortDesc(m_shortDesc.getText());
+
+		try
+		{
+			m_componentQuery.setDocumentation(Documentation.parse(m_documentation.getText()));
+		}
+		catch(CoreException e)
+		{
+			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+			return false;
+		}
+
+		ComponentRequest[] requestRet = new ComponentRequest[1];
+		String error = commitChanges(requestRet);
+		if(error == null)
+			m_componentQuery.setRootRequest(requestRet[0]);
+		else
+		{
+			MessageDialog.openError(getSite().getShell(), null, error);
+			return false;
+		}
+		return true;
+	}
+
+	private void createActionButtons(Composite parent)
+	{
+		Composite allButtonsBox = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		// layout.marginHeight = layout.marginWidth = 0;
+		allButtonsBox.setLayout(layout);
+		allButtonsBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		UiUtils.createCheckButton(allButtonsBox, "Continue on error", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				m_continueOnError = ((Button)e.getSource()).getSelection();
+			}
+		});
+
+		Composite pressButtonsBox = new Composite(allButtonsBox, SWT.NONE);
+		layout = new GridLayout(3, true);
+		layout.marginHeight = layout.marginWidth = 0;
+		pressButtonsBox.setLayout(layout);
+		pressButtonsBox.setLayoutData(new GridData(SWT.END, SWT.FILL, true, false));
+
+		m_resolveButton = UiUtils.createPushButton(pressButtonsBox, "Resolve to Wizard", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				loadComponent(false);
+			}
+		});
+		m_resolveButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+		m_materializeButton = UiUtils.createPushButton(pressButtonsBox, "Resolve and Materialize",
+				new SelectionAdapter()
+				{
+					@Override
+					public void widgetSelected(SelectionEvent e)
+					{
+						loadComponent(true);
+					}
+				});
+		m_materializeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+		m_externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, "External Save As", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				doExternalSaveAs();
+			}
+		});
+		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+	}
+
+	private void createButtonBox(Composite parent)
+	{
+		Composite buttonBox = new Composite(parent, SWT.NULL);
+		buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		FillLayout layout = new FillLayout(SWT.VERTICAL);
+		layout.marginWidth = layout.marginHeight = 0;
+		layout.spacing = 3;
+		buttonBox.setLayout(layout);
+
+		Composite buttonBox1 = new Composite(buttonBox, SWT.NULL);
+		// buttonBox1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+		// false));
+		layout = new FillLayout(SWT.HORIZONTAL);
+		layout.marginWidth = layout.marginHeight = 0;
+		buttonBox1.setLayout(layout);
+
+		Composite buttonBox2 = new Composite(buttonBox, SWT.NULL);
+		// buttonBox2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+		// false));
+		layout = new FillLayout(SWT.HORIZONTAL);
+		layout.marginWidth = layout.marginHeight = 0;
+		buttonBox2.setLayout(layout);
+
+		m_newOrSaveButton = UiUtils.createPushButton(buttonBox1, "New", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				newOrSaveNode();
+			}
+		});
+
+		m_editOrCancelButton = UiUtils.createPushButton(buttonBox1, "Edit", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				editOrCancelNode();
+			}
+		});
+
+		m_removeButton = UiUtils.createPushButton(buttonBox1, "Remove", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				removeNode();
+			}
+		});
+
+		m_moveUpButton = UiUtils.createPushButton(buttonBox2, "Move up", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				swapAndReselect(0, -1);
+			}
+		});
+
+		m_moveDownButton = UiUtils.createPushButton(buttonBox2, "Move down", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				swapAndReselect(1, 0);
+			}
+		});
+	}
+
+	private void createNodeFields(Composite parent)
+	{
+		createNodeTree(parent);
+
+		createNodeStack(parent);
+	}
+
+	private void createNodeStack(Composite parent)
+	{
+		m_nodesStackComposite = new Composite(parent, SWT.NONE);
+		m_nodesStackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_nodesStackLayout = new StackLayout();
+		m_nodesStackLayout.marginHeight = m_nodesStackLayout.marginWidth = 0;
+		m_nodesStackComposite.setLayout(m_nodesStackLayout);
+
+		m_nodesHash = new HashMap<String, Control>();
+
+		Composite geComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		geComposite.setLayout(layout);
+
+		m_nodesHash.put("General", geComposite);
+
+		createHeaderLabel(geComposite, "General", 2);
+
+		UiUtils.createGridLabel(geComposite, "Name pattern:", 1, 0, SWT.NONE);
+
+		m_namePattern = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+
+		UiUtils.createGridLabel(geComposite, "Matched category:", 1, 0, SWT.NONE);
+
+		m_category = UiUtils.createGridCombo(geComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
+				| SWT.SIMPLE);
+		m_category.setItems(ComponentCategory.getCategoryNames(true));
+
+		UiUtils.createGridLabel(geComposite, "Skip Component:", 1, 0, SWT.NONE);
+		m_skipComponent = UiUtils.createCheckButton(geComposite, null, new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				enableDisableSkipSensitive();
+			}
+		});
+		m_skipComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		UiUtils.createGridLabel(geComposite, "Allow Circular Dependency:", 1, 0, SWT.NONE);
+		m_allowCircular = UiUtils.createCheckButton(geComposite, null, null);
+
+		Composite aqComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		aqComposite.setLayout(layout);
+
+		m_nodesHash.put("Attribute Qualification", aqComposite);
+
+		createHeaderLabel(aqComposite, "Attribute Qualification", 2);
+
+		UiUtils.createGridLabel(aqComposite, "Attributes:", 1, 0, SWT.NONE);
+		m_wantedAttributes = UiUtils.createGridText(aqComposite, 0, 0, null, SWT.NONE);
+		UiUtils.createGridLabel(aqComposite, "Prune According To Attributes:", 1, 0, SWT.NONE);
+		m_prune = UiUtils.createCheckButton(aqComposite, null, null);
+
+		Composite pnmComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		pnmComposite.setLayout(layout);
+
+		m_nodesHash.put("Project Name Mapping", pnmComposite);
+
+		createHeaderLabel(pnmComposite, "Project Name Mapping", 2);
+
+		UiUtils.createGridLabel(pnmComposite, "Source pattern:", 1, 0, SWT.NONE);
+		m_replaceFrom = UiUtils.createGridText(pnmComposite, 0, 0, null, SWT.NONE);
+		UiUtils.createGridLabel(pnmComposite, "Replacement:", 1, 0, SWT.NONE);
+		m_replaceTo = UiUtils.createGridText(pnmComposite, 0, 0, null, SWT.NONE);
+
+		Composite srComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		srComposite.setLayout(layout);
+
+		m_nodesHash.put("Special Requirements", srComposite);
+
+		createHeaderLabel(srComposite, "Special Requirements", 2);
+
+		UiUtils.createGridLabel(srComposite, "Mutable level:", 1, 0, SWT.NONE);
+		m_mutableLevel = UiUtils.createGridEnumCombo(srComposite, 0, 0, MutableLevel.values(), null, null, SWT.NONE);
+		UiUtils.createGridLabel(srComposite, "Source level:", 1, 0, SWT.NONE);
+		m_sourceLevel = UiUtils.createGridEnumCombo(srComposite, 0, 0, SourceLevel.values(), null, null, SWT.NONE);
+
+		Composite kuComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		kuComposite.setLayout(layout);
+
+		m_nodesHash.put("Resolution Scope", kuComposite);
+
+		createHeaderLabel(kuComposite, "Resolution Scope", 2);
+
+		UiUtils.createGridLabel(kuComposite, "Target Platform:", 1, 0, SWT.NONE);
+		m_useInstalled = UiUtils.createCheckButton(kuComposite, null, null);
+		UiUtils.createGridLabel(kuComposite, "Materialization:", 1, 0, SWT.NONE);
+		m_useMaterialization = UiUtils.createCheckButton(kuComposite, null, null);
+		UiUtils.createGridLabel(kuComposite, "Resolution Service:", 1, 0, SWT.NONE);
+		m_useResolutionService = UiUtils.createCheckButton(kuComposite, null, null);
+
+		Composite ovComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(3, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		ovComposite.setLayout(layout);
+
+		m_nodesHash.put("Override", ovComposite);
+
+		createHeaderLabel(ovComposite, "Override", 3);
+
+		UiUtils.createGridLabel(ovComposite, "Override version", 1, 0, SWT.NONE);
+		m_enableOverride = UiUtils.createCheckButton(ovComposite, null, new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				boolean selected = ((Button)e.getSource()).getSelection();
+				m_versionOverride.setEnabled(selected);
+			}
+		});
+		UiUtils.createEmptyLabel(ovComposite);
+
+		m_versionOverride = new VersionDesignator(ovComposite);
+		m_nodeEditMode = false;
+
+		Composite ofComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		ofComposite.setLayout(layout);
+
+		m_nodesHash.put("Overlay Folder", ofComposite);
+
+		createHeaderLabel(ofComposite, "Overlay folder (for prototyping)", 2);
+
+		UiUtils.createGridLabel(ofComposite, "Folder:", 1, 0, SWT.NONE);
+		m_overlayFolder = UiUtils.createGridText(ofComposite, 1, 0, null, SWT.NONE);
+		Label label = UiUtils.createEmptyLabel(ofComposite);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		m_overlayBrowseButton = new Button(ofComposite, SWT.PUSH);
+		m_overlayBrowseButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		m_overlayBrowseButton.setText("Browse...");
+		m_overlayBrowseButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent se)
+			{
+				DirectoryDialog dlg = new DirectoryDialog(getSite().getShell());
+				m_overlayFolder.setText(TextUtils.notNullString(dlg.open()));
+			}
+		});
+
+		Composite prComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		prComposite.setLayout(layout);
+
+		m_nodesHash.put("Properties", prComposite);
+
+		createHeaderLabel(prComposite, "Properties", 1);
+
+		m_nodeProperties = new Properties(prComposite, SWT.NONE);
+		m_nodeProperties.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		Composite docComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		docComposite.setLayout(layout);
+
+		m_nodesHash.put("Documentation", docComposite);
+
+		createHeaderLabel(docComposite, "Documentation", 1);
+
+		m_nodeDocumentation = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
+		m_nodeDocumentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		m_nodeTree.setSelection(m_nodeTree.getItem(0));
+		m_nodesStackLayout.topControl = geComposite;
+		m_nodesStackComposite.layout();
+		/*
+		 * // set the same height for nodeTable and node Tree int height = m_nodeTree.computeSize(SWT.DEFAULT,
+		 * SWT.DEFAULT).y + 35;
+		 * 
+		 * Table table = (Table) m_nodeTable.getControl(); GridData gridData = (GridData) table.getLayoutData();
+		 * gridData.heightHint = height; table.setLayoutData(gridData);
+		 * 
+		 * gridData = (GridData) m_nodeTree.getLayoutData(); gridData.heightHint = height;
+		 * m_nodeTree.setLayoutData(gridData);
+		 * 
+		 * gridData = (GridData) m_nodesStackComposite.getLayoutData(); gridData.heightHint = height + 21;
+		 * m_nodesStackComposite.setLayoutData(gridData);
+		 */
+	}
+
+	private void createNodeTableGroup(Composite parent)
+	{
+		Composite componentTableGroup = new Composite(parent, SWT.NONE);
+		GridLayout gl = new GridLayout(1, true);
+		gl.marginHeight = gl.marginWidth = 0;
+		componentTableGroup.setLayout(gl);
+		componentTableGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		Table table = new Table(componentTableGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.FULL_SELECTION);
+
+		table.setHeaderVisible(false);
+
+		String[] columnNames = new String[] { "Name Pattern", "Cat" };
+		int[] columnWeights = new int[] { 10, 5 };
+
+		table.setHeaderVisible(true);
+		DynamicTableLayout layout = new DynamicTableLayout(50);
+		for(int idx = 0; idx < columnNames.length; idx++)
+		{
+			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, idx);
+			tableColumn.setText(columnNames[idx]);
+			layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
+		}
+		table.setLayout(layout);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		m_nodeTable = new TableViewer(table);
+		m_nodeTable.setLabelProvider(new AdvisorNodeLabelProvider());
+		m_nodeTable.setContentProvider(new ArrayContentProvider());
+		m_nodeTable.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				nodeSelectionEvent();
+			}
+		});
+		m_nodeTable.addDoubleClickListener(new IDoubleClickListener()
+		{
+			public void doubleClick(DoubleClickEvent event)
+			{
+				if(m_nodeTable.getTable().getSelectionIndex() >= 0)
+				{
+					editNode();
+				}
+			}
+		});
+
+		createButtonBox(componentTableGroup);
+	}
+
+	private void createNodeTree(Composite parent)
+	{
+		Composite treeComposite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = layout.marginWidth = 0;
+		treeComposite.setLayout(layout);
+		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+
+		m_nodeTree = new Tree(treeComposite, SWT.BORDER);
+
+		int width = m_nodeTree.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, true);
+		gridData.widthHint = width + 40; // m_nodeTree.setSelection made it
+		// too small
+		m_nodeTree.setLayoutData(gridData);
+		m_nodeTree.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if(e.item != null)
+				{
+					TreeItem item = (TreeItem)e.item;
+					m_nodesStackLayout.topControl = m_nodesHash.get(item.getText());
+					m_nodesStackComposite.layout();
+				}
+			}
+		});
+
+		TreeItem item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("General");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Attribute Qualification");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Project Name Mapping");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Special Requirements");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Resolution Scope");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Override");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Overlay Folder");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Properties");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Documentation");
+	}
+
+	private void editNode()
+	{
+		m_nodeEditMode = true;
+		enableDisableButtonGroup();
+		setDirty(true);
+	}
+
+	private void editOrCancelNode()
+	{
+		if(m_nodeEditMode)
+			cancelNode();
+		else
+			editNode();
+	}
+
+	private void enableDisableButtonGroup()
+	{
+		if(m_nodeEditMode)
+		{
+			// A node is being edited
+			//
+			m_newOrSaveButton.setText("Save");
+			m_editOrCancelButton.setText("Cancel");
+			m_editOrCancelButton.setEnabled(true);
+			m_removeButton.setEnabled(false);
+			m_moveUpButton.setEnabled(false);
+			m_moveDownButton.setEnabled(false);
+		}
+		else
+		{
+			Table table = m_nodeTable.getTable();
+			int top = table.getItemCount();
+			int idx = table.getSelectionIndex();
+			m_newOrSaveButton.setText("New");
+			m_editOrCancelButton.setText("Edit");
+			m_editOrCancelButton.setEnabled(idx >= 0);
+			m_removeButton.setEnabled(idx >= 0);
+			m_moveUpButton.setEnabled(idx > 0);
+			m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
+		}
+		m_nodeTable.getTable().setEnabled(!m_nodeEditMode);
+
+		m_namePattern.setEnabled(m_nodeEditMode);
+		m_category.setEnabled(m_nodeEditMode);
+		m_skipComponent.setEnabled(m_nodeEditMode);
+		enableDisableSkipSensitive();
+	}
+
+	private void enableDisableSkipSensitive()
+	{
+		boolean enableRest = m_nodeEditMode && !m_skipComponent.getSelection();
+
+		m_allowCircular.setEnabled(enableRest);
+		m_overlayFolder.setEnabled(enableRest);
+		m_overlayBrowseButton.setEnabled(enableRest);
+		m_wantedAttributes.setEnabled(enableRest);
+		m_prune.setEnabled(enableRest);
+
+		m_replaceFrom.setEnabled(enableRest);
+		m_replaceTo.setEnabled(enableRest);
+
+		m_mutableLevel.setEnabled(enableRest);
+		m_sourceLevel.setEnabled(enableRest);
+
+		m_useInstalled.setEnabled(enableRest);
+		m_useMaterialization.setEnabled(enableRest);
+		m_useResolutionService.setEnabled(enableRest);
+
+		m_enableOverride.setEnabled(enableRest);
+		m_versionOverride.setEnabled(enableRest && m_enableOverride.getSelection());
+
+		m_nodeProperties.setEnabled(enableRest);
+		m_nodeDocumentation.setEnabled(enableRest);
+	}
+
+	private Control getAdvisorTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent, "Advisor Nodes");
+
+		Composite advisorComposite = new Composite(tabComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		advisorComposite.setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		advisorComposite.setLayoutData(gridData);
+
+		createNodeTableGroup(advisorComposite);
+
+		createNodeFields(advisorComposite);
+
+		return tabComposite;
+	}
+
+	private Control getDocumentationTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent, "Documentation");
+
+		Composite descComposite = new Composite(tabComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		descComposite.setLayout(layout);
+		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		UiUtils.createGridLabel(descComposite, "Short Description:", 1, 0, SWT.NONE);
+		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, compoundModifyListener, SWT.NONE);
+
+		Label label = UiUtils.createGridLabel(descComposite, "Documentation:", 1, 0, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, compoundModifyListener, SWT.MULTI
+				| SWT.V_SCROLL);
+		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		return tabComposite;
+	}
+
+	private Control getMainTabControl(CTabFolder parent)
+	{
+		Composite tabComposite = getTabComposite(parent, "Main");
+
+		Composite nameComposite = new Composite(tabComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginRight = 8;
+		layout.marginHeight = layout.marginWidth = 0;
+		nameComposite.setLayout(layout);
+		nameComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+
+		Label label = UiUtils.createGridLabel(nameComposite, "Component name:", 1, 0, SWT.NONE);
+		int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x + 5;
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gridData.widthHint = labelWidth;
+		label.setLayoutData(gridData);
+
+		m_componentName = UiUtils.createGridText(nameComposite, 2, 0, compoundModifyListener, SWT.NONE);
+
+		UiUtils.createGridLabel(nameComposite, "Category:", 1, 0, SWT.NONE);
+		m_componentCategory = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
+				| SWT.SIMPLE);
+
+		m_componentCategory.setItems(ComponentCategory.getCategoryNames(true));
+		m_componentCategory.addModifyListener(compoundModifyListener);
+
+		// not nice but I had to make equal 2 columns form different Composites
+		// the purpose of hlpComposite is to create empty space, the same size
+		// as m_componentCategory
+		UiUtils.createEmptyPanel(nameComposite);
+
+		int textWidth = m_componentCategory.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+		gridData = (GridData)m_componentCategory.getLayoutData();
+		gridData.widthHint = textWidth;
+		m_componentCategory.setLayoutData(gridData);
+
+		Group versionGroup = new Group(tabComposite, SWT.NONE);
+		versionGroup.setText("Version");
+		layout = new GridLayout(3, false);
+		versionGroup.setLayout(layout);
+		versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+
+		m_versionDesignator = new VersionDesignator(versionGroup);
+		m_versionDesignator.addVersionDesignatorListener(compoundModifyListener);
+
+		Control control = m_versionDesignator.getVersionDsTypeLabel();
+		gridData = (GridData)control.getLayoutData();
+		gridData.widthHint = labelWidth - layout.marginWidth - 3;
+		control.setLayoutData(gridData);
+
+		control = m_versionDesignator.getVersionDsTypeCombo();
+		gridData = (GridData)control.getLayoutData();
+		gridData.widthHint = textWidth;
+		control.setLayoutData(gridData);
+
+		Group propertiesGroup = new Group(tabComposite, SWT.NO_RADIO_GROUP);
+
+		propertiesGroup.setText("Properties");
+		layout = new GridLayout(2, false);
+		propertiesGroup.setLayout(layout);
+		propertiesGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+
+		m_propertyURLCheckbox = UiUtils.createCheckButton(propertiesGroup, "Use Properties", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Button button = (Button)e.widget;
+
+				if(!button.getSelection())
+				{
+					m_propertyURL.setText("");
+				}
+			}
+		});
+		gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+		gridData.horizontalSpan = 2;
+		m_propertyURLCheckbox.setLayoutData(gridData);
+
+		label = UiUtils.createGridLabel(propertiesGroup, "Properties:", 1, labelWidth - layout.marginWidth - 3,
+				SWT.NONE);
+
+		Composite propertiesComposite = new Composite(propertiesGroup, SWT.NONE);
+
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		propertiesComposite.setLayout(layout);
+		propertiesComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+
+		m_propertyURL = UiUtils.createGridText(propertiesComposite, 1, 0, compoundModifyListener, SWT.NONE);
+		Button browseButton = new Button(propertiesComposite, SWT.PUSH);
+		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		browseButton.setText("Browse...");
+		browseButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent se)
+			{
+				FileDialog dlg = new FileDialog(getSite().getShell());
+				dlg.setFilterExtensions(new String[] { "*.properties" });
+				String name = dlg.open();
+				if(name == null)
+					return;
+				try
+				{
+					m_propertyURL.setText(TextUtils.notNullString(new URL(name)));
+				}
+				catch(MalformedURLException e)
+				{
+					try
+					{
+						m_propertyURL.setText(TextUtils.notNullString(new File(name).toURI().toURL()));
+					}
+					catch(MalformedURLException e1)
+					{
+					}
+				}
+			}
+		});
+
+		m_propertyURLCheckbox.addSelectionListener(new CheckboxSelectionListener(new Control[] { label, m_propertyURL,
+				browseButton }));
+
+		Group rmapGroup = new Group(tabComposite, SWT.NO_RADIO_GROUP);
+		rmapGroup.setText("Resource Map");
+		layout = new GridLayout(2, false);
+		rmapGroup.setLayout(layout);
+		rmapGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+
+		m_requestURLCheckbox = UiUtils.createCheckButton(rmapGroup, "Use Properties", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Button button = (Button)e.widget;
+
+				if(!button.getSelection())
+				{
+					m_requestURL.setText("");
+				}
+			}
+		});
+		gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+		gridData.horizontalSpan = 2;
+		m_requestURLCheckbox.setLayoutData(gridData);
+
+		label = UiUtils.createGridLabel(rmapGroup, "RMap URL:", 1, labelWidth - layout.marginWidth - 3, SWT.NONE);
+
+		Composite rmapComposite = new Composite(rmapGroup, SWT.NONE);
+
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		rmapComposite.setLayout(layout);
+		rmapComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+
+		m_requestURL = UiUtils.createGridText(rmapComposite, 1, 0, compoundModifyListener, SWT.NONE);
+		browseButton = new Button(rmapComposite, SWT.PUSH);
+		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		browseButton.setText("Browse...");
+		browseButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent se)
+			{
+				FileDialog dlg = new FileDialog(getSite().getShell());
+				dlg.setFilterExtensions(new String[] { "*.rmap" });
+				String name = dlg.open();
+				if(name == null)
+					return;
+				try
+				{
+					m_requestURL.setText(TextUtils.notNullString(new URL(name)));
+				}
+				catch(MalformedURLException e)
+				{
+					try
+					{
+						m_requestURL.setText(TextUtils.notNullString(new File(name).toURI().toURL()));
+					}
+					catch(MalformedURLException e1)
+					{
+					}
+				}
+			}
+		});
+
+		m_requestURLCheckbox.addSelectionListener(new CheckboxSelectionListener(new Control[] { label, m_requestURL,
+				browseButton }));
+
+		return tabComposite;
+	}
+
+	private Control getPropertiesTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent, "Properties");
+
+		/*
+		 * Group propertiesGroup = new Group(tabComposite, SWT.NONE); propertiesGroup.setText("Properties"); GridLayout
+		 * layout = new GridLayout(1, false); propertiesGroup.setLayout(layout); propertiesGroup.setLayoutData(new
+		 * GridData(GridData.FILL, GridData.FILL, true, true));
+		 * 
+		 * m_properties = UiUtils.createNoBorderGridText(propertiesGroup, 1, 0, compoundModifyListener, SWT.MULTI);
+		 * m_properties.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		 */
+		m_properties = new Properties(tabComposite, SWT.NONE);
+		m_properties.addPropertiesModifyListener(compoundModifyListener);
+
+		return tabComposite;
+	}
+
+	private AdvisorNodeBuilder getSelectedNode()
+	{
+		int idx = m_nodeTable.getTable().getSelectionIndex();
+		return idx >= 0
+				? (AdvisorNodeBuilder)m_nodeTable.getElementAt(idx)
+				: null;
+	}
+
+	private Composite getTabComposite(Composite parent, String header)
+	{
+		Composite tabComposite = new Composite(parent, SWT.NONE);
+		tabComposite.setLayout(new GridLayout(1, true));
+		tabComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		tabComposite.setBackgroundMode(SWT.INHERIT_FORCE);
+
+		Label headerLabel = new Label(tabComposite, SWT.BOLD);
+		headerLabel.setText(header);
+		headerLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+		FontData fontData = new FontData();
+		fontData.setHeight(14);
+		headerLabel.setFont(new Font(tabComposite.getDisplay(), fontData));
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gridData.heightHint = 30;
+		headerLabel.setLayoutData(gridData);
+
+		return tabComposite;
+	}
+
 	private void loadComponent(boolean materialize)
 	{
 		if(!commitChangesToQuery())
@@ -999,17 +1462,24 @@ public class QueryEditor extends EditorPart
 		m_replaceTo.setText(TextUtils.notNullString(node.getReplaceTo()));
 		m_mutableLevel.select(m_mutableLevel.indexOf(node.getMutableLevel().toString()));
 		m_sourceLevel.select(m_sourceLevel.indexOf(node.getSourceLevel().toString()));
-		m_whenNotEmpty.select(m_whenNotEmpty.indexOf(node.getWhenNotEmpty().toString()));
 		m_skipComponent.setSelection(node.skipComponent());
 		m_useInstalled.setSelection(node.useInstalled());
 		m_useMaterialization.setSelection(node.useMaterialization());
-		m_useProject.setSelection(node.useProject());
+		m_useResolutionService.setSelection(node.isUseResolutionSchema());
 
 		IVersionDesignator vs = node.getVersionOverride();
 		boolean enableOverride = (vs != null);
 		m_enableOverride.setSelection(enableOverride);
 		m_versionOverride.setEnabled(enableOverride);
 		m_versionOverride.refreshValues(vs);
+
+		m_nodeProperties.setProperties(node.getProperties());
+		m_nodeProperties.refreshList();
+
+		Documentation doc = node.getDocumentation();
+		m_nodeDocumentation.setText(TextUtils.notNullString(doc == null
+				? null
+				: doc.toString()));
 	}
 
 	private void refreshQuery()
@@ -1018,10 +1488,28 @@ public class QueryEditor extends EditorPart
 		m_mute = true;
 		try
 		{
-			m_componentRequestGroup.refreshValues(m_componentQuery.getRootRequest());
-			m_propertyURL.setText(TextUtils.notNullString(m_componentQuery.getPropertiesURL()));
-			m_requestURL.setText(TextUtils.notNullString(m_componentQuery.getResourceMapURL()));
+			ComponentRequest request = m_componentQuery.getRootRequest();
+			m_componentName.setText(TextUtils.notNullString(request.getName()));
+			m_componentCategory.select(m_componentCategory.indexOf(TextUtils.notNullString(request.getCategory())));
+			m_versionDesignator.refreshValues(request.getVersionDesignator());
+
+			String string = TextUtils.notNullString(m_componentQuery.getPropertiesURL());
+			m_propertyURL.setText(string);
+			m_propertyURLCheckbox.setSelection(string.length() > 0);
+			m_propertyURLCheckbox.notifyListeners(SWT.Selection, new Event());
+
+			string = TextUtils.notNullString(m_componentQuery.getResourceMapURL());
+			m_requestURL.setText(string);
+			m_requestURLCheckbox.setSelection(string.length() > 0);
+			m_propertyURLCheckbox.notifyListeners(SWT.Selection, new Event());
+			m_properties.setProperties(m_componentQuery.getProperties());
+			m_shortDesc.setText(TextUtils.notNullString(m_componentQuery.getShortDesc()));
+			Documentation doc = m_componentQuery.getDocumentation();
+			m_documentation.setText(TextUtils.notNullString(doc == null
+					? ""
+					: doc.toString()));
 			refreshList();
+			m_properties.refreshList();
 			m_needsRefresh = false;
 			nodeSelectionEvent();
 		}
@@ -1084,8 +1572,7 @@ public class QueryEditor extends EditorPart
 			AdvisorNodeBuilder patternEqual = m_componentQuery.getNodeByPattern(patternStr, category);
 			if(patternEqual != null)
 			{
-				if(!MessageDialog.openQuestion(getSite().getShell(), null,
-						"Overwrite existing node with same pattern"))
+				if(!MessageDialog.openQuestion(getSite().getShell(), null, "Overwrite existing node with same pattern"))
 					return false;
 				m_componentQuery.removeAdvisorNode(patternEqual);
 			}
@@ -1107,7 +1594,9 @@ public class QueryEditor extends EditorPart
 			if(tmp != null)
 				pattern = Pattern.compile(patternStr);
 			tmp = UiUtils.trimmedValue(m_overlayFolder);
-			node.setOverlayFolder(tmp == null ? null : URLUtils.normalizeToURL(tmp));
+			node.setOverlayFolder(tmp == null
+					? null
+					: URLUtils.normalizeToURL(tmp));
 		}
 		catch(Exception e)
 		{
@@ -1127,19 +1616,33 @@ public class QueryEditor extends EditorPart
 		node.setReplaceTo(UiUtils.trimmedValue(m_replaceTo));
 
 		int idx = m_mutableLevel.getSelectionIndex();
-		node.setMutableLevel(idx >= 0 ? MutableLevel.values()[idx] : null);
+		node.setMutableLevel(idx >= 0
+				? MutableLevel.values()[idx]
+				: null);
 
 		idx = m_sourceLevel.getSelectionIndex();
-		node.setSourceLevel(idx >= 0 ? SourceLevel.values()[idx] : null);
-
-		idx = m_whenNotEmpty.getSelectionIndex();
-		node.setWhenNotEmpty(idx >= 0 ? NotEmptyAction.values()[idx] : null);
+		node.setSourceLevel(idx >= 0
+				? SourceLevel.values()[idx]
+				: null);
 
 		node.setUseInstalled(m_useInstalled.getSelection());
 		node.setUseMaterialization(m_useMaterialization.getSelection());
-		node.setUseProject(m_useProject.getSelection());
+		node.setUseResolutionSchema(m_useResolutionService.getSelection());
 
 		node.setVersionOverride(versionOverride);
+
+		m_nodeProperties.fillProperties(node.getProperties());
+
+		try
+		{
+			node.setDocumentation(Documentation.parse(m_nodeDocumentation.getText()));
+		}
+		catch(Exception e)
+		{
+			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+			return false;
+		}
+
 		if(isNewNode)
 		{
 			// This was an add operation

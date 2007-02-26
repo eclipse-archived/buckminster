@@ -17,12 +17,14 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -163,5 +165,119 @@ public class UiUtils
 				value = null;
 		}
 		return value;
+	}
+	
+	public static Label createEmptyLabel(Composite parent)
+	{
+		Label lbl = new Label(parent, SWT.NONE);
+		lbl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		return lbl;
+	}
+
+	public static Composite createEmptyPanel(Composite parent)
+	{
+		Composite hlpComposite = new Composite(parent, SWT.NONE);
+		hlpComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		StackLayout hlpStackLayout = new StackLayout();
+		hlpComposite.setLayout(hlpStackLayout);
+		Label hlpEmptyLabel = UiUtils.createEmptyLabel(hlpComposite);
+		UiUtils.createGridText(hlpComposite, 1, 0, null, SWT.NONE);
+		hlpStackLayout.topControl = hlpEmptyLabel;
+
+		return hlpComposite;
+	}
+
+	public static Combo createGridCombo(Composite parent, int horizontalSpan, int widthHint,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		Combo combo = new Combo(parent, style);
+
+		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+
+		if(horizontalSpan > 0)
+		{
+			data.horizontalSpan = horizontalSpan;
+		}
+
+		if(widthHint > 0)
+		{
+			data.widthHint = widthHint;
+		}
+
+		combo.setLayoutData(data);
+
+		if(selectionListener != null)
+		{
+			combo.addSelectionListener(selectionListener);
+		}
+
+		if(modifyListener != null)
+		{
+			combo.addModifyListener(modifyListener);
+		}
+
+		return combo;
+	}
+
+	public static Combo createGridEnumCombo(Composite parent, int horizontalSpan, int widthHint, Enum<?>[] values,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
+				style);
+		for(Enum<?> value : values)
+			combo.add(value.toString());
+		combo.select(0);
+
+		return combo;
+	}
+
+	public static Label createGridLabel(Composite parent, String string, int horizontalSpan, int widthHint, int style)
+	{
+		Label lbl = new Label(parent, style);
+		GridData data = new GridData(SWT.FILL, SWT.CENTER, false, false);
+
+		if(widthHint > 0)
+		{
+			data.widthHint = widthHint;
+		}
+
+		if(horizontalSpan > 1)
+		{
+			data.horizontalSpan = horizontalSpan;
+		}
+
+		lbl.setLayoutData(data);
+		lbl.setText(string);
+
+		return lbl;
+	}
+
+	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, ModifyListener listener,
+			int style)
+	{
+		return createNoBorderGridText(parent, horizontalSpan, widthHint, listener, SWT.BORDER | style);
+	}
+
+	public static Text createNoBorderGridText(Composite parent, int horizontalSpan, int widthHint,
+			ModifyListener listener, int style)
+	{
+		Text text = new Text(parent, style);
+		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+
+		if(horizontalSpan > 0)
+		{
+			data.horizontalSpan = horizontalSpan;
+		}
+
+		if(widthHint > 0)
+		{
+			data.widthHint = widthHint;
+		}
+
+		text.setLayoutData(data);
+		if(listener != null)
+			text.addModifyListener(listener);
+
+		return text;
 	}
 }
