@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.core.headless.feature"
       label="%featureName"
-      version="1.0.0.v20070225"
+      version="1.0.0.v20070227"
       provider-name="%providerName">
 
    <description url="http://www.eclipse.org/buckminster">
