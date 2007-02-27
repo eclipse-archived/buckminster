@@ -7,11 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.cmdline;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -22,6 +22,7 @@ import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -237,9 +238,9 @@ public class Headless implements IPlatformRunnable, OptionValueType
 		optionArr.add(HELP);
 		optionArr.add(LOG_LEVEL);
 		ParseResult pr = ParseResult.parse(args, optionArr);
+		String scriptFile = null;
 
 		Option[] options = pr.getOptions();
-		InputStream lines = null;
 		int top = options.length;
 		for(int idx = 0; idx < top; ++idx)
 		{
@@ -249,13 +250,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 			else if(option.is(DISPLAY_STACKTRACE))
 				m_displayStackTrace = true;
 			else if(option.is(FILE))
-			{
-				String arg = option.getValue();
-				if(arg.equals("-"))
-					lines = System.in;
-				else
-					lines = new FileInputStream(arg);
-			}
+				scriptFile = option.getValue();
 			else if(option.is(LOG_LEVEL))
 			{
 				int logLevel;
@@ -279,32 +274,47 @@ public class Headless implements IPlatformRunnable, OptionValueType
 		String[] unparsed = pr.getUnparsed();
 		if(unparsed.length > 0)
 		{
-			if(lines != null)
+			if(scriptFile != null)
 				throw new UsageException("The --scriptfile option cannot be combined with a command", true);
 
 			String[] commandArgs = new String[unparsed.length - 1];
 			System.arraycopy(unparsed, 1, commandArgs, 0, commandArgs.length);
 			m_invocations.add(new Invocation(unparsed[0], commandArgs));
 		}
-		else if(lines != null)
+		else if(scriptFile != null)
 		{
-			LineNumberReader reader = new LineNumberReader(new InputStreamReader(lines));
-			String line;
-			while((line = reader.readLine()) != null)
+			InputStream lines = null;
+			try
 			{
-				CommandLineParser tokenParser = new CommandLineParser(line);
-				if(tokenParser.hasNext())
+				if(scriptFile.equals("-"))
+					lines = System.in;
+				else
 				{
-					String command = (String)tokenParser.next();
-					ArrayList tokens = new ArrayList();
-					while(tokenParser.hasNext())
-						tokens.add(tokenParser.next());
-					m_invocations.add(new Invocation(command, (String[])tokens.toArray(new String[tokens.size()])));
-					m_usingScript = true;
+					URL url = URLUtils.normalizeToURL(scriptFile);
+					lines = URLUtils.openStream(url, new NullProgressMonitor());
+				}
+
+				LineNumberReader reader = new LineNumberReader(new InputStreamReader(lines));
+				String line;
+				while((line = reader.readLine()) != null)
+				{
+					CommandLineParser tokenParser = new CommandLineParser(line);
+					if(tokenParser.hasNext())
+					{
+						String command = (String)tokenParser.next();
+						ArrayList tokens = new ArrayList();
+						while(tokenParser.hasNext())
+							tokens.add(tokenParser.next());
+						m_invocations.add(new Invocation(command, (String[])tokens.toArray(new String[tokens.size()])));
+						m_usingScript = true;
+					}
 				}
 			}
-			if(lines != System.in)
-				IOUtils.close(lines);
+			finally
+			{
+				if(lines != System.in)
+					IOUtils.close(lines);
+			}
 		}
 	}
 
