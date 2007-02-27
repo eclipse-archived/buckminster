@@ -4,7 +4,7 @@
    <description url="http://download.eclipse.org/technology/buckminster/updates">
       The update site for Buckminster
    </description>
-   <feature url="features/org.eclipse.buckminster.core.feature_1.0.0.v20070225.jar" id="org.eclipse.buckminster.core.feature" version="1.0.0.v20070225">
+   <feature url="features/org.eclipse.buckminster.core.feature_1.0.0.v20070227.jar" id="org.eclipse.buckminster.core.feature" version="1.0.0.v20070227">
       <category name="Buckminster (core)"/>
    </feature>
    <feature url="features/org.eclipse.buckminster.cvs.feature_1.0.0.v20070223.jar" id="org.eclipse.buckminster.cvs.feature" version="1.0.0.v20070223">
@@ -22,7 +22,7 @@
    <feature url="features/org.eclipse.buckminster.svn.feature_1.0.0.v20070223.jar" id="org.eclipse.buckminster.svn.feature" version="1.0.0.v20070223">
       <category name="Buckminster (optional)"/>
    </feature>
-   <feature url="features/org.eclipse.buckminster.core.headless.feature_1.0.0.v20070225.jar" id="org.eclipse.buckminster.core.headless.feature" version="1.0.0.v20070225">
+   <feature url="features/org.eclipse.buckminster.core.headless.feature_1.0.0.v20070227.jar" id="org.eclipse.buckminster.core.headless.feature" version="1.0.0.v20070227">
       <category name="Buckminster (headless)"/>
    </feature>
    <feature url="features/org.eclipse.buckminster.cvs.headless.feature_1.0.0.v20070223.jar" id="org.eclipse.buckminster.cvs.headless.feature" version="1.0.0.v20070223">
@@ -36,6 +36,9 @@
    </feature>
    <feature url="features/org.eclipse.buckminster.svn.headless.feature_1.0.0.v20070223.jar" id="org.eclipse.buckminster.svn.headless.feature" version="1.0.0.v20070223">
       <category name="Buckminster (headless)"/>
+   </feature>
+   <feature url="features/org.eclipse.buckminster.europatools.feature_1.0.0.v20070227.jar" id="org.eclipse.buckminster.europatools.feature" version="1.0.0.v20070227">
+      <category name="Tools and utilities"/>
    </feature>
 
    <!-- Eclipse 3.3M5eh dependencies -->
@@ -77,6 +80,11 @@
    <category-def name="Buckminster (headless)" label="%BuckminsterHeadless">
       <description>
          Special features that include plugins normally present in the Eclipse IDE.
+      </description>
+   </category-def>
+   <category-def name="Tools and utilities" label="%BuckminsterTools">
+      <description>
+         Special add-on tools and utilities for Buckminster
       </description>
    </category-def>
 </site>
