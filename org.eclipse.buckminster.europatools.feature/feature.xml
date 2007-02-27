@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.buckminster.europatools.feature"
+      label="%featureName"
+      version="1.0.0.v20070227"
+      provider-name="%providerName">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      Copyright (c) 2006-2007, Cloudsmith Inc.
+The code, documentation and other materials contained herein have been
+licensed under the Eclipse Public License - v 1.0 by the copyright holder
+listed above, as the Initial Contributor under such license. The text of
+such license is available at www.eclipse.org.
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <plugin
+         id="org.eclipse.buckminster.europatools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
