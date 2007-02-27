@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.product"
       label="Buckminster Product"
-      version="1.0.0.v20070223"
+      version="1.0.0.v20070227"
       provider-name="The Buckminster Project">
 
    <description>
@@ -119,6 +119,13 @@ The text of such license is available at www.eclipse.org.
 
    <plugin
          id="org.eclipse.update.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.app"
          download-size="0"
          install-size="0"
          version="0.0.0"
