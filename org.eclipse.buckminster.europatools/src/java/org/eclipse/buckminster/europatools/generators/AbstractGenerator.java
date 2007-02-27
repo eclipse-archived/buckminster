@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 public abstract class AbstractGenerator
 {
-	protected static final String GENERATED_FOLDER_REF = "${generated.folder}";
+	protected static final String GENERATED_FOLDER_URL_REF = "${generated.folder.url}";
 	private final String m_topProject;
 	private final File m_workingDir;
 

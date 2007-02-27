@@ -9,8 +9,11 @@
 package org.eclipse.buckminster.europatools.generators;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -42,6 +45,18 @@ public class CQueryGenerator extends AbstractGenerator
 	{
 		ComponentQueryBuilder cqueryBuilder = new ComponentQueryBuilder();
 		cqueryBuilder.setRootRequest(new ComponentRequest(getTopProject(), null, null));
-		return cqueryBuilder.createComponentQuery();
+		File workingDir = getWorkingDir();
+		try
+		{
+			cqueryBuilder.setResourceMapURL(new File(workingDir, getTopProject() + ".rmap").toURI().toURL());
+			Map<String,String> props = cqueryBuilder.getProperties();
+			props.put("generated.folder.url", workingDir.toURI().toURL().toString());
+			props.put("buckminster.materializer.name", "site.mirror");
+			return cqueryBuilder.createComponentQuery();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 }

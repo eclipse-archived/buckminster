@@ -52,7 +52,7 @@ public class RMapGenerator extends AbstractGenerator
 				IReaderType.URL,
 				IComponentType.BUCKMINSTER,
 				null, null,
-				new Format(GENERATED_FOLDER_REF + "/${" + KeyConstants.COMPONENT_NAME + "}.cspec"),
+				new Format(GENERATED_FOLDER_URL_REF + "/${" + KeyConstants.COMPONENT_NAME + "}.cspec"),
 				true, true, null));
 		return dflt;
 	}
@@ -181,6 +181,7 @@ public class RMapGenerator extends AbstractGenerator
 			{
 				resourceMap = new ResourceMap();
 				resourceMap.addSearchPath(createDefaultSearchPath());
+				resourceMap.addMatcher(new Locator(resourceMap, "\\Q" + getTopProject() + "\\E", DEFAULT_SEARCH_PATH));
 			}
 			finally
 			{
