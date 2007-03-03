@@ -7,7 +7,7 @@
 
 	<extension point="org.eclipse.ui.importWizards">
 		<wizard id="org.eclipse.buckminster.ui.ImportBOM"
-			name="%ImportBOMWizardShortDescription" icon="icons/materialize.gif"
+			name="%ImportBOMWizardShortDescription" icon="icons/materialize.png"
 			class="org.eclipse.buckminster.ui.wizards.QueryWizard">
 			<description>%ImportBOMWizardLongDescription</description>
 		</wizard>
@@ -71,7 +71,7 @@
         class="org.eclipse.buckminster.ui.editor.query.QueryEditor"
         contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
         extensions="cquery"
-        icon="icons/cquery.gif"
+        icon="icons/cquery.png"
         id="org.eclipse.buckminster.ui.editor.QueryEditor"
         name="Component Query Editor">
 		</editor>
@@ -80,7 +80,7 @@
         contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
         default="true"
         extensions="rmap"
-        icon="icons/rmap.gif"
+        icon="icons/rmap.png"
         id="org.eclipse.buckminster.ui.editors.RMAPEditor"
         name="Buckminster Resource Map Editor"/>
 <editor
@@ -159,25 +159,25 @@
       <wizard
             category="org.eclipse.buckminster"
             class="org.eclipse.buckminster.ui.wizards.NewResourceMapWizard"
-            icon="icons/rmap.gif"
+            icon="icons/rmap.new.png"
             id="org.eclipse.buckminster.ui.wizards.NewResourceMapWizard"
             name="Resource Map  file"/>
       <wizard
             category="org.eclipse.buckminster"
             class="org.eclipse.buckminster.ui.wizards.NewCQueryWizard"
-            icon="icons/cquery.gif"
+            icon="icons/cquery.new.png"
             id="org.eclipse.buckminster.ui.wizards.NewCQueryWizard"
             name="Component Query file"/>
       <wizard
             category="org.eclipse.buckminster"
             class="org.eclipse.buckminster.ui.wizards.NewCSPEXWizard"
-            icon="icons/cspex.png"
+            icon="icons/cspex.new.png"
             id="org.eclipse.buckminster.ui.wizards.NewCSPEXWizard"
             name="Component Specification Extension file"/>
       <wizard
             category="org.eclipse.buckminster"
             class="org.eclipse.buckminster.ui.wizards.NewCSPECWizard"
-            icon="icons/cspec.png"
+            icon="icons/cspec.new.png"
             id="org.eclipse.buckminster.ui.wizards.NewCSPECWizard"
             name="Component Specification file"/>
    </extension>
