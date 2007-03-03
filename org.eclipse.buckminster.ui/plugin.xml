@@ -98,7 +98,7 @@
         extensions="cspex"
         icon="icons/cspex.png"
         id="org.eclipse.buckminster.ui.editors.CSPEXEditor"
-        name="Buckminster CSPEC Editor"/>
+        name="Buckminster CSPEX Editor"/>
 	</extension>
 	<extension point="org.eclipse.ui.actionSets">
 		<actionSet id="org.eclipse.buckminster.ui.project"
