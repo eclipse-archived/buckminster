@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.headless.feature"
       label="%featureName"
-      version="1.0.0.v20070223"
+      version="1.0.0.v20070304-r32x"
       provider-name="%providerName"
       plugin="org.eclipse.buckminster.pde">
 
