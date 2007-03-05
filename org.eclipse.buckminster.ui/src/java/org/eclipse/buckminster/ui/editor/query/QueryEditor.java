@@ -953,7 +953,7 @@ public class QueryEditor extends EditorPart
 
 		table.setHeaderVisible(false);
 
-		String[] columnNames = new String[] { "Name Pattern", "Cat" };
+		String[] columnNames = new String[] { "Name Pattern", "Category" };
 		int[] columnWeights = new int[] { 10, 5 };
 
 		table.setHeaderVisible(true);
@@ -1292,7 +1292,7 @@ public class QueryEditor extends EditorPart
 		rmapGroup.setLayout(layout);
 		rmapGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		m_requestURLCheckbox = UiUtils.createCheckButton(rmapGroup, "Use Properties", new SelectionAdapter()
+		m_requestURLCheckbox = UiUtils.createCheckButton(rmapGroup, "Use Resource Map", new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
