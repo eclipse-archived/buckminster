@@ -592,11 +592,14 @@ public class QueryEditor extends EditorPart
 		}
 
 		m_properties.fillProperties(m_componentQuery.getProperties());
-		m_componentQuery.setShortDesc(m_shortDesc.getText());
+		
+		String doc = UiUtils.trimmedValue(m_shortDesc);
+		m_componentQuery.setShortDesc(doc);
 
+		doc = UiUtils.trimmedValue(m_documentation);
 		try
 		{
-			m_componentQuery.setDocumentation(Documentation.parse(m_documentation.getText()));
+			m_componentQuery.setDocumentation(doc == null ? null : Documentation.parse(doc));
 		}
 		catch(CoreException e)
 		{
@@ -1633,9 +1636,11 @@ public class QueryEditor extends EditorPart
 
 		m_nodeProperties.fillProperties(node.getProperties());
 
+		String doc = UiUtils.trimmedValue(m_nodeDocumentation);
+		
 		try
 		{
-			node.setDocumentation(Documentation.parse(m_nodeDocumentation.getText()));
+			node.setDocumentation(doc == null ? null : Documentation.parse(doc));
 		}
 		catch(Exception e)
 		{
