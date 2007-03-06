@@ -504,7 +504,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 		handler.startElement(namespace, localName, qName, attrs);
 		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+			m_documentation.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, m_documentation.getDefaultTag());
 
 		m_rootRequest.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, ELEM_ROOT_REQUEST);
 		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
