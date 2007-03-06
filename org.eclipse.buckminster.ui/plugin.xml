@@ -70,6 +70,7 @@
 		<editor
         class="org.eclipse.buckminster.ui.editor.query.QueryEditor"
         contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+        default="true"
         extensions="cquery"
         icon="icons/cquery.png"
         id="org.eclipse.buckminster.ui.editor.QueryEditor"
