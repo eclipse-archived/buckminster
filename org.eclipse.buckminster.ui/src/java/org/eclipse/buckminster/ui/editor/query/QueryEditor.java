@@ -136,7 +136,7 @@ public class QueryEditor extends EditorPart
 			switch(columnIndex)
 			{
 			case 0:
-				lbl = node.getNamePattern().toString();
+				lbl = node.getNamePattern().toString(); 
 				break;
 			case 1:
 				lbl = node.getCategory();
