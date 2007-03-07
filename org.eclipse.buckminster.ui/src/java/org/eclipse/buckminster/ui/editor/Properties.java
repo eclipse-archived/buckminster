@@ -14,6 +14,9 @@ import java.util.Map;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.dialogs.Property;
+import org.eclipse.buckminster.ui.dialogs.PropertyDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -43,8 +46,6 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class Properties extends Composite
 {
-
-	// TODO add listener to detect changes on properties
 
 	class PropertiesContentProvider implements IStructuredContentProvider
 	{
@@ -250,23 +251,6 @@ public class Properties extends Composite
 		enableDisableButtonGroup();
 	}
 
-	private void editProperty()
-	{
-		PropertyDialog dialog = new PropertyDialog(this.getShell(), false);
-		Property prop = getSelectedProperty();
-		int idx = m_tableViewer.getTable().getSelectionIndex();
-		dialog.setInput(prop);
-
-		prop = dialog.open();
-
-		if(prop != null)
-		{
-			m_properties.set(idx, prop);
-			notifyListeners();
-			refreshList();
-		}
-	}
-
 	private void enableDisableButtonGroup()
 	{
 		boolean enable = false;
@@ -342,13 +326,12 @@ public class Properties extends Composite
 
 	private void newProperty()
 	{
-		PropertyDialog dialog = new PropertyDialog(this.getShell(), true);
-		Property newProp = dialog.open();
-		if(newProp != null)
+		PropertyDialog dialog = new PropertyDialog(this.getShell(), null);
+		if(dialog.open() == IDialogConstants.OK_ID)
 		{
 			try
 			{
-				addProperty(newProp);
+				addProperty(dialog.getProperty());
 				notifyListeners();
 				refreshList();
 			}
@@ -359,11 +342,17 @@ public class Properties extends Composite
 		}
 	}
 
-	private void notifyListeners()
+	private void editProperty()
 	{
-		PropertiesModifyEvent e = new PropertiesModifyEvent(this);
-		for(PropertiesModifyListener listener : m_listeners)
-			listener.modifyProperties(e);
+		PropertyDialog dialog = new PropertyDialog(this.getShell(), getSelectedProperty());
+		int idx = m_tableViewer.getTable().getSelectionIndex();
+
+		if(dialog.open() == IDialogConstants.OK_ID)
+		{
+			m_properties.set(idx, dialog.getProperty());
+			notifyListeners();
+			refreshList();
+		}
 	}
 
 	private void removeProperty()
@@ -372,5 +361,12 @@ public class Properties extends Composite
 		m_properties.remove(prop);
 		notifyListeners();
 		refreshList();
+	}
+
+	private void notifyListeners()
+	{
+		PropertiesModifyEvent e = new PropertiesModifyEvent(this);
+		for(PropertiesModifyListener listener : m_listeners)
+			listener.modifyProperties(e);
 	}
 }
