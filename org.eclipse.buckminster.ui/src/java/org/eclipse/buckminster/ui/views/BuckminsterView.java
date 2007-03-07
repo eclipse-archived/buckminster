@@ -8,6 +8,10 @@
 
 package org.eclipse.buckminster.ui.views;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,18 +35,34 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.actions.BlankQueryAction;
+import org.eclipse.buckminster.ui.actions.InvokeAction;
 import org.eclipse.buckminster.ui.actions.OpenQueryAction;
+import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
 import org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -58,6 +78,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -65,6 +86,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
+import org.xml.sax.SAXException;
 
 /**
  * @author kaja
@@ -280,7 +302,11 @@ public class BuckminsterView extends ViewPart
 		}
 	}
 	
+	private CTabFolder m_tabFolder;
+	
 	private TreeViewer m_treeViewer;
+	
+	private Text m_projectInfoText;
 
 	private IWorkspaceRoot m_workspaceRoot;
 
@@ -295,7 +321,17 @@ public class BuckminsterView extends ViewPart
 	private IAction m_viewPreferencesAction;
 
 	private IAction m_viewAboutAction;
+	
+	private IAction m_invokeActionAction;
 
+	private IAction m_viewCspecAction;
+	
+	private IAction m_publishAction;
+	
+	private IAction m_resolveToWizardAction;
+
+	private IAction m_resolveAndMaterializeAction;
+	
 	public BuckminsterView()
 	{
 		m_workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -316,17 +352,29 @@ public class BuckminsterView extends ViewPart
 	public void createPartControl(Composite parent)
 	{
 		Composite topComposite = new Composite(parent, SWT.NONE);
-		topComposite.setLayout(new GridLayout(1, false));
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		topComposite.setLayout(layout);
 		topComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		topComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		topComposite.setBackgroundMode(SWT.INHERIT_FORCE);
 
 		createActions();
 		createMenu();
 		createToolbar();
-		createNavigator(topComposite);
+		
+		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
+		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		ImageDescriptor imageDescriptor = UiPlugin.getImageDescriptor("icons/buckminster_logo.gif");
+		CTabItem navigatorTab = new CTabItem(m_tabFolder, SWT.NONE);
+		navigatorTab.setText("Navigator");
+		navigatorTab.setControl(getNavigatorTabControl(m_tabFolder));
+
+		CTabItem repositoryTab = new CTabItem(m_tabFolder, SWT.NONE);
+		repositoryTab.setText("Repository");
+		repositoryTab.setControl(getRepositoryTabControl(m_tabFolder));
+
+		m_tabFolder.setSelection(navigatorTab);
+		
+		ImageDescriptor imageDescriptor = UiPlugin.getImageDescriptor("icons/buckminster_logo.png");
 		ImageData imageData = imageDescriptor.getImageData();
 		//imageData = imageData.scaledTo(210, 55);
 
@@ -339,6 +387,46 @@ public class BuckminsterView extends ViewPart
 		createContextMenu();
 	}
 
+	private Control getNavigatorTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent);
+
+		createNavigator(tabComposite);
+		createInfo(tabComposite);
+
+		return tabComposite;
+	}
+
+	private Control getRepositoryTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent);
+
+		Link newAccountLink = new Link(tabComposite, SWT.NONE);
+		newAccountLink.setText("<A>Create new repository identity</A>");
+		newAccountLink.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Program.launch("www.cloudsmith.com");
+			}
+		});
+		
+		return tabComposite;
+	}
+
+	private Composite getTabComposite(Composite parent)
+	{
+		Composite tabComposite = new Composite(parent, SWT.NONE);
+		tabComposite.setLayout(new GridLayout(1, true));
+		tabComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		tabComposite.setBackgroundMode(SWT.INHERIT_FORCE);
+
+		return tabComposite;
+	}
+
+
+	// TODO Most of the actions should come here from extension point
 	private void createActions()
 	{
 		m_openEditorAction = new Action("Open")
@@ -372,14 +460,16 @@ public class BuckminsterView extends ViewPart
 			}
 		};
 		
-		m_viewCSpecAction = new Action("View the CSpec of a component")
+		m_viewCSpecAction = new Action("View the CSpec of a Component")
 		{
 			@Override
 			public void run()
 			{
 				IWorkbenchWindowActionDelegate action = new ViewChosenCSpecAction();
 				action.init(getWorkbenchWindow());
-				action.run(null);
+				action.selectionChanged(this, m_treeViewer.getSelection());
+				action.run(this);
+				action.dispose();
 			}
 		};
 		m_viewCSpecAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cspec.png"));
@@ -391,7 +481,9 @@ public class BuckminsterView extends ViewPart
 			{
 				IWorkbenchWindowActionDelegate action = new OpenQueryAction();
 				action.init(getWorkbenchWindow());
-				action.run(null);
+				action.selectionChanged(this, m_treeViewer.getSelection());
+				action.run(this);
+				action.dispose();
 			}
 		};
 		m_openCQueryAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cquery.png"));
@@ -417,7 +509,82 @@ public class BuckminsterView extends ViewPart
 			{
 				// TODO implement
 			}
-		};		
+		};
+		
+		m_invokeActionAction = new Action("Invoke Action")
+		{
+			@Override
+			public void run()
+			{
+				IObjectActionDelegate action = new InvokeAction();
+				action.setActivePart(this, getWorkbenchWindow().getActivePage().getActivePart());
+				action.selectionChanged(this, m_treeViewer.getSelection());
+				action.run(this);
+			}			
+		};
+
+		m_viewCspecAction = new Action("View CSpec")
+		{
+			@Override
+			public void run()
+			{
+				IObjectActionDelegate action = new ViewCSpecAction();
+				action.setActivePart(this, getWorkbenchWindow().getActivePage().getActivePart());
+				action.selectionChanged(this, m_treeViewer.getSelection());
+				action.run(this);
+			}
+			
+			@Override
+			public ImageDescriptor getImageDescriptor()
+			{
+				return UiPlugin.getImageDescriptor("icons/cspec.png");
+			}
+		};
+		
+		m_publishAction = new Action("Publish")
+		{
+			@Override
+			public void run()
+			{
+				// TODO implement
+			}
+			
+			@Override
+			public ImageDescriptor getImageDescriptor()
+			{
+				return UiPlugin.getImageDescriptor("icons/publish.png");
+			}
+		};
+		
+		m_resolveToWizardAction = new Action("Resolve to Wizard")
+		{
+			@Override
+			public void run()
+			{
+				loadComponent(false);
+			}
+			
+			@Override
+			public ImageDescriptor getImageDescriptor()
+			{
+				return UiPlugin.getImageDescriptor("icons/resolve.png");
+			}
+		};
+		
+		m_resolveAndMaterializeAction = new Action("Resolve and Materialize")
+		{
+			@Override
+			public void run()
+			{
+				loadComponent(true);
+			}
+			
+			@Override
+			public ImageDescriptor getImageDescriptor()
+			{
+				return UiPlugin.getImageDescriptor("icons/resolve.png");
+			}
+		};
 	}
 	
 	private IWorkbenchWindow getWorkbenchWindow()
@@ -460,6 +627,17 @@ public class BuckminsterView extends ViewPart
 		});
 	}
 
+	private void createInfo(Composite parent)
+	{
+		Label label = UiUtils.createGridLabel(parent, "Info:", 0, 0, SWT.NONE);
+		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+		m_projectInfoText = UiUtils.createGridText(parent, 0, 0, null, SWT.MULTI | SWT.READ_ONLY);
+		//m_projectInfoText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+
+		GridData layoutData = (GridData) m_projectInfoText.getLayoutData();
+		layoutData.heightHint = 80;	
+	}
+
 	private void createContextMenu()
 	{
 		// Create menu manager
@@ -484,20 +662,49 @@ public class BuckminsterView extends ViewPart
 
 	private void fillContextMenu(IMenuManager menuMgr)
 	{
-		if(getResourceSelection() != null && getResourceSelection() instanceof IFile)
+		IResource selectedResource = getResourceSelection();
+		
+		if(selectedResource == null)
+		{
+			return;
+		}
+		
+		if(selectedResource instanceof IFile)
 		{
 			menuMgr.add(m_openEditorAction);
-			menuMgr.add(new Separator());
+			
+			String fileExt = ((IFile) selectedResource).getFileExtension();
+			
+			// TODO Action (or it's wrapper) should have it's own filter test
+			if(Arrays.asList(new String[] {"cspec", "cquery", "bom"}).contains(fileExt))
+			{
+				menuMgr.add(m_publishAction);
+			}
+			
+			// TODO Action (or it's wrapper) should have it's own filter test
+			if(Arrays.asList(new String[] {"cquery"}).contains(fileExt))
+			{
+				menuMgr.add(new Separator());
+				menuMgr.add(m_resolveToWizardAction);
+				menuMgr.add(m_resolveAndMaterializeAction);
+			}			
 			
 			// Place for extensions - I don't want extensions here
 			//menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		}
+		
+		if(selectedResource instanceof IProject)
+		{
+			menuMgr.add(m_invokeActionAction);
+			menuMgr.add(m_viewCspecAction);
+		}		
+		
 	}
 	
 	@Override
 	public void setFocus()
 	{
-		m_treeViewer.getTree().setFocus();
+		m_tabFolder.setFocus();
 	}
 
 	private IResource getResourceSelection()
@@ -513,6 +720,69 @@ public class BuckminsterView extends ViewPart
 		}
 		
 		return null;
+	}
+	
+	private void loadComponent(boolean materialize)
+	{
+		IResource resource = getResourceSelection();
+
+		if(resource instanceof IFile)
+		{
+			IFile resourceFile = (IFile)resource;
+
+			File file = resourceFile.getFullPath().toFile();
+			ComponentQueryBuilder componentQuery = new ComponentQueryBuilder();
+			InputStream stream = null;
+
+			if(file.length() == 0)
+			{
+				String defaultName = file.getName();
+				if(defaultName.startsWith(BlankQueryAction.TEMP_FILE_PREFIX))
+					defaultName = "";
+				else
+				{
+					int lastDot = defaultName.lastIndexOf('.');
+					if(lastDot > 0)
+						defaultName = defaultName.substring(0, lastDot);
+				}
+				componentQuery.setRootRequest(new ComponentRequest(defaultName, null, null));
+			}
+			else
+			{
+				try
+				{
+					String systemId = file.toString();
+					stream = new FileInputStream(file);
+					IParser<ComponentQuery> parser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
+							true);
+					componentQuery.initFrom(parser.parse(systemId, stream));
+				}
+				catch(FileNotFoundException e)
+				{
+					UiUtils.openError(getViewSite().getShell(), "File not found", e);
+				}
+				catch(SAXException e)
+				{
+					UiUtils.openError(getViewSite().getShell(), "Parse error", e);
+				}
+			}
+			
+			if("cquery".equalsIgnoreCase(resourceFile.getFileExtension()))
+			{
+				// TODO implement commented
+/*				
+				try
+				{
+					//ResolveJob resolveJob = new ResolveJob(componentQuery.createComponentQuery(), false);
+					//resolveJob.schedule();
+				}
+				catch(CoreException e)
+				{
+					UiUtils.openError(getViewSite().getShell(), null, e);
+				}
+*/				
+			}
+		}
 	}
 	
 	private void refreshTree()
