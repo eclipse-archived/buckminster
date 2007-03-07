@@ -6,7 +6,7 @@
  * prior written consent or license from Cloudsmith Inc.
  ******************************************************************/
 
-package org.eclipse.buckminster.ui.editor;
+package org.eclipse.buckminster.ui.dialogs;
 
 /**
  * @author Karel Brezina
