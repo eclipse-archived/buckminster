@@ -9,6 +9,8 @@ package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.NamedElementBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
@@ -47,5 +49,14 @@ public class PrerequisiteHandler extends CSpecElementHandler
 	protected NamedElementBuilder createBuilder()
 	{
 		return this.getAttributeBuilder().createPrerequisiteBuilder();
+	}
+
+	protected String getNameAttribute(Attributes attrs)
+	throws SAXException
+	{
+		String name = getOptionalStringValue(attrs, NamedElement.ATTR_NAME);
+		if(name == null)
+			name = CSpec.SELF_ARTIFACT;
+		return name;
 	}
 }
