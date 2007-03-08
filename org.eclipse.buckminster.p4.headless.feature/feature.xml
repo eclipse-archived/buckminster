@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.p4.headless.feature"
       label="Buckminster - Perforce support for headless operation"
-      version="1.0.0.v20070223"
+      version="1.0.0.v20070803"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.p4">
 
