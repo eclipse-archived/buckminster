@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.product"
       label="Buckminster Product"
       version="1.0.0.v20070227"
-      provider-name="The Buckminster Project">
+      provider-name="Eclipse.org">
 
    <description>
       This feature includes all features needed for the product. The product then includes only this feature and nothing else.
