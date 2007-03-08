@@ -35,12 +35,14 @@ public class SiteContributionParser extends AbstractParser<SiteContribution>
 			XMLConstants.XHTML_NS,
 			XMLConstants.XML_NS,
    			XMLConstants.BM_COMMON_NS,
+   			XMLConstants.BM_CSPEC_NS,
 			EuropaTools.BM_SITE_CONTRIBUTION_NS
    		}, new String[]
    		{
 			XMLConstants.XHTML_RESOURCE,
 			XMLConstants.XML_RESOURCE,
 			XMLConstants.BM_COMMON_RESOURCE,
+			XMLConstants.BM_CSPEC_RESOURCE,
 			EuropaTools.BM_SITE_CONTRIBUTION_RESOURCE
    		}, true);
 	}

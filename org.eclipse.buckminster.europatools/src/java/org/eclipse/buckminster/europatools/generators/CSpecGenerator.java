@@ -24,7 +24,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
-import org.eclipse.buckminster.europatools.model.Feature;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -47,20 +46,11 @@ public class CSpecGenerator extends AbstractGenerator
 	@Override
 	public void generate(SiteContribution siteContribution) throws CoreException
 	{
-		CSpecBuilder cspecBuilder = new CSpecBuilder();
-		String name = siteContribution.getName();
-		cspecBuilder.setName(name);
-		for(Feature feature : siteContribution.getFeatures())
-		{
-			ComponentRequest request = new ComponentRequest(feature.getName(), null, feature.getVersionDesignator());
-			cspecBuilder.removeDependency(request.getName());
-			cspecBuilder.addDependency(request);
-		}
-		CSpec cspec = cspecBuilder.createCSpec();
+		CSpec cspec = siteContribution.getCSpec();
+		String name = cspec.getName();
 
 		m_cspecs.add(cspec);
-
-		cspecBuilder = getMainCSpec();
+		CSpecBuilder cspecBuilder = getMainCSpec();
 		cspecBuilder.removeDependency(name);
 		cspecBuilder.addDependency(new ComponentRequest(name, null, null));
 	}

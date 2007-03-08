@@ -8,11 +8,9 @@
 
 package org.eclipse.buckminster.europatools.parser;
 
-import java.util.List;
-
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.europatools.model.Category;
-import org.eclipse.buckminster.europatools.model.Feature;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -25,12 +23,9 @@ import org.xml.sax.SAXException;
  */
 public class SiteContributionHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
-	private CategoriesHandler m_categoriesHandler;
-	private FeaturesHandler m_featuresHandler;
-	private String m_name;
-	private String m_source;
-	private List<Category> m_categories;
-	private List<Feature> m_features;
+	private final CSpecHandler m_cspecHandler = new CSpecHandler(this);
+	private CSpec m_cspec;
+	private String m_rmapProviderURL;
 
 	public SiteContributionHandler(AbstractHandler parent)
 	{
@@ -42,18 +37,8 @@ public class SiteContributionHandler extends ExtensionAwareHandler implements Ch
 	throws SAXException
 	{
 		ChildHandler ch;
-		if(SiteContribution.TAG_CATEGORIES.equals(localName))
-		{
-			if(m_categoriesHandler == null)
-				m_categoriesHandler = new CategoriesHandler(this);
-			ch = m_categoriesHandler;
-		}
-		else if(SiteContribution.TAG_FEATURES.equals(localName))
-		{
-			if(m_featuresHandler == null)
-				m_featuresHandler = new FeaturesHandler(this);
-			ch = m_featuresHandler;
-		}
+		if(CSpec.TAG.equals(localName))
+			ch = m_cspecHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
@@ -62,18 +47,14 @@ public class SiteContributionHandler extends ExtensionAwareHandler implements Ch
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_name = getStringValue(attrs, SiteContribution.ATTR_NAME);
-		m_source = getStringValue(attrs, SiteContribution.ATTR_SOURCE);
-		m_categories = null;
-		m_features = null;
+		m_rmapProviderURL = getStringValue(attrs, SiteContribution.ATTR_RMAP_PROVIDER_URL);
+		m_cspec = null;
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(child == m_categoriesHandler)
-			m_categories = m_categoriesHandler.getCategorysAndClear();
-		else if(child == m_featuresHandler)
-			m_features = m_featuresHandler.getFeaturesAndClear();
+		if(child == m_cspecHandler)
+			m_cspec = m_cspecHandler.getCSpec();
 	}
 
 	@Override
@@ -81,7 +62,6 @@ public class SiteContributionHandler extends ExtensionAwareHandler implements Ch
 	throws SAXException
 	{
 		super.endElement(uri, localName, qName);
-		((SiteContributionParser)this.getTopHandler()).setSiteContribution(
-				new SiteContribution(m_name, m_source, m_features, m_categories));
+		((SiteContributionParser)this.getTopHandler()).setSiteContribution(new SiteContribution(m_rmapProviderURL, m_cspec));
 	}
 }

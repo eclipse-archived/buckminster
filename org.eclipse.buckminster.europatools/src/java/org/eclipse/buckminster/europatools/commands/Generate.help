@@ -4,6 +4,7 @@ usage: import
        [{ -? | --help }]
        [{ -O | --outputdir } <output directory> ]
        [{ -C | --clean} ]
+       [{ -S | --sitefile} <template site> ]
        { -T | --topproject} <name of top project>
        <path to site contribution> [ <path to site contribution> ... ]
 
@@ -15,6 +16,12 @@ usage: import
 --topproject  <name of top project>
   Required option. This is the name of the top project, I.e.
   the owner of the generated site.
+
+ -S  <site file>
+--sitefile  <template file for the generated site>
+  Contains descriptions of all valid categories for the
+  generated site. If this file is present, it will restrict the
+  use of categories to the categories it contains.
 
  -O <output directory>
 --outputdir <output directory>

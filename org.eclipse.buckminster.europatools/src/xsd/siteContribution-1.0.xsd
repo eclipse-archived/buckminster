@@ -1,50 +1,18 @@
 <?xml version='1.0'?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 	xmlns:sc="http://www.eclipse.org/buckminster/SiteContribution-1.0"
-	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="http://www.eclipse.org/buckminster/SiteContribution-1.0">
 
-	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
+	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0"/>
 
-	<element name="siteContribution" type="sc:SiteContribution">
+	<element name="siteContribution">
+		<complexType>
+			<sequence>
+				<element name="cspec" type="cs:ComponentSpec"/>
+			</sequence>
+			<attribute name="rmapProviderURL" use="required" />
+		</complexType>
 	</element>
-
-	<complexType name="SiteContribution">
-		<choice minOccurs="0" maxOccurs="unbounded">
-			<element name="features">
-				<complexType>
-					<sequence>
-						<element name="feature" type="sc:Feature" minOccurs="0" maxOccurs="unbounded"/>
-					</sequence>
-				</complexType>
-			</element>
-			<element name="categories">
-				<complexType>
-					<sequence>
-						<element name="category" type="sc:Category" minOccurs="0" maxOccurs="unbounded"/>
-					</sequence>
-				</complexType>
-			</element>
-		</choice>
-		<attribute name="name" use="required" />
-		<attribute name="source" use="required" />
-	</complexType>
-
-	<complexType name="Category">
-		<sequence>
-			<element name="description" type="com:Documentation"
-				minOccurs="0" maxOccurs="1" />
-		</sequence>
-		<attribute name="name" type="string" use="required" />
-		<attribute name="label" type="string" use="optional" />
-	</complexType>
-
-	<complexType name="Feature">
-		<attribute name="name" type="string" use="required" />
-		<attribute name="versionDesignator" type="string"
-			use="optional" />
-		<attribute name="category" type="string" use="optional" />
-	</complexType>
 </schema>

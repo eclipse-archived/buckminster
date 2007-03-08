@@ -14,20 +14,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.Locator;
 import org.eclipse.buckminster.core.rmap.model.Matcher;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
-import org.eclipse.buckminster.europatools.model.Feature;
+import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
+import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -59,12 +64,12 @@ public class RMapGenerator extends AbstractGenerator
 
 	private static SearchPath createSearchPath(SiteContribution sc)
 	{
-		SearchPath searchPath = new SearchPath(sc.getName());
+		SearchPath searchPath = new SearchPath(sc.getCSpec().getName());
 		searchPath.addProvider(new Provider(
 				IReaderType.ECLIPSE_SITE_FEATURE,
 				IComponentType.ECLIPSE_SITE_FEATURE,
-				null, null,
-				new Format(sc.getSource()),
+				null, new VersionConverterDesc(IVersionConverter.TAG, new BidirectionalTransformer[0]),
+				new Format(sc.getRmapProviderURL()),
 				true, true, null));
 		return searchPath;
 	}
@@ -88,10 +93,9 @@ public class RMapGenerator extends AbstractGenerator
 		// Consolidate locators. Add new ones and remove extras that we don't have
 		// any use for.
 		//
-		List<Feature> features = sc.getFeatures();
-		int featureCount = features.size();
-
-		String contribName = sc.getName();
+		CSpec cspec = sc.getCSpec();
+		Map<String,ComponentRequest> features = cspec.getDependencies();
+		String contribName = cspec.getName();
 		String cspecLocatorPattern = "^\\Q" + contribName + "\\E$";
 
 		// Remove old matchers appointing our searchPath. Also, check that
@@ -118,19 +122,15 @@ public class RMapGenerator extends AbstractGenerator
 			// It is an error if another matcher matches one of the
 			// contributed features.
 			//
-			for(int featureIdx = 0; featureIdx < featureCount; ++featureIdx)
-			{
-				String featureName = features.get(featureIdx).getName();
+			for(String featureName : features.keySet())
 				if(matcher.matches(featureName))
 					throw new AmbigousMatchException(matcher.getPattern().pattern(), featureName, contribName);
-			}
 		}
 
 		// Add one locator per feature. The all represent an exact match.
 		//
-		for(idx = 0; idx < featureCount; ++idx)
+		for(ComponentRequest feature : features.values())
 		{
-			Feature feature = features.get(idx);
 			String featureName = feature.getName();
 			if(featureName.equals(contribName))
 				throw BuckminsterException.fromMessage("A feature cannot have the same name as the contribution as a whole: " + contribName);

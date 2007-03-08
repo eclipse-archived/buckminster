@@ -8,9 +8,7 @@
 
 package org.eclipse.buckminster.europatools.model;
 
-import java.util.List;
-
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
@@ -23,22 +21,15 @@ import org.xml.sax.helpers.AttributesImpl;
 public class SiteContribution implements ISaxableElement
 {
 	public static final String TAG = "siteContribution";
-	public static final String TAG_FEATURES = "features";
-	public static final String TAG_CATEGORIES = "categories";
-	public static final String ATTR_NAME = "name";
-	public static final String ATTR_SOURCE = "source";
+	public static final String ATTR_RMAP_PROVIDER_URL = "rmapProviderURL";
 
-	private final String m_name;
-	private final String m_source;
-	private final List<Feature> m_features;
-	private final List<Category> m_categories;
+	private final String m_rmapProviderURL;
+	private final CSpec m_cspec;
 
-	public SiteContribution(String name, String source, List<Feature> features, List<Category> categories)
+	public SiteContribution(String rmapProviderURL, CSpec cspec)
 	{
-		m_name = name;
-		m_source = source;
-		m_features = UUIDKeyed.createUnmodifiableList(features);
-		m_categories = UUIDKeyed.createUnmodifiableList(categories);
+		m_rmapProviderURL = rmapProviderURL;
+		m_cspec = cspec;
 	}
 
 	public String getDefaultTag()
@@ -46,35 +37,23 @@ public class SiteContribution implements ISaxableElement
 		return TAG;
 	}
 
-	public String getName()
+	public CSpec getCSpec()
 	{
-		return m_name;
+		return m_cspec;
 	}
 
-	public String getSource()
+	public String getRmapProviderURL()
 	{
-		return m_source;
-	}
-
-	public List<Category> getCategories()
-	{
-		return m_categories;
-	}
-
-	public List<Feature> getFeatures()
-	{
-		return m_features;
+		return m_rmapProviderURL;
 	}
 
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
 		AttributesImpl attrs = new AttributesImpl();
-		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		Utils.addAttribute(attrs, ATTR_SOURCE, m_source);
+		Utils.addAttribute(attrs, ATTR_RMAP_PROVIDER_URL, m_rmapProviderURL);
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, attrs);
-		Utils.emitCollection(namespace, prefix, TAG_FEATURES, null, m_features, receiver);
-		Utils.emitCollection(namespace, prefix, TAG_CATEGORIES, null, m_categories, receiver);
+		m_cspec.toSax(receiver, namespace, prefix, localName);
 		receiver.endElement(namespace, localName, qName);
 	}
 }
