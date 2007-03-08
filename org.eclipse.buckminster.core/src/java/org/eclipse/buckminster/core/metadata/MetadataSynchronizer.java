@@ -9,13 +9,17 @@ package org.eclipse.buckminster.core.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -47,7 +51,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 {
 	private static final MetadataSynchronizer s_default = new MetadataSynchronizer();
 
-	private final HashSet<IPath> m_cspecSources = new HashSet<IPath>();
+	private final HashMap<IPath,String> m_cspecSources = new HashMap<IPath,String>();
 
 	private final Set<IProject> m_projectsNeedingUpdate = new HashSet<IProject>();
 
@@ -75,7 +79,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
 				{
 					IPath path = delta.getFullPath();
-					if(path.segmentCount() > 1 && m_cspecSources.contains(path.removeFirstSegments(1)))
+					if(path.segmentCount() > 1 && m_cspecSources.containsKey(path.removeFirstSegments(1)))
 					{
 						synchronized(MetadataSynchronizer.this)
 						{
@@ -94,9 +98,14 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		return s_default;
 	}
 
-	public void registerCSpecSource(IPath path)
+	public Map<IPath,String> getCSpecSources()
 	{
-		m_cspecSources.add(path);
+		return Collections.unmodifiableMap(m_cspecSources);
+	}
+
+	public void registerCSpecSource(IPath path, String componentType)
+	{
+		m_cspecSources.put(path, componentType);
 	}
 
 	synchronized IPath getNextRemovedEntry()
@@ -229,12 +238,14 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = exReg.getConfigurationElementsFor(CorePlugin.COMPONENT_TYPE_POINT);
 
-		// The extension file can exist in every project.
+		// The extension file can exist in every project but we use Buckminster component
+		// type as a placeholder.
 		//
-		s_default.registerCSpecSource(new Path(CorePlugin.CSPECEXT_FILE));
+		s_default.registerCSpecSource(new Path(CorePlugin.CSPECEXT_FILE), IComponentType.BUCKMINSTER);
 
 		for(IConfigurationElement elem : elems)
 		{
+			String componentType = elem.getAttribute("id");
 			for(IConfigurationElement metaFile : elem.getChildren("metaFile"))
 			{
 				String metaPath = metaFile.getAttribute("path");
@@ -242,7 +253,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					continue;
 				metaPath = metaPath.trim();
 				if(metaPath.length() > 0)
-					s_default.registerCSpecSource(new Path(metaPath));
+					s_default.registerCSpecSource(new Path(metaPath), componentType);
 			}
 		}
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(s_default, IResourceChangeEvent.PRE_BUILD);

@@ -10,10 +10,13 @@
 
 package org.eclipse.buckminster.core.ctype;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.helpers.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -46,13 +49,16 @@ public class EclipseComponentType extends AbstractComponentType
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
 	throws CoreException
 	{
-		monitor.beginTask(null, 5000);
+		CorePlugin plugin = CorePlugin.getDefault();
+		monitor.beginTask(null, 7000);
 		if(!(reader instanceof ICatalogReader))
 			throw new IllegalArgumentException("EclipseComponentType must work with catalog reader");
 
+		// TODO: We need a way to define priority when searching for known meta-data files
+		//
 		ICatalogReader catalogReader = (ICatalogReader)reader;
 		String category = guessCategory(catalogReader, MonitorUtils.subMonitor(monitor, 3000));
-		String builderId;
+		String builderId = IResolutionBuilder.DEFAULT;
 		if(category == null)
 		{
 			// Not a plugin or feature. Check if it has a manually added cquery or cspec
@@ -72,15 +78,40 @@ public class EclipseComponentType extends AbstractComponentType
 			else if(catalogReader.exists(CorePlugin.CSPEC_FILE, MonitorUtils.subMonitor(monitor, 1000)))
 				builderId = IResolutionBuilder.CSPEC2CSPEC;
 			else
-				builderId = IResolutionBuilder.DEFAULT;
+			{
+				Map<IPath,String> cspecSources = MetadataSynchronizer.getDefault().getCSpecSources();
+				for(Map.Entry<IPath, String> entry : cspecSources.entrySet())
+				{
+					String ctypeId = entry.getValue();
+					if(ctypeId.equals(getId()))
+						continue;
+
+					IPath path = entry.getKey();
+					if(guessCategory(path) != null)
+						continue;
+
+					if(path.segmentCount() == 1)
+					{
+						String name = path.lastSegment();
+						if(name.equals(CorePlugin.CQUERY_FILE) || name.equals(CorePlugin.CSPEC_FILE))
+							continue;
+					}
+
+					if(catalogReader.exists(path.toOSString(), MonitorUtils.subMonitor(monitor, 1000)))
+					{
+						IComponentType ctype =  plugin.getComponentType(ctypeId);
+						return ctype.getResolutionBuilder(reader, monitor);
+					}
+				}
+			}
 		}
 		else
 		{
 			builderId = KeyConstants.PLUGIN_CATEGORY.equals(category) ? IResolutionBuilder.PLUGIN2CSPEC
 				: IResolutionBuilder.FEATURE2CSPEC;
-			MonitorUtils.worked(monitor, 2000);
+			MonitorUtils.worked(monitor, 4000);
 		}
-		return CorePlugin.getDefault().getResolutionBuilder(builderId);
+		return plugin.getResolutionBuilder(builderId);
 	}
 
 	public static String guessCategory(ICatalogReader reader, IProgressMonitor monitor) throws CoreException

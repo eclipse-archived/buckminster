@@ -21,12 +21,18 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -40,9 +46,28 @@ public class URLReaderType extends AbstractReaderType
 {
 	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
 
+	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
+	{
+		return getDirectReader(externalFile, IReaderType.URL, monitor);
+	}
+
 	public static ProviderMatch getCurrentProviderMatch()
 	{
 		return s_currentProviderMatch.get();
+	}
+
+	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
+	{
+		String urlString = url.toString();
+		ComponentRequest rq = new ComponentRequest(urlString, null, null);
+		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+		queryBld.setRootRequest(rq);
+		RMContext context = new RMContext(queryBld.createComponentQuery());
+		NodeQuery nq = new NodeQuery(context, rq, null);
+
+		Provider provider = new Provider(readerType, IComponentType.UNKNOWN, null, null, new Format(urlString), false, false, null);
+		ProviderMatch pm = new ProviderMatch(provider, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
+		return provider.getReaderType().getReader(pm, monitor);
 	}
 
 	@Override

@@ -51,6 +51,11 @@ public class URLCatalogReaderType extends URLReaderType
 			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))",
 			Pattern.CASE_INSENSITIVE);
 
+	public static IComponentReader getReader(URL catalog, IProgressMonitor monitor) throws CoreException
+	{
+		return getDirectReader(catalog, URL_CATALOG, monitor);
+	}
+
 	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
