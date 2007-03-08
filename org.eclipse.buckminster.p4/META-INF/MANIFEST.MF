@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Perforce Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.p4; singleton:=true
-Bundle-Version: 1.0.0.v20070223
+Bundle-Version: 1.0.0.v20070308
 Bundle-Activator: org.eclipse.buckminster.p4.P4Plugin
-Bundle-Vendor: The Buckminster Project
+Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Export-Package: org.eclipse.buckminster.p4,
  org.eclipse.buckminster.p4.internal;x-friends:="org.eclipse.buckminster.tests",
