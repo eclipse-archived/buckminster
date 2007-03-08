@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -54,7 +55,16 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			if(reader instanceof MavenReader)
 				pomDoc = ((MavenReader)reader).getPOMDocument(subMon);
 			else if(reader instanceof ICatalogReader)
-				pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon);
+			{
+				try
+				{
+					pomDoc = ((ICatalogReader)reader).readFile("pom.xml", this, subMon);
+				}
+				catch(FileNotFoundException e)
+				{
+					pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon);
+				}
+			}
 			else
 				pomDoc = ((IFileReader)reader).readFile(this, subMon);
 

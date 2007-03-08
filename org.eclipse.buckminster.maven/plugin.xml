@@ -16,6 +16,9 @@
             class="org.eclipse.buckminster.maven.internal.MavenComponentType"
             id="maven">
          <metaFile path="project.xml"/>
+         <metaFile
+               path="pom.xml">
+         </metaFile>
       </componentType>
    </extension>
    <extension
