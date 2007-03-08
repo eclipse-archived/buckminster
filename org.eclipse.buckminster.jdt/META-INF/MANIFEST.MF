@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster JDT Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.jdt; singleton:=true
-Bundle-Version: 1.0.0.v20070210
+Bundle-Version: 1.0.0.v20070308
 Bundle-Activator: org.eclipse.buckminster.jdt.JdtPlugin
-Bundle-Vendor: The Buckminster Project
+Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Bundle-ClassPath: bmjdt.jar
 Export-Package: org.eclipse.buckminster.jdt,
