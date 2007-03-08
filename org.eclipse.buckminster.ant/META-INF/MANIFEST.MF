@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Ant Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.ant; singleton:=true
-Bundle-Version: 1.0.0.v20070223
+Bundle-Version: 1.0.0.v20070308
 Bundle-Activator: org.eclipse.buckminster.ant.AntPlugin
-Bundle-Vendor: The Buckminster Project
+Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.buckminster.sax,
  org.eclipse.buckminster.core,
