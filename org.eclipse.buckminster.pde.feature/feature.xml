@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.pde.feature"
-      label="%featureName"
-      version="1.0.0.v20070225"
-      provider-name="%providerName"
+      label="Buckminster - PDE support"
+      version="1.0.0.v20070308"
+      provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.pde">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -112,7 +112,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <url>
-      <update label="%updateSiteName" url="http://download.eclipse.org/technology/buckminster/updates"/>
+      <update label="Buckminster" url="http://download.eclipse.org/technology/buckminster/updates"/>
    </url>
 
    <requires>
