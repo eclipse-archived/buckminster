@@ -43,10 +43,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  */
 public class Generate extends AbstractCommand
 {
-	static private final OptionDescriptor SITE_FILE = new OptionDescriptor('S', "sitefile",
+	static private final OptionDescriptor TEMPLATE_SITE = new OptionDescriptor('T', "templatesite",
 			OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor TOP_PROJECT = new OptionDescriptor('T', "topproject",
+	static private final OptionDescriptor TOP_PROJECT = new OptionDescriptor('P', "project",
 			OptionValueType.REQUIRED);
 
 	static private final OptionDescriptor OUTPUT_DIR = new OptionDescriptor('O', "outputdir",
@@ -61,7 +61,7 @@ public class Generate extends AbstractCommand
 
 	private File m_outputDir;
 
-	private File m_siteFile;
+	private URL m_templateSiteURL;
 
 	private boolean m_clean;
 
@@ -69,7 +69,7 @@ public class Generate extends AbstractCommand
 	@Override
 	protected void getOptionDescriptors(List appendHere) throws Exception
 	{
-		appendHere.add(SITE_FILE);
+		appendHere.add(TEMPLATE_SITE);
 		appendHere.add(TOP_PROJECT);
 		appendHere.add(OUTPUT_DIR);
 		appendHere.add(CLEAN);
@@ -80,8 +80,8 @@ public class Generate extends AbstractCommand
 	{
 		if(option.is(TOP_PROJECT))
 			m_topProject = option.getValue();
-		else if(option.is(SITE_FILE))
-			m_siteFile = new File(option.getValue());
+		else if(option.is(TEMPLATE_SITE))
+			m_templateSiteURL = URLUtils.normalizeToURL(option.getValue());
 		else if(option.is(OUTPUT_DIR))
 			m_outputDir = new File(option.getValue());
 		else if(option.is(CLEAN))
@@ -128,7 +128,7 @@ public class Generate extends AbstractCommand
 			new CSpecGenerator(m_topProject, m_outputDir),
 			new RMapGenerator(m_topProject, m_outputDir),
 			new CQueryGenerator(m_topProject, m_outputDir),
-			new SiteGenerator(m_topProject, m_siteFile, m_outputDir)
+			new SiteGenerator(m_topProject, m_templateSiteURL, m_outputDir)
 		};
 
 		monitor.beginTask(null, m_siteContributions.size() * 100 + 100);

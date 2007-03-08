@@ -10,7 +10,7 @@ package org.eclipse.buckminster.europatools.generators;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,7 +32,6 @@ import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.core.model.CategoryModel;
 import org.eclipse.update.internal.core.ExtendedSite;
 import org.eclipse.update.internal.core.UpdateSiteFeatureReference;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -40,10 +39,10 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("restriction")
 public class SiteGenerator extends AbstractGenerator
 {
-	private final File m_templateSite;
+	private final URL m_templateSite;
 	private Site m_site;
 
-	public SiteGenerator(String topProject, File templateSite, File generatedDir)
+	public SiteGenerator(String topProject, URL templateSite, File generatedDir)
 	{
 		super(topProject, generatedDir);
 		m_templateSite = templateSite;
@@ -139,10 +138,13 @@ public class SiteGenerator extends AbstractGenerator
 			{
 				try
 				{
-					m_site = parseSite(getArtifactFile());
+					m_site = parseSite(getArtifactFile().toURI().toURL());
 				}
-				catch(FileNotFoundException e)
+				catch(CoreException e)
 				{
+					if(!(e.getCause() instanceof FileNotFoundException))
+						throw e;
+
 					if(m_templateSite != null)
 						m_site = parseSite(m_templateSite);
 					else
@@ -157,9 +159,9 @@ public class SiteGenerator extends AbstractGenerator
 		return m_site;
 	}
 
-	private static Site parseSite(File siteFile) throws CoreException, SAXException, IOException
+	private static Site parseSite(URL siteURL) throws CoreException
 	{
 		IProgressMonitor nullMonitor = new NullProgressMonitor();
-		return SiteReader.getSite(URLReaderType.getReader(siteFile.toURI().toURL(), nullMonitor), nullMonitor);
+		return SiteReader.getSite(URLReaderType.getReader(siteURL, nullMonitor), nullMonitor);
 	}
 }
