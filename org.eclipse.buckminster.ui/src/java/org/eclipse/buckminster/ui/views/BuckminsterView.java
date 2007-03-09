@@ -30,7 +30,9 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -84,7 +86,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.xml.sax.SAXException;
@@ -307,7 +311,7 @@ public class BuckminsterView extends ViewPart
 	
 	private TreeViewer m_treeViewer;
 	
-	private Text m_projectInfoText;
+	private Text m_infoText;
 
 	private IWorkspaceRoot m_workspaceRoot;
 
@@ -449,7 +453,7 @@ public class BuckminsterView extends ViewPart
 						String editorId = editorDescriptor.getId();
 						if(editorId != null)
 						{
-							workbenchPage.openEditor(new FileEditorInput(file), editorId);
+							IDE.openEditor(workbenchPage, new FileEditorInput(file), editorId);
 						}
 					}
 					catch(PartInitException e)
@@ -626,16 +630,73 @@ public class BuckminsterView extends ViewPart
 				m_openEditorAction.run();
 			}
 		});
+		
+		m_treeViewer.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				changeInfo();
+			}
+		});
 	}
 
+	private void changeInfo()
+	{
+		IResource resource = getResourceSelection();
+		
+		String info = "";
+		
+		if(resource != null)
+		{
+			info = getProjectInfo(resource.getProject());
+		}
+		
+		m_infoText.setText(info);
+	}
+	
+	private String getProjectInfo(IProject project)
+	{
+		boolean knownProject = isProjectKnown(project);
+		
+		if(knownProject)
+		{
+			return "Buckminster understands project metadata";
+		}
+
+		return "Buckminster does not understand project metadata";
+	}
+	
+	private boolean isProjectKnown(IProject project)
+	{
+		try
+		{
+			String[] natureIds = project.getDescription().getNatureIds();
+			
+			for(String natureId : natureIds)
+			{
+				if(natureId.endsWith("PluginNature") || natureId.endsWith("FeatureNature"))
+				{
+					return true;
+				}
+			}
+		}
+		catch(CoreException e)
+		{
+			UiUtils.openError(getViewSite().getShell(), "Project is not open", e);
+		}
+		
+		return false;
+	}
+	
 	private void createInfo(Composite parent)
 	{
 		Label label = UiUtils.createGridLabel(parent, "Info:", 0, 0, SWT.NONE);
 		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-		m_projectInfoText = UiUtils.createGridText(parent, 0, 0, null, SWT.MULTI | SWT.READ_ONLY);
+		m_infoText = UiUtils.createGridText(parent, 0, 0, null, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
 		//m_projectInfoText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
-		GridData layoutData = (GridData) m_projectInfoText.getLayoutData();
+		GridData layoutData = (GridData) m_infoText.getLayoutData();
 		layoutData.heightHint = 80;	
 	}
 
@@ -656,7 +717,6 @@ public class BuckminsterView extends ViewPart
 		// Create menu
 		Menu menu = menuMgr.createContextMenu(m_treeViewer.getControl());
 		m_treeViewer.getControl().setMenu(menu);
-		
 		// Register menu for extension - I don't want extensions here
 		//getSite().registerContextMenu(menuMgr, m_treeViewer);
 	}
@@ -672,20 +732,25 @@ public class BuckminsterView extends ViewPart
 		
 		if(selectedResource instanceof IFile)
 		{
-			menuMgr.add(m_openEditorAction);
+			menuMgr.add(m_openEditorAction);			
+			
+			MenuManager subMenuMgr = new MenuManager("Open With");
+			OpenWithMenu openWithMenu = new OpenWithMenu(getWorkbenchWindow().getActivePage(), selectedResource);
+			subMenuMgr.add(openWithMenu);
+			menuMgr.add(subMenuMgr);
 			
 			String fileExt = ((IFile) selectedResource).getFileExtension();
 			
 			// TODO Action (or it's wrapper) should have it's own filter test
 			if(Arrays.asList(new String[] {"cspec", "cquery", "bom"}).contains(fileExt))
 			{
+				menuMgr.add(new Separator());
 				menuMgr.add(m_publishAction);
 			}
 			
 			// TODO Action (or it's wrapper) should have it's own filter test
 			if(Arrays.asList(new String[] {"cquery"}).contains(fileExt))
 			{
-				menuMgr.add(new Separator());
 				menuMgr.add(m_resolveToWizardAction);
 				menuMgr.add(m_resolveAndMaterializeAction);
 			}			
