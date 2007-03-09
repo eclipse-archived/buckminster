@@ -21,25 +21,19 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
-import org.eclipse.buckminster.core.resolver.IResolver;
-import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
@@ -52,17 +46,14 @@ import org.eclipse.buckminster.ui.editor.SaveRunnable;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorListener;
-import org.eclipse.buckminster.ui.wizards.QueryWizard;
+import org.eclipse.buckminster.ui.internal.ResolveJob;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -94,7 +85,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
@@ -109,7 +99,6 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.ILocationProvider;
@@ -185,85 +174,6 @@ public class QueryEditor extends EditorPart
 			for(Control control : m_controlsToEnable)
 			{
 				control.setEnabled(enable);
-			}
-		}
-	}
-
-	class ResolveJob extends Job
-	{
-		private final IResolver m_resolver;
-
-		private final boolean m_materialize;
-
-		ResolveJob(ComponentQuery query, boolean materialize) throws CoreException
-		{
-			super("Resolving query");
-			m_resolver = new MainResolver(new RMContext(query));
-			m_resolver.getContext().setContinueOnError(m_continueOnError);
-			m_materialize = materialize;
-			setUser(true);
-			setPriority(LONG);
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor)
-		{
-			final IWorkbenchPartSite site = getSite();
-			RMContext ctx = m_resolver.getContext();
-			ComponentQuery query = ctx.getComponentQuery();
-
-			try
-			{
-				Display display = site.getShell().getDisplay();
-				ComponentRequest rootRequest = query.getRootRequest();
-				if(!m_materialize)
-				{
-					final BillOfMaterials bom = m_resolver.resolve(rootRequest, monitor);
-					IStatus status = ctx.getStatus();
-					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-						return status;
-					CorePlugin.logWarningsAndErrors(status);
-
-					display.asyncExec(new Runnable()
-					{
-						public void run()
-						{
-							QueryWizard.openWizard(site, m_resolver.getContext(), bom);
-						}
-					});
-					return Status.OK_STATUS;
-				}
-
-				monitor.beginTask(null, 2000);
-				monitor.subTask("Resolving and materializing " + rootRequest.getName());
-				try
-				{
-					BillOfMaterials bom = m_resolver.resolve(rootRequest, MonitorUtils.subMonitor(monitor, 1000));
-					IStatus status = m_resolver.getContext().getStatus();
-
-					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-						return status;
-					CorePlugin.logWarningsAndErrors(status);
-
-					if(bom.isFullyResolved() || ctx.isContinueOnError())
-					{
-						setName("Materializing");
-						MaterializerJob.run(bom, ctx, null, MonitorUtils.subMonitor(monitor, 1000));
-						status = ctx.getStatus();
-						if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-							return status;
-						CorePlugin.logWarningsAndErrors(status);
-					}
-					return status;
-				}
-				finally
-				{
-					monitor.done();
-				}
-			}
-			catch(Exception e)
-			{
-				return BuckminsterException.wrap(e).getStatus();
 			}
 		}
 	}
@@ -1411,7 +1321,7 @@ public class QueryEditor extends EditorPart
 
 		try
 		{
-			ResolveJob resolveJob = new ResolveJob(m_componentQuery.createComponentQuery(), materialize);
+			ResolveJob resolveJob = new ResolveJob(m_componentQuery.createComponentQuery(), materialize, getSite(), m_continueOnError);
 			resolveJob.schedule();
 		}
 		catch(CoreException e)
