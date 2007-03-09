@@ -64,6 +64,7 @@ import org.eclipse.buckminster.ui.actions.InvokeAction;
 import org.eclipse.buckminster.ui.actions.OpenQueryAction;
 import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
 import org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction;
+import org.eclipse.buckminster.ui.internal.ResolveJob;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -728,9 +729,7 @@ public class BuckminsterView extends ViewPart
 
 		if(resource instanceof IFile)
 		{
-			IFile resourceFile = (IFile)resource;
-
-			File file = resourceFile.getFullPath().toFile();
+			File file = resource.getLocation().toFile();
 			ComponentQueryBuilder componentQuery = new ComponentQueryBuilder();
 			InputStream stream = null;
 
@@ -767,20 +766,17 @@ public class BuckminsterView extends ViewPart
 				}
 			}
 			
-			if("cquery".equalsIgnoreCase(resourceFile.getFileExtension()))
+			if("cquery".equalsIgnoreCase(resource.getFileExtension()))
 			{
-				// TODO implement commented
-/*				
 				try
 				{
-					//ResolveJob resolveJob = new ResolveJob(componentQuery.createComponentQuery(), false);
-					//resolveJob.schedule();
+					ResolveJob resolveJob = new ResolveJob(componentQuery.createComponentQuery(), materialize, getSite(), false);
+					resolveJob.schedule();
 				}
 				catch(CoreException e)
 				{
 					UiUtils.openError(getViewSite().getShell(), null, e);
-				}
-*/				
+				}				
 			}
 		}
 	}
