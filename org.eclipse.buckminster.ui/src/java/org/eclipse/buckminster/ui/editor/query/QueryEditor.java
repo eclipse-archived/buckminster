@@ -1369,7 +1369,7 @@ public class QueryEditor extends EditorPart
 		m_namePattern.setText(TextUtils.notNullString(node.getNamePattern()));
 		m_category.select(m_category.indexOf(TextUtils.notNullString(node.getCategory())));
 		m_overlayFolder.setText(TextUtils.notNullString(node.getOverlayFolder()));
-		m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.toCommaSeparatedList(node.getAttributes())));
+		m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.concat(node.getAttributes(), ",")));
 		m_prune.setSelection(node.isPrune());
 		m_replaceFrom.setText(TextUtils.notNullString(node.getReplaceFrom()));
 		m_replaceTo.setText(TextUtils.notNullString(node.getReplaceTo()));
