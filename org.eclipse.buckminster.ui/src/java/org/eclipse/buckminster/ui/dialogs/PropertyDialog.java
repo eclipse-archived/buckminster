@@ -42,7 +42,7 @@ public class PropertyDialog extends Dialog
 	private Button m_okButton;
 
 	/**
-	 * DumbMessageDialog constructor
+	 * PropertyDialog constructor
 	 *
 	 * @param parent the parent shell
 	 */
