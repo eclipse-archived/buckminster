@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -23,6 +24,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -39,6 +42,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -52,6 +57,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.buckminster.core.CorePlugin;
@@ -91,6 +97,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
 /**
@@ -307,6 +314,109 @@ public class BuckminsterView extends ViewPart
 		}
 	}
 	
+	class AboutDialog extends Dialog
+	{
+		public static final int EXTENSIONS_ID = IDialogConstants.CLIENT_ID;
+
+		public static final String EXTENSIONS_LABEL = "Extensions";
+
+		private Image m_image;
+
+		public AboutDialog(Shell parentShell)
+		{
+			super(parentShell);
+
+			m_image = new Image(parentShell.getDisplay(), BuckminsterView.getBuckminsterLogo());
+		}
+
+		@Override
+		protected void configureShell(Shell newShell)
+		{
+			super.configureShell(newShell);
+			
+			newShell.setText("About Buckminster");
+		}
+
+		@Override
+		public boolean close()
+		{
+			if(m_image != null)
+				m_image.dispose();
+			return super.close();
+		}
+
+		@Override
+		protected Control createDialogArea(Composite parent)
+		{
+			Composite composite = new Composite(parent, SWT.NONE);
+			GridData data = new GridData(GridData.FILL_BOTH);
+			composite.setLayoutData(data);
+			GridLayout layout = new GridLayout(2, false);
+			layout.marginTop = layout.marginHeight;
+			layout.marginHeight = layout.marginWidth = 0;
+			layout.horizontalSpacing += 5;
+			composite.setLayout(layout);
+			
+			composite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+			composite.setBackgroundMode(SWT.INHERIT_FORCE);
+
+			Label label = new Label(composite, SWT.NONE);
+			label.setImage(m_image);
+
+			Composite bmComposite = new Composite(composite, SWT.NONE);
+			data = new GridData(GridData.FILL_BOTH);
+			bmComposite.setLayoutData(data);
+			layout = new GridLayout(2, false);
+			bmComposite.setLayout(layout);
+
+			UiUtils.createGridLabel(bmComposite, "Version:", 0, 0, SWT.NONE);
+
+			UiUtils.createGridLabel(bmComposite, (String) UiUtils.nvl(getCoreVersion(), ""), 0, 0, SWT.NONE);
+			UiUtils.createGridLabel(bmComposite, "Wiki:", 0, 0, SWT.NONE);
+			Link wiki = new Link(bmComposite, SWT.NONE);
+			wiki.setText("<A>http://wiki.eclipse.org/index.php/BuckminsterWiki</A>");
+			wiki.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					Program.launch("http://wiki.eclipse.org/index.php/Buckminster");
+				}
+			});
+			
+			// Build the separator line
+			Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+			data = new GridData(GridData.FILL_HORIZONTAL);
+			data.horizontalSpan = 2;
+			separator.setLayoutData(data);
+
+			return composite;
+		}
+
+		@Override
+		protected void createButtonsForButtonBar(Composite parent)
+		{
+			createButton(parent, EXTENSIONS_ID, EXTENSIONS_LABEL, false);
+			createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		}
+
+		@Override
+		protected void buttonPressed(int buttonId)
+		{
+			switch(buttonId)
+			{
+			case EXTENSIONS_ID:
+				// TODO Implement
+				break;
+			case IDialogConstants.OK_ID:
+			{
+				setReturnCode(buttonId);
+				close();
+			}
+			}
+		}
+	}
+	
 	private CTabFolder m_tabFolder;
 	
 	private TreeViewer m_treeViewer;
@@ -379,17 +489,18 @@ public class BuckminsterView extends ViewPart
 
 		m_tabFolder.setSelection(navigatorTab);
 		
-		ImageDescriptor imageDescriptor = UiPlugin.getImageDescriptor("icons/buckminster_logo.png");
-		ImageData imageData = imageDescriptor.getImageData();
-		//imageData = imageData.scaledTo(210, 55);
-
-		Image image = new Image(parent.getDisplay(), imageData);
+		Image image = new Image(parent.getDisplay(), getBuckminsterLogo());
 		Label imageLabel = new Label(topComposite, SWT.NONE);
 		imageLabel.setAlignment(SWT.CENTER);
 		imageLabel.setImage(image);
 		imageLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BOTTOM, false, false));
 		
 		createContextMenu();
+	}
+	
+	private static ImageData getBuckminsterLogo()
+	{
+		return UiPlugin.getImageDescriptor("icons/buckminster_logo.png").getImageData();
 	}
 
 	private Control getNavigatorTabControl(Composite parent)
@@ -512,7 +623,8 @@ public class BuckminsterView extends ViewPart
 			@Override
 			public void run()
 			{
-				// TODO implement
+				AboutDialog dialog = new AboutDialog(getWorkbenchWindow().getShell());
+				dialog.open();
 			}
 		};
 		
@@ -857,4 +969,12 @@ public class BuckminsterView extends ViewPart
 			}
 		});
 	}
+	
+	private static String getCoreVersion()
+	{
+		Bundle coreBundle = Platform.getBundle("org.eclipse.buckminster.core");
+		return coreBundle == null ? null : (String) coreBundle.getHeaders().get("Bundle-Version");
+	}
+	
+
 }
