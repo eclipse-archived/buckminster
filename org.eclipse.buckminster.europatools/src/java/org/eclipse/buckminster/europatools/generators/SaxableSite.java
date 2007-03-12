@@ -77,7 +77,7 @@ public class SaxableSite implements ISaxable, ISaxableElement
 			if(availableLocales != null)
 			{
 				StringBuilder bld = new StringBuilder();
-				TextUtils.buildCommaSeparatedList(bld, availableLocales);
+				TextUtils.concat(bld, availableLocales, ",");
 				if(bld.length() > 0)
 					Utils.addAttribute(attrs, "availableLocales", bld.toString());
 			}
