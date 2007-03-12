@@ -268,7 +268,7 @@ public class InternalAntBuilder
 			{
 				List<String> theOneAndOnly = filesetInfos.values().iterator().next();
 				project.log(String.format("Adding FileSet reference %s.fileset. Includes = %s", key,
-					TextUtils.toCommaSeparatedList(theOneAndOnly)), Project.MSG_VERBOSE);
+					TextUtils.concat(theOneAndOnly, ",")), Project.MSG_VERBOSE);
 			}
 			project.addReference(key + ".fileset", fileSets.get(0));
 		}
@@ -289,7 +289,7 @@ public class InternalAntBuilder
 				bld.append("\n    base = ");
 				bld.append(entry.getKey());
 				bld.append(". Includes = ");
-				TextUtils.buildCommaSeparatedList(bld, entry.getValue());
+				TextUtils.concat(bld, entry.getValue(), ",");
 			}
 			project.log(bld.toString(), Project.MSG_VERBOSE);
 		}

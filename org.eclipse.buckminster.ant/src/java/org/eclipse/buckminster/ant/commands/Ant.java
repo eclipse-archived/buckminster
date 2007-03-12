@@ -87,7 +87,7 @@ public class Ant extends AbstractCommand
 			String[] targets = m_targets.toArray(new String[m_targets.size()]);
 			Object builder = AntBuilder.createInternalAntBuilder();
 			MonitorUtils.worked(monitor, 1);
-			monitor.subTask(TextUtils.toCommaSeparatedList(targets));
+			monitor.subTask(TextUtils.concat(targets, ","));
 			AntBuilder.invokeInternalAntBuilder(builder, m_scriptFile, m_baseDirPath, targets, m_properties, null, System.out, System.err);
 			MonitorUtils.worked(monitor, 1);
 		}
