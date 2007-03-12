@@ -64,7 +64,7 @@ public class ProductTest extends TestCase
 		bi.setRoot(genRoot.toString());
 		String[] icons = pf.getIcons();
 		if(icons != null && icons.length > 0)
-			bi.setIcons(TextUtils.toCommaSeparatedList(pf.getIcons()));
+			bi.setIcons(TextUtils.concat(pf.getIcons(), ","));
 		bi.brand();
 	}
 }
