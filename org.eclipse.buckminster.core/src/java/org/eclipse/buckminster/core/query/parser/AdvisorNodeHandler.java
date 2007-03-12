@@ -19,6 +19,7 @@ import java.util.regex.PatternSyntaxException;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
@@ -167,8 +168,8 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setUseProject(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_PROJECT, true));
 		m_builder.setUseResolutionSchema(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_RESOLUTION_SCHEMA, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
-		m_builder.setBranch(getOptionalStringValue(attrs, AdvisorNode.ATTR_BRANCH));
-		m_builder.setResolutionPath(getOptionalStringValue(attrs, AdvisorNode.ATTR_RESOLUTION_PATH));
+		m_builder.setBranchPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_BRANCH_PATH), ","));
+		m_builder.setResolutionPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_RESOLUTION_PATH), ","));
 	}
 
 	AdvisorNodeBuilder getAdvisorNodeBuilder()

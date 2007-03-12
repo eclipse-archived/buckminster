@@ -10,16 +10,15 @@
 package org.eclipse.buckminster.core.query.model;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -68,7 +67,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery";
 
-	public static final String ATTR_BRANCH = "branch";
+	public static final String ATTR_BRANCH_PATH = "branchPath";
 
 	public static final String ATTR_RESOLUTION_PATH = "resolutionPath";
 
@@ -114,46 +113,34 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	private final boolean m_systemDiscovery;
 	
-	private final String m_branch;
+	private final String[] m_branchPath;
 	
-	private final String m_resolutionPath;
+	private final String[] m_resolutionPath;
 
-	public AdvisorNode(Documentation documentation, boolean allowCircularDependency, List<String> attributes, String category, MutableLevel mutableLevel, Pattern namePattern,
-			URL overlayFolder, Map<String, String> properties, boolean prune, Pattern replaceFrom, String replaceTo,
-			boolean skipComponent, SourceLevel sourceLevel, boolean useInstalled, boolean useMaterialization,
-			boolean useProject, IVersionDesignator versionOverride, NotEmptyAction notEmptyAction,
-			boolean useResolutionSchema, boolean systemDiscovery, String branch, String resolutionPath)
+	public AdvisorNode(AdvisorNodeBuilder bld)
 	{
-		m_documentation = documentation;
-		m_allowCircularDependency = allowCircularDependency;
-		m_namePattern = namePattern;
-		m_category = category;
-		m_overlayFolder = overlayFolder;
-		m_prune = prune;
-		m_mutableLevel = mutableLevel;
-		m_sourceLevel = sourceLevel;
-		m_whenNotEmpty = notEmptyAction;
-		m_replaceFrom = replaceFrom;
-		m_replaceTo = replaceTo;
-		m_skipComponent = skipComponent;
-		m_useInstalled = useInstalled;
-		m_useMaterialization = useMaterialization;
-		m_useProject = useProject;
-		m_versionOverride = versionOverride;
-		m_useResolutionSchema = useResolutionSchema;
-		m_systemDiscovery = systemDiscovery;
-		m_branch = branch;
-		m_resolutionPath = resolutionPath;
-
-		if(attributes == null || attributes.size() == 0)
-			m_attributes = Collections.emptyList();
-		else
-			m_attributes = Collections.unmodifiableList(new ArrayList<String>(attributes));
-
-		if(properties == null || properties.size() == 0)
-			m_properties = Collections.emptyMap();
-		else
-			m_properties = Collections.unmodifiableMap(new ExpandingProperties(properties));
+		m_documentation = bld.getDocumentation();
+		m_allowCircularDependency = bld.allowCircularDependency();
+		m_namePattern = bld.getNamePattern();
+		m_category = bld.getCategory();
+		m_overlayFolder = bld.getOverlayFolder();
+		m_prune = bld.isPrune();
+		m_mutableLevel = bld.getMutableLevel();
+		m_sourceLevel = bld.getSourceLevel();
+		m_whenNotEmpty = bld.getWhenNotEmpty();
+		m_replaceFrom = bld.getReplaceFrom();
+		m_replaceTo = bld.getReplaceTo();
+		m_skipComponent = bld.skipComponent();
+		m_useInstalled = bld.useInstalled();
+		m_useMaterialization = bld.useMaterialization();
+		m_useProject = bld.useProject();
+		m_versionOverride = bld.getVersionOverride();
+		m_useResolutionSchema = bld.isUseResolutionSchema();
+		m_systemDiscovery = bld.isSystemDiscovery();
+		m_branchPath = bld.getBranchPath();
+		m_resolutionPath = bld.getResolutionPath();
+		m_attributes = UUIDKeyed.createUnmodifiableList(bld.getAttributes());
+		m_properties = UUIDKeyed.createUnmodifiableProperties(bld.getProperties());
 	}
 
 	public boolean allowCircularDependency()
@@ -164,6 +151,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public final List<String> getAttributes()
 	{
 		return m_attributes;
+	}
+
+	public final String[] getBranchPath()
+	{
+		return m_branchPath;
 	}
 
 	public final String getCategory()
@@ -217,6 +209,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_replaceTo;
 	}
 
+	public final String[] getResolutionPath()
+	{
+		return m_resolutionPath;
+	}
+
 	public final SourceLevel getSourceLevel()
 	{
 		return m_sourceLevel;
@@ -237,6 +234,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_prune;
 	}
 
+	public final boolean isSystemDiscovery()
+	{
+		return m_systemDiscovery;
+	}
+
 	public final boolean isUseInstalled()
 	{
 		return m_useInstalled;
@@ -250,6 +252,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public final boolean isUseProject()
 	{
 		return m_useProject;
+	}
+
+	public final boolean isUseResolutionSchema()
+	{
+		return m_useResolutionSchema;
 	}
 
 	public final boolean skipComponent()
@@ -291,64 +298,48 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, m_versionOverride.toString());
 			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE_TYPE, m_versionOverride.getVersion().getType().getId());
 		}
-		if(m_attributes.size() > 0)
-			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, TextUtils.toCommaSeparatedList(m_attributes));
+		String tmp = TextUtils.concat(m_attributes, ",");
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		if(m_prune)
 			Utils.addAttribute(attrs, ATTR_PRUNE, "true");
 		if(!m_useResolutionSchema)
 			Utils.addAttribute(attrs, ATTR_USE_RESOLUTION_SCHEMA, "false");
 		if(!m_systemDiscovery)
 			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
-		if(m_branch != null)
-			Utils.addAttribute(attrs, ATTR_BRANCH, m_branch);
-		if(m_resolutionPath != null)
-			Utils.addAttribute(attrs, ATTR_RESOLUTION_PATH, m_resolutionPath);
-			
-			
+
+		tmp = TextUtils.concat(m_branchPath, ",");
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_BRANCH_PATH, tmp);
+
+		tmp = TextUtils.concat(m_resolutionPath, ",");
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_PATH, tmp);
+
 		handler.startElement(namespace, localName, qName, attrs);
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
 		handler.endElement(namespace, localName, qName);
 	}
-
+	
 	public final boolean useInstalled()
 	{
 		return m_useInstalled;
 	}
-
+	
 	public final boolean useMaterialization()
 	{
 		return m_useMaterialization;
 	}
-
+	
 	public final boolean useProject()
 	{
 		return m_useProject;
 	}
-
+	
 	public final NotEmptyAction whenNotEmpty()
 	{
 		return m_whenNotEmpty;
-	}
-	
-	public final boolean isUseResolutionSchema()
-	{
-		return m_useResolutionSchema;
-	}
-	
-	public final boolean isSystemDiscovery()
-	{
-		return m_systemDiscovery;
-	}
-	
-	public final String getBranch()
-	{
-		return m_branch;
-	}
-	
-	public final String getResolutionPath()
-	{
-		return m_resolutionPath;
 	}
 }

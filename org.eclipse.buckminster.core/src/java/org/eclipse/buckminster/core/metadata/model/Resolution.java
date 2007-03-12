@@ -375,8 +375,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		AttributesImpl attrs = new AttributesImpl();
 
 		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspecId.toString());
-		if(m_attributes.size() > 0)
-			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, TextUtils.toCommaSeparatedList(m_attributes));
+		String tmp = TextUtils.concat(m_attributes, ",");
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 
 		IVersion version = m_versionMatch.getVersion();
 		if(!version.isDefault())

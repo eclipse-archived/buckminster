@@ -51,6 +51,7 @@ public class PrerequisiteHandler extends CSpecElementHandler
 		return this.getAttributeBuilder().createPrerequisiteBuilder();
 	}
 
+	@Override
 	protected String getNameAttribute(Attributes attrs)
 	throws SAXException
 	{

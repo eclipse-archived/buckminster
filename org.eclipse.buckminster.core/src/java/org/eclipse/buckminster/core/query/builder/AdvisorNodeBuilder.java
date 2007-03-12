@@ -65,9 +65,9 @@ public class AdvisorNodeBuilder
 
 	private boolean m_systemDiscovery;
 	
-	private String m_branch;
+	private String[] m_branchPath;
 	
-	private String m_resolutionPath;
+	private String[] m_resolutionPath;
 
 	public AdvisorNodeBuilder()
 	{
@@ -111,18 +111,13 @@ public class AdvisorNodeBuilder
 		m_whenNotEmpty = NotEmptyAction.FAIL;
 		m_useResolutionSchema = true;
 		m_systemDiscovery = true;
-		m_branch = null;
+		m_branchPath = null;
 		m_resolutionPath = null;
 	}
 
 	public AdvisorNode create()
 	{
-		return new AdvisorNode(m_documentation, m_allowCircularDependency, m_attributes, m_category, m_mutableLevel,
-				m_namePattern, m_overlayFolder, m_properties, m_prune,
-				m_replaceFrom, m_replaceTo, m_skipComponent,
-				m_sourceLevel, m_useInstalled, m_useMaterialization,
-				m_useProject, m_versionOverride, m_whenNotEmpty,
-				m_useResolutionSchema, m_systemDiscovery, m_branch, m_resolutionPath);
+		return new AdvisorNode(this);
 	}
 	
 	public List<String> getAttributes()
@@ -218,7 +213,7 @@ public class AdvisorNodeBuilder
 		m_whenNotEmpty = node.getWhenNotEmpty();
 		m_useResolutionSchema = node.isUseResolutionSchema();
 		m_systemDiscovery = node.isSystemDiscovery();
-		m_branch = node.getBranch();
+		m_branchPath = node.getBranchPath();
 		m_resolutionPath = node.getResolutionPath();
 	}
 
@@ -252,12 +247,12 @@ public class AdvisorNodeBuilder
 		return m_systemDiscovery;
 	}
 	
-	public String getBranch()
+	public String[] getBranchPath()
 	{
-		return m_branch;
+		return m_branchPath;
 	}
-	
-	public String getResolutionPath()
+
+	public String[] getResolutionPath()
 	{
 		return m_resolutionPath;
 	}
@@ -351,12 +346,12 @@ public class AdvisorNodeBuilder
 		m_systemDiscovery = systemDiscovery;
 	}
 	
-	public void setBranch(String branch)
+	public void setBranchPath(String[] branchPath)
 	{
-		m_branch = branch;
+		m_branchPath = branchPath;
 	}
 	
-	public void setResolutionPath(String resolutionPath)
+	public void setResolutionPath(String[] resolutionPath)
 	{
 		m_resolutionPath = resolutionPath;
 	}
