@@ -167,6 +167,11 @@ public class UiUtils
 		return value;
 	}
 	
+	public static Object nvl(Object arg0, Object arg1)
+	{
+		return arg0 != null ? arg0 : arg1;
+	}
+	
 	public static Label createEmptyLabel(Composite parent)
 	{
 		Label lbl = new Label(parent, SWT.NONE);
