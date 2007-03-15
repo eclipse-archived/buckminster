@@ -2,7 +2,7 @@
 	<artifacts>
 		<public name="feature.xml" path="feature.xml"/>
 		<public name="site.files">
-			<path path="site-3.3.xml"/>
+			<path path="headless-site.xml"/>
 			<path path="site.xml"/>
 			<path path="site.properties"/>
 		</public>
