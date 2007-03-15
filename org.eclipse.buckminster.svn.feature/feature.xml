@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.svn.feature"
       label="Buckminster - Subversion support"
-      version="1.0.0.v20070308"
+      version="1.0.0.v20070315"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.svn">
 
@@ -123,7 +123,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.tigris.subversion.subclipse.core"/>
    </requires>
 
    <plugin
@@ -132,11 +132,5 @@ This Agreement is governed by the laws of the State of New York and the intellec
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.tigris.subversion.subclipse.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
 </feature>
