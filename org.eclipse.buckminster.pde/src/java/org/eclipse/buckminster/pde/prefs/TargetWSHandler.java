@@ -18,7 +18,7 @@ import org.osgi.service.prefs.BackingStoreException;
 @SuppressWarnings("restriction")
 public class TargetWSHandler extends TargetVariableHandler
 {
-	TargetWSHandler()
+	public TargetWSHandler()
 	{
 		super(WS);
 	}

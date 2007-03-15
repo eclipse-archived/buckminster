@@ -20,7 +20,7 @@ import org.osgi.service.prefs.BackingStoreException;
 @SuppressWarnings("restriction")
 public class TargetNLHandler extends TargetVariableHandler
 {
-	TargetNLHandler()
+	public TargetNLHandler()
 	{
 		super(NL);
 	}

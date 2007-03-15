@@ -18,7 +18,7 @@ import org.osgi.service.prefs.BackingStoreException;
 @SuppressWarnings("restriction")
 public class TargetOSHandler extends TargetVariableHandler
 {
-	TargetOSHandler()
+	public TargetOSHandler()
 	{
 		super(OS);
 	}

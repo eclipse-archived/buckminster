@@ -18,7 +18,7 @@ import org.osgi.service.prefs.BackingStoreException;
 @SuppressWarnings("restriction")
 public class TargetArchHandler extends TargetVariableHandler
 {
-	TargetArchHandler()
+	public TargetArchHandler()
 	{
 		super(ARCH);
 	}
