@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.svn.internal;
 
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,7 +24,6 @@ import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
-import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
@@ -177,14 +177,13 @@ public class SvnSession
 	{
 		try
 		{
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(this.getSVNUrl(null), SVNRevision.HEAD);
+			SVNUrl svnURL = getSVNUrl(null);
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, SVNRevision.HEAD);
+			if(root == null)
+				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedRevision().getNumber();
 		}
-		catch(SVNClientException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(MalformedURLException e)
+		catch(Exception e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
@@ -194,14 +193,13 @@ public class SvnSession
 	{
 		try
 		{
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(this.getSVNUrl(null), SVNRevision.HEAD);
+			SVNUrl svnURL = getSVNUrl(null);
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, SVNRevision.HEAD);
+			if(root == null)
+				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedDate();
 		}
-		catch(SVNClientException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(MalformedURLException e)
+		catch(Exception e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
@@ -212,7 +210,7 @@ public class SvnSession
 	{
 		try
 		{
-			return this.getSVNUrl(null).toString();
+			return getSVNUrl(null).toString();
 		}
 		catch(MalformedURLException e)
 		{
