@@ -50,7 +50,7 @@ public abstract class VersionSelector implements IVersionSelector
 
 	public static IVersionSelector fromString(CharSequence versionString) throws BuckminsterException
 	{
-		if(versionString == null)
+		if(versionString == null || versionString.length() == 0)
 			return null;
 
 		Matcher m = s_versionExp.matcher(versionString);
