@@ -2,47 +2,7 @@
 <project name="project" default="default">
 	<import file="macros.xml"/>
 
-	<property name="versionSelector" value="3.2.x/"/>
-	<property name="workspace" location="/workspaces/Buck-3.2.x"/>
-
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-	  <classpath>
-	    <pathelement location="ant-contrib.jar"/>
-	  </classpath>
-	</taskdef>
-
-	<macrodef name="printLine">
-		<attribute name="component"/>
-		<attribute name="timestamp"/>
-		<attribute name="version"/>
-		<sequential>
-			<buckminster.substitute pattern="^\d+\.\d+\.\d+\.v(.*)$" property="@{component}.vts" value="@{version}" replacement="$1"/>
-			<if>
-				<equals arg1="@{timestamp}" arg2="${@{component}.vts}"/>
-				<else>
-					<echo message="@{component}: version = @{version}, Timestamp = @{timestamp}"/>
-				</else>
-			</if>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="listPluginTimestamp">
-		<attribute name="component"/>
-		<sequential>
-			<svnDatestamp property="@{component}.timestamp" component="@{component}" versionSelector="${versionSelector}"/>
-			<extractBundleVersion property="@{component}.version" file="${workspace}/plugins/@{component}/META-INF/MANIFEST.MF"/>
-			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="listFeatureTimestamp">
-		<attribute name="component"/>
-		<sequential>
-			<svnDatestamp property="@{component}.timestamp" component="@{component}" versionSelector="${versionSelector}"/>
-			<extractFeatureVersion property="@{component}.version" file="${workspace}/features/@{component}/feature.xml"/>
-			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
-		</sequential>
-	</macrodef>
+	<property name="workspace" location="/workspaces/Buck-dev"/>
 
 	<target name="list.timestamps">
 		<listPluginTimestamp component="org.eclipse.buckminster.ant"/>

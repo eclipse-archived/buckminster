@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <project name="helpful.macros">
 
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="ant-contrib.jar"/>
+	  </classpath>
+	</taskdef>
+
 	<macrodef name="svnDatestamp">
 		<attribute name="component"/>
 		<attribute name="property"/>
@@ -56,4 +62,40 @@
 			</loadfile>
 		</sequential>
 	</macrodef>
+
+	<macrodef name="printLine">
+		<attribute name="component"/>
+		<attribute name="timestamp"/>
+		<attribute name="version"/>
+		<sequential>
+			<buckminster.substitute pattern="^\d+\.\d+\.\d+\.v(.*)$" property="@{component}.vts" value="@{version}" replacement="$1"/>
+			<if>
+				<equals arg1="@{timestamp}" arg2="${@{component}.vts}"/>
+				<else>
+					<echo message="@{component}: version = @{version}, Timestamp = @{timestamp}"/>
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="listPluginTimestamp">
+		<attribute name="component"/>
+		<attribute name="versionSelector" default=""/>
+		<sequential>
+			<svnDatestamp property="@{component}.timestamp" component="@{component}" versionSelector="@{versionSelector}"/>
+			<extractBundleVersion property="@{component}.version" file="${workspace}/plugins/@{component}/META-INF/MANIFEST.MF"/>
+			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="listFeatureTimestamp">
+		<attribute name="component"/>
+		<attribute name="versionSelector" default=""/>
+		<sequential>
+			<svnDatestamp property="@{component}.timestamp" component="@{component}" versionSelector="@{versionSelector}"/>
+			<extractFeatureVersion property="@{component}.version" file="${workspace}/features/@{component}/feature.xml"/>
+			<printLine component="@{component}" timestamp="${@{component}.timestamp}" version="${@{component}.version}"/>
+		</sequential>
+	</macrodef>
+
 </project>
