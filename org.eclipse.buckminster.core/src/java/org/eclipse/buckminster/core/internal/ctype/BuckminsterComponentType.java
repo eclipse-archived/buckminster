@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.internal.ctype;
 
+import org.eclipse.buckminster.core.ctype.BuckminsterCSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.AbstractComponentType;
 import org.eclipse.buckminster.core.reader.IComponentReader;

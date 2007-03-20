@@ -140,12 +140,12 @@ public class URLReaderType extends AbstractReaderType
 
 	public URI getURI(Provider provider, Map<String,String> properties) throws CoreException
 	{
-		return this.getURI(provider.getURI(properties));
+		return getURI(provider.getURI(properties));
 	}
 
 	public URI getURI(ProviderMatch providerMatch) throws CoreException
 	{
-		return this.getURI(providerMatch.getRepositoryURI());
+		return getURI(providerMatch.getRepositoryURI());
 	}
 
 	public URI getURI(String repository) throws CoreException
@@ -176,7 +176,7 @@ public class URLReaderType extends AbstractReaderType
 		String query = uri.getQuery();
 		String fragment = uri.getFragment();
 		boolean change = false;
-		if(!(this.isFileReader() || path.endsWith("/")))
+		if(!(isFileReader() || path.endsWith("/")))
 		{
 			path += "/";
 			change = true;

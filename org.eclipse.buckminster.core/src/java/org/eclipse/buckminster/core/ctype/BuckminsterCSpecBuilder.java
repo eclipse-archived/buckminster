@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.core.internal.ctype;
+package org.eclipse.buckminster.core.ctype;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -142,7 +142,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
 	{
-		return CorePlugin.getDefault().openCachedURL(this.getURL(), monitor);
+		return CorePlugin.getDefault().openCachedURL(getURL(), monitor);
 	}
 
 	public final <T> T readFile(IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException

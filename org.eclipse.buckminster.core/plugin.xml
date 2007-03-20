@@ -114,10 +114,10 @@
 	</extension>
 	<extension point="org.eclipse.buckminster.core.cspecBuilders">
 		<builder
-			class="org.eclipse.buckminster.core.internal.ctype.BuckminsterCSpecBuilder"
+			class="org.eclipse.buckminster.core.ctype.BuckminsterCSpecBuilder"
 			id="cspec2cspec" />
   <builder
-        class="org.eclipse.buckminster.core.internal.ctype.BOMFromCQueryBuilder"
+        class="org.eclipse.buckminster.core.ctype.BOMFromCQueryBuilder"
         id="cquery2BOM"/>
 		<builder
 			class="org.eclipse.buckminster.core.internal.ctype.DefaultResolutionBuilder"
