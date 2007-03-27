@@ -7,7 +7,7 @@
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
 
 	<rm:searchPath name="default">
-		<rm:provider readerType="svn" componentType="eclipse-project" mutable="true" source="true">
+		<rm:provider readerType="svn" componentType="eclipse.project" mutable="true" source="true">
 			<rm:uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/{0}">
 				<bc:propertyRef key="buckminster.component" />
 			</rm:uri>
