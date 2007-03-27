@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.maven.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,10 @@ public class MavenProvider extends Provider
 	{
 		super(remoteReaderType, componentType, managedCategories, versionConverterDesc, uri, mutable, source,
 			documentation);
+		if(mappings == null)
+			mappings = Collections.emptyMap();
+		if(rules == null)
+			rules = Collections.emptyList();
 		m_mappings = mappings;
 		m_rules = rules;
 	}
@@ -111,7 +116,7 @@ public class MavenProvider extends Provider
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		super.emitElements(handler, namespace, prefix);
-		if(m_mappings.size() == 0)
+		if(m_mappings.size() == 0 && m_rules.size() == 0)
 			return;
 
 		String qName = Utils.makeQualifiedName(BM_MAVEN_PROVIDER_PREFIX, ELEM_MAPPINGS);
