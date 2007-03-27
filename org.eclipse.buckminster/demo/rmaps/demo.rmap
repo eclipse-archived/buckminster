@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rm:rmap
+<rmap
+	xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
-	xmlns:pv="http://www.eclipse.org/buckminster/Provider-1.0"
 	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
 
-	<rm:searchPath name="default">
-		<rm:provider readerType="svn" componentType="eclipse.project" mutable="true" source="true">
-			<rm:uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/{0}">
+	<searchPath name="default">
+		<provider readerType="svn" componentType="eclipse.project" mutable="true" source="true">
+			<uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/{0}">
 				<bc:propertyRef key="buckminster.component" />
-			</rm:uri>
-		</rm:provider>
-	</rm:searchPath>
+			</uri>
+		</provider>
+	</searchPath>
 
-	<rm:searchPath name="maven">
-		<rm:provider xsi:type="mp:MavenProvider" readerType="svn" componentType="maven" mutable="false" source="false">
-			<rm:uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/maven"/>
+	<searchPath name="maven">
+		<provider xsi:type="mp:MavenProvider" readerType="maven2" componentType="maven" mutable="false" source="false">
+			<uri format="http://repo1.maven.org/maven2"/>
 			<mp:mappings>
 				<mp:entry name="se.tada.util.sax" groupId="se.tada" artifactId="tada-sax"/>
 			</mp:mappings>
-		</rm:provider>
-	</rm:searchPath>
+		</provider>
+	</searchPath>
 
-	<rm:locator searchPathRef="maven" pattern="^se\.tada\..*" />
-	<rm:locator searchPathRef="default" pattern="^org\.demo\..*" />
+	<locator searchPathRef="maven" pattern="^se\.tada\..*" />
+	<locator searchPathRef="default" pattern="^org\.demo\..*" />
 
-</rm:rmap>
+</rmap>
