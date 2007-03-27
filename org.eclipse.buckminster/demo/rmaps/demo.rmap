@@ -7,16 +7,16 @@
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
 
 	<rm:searchPath name="default">
-		<rm:provider readerType="cvs" componentType="eclipse-project" mutable="true" source="true">
-			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster/demo/{0}">
+		<rm:provider readerType="svn" componentType="eclipse-project" mutable="true" source="true">
+			<rm:uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/{0}">
 				<bc:propertyRef key="buckminster.component" />
 			</rm:uri>
 		</rm:provider>
 	</rm:searchPath>
 
 	<rm:searchPath name="maven">
-		<rm:provider xsi:type="mp:MavenProvider" readerType="cvs" componentType="maven" mutable="false" source="false">
-			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster/demo/maven"/>
+		<rm:provider xsi:type="mp:MavenProvider" readerType="svn" componentType="maven" mutable="false" source="false">
+			<rm:uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/maven"/>
 			<mp:mappings>
 				<mp:entry name="se.tada.util.sax" groupId="se.tada" artifactId="tada-sax"/>
 			</mp:mappings>
