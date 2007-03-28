@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 /**
  * @author Thomas Hallgren
  */
-public class ResourceMapResolverFactory extends AbstractExtension implements IResolverFactory
+public class ResourceMapResolverFactory extends AbstractExtension implements IResourceMapResolverFactory
 {
 	private static final IEclipsePreferences s_prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
 	private static final IEclipsePreferences s_defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);

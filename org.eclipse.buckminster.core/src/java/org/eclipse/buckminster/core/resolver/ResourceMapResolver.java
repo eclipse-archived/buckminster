@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("serial")
-class ResourceMapResolver extends LocalResolver implements IJobChangeListener, IResolver
+public class ResourceMapResolver extends LocalResolver implements IJobChangeListener, IResolver
 {
 	private boolean m_holdQueue = false;
 
@@ -44,13 +44,13 @@ class ResourceMapResolver extends LocalResolver implements IJobChangeListener, I
 
 	private final ArrayList<IProgressMonitor> m_jobMonitors = new ArrayList<IProgressMonitor>();
 
-	private final ResourceMapResolverFactory m_factory;
+	private final IResourceMapResolverFactory m_factory;
 
 	private IProgressMonitor m_topMonitor;
 
 	private final LinkedList<ResolverNodeWithJob> m_waitQueue = new LinkedList<ResolverNodeWithJob>();
 
-	public ResourceMapResolver(ResourceMapResolverFactory factory, RMContext context) throws CoreException
+	public ResourceMapResolver(IResourceMapResolverFactory factory, RMContext context) throws CoreException
 	{
 		super(context);
 		m_factory = factory;
