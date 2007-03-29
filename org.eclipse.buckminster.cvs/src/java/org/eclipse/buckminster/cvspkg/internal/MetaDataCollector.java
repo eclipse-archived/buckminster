@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.internal.ccvs.core.CVSMessages;
 import org.eclipse.team.internal.ccvs.core.CVSStatus;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
@@ -84,7 +86,11 @@ public class MetaDataCollector extends CommandOutputListener
 	{
 		String serverMessage = getServerMessage(line, location);
 		if(serverMessage != null && serverMessage.startsWith(NOTHING_KNOWN_ABOUT))
-			return new CVSStatus(IStatus.ERROR, CVSStatus.DOES_NOT_EXIST, commandRoot, line);
+			return new CVSStatus(
+				IStatus.ERROR,
+				CVSStatus.DOES_NOT_EXIST,
+				NLS.bind(CVSMessages.CVSStatus_messageWithRoot, new String[] { commandRoot.getName(), line }),
+				(Throwable)null);
 		return OK;
 	}
 
