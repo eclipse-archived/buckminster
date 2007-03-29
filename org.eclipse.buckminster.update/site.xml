@@ -4,19 +4,19 @@
    <description url="http://download.eclipse.org/technology/buckminster/updates">
       The update site for Buckminster
    </description>
-   <feature url="features/org.eclipse.buckminster.core.feature_1.0.0.v20070315.jar" id="org.eclipse.buckminster.core.feature" version="1.0.0.v20070315">
+   <feature url="features/org.eclipse.buckminster.core.feature_1.0.0.v20070329.jar" id="org.eclipse.buckminster.core.feature" version="1.0.0.v20070329">
       <category name="Buckminster (core)"/>
    </feature>
-   <feature url="features/org.eclipse.buckminster.cvs.feature_1.0.0.v20070308.jar" id="org.eclipse.buckminster.cvs.feature" version="1.0.0.v20070308">
+   <feature url="features/org.eclipse.buckminster.cvs.feature_1.0.0.v20070329.jar" id="org.eclipse.buckminster.cvs.feature" version="1.0.0.v20070329">
       <category name="Buckminster (optional)"/>
    </feature>
-   <feature url="features/org.eclipse.buckminster.maven.feature_1.0.0.v20070308.jar" id="org.eclipse.buckminster.maven.feature" version="1.0.0.v20070308">
+   <feature url="features/org.eclipse.buckminster.maven.feature_1.0.0.v20070329.jar" id="org.eclipse.buckminster.maven.feature" version="1.0.0.v20070329">
       <category name="Buckminster (optional)"/>
    </feature>
    <feature url="features/org.eclipse.buckminster.p4.feature_1.0.0.v20070308.jar" id="org.eclipse.buckminster.p4.feature" version="1.0.0.v20070308">
       <category name="Buckminster (optional)"/>
    </feature>
-   <feature url="features/org.eclipse.buckminster.pde.feature_1.0.0.v20070315.jar" id="org.eclipse.buckminster.pde.feature" version="1.0.0.v20070315">
+   <feature url="features/org.eclipse.buckminster.pde.feature_1.0.0.v20070329.jar" id="org.eclipse.buckminster.pde.feature" version="1.0.0.v20070329">
       <category name="Buckminster (optional)"/>
    </feature>
    <feature url="features/org.eclipse.buckminster.svn.feature_1.0.0.v20070315.jar" id="org.eclipse.buckminster.svn.feature" version="1.0.0.v20070315">
