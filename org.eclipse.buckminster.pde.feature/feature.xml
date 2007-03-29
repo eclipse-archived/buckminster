@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.pde.feature"
       label="Buckminster - PDE support"
-      version="1.0.0.v20070315"
+      version="1.0.0.v20070329"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.pde">
 
