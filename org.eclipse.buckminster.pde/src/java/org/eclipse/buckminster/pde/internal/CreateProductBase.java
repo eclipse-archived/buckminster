@@ -313,11 +313,10 @@ public class CreateProductBase
 		{
 			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_16_LOW));
 			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_16_HIGH));
-			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_24_LOW));
-			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_32_HIGH));
 			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_32_LOW));
-			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_48_HIGH));
+			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_32_HIGH));
 			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_48_LOW));
+			appendExpandedPath(buffer, info.getIconPath(ILauncherInfo.WIN32_48_HIGH));
 		}
 		return buffer.length() > 0
 				? buffer.toString()
