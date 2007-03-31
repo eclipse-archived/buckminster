@@ -106,7 +106,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		return m_uri;
 	}
 
-	protected URL getURL() throws CoreException
+	public URL getURL() throws CoreException
 	{
 		try
 		{
