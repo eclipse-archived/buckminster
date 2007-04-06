@@ -19,4 +19,5 @@
     <cq:advisorNode namePattern="stax\.stax-ri" skipComponent="true"/>
     <cq:advisorNode namePattern="ws-commons-java5" skipComponent="true"/>
     <cq:advisorNode namePattern="xml-apis" skipComponent="true" versionOverride="1.3.2" versionOverrideType="Triplet"/>
+    <cq:advisorNode namePattern="org\.apache\.axiom\.api" versionOverride="[1.2.2,1.2.2]" versionOverrideType="Triplet"/>
 </cq:componentQuery>
