@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Buckminster Runtime Plug-in
+Bundle-Name: Buckminster Runtime Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.runtime;singleton:=true
-Bundle-Version: 1.0.0.v20070308
+Bundle-Version: 0.1.0.v20070413
 Bundle-Activator: org.eclipse.buckminster.runtime.Buckminster
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime
