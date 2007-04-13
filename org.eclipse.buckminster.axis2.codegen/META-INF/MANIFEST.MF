@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Buckminster Axis2 Codegen Plug-in
+Bundle-Name: Buckminster Axis2 Codegen Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.axis2.codegen;singleton:=true
-Bundle-Version: 1.0.0.v20070205
+Bundle-Version: 0.1.0.v20070413
 Bundle-Localization: plugin
 Bundle-Vendor: The Buckminster Project
 Require-Bundle: org.eclipse.ant.core,
