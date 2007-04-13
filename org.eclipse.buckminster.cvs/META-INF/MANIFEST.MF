@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Buckminster CVS Plug-in
+Bundle-Name: Buckminster CVS Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.cvs; singleton:=true
-Bundle-Version: 1.0.0.v20070329
+Bundle-Version: 0.1.0.v20070413
 Bundle-Activator: org.eclipse.buckminster.cvspkg.CVSPlugin
 Bundle-Vendor: Eclipse.org
 Export-Package: .,
