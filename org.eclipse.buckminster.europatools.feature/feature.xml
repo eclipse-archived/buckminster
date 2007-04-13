@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.europatools.feature"
-      label="Buckminster - Europa tools"
-      version="1.0.0.v20070308"
+      label="Buckminster - Europa tools (Incubation)"
+      version="0.1.0.v20070413"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
