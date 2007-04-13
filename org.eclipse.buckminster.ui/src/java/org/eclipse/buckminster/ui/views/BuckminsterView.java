@@ -54,7 +54,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -126,7 +129,7 @@ public class BuckminsterView extends ViewPart
 				}
 				catch(CoreException e)
 				{
-					UiUtils.openError(getViewSite().getShell(), "Unable to get children nodes", e);
+					UiUtils.openError(getViewSite().getShell(), "Unable to get child nodes", e);
 				}
 			}
 			return null;
@@ -299,6 +302,206 @@ public class BuckminsterView extends ViewPart
 		public static String[] getIds()
 		{
 			return s_preferenceIds.toArray(new String[0]);
+		}
+	}
+	
+	abstract class TreeNode
+	{
+		private TreeNode m_parent = null;
+
+		public TreeNode getParent()
+		{
+			return m_parent;
+		}
+		
+		public void setParent(TreeNode parent)
+		{
+			m_parent = parent;
+		}
+
+		public TreeNode[] getChildren()
+		{
+			return null;
+		}
+
+		public Object getValue()
+		{
+			return null;
+		}
+
+		public boolean hasChildren()
+		{
+			TreeNode[] children = getChildren();
+			return children == null ? false : getChildren().length > 0;
+		}
+		
+		public String getName()
+		{
+			return "";
+		}
+	}
+	
+	class RootNode extends TreeNode
+	{
+
+		@Override
+		public TreeNode[] getChildren()
+		{
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			List<TreeNode> children = new ArrayList<TreeNode>(); 
+			
+			for(IProject project : projects)
+			{
+				TreeNode child = new ProjectNode(project);
+				child.setParent(this);
+				children.add(child);
+			}
+			
+			return children.toArray(new TreeNode[0]);
+		}
+	}
+	
+	class ProjectNode extends TreeNode
+	{
+		
+		private IProject m_project;
+		
+		public ProjectNode(IProject project)
+		{
+			m_project = project;
+		}
+
+		@Override
+		public TreeNode[] getChildren()
+		{
+			List<TreeNode> children = new ArrayList<TreeNode>();
+			
+			try
+			{
+				CSpec cspec = WorkspaceInfo.getCSpec(m_project);
+				cspec.getAttributesProducedByActions(false);
+				TreeNode child = new CspecNode(cspec);
+				child.setParent(this);
+				children.add(child);
+			
+				for(IResource resource : m_project.members())
+				{
+					if(resource instanceof IFile && resource.getName().endsWith("cquery"))
+					{
+						child = new CqueryNode((IFile) resource);
+						child.setParent(this);
+						children.add(child);
+						break;
+					}
+				}
+				
+				if(cspec.getAttributesProducedByActions(false).size() > 0)
+				{
+					child = new ActionsNode(cspec);
+					child.setParent(this);
+					children.add(child);					
+				}
+			}
+			catch(CoreException e)
+			{
+				UiUtils.openError(getViewSite().getShell(), "Unable to get child nodes", e);
+			}
+			
+			return children.toArray(new TreeNode[0]);
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_project;
+		}
+		
+		@Override
+		public String getName()
+		{
+			return m_project.getName();
+		}
+	}
+	
+	class CspecNode extends TreeNode
+	{
+		
+		private CSpec m_cspec;
+		
+		public CspecNode(CSpec cspec)
+		{
+			m_cspec = cspec;
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_cspec;
+		}
+
+		@Override
+		public String getName()
+		{
+			return "Component Specification";
+		}
+	}
+	
+	class CqueryNode extends TreeNode
+	{
+		private IFile m_cqueryFile;
+		
+		public CqueryNode(IFile cqueryFile)
+		{
+			m_cqueryFile = cqueryFile;
+		}
+		
+		@Override
+		public Object getValue()
+		{
+			return m_cqueryFile;
+		}
+
+		@Override
+		public String getName()
+		{
+			return "Component Query";
+		}
+	}
+	
+	class ActionsNode extends TreeNode
+	{
+		
+		private CSpec m_cspec;
+		
+		public ActionsNode(CSpec cspec)
+		{
+			m_cspec = cspec;
+		}
+
+		@Override
+		public TreeNode[] getChildren()
+		{
+			try
+			{
+				List<Attribute> viableAttributes = m_cspec.getAttributesProducedByActions(false);
+			}
+			catch(CoreException e)
+			{
+				UiUtils.openError(getViewSite().getShell(), "Unable to get child nodes", e);
+			}
+			return null;
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_cspec;
+		}
+
+		@Override
+		public String getName()
+		{
+			return "Actions";
 		}
 	}
 	
