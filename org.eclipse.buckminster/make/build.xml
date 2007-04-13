@@ -39,7 +39,7 @@
 
 	<target name="build.product">
 		<extractFeatureVersion property="product.version" file="${product.feature.xml}"/>
-		<property name="zipped.product" location="${product.output}/buckminster.product-${product.version}.zip"/>
+		<property name="zipped.product" location="${product.output}/buckminster.product-${product.version}_incubation.zip"/>
 
 		<mkdir dir="${product.output}"/>
 		<buckminster.zip destfile="${zipped.product}">
@@ -50,7 +50,7 @@
 	<target name="build.site">
 		<extractFeatureVersion property="site.version" file="${site.feature.xml}"/>
 		<property name="deployed.site" location="${site.output}/buckminster.site-${site.version}"/>
-		<property name="archived.site" location="${site.output}/buckminster.archivedsite-${site.version}.zip"/>
+		<property name="archived.site" location="${site.output}/buckminster.archivedsite-${site.version}_incubation.zip"/>
 
 		<mkdir dir="${deployed.site}"/>
 		<buckminster.copy todir="${deployed.site}">
