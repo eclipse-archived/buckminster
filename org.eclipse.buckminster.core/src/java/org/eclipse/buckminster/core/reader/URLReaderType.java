@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -94,21 +93,14 @@ public class URLReaderType extends AbstractReaderType
 		try
 		{
 			optional[0] = true;
-
-			IComponentType cType = cr.getProvider().getComponentType();
-			if(cType.hasProjectDescription())
+			URI uri = new URI(cr.getRepository(context));
+			IPath path = Path.fromPortableString(uri.getPath());
+			if(!this.isFileReader() || path.hasTrailingSeparator())
 				//
 				// Returning null here suggests using the location of the workspace
 				//
 				return null;
 
-			// a URL with, say, '%20', in it, won't be properly translated to ' ' by the URL class
-			// solution: pass it through URI which will do the right thing.
-			// Also, run it through java.lang.File to ensure we get native separators - we never know where the
-			// path will be used...
-			//
-			URI uri = new URI(cr.getRepository(context));
-			IPath path = new Path(new File(uri.getPath()).getPath());
 			return CorePlugin.getDefault().getBuckminsterProjectLocation().append("url-cache").append(path);
 		}
 		catch(Exception e)

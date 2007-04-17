@@ -437,13 +437,16 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		}
 
 		IPath wsRelativePath;
-		if(isEclipseProject())
+		IPath matLoc = mat.getComponentLocation();
+		if(matLoc.hasTrailingSeparator())
 		{
+			// TODO: Improve this when the Materialization spec is in place. For
+			// now, let's assume that a folder is a project.
+			//
 			wsRelativePath = new Path(context.getProjectName(this)).addTrailingSeparator();
 		}
 		else
 		{
-			IPath matLoc = mat.getComponentLocation();
 			IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
 			if(bmProjLoc.isPrefixOf(matLoc))
 				wsRelativePath = matLoc.removeFirstSegments(bmProjLoc.segmentCount() - 1).setDevice(null);

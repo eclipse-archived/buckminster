@@ -18,7 +18,7 @@ import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
-import org.eclipse.buckminster.core.ctype.JarComponentType;
+import org.eclipse.buckminster.core.helpers.AbstractComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -42,7 +42,7 @@ import org.w3c.dom.Node;
  *
  * @author Thomas Hallgren
  */
-public class MavenComponentType extends JarComponentType
+public class MavenComponentType extends AbstractComponentType
 {
 	private static final MavenCSpecBuilder s_builder = new MavenCSpecBuilder();
 	private static final Pattern s_snapshotDesignatorPattern = Pattern.compile("^(.+)-" + MavenComponentType.s_snapshotExpr + '$');
@@ -248,7 +248,6 @@ public class MavenComponentType extends JarComponentType
 		archives.addExternalPrerequisite(componentName, WellKnownExports.JAVA_BINARIES);
 	}
 	
-	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);

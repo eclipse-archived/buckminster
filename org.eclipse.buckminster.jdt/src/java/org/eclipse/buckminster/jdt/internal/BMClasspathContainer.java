@@ -132,7 +132,7 @@ public class BMClasspathContainer implements IClasspathContainer
 		if(!componentHome.toFile().isFile())
 			return;
 
-		if("jar".equals(componentHome.lastSegment()))
+		if(componentHome.lastSegment().endsWith(".jar"))
 		{
 			IClasspathEntry cpe = JavaCore.newLibraryEntry(componentHome, null, null);
 			if(!cpes.contains(cpe))
