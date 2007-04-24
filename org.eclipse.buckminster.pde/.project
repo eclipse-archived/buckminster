@@ -22,7 +22,6 @@
 		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.buckminster.jdt.classpathEmitter</name>
-			<triggers>full,</triggers>
 			<arguments>
 				<dictionary>
 					<key>full.printstream</key>
