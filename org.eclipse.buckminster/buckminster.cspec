@@ -3,6 +3,7 @@
 	<dependencies>
  		<dependency name="org.eclipse.buckminster.update" category="feature"/>
 		<dependency name="org.eclipse.buckminster.product" category="feature"/>
+		<dependency name="org.eclipse.buckminster.jnlp.product" category="feature"/>
 	</dependencies>
 
 	<actions>
@@ -28,12 +29,24 @@
             <products base="${buckminster.output}/product"/>
 		</public>
 
+		<public name="build.jnlp.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/build.xml" />
+			</actorProperties>
+			<prerequisites>
+				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.buckminster.product" alias="product"/>
+				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
+			</prerequisites>
+            <products base="${buckminster.output}/jnlp.product"/>
+		</public>
+
 		<public name="clean" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
 			</actorProperties>
 			<prerequisites>
 				<attribute component="org.eclipse.buckminster.product" name="buckminster.clean"/>
+				<attribute component="org.eclipse.buckminster.jnlp.product" name="buckminster.clean"/>
 				<attribute component="org.eclipse.buckminster.update" name="buckminster.clean"/>
 			</prerequisites>
 		</public>
@@ -43,6 +56,7 @@
 		<public name="build.all">
 			<attribute name="build.site"/>
 			<attribute name="build.product"/>
+			<attribute name="build.jnlp.product"/>
 		</public>
 		<private name="site.source">
 			<attribute component="org.eclipse.buckminster.update" name="feature.exports"/>
