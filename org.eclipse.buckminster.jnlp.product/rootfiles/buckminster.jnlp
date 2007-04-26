@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="@@codebase" href="buckminster.jnlp">
+	<information>
+		<title>Buckminster installer</title>
+		<vendor>Eclipse.org</vendor>
+		<homepage href="www.eclipse.org/buckminster" />
+		<description>Buckminster Java Web Start installer</description>
+	</information>
+
+	<security>
+		<all-permissions />
+	</security>
+
+	<!-- The name of the main class to execute. This does not change-->
+	<application-desc main-class="org.eclipse.core.launcher.WebStartMain">
+		<argument>-nosplash</argument>
+		<argument>@@brandinginfo</argument>
+		<argument>@@artifact</argument>
+	</application-desc>
+
+	<resources>
+		<jar href="startup.jar" />
+
+		<extension name="JNLP Product feature" href="features/org.eclipse.buckminster.jnlp.product.0.1.0.jnlp" />
+
+		<!-- Information usually specified in the config.ini -->
+		<property name="osgi.instance.area" value="@user.home/Application Data/buckminster" />
+		<property name="osgi.configuration.area" value="@user.home/Application Data/buckminster" />
+
+		<!-- The id of the product to run, like found in the overview page of the product editor -->
+		<property name="eclipse.product" value="org.eclipse.buckminster.jnlp.product" />
+	</resources>
+
+	<!-- Indicate on a platform basis which JRE to use -->
+	<resources os="Mac">
+		<j2se version="1.5+" java-vm-args="-XstartOnFirstThread"/>
+	</resources>
+	<resources>
+		<j2se version="1.5+" />
+	</resources>
+</jnlp>
