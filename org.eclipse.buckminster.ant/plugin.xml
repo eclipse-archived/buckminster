@@ -87,7 +87,7 @@
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.packages"/>
   <antTask
-        class="org.eclipse.buckminster.ant.taskdefs.WorkspaceBind"
+        class="org.eclipse.buckminster.ant.taskdefs.ResourceLocation"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.resourceLocation"/>
 	</extension>
