@@ -160,7 +160,7 @@ public class Perform extends WorkspaceCommand
     	{
     		String component = null;
     		String attribute = null;
-    		int splitIdx = s.indexOf('#');
+    		int splitIdx = s.lastIndexOf('#');
     		if(splitIdx > 0)
     		{
     			attribute = s.substring(splitIdx + 1).trim();

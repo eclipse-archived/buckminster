@@ -84,9 +84,20 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 		return hc;
 	}
 
+	/**
+	 * <p>Match this name with another name. The match is done as
+	 * follows</p>
+	 * <ul>
+	 * <li>If names are not equal, the match is always false</li>
+	 * <li>If both instances have a category, it must be equal</li>
+	 * <li>If one instance lacks a category, the categories are not considered part of the match</p>
+	 * @param o The name to match with this one
+	 * @return <code>true</code> if the name match
+	 */
 	public boolean matches(ComponentName o)
 	{
-		return this.equals(o);
+		return this.getName().equals(o.getName())
+			&& (m_categoryName == null || o.m_categoryName == null || m_categoryName.equals(o.m_categoryName));
 	}
 
 	/**

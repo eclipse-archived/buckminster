@@ -102,10 +102,22 @@ public class ComponentIdentifier extends ComponentName
 		return hc;
 	}
 
+	/**
+	 * <p>Match this identifier with another identifier. The match is done as
+	 * follows</p>
+	 * <ul>
+	 * <li>If names are not equal, the match is always false</li>
+	 * <li>If both instances have a category, it must be equal</li>
+	 * <li>If one instance lacks a category, the categories are not considered part of the match</p>
+	 * <li>If both instances have a version, it must be equal</li>
+	 * <li>If one instance lacks a version, the versions are not considered part of the match</p>
+	 * @param o The identifier to match with this one
+	 * @return <code>true</code> if the identifiers match
+	 */
 	public boolean matches(ComponentIdentifier o)
 	{
 		return super.matches(o)
-			&& (m_version == null || m_version.equals(o.m_version));
+			&& (m_version == null || o.m_version == null || m_version.equals(o.m_version));
 	}
 	
 	@Override
