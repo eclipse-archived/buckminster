@@ -75,7 +75,7 @@ public class WorkspaceBind extends Task
 			RMContext context = new RMContext(qbld.createComponentQuery());
 
 			IPath projectPath = Path.fromOSString(m_projectDir.toString());
-			Materialization mat = new Materialization(projectPath, LocalResolver.fromPath(projectPath, projDesc.getName()));
+			Materialization mat = new Materialization(projectPath.addTrailingSeparator(), LocalResolver.fromPath(projectPath, projDesc.getName()));
 			mat.store();
 
 			IMaterializer wsMat = CorePlugin.getDefault().getMaterializer(IMaterializer.WORKSPACE);
