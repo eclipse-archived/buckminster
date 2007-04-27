@@ -34,7 +34,7 @@
 				<property key="buildFile" value="make/build.xml" />
 			</actorProperties>
 			<prerequisites>
-				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.buckminster.product" alias="product"/>
+				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.buckminster.jnlp.product" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
             <products base="${buckminster.output}/jnlp.product"/>
