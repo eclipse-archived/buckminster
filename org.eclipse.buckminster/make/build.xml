@@ -39,7 +39,7 @@
 
 	<target name="build.product">
 		<extractFeatureVersion property="product.version" file="${product.feature.xml}"/>
-		<property name="zipped.product" location="${product.output}/buckminster.product-${product.version}_incubation.zip"/>
+		<property name="zipped.product" location="${product.output}/${product.name}-${product.version}_incubation.zip"/>
 
 		<mkdir dir="${product.output}"/>
 		<buckminster.zip destfile="${zipped.product}">

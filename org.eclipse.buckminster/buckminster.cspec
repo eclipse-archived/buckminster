@@ -21,7 +21,11 @@
 		<public name="build.product" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
+				<property key="targets" value="build.product" />
 			</actorProperties>
+			<properties>
+				<property key="product.name" value="buckminster.product" />
+			</properties>
 			<prerequisites>
 				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
 				<attribute component="org.eclipse.buckminster.product" name="feature.xml" alias="product.feature.xml"/>
@@ -32,7 +36,11 @@
 		<public name="build.jnlp.product" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
+				<property key="targets" value="build.product" />
 			</actorProperties>
+			<properties>
+				<property key="product.name" value="buckminster.jnlp.product" />
+			</properties>
 			<prerequisites>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.buckminster.jnlp.product" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
