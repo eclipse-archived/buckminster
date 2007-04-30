@@ -3,4 +3,9 @@
     <cq:rootRequest name="org.eclipse.buckminster.axis2.bundlegen"/>
     <cq:advisorNode namePattern="buckminster" sourceLevel="REQUIRE" whenNotEmpty="OVERWRITE" useInstalled="false" useMaterialization="false"/>
     <cq:advisorNode namePattern="\Qorg.tigris.subversion\E" whenNotEmpty="REUSE"/>
+    <cq:advisorNode namePattern="jaxen" skipComponent="true"/>
+    <cq:advisorNode namePattern="junit" skipComponent="true"/>
+    <cq:advisorNode namePattern="org.apache.woden/woden" skipComponent="true"/>
+    <cq:advisorNode namePattern="xerces/xercesImpl" skipComponent="true"/>
+    <cq:advisorNode namePattern="xml-apis" skipComponent="true"/>
 </cq:componentQuery>
