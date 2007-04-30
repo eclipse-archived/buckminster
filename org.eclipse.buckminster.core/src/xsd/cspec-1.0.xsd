@@ -598,28 +598,18 @@
 					maxOccurs="unbounded">
 					<element
 						name="alterInstallerHints"
-						type="cs:AlterProperties"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:AlterProperties"/>
 					<element
 						name="alterPrerequisites"
-						type="cs:AlterGroup"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:AlterGroup"/>
 					<element
 						name="alterActorProperties"
-						type="cs:AlterProperties"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:AlterProperties"/>
 					<element
 						name="alterProperties"
-						type="cs:AlterProperties"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:AlterProperties"/>
 					<element
-						name="alterProducts"
-						minOccurs="0"
-						maxOccurs="1">
+						name="alterProducts">
 						<complexType>
 							<choice
 								minOccurs="0"
@@ -651,14 +641,10 @@
 					maxOccurs="unbounded">
 					<element
 						name="alterInstallerHints"
-						type="cs:AlterProperties"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:AlterProperties"/>
 					<element
 						name="removePath"
-						type="cs:RemovePath"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:RemovePath"/>
 				</choice>
 			</extension>
 		</complexContent>
@@ -671,33 +657,22 @@
 					maxOccurs="unbounded">
 					<element
 						name="alterInstallerHints"
-						type="cs:AlterProperties"
-						minOccurs="0"
-						maxOccurs="1" />
+						type="cs:AlterProperties"/>
 					<element
 						name="alterAttribute"
-						type="cs:Prerequisite"
-						minOccurs="0"
-						maxOccurs="unbounded" />
+						type="cs:Prerequisite"/>
 					<element
 						name="remove"
-						type="cs:Remove"
-						minOccurs="0"
-						maxOccurs="unbounded" />
+						type="cs:Remove"/>
 				</choice>
 			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="AlterProperties">
-		<complexContent>
-			<extension base="cs:Properties">
-				<sequence>
-					<element
-						name="remove"
-						type="cs:RemoveProperty" />
-				</sequence>
-			</extension>
-		</complexContent>
+		<choice maxOccurs="unbounded" minOccurs="0">
+			<element name="property" type="com:PropertyConstant" />
+			<element name="remove" type="cs:RemoveProperty" />
+		</choice>
 	</complexType>
 	<complexType name="Remove">
 		<attribute
