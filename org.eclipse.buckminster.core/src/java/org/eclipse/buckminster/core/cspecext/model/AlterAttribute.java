@@ -14,7 +14,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.MissingPathException;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.HintAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.PropertyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
@@ -71,7 +71,7 @@ public abstract class AlterAttribute<T extends Attribute>
 		// Assert that all hints to remove really exists
 		//
 		performPropertyAlterations(
-				original.getCSpecName(), original.getName(),
+				original.getCSpecName(), original.getName(), "installer hint",
 				original.getInstallerHints(), m_alteredHints,
 				m_base.getInstallerHints(), m_removedHints);
 	}
@@ -103,7 +103,7 @@ public abstract class AlterAttribute<T extends Attribute>
 	}
 
 	
-	static void performPropertyAlterations(String compName, String attrName,
+	static void performPropertyAlterations(String compName, String attrName, String propertyCategory,
 			Map<String, String> original, Map<String, String> altered, Map<String, String> added,
 			Set<String> removed) throws CoreException
 	{
@@ -114,19 +114,19 @@ public abstract class AlterAttribute<T extends Attribute>
 
 		for(String key : removed)
 			if(!original.containsKey(key))
-				throw new MissingHintException(compName, attrName, key);
+				throw new MissingPropertyException(compName, attrName, propertyCategory, key);
 
 		// Assert that all hints to be altered really exists
 		//
 		for(String key : altered.keySet())
 			if(!original.containsKey(key))
-				throw new MissingHintException(compName, attrName, key);
+				throw new MissingPropertyException(compName, attrName, propertyCategory, key);
 
 		// Assert that we don't already have hints to be added
 		//
 		for(String key : added.keySet())
 			if(original.containsKey(key))
-				throw new HintAlreadyDefinedException(compName, attrName, key);
+				throw new PropertyAlreadyDefinedException(compName, attrName, propertyCategory, key);
 
 		for(String key : removed)
 			original.remove(key);

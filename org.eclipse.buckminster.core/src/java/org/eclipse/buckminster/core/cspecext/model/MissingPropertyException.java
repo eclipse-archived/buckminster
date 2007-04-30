@@ -5,30 +5,32 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.core.cspec.model;
+package org.eclipse.buckminster.core.cspecext.model;
 
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 
-public class HintAlreadyDefinedException extends LocalizedException
+public class MissingPropertyException extends LocalizedException
 {
-	private static final long serialVersionUID = -8061340018978439600L;
+	private static final long serialVersionUID = 5466504695679341153L;
 	private final String m_name;
 	private final String m_attribute;
-	private final String m_hint;
+	private final String m_propertyCategory;
+	private final String m_propertyName;
 
-	public HintAlreadyDefinedException(String name, String attribute, String hint)
+	public MissingPropertyException(String name, String attribute, String propertyCategory, String propertyName)
 	{
-		super("CSpec {0}, attribute {1} already has a hint named {2}");
+		super("CSpec {0}, attribute {1} has no {2} named {3}");
 		m_name = name;
 		m_attribute = attribute;
-		m_hint = hint;
+		m_propertyCategory = propertyCategory;
+		m_propertyName = propertyName;
 		this.assignMessage();
 	}
 
 	@Override
 	protected String[] getArguments()
 	{
-		return new String[] { m_name, m_attribute, m_hint };
+		return new String[] { m_name, m_attribute, m_propertyCategory, m_propertyName };
 	}
 }
 

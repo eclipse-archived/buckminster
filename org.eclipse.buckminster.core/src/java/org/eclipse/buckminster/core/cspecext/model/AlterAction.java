@@ -91,7 +91,7 @@ public class AlterAction extends AlterAttribute<Action>
 	protected void alterActorProperties(ActionBuilder original) throws CoreException
 	{
 		performPropertyAlterations(
-				original.getCSpecName(), original.getName(),
+				original.getCSpecName(), original.getName(), "actorProperty",
 				original.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
 				m_removedActorProperties);
 	}
@@ -99,7 +99,7 @@ public class AlterAction extends AlterAttribute<Action>
 	protected void alterProperties(ActionBuilder original) throws CoreException
 	{
 		performPropertyAlterations(
-				original.getCSpecName(), original.getName(),
+				original.getCSpecName(), original.getName(), "property",
 				original.getProperties(), m_alteredProperties, this.getBase().getProperties(),
 				m_removedProperties);
 	}

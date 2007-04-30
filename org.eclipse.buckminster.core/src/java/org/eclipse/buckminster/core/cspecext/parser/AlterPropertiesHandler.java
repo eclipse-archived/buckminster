@@ -33,7 +33,9 @@ abstract class AlterPropertiesHandler extends PropertyManagerHandler
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_removeHandler)
-			this.addRemovedProperty(m_removeHandler.getValue());
+			addRemovedProperty(m_removeHandler.getValue());
+		else
+			super.childPopped(child);
 	}
 
 	@Override
