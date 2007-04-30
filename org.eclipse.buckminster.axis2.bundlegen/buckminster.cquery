@@ -3,21 +3,4 @@
     <cq:rootRequest name="org.eclipse.buckminster.axis2.bundlegen"/>
     <cq:advisorNode namePattern="buckminster" sourceLevel="REQUIRE" whenNotEmpty="OVERWRITE" useInstalled="false" useMaterialization="false"/>
     <cq:advisorNode namePattern="\Qorg.tigris.subversion\E" whenNotEmpty="REUSE"/>
-    <cq:advisorNode namePattern="\Qorg.apache.ws.jaxme.api\E" versionOverride="0.5" versionOverrideType="Triplet"/>
-    <cq:advisorNode namePattern="org\.jaxen" allowCircularDependency="true" versionOverride="1.1" versionOverrideType="Triplet"/>
-    <cq:advisorNode namePattern="com\.clarkware\.junitperf" skipComponent="true"/>
-    <cq:advisorNode namePattern="javax\.portlet" skipComponent="true"/>
-    <cq:advisorNode namePattern="javax\.servlet" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.apache\.avalon\.framework" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.apache\.log" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.apache\.xerces\.impl" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.custommonkey\.xmlunit" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.dom4j" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.jdom" skipComponent="true"/>
-    <cq:advisorNode namePattern="org\.junit" skipComponent="true"/>
-    <cq:advisorNode namePattern="nu\.xom" skipComponent="true"/>
-    <cq:advisorNode namePattern="stax\.stax-ri" skipComponent="true"/>
-    <cq:advisorNode namePattern="ws-commons-java5" skipComponent="true"/>
-    <cq:advisorNode namePattern="xml-apis" skipComponent="true" versionOverride="1.3.2" versionOverrideType="Triplet"/>
-    <cq:advisorNode namePattern="org\.apache\.axiom\.api" versionOverride="[1.2.2,1.2.2]" versionOverrideType="Triplet"/>
 </cq:componentQuery>
