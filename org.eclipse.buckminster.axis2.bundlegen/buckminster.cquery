@@ -7,6 +7,7 @@
     <cq:advisorNode namePattern="ant-launcher$" skipComponent="true"/>
     <cq:advisorNode namePattern="avalon-framework" skipComponent="true"/>
     <cq:advisorNode namePattern="mail" skipComponent="true"/>
+    <cq:advisorNode namePattern="jaxme2" skipComponent="true"/>
     <cq:advisorNode namePattern="jaxen" skipComponent="true"/>
     <cq:advisorNode namePattern="junit" skipComponent="true"/>
     <cq:advisorNode namePattern="logkit" skipComponent="true"/>
