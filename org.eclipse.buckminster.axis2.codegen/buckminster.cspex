@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cs:cspecExtension xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
 <cs:dependencies>
-	<cs:dependency name="org.apache.axis2/axis2-java2wsdl"/>
 	<cs:dependency name="org.apache.axis2/axis2-codegen"/>
 	<cs:dependency name="org.apache.axis2/axis2-tools"/>
 </cs:dependencies>
@@ -11,7 +10,7 @@
 			<cs:property key="buildFile" value="make/build.xml" />
 		</cs:actorProperties>
 		<cs:prerequisites alias="required.jars">
-			<cs:attribute component="org.apache.axis2/axis2-java2wsdl" name="java.binaries"/>
+			<cs:attribute component="org.eclipse.buckminster.axis2" name="java.binaries"/>
 			<cs:attribute component="org.apache.axis2/axis2-codegen" name="java.binaries"/>
 			<cs:attribute component="org.apache.axis2/axis2-tools" name="java.binaries"/>
 		</cs:prerequisites>
