@@ -2,7 +2,7 @@
 <cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.axis2.bundlegen" version="1.0.0">
 <cs:dependencies>
 	<cs:dependency name="org.apache.axis2/axis2-kernel"/>
-	<cs:dependency name="org.apache.axis2/axis2-codegen"/>
+	<cs:dependency name="org.apache.axis2/axis2-adb-codegen"/>
 	<cs:dependency name="org.apache.axis2/axis2-tools"/>
 </cs:dependencies>
 <cs:actions>
@@ -16,7 +16,7 @@
 		</cs:properties>
 		<cs:prerequisites alias="required.jars">
 			<cs:attribute component="org.apache.axis2/axis2-kernel" name="java.binaries"/>
-			<cs:attribute component="org.apache.axis2/axis2-codegen" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2/axis2-adb-codegen" name="java.binaries"/>
 			<cs:attribute component="org.apache.axis2/axis2-tools" name="java.binaries"/>
 		</cs:prerequisites>
 		<cs:products alias="output" base="../plugins">
