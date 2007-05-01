@@ -53,7 +53,7 @@ public class MavenProvider extends Provider
 	 */
 	public static MapEntry getDefaultGroupAndArtifact(String name)
 	{
-		int dotIdx = name.lastIndexOf('.');
+		int dotIdx = name.lastIndexOf('/');
 		return (dotIdx > 0)
 			? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null)
 			: new MapEntry(name, name, name, null);
@@ -70,7 +70,7 @@ public class MavenProvider extends Provider
 	 */
 	public static String getDefaultName(String groupId, String artifactId)
 	{
-		return artifactId.equals(groupId) ? artifactId : groupId + '.' + artifactId;
+		return artifactId.equals(groupId) ? artifactId : groupId + '/' + artifactId;
 	}
 
 	private final Map<String, MapEntry> m_mappings;

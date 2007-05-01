@@ -12,11 +12,11 @@ package org.eclipse.buckminster.maven.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.URLFileReader;
@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * The URL used by the MavenReader denotes the group directory within one
@@ -68,20 +67,33 @@ public class MavenReader extends URLFileReader
 		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor);
 	}
 
-	Document getPOMDocument(IProgressMonitor monitor) throws CoreException
+	Document getPOMDocument(IPath[] pomPathRet, IProgressMonitor monitor) throws CoreException
 	{
 		MavenReaderType rt = (MavenReaderType)getReaderType();
-		URL pomURL = rt.getPomURL(getURI(), m_mapEntry, getVersionSelector());
-		IPath pomPath = rt.getPomPath(m_mapEntry, getVersionSelector());
+		IVersionSelector vs = getVersionSelector();
+		IPath pomPath = rt.getPomPath(m_mapEntry, vs);
+		pomPathRet[0] = pomPath;
+		return getPOMDocument(m_mapEntry, vs, pomPath, monitor);
+	}
+
+	Document getPOMDocument(MapEntry entry, IVersionSelector vs, IPath pomPath, IProgressMonitor monitor) throws CoreException
+	{
+		MavenReaderType rt = (MavenReaderType)getReaderType();
+		URI repoURI = getURI();
 		InputStream input = null;
 		monitor.beginTask(null, 2000);
 		try
 		{
-			input = rt.getLocalCache().openFile(getURI().toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
+			URL repoURL = repoURI.toURL();
+			input = rt.getLocalCache().openFile(repoURI.toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource source = new InputSource(new BufferedInputStream(input));
-			source.setSystemId(pomURL.toString());
+			String repoPath = repoURL.getPath();
+			if(!repoPath.endsWith("/"))
+				repoPath += "/";
+			repoPath += pomPath;
+			source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment()).toString());
 			return builder.parse(source);
 		}
 		catch(IOException e)
@@ -90,11 +102,7 @@ public class MavenReader extends URLFileReader
 			//
 			return null;
 		}
-		catch(ParserConfigurationException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(SAXException e)
+		catch(Exception e)
 		{
 			throw BuckminsterException.wrap(e);
 		}

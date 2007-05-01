@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
@@ -31,6 +32,7 @@ import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -50,10 +52,15 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		monitor.subTask("Generating cspec from Maven artifact");
 		try
 		{
+			IPath pomPath = null;
 			Document pomDoc;
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 2000);
 			if(reader instanceof MavenReader)
-				pomDoc = ((MavenReader)reader).getPOMDocument(subMon);
+			{
+				IPath[] pomPathRet = new IPath[1];
+				pomDoc = ((MavenReader)reader).getPOMDocument(pomPathRet, subMon);
+				pomPath = pomPathRet[0];
+			}
 			else if(reader instanceof ICatalogReader)
 			{
 				try
@@ -71,7 +78,10 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			CSpecBuilder cspecBld = ri.createCSpec();
 			GroupBuilder archives = AbstractComponentType.addSelfAsJarArtifactGroups(cspecBld);
 			if(pomDoc != null)
-				MavenComponentType.addDependencies(reader, pomDoc, cspecBld, archives);
+			{
+				ExpandingProperties properties = new ExpandingProperties();
+				MavenComponentType.addDependencies(reader, pomDoc, pomPath, cspecBld, archives, properties);
+			}
 
 			CSpec cspec = applyExtensions(cspecBld.createCSpec(), reader, MonitorUtils.subMonitor(monitor, 1000));
 			return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
