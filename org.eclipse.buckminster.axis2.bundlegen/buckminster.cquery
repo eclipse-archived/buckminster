@@ -3,6 +3,7 @@
     <cq:rootRequest name="org.eclipse.buckminster.axis2.bundlegen"/>
     <cq:advisorNode namePattern="buckminster" sourceLevel="REQUIRE" whenNotEmpty="OVERWRITE" useInstalled="false" useMaterialization="false"/>
     <cq:advisorNode namePattern="\Qorg.tigris.subversion\E" whenNotEmpty="REUSE"/>
+    <cq:advisorNode namePattern="ant" skipComponent="true"/>
     <cq:advisorNode namePattern="avalon-framework" skipComponent="true"/>
     <cq:advisorNode namePattern="jaxen" skipComponent="true"/>
     <cq:advisorNode namePattern="junit" skipComponent="true"/>
@@ -11,6 +12,7 @@
     <cq:advisorNode namePattern="servlet" skipComponent="true"/>
     <cq:advisorNode namePattern="woden" skipComponent="true"/>
     <cq:advisorNode namePattern="ws-commons-java5" skipComponent="true"/>
+    <cq:advisorNode namePattern="xbeans" skipComponent="true"/>
     <cq:advisorNode namePattern="xercesImpl" skipComponent="true"/>
     <cq:advisorNode namePattern="xml-apis" skipComponent="true"/>
     <cq:advisorNode namePattern="xmlunit" skipComponent="true"/>
