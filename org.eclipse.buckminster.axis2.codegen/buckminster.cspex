@@ -3,6 +3,7 @@
 <cs:dependencies>
 	<cs:dependency name="org.apache.axis2/axis2-java2wsdl"/>
 	<cs:dependency name="org.apache.axis2/axis2-codegen"/>
+	<cs:dependency name="org.apache.axis2/axis2-tools"/>
 </cs:dependencies>
 <cs:actions>
 	<cs:public name="codegen-all.jar" actor="ant">
@@ -12,6 +13,7 @@
 		<cs:prerequisites alias="required.jars">
 			<cs:attribute component="org.apache.axis2/axis2-java2wsdl" name="java.binaries"/>
 			<cs:attribute component="org.apache.axis2/axis2-codegen" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2/axis2-tools" name="java.binaries"/>
 		</cs:prerequisites>
 		<cs:products alias="output">
 			<cs:path path="codegen-all.jar"/>
