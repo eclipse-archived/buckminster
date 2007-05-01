@@ -198,8 +198,16 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			// Generate the resolution from a project in the workspace
 			//
 			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-			IProject existingProject = wsRoot.getProject(query.getProjectName());
-			if(existingProject.isOpen())
+			IProject existingProject = null;
+			try
+			{
+				existingProject = wsRoot.getProject(query.getProjectName());
+			}
+			catch(IllegalArgumentException e)
+			{
+				// Query did not produce a name that is valid for a project
+			}
+			if(existingProject != null && existingProject.isOpen())
 			{
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				if(request.designates(resolution.getComponentIdentifier()))
