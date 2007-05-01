@@ -5,6 +5,7 @@
     <cq:advisorNode namePattern="\Qorg.tigris.subversion\E" whenNotEmpty="REUSE"/>
     <cq:advisorNode namePattern="ant" skipComponent="true"/>
     <cq:advisorNode namePattern="avalon-framework" skipComponent="true"/>
+    <cq:advisorNode namePattern="mail" skipComponent="true"/>
     <cq:advisorNode namePattern="jaxen" skipComponent="true"/>
     <cq:advisorNode namePattern="junit" skipComponent="true"/>
     <cq:advisorNode namePattern="logkit" skipComponent="true"/>
