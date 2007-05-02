@@ -61,8 +61,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(DocumentationHandler.TAG.equals(localName))
@@ -77,7 +76,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		return m_builder.getProperties();
 	}
@@ -95,7 +94,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		{
 			if(to == null)
 				throw new SAXParseException("replaceFrom without replaceTo", this.getDocumentLocator());
-				
+
 			try
 			{
 				m_builder.setReplaceFrom(Pattern.compile(tmp));
@@ -132,8 +131,21 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_WHEN_NOT_EMPTY);
 		if(tmp != null)
-			m_builder.setWhenNotEmpty(ConflictResolution.valueOf(tmp));
-		
+		{
+			if("OVERWRITE".equalsIgnoreCase(tmp))
+				tmp = "REPLACE";
+			else if("REUSE".equals(tmp))
+				tmp = "KEEP";
+
+			try
+			{
+				m_builder.setWhenNotEmpty(ConflictResolution.valueOf(tmp));
+			}
+			catch(IllegalArgumentException e)
+			{
+			}
+		}
+
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_VERSION_OVERRIDE);
 		if(tmp != null)
 		{
@@ -141,9 +153,9 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 			{
 				String vtStr = getOptionalStringValue(attrs, AdvisorNode.ATTR_VERSION_OVERRIDE_TYPE);
 				IVersionType vt = (vtStr == null)
-					? VersionFactory.OSGiType
-					: CorePlugin.getDefault().getVersionType(vtStr);
-		
+						? VersionFactory.OSGiType
+						: CorePlugin.getDefault().getVersionType(vtStr);
+
 				m_builder.setVersionOverride(VersionFactory.createDesignator(vt, tmp));
 			}
 			catch(CoreException e)
@@ -161,7 +173,8 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		}
 
 		m_builder.setPrune(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_PRUNE, false));
-		m_builder.setAllowCircularDependency(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_ALLOW_CIRCULAR_DEPENDENCY, false));
+		m_builder.setAllowCircularDependency(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_ALLOW_CIRCULAR_DEPENDENCY,
+				false));
 		m_builder.setSkipComponent(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SKIP_COMPONENT, false));
 		m_builder.setUseInstalled(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_INSTALLED, true));
 		m_builder.setUseMaterialization(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_MATERIALIZATION, true));
@@ -169,7 +182,8 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setUseResolutionSchema(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_RESOLUTION_SCHEMA, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
 		m_builder.setBranchPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_BRANCH_PATH), ","));
-		m_builder.setResolutionPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_RESOLUTION_PATH), ","));
+		m_builder.setResolutionPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_RESOLUTION_PATH),
+				","));
 	}
 
 	AdvisorNodeBuilder getAdvisorNodeBuilder()
