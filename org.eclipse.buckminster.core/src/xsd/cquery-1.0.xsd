@@ -8,146 +8,91 @@
 	copyright holders listed above, as Initial Contributors under such license.
 	The text of such license is available at www.eclipse.org.
 -->
-<schema
-	xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
-	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0"
-	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
-	targetNamespace="http://www.eclipse.org/buckminster/CQuery-1.0"
-	attributeFormDefault="unqualified"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
+	targetNamespace="http://www.eclipse.org/buckminster/CQuery-1.0" attributeFormDefault="unqualified"
 	elementFormDefault="qualified">
 	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
 	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" />
-	<element
-		name="componentQuery"
-		type="cq:ComponentQuery" />
+	<element name="componentQuery" type="cq:ComponentQuery" />
 	<complexType name="ComponentQuery">
 		<sequence>
-			<element
-				name="documentation"
-				type="com:Documentation"
-				minOccurs="0"
-				maxOccurs="1" />
-			<element
-				name="rootRequest"
-				type="cs:ComponentRequest"
-				minOccurs="1"
-				maxOccurs="1">
-			</element>
-			<choice
-				minOccurs="0"
-				maxOccurs="unbounded">
-				<element
-					name="property"
-					type="com:PropertyConstant" />
-				<element
-					name="propertyElement"
-					type="com:PropertyElement" />
-				<element
-					name="advisorNode"
-					type="cq:AdvisorNode" />
+			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
+			<element name="rootRequest" type="cs:ComponentRequest" minOccurs="1" maxOccurs="1"></element>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="property" type="com:PropertyConstant" />
+				<element name="propertyElement" type="com:PropertyElement" />
+				<element name="advisorNode" type="cq:AdvisorNode" />
 			</choice>
 		</sequence>
-		<attribute
-			name="resourceMap"
-			type="com:URL"
-			use="optional" />
-		<attribute
-			name="properties"
-			type="com:URL"
-			use="optional" />
-		<attribute
-			name="shortDesc"
-			type="string"
-			use="optional" />
+		<attribute name="resourceMap" type="com:URL" use="optional" />
+		<attribute name="properties" type="com:URL" use="optional" />
+		<attribute name="shortDesc" type="string" use="optional" />
 
 		<!-- This one is no longer used. The flag must be set per invocation -->
-		<attribute
-			name="failOnResolveException"
-			type="boolean"
-			use="optional"
-			default="true" />
+		<attribute name="failOnResolveException" type="boolean" use="optional" default="true" />
 	</complexType>
 	<complexType name="AdvisorNode">
 		<sequence>
-			<element name="documentation" type="com:Documentation"
-				minOccurs="0" maxOccurs="1" />
+			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<element name="property" type="com:PropertyConstant" />
-				<element name="propertyElement"
-					type="com:PropertyElement" />
+				<element name="propertyElement" type="com:PropertyElement" />
 			</choice>
 		</sequence>
 		<attribute name="namePattern" type="string" use="required">
 			<annotation>
 				<documentation>
-					A regular expression pattern that will be matched
-					against component names. The matching occurs in the
-					order that the nodes are declared. The first node
-					that matches a given component is used. No further
-					matching takes place once a node is found.
+					A regular expression pattern that will be matched against component names. The matching occurs in
+					the order that the nodes are declared. The first node that matches a given component is used. No
+					further matching takes place once a node is found.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="category" type="string" use="optional">
 			<annotation>
 				<documentation>
-					If set, this advisor node will only match requests
-					that has this category.
+					If set, this advisor node will only match requests that has this category.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="overlayFolder" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Appoints a folder that will act as an overlay to
-					components found by this node. Overlays are ment to
-					assist when prototyping so that Buckminster gets the
-					notion of added files although they are not really
-					checked in. If the path is relative it will be
-					treated as relative to the current workspace.
+					Appoints a folder that will act as an overlay to components found by this node. Overlays are ment to
+					assist when prototyping so that Buckminster gets the notion of added files although they are not
+					really checked in. If the path is relative it will be treated as relative to the current workspace.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="attributes" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Comma separated list of attribute names that will
-					imply dependencies during resolvement
+					Comma separated list of attribute names that will imply dependencies during resolvement
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="prune" type="boolean" use="optional">
 			<annotation>
 				<documentation>
-					If true, prune the extenral dependency list to
-					include only those dependencies that have purposes
+					If true, prune the extenral dependency list to include only those dependencies that have purposes
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="mutableLevel" type="cq:Feasibility"
-			default="INDIFFERENT" use="optional">
+		<attribute name="mutableLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
 			<annotation>
-				<documentation>
-					The mutable level used when the feasibility of a
-					provider is determined.
-				</documentation>
+				<documentation>The mutable level used when the feasibility of a provider is determined.</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="sourceLevel" type="cq:Feasibility"
-			default="INDIFFERENT" use="optional">
+		<attribute name="sourceLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
 			<annotation>
-				<documentation>
-					The source level used when the feasibility of a
-					provider is determined.
-				</documentation>
+				<documentation>The source level used when the feasibility of a provider is determined.</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="replaceFrom" type="string" use="optional">
 			<annotation>
 				<documentation>
-					A replacement pattern matching the component name
-					when creating a workspace project name. The result
+					A replacement pattern matching the component name when creating a workspace project name. The result
 					is then produced by replaceTo.
 				</documentation>
 			</annotation>
@@ -155,97 +100,68 @@
 		<attribute name="replaceTo" type="string" use="optional">
 			<annotation>
 				<documentation>
-					A replacement string that produces the resulting
-					project name from a name matched by pattern
+					A replacement string that produces the resulting project name from a name matched by pattern
 					replaceFrom.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="whenNotEmpty" type="cq:NotEmptyAction"
-			default="FAIL" use="optional">
+		<attribute name="whenNotEmpty" type="cq:NotEmptyAction" default="FAIL" use="optional">
 			<annotation>
 				<documentation>
-					Action to take when the location intended for a
-					materialization is found to be non-empty.
+					Action to take when the location intended for a materialization is found to be non-empty.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="allowCircularDependency" type="boolean"
-			default="false" use="optional">
+		<attribute name="allowCircularDependency" type="boolean" default="false" use="optional">
+			<annotation>
+				<documentation>Allow that matched components participate in circular dependency chains</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="skipComponent" type="boolean" default="false" use="optional">
+			<annotation>
+				<documentation>Skip components that are matched altogether if this attribute is true</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useInstalled" type="boolean" default="true" use="optional">
 			<annotation>
 				<documentation>
-					Allow that matched components participate in
-					circular dependency chains
+					Regulates how to treat components that are matched by installed features and plugins. Setting this
+					attribute to false will cause the resolver to omitt installed components.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="skipComponent" type="boolean" default="false"
-			use="optional">
+		<attribute name="useMaterialization" type="boolean" default="true" use="optional">
 			<annotation>
 				<documentation>
-					Skip components that are matched altogether if this
-					attribute is true
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="useInstalled" type="boolean" default="true"
-			use="optional">
-			<annotation>
-				<documentation>
-					Regulates how to treat components that are matched
-					by installed features and plugins. Setting this
-					attribute to false will cause the resolver to omitt
-					installed components.
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="useMaterialization" type="boolean"
-			default="true" use="optional">
-			<annotation>
-				<documentation>
-					Regulates how the resolver will treat existing
-					materializations. Setting this flag to false will
+					Regulates how the resolver will treat existing materializations. Setting this flag to false will
 					cause existing material to be overwritten.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useProject" type="boolean" default="true"
-			use="optional">
+		<attribute name="useProject" type="boolean" default="true" use="optional">
 			<annotation>
 				<documentation>
-					Regulates how the resolver will treat workspace
-					projects that fulfills the component request.
-					Setting this flag to false will cause the resolver
-					to omitt existing projects (and thus overwrite
+					Regulates how the resolver will treat workspace projects that fulfills the component request.
+					Setting this flag to false will cause the resolver to omitt existing projects (and thus overwrite
 					them).
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="versionOverride" type="string"
-			use="optional">
+		<attribute name="versionOverride" type="string" use="optional">
 			<annotation>
 				<documentation>
-					A version that should be used in place of the
-					version stipulated by the component request. This is
-					typically used when there is a desire to load the
-					LATEST from a branch rather than a tagged version.
+					A version that should be used in place of the version stipulated by the component request. This is
+					typically used when there is a desire to load the LATEST from a branch rather than a tagged version.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="versionOverrideType" type="string"
-			use="optional">
+		<attribute name="versionOverrideType" type="string" use="optional">
 			<annotation>
-				<documentation>
-					The version type for the versionOverride.
-				</documentation>
+				<documentation>The version type for the versionOverride.</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useResolutionSchema" type="boolean"
-			use="optional">
-		</attribute>
-		<attribute name="systemDiscovery" type="boolean"
-			use="optional">
-		</attribute>
+		<attribute name="useResolutionSchema" type="boolean" use="optional"></attribute>
+		<attribute name="systemDiscovery" type="boolean" use="optional"></attribute>
 		<attribute name="branch" type="string" use="optional"></attribute>
 		<attribute name="resolutionPath" type="string" use="optional"></attribute>
 	</complexType>
@@ -260,8 +176,19 @@
 	<simpleType name="NotEmptyAction">
 		<restriction base="string">
 			<enumeration value="FAIL" />
-			<enumeration value="OVERWRITE" />
-			<enumeration value="REUSE" />
+			<enumeration value="REPLACE" />
+			<enumeration value="UPDATE" />
+			<enumeration value="KEEP" />
+			<enumeration value="OVERWRITE">
+				<annotation>
+					<documentation>Deprecated, use REPLACE or UPDATE</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="REUSE">
+				<annotation>
+					<documentation>Deprecated, use KEEP</documentation>
+				</annotation>
+			</enumeration>
 		</restriction>
 	</simpleType>
 </schema>
