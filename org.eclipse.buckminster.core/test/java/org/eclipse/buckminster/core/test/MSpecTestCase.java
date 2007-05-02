@@ -21,9 +21,8 @@ import junit.framework.TestCase;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
-import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.sax.Utils;
@@ -65,21 +64,23 @@ public class MSpecTestCase extends TestCase
 		node.setCategory("plugin");
 		node.setConflictResolution(ConflictResolution.KEEP);
 		node.setInstallLocation(Path.fromPortableString("plugins"));
-		
-		builder.getNodes().add(new MaterializationNode(node));
-		
+		builder.getNodes().add(node);
+
+		node = new MaterializationNodeBuilder();
+		node.setNamePattern(Pattern.compile(".*"));
 		node.setCategory("feature");
+		node.setConflictResolution(ConflictResolution.REPLACE);
 		node.setInstallLocation(Path.fromPortableString("features"));
 
-		builder.getNodes().add(new MaterializationNode(node));
+		builder.getNodes().add(node);
 
-		node.clear();
+		node = new MaterializationNodeBuilder();
 		node.setNamePattern(Pattern.compile("i.don.not.want.this.one"));
 		node.setCategory("plugin");
 		node.setExclude(true);
 		
-		builder.getNodes().add(new MaterializationNode(node));
-		
+		builder.getNodes().add(node);
+
 		MaterializationSpec spec = new MaterializationSpec(builder);
 
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();

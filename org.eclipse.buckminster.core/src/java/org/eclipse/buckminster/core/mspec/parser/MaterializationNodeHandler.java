@@ -29,9 +29,9 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		super(parent, TAG);
 	}
 
-	public MaterializationNode getMaterializationNode()
+	public MaterializationNodeBuilder getMaterializationNodeBuilder()
 	{
-		return new MaterializationNode((MaterializationNodeBuilder)getBuilder());
+		return (MaterializationNodeBuilder)getBuilder();
 	}
 
 	@Override

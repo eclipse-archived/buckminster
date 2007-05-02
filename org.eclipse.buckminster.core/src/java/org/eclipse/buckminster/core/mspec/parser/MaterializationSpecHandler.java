@@ -40,7 +40,7 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 		if(child == m_materializationNodeHandler)
 		{
 			MaterializationSpecBuilder builder = (MaterializationSpecBuilder)getBuilder();
-			builder.getNodes().add(m_materializationNodeHandler.getMaterializationNode());
+			builder.getNodes().add(m_materializationNodeHandler.getMaterializationNodeBuilder());
 		}
 		else
 			super.childPopped(child);

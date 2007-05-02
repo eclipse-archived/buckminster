@@ -9,10 +9,14 @@
 package org.eclipse.buckminster.core.mspec.model;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
@@ -38,12 +42,31 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		super(builder);
 		m_shortDesc = builder.getShortDesc();
 		m_url = builder.getURL();
-		m_nodes = UUIDKeyed.createUnmodifiableList(builder.getNodes());
+		ArrayList<MaterializationNode> nodes = new ArrayList<MaterializationNode>();
+		for(MaterializationNodeBuilder nodeBuilder : builder.getNodes())
+			nodes.add(nodeBuilder.createMaterializationNode());
+		m_nodes = UUIDKeyed.createUnmodifiableList(nodes);
 	}
 
 	public String getDefaultTag()
 	{
 		return TAG;
+	}
+
+	public MaterializationNode getMatchingNode(ComponentName cName)
+	{
+		String name = cName.getName();
+		for(MaterializationNode aNode : m_nodes)
+		{
+			Pattern pattern = aNode.getNamePattern();
+			if(pattern.matcher(name).find())
+			{
+				String matchingCategory = aNode.getCategory();
+				if(matchingCategory == null || matchingCategory.equals(cName.getCategory()))
+					return aNode;
+			}
+		}
+		return null;
 	}
 
 	public List<MaterializationNode> getNodes()
@@ -59,6 +82,12 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public URL getURL()
 	{
 		return m_url;
+	}
+
+	public boolean isExcluded(ComponentName cname)
+	{
+		MaterializationNode node = getMatchingNode(cname);
+		return node != null && node.isExclude();
 	}
 
 	public void toSax(ContentHandler handler) throws SAXException

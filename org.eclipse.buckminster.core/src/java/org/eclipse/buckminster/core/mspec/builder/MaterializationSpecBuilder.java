@@ -11,7 +11,9 @@ package org.eclipse.buckminster.core.mspec.builder;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 
@@ -21,7 +23,7 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
  */
 public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 {
-	private final List<MaterializationNode> m_nodes = new ArrayList<MaterializationNode>();
+	private final List<MaterializationNodeBuilder> m_nodes = new ArrayList<MaterializationNodeBuilder>();
 	private String m_shortDesc;
 	private URL m_url;
 
@@ -34,7 +36,28 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 		m_nodes.clear();
 	}
 
-	public List<MaterializationNode> getNodes()
+	public MaterializationSpec createMaterializationSpec()
+	{
+		return new MaterializationSpec(this);
+	}
+
+	public MaterializationNodeBuilder getMatchingNode(ComponentName cName)
+	{
+		String name = cName.getName();
+		for(MaterializationNodeBuilder aNode : m_nodes)
+		{
+			Pattern pattern = aNode.getNamePattern();
+			if(pattern != null && pattern.matcher(name).find())
+			{
+				String matchingCategory = aNode.getCategory();
+				if(matchingCategory == null || matchingCategory.equals(cName.getCategory()))
+					return aNode;
+			}
+		}
+		return null;
+	}
+
+	public List<MaterializationNodeBuilder> getNodes()
 	{
 		return m_nodes;
 	}
@@ -54,7 +77,12 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 		super.initFrom(mspec);
 		m_shortDesc = mspec.getShortDesc();
 		m_url = mspec.getURL();
-		m_nodes.addAll(mspec.getNodes());
+		for(MaterializationNode node : mspec.getNodes())
+		{
+			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
+			nodeBuilder.initFrom(node);
+			m_nodes.add(nodeBuilder);
+		}
 	}
 
 	public void setShortDesc(String shortDesc)

@@ -31,6 +31,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		m_exclude = false;
 	}
 
+	public MaterializationNode createMaterializationNode()
+	{
+		return new MaterializationNode(this);
+	}
+
 	public String getCategory()
 	{
 		return m_category;

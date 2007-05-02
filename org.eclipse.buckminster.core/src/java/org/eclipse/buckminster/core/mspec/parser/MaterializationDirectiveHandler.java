@@ -29,12 +29,11 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 {
 	private DocumentationHandler m_documentationHandler;
 
-	private final MaterializationDirectiveBuilder m_builder;
+	private MaterializationDirectiveBuilder m_builder;
 
 	public MaterializationDirectiveHandler(AbstractHandler parent, String tag)
 	{
 		super(parent, tag);
-		m_builder = createBuilder();
 	}
 
 	@Override
@@ -70,7 +69,7 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_builder.clear();
+		m_builder = createBuilder();
 		String tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_INSTALL_LOCATION);
 		if(tmp != null)
 			m_builder.setInstallLocation(Path.fromPortableString(tmp));
