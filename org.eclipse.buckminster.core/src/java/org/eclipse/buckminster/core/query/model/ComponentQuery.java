@@ -44,6 +44,7 @@ import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
@@ -516,10 +517,10 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		handler.endPrefixMapping(BM_CQUERY_PREFIX);
 	}
 
-	public NotEmptyAction useExistingArtifacts(ComponentName cName)
+	public ConflictResolution useExistingArtifacts(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? NotEmptyAction.FAIL : node.whenNotEmpty();
+		return node == null ? ConflictResolution.FAIL : node.whenNotEmpty();
 	}
 
 	public boolean useExistingProject(ComponentName cName)

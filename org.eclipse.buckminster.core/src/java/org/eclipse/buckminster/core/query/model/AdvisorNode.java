@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.ISaxableElement;
@@ -107,7 +108,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	private final IVersionDesignator m_versionOverride;
 
-	private final NotEmptyAction m_whenNotEmpty;
+	private final ConflictResolution m_whenNotEmpty;
 	
 	private final boolean m_useResolutionSchema;
 
@@ -224,7 +225,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_versionOverride;
 	}
 
-	public final NotEmptyAction getWhenNotEmpty()
+	public final ConflictResolution getWhenNotEmpty()
 	{
 		return m_whenNotEmpty;
 	}
@@ -277,7 +278,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, m_mutableLevel.name());
 		if(m_sourceLevel != SourceLevel.INDIFFERENT)
 			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, m_sourceLevel.name());
-		if(m_whenNotEmpty != NotEmptyAction.FAIL)
+		if(m_whenNotEmpty != ConflictResolution.FAIL)
 			Utils.addAttribute(attrs, ATTR_WHEN_NOT_EMPTY, m_whenNotEmpty.name());
 		if(m_skipComponent)
 			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true");
@@ -338,7 +339,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_useProject;
 	}
 	
-	public final NotEmptyAction whenNotEmpty()
+	public final ConflictResolution whenNotEmpty()
 	{
 		return m_whenNotEmpty;
 	}

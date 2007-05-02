@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class MetaDataParser<T> extends AbstractParser<T> implements ChildPoppedListener
+public abstract class MetaDataParser<T> extends AbstractParser<T> implements ChildPoppedListener
 {
 	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions)
 	throws SAXException

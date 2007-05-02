@@ -15,9 +15,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.core.runtime.IPath;
@@ -59,7 +59,7 @@ public class AdvisorNodeBuilder
 
 	private IVersionDesignator m_versionOverride;
 
-	private NotEmptyAction m_whenNotEmpty;
+	private ConflictResolution m_whenNotEmpty;
 
 	private boolean m_useResolutionSchema;
 
@@ -108,7 +108,7 @@ public class AdvisorNodeBuilder
 		m_useMaterialization = true;
 		m_useProject = true;
 		m_versionOverride = null;
-		m_whenNotEmpty = NotEmptyAction.FAIL;
+		m_whenNotEmpty = ConflictResolution.FAIL;
 		m_useResolutionSchema = true;
 		m_systemDiscovery = true;
 		m_branchPath = null;
@@ -183,7 +183,7 @@ public class AdvisorNodeBuilder
 		return m_versionOverride;
 	}
 
-	public NotEmptyAction getWhenNotEmpty()
+	public ConflictResolution getWhenNotEmpty()
 	{
 		return m_whenNotEmpty;
 	}
@@ -331,9 +331,9 @@ public class AdvisorNodeBuilder
 		m_versionOverride = versionOverride;
 	}
 
-	public void setWhenNotEmpty(NotEmptyAction whenNotEmpty)
+	public void setWhenNotEmpty(ConflictResolution whenNotEmpty)
 	{
-		m_whenNotEmpty = whenNotEmpty == null ? NotEmptyAction.FAIL : whenNotEmpty;
+		m_whenNotEmpty = whenNotEmpty == null ? ConflictResolution.FAIL : whenNotEmpty;
 	}
 
 	public void setUseResolutionSchema(boolean useResolutionSchema)
@@ -376,7 +376,7 @@ public class AdvisorNodeBuilder
 		return m_useProject;
 	}
 
-	public NotEmptyAction whenNotEmpty()
+	public ConflictResolution whenNotEmpty()
 	{
 		return m_whenNotEmpty;
 	}

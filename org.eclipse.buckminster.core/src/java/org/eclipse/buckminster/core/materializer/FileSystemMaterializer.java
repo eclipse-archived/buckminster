@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
@@ -61,8 +61,8 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			for(Materialization mi : minfos)
 			{
 				Resolution cr = mi.getResolution();
-				NotEmptyAction notEmptyAction = context.getNotEmptyAction(cr);
-				if(notEmptyAction != NotEmptyAction.OVERWRITE && mi.isPersisted())
+				ConflictResolution notEmptyAction = context.getNotEmptyAction(cr);
+				if(notEmptyAction != ConflictResolution.UPDATE && mi.isPersisted())
 				{
 					// Already materialized.
 					//
@@ -73,7 +73,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				ComponentIdentifier ci = cr.getComponentIdentifier();
 				IPath location = mi.getComponentLocation();
 				File file = location.toFile();
-				if(file.exists() && notEmptyAction == NotEmptyAction.REUSE)
+				if(file.exists() && notEmptyAction == ConflictResolution.KEEP)
 				{
 					// Don't materialize this one. Instead, pretend that we
 					// just did.
@@ -99,7 +99,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				File folder = location.hasTrailingSeparator()
 						? file
 						: file.getParentFile();
-				FileUtils.prepareDestination(folder, notEmptyAction == NotEmptyAction.OVERWRITE, MonitorUtils
+				FileUtils.prepareDestination(folder, notEmptyAction == ConflictResolution.UPDATE, MonitorUtils
 						.subMonitor(prepMon, 10));
 
 				String readerType = cr.getProvider().getReaderTypeId();

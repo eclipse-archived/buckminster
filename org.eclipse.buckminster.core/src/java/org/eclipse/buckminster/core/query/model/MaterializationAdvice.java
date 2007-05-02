@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.query.model;
 
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -16,9 +17,9 @@ public class MaterializationAdvice
 {
 	private final String m_projectName;
 	private final IPath m_destination;
-	private final NotEmptyAction m_notEmptyAction;
+	private final ConflictResolution m_notEmptyAction;
 
-	public MaterializationAdvice(final String projectName, final IPath destination, final NotEmptyAction notEmptyAction)
+	public MaterializationAdvice(final String projectName, final IPath destination, final ConflictResolution notEmptyAction)
 	{
 		m_projectName = projectName;
 		m_destination = destination;
@@ -30,7 +31,7 @@ public class MaterializationAdvice
 		return m_destination;
 	}
 
-	public NotEmptyAction getNotEmptyAction()
+	public ConflictResolution getNotEmptyAction()
 	{
 		return m_notEmptyAction;
 	}

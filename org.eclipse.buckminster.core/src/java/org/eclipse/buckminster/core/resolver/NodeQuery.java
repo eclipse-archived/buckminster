@@ -20,8 +20,8 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.core.runtime.CoreException;
@@ -233,7 +233,7 @@ public class NodeQuery
 	 * 
 	 * @return An enum denoting the verdict.
 	 */
-	public NotEmptyAction useExistingArtifacts()
+	public ConflictResolution useExistingArtifacts()
 	{
 		return getComponentQuery().useExistingArtifacts(getComponentRequest());
 	}

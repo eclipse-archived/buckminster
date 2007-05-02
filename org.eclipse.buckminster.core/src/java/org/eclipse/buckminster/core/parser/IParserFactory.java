@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
@@ -64,6 +65,16 @@ public interface IParserFactory
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<Materialization> getMaterializationParser()
+	throws SAXException;
+
+	/**
+	 * Creates a SAX parser that can parse a Materialization specifications.
+	 * @param validating <code>true</code> if a validating parser is desired
+	 * @return a MaterializationSpec parser.
+	 * @throws SAXException if the Java Runtime cannot support
+	 * SAX parsers due to configuration problems.
+	 */
+	IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating)
 	throws SAXException;
 
 	/**

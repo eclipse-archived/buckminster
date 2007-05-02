@@ -20,10 +20,10 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -132,7 +132,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_WHEN_NOT_EMPTY);
 		if(tmp != null)
-			m_builder.setWhenNotEmpty(NotEmptyAction.valueOf(tmp));
+			m_builder.setWhenNotEmpty(ConflictResolution.valueOf(tmp));
 		
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_VERSION_OVERRIDE);
 		if(tmp != null)

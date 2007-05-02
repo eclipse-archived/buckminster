@@ -31,10 +31,10 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.model.MaterializationAdvice;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -160,10 +160,10 @@ public class RMContext extends ExpandingProperties
 		return new NodeQuery(this, qualifiedDependency);
 	}
 
-	public NotEmptyAction getNotEmptyAction(Resolution resolution) throws CoreException
+	public ConflictResolution getNotEmptyAction(Resolution resolution) throws CoreException
 	{
 		MaterializationAdvice mat = getMaterializationAdvice(resolution);
-		NotEmptyAction notEmptyAction = null;
+		ConflictResolution notEmptyAction = null;
 		if(mat != null)
 			notEmptyAction = mat.getNotEmptyAction();
 
@@ -267,7 +267,7 @@ public class RMContext extends ExpandingProperties
 
 		MaterializationAdvice matAdvice = getMaterializationAdvice(resolution);
 
-		NotEmptyAction notEmptyAction = null;
+		ConflictResolution notEmptyAction = null;
 		if(matAdvice != null)
 			notEmptyAction = matAdvice.getNotEmptyAction();
 
@@ -295,7 +295,7 @@ public class RMContext extends ExpandingProperties
 		return (m_parentContext == null) ? null : m_parentContext.getGeneratorNode(name);
 	}
 
-	public synchronized void setNotEmptyAction(Resolution resolution, NotEmptyAction notEmptyAction) throws CoreException
+	public synchronized void setNotEmptyAction(Resolution resolution, ConflictResolution notEmptyAction) throws CoreException
 	{
 		if(getNotEmptyAction(resolution).equals(notEmptyAction))
 			return;
@@ -320,7 +320,7 @@ public class RMContext extends ExpandingProperties
 		MaterializationAdvice matAdvice = getMaterializationAdvice(resolution);
 
 		IPath destination = null;
-		NotEmptyAction notEmptyAction = null;
+		ConflictResolution notEmptyAction = null;
 		if(matAdvice != null)
 		{
 			notEmptyAction = matAdvice.getNotEmptyAction();
@@ -399,7 +399,7 @@ public class RMContext extends ExpandingProperties
 		return location;
 	}
 
-	private NotEmptyAction getDefaultNotEmptyAction(Resolution resolution)
+	private ConflictResolution getDefaultNotEmptyAction(Resolution resolution)
 	{
 		return getComponentQuery().useExistingArtifacts(resolution.getRequest());
 	}

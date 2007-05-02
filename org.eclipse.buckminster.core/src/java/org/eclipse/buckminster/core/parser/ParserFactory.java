@@ -31,8 +31,11 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.metadata.parser.BillOfMaterialsParser;
 import org.eclipse.buckminster.core.metadata.parser.DepNodeParser;
+import org.eclipse.buckminster.core.metadata.parser.MaterializationParser;
 import org.eclipse.buckminster.core.metadata.parser.ResolutionParser;
 import org.eclipse.buckminster.core.metadata.parser.WorkspaceBindingParser;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.mspec.parser.MaterializationSpecParser;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryParser;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -136,7 +139,13 @@ public class ParserFactory implements IParserFactory
 	public IParser<Materialization> getMaterializationParser()
 	throws SAXException
 	{
-		return new org.eclipse.buckminster.core.metadata.parser.MaterializationParser(getParserExtensions(Materialization.TAG));
+		return new MaterializationParser(getParserExtensions(Materialization.TAG));
+	}
+
+	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating)
+	throws SAXException
+	{
+		return new MaterializationSpecParser(getParserExtensions(MaterializationSpec.TAG), validating);
 	}
 
 	public IParser<Provider> getProviderParser(boolean validating) throws SAXException
