@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.core.headless.feature"
       label="Buckminster - Core Headless (Incubation)"
-      version="0.1.0.v20070430"
+      version="0.1.0.v20070502"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -150,7 +150,8 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="com.jcraft.jsch"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.apache.ant"
