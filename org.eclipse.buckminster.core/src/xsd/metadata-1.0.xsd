@@ -144,6 +144,13 @@
 						</documentation>
 					</annotation>
 				</attribute>
+				<attribute name="exclude" type="boolean" use="optional">
+					<annotation>
+						<documentation>
+							If set, matched components will be excluded.
+						</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>

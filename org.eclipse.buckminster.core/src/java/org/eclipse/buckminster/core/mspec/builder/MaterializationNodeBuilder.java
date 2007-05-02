@@ -20,6 +20,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 {
 	private Pattern m_namePattern;
 	private String m_category;
+	private boolean m_exclude;
 
 	@Override
 	public void clear()
@@ -27,6 +28,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		super.clear();
 		m_namePattern = null;
 		m_category = null;
+		m_exclude = false;
 	}
 
 	public String getCategory()
@@ -54,5 +56,16 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		super.initFrom(mn);
 		m_namePattern = mn.getNamePattern();
 		m_category = mn.getCategory();
+		m_exclude = mn.isExclude();
+	}
+
+	public boolean isExclude()
+	{
+		return m_exclude;
+	}
+
+	public void setExclude(boolean exclude)
+	{
+		m_exclude = exclude;
 	}
 }

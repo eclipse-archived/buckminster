@@ -72,6 +72,13 @@ public class MSpecTestCase extends TestCase
 		node.setInstallLocation(Path.fromPortableString("features"));
 
 		builder.getNodes().add(new MaterializationNode(node));
+
+		node.clear();
+		node.setNamePattern(Pattern.compile("i.don.not.want.this.one"));
+		node.setCategory("plugin");
+		node.setExclude(true);
+		
+		builder.getNodes().add(new MaterializationNode(node));
 		
 		MaterializationSpec spec = new MaterializationSpec(builder);
 

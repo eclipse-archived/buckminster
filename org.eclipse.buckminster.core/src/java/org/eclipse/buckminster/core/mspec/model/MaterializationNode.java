@@ -23,15 +23,18 @@ public class MaterializationNode extends MaterializationDirective
 	public static final String TAG = "mspecNode";
 	public static final String ATTR_NAME_PATTERN = "namePattern";
 	public static final String ATTR_CATEGORY = "category";
+	public static final String ATTR_EXCLUDE = "exclude";
 
 	private final Pattern m_namePattern;
 	private final String m_category;
+	private final boolean m_exclude;
 
 	public MaterializationNode(MaterializationNodeBuilder builder)
 	{
 		super(builder);
 		m_namePattern = builder.getNamePattern();
 		m_category = builder.getCategory();
+		m_exclude = builder.isExclude();
 	}
 
 	public String getDefaultTag()
@@ -49,6 +52,11 @@ public class MaterializationNode extends MaterializationDirective
 		return m_namePattern;
 	}
 
+	public boolean isExclude()
+	{
+		return m_exclude;
+	}
+
 	@Override
 	protected void appendAttributes(AttributesImpl attrs) throws SAXException
 	{
@@ -56,5 +64,7 @@ public class MaterializationNode extends MaterializationDirective
 		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
 		if(m_category != null)
 			Utils.addAttribute(attrs, ATTR_CATEGORY, m_category);
+		if(m_exclude)
+			Utils.addAttribute(attrs, ATTR_EXCLUDE, "true");
 	}
 }

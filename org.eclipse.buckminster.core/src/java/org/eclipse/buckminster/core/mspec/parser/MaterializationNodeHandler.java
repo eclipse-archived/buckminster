@@ -41,6 +41,7 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		MaterializationNodeBuilder builder = (MaterializationNodeBuilder)getBuilder();
 		builder.setNamePattern(Pattern.compile(this.getStringValue(attrs, MaterializationNode.ATTR_NAME_PATTERN)));
 		builder.setCategory(getOptionalStringValue(attrs, MaterializationNode.ATTR_CATEGORY));
+		builder.setExclude("true".equalsIgnoreCase(getOptionalStringValue(attrs, MaterializationNode.ATTR_EXCLUDE)));
 	}
 
 	@Override
