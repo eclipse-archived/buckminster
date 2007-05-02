@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
@@ -315,7 +315,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		createSettingsLocationComposite(m_settingsGroup);
 
-		m_whenNotEmptyCombo = UiUtils.createEnumCombo(m_settingsGroup, "When destination is not empty", NotEmptyAction.values(), new SelectionAdapter()
+		m_whenNotEmptyCombo = UiUtils.createEnumCombo(m_settingsGroup, "When destination is not empty", ConflictResolution.values(), new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
@@ -496,7 +496,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				return;
 			}
 
-			if (f.exists() && context.getNotEmptyAction(resolution) == NotEmptyAction.FAIL && !resolution.isMaterialized(destination))
+			if (f.exists() && context.getNotEmptyAction(resolution) == ConflictResolution.FAIL && !resolution.isMaterialized(destination))
 			{
 				if (f.isFile())
 				{
@@ -537,7 +537,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		if(resolution != null && ordinal >= 0)
 			try
 			{
-				getContext().setNotEmptyAction(resolution, NotEmptyAction.values()[ordinal]);
+				getContext().setNotEmptyAction(resolution, ConflictResolution.values()[ordinal]);
 			}
 			catch(CoreException e)
 			{
