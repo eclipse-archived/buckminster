@@ -20,7 +20,7 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.helpers.TimedHashMap;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -120,7 +120,7 @@ public class P4ReaderType extends AbstractReaderType
 			DepotURI depotLocation = getDepotLocation(cr, context);
 			ClientSpec client = this.getClient(depotLocation);
 			client.addLocation(depotLocation.getDepotPath(), mi.getComponentLocation());
-			if(context.getComponentQuery().useExistingArtifacts(cr.getRequest()) == NotEmptyAction.OVERWRITE)
+			if(context.getComponentQuery().useExistingArtifacts(cr.getRequest()) == ConflictResolution.UPDATE)
 				client.setClobber(true);
 			modifiedClients.add(client);
 		}
