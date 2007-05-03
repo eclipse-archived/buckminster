@@ -4,6 +4,7 @@
 	<cs:dependency name="org.apache.axis2/axis2-kernel"/>
 	<cs:dependency name="org.apache.axis2/axis2-adb-codegen"/>
 	<cs:dependency name="org.apache.axis2/axis2-tools"/>
+	<cs:dependency name="org.apache.axis2/addressing"/>
 </cs:dependencies>
 <cs:actions>
 	<cs:public name="generate.bundle" actor="ant">
@@ -18,6 +19,7 @@
 			<cs:attribute component="org.apache.axis2/axis2-kernel" name="java.binaries"/>
 			<cs:attribute component="org.apache.axis2/axis2-adb-codegen" name="java.binaries"/>
 			<cs:attribute component="org.apache.axis2/axis2-tools" name="java.binaries"/>
+			<cs:attribute component="org.apache.axis2/addressing" name="java.binaries"/>
 		</cs:prerequisites>
 		<cs:products alias="output" base="../plugins">
 			<cs:path path="org.eclipse.buckminster.axis2"/>
