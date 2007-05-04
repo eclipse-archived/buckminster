@@ -62,7 +62,7 @@
 		<manifest file="${projroot}/META-INF/MANIFEST.MF">
 			<attribute name="Bundle-ManifestVersion" value="2"/>
 			<attribute name="Bundle-Name" value="Axis2 Client Plug-in"/>
-			<attribute name="Bundle-SymbolicName" value="${generated.name}"/>
+			<attribute name="Bundle-SymbolicName" value="${generated.name};singleton:=true"/>
 			<attribute name="Bundle-Version" value="${generated.version}"/>
 			<attribute name="Bundle-Vendor" value="Cloudsmith Inc."/>
 			<attribute name="Bundle-Localization" value="plugin"/>
