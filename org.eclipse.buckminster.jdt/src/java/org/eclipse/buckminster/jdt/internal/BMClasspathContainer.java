@@ -108,10 +108,9 @@ public class BMClasspathContainer implements IClasspathContainer
 		}
 
 		IPath componentHome = cspec.getComponentLocation();
-		IResource resource = WorkspaceInfo.getResource(cid);
-		if(resource instanceof IProject)
+		IProject project = WorkspaceInfo.getProject(cid);
+		if(project != null)
 		{
-			IProject project = (IProject)resource;
 			if(project.getName().equals(m_project.getName()))
 				//
 				// Skip the project itself.

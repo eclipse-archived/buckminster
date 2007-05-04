@@ -36,11 +36,11 @@ public class JdtAntActor extends AntActor
 	@Override
 	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays) throws CoreException
 	{
-		IResource resource = WorkspaceInfo.getResource(ctx.getCSpec().getComponentIdentifier());
-		if(!(resource instanceof IProject))
+		IProject project = WorkspaceInfo.getProject(ctx.getCSpec().getComponentIdentifier());
+		if(project == null)
 			return;
 
-		List<IPath> paths = ClasspathEmitter.finalClasspathResolve((IProject)resource, null);
+		List<IPath> paths = ClasspathEmitter.finalClasspathResolve(project, null);
 		int top = paths.size();
 		if(top > 0)
 		{
