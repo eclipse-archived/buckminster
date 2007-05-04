@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.resolver;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -35,7 +34,8 @@ public interface IResolver
 	 * resolve(context, context.getComponentQuery().getRootRequest(), monitor);
 	 * </pre>
 	 * 
-	 * @param monitor The monitor used for progress reporting
+	 * @param monitor
+	 *            The monitor used for progress reporting
 	 * @return The resulting bill of materials. Might be partly resolved.
 	 * @throws CoreException
 	 */
@@ -43,28 +43,34 @@ public interface IResolver
 
 	/**
 	 * Resolve the component denoted by <code>request</code>.
-	 * @param request The request that denotes the desired top component of the resulting
-	 *            <code>BillOfMaterials</code>.
-	 * @param monitor The monitor used for progress reporting
+	 * 
+	 * @param request
+	 *            The request that denotes the desired top component of the resulting <code>BillOfMaterials</code>.
+	 * @param monitor
+	 *            The monitor used for progress reporting
 	 * @return The resulting bill of materials. Might be partly resolved.
 	 * @throws CoreException
 	 */
-	BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor)
-	throws CoreException;
+	BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Attemt to resolve unresolved nodes of the <code>bom</code>. The resolution process will
-	 * use the {@link ComponentQuery} passed in the <code>context</code>, not the one stored in the <code>bom</code>.
-	 * @param monitor The monitor used for progress reporting
+	 * Attemt to resolve unresolved nodes of the <code>bom</code>. The resolution process will use the
+	 * {@link org.eclipse.buckminster.core.query.model.ComponentQuery ComponentQuery} passed in the <code>context</code>,
+	 * not the one stored in the <code>bom</code>.
+	 * 
+	 * @param monitor
+	 *            The monitor used for progress reporting
 	 * @return The resulting bill of materials. Might still be partly resolved.
 	 * @throws CoreException
 	 */
 	BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Tell the resolver to perform a one step resolve only or to traverse
-	 * and attempt to resolve each dependency until the complete graph is resolved.
-	 * @param flag <code>true</code> if a full resolve is desired
+	 * Tell the resolver to perform a one step resolve only or to traverse and attempt to resolve each dependency until
+	 * the complete graph is resolved.
+	 * 
+	 * @param flag
+	 *            <code>true</code> if a full resolve is desired
 	 */
 	void setRecursiveResolve(boolean flag);
 }
