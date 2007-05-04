@@ -14,11 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
@@ -26,9 +24,11 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiPlugin;
@@ -248,8 +248,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		try
 		{
 			m_masterDups.clear();
-			countDuplicates(null, bom, wizard.getNodesToSkip());
-
+			countDuplicates(null, bom, wizard.getMaterializationContext().getMaterializationSpec());
 			m_masterTree.removeAll();
 			m_masterTree.clearAll(false);
 			addMasterItem(new TreeItem(m_masterTree, SWT.NONE), null, bom);
@@ -268,7 +267,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		{
 			QueryWizard wizard = getQueryWizard();
 			BillOfMaterials bom = wizard.getBOM();
-			RMContext context = new RMContext(bom.getQuery());
+			ResolutionContext context = new ResolutionContext(bom.getQuery());
 			context.setContinueOnError(true);
 
 			final BillOfMaterials[] bin = new BillOfMaterials[] { bom };
@@ -396,14 +395,14 @@ public class ResolverNodePage extends AbstractQueryPage
 		ti.setExpanded(true);
 	}
 
-	private void countDuplicates(DepNode parent, DepNode node, Set<Resolution> nodesToSkip)
+	private void countDuplicates(DepNode parent, DepNode node, MaterializationSpec mspec)
 	throws CoreException
 	{
 		Resolution ci = node.getResolution();
 		if(ci == null)
 			return;
 
-		if(!nodesToSkip.contains(ci))
+		if(!mspec.isExcluded(ci.getComponentIdentifier()))
 		{
 			Integer nc = m_masterDups.get(ci);
 			int nci;
@@ -418,7 +417,7 @@ public class ResolverNodePage extends AbstractQueryPage
 
 			m_masterDups.put(ci, new Integer(1 + nci));
 			for(DepNode child : getSortedChildren(node))
-				countDuplicates(node, child, nodesToSkip);
+				countDuplicates(node, child, mspec);
 		}
 	}
 

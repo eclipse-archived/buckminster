@@ -16,6 +16,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.ui.UiPlugin;
+import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.actions.BlankQueryAction;
+import org.eclipse.buckminster.ui.actions.InvokeAction;
+import org.eclipse.buckminster.ui.actions.OpenQueryAction;
+import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
+import org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction;
+import org.eclipse.buckminster.ui.dialogs.AboutDialog;
+import org.eclipse.buckminster.ui.internal.ResolveJob;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -53,35 +81,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.ui.UiPlugin;
-import org.eclipse.buckminster.ui.UiUtils;
-import org.eclipse.buckminster.ui.actions.BlankQueryAction;
-import org.eclipse.buckminster.ui.actions.InvokeAction;
-import org.eclipse.buckminster.ui.actions.OpenQueryAction;
-import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
-import org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction;
-import org.eclipse.buckminster.ui.dialogs.AboutDialog;
-import org.eclipse.buckminster.ui.internal.ResolveJob;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -483,7 +482,7 @@ public class BuckminsterView extends ViewPart
 		{
 			try
 			{
-				List<Attribute> viableAttributes = m_cspec.getAttributesProducedByActions(false);
+				/* List<Attribute> viableAttributes = */ m_cspec.getAttributesProducedByActions(false);
 			}
 			catch(CoreException e)
 			{

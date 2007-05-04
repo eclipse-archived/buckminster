@@ -10,14 +10,13 @@
 
 package org.eclipse.buckminster.ui.wizards;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.internal.MaterializeAndBindRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class QueryWizard extends Wizard implements INewWizard
 {
-	public static void openWizard(IWorkbenchPartSite site, RMContext context, BillOfMaterials bom)
+	public static void openWizard(IWorkbenchPartSite site, ResolutionContext context, BillOfMaterials bom)
 	{
 		final QueryWizard wizard = new QueryWizard(context, bom);
 		wizard.init(PlatformUI.getWorkbench(), null);
@@ -45,8 +44,9 @@ public class QueryWizard extends Wizard implements INewWizard
 		dialog.open();
 	}
 
-	private final HashSet<Resolution> m_nodesToSkip = new HashSet<Resolution>();
-	private RMContext m_context;
+	private final MaterializationSpecBuilder m_mspec;
+	private MaterializationContext m_materializationContext;
+	private ResolutionContext m_context;
 	private BillOfMaterials m_bom;
 
 	public QueryWizard()
@@ -54,10 +54,22 @@ public class QueryWizard extends Wizard implements INewWizard
 		this(null, null);
 	}
 
-	private QueryWizard(RMContext context, BillOfMaterials bom)
+	private QueryWizard(ResolutionContext context, BillOfMaterials bom)
 	{
-		m_bom = bom;
 		m_context = context;
+		m_mspec = new MaterializationSpecBuilder();
+		m_mspec.setMaterializer(IMaterializer.WORKSPACE);
+		if(bom != null)
+		{
+			try
+			{
+				setBOM(bom);
+			}
+			catch(CoreException e)
+			{
+				CorePlugin.getLogger().error(e.toString(), e);
+			}
+		}
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection)
@@ -83,6 +95,13 @@ public class QueryWizard extends Wizard implements INewWizard
 		addPage(page);
 	}
 
+	public MaterializationContext getMaterializationContext()
+	{
+		if(m_materializationContext == null)
+			m_materializationContext = new MaterializationContext(getBOM(), m_mspec.createMaterializationSpec());
+		return m_materializationContext;
+	}
+
 	@Override
 	public boolean performFinish()
 	{
@@ -92,7 +111,7 @@ public class QueryWizard extends Wizard implements INewWizard
 
 		try
 		{
-			getContainer().run(true, true, new MaterializeAndBindRunnable(bom, getContext(), m_nodesToSkip));
+			getContainer().run(true, true, new MaterializeAndBindRunnable(getMaterializationContext()));
 			return true;
 		}
 		catch(InterruptedException e)
@@ -116,16 +135,21 @@ public class QueryWizard extends Wizard implements INewWizard
 		return m_bom;
 	}
 
-	RMContext getContext()
+	ResolutionContext getContext()
 	{
 		if(m_context == null)
 			throw new IllegalStateException("Wizard not yet initialized with BOM");
 		return m_context;
 	}
 
-	Set<Resolution> getNodesToSkip()
+	MaterializationSpecBuilder getMaterializationSpec()
 	{
-		return m_nodesToSkip;
+		return m_mspec;
+	}
+
+	void invalidateMaterializationContext()
+	{
+		m_materializationContext = null;
 	}
 
 	boolean hasBOM()
@@ -136,7 +160,8 @@ public class QueryWizard extends Wizard implements INewWizard
 	void setBOM(BillOfMaterials bom) throws CoreException
 	{
 		m_bom = bom;
-		m_context = new RMContext(bom.getQuery());
+		m_context = new ResolutionContext(bom.getQuery());
+		m_mspec.setName(bom.getViewName());
 	}
 
 	public void resetBOM()

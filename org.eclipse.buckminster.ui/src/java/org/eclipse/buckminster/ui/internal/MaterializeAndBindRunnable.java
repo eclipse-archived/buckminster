@@ -11,12 +11,9 @@
 package org.eclipse.buckminster.ui.internal;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
 
-import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerJob;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -24,15 +21,11 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 public class MaterializeAndBindRunnable extends WorkspaceModifyOperation
 {
-	private final RMContext m_context;
-	private final BillOfMaterials m_billOfMaterials;
-	private final Set<Resolution> m_nodesToSkip;
+	private final MaterializationContext m_context;
 	
-	public MaterializeAndBindRunnable(BillOfMaterials billOfMaterials, RMContext context, Set<Resolution> nodesToSkip)
+	public MaterializeAndBindRunnable(MaterializationContext context)
 	{
 		m_context = context;
-		m_billOfMaterials = billOfMaterials;
-		m_nodesToSkip = nodesToSkip;
 	}
 
 	@Override
@@ -40,7 +33,7 @@ public class MaterializeAndBindRunnable extends WorkspaceModifyOperation
 	{
 		try
 		{
-			MaterializerJob.runDelegated(m_billOfMaterials, m_context, m_nodesToSkip, monitor);
+			MaterializerJob.runDelegated(m_context, monitor);
 		}
 		catch(OperationCanceledException e)
 		{
