@@ -61,7 +61,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -171,6 +170,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 	private TableViewer m_componentTable;
 
+	private Combo m_globalConflictResolutionCombo;
+
 	private Combo m_conflictResolutionCombo;
 
 	private Button m_skipButton;
@@ -259,7 +260,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				Text fld = (Text)me.getSource();
 				String txt = UiUtils.trimmedValue(fld);
-				setGlobalInstallLocation(txt == null ? null: new Path(txt));
+				setGlobalInstallLocation(txt == null
+						? null
+						: new Path(txt));
 			}
 		});
 		m_globalInstallLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -285,10 +288,27 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				Combo combo = (Combo)se.getSource();
 				int idx = combo.getSelectionIndex();
-				String materializerId = idx >= 0 ? combo.getItem(idx) : "";
+				String materializerId = idx >= 0
+						? combo.getItem(idx)
+						: "";
 				if(materializerId.length() == 0)
 					materializerId = null;
 				setGlobalMaterializer(materializerId);
+			}
+		});
+
+		UiUtils.createGridLabel(globalSettings, "On non empty install location:", 1, 0, SWT.NONE);
+		m_globalConflictResolutionCombo = UiUtils.createGridCombo(globalSettings, 2, 0, null, null, SWT.DROP_DOWN
+				| SWT.READ_ONLY | SWT.SIMPLE);
+		for(ConflictResolution value : ConflictResolution.values())
+			m_globalConflictResolutionCombo.add(value.toString());
+		m_globalConflictResolutionCombo.select(0);
+		m_globalConflictResolutionCombo.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent se)
+			{
+				globalConflictResolutionEvent(((Combo)se.getSource()).getSelectionIndex());
 			}
 		});
 
@@ -341,7 +361,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		m_settingsGroup.setLayout(new GridLayout(2, false));
 		m_settingsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		m_skipButton = UiUtils.createCheckButton(m_settingsGroup, "Skip this component" ,new SelectionAdapter()
+		m_skipButton = UiUtils.createCheckButton(m_settingsGroup, "Skip this component", new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
@@ -378,7 +398,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				Combo combo = (Combo)se.getSource();
 				int idx = combo.getSelectionIndex();
-				String materializerId = idx >= 0 ? combo.getItem(idx) : "";
+				String materializerId = idx >= 0
+						? combo.getItem(idx)
+						: "";
 				if(materializerId.length() == 0)
 					materializerId = null;
 				setMaterializer(getSelectedComponent(), materializerId);
@@ -391,7 +413,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				Text fld = (Text)me.getSource();
 				String txt = UiUtils.trimmedValue(fld);
-				setLocation(getSelectedComponent(), txt == null ? null : new Path(txt));
+				setLocation(getSelectedComponent(), txt == null
+						? null
+						: new Path(txt));
 			}
 		});
 		m_installLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -407,8 +431,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			}
 		});
 
-		Label crLabel = new Label(m_nodeComposite, SWT.NONE);
-		crLabel.setText("On non empty install location:");
+		UiUtils.createGridLabel(m_nodeComposite, "On non empty install location:", 1, 0, SWT.NONE);
 		m_conflictResolutionCombo = new Combo(m_nodeComposite, SWT.NONE);
 		for(ConflictResolution value : ConflictResolution.values())
 			m_conflictResolutionCombo.add(value.toString());
@@ -509,13 +532,28 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 	}
 
+	private void globalConflictResolutionEvent(int ordinal)
+	{
+		QueryWizard wizard = getQueryWizard();
+		MaterializationContext context = wizard.getMaterializationContext();
+		MaterializationSpec mspec = context.getMaterializationSpec();
+		ConflictResolution cr = ConflictResolution.values()[ordinal];
+		if(!cr.equals(mspec.getConflictResolution()))
+		{
+			wizard.getMaterializationSpec().setConflictResolution(cr);
+			wizard.invalidateMaterializationContext();
+		}
+	}
+
 	private void setMaterializer(Resolution selected, String materializer)
 	{
 		try
 		{
 			MaterializationContext context = getQueryWizard().getMaterializationContext();
 			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(selected.getRequest());
-			String nodeMat = (node == null) ? null : node.getMaterializerID();
+			String nodeMat = (node == null)
+					? null
+					: node.getMaterializerID();
 			if(!Trivial.equalsAllowNull(nodeMat, materializer))
 			{
 				getMaterializationNode(selected).setMaterializer(materializer);
@@ -534,7 +572,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		{
 			MaterializationContext context = getQueryWizard().getMaterializationContext();
 			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution.getRequest());
-			IPath path = (name == null) ? null : Path.fromPortableString(name);
+			IPath path = (name == null)
+					? null
+					: Path.fromPortableString(name);
 
 			if(node == null)
 			{
@@ -574,7 +614,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		MaterializationNode node = mspec.getMatchingNode(resolution.getRequest());
 
 		IPath destination = mspec.getInstallLocation();
-		m_globalInstallLocation.setText(destination == null ? "" : destination.toOSString());
+		m_globalInstallLocation.setText(destination == null
+				? ""
+				: destination.toOSString());
 
 		int matIdx = 0;
 		String materializer = mspec.getMaterializerID();
@@ -585,6 +627,11 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				matIdx = 0;
 		}
 		m_globalMaterializer.select(matIdx);
+
+		ConflictResolution cr = mspec.getConflictResolution();
+		if(cr == null)
+			cr = ConflictResolution.getDefault();
+		m_globalConflictResolutionCombo.select(cr.ordinal());
 
 		boolean useDefaults = node == null;
 		boolean skip = mspec.isExcluded(request);
@@ -601,7 +648,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		else
 			m_resourcePath.setText("");
 
-		materializer = (node == null) ? null : node.getMaterializerID();
+		materializer = (node == null)
+				? null
+				: node.getMaterializerID();
 		matIdx = 0;
 		if(materializer != null)
 		{
@@ -625,8 +674,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		updatePageCompletion();
 	}
 
-	private MaterializationNodeBuilder getMaterializationNode(Resolution resolution)
-			throws CoreException
+	private MaterializationNodeBuilder getMaterializationNode(Resolution resolution) throws CoreException
 	{
 		QueryWizard wizard = getQueryWizard();
 		ComponentName cname = resolution.getComponentIdentifier();
