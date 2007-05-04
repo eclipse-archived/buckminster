@@ -5,31 +5,31 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.core.metadata.model;
+package org.eclipse.buckminster.core.materializer;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Thomas Hallgren
  */
-public class WorkspaceBinding
+class WorkspaceBinding
 {
 	private final IPath m_workspaceRelativePath;
 	private final Materialization m_materialization;
 
-	public WorkspaceBinding(IPath workspaceRelativePath, Materialization materialization)
+	WorkspaceBinding(IPath workspaceRelativePath, Materialization materialization)
 	{
 		m_workspaceRelativePath = workspaceRelativePath;
 		m_materialization = materialization;
 	}
 
-	public synchronized Materialization getMaterialization() throws CoreException
+	Materialization getMaterialization()
 	{
 		return m_materialization;
 	}
 
-	public IPath getWorkspaceRelativePath()
+	IPath getWorkspaceRelativePath()
 	{
 		return m_workspaceRelativePath;
 	}
