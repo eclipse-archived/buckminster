@@ -16,9 +16,9 @@ import java.net.URL;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -96,7 +96,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution cr, RMContext context, boolean[] optional)
+	public IPath getMaterializationLocation(Resolution cr, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
 		MapEntry ga = getGroupAndArtifact(cr.getProvider(), cr.getRequest());
