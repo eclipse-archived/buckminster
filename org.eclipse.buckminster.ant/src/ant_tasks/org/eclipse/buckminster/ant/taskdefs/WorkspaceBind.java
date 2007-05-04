@@ -16,12 +16,20 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -72,14 +80,23 @@ public class WorkspaceBind extends Task
 			//
 			ComponentQueryBuilder qbld = new ComponentQueryBuilder();
 			qbld.setRootRequest(new ComponentRequest(projDesc.getName(), null, null));
-			RMContext context = new RMContext(qbld.createComponentQuery());
+			ComponentQuery query = qbld.createComponentQuery();
+			ResolutionContext context = new ResolutionContext(query);
+			NodeQuery topQuery = context.getRootNodeQuery();
 
-			IPath projectPath = Path.fromOSString(m_projectDir.toString());
-			Materialization mat = new Materialization(projectPath.addTrailingSeparator(), LocalResolver.fromPath(projectPath, projDesc.getName()));
+			IPath projectPath = Path.fromOSString(m_projectDir.toString()).addTrailingSeparator();
+			Resolution resolution = LocalResolver.fromPath(topQuery, projectPath, null);
+			
+			Materialization mat = new Materialization(projectPath, resolution);
 			mat.store();
 
+			BillOfMaterials bom = BillOfMaterials.create(new ResolvedNode(topQuery, resolution), query);
+			MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
+			mspecBuilder.setName(bom.getViewName());
+			mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+			MaterializationSpec mspec = mspecBuilder.createMaterializationSpec();
 			IMaterializer wsMat = CorePlugin.getDefault().getMaterializer(IMaterializer.WORKSPACE);
-			wsMat.performInstallAction(mat.getResolution(), context, new NullProgressMonitor());
+			wsMat.performInstallAction(mat.getResolution(), new MaterializationContext(bom, mspec), new NullProgressMonitor());
 		}
 		catch(Exception e)
 		{
