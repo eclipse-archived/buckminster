@@ -12,7 +12,6 @@ package org.eclipse.buckminster.svn.test;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -23,6 +22,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.ProjectDescReader;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.test.AbstractTestCase;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -58,7 +58,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 		queryBld.setRootRequest(new ComponentRequest("org.eclipse.buckminster.svn", KeyConstants.PLUGIN_CATEGORY, null));
 		queryBld.setResourceMapURL(TestSVNCSpecProvider.class.getResource("test.rmap"));
 		ComponentQuery query = queryBld.createComponentQuery();
-		IResolver resolver = new MainResolver(new RMContext(query));
+		IResolver resolver = new MainResolver(new ResolutionContext(query));
 
 		Format vh = new Format("http://svn.tada.se/util/trunk/se.tada.util");
 		Provider provider = new Provider("svn", "eclipse-project", null, null, vh, true, true, null);
