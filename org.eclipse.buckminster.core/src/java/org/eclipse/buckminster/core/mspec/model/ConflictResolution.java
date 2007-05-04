@@ -50,4 +50,9 @@ public enum ConflictResolution
 	{
 		return m_string;
 	}
+
+	public static ConflictResolution getDefault()
+	{
+		return FAIL;
+	}
 }

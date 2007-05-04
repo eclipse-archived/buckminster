@@ -105,7 +105,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		MaterializationNode node = getMatchingNode(cName);
 		ConflictResolution cr = (node == null ? getConflictResolution() : node.getConflictResolution());
 		if(cr == null)
-			cr = ConflictResolution.FAIL;
+			cr = ConflictResolution.getDefault();
 		return cr;
 	}
 
