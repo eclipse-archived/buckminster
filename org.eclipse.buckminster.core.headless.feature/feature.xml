@@ -130,81 +130,81 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="org.eclipse.buckminster.ant"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.1.0.v20070427"/>
 
    <plugin
          id="org.eclipse.buckminster.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.1.0.v20070504"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.buckminster.sax"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.1.0.v20070413"
          unpack="false"/>
 
    <plugin
          id="com.jcraft.jsch"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.1.28"
          unpack="false"/>
 
    <plugin
          id="org.apache.ant"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="1.6.5"/>
 
    <plugin
          id="org.eclipse.ant.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.1.100.v20060531"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.resources"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.2.R32x_v20061218"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.variables"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.1.100.v20060605"
          unpack="false"/>
 
    <plugin
          id="org.junit4"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="4.1.0.1"/>
 
    <plugin
          id="org.eclipse.core.filesystem"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.expressions"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.2.r322_v20070109a"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.runtime.compatibility"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.1.100.v20060603"
          unpack="false"/>
 
    <plugin
@@ -213,7 +213,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          arch="x86"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -223,7 +223,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          arch="x86_64"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -232,7 +232,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          os="macosx"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -242,7 +242,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          arch="x86"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -251,7 +251,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          os="win32"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -260,7 +260,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          os="linux"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.0.v20060605"
          fragment="true"
          unpack="false"/>
 
@@ -269,7 +269,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          os="win32"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.2.R32x_v20061214"
          fragment="true"
          unpack="false"/>
 
@@ -279,7 +279,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          arch="PA_RISC"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
