@@ -119,7 +119,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				{
 					if(resolution.isMaterializable())
 					{
-						if(WorkspaceInfo.getResource(resolution.getCSpec().getComponentIdentifier()) != null)
+						if(WorkspaceInfo.getResources(resolution.getCSpec().getComponentIdentifier()).length > 0)
 							lbl = "Yes";
 						else
 							lbl = "No";
