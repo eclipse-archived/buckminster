@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core.resolver;
 import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -65,7 +64,7 @@ class ResolverNodeWithJob extends ResolverNode
 
 	private final ResourceMapResolver m_resolver;
 
-	ResolverNodeWithJob(ResourceMapResolver resolver, RMContext context, QualifiedDependency qDep)
+	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep)
 	{
 		super(new NodeQuery(context, qDep));
 		m_job = new NodeResolutionJob(qDep.getRequest().toString());
@@ -92,7 +91,7 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		catch(CoreException e)
 		{
-			m_resolver.getContext().addResolveException(e.getStatus());
+			m_resolver.getContext().addException(e.getStatus());
 		}
 		catch(OperationCanceledException e)
 		{
@@ -101,7 +100,7 @@ class ResolverNodeWithJob extends ResolverNode
 		catch(Throwable e)
 		{
 			CorePlugin.getLogger().warning(e.toString(), e);
-			m_resolver.getContext().addResolveException(BuckminsterException.wrap(e).getStatus());
+			m_resolver.getContext().addException(BuckminsterException.wrap(e).getStatus());
 		}
 		finally
 		{
@@ -133,7 +132,7 @@ class ResolverNodeWithJob extends ResolverNode
 
 	private boolean buildTree(DepNode node) throws CoreException
 	{
-		RMContext context = getQuery().getContext();
+		ResolutionContext context = getQuery().getResolutionContext();
 		GeneratorNode generatorNode = context.getGeneratorNode(node.getRequest().getName());
 		if(generatorNode != null)
 		{
@@ -169,7 +168,7 @@ class ResolverNodeWithJob extends ResolverNode
 		{
 			DepNode childNode = nodeChildren.get(idx);
 			ComponentQuery childQuery = childNode.getQuery();
-			RMContext childContext = (childQuery == null) ? context : new RMContext(childQuery, context);
+			ResolutionContext childContext = (childQuery == null) ? context : new ResolutionContext(childQuery, context);
 			ResolverNode child = m_resolver.getResolverNode(childContext, childNode.getQualifiedDependency());
 			children[idx] = child;
 			if(((ResolverNodeWithJob)child).buildTree(childNode))

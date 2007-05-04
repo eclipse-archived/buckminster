@@ -1,7 +1,6 @@
 package org.eclipse.buckminster.core.resolver;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.prefs.IPreferenceDescriptor;
 import org.eclipse.core.runtime.CoreException;
 
@@ -22,7 +21,7 @@ public interface IResolverFactory extends IBuckminsterExtension
 	 * @param context The context to associate with the new resolver
 	 * @return The resolver
 	 */
-	IResolver createResolver(RMContext context) throws CoreException;
+	IResolver createResolver(ResolutionContext context) throws CoreException;
 
 	/**
 	 * Returns descriptors for the preferences managed by this resolver

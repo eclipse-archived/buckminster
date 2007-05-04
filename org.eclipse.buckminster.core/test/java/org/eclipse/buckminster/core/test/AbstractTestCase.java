@@ -15,12 +15,12 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 
@@ -45,7 +45,7 @@ public abstract class AbstractTestCase extends TestCase
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood.rmap"));
 		ComponentQuery query = queryBld.createComponentQuery();
-		return new MainResolver(new RMContext(query));
+		return new MainResolver(new ResolutionContext(query));
 	}
 
 	protected CorePlugin getPlugin()

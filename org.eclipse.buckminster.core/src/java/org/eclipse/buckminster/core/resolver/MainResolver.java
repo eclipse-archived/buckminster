@@ -8,7 +8,6 @@
 package org.eclipse.buckminster.core.resolver;
 
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
@@ -24,16 +23,16 @@ public class MainResolver implements IResolver
 {
 	private static final int MAX_ITERATIONS = 8;	// TODO: Perhaps this should be a preference setting
 
-	private final RMContext m_context;
+	private final ResolutionContext m_context;
 
 	private boolean m_recursiveResolve = true;
 
-	public MainResolver(RMContext context)
+	public MainResolver(ResolutionContext context)
 	{
 		m_context = context;
 	}
 
-	public RMContext getContext()
+	public ResolutionContext getContext()
 	{
 		return m_context;
 	}

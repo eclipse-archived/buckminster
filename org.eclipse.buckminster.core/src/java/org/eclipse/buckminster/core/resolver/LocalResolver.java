@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -84,21 +83,21 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			new Format("feature/${" + KeyConstants.COMPONENT_NAME + "}"), false, false, null);
 	}
 
-	private final RMContext m_context;
+	private final ResolutionContext m_context;
 
 	private boolean m_recursiveResolve = true;
 
 	public LocalResolver(ComponentQuery componentQuery) throws CoreException
 	{
-		this(new RMContext(componentQuery));
+		this(new ResolutionContext(componentQuery));
 	}
 
-	public LocalResolver(RMContext context) throws CoreException
+	public LocalResolver(ResolutionContext context) throws CoreException
 	{
 		m_context = context;
 	}
 
-	public RMContext getContext()
+	public ResolutionContext getContext()
 	{
 		return m_context;
 	}
@@ -129,7 +128,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			return bom;
 		}
 		ComponentQuery cquery = bom.getQuery();
-		RMContext context = (cquery == null || cquery.equals(m_context.getComponentQuery())) ? m_context : new RMContext(cquery, m_context);
+		ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery())) ? m_context : new ResolutionContext(cquery, m_context);
 		BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom));
 		if(!newBom.contentEqual(bom))
 			bom = newBom;
@@ -255,7 +254,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return null;
 	}
 
-	ResolverNode getResolverNode(RMContext context, QualifiedDependency qDep) throws CoreException
+	ResolverNode getResolverNode(ResolutionContext context, QualifiedDependency qDep) throws CoreException
 	{
 		// We use a ComponentName as the key since we don't want the
 		// designator to play a role here.
@@ -338,12 +337,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return bom;
 	}
 
-	ResolverNode createResolverNode(RMContext context, QualifiedDependency qDep)
+	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep)
 	{
 		return new ResolverNode(new NodeQuery(context, qDep));
 	}
 
-	private ResolverNode deepResolve(RMContext context, DepNode depNode) throws CoreException
+	private ResolverNode deepResolve(ResolutionContext context, DepNode depNode) throws CoreException
 	{
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
 		ResolverNode node = getResolverNode(context, qDep);
@@ -354,7 +353,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		if(query.skipComponent())
 			return node;
 
-		GeneratorNode generatorNode = query.getContext().getGeneratorNode(qDep.getRequest().getName());
+		GeneratorNode generatorNode = query.getResolutionContext().getGeneratorNode(qDep.getRequest().getName());
 		if(generatorNode != null)
 		{
 			node.setGeneratorNode(generatorNode);
@@ -400,7 +399,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		{
 			DepNode child = children.get(idx);
 			ComponentQuery cquery = child.getQuery();
-			RMContext childContext = (cquery == null) ? context : new RMContext(cquery, context);
+			ResolutionContext childContext = (cquery == null) ? context : new ResolutionContext(cquery, context);
 			resolvedChildren[idx] = m_recursiveResolve
 				? deepResolve(childContext, child)
 				: getResolverNode(childContext, child.getQualifiedDependency());
@@ -414,7 +413,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest(name, EclipseComponentType.guessCategory(productPath),
 			null));
-		RMContext context = new RMContext(queryBld.createComponentQuery());
+		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 		return fromPath(context.getRootNodeQuery(), productPath, null);
 	}
 
@@ -424,7 +423,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest(project.getName(),
 			EclipseComponentType.guessCategory(project), null));
-		RMContext context = new RMContext(queryBld.createComponentQuery());
+		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 		context.setContinueOnError(true);
 		IResolver local = new LocalResolver(context);
 		return local.resolve(monitor);

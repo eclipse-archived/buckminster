@@ -63,7 +63,7 @@
 		<attribute name="fixedVersionSelector" type="string" use="optional" />
 		<attribute name="materializable" type="boolean" use="required" />
 		<attribute name="providerId" type="com:uuid" use="required" />
-		<attribute name="repository" type="string" use="optional" />
+		<attribute name="repository" type="string" use="required" />
 	</complexType>
 	<element name="resolvedNode" type="md:ResolvedNode" />
 	<complexType name="ResolvedNode">
@@ -113,6 +113,7 @@
 				<sequence>
 					<element name="mspecNode" type="md:MaterializationNode" minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
+				<attribute name="name" type="string" use="required" />
 				<attribute name="shortDesc" type="string" use="optional" />
 				<attribute name="url" type="com:URL">
 					<annotation>
@@ -141,6 +142,14 @@
 					<annotation>
 						<documentation>
 							If set, this node will only match components that has this category.
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="resourcePath" type="string" use="optional">
+					<annotation>
+						<documentation>
+							Resource path. Only used when bound to a workspace. Typically used when
+							resolving conflicts between equally named features and bundles.
 						</documentation>
 					</annotation>
 				</attribute>

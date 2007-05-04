@@ -19,12 +19,15 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
@@ -74,7 +77,7 @@ public class Resolve extends WorkspaceInitCommand
 				monitor.beginTask(null, m_resolveOnly ? 40 : 100);
 
 				ComponentQuery query = ComponentQuery.fromURL(m_url, MonitorUtils.subMonitor(monitor, 5));
-				RMContext context = new RMContext(query);
+				ResolutionContext context = new ResolutionContext(query);
 				MainResolver resolver = new MainResolver(context);
 				resolver.getContext().setContinueOnError(continueOnError);
 				BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 35));
@@ -94,7 +97,16 @@ public class Resolve extends WorkspaceInitCommand
 					Utils.serialize(bom.exportGraph(), bomOut);
 
 				if(!m_resolveOnly)
-					MaterializerJob.run(bom, context, null, MonitorUtils.subMonitor(monitor, 60));
+				{
+					// TODO: Allow mspec to be specified on the command line as an alternative to
+					// the CQUERY.
+					//
+					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
+					mspecBuilder.setName(bom.getViewName());
+					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
+					MaterializerJob.run(matCtx, MonitorUtils.subMonitor(monitor, 60));
+				}
 				logger.info("Query complete.");
 			}
 			finally

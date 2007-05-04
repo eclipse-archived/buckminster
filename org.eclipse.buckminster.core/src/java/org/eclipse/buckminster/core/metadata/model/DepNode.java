@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
@@ -161,7 +161,7 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 	{
 	}
 
-	abstract void addMaterializations(List<Materialization> minfos, RMContext context, Set<Resolution> skipThese)
+	abstract void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException;
 
 	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException

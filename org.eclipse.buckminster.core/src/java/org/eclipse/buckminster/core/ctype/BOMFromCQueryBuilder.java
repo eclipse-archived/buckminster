@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -26,6 +25,7 @@ import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -70,7 +70,7 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 			reader.close();
 			readerHandle[0] = null;
 
-			RMContext newCtx = new RMContext(cquery, query.getContext());
+			ResolutionContext newCtx = new ResolutionContext(cquery, query.getResolutionContext());
 			IResolver resolver = new MainResolver(newCtx);
 			BillOfMaterials bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 1800));
 			if(bom.getResolution() == null)

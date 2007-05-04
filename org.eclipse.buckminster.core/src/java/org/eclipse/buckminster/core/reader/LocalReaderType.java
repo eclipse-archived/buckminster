@@ -13,7 +13,7 @@ package org.eclipse.buckminster.core.reader;
 import java.io.File;
 import java.net.URI;
 
-import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -58,7 +58,7 @@ public class LocalReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution rc, RMContext context, boolean[] optional) throws CoreException
+	public IPath getMaterializationLocation(Resolution rc, MaterializationContext context, boolean[] optional) throws CoreException
 	{
 		return null;
 	}
@@ -68,7 +68,7 @@ public class LocalReaderType extends URLCatalogReaderType
 	{
 		// Should be OK unless we encounter a workspace with old metadata
 		//
-		return new Path(rc.getRepository(null));
+		return new Path(rc.getRepository());
 	}
 
 	@Override

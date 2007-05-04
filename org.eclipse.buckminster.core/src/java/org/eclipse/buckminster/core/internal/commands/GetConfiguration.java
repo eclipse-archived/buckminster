@@ -13,12 +13,15 @@ package org.eclipse.buckminster.core.internal.commands;
 import java.net.URL;
 
 import org.eclipse.buckminster.cmdline.UsageException;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -38,7 +41,7 @@ public class GetConfiguration extends WorkspaceCommand
 		try
 		{
 			ComponentQuery query = ComponentQuery.fromURL(m_url, MonitorUtils.subMonitor(monitor, 1));
-			RMContext context = new RMContext(query);
+			ResolutionContext context = new ResolutionContext(query);
 			MainResolver resolver = new MainResolver(context);
 			BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 1));
 			IStatus status = context.getStatus();
@@ -52,7 +55,12 @@ public class GetConfiguration extends WorkspaceCommand
 			case IStatus.INFO:
 				System.out.print(status.getMessage());
 			}
-			MaterializerJob.run(bom, context, null, MonitorUtils.subMonitor(monitor, 1));
+
+			MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
+			mspecBuilder.setName(bom.getViewName());
+			mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
+			MaterializerJob.run(matCtx, MonitorUtils.subMonitor(monitor, 1));
 			MonitorUtils.worked(monitor, 1);
 			System.out.println("Query complete.");
 		}

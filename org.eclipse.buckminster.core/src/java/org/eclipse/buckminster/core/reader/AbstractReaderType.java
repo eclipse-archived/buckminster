@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -74,7 +75,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
-	public void prepareMaterialization(List<Materialization> mtr, RMContext context, IProgressMonitor monitor) throws CoreException
+	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		// FIXME: Perhaps assert that all locations are writeable?
 	}
@@ -94,7 +95,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return CorePlugin.getDefault().getReaderType(destIsFile ? URL : URL_CATALOG);
 	}
 
-	public IPath getMaterializationLocation(Resolution cr, RMContext context, boolean[] optional)
+	public IPath getMaterializationLocation(Resolution cr, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
 		optional[0] = true;
@@ -106,7 +107,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return false;
 	}
 
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
+	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
 	}
@@ -128,7 +129,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return new DefaultVersionFinder();
 	}
 
-	public void postMaterialization(IProgressMonitor monitor) throws CoreException
+	public void postMaterialization(MaterializationContext contextIProgress, IProgressMonitor monitor) throws CoreException
 	{
 	}
 }

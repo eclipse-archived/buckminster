@@ -12,15 +12,19 @@ package org.eclipse.buckminster.core.test;
 
 import junit.framework.TestCase;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.test.rmap.RMapTestCase;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -56,8 +60,12 @@ public class SimpleLoaderTestCase extends TestCase
 
 	public void testMaterialize() throws Exception
 	{
-		IResolver resolver = new MainResolver(new RMContext(m_query));
+		IResolver resolver = new MainResolver(new ResolutionContext(m_query));
 		BillOfMaterials bom = resolver.resolve(m_nullMonitor);
-		MaterializerJob.run(bom, resolver.getContext(), null, m_nullMonitor);
+		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
+		mspecBuilder.setName(bom.getViewName());
+		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
+		MaterializerJob.run(matCtx, MonitorUtils.subMonitor(m_nullMonitor, 1));
 	}
 }

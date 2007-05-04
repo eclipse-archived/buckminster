@@ -10,13 +10,13 @@
 
 package org.eclipse.buckminster.core.test.rmap;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.test.AbstractTestCase;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -41,7 +41,7 @@ public abstract class AbstractMnBTestCase extends AbstractTestCase
 		bld.setRootRequest(new ComponentRequest(componentName, null, null));
 		bld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap"));
 		m_query = bld.createComponentQuery();
-		IResolver resolver = new MainResolver(new RMContext(m_query));
+		IResolver resolver = new MainResolver(new ResolutionContext(m_query));
 		m_bom = resolver.resolve(nullMon);
 	}
 	public String getComponentName()

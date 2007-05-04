@@ -11,6 +11,7 @@ package org.eclipse.buckminster.core.mspec.builder;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Thomas Hallgren
@@ -22,12 +23,17 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	private String m_category;
 	private boolean m_exclude;
 
+	// Only valid when materializing into workspace
+	//
+	private IPath m_resourcePath;
+
 	@Override
 	public void clear()
 	{
 		super.clear();
 		m_namePattern = null;
 		m_category = null;
+		m_resourcePath = null;
 		m_exclude = false;
 	}
 
@@ -51,6 +57,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		return m_namePattern;
 	}
 
+	public IPath getResourcePath()
+	{
+		return m_resourcePath;
+	}
+
 	public void setNamePattern(Pattern namePattern)
 	{
 		m_namePattern = namePattern;
@@ -61,6 +72,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		super.initFrom(mn);
 		m_namePattern = mn.getNamePattern();
 		m_category = mn.getCategory();
+		m_resourcePath = mn.getResourcePath();
 		m_exclude = mn.isExclude();
 	}
 
@@ -72,5 +84,10 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	public void setExclude(boolean exclude)
 	{
 		m_exclude = exclude;
+	}
+
+	public void setResourcePath(IPath resourcePath)
+	{
+		m_resourcePath = resourcePath;
 	}
 }

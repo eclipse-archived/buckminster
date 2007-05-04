@@ -54,6 +54,7 @@ public class MSpecTestCase extends TestCase
 	public void testSerialize() throws Exception
 	{
 		MaterializationSpecBuilder builder = new MaterializationSpecBuilder();
+		builder.setName("Buckys download spec");
 		builder.setURL(new URL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery"));
 		builder.setShortDesc("Buckminster materialization spec");
 		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home") + System.getProperty("file.separator") + "bucky"));

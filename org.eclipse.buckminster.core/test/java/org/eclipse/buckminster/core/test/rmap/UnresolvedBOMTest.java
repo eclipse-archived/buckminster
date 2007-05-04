@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -14,6 +13,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.IResolverFactory;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.resolver.ResolverFactoryMaintainer;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory;
 import org.eclipse.buckminster.core.test.AbstractTestCase;
@@ -44,7 +44,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 
 		// Resolve using the MainResolver
 		//
-		IResolver resolver = new MainResolver(new RMContext(query));
+		IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 		assertTrue("bom is not fully resolved", bom.isFullyResolved());
 	}
@@ -55,7 +55,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
 		ComponentQuery query = queryBld.createComponentQuery();
 		
-		RMContext context = new RMContext(query);
+		ResolutionContext context = new ResolutionContext(query);
 		IResolver resolver1 = createRMAPResolverFactory("rmap_c.rmap").createResolver(context);
 		resolver1.getContext().setContinueOnError(true);
 		IResolver resolver2 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context);
@@ -90,7 +90,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		// extension points.
 		//
 		ResolverFactoryMaintainer.getInstance().setResolverFactories(new IResolverFactory[] { new ResourceMapResolverFactory() });
-		final IResolver resolver = new MainResolver(new RMContext(query));
+		final IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials unresolved = BillOfMaterials.create(new UnresolvedNode(qDep), query);
 
 		final BillOfMaterials[] bucket = new BillOfMaterials[] { unresolved };
@@ -137,7 +137,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
 		ComponentQuery query = queryBld.createComponentQuery();
 
-		RMContext context = new RMContext(query);
+		ResolutionContext context = new ResolutionContext(query);
 		IResolver resolver1 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context);
 		resolver1.getContext().setContinueOnError(true);
 		IResolver resolver2 = createRMAPResolverFactory("rmap_d.rmap").createResolver(context);

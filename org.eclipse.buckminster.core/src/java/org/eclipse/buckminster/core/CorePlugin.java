@@ -88,8 +88,6 @@ public class CorePlugin extends LogAwarePlugin
 
 	public static final String INCREMENTAL_BUILDERS_POINT = CORE_NAMESPACE + ".incrementalBuilders";
 
-	public static final String MATERIALIZERS_POINT = CORE_NAMESPACE + ".materializers";
-
 	public static final String MATERIALIZATIONS_FILE = "buckminster.mtr";
 
 	public static final String READER_TYPE_POINT = CORE_NAMESPACE + ".readerTypes";
@@ -411,7 +409,7 @@ public class CorePlugin extends LogAwarePlugin
 		if(materializerId == null)
 			materializerId = IMaterializer.WORKSPACE;
 
-		IMaterializer mat = getExecutableExtension(IMaterializer.class, MATERIALIZERS_POINT, materializerId, true);
+		IMaterializer mat = getExecutableExtension(IMaterializer.class, IMaterializer.MATERIALIZERS_POINT, materializerId, true);
 		if(mat != null)
 			return mat;
 		throw new MissingMaterializerException(materializerId);

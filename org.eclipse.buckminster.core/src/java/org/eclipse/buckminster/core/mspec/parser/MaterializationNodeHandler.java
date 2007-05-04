@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilde
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.core.runtime.Path;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -42,6 +43,9 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		builder.setNamePattern(Pattern.compile(this.getStringValue(attrs, MaterializationNode.ATTR_NAME_PATTERN)));
 		builder.setCategory(getOptionalStringValue(attrs, MaterializationNode.ATTR_CATEGORY));
 		builder.setExclude("true".equalsIgnoreCase(getOptionalStringValue(attrs, MaterializationNode.ATTR_EXCLUDE)));
+		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_RESOURCE_PATH);
+		if(tmp != null)
+			builder.setResourcePath(Path.fromPortableString(tmp));
 	}
 
 	@Override

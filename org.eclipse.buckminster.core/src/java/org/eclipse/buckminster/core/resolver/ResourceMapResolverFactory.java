@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.resolver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.IllegalParameterException;
@@ -79,7 +78,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		return m_prefsNode;
 	}
 
-	public IResolver createResolver(RMContext context) throws CoreException
+	public IResolver createResolver(ResolutionContext context) throws CoreException
 	{
 		ComponentQuery query = context.getComponentQuery();
 		URL url;

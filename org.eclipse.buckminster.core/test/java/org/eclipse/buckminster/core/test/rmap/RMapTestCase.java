@@ -14,13 +14,13 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.IResolverFactory;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.resolver.ResolverFactoryMaintainer;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
@@ -54,7 +54,7 @@ public class RMapTestCase extends AbstractTestCase
 
 		// Resolve the query
 		//
-		IResolver resolver = new MainResolver(new RMContext(query));
+		IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 
 		// Print the XML of exported version of the BOM

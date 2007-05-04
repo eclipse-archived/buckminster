@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -25,6 +24,7 @@ import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.parser.ElementRefHandler;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -280,16 +280,18 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	void addMaterializations(List<Materialization> minfos, RMContext context, Set<Resolution> skipThese)
+	void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
 		for(DepNode child : getChildren())
-			child.addMaterializations(minfos, context, skipThese);
+			child.addMaterializationCandidates(resolutions, mspec, perused);
+
 		Resolution resolution = getResolution();
-		if(!skipThese.contains(resolution))
+		if(!perused.contains(resolution))
 		{
-			skipThese.add(resolution);
-			resolution.addMaterialization(minfos, context);
+			perused.add(resolution);
+			if(resolution.isMaterializable() && !mspec.isExcluded(resolution.getComponentIdentifier()))
+				resolutions.add(resolution);
 		}
 	}
 

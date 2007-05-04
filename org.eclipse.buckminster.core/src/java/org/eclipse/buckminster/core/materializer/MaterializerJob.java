@@ -10,13 +10,16 @@
 
 package org.eclipse.buckminster.core.materializer;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -33,15 +36,9 @@ import org.eclipse.core.runtime.Status;
  */
 public class MaterializerJob extends WorkspaceJob
 {
-	private final RMContext m_context;
+	private final MaterializationContext m_context;
 
-	private final BillOfMaterials m_billOfMaterials;
-
-	private final Set<Resolution> m_skipThese;
-
-	private final IMaterializer m_materializer;
-
-	public static void run(BillOfMaterials bom, RMContext ctx, Set<Resolution> skipThese, IProgressMonitor monitor)
+	public static void run(MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
@@ -51,7 +48,7 @@ public class MaterializerJob extends WorkspaceJob
 		try
 		{
 			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-			MaterializerJob mbJob = new MaterializerJob(bom, ctx, skipThese);
+			MaterializerJob mbJob = new MaterializerJob(context);
 			mbJob.schedule();
 			mbJob.join(); // longrunning
 			IStatus status = mbJob.getResult();
@@ -75,10 +72,9 @@ public class MaterializerJob extends WorkspaceJob
 		}
 	}
 
-	public static void runDelegated(BillOfMaterials bom, RMContext context, Set<Resolution> skipThese,
-		final IProgressMonitor monitor) throws CoreException
+	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
-		MaterializerJob mbJob = new MaterializerJob(bom, context, skipThese);
+		MaterializerJob mbJob = new MaterializerJob(context);
 		IStatus status = mbJob.runInWorkspace(monitor);
 		if(status.getSeverity() == IStatus.CANCEL)
 			throw new OperationCanceledException();
@@ -86,13 +82,10 @@ public class MaterializerJob extends WorkspaceJob
 			throw new CoreException(status);
 	}
 
-	private MaterializerJob(BillOfMaterials bom, RMContext ctx, Set<Resolution> skipThese) throws CoreException
+	private MaterializerJob(MaterializationContext ctx) throws CoreException
 	{
 		super("Materializing and binding");
-		m_billOfMaterials = bom;
 		m_context = ctx;
-		m_skipThese = skipThese;
-		m_materializer = CorePlugin.getDefault().getMaterializer(ctx.get(IMaterializer.MATERIALIZER_PROPERTY));
 
 		// Report using the standard job reporter.
 		//
@@ -111,8 +104,30 @@ public class MaterializerJob extends WorkspaceJob
 		monitor.beginTask(null, 1000);
 		try
 		{
-			m_materializer.materialize(m_billOfMaterials, m_skipThese, m_context, MonitorUtils.subMonitor(monitor, 800));
-			m_materializer.performInstallActions(m_billOfMaterials, m_skipThese, m_context, MonitorUtils.subMonitor(monitor, 100));
+			CorePlugin corePlugin = CorePlugin.getDefault();
+			Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
+			MaterializationSpec mspec = m_context.getMaterializationSpec();
+			BillOfMaterials bom = m_context.getBillOfMaterials();
+			for(Resolution cr : bom.findMaterializationCandidates(mspec))
+			{
+				String materializer = mspec.getMaterializerID(cr.getComponentIdentifier());
+				List<Resolution> crs = resPerMat.get(materializer);
+				if(crs == null)
+				{
+					crs = new ArrayList<Resolution>();
+					resPerMat.put(materializer, crs);
+				}
+				crs.add(cr);
+			}
+
+			int ticksPerM = 800 / resPerMat.size();
+			for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
+			{
+				IMaterializer materializer = corePlugin.getMaterializer(entry.getKey());
+				materializer.materialize(entry.getValue(), m_context, MonitorUtils.subMonitor(monitor, ticksPerM));
+			}
+			bom.store();
+			AbstractMaterializer.performInstallActions(bom, m_context, MonitorUtils.subMonitor(monitor, 100));
 		}
 		catch(CoreException e)
 		{

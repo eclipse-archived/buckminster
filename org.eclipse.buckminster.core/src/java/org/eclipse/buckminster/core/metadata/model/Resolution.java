@@ -7,12 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.model;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -23,9 +20,7 @@ import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
-import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -39,7 +34,6 @@ import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -121,7 +115,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_providerId = old.getProviderId();
 		m_versionMatch = old.getVersionMatch();
 		m_materializable = old.isMaterializable();
-		m_repository = old.getRepository(null);
+		m_repository = old.getRepository();
 	}
 
 	public Resolution(IVersion version, Resolution old) throws CoreException
@@ -134,7 +128,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_providerId = old.getProviderId();
 		m_versionMatch = new VersionMatch(version, old.getVersionMatch().getFixedVersionSelector());
 		m_materializable = old.isMaterializable();
-		m_repository = old.getRepository(null);
+		m_repository = old.getRepository();
 	}
 
 	public Resolution(UUID cspecId, IVersion version, IVersionSelector fixedVersionSelector, UUID providerId,
@@ -222,11 +216,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		return m_providerId;
 	}
 
-	public String getRepository(RMContext context) throws CoreException
+	public String getRepository() throws CoreException
 	{
-		if(m_repository != null)
-			return m_repository;
-		return getProvider().getURI(context.getProperties(getRequest()));
+		return m_repository;
 	}
 
 	public final QualifiedDependency getQualifiedDependency()
@@ -389,9 +381,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 			m_versionMatch.getFixedVersionSelector().toString());
 		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable ? "true" : "false");
 		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_providerId.toString());
-
-		if(m_repository != null)
-			Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
+		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
 
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		handler.startElement(namespace, localName, qName, attrs);
@@ -415,57 +405,6 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		result.append(", Fixed at: ");
 		result.append(m_versionMatch.getFixedVersionSelector());
 		return result.toString();
-	}
-
-	public WorkspaceBinding createBindSpec(RMContext context)
-	throws CoreException
-	{
-		Materialization mat = WorkspaceInfo.getMaterialization(this);
-		if(mat == null)
-		{
-			// We still want to bind stuff produced by the local reader
-			//
-			String readerTypeName = getProvider().getReaderTypeId();
-			if(!IReaderType.LOCAL.equals(readerTypeName))
-				//
-				// From the platform. Don't bind this
-				//
-				return null;
-
-			IReaderType localReaderType = CorePlugin.getDefault().getReaderType(readerTypeName);
-			mat = new Materialization(localReaderType.getFixedLocation(this), this);
-		}
-
-		IPath wsRelativePath;
-		IPath matLoc = mat.getComponentLocation();
-		if(matLoc.hasTrailingSeparator())
-		{
-			// TODO: Improve this when the Materialization spec is in place. For
-			// now, let's assume that a folder is a project.
-			//
-			wsRelativePath = new Path(context.getProjectName(this)).addTrailingSeparator();
-		}
-		else
-		{
-			IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
-			if(bmProjLoc.isPrefixOf(matLoc))
-				wsRelativePath = matLoc.removeFirstSegments(bmProjLoc.segmentCount() - 1).setDevice(null);
-			else
-				//
-				// This will become a link in the root of the .buckminster project
-				//
-				wsRelativePath = new Path(CorePlugin.BUCKMINSTER_PROJECT).append(matLoc.lastSegment());
-
-			if(matLoc.hasTrailingSeparator())
-				wsRelativePath.addTrailingSeparator();
-		}
-		return new WorkspaceBinding(wsRelativePath, mat);
-	}
-
-	void addMaterialization(List<Materialization> minfos, RMContext context) throws CoreException
-	{
-		if(isMaterializable())
-			minfos.add(new Materialization(context.getDestination(this), this));
 	}
 
 	private ISaxableStorage<Resolution> getStorage() throws CoreException

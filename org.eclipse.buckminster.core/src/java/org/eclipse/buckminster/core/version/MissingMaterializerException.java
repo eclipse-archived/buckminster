@@ -7,8 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 
 /**
  * @author Thomas Hallgren
@@ -28,7 +28,7 @@ public class MissingMaterializerException extends LocalizedException
 	@Override
 	protected String[] getArguments()
 	{
-		return new String[] { m_argument, CorePlugin.MATERIALIZERS_POINT };
+		return new String[] { m_argument, IMaterializer.MATERIALIZERS_POINT };
 	}
 }
 

@@ -7,12 +7,12 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.materializer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -24,24 +24,24 @@ import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
  */
 public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer
 {
-	public void performInstallActions(BillOfMaterials bom, Set<Resolution> excludes, RMContext context,
+	public static void performInstallActions(BillOfMaterials bom, MaterializationContext context,
 			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, bom.uniqueNodeCount() * 100);
 		try
 		{
-			HashSet<Resolution> notThese = new HashSet<Resolution>();
-			if(excludes != null)
-				notThese.addAll(excludes);
-			HashSet<String> generated = new HashSet<String>();
-			installRecursive(bom, notThese, context, generated, monitor);
+			IMaterializer materializer = context.getMaterializationSpec().getMaterializer(bom.getRequest());
+			materializer.installRecursive(bom, context, new HashSet<String>(), new HashSet<Resolution>(), monitor);
 		}
 		finally
 		{
@@ -49,24 +49,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
-	public void performInstallAction(Resolution resolution, RMContext context, IProgressMonitor monitor) throws CoreException
-	{
-		// The AbstractMaterializer will not perform any install actions
-		//
-		MonitorUtils.complete(monitor);
-	}
-
-	private void generateResolution(GeneratorNode generatorNode, RMContext context, IProgressMonitor monitor) throws CoreException
-	{
-		IPerformManager performManager = CorePlugin.getPerformManager();
-		CSpec cspec = generatorNode.getDeclaringCSpec();
-		Attribute generatorAttribute = cspec.getReferencedAttribute(
-				generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
-		performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
-	}
-
-	private void installRecursive(DepNode node, Set<Resolution> excludes, RMContext context,
-			Set<String> generated, IProgressMonitor monitor) throws CoreException
+	public void installRecursive(DepNode node, MaterializationContext context,
+			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{
 		if(node instanceof GeneratorNode)
 		{
@@ -81,13 +65,58 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		else
 		{
 			Resolution resolution = node.getResolution();
-			if(resolution == null || excludes.contains(resolution))
+			if(resolution == null || perused.contains(resolution))
 				return;
 
-			excludes.add(resolution);
+			perused.add(resolution);
 			for(DepNode child : node.getChildren())
-				installRecursive(child, excludes, context, generated, monitor);
-			performInstallAction(resolution, context, MonitorUtils.subMonitor(monitor, 100));
+				delegateAndInstallRecursive(child, context, generated, perused, monitor);
+
+			if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier()))
+				performInstallAction(resolution, context, MonitorUtils.subMonitor(monitor, 100));
 		}
+	}
+
+	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	{
+		// The AbstractMaterializer will not perform any install actions
+		//
+		MonitorUtils.complete(monitor);
+	}
+
+	private void delegateAndInstallRecursive(DepNode node, MaterializationContext context,
+			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
+	{
+		String materializerId = context.getMaterializationSpec().getMaterializerID(node.getRequest());
+		IMaterializer materializer = materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(materializerId);
+		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
+	}
+
+	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	{
+		IPerformManager performManager = CorePlugin.getPerformManager();
+		CSpec cspec = generatorNode.getDeclaringCSpec();
+		Attribute generatorAttribute = cspec.getReferencedAttribute(
+				generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
+		performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
+	}
+
+	public static String[] getMaterializerIDs(boolean includeEmptyEntry)
+	{
+		IConfigurationElement[] elems = getElements();
+		int idx = elems.length;
+		ArrayList<String> names = new ArrayList<String>(idx+1);
+		if(includeEmptyEntry)
+			names.add("");
+		while(--idx >= 0)
+			names.add(elems[idx].getAttribute("id"));
+		Collections.sort(names);
+		return names.toArray(new String[names.size()]);
+	}
+
+	private static IConfigurationElement[] getElements()
+	{
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
 	}
 }

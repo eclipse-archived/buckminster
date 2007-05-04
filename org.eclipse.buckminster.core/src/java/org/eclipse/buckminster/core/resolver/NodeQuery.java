@@ -73,9 +73,9 @@ public class NodeQuery
 	 * is allowed.
 	 * @return <code>true</code> only if an advice indicates that a circular dependency is allowed.
 	 */
-	public boolean allowCircularDependency()
+	public boolean allowCircularDependency() throws CoreException
 	{
-		return this.getComponentQuery().allowCircularDependency(this.getComponentRequest());
+		return getComponentQuery().allowCircularDependency(getComponentRequest());
 	}
 
 	/**
@@ -85,13 +85,12 @@ public class NodeQuery
 	 * @throws MissingAttributeException when this query declares an attribute
 	 * that cannot be found in <code>cspec</code>.
 	 */
-	public Attribute[] getAttributes(CSpec cspec)
-	throws MissingAttributeException
+	public Attribute[] getAttributes(CSpec cspec) throws CoreException
 	{
-		return cspec.getAttributes(this.getRequiredAttributes());
+		return cspec.getAttributes(getRequiredAttributes());
 	}
 
-	public final ComponentQuery getComponentQuery()
+	public final ComponentQuery getComponentQuery() throws CoreException
 	{
 		return m_context.getComponentQuery();
 	}
@@ -106,12 +105,19 @@ public class NodeQuery
 		return m_context;
 	}
 
-	public IPath getMaterializationLocation() throws CoreException
+	public ResolutionContext getResolutionContext()
 	{
-		return this.getComponentQuery().getMaterializationLocation(this.getComponentRequest());
+		if(m_context instanceof ResolutionContext)
+			return (ResolutionContext)m_context;		
+		throw new IllegalStateException("ResolutionContext requested during Materialization");
 	}
 
-	public final URL getOverlayFolder()
+	public IPath getMaterializationLocation() throws CoreException
+	{
+		return getComponentQuery().getMaterializationLocation(getComponentRequest());
+	}
+
+	public final URL getOverlayFolder() throws CoreException
 	{
 		return getComponentQuery().getOverlayFolder(getComponentRequest());
 	}
@@ -162,7 +168,7 @@ public class NodeQuery
 	 * @return A score that the resolver will use when it compares the provider
 	 *         to other providers.
 	 */
-	public ProviderScore getProviderScore(boolean mutable, boolean source)
+	public ProviderScore getProviderScore(boolean mutable, boolean source) throws CoreException
 	{
 		return getComponentQuery().getProviderScore(getComponentRequest(), mutable, source);
 	}
@@ -180,7 +186,7 @@ public class NodeQuery
 	 * Checks if there is a matching advice that declares specific actions
 	 * @return The names of the adviced actions or an empty array.
 	 */
-	public List<String> getRequiredAttributes()
+	public List<String> getRequiredAttributes() throws CoreException
 	{
 		return getComponentQuery().getAttributes(getComponentRequest());
 	}
@@ -191,7 +197,7 @@ public class NodeQuery
 	 * 
 	 * @return A version selector or <code>null</code>.
 	 */
-	public IVersionDesignator getVersionDesignator()
+	public IVersionDesignator getVersionDesignator() throws CoreException
 	{
 		ComponentRequest request = getComponentRequest();
 		IVersionDesignator vds = getComponentQuery().getVersionOverride(request);
@@ -209,7 +215,7 @@ public class NodeQuery
 	 * @return <code>true</code> if the external dependencies of the requested
 	 *         component should be pruned.
 	 */
-	public boolean isPrune()
+	public boolean isPrune() throws CoreException
 	{
 		return getComponentQuery().isPrune(getComponentRequest());
 	}
@@ -220,7 +226,7 @@ public class NodeQuery
 	 * 
 	 * @return <code>true</code> if the requested component should be skipped.
 	 */
-	public boolean skipComponent()
+	public boolean skipComponent() throws CoreException
 	{
 		return getComponentQuery().skipComponent(getComponentRequest());
 	}
@@ -233,7 +239,7 @@ public class NodeQuery
 	 * 
 	 * @return An enum denoting the verdict.
 	 */
-	public ConflictResolution useExistingArtifacts()
+	public ConflictResolution useExistingArtifacts() throws CoreException
 	{
 		return getComponentQuery().useExistingArtifacts(getComponentRequest());
 	}
@@ -246,7 +252,7 @@ public class NodeQuery
 	 *            The properties that contains the component request.
 	 * @return <code>true</code> if an existing project can be used.
 	 */
-	public boolean useExistingProject()
+	public boolean useExistingProject() throws CoreException
 	{
 		return getComponentQuery().useExistingProject(getComponentRequest());
 	}
@@ -258,7 +264,7 @@ public class NodeQuery
 	 * 
 	 * @return <code>true</code> if installed feature or plugin can be used.
 	 */
-	public boolean useInstalledComponent()
+	public boolean useInstalledComponent() throws CoreException
 	{
 		return getComponentQuery().useInstalledComponent(getComponentRequest());
 	}
@@ -270,7 +276,7 @@ public class NodeQuery
 	 * 
 	 * @return <code>true</code> if an existing materialization can be used.
 	 */
-	public boolean useMaterialization()
+	public boolean useMaterialization() throws CoreException
 	{
 		return getComponentQuery().useMaterialization(getComponentRequest());
 	}

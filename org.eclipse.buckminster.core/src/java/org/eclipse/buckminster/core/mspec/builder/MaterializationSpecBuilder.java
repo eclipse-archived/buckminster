@@ -25,12 +25,14 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 {
 	private final List<MaterializationNodeBuilder> m_nodes = new ArrayList<MaterializationNodeBuilder>();
 	private String m_shortDesc;
+	private String m_name;
 	private URL m_url;
 
 	@Override
 	public void clear()
 	{
 		super.clear();
+		m_name = null;
 		m_shortDesc = null;
 		m_url = null;
 		m_nodes.clear();
@@ -57,6 +59,11 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 		return null;
 	}
 
+	public String getName()
+	{
+		return m_name;
+	}
+
 	public List<MaterializationNodeBuilder> getNodes()
 	{
 		return m_nodes;
@@ -75,6 +82,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 	public void initFrom(MaterializationSpec mspec)
 	{
 		super.initFrom(mspec);
+		m_name = mspec.getName();
 		m_shortDesc = mspec.getShortDesc();
 		m_url = mspec.getURL();
 		for(MaterializationNode node : mspec.getNodes())
@@ -83,6 +91,11 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 			nodeBuilder.initFrom(node);
 			m_nodes.add(nodeBuilder);
 		}
+	}
+
+	public void setName(String name)
+	{
+		m_name = name;
 	}
 
 	public void setShortDesc(String shortDesc)

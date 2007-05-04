@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.sax.ISaxableElement;
@@ -41,15 +40,8 @@ public abstract class MaterializationDirective implements ISaxableElement
 	{
 		m_documentation = builder.getDocumentation();
 		m_installLocation = builder.getInstallLocation();
-		String mt = builder.getMaterializer();
-		if(mt == null)
-			mt = IMaterializer.FILE_SYSTEM;
-		m_materializer = mt;
-
-		ConflictResolution cr = builder.getConflictResolution();
-		if(cr == null)
-			cr = ConflictResolution.UPDATE;
-		m_conflictResolution = cr;
+		m_materializer = builder.getMaterializer();
+		m_conflictResolution = builder.getConflictResolution();
 		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());
 	}
 
@@ -63,7 +55,7 @@ public abstract class MaterializationDirective implements ISaxableElement
 		return m_installLocation;
 	}
 
-	public String getMaterializer()
+	public String getMaterializerID()
 	{
 		return m_materializer;
 	}
@@ -94,7 +86,8 @@ public abstract class MaterializationDirective implements ISaxableElement
 			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, m_installLocation.toPortableString());
 		if(m_materializer != null)
 			Utils.addAttribute(attrs, ATTR_MATERIALIZER, m_materializer);
-		Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, m_conflictResolution.name());
+		if(m_conflictResolution != null)
+			Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, m_conflictResolution.name());
 	}
 
 	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException

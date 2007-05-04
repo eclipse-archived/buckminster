@@ -17,21 +17,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
@@ -46,6 +45,33 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
 @SuppressWarnings("restriction")
 public class SiteMirrorMaterializer extends AbstractMaterializer
 {
+	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
+	{
+		// Obtain the mirror site URL.
+		//
+		String mirrorSiteLocation = context.get(MIRROR_SITE_LOCATION_PROPERTY);
+		if(mirrorSiteLocation == null)
+			throw BuckminsterException.fromMessage("Site mirror materializer is missing the required property "
+					+ MIRROR_SITE_LOCATION_PROPERTY);
+
+		URL url;
+		try
+		{
+			url = URLUtils.normalizeToURL(mirrorSiteLocation);
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.fromMessage("Property " + MIRROR_SITE_LOCATION_PROPERTY
+					+ " cannot be coerced to a URL", e);
+		}
+		File mirrorSiteFile = FileUtils.getFile(url);
+		if(mirrorSiteFile == null)
+			throw BuckminsterException.fromMessage("Property " + MIRROR_SITE_LOCATION_PROPERTY
+					+ " does not denote a local resource");
+
+		return Path.fromOSString(mirrorSiteFile.toString());
+	}
+
 	@SuppressWarnings("serial")
 	private static class FeaturesPerSite extends ArrayList<ISiteFeatureReference>
 	{
@@ -94,50 +120,25 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 
 	public static final Object MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
 
-	public List<Materialization> materialize(BillOfMaterials bom, Set<Resolution> excludes, RMContext context,
+	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
 			IProgressMonitor monitor) throws CoreException
 	{
-		// Obtain the mirror site URL.
-		//
-		String mirrorSiteLocation = context.get(MIRROR_SITE_LOCATION_PROPERTY);
-		if(mirrorSiteLocation == null)
-			throw BuckminsterException.fromMessage("Site mirror materializer is missing the required property "
-					+ MIRROR_SITE_LOCATION_PROPERTY);
-
-		URL url;
-		try
-		{
-			url = URLUtils.normalizeToURL(mirrorSiteLocation);
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.fromMessage("Property " + MIRROR_SITE_LOCATION_PROPERTY
-					+ " cannot be coerced to a URL", e);
-		}
-		File mirrorSiteFile = FileUtils.getFile(url);
-		if(mirrorSiteFile == null)
-			throw BuckminsterException.fromMessage("Property " + MIRROR_SITE_LOCATION_PROPERTY
-					+ " does not denote a local resource");
-
 		monitor.beginTask(null, 100);
 		try
 		{
-			Set<Resolution> notThese = new HashSet<Resolution>();
-			if(excludes != null)
-				notThese.addAll(excludes);
 			Map<String, FeaturesPerSite> sites = new HashMap<String, FeaturesPerSite>();
 
 			IProgressMonitor siteCollectorMon = MonitorUtils.subMonitor(monitor, 50);
-			siteCollectorMon.beginTask(null, bom.uniqueNodeCount() * 100);
+			siteCollectorMon.beginTask(null, resolutions.size() * 100);
 			try
 			{
-				collectSites(bom, notThese, context, sites, siteCollectorMon);
+				collectSites(resolutions, sites, siteCollectorMon);
 			}
 			finally
 			{
 				siteCollectorMon.done();
 			}
-			mirrorAndExpose(context, mirrorSiteFile, context.get(MIRROR_SITE_URL_PROPERTY), sites.values(),
+			mirrorAndExpose(context, getDefaultInstallRoot(context).toFile(), context.get(MIRROR_SITE_URL_PROPERTY), sites.values(),
 					MonitorUtils.subMonitor(monitor, 50));
 
 			// Not supposed to be further perused
@@ -179,7 +180,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 				{
 					if(!context.isContinueOnError())
 						throw e;
-					context.addResolveException(e.getStatus());
+					context.addException(e.getStatus());
 				}
 			}
 		}
@@ -189,37 +190,32 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 		}
 	}
 
-	private static void collectSites(DepNode node, Set<Resolution> notThese, RMContext context,
+	private static void collectSites(List<Resolution> resolutions,
 			Map<String, FeaturesPerSite> sites, IProgressMonitor monitor) throws CoreException
 	{
-		Resolution resolution = node.getResolution();
-		if(resolution == null || notThese.contains(resolution))
-			return;
-
-		notThese.add(resolution);
-		for(DepNode child : node.getChildren())
-			collectSites(child, notThese, context, sites, monitor);
-
-		try
+		for(Resolution resolution : resolutions)
 		{
-			SiteFeatureReaderType.checkComponentType(resolution.getProvider());
-		}
-		catch(CoreException e)
-		{
-			// Ignore this node, i.e. don't consider it to be a site.feature
-			// We are interested of its children anyway.
-			//
-			MonitorUtils.worked(monitor, 100);
-			return;
-		}
+			try
+			{
+				SiteFeatureReaderType.checkComponentType(resolution.getProvider());
+			}
+			catch(CoreException e)
+			{
+				// Ignore this node, i.e. don't consider it to be a site.feature
+				// We are interested of its children anyway.
+				//
+				MonitorUtils.worked(monitor, 100);
+				continue;
+			}
 
-		String siteURL = resolution.getRepository(context);
-		FeaturesPerSite fps = sites.get(siteURL);
-		if(fps == null)
-		{
-			fps = new FeaturesPerSite(SiteFeatureReaderType.getSite(siteURL, MonitorUtils.subMonitor(monitor, 100)));
-			sites.put(siteURL, fps);
+			String siteURL = resolution.getRepository();
+			FeaturesPerSite fps = sites.get(siteURL);
+			if(fps == null)
+			{
+				fps = new FeaturesPerSite(SiteFeatureReaderType.getSite(siteURL, MonitorUtils.subMonitor(monitor, 100)));
+				sites.put(siteURL, fps);
+			}
+			fps.add(resolution.getComponentIdentifier());
 		}
-		fps.add(resolution.getComponentIdentifier());
 	}
 }

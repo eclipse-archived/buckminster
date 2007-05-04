@@ -50,7 +50,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	private final LinkedList<ResolverNodeWithJob> m_waitQueue = new LinkedList<ResolverNodeWithJob>();
 
-	public ResourceMapResolver(IResourceMapResolverFactory factory, RMContext context) throws CoreException
+	public ResourceMapResolver(IResourceMapResolverFactory factory, ResolutionContext context) throws CoreException
 	{
 		super(context);
 		m_factory = factory;
@@ -74,7 +74,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	}
 
 	@Override
-	ResolverNode createResolverNode(RMContext context, QualifiedDependency qDep)
+	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep)
 	{
 		return new ResolverNodeWithJob(this, context, qDep);
 	}
@@ -111,9 +111,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		try
 		{
 			ComponentQuery cquery = bom.getQuery();
-			RMContext context = getContext();
+			ResolutionContext context = getContext();
 			if(!(cquery == null || cquery.equals(context.getComponentQuery())))
-				context = new RMContext(cquery, context);
+				context = new ResolutionContext(cquery, context);
 			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(context, bom.getQualifiedDependency());
 
 			m_holdQueue = true;
@@ -197,7 +197,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			RMContext context = getContext();
 			if(!context.isContinueOnError())
 				throw e;
-			context.addResolveException(e.getStatus());
+			context.addException(e.getStatus());
 			return null;
 		}
 	}

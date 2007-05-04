@@ -67,8 +67,9 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 	{
 		super.handleAttributes(attrs);
 		MaterializationSpecBuilder builder = (MaterializationSpecBuilder)getBuilder();
+		builder.setName(getStringValue(attrs, MaterializationSpec.ATTR_NAME));
 		builder.setShortDesc(getOptionalStringValue(attrs, MaterializationSpec.ATTR_SHORT_DESC));
-		String url = this.getStringValue(attrs, MaterializationSpec.ATTR_URL);
+		String url = getStringValue(attrs, MaterializationSpec.ATTR_URL);
 		try
 		{
 			builder.setURL(new URL(url));

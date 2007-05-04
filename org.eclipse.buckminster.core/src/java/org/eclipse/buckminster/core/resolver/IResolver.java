@@ -21,7 +21,7 @@ public interface IResolver
 	/**
 	 * Returns the context associated with this resolver
 	 */
-	RMContext getContext();
+	ResolutionContext getContext();
 
 	/**
 	 * Returns <code>true</code> if this resolver will perform a recursive resolve.

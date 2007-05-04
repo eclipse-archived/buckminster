@@ -934,6 +934,9 @@ public abstract class FileUtils
 
 	public static File getFile(URL url)
 	{
+		if(url == null)
+			return null;
+
 		String proto = url.getProtocol();
 		if(proto == null || "file".equalsIgnoreCase(proto))
 		{

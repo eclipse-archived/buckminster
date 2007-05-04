@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.StorageManager;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -136,7 +136,7 @@ public class GeneratorNode extends DepNode
 	}
 
 	@Override
-	void addMaterializations(List<Materialization> minfos, RMContext context, Set<Resolution> skipThese)
+	void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
 	}

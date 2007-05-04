@@ -19,14 +19,15 @@ import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersionSelector;
@@ -61,7 +62,7 @@ public class URLReaderType extends AbstractReaderType
 		ComponentRequest rq = new ComponentRequest(urlString, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
-		RMContext context = new RMContext(queryBld.createComponentQuery());
+		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
 		Provider provider = new Provider(readerType, IComponentType.UNKNOWN, null, null, new Format(urlString), false, false, null);
@@ -88,12 +89,12 @@ public class URLReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution cr, RMContext context, boolean[] optional) throws CoreException
+	public IPath getMaterializationLocation(Resolution cr, MaterializationContext context, boolean[] optional) throws CoreException
 	{
 		try
 		{
 			optional[0] = true;
-			URI uri = new URI(cr.getRepository(context));
+			URI uri = new URI(cr.getRepository());
 			IPath path = Path.fromPortableString(uri.getPath());
 			if(!this.isFileReader() || path.hasTrailingSeparator())
 				//

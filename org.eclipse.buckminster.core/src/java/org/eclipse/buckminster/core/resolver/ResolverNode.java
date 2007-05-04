@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -184,23 +183,23 @@ public class ResolverNode
 		}
 	}
 
-	public synchronized RMContext startResolvingChildren(DepNode node) throws CoreException
+	public synchronized ResolutionContext startResolvingChildren(DepNode node) throws CoreException
 	{
 		Resolution resolution = node.getResolution();
 		if(m_invalidateRun || resolution == null)
 			return null;
 
 		ComponentQuery cquery = node.getQuery();
-		RMContext originalContext = m_query.getContext();
-		RMContext context = originalContext;
+		ResolutionContext originalContext = m_query.getResolutionContext();
+		ResolutionContext context = originalContext;
 		if(!(cquery == null || cquery.equals(context.getComponentQuery())))
-			context = new RMContext(cquery, context);
+			context = new ResolutionContext(cquery, context);
 
 		Map<String,Generator> generators = resolution.getCSpec().getGenerators();
 		if(generators.size() > 0)
 		{
 			if(context == originalContext)
-				context = new RMContext(originalContext.getComponentQuery(), originalContext);
+				context = new ResolutionContext(originalContext.getComponentQuery(), originalContext);
 			context.setGenerators(generators.values());
 		}
 

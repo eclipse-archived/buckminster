@@ -11,26 +11,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.service.datalocation.Location;
 
 /**
  * Materializes each component to the local filesystem.
@@ -39,56 +41,73 @@ import org.eclipse.core.runtime.SubProgressMonitor;
  */
 public class FileSystemMaterializer extends AbstractMaterializer
 {
-	public List<Materialization> materialize(BillOfMaterials bom, Set<Resolution> excludes, RMContext context,
-			IProgressMonitor monitor) throws CoreException
+	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
 	{
-		List<Materialization> minfos = bom.createMaterializations(context, excludes);
-		ArrayList<Materialization> adjustedMinfos = new ArrayList<Materialization>(minfos.size());
+		Location userLocation = Platform.getUserLocation();
+		if(userLocation != null)
+		{
+			File userDir = FileUtils.getFile(userLocation.getURL());
+			if(userDir != null)
+			{
+				if(Platform.OS_WIN32.equals(Platform.getOS()))
+					userDir = new File(userDir, "Application Data\\Buckminster");
+				else
+					userDir = new File(userDir, "buckminster");
+				return Path.fromOSString(new File(userDir, "downloads").toString());
+			}
+		}
+		throw BuckminsterException.fromMessage("Unable to determine users home directory");
+	}
+
+	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	{
+		ArrayList<Materialization> adjustedMinfos = new ArrayList<Materialization>(resolutions.size());
 
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 1000);
 		try
 		{
-			// Group materialization infos per reader. Some readers use a common
-			// "view"
+			// Group materialization infos per reader. Some readers use a common "view"
 			// for all materializations. They need to be initialized using all
 			// entries.
 			//
 			int totCount = 0;
 			Map<String, List<Materialization>> perReader = new TreeMap<String, List<Materialization>>();
+			MaterializationSpec mspec = context.getMaterializationSpec();
 			IProgressMonitor prepMon = MonitorUtils.subMonitor(monitor, 100);
-			prepMon.beginTask(null, minfos.size() * 10);
-			for(Materialization mi : minfos)
+			prepMon.beginTask(null, resolutions.size() * 10);
+			for(Resolution cr : resolutions)
 			{
-				Resolution cr = mi.getResolution();
-				ConflictResolution notEmptyAction = context.getNotEmptyAction(cr);
-				if(notEmptyAction != ConflictResolution.UPDATE && mi.isPersisted())
+				Materialization mat = WorkspaceInfo.getMaterialization(cr);
+				if(mat != null)
 				{
-					// Already materialized.
+					// The exact same resolution is already materialized.
 					//
-					adjustedMinfos.add(mi);
+					adjustedMinfos.add(mat);
 					continue;
 				}
 
 				ComponentIdentifier ci = cr.getComponentIdentifier();
-				IPath location = mi.getComponentLocation();
-				File file = location.toFile();
-				if(file.exists() && notEmptyAction == ConflictResolution.KEEP)
+				ConflictResolution conflictRes = mspec.getConflictResolution(ci);
+				IPath installLocation = context.getInstallLocation(cr);
+				mat = new Materialization(installLocation, cr);
+
+				File file = installLocation.toFile();
+				if(file.exists() && conflictRes == ConflictResolution.KEEP)
 				{
+					boolean pathTypeOK = installLocation.hasTrailingSeparator() ? file.isDirectory() : !file.isDirectory();
+
+					if(!pathTypeOK)
+						throw new FileFolderMismatchException(ci, installLocation);
+
 					// Don't materialize this one. Instead, pretend that we
 					// just did.
 					//
-					logger
-							.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
-									+ location);
-					if(!location.hasTrailingSeparator() && file.isDirectory())
-					{
-						Resolution current = LocalResolver.fromPath(location, ci.getName());
-						mi = new Materialization(location.addTrailingSeparator(), new Resolution(current.getCSpec(), mi
-								.getResolution()));
-					}
-					mi.store();
-					adjustedMinfos.add(mi);
+					logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
+									+ installLocation);
+
+					mat.store();
+					adjustedMinfos.add(mat);
 					MonitorUtils.worked(prepMon, 10);
 					continue;
 				}
@@ -96,10 +115,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				// Ensure that the destination exists and that it is empty. This might cause a
 				// DestinationNotEmpty exception to be thrown.
 				//
-				File folder = location.hasTrailingSeparator()
+				File folder = installLocation.hasTrailingSeparator()
 						? file
 						: file.getParentFile();
-				FileUtils.prepareDestination(folder, notEmptyAction == ConflictResolution.UPDATE, MonitorUtils
+				FileUtils.prepareDestination(folder, conflictRes != ConflictResolution.FAIL, MonitorUtils
 						.subMonitor(prepMon, 10));
 
 				String readerType = cr.getProvider().getReaderTypeId();
@@ -109,7 +128,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					readerGroup = new ArrayList<Materialization>();
 					perReader.put(readerType, readerGroup);
 				}
-				readerGroup.add(mi);
+				readerGroup.add(mat);
 				totCount++;
 			}
 			prepMon.done();
@@ -157,10 +176,9 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			for(String readerTypeId : perReader.keySet())
 			{
 				IReaderType readerType = plugin.getReaderType(readerTypeId);
-				readerType.postMaterialization(new SubProgressMonitor(matMon, 2));
+				readerType.postMaterialization(context, new SubProgressMonitor(matMon, 2));
 			}
 			matMon.done();
-			bom.store();
 			return adjustedMinfos;
 		}
 		finally

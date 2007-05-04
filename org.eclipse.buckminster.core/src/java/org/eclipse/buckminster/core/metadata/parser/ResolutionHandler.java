@@ -79,8 +79,8 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			String fixedSelector = this.getStringValue(attrs, ATTR_FIXED_VERSION_SELECTOR);
 			m_fixedVersionSelector = VersionSelectorFactory.fromString(fixedSelector);
 			m_materializable = this.getBooleanValue(attrs, ATTR_MATERIALIZABLE);
-			m_providerId = UUID.fromString(this.getStringValue(attrs, ATTR_PROVIDER_ID));
-			m_repository = getOptionalStringValue(attrs, ATTR_REPOSITORY);
+			m_providerId = UUID.fromString(getStringValue(attrs, ATTR_PROVIDER_ID));
+			m_repository = getStringValue(attrs, ATTR_REPOSITORY);
 			m_request = null;
 
 			m_attributes.clear();

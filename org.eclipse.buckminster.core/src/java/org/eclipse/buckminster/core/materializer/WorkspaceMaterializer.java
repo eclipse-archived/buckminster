@@ -10,12 +10,16 @@ package org.eclipse.buckminster.core.materializer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
@@ -42,10 +46,16 @@ import org.eclipse.core.runtime.Path;
 public class WorkspaceMaterializer extends FileSystemMaterializer
 {
 	@Override
-	public void performInstallAction(Resolution resolution, RMContext context, IProgressMonitor monitor)
+	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
+	{
+		return ResourcesPlugin.getWorkspace().getRoot().getLocation();
+	}
+
+	@Override
+	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
-		WorkspaceBinding wb = resolution.createBindSpec(context);
+		WorkspaceBinding wb = createBindSpec(resolution, context);
 		if(wb == null)
 		{
 			MonitorUtils.complete(monitor);
@@ -75,6 +85,54 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		{
 			monitor.done();
 		}
+	}
+
+	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context)
+	throws CoreException
+	{
+		Materialization mat = WorkspaceInfo.getMaterialization(resolution);
+		if(mat == null)
+		{
+			// We still want to bind stuff produced by the local reader
+			//
+			String readerTypeName = resolution.getProvider().getReaderTypeId();
+			if(!IReaderType.LOCAL.equals(readerTypeName))
+				//
+				// From the platform. Don't bind this
+				//
+				return null;
+
+			IReaderType localReaderType = CorePlugin.getDefault().getReaderType(readerTypeName);
+			mat = new Materialization(localReaderType.getFixedLocation(resolution), resolution);
+		}
+
+		IPath wsRelativePath;
+		IPath matLoc = mat.getComponentLocation();
+		if(matLoc.hasTrailingSeparator())
+		{
+			ComponentIdentifier ci = resolution.getComponentIdentifier();
+			wsRelativePath = context.getMaterializationSpec().getResourcePath(ci);
+			if(wsRelativePath == null)
+				//
+				// Default to project.
+				//
+				wsRelativePath = Path.fromPortableString(getDefaultProjectName(resolution));
+		}
+		else
+		{
+			IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
+			if(bmProjLoc.isPrefixOf(matLoc))
+				wsRelativePath = matLoc.removeFirstSegments(bmProjLoc.segmentCount() - 1).setDevice(null);
+			else
+				//
+				// This will become a link in the root of the .buckminster project
+				//
+				wsRelativePath = new Path(CorePlugin.BUCKMINSTER_PROJECT).append(matLoc.lastSegment());
+
+			if(matLoc.hasTrailingSeparator())
+				wsRelativePath.addTrailingSeparator();
+		}
+		return new WorkspaceBinding(wsRelativePath, mat);
 	}
 
 	private void createExternalBinding(IPath wsRelativePath, Materialization mat, IProgressMonitor monitor)
@@ -191,7 +249,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private void createProjectBinding(String projName, Materialization mat, RMContext context,
+	private void createProjectBinding(String projName, Materialization mat, MaterializationContext context,
 		IProgressMonitor monitor) throws CoreException, IOException
 	{
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -264,7 +322,39 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, RMContext context,
+	private String getDefaultProjectName(Resolution resolution) throws CoreException
+	{
+		ComponentRequest cname = resolution.getRequest();
+		String name = cname.getName();
+		String categoryName = cname.getCategory();
+		ComponentCategory cc = ComponentCategory.getCategory(categoryName);
+		if(cc == null)
+			return name;
+
+		Pattern desiredMatch = cc.getDesiredNamePattern();
+		if(desiredMatch == null || desiredMatch.matcher(name).find())
+			//
+			// We have a category but no desire to change the name
+			//
+			return name;
+
+		Pattern repFrom = cc.getSubstituteNamePattern();
+		String repTo = cc.getNameSubstitution();
+
+		if(repFrom == null || repTo == null)
+			throw new BuckminsterException("Category: " + categoryName + " defines desiredNamePattern but no substitution");
+
+		Matcher matcher = repFrom.matcher(name);
+		if(matcher.matches())
+		{
+			String repl = matcher.replaceAll(repTo).trim();
+			if(repl.length() > 0)
+				name = repl;
+		}
+		return name;
+	}
+
+	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, MaterializationContext context,
 		IProgressMonitor monitor) throws CoreException
 	{
 		try
@@ -297,7 +387,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		{
 			if(!context.isContinueOnError())
 				throw e;
-			context.addResolveException(e.getStatus());
+			context.addException(e.getStatus());
 			return wb;
 		}
 	}

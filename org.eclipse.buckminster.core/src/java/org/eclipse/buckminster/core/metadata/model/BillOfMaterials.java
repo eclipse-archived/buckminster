@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -26,9 +25,11 @@ import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -231,14 +232,11 @@ public class BillOfMaterials extends DepNode
 		return other != null && m_queryId.equals(other.m_queryId) && m_topNodeId.equals(other.m_topNodeId);
 	}
 
-	public List<Materialization> createMaterializations(RMContext context, Set<Resolution> skipThese)
+	public List<Resolution> findMaterializationCandidates(MaterializationSpec mspec)
 	throws CoreException
 	{
-		List<Materialization> minfos = new ArrayList<Materialization>();
-		HashSet<Resolution> excludes = new HashSet<Resolution>();
-		if(skipThese != null)
-			excludes.addAll(skipThese);
-		getTopNode().addMaterializations(minfos, context, excludes);
+		List<Resolution> minfos = new ArrayList<Resolution>();
+		addMaterializationCandidates(minfos, mspec, new HashSet<Resolution>());
 		return minfos;
 	}
 
@@ -260,7 +258,7 @@ public class BillOfMaterials extends DepNode
 
 	public BillOfMaterials fullyResolve(IProgressMonitor monitor) throws CoreException
 	{
-		return fullyResolve(new MainResolver(new RMContext(getQuery())), monitor);
+		return fullyResolve(new MainResolver(new ResolutionContext(getQuery())), monitor);
 	}
 
 	public BillOfMaterials fullyResolve(IResolver resolver, IProgressMonitor monitor) throws CoreException
@@ -421,10 +419,10 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	void addMaterializations(List<Materialization> minfos, RMContext context, Set<Resolution> skipThese)
+	void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
-		getTopNode().addMaterializations(minfos, context, skipThese);
+		getTopNode().addMaterializationCandidates(resolutions, mspec, perused);
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public abstract class MaterializationDirectiveBuilder
 		clear();
 		m_documentation = md.getDocumentation();
 		m_installLocation = md.getInstallLocation();
-		m_materializer = md.getMaterializer();
+		m_materializer = md.getMaterializerID();
 		m_conflictResolution = md.getConflictResolution();
 		m_properties.putAll(md.getProperties());
 	}

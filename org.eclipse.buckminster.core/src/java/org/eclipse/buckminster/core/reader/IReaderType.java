@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -51,25 +52,25 @@ public interface IReaderType extends IBuckminsterExtension
 	 * materialization has to take place.
 	 * @param resolution The resolution for the component that should be
 	 *            materialized.
-	 * @param context The resolution and materialization context
+	 * @param context The materialization context
 	 * @param optional A one element array that will carry the optional status
 	 *            return value.
 	 * @return A location for materialization or <code>null</code> if this
 	 *         reader type has no opinion.
 	 * @throws CoreException
 	 */
-	IPath getMaterializationLocation(Resolution resolution, RMContext context, boolean[] optional) throws CoreException;
+	IPath getMaterializationLocation(Resolution resolution, MaterializationContext context, boolean[] optional) throws CoreException;
 
 	/**
 	 * Prepare to materialize the given locations. Typically a reader type will
 	 * use this information to set up some kind of "view" of the repository that
 	 * it represents.
 	 * @param locations The locations that will be materialized
-	 * @param context The resolution and materialization context
+	 * @param context The materialization context
 	 * @param monitor
 	 * @throws CoreException
 	 */
-	void prepareMaterialization(List<Materialization> locations, RMContext context, IProgressMonitor monitor)
+	void prepareMaterialization(List<Materialization> locations, MaterializationContext context, IProgressMonitor monitor)
 		throws CoreException;
 
 	/**
@@ -79,11 +80,11 @@ public interface IReaderType extends IBuckminsterExtension
 	 * repository provider.
 	 * @param project The project to share
 	 * @param cr The resolution for the shared project
-	 * @param context The resolution context.
+	 * @param context The materialization context.
 	 * @param monitor The monitor used for progress reporting
 	 * @param monitor
 	 */
-	void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException;
+	void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Some components, such as the ones present in the target platform, are not materialized. Instead,
@@ -149,10 +150,11 @@ public interface IReaderType extends IBuckminsterExtension
 
 	/**
 	 * Called when all reader types have performed their materialization
+	 * @param context The materialization context
 	 * @param monitor The monitor used for progress reporting
 	 * @throws CoreException
 	 */
-	void postMaterialization(IProgressMonitor monitor) throws CoreException;
+	void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Convert a team project set style locator into a URL.
