@@ -142,51 +142,51 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	protected DepNode localResolve(NodeQuery query) throws CoreException
 	{
-		if(!(query.useExistingProject() || query.useMaterialization() || query.useInstalledComponent()))
-			return null;
-
 		ComponentRequest request = query.getComponentRequest();
-		try
+		if(query.useMaterialization())
 		{
-			Resolution res = WorkspaceInfo.getResolution(request);
-			if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+			try
 			{
-				// Resolution is from target platform.
-				//
-				if(!query.useInstalledComponent())
-					res = null;
-			}
-			else
-			{
-				if(!query.useMaterialization())
-					res = null;
+				Resolution res = WorkspaceInfo.getResolution(request);
+				if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+				{
+					// Resolution is from target platform.
+					//
+					if(!query.useInstalledComponent())
+						res = null;
+				}
 				else
 				{
-					Materialization mat = WorkspaceInfo.getMaterialization(res);
-					if(mat == null)
-					{
-						// Resolution is not materialized so don't use it
-						//
+					if(!query.useMaterialization())
 						res = null;
-					}
-					else if(WorkspaceInfo.getWorkspaceBinding(mat) != null)
+					else
 					{
-						// This component is bound to the workspace. Perhaps we
-						// are not allowed to use it when we resolve?
-						//
-						if(!query.useExistingProject())
+						Materialization mat = WorkspaceInfo.getMaterialization(res);
+						if(mat == null)
+						{
+							// Resolution is not materialized so don't use it
+							//
 							res = null;
+						}
+						else if(WorkspaceInfo.getWorkspaceBinding(mat) != null)
+						{
+							// This component is bound to the workspace. Perhaps we
+							// are not allowed to use it when we resolve?
+							//
+							if(!query.useExistingProject())
+								res = null;
+						}
 					}
 				}
+				if(res != null)
+				{
+					res.store();
+					return new ResolvedNode(query, res);
+				}
 			}
-			if(res != null)
+			catch(MissingComponentException e)
 			{
-				res.store();
-				return new ResolvedNode(query, res);
 			}
-		}
-		catch(MissingComponentException e)
-		{
 		}
 
 		// If we get to this point, we didn't find any existing resolution that

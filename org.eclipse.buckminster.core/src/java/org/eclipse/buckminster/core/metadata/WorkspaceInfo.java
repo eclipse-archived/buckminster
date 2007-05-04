@@ -9,15 +9,23 @@ package org.eclipse.buckminster.core.metadata;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.internal.version.VersionDesignator;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
+import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.resolver.IResolver;
+import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -30,6 +38,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 
 /**
@@ -255,31 +264,61 @@ public class WorkspaceInfo
 		return null;
 	}
 
-	public static Resolution getResolution(ComponentIdentifier componentIdentifier) throws CoreException
+	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException
 	{
 		Resolution candidate = null;
 		for(Resolution res : getActiveResolutions())
 		{
 			ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
-			if(!componentIdentifier.matches(cid))
+			if(!wanted.matches(cid))
 				continue;
 
-			if(componentIdentifier.getVersion() != null)
+			if(wanted.getVersion() != null)
 			{
 				candidate = res;
 				break;
 			}
 
 			if(candidate != null)
-				throw new AmbigousComponentException(componentIdentifier.toString());
+				throw new AmbigousComponentException(wanted.toString());
 			
 			candidate = res;
 		}
 
 		if(candidate == null)
-			throw new MissingComponentException(componentIdentifier.toString());
-
+		{
+			IVersion v = wanted.getVersion();
+			IVersionDesignator vd = (v == null) ? null : VersionDesignator.explicit(v);
+			try
+			{
+				candidate = resolveLocal(new ComponentRequest(wanted.getName(), wanted.getCategory(), vd));
+			}
+			catch(CoreException e)
+			{
+				throw new MissingComponentException(wanted.toString());				
+			}
+		}
 		return candidate;
+	}
+
+	public static Resolution resolveLocal(ComponentRequest request) throws CoreException
+	{
+		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
+		qbld.setRootRequest(request);
+
+		// Add an advisor node that matches all queries and prohibits that we
+		// do something external.
+		//
+		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
+		nodeBld.setNamePattern(Pattern.compile(".*"));
+		nodeBld.setUseInstalled(true);
+		nodeBld.setUseProject(true);
+		nodeBld.setUseMaterialization(false); // We would have found it already
+		nodeBld.setUseResolutionSchema(false);
+		qbld.addAdvisorNode(nodeBld);
+
+		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));
+		return main.resolve(new NullProgressMonitor()).getResolution();
 	}
 
 	/**
@@ -313,7 +352,16 @@ public class WorkspaceInfo
 		}
 
 		if(candidate == null)
-			throw new MissingComponentException(request.toString());
+		{
+			try
+			{
+				candidate = resolveLocal(request);
+			}
+			catch(CoreException e)
+			{
+				throw new MissingComponentException(request.toString());				
+			}
+		}
 		return candidate;
 	}
 
