@@ -148,16 +148,14 @@
 				<attribute name="resourcePath" type="string" use="optional">
 					<annotation>
 						<documentation>
-							Resource path. Only used when bound to a workspace. Typically used when
-							resolving conflicts between equally named features and bundles.
+							Resource path. Only used when bound to a workspace. Typically used when resolving conflicts
+							between equally named features and bundles.
 						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="exclude" type="boolean" use="optional">
 					<annotation>
-						<documentation>
-							If set, matched components will be excluded.
-						</documentation>
+						<documentation>If set, matched components will be excluded.</documentation>
 					</annotation>
 				</attribute>
 			</extension>
@@ -201,7 +199,10 @@
 	<element name="materialization" type="md:Materialization" />
 	<complexType name="Materialization">
 		<attribute name="location" type="string" use="required" />
-		<attribute name="resolutionId" type="com:uuid" use="required" />
+		<attribute name="name" type="string" use="required" />
+		<attribute name="category" type="string" use="optional" />
+		<attribute name="version" type="string" use="optional" />
+		<attribute name="versionType" type="string" use="optional" />
 	</complexType>
 
 	<simpleType name="ConflictResolution">

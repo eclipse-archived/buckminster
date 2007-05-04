@@ -17,11 +17,11 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
@@ -64,11 +64,11 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			int kind = delta.getKind();
 			if(kind == IResourceDelta.REMOVED)
 			{
-				IPath path = delta.getFullPath();
-				path = path.makeRelative();
 				IResource resource = delta.getResource();
+				IPath path = resource.getLocation();
 				if(!(resource instanceof IFile))
 					path = path.addTrailingSeparator();
+
 				synchronized(MetadataSynchronizer.this)
 				{
 					m_removedEntries.add(path);
@@ -158,14 +158,15 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					IPath removedEntry;
 					while((removedEntry = getNextRemovedEntry()) != null)
 					{
-						for(WorkspaceBinding wb : StorageManager.getDefault().getWorkspaceBindings().getElements())
+						for(Materialization mat : StorageManager.getDefault().getMaterializations().getElements())
 						{
-							if(wb.getWorkspaceRelativePath().equals(removedEntry))
+							if(mat.getComponentLocation().equals(removedEntry))
 							{
-								wb.getMaterialization().remove();
-								MonitorUtils.worked(monitor, 30);
+								mat.remove();
+								break;
 							}
 						}
+						MonitorUtils.worked(monitor, 30);
 					}
 					IProject project;
 					while((project = getNextProjectNeedingUpdate()) != null)
@@ -266,30 +267,14 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 		if(!project.exists())
 		{
-			// Project has been removed. Remove the binding
+			// Project has been removed. Verify that we have no dangling
+			// materializations.
 			//
-			WorkspaceBinding binding = WorkspaceBinding.find(project.getFullPath().addTrailingSeparator());
-			if(binding != null)
+			for(Materialization mat : StorageManager.getDefault().getMaterializations().getElements())
 			{
-				Materialization mat = binding.getMaterialization();
-				Resolution res = mat.getResolution();
-	
-				binding.remove();
 				if(!mat.getComponentLocation().toFile().exists())
-				{
 					mat.remove();
-					try
-					{
-						res.remove();
-					}
-					catch(ReferentialIntegrityException e)
-					{
-						// This is OK. The resolution might be bound
-						// by a BillOfMaterials
-					}
-				}
 			}
-			MonitorUtils.complete(monitor);
 			return false;
 		}
 
@@ -330,13 +315,13 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			{
 				oldRes = WorkspaceInfo.getResolution(oldCSpec.getComponentIdentifier());
 				res = new Resolution(res.getCSpec(), oldRes);
+				res.store();
 			}
-	
-			Materialization mat = new Materialization(project.getLocation().addTrailingSeparator(), res);
-			WorkspaceBinding binding = new WorkspaceBinding(
-				project.getFullPath().makeRelative().addTrailingSeparator(), mat);
-			binding.store();
-			WorkspaceInfo.setComponentIdentifier(project, res.getCSpec().getComponentIdentifier());
+
+			ComponentIdentifier ci = res.getComponentIdentifier();
+			Materialization mat = new Materialization(project.getLocation().addTrailingSeparator(), ci);
+			mat.store();
+			WorkspaceInfo.setComponentIdentifier(project, ci);
 	
 			if(oldRes != null)
 			{
@@ -385,26 +370,28 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		boolean changed = false;
 		for(ComponentRequest cref : crefs)
 		{
-			IResource resource = WorkspaceInfo.getResource(cref);
-			if(!(resource instanceof IProject))
-				//
-				// Component is not a project. This is OK but the component doesn't
-				// qualify as a project dependency (it can't be built).
-				//
-				continue;
+			for(IResource resource : WorkspaceInfo.getResources(cref))
+			{
+				if(!(resource instanceof IProject))
+					//
+					// Component is not a project. This is OK but the component doesn't
+					// qualify as a project dependency (it can't be built).
+					//
+					continue;
 
-			IProject refdProj = (IProject)resource;
-			if(!refdProj.isOpen())
-			{
-				CorePlugin.getLogger().warning(
-					"Project " + project.getName() + " references a closed project: " + cref.getName());
-			}
-			else if(!oldSet.contains(refdProj.getName()))
-			{
-				// Didn't have this one.
-				//
-				refdProjs.add(refdProj);
-				changed = true;
+				IProject refdProj = (IProject)resource;
+				if(!refdProj.isOpen())
+				{
+					CorePlugin.getLogger().warning(
+						"Project " + project.getName() + " references a closed project: " + cref.getName());
+				}
+				else if(!oldSet.contains(refdProj.getName()))
+				{
+					// Didn't have this one.
+					//
+					refdProjs.add(refdProj);
+					changed = true;
+				}
 			}
 		}
 

@@ -53,7 +53,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 	@Override
 	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		WorkspaceBinding wb = createBindSpec(resolution, context);
 		if(wb == null)
@@ -75,7 +75,6 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				this.createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
 			else
 				this.createExternalBinding(wsRelativePath, mat, subMonitor);
-			wb.store();
 		}
 		catch(IOException e)
 		{
@@ -87,8 +86,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context)
-	throws CoreException
+	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context) throws CoreException
 	{
 		Materialization mat = WorkspaceInfo.getMaterialization(resolution);
 		if(mat == null)
@@ -103,7 +101,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				return null;
 
 			IReaderType localReaderType = CorePlugin.getDefault().getReaderType(readerTypeName);
-			mat = new Materialization(localReaderType.getFixedLocation(resolution), resolution);
+			mat = new Materialization(localReaderType.getFixedLocation(resolution), resolution.getComponentIdentifier());
 		}
 
 		IPath wsRelativePath;
@@ -136,8 +134,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	}
 
 	private void createExternalBinding(IPath wsRelativePath, Materialization mat, IProgressMonitor monitor)
-	throws CoreException,
-		IOException
+			throws CoreException, IOException
 	{
 		IPath locationPath = mat.getComponentLocation();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -159,8 +156,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			int matSegs = locationPath.segmentCount();
 			if(matSegs >= relSegs)
 			{
-				if(locationPath.removeFirstSegments(matSegs - relSegs).setDevice(null).equals(
-					projRelativePath))
+				if(locationPath.removeFirstSegments(matSegs - relSegs).setDevice(null).equals(projRelativePath))
 				{
 					if(relSegs == 1)
 						locationProjRoot = locationPath;
@@ -177,8 +173,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				if(relSegs == 1)
 					useLink = true;
 				else
-					throw new BuckminsterException("Unable to determine project root when binding "
-						+ locationPath + " to <workspace>/" + wsRelativePath);
+					throw new BuckminsterException("Unable to determine project root when binding " + locationPath
+							+ " to <workspace>/" + wsRelativePath);
 			}
 
 			IProject projectForBinding = wsRoot.getProject(projName);
@@ -211,8 +207,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					{
 						if(!(folder.isLinked() && FileUtils.pathEquals(folder.getRawLocation(), locationPath)))
 							throw new BuckminsterException("Unable to create a folder link from <workspace>/"
-								+ wsRelativePath + " to " + locationPath + ", the link origin '"
-								+ projRelativePath + "' is already in use");
+									+ wsRelativePath + " to " + locationPath + ", the link origin '" + projRelativePath
+									+ "' is already in use");
 
 						MonitorUtils.worked(monitor, 50);
 					}
@@ -226,8 +222,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					{
 						if(!(ifile.isLinked() && FileUtils.pathEquals(ifile.getRawLocation(), locationPath)))
 							throw new BuckminsterException("Unable to create a file link from <workspace>/"
-								+ wsRelativePath + " to " + locationPath + ", the link origin: "
-								+ projRelativePath + " is already in use");
+									+ wsRelativePath + " to " + locationPath + ", the link origin: " + projRelativePath
+									+ " is already in use");
 						MonitorUtils.worked(monitor, 50);
 					}
 					else
@@ -240,8 +236,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			// This resource now resides within the project but a refresh is needed
 			//
 			projectForBinding.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
-			WorkspaceInfo.setComponentIdentifier(projectForBinding.findMember(projRelativePath),
-				mat.getComponentIdentifier());
+			WorkspaceInfo.setComponentIdentifier(projectForBinding.findMember(projRelativePath), mat
+					.getComponentIdentifier());
 		}
 		finally
 		{
@@ -250,7 +246,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	}
 
 	private void createProjectBinding(String projName, Materialization mat, MaterializationContext context,
-		IProgressMonitor monitor) throws CoreException, IOException
+			IProgressMonitor monitor) throws CoreException, IOException
 	{
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot wsRoot = workspace.getRoot();
@@ -275,7 +271,6 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		monitor.subTask("Binding " + projName);
 		try
 		{
-			Resolution cr = mat.getResolution();
 			try
 			{
 				description = workspace.loadProjectDescription(locationPath.append(".project"));
@@ -291,8 +286,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				//
 				description = workspace.newProjectDescription(projName);
 				IPath wsRootPath = wsRoot.getLocation();
-				if(wsRootPath.isPrefixOf(locationPath)
-					&& wsRootPath.segmentCount() == locationPath.segmentCount() - 1)
+				if(wsRootPath.isPrefixOf(locationPath) && wsRootPath.segmentCount() == locationPath.segmentCount() - 1)
 				{
 					// This is heading for disaster unless the last segement of the locationPath
 					// is in fact equal to the name of the project
@@ -311,6 +305,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				MonitorUtils.worked(monitor, 50);
 
 			project.open(0, MonitorUtils.subMonitor(monitor, 20));
+			Resolution cr = mat.getResolution();
 			IReaderType readerType = cr.getProvider().getReaderType();
 			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 30));
 			WorkspaceInfo.setComponentIdentifier(project, cr.getCSpec().getComponentIdentifier());
@@ -342,7 +337,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		String repTo = cc.getNameSubstitution();
 
 		if(repFrom == null || repTo == null)
-			throw new BuckminsterException("Category: " + categoryName + " defines desiredNamePattern but no substitution");
+			throw new BuckminsterException("Category: " + categoryName
+					+ " defines desiredNamePattern but no substitution");
 
 		Matcher matcher = repFrom.matcher(name);
 		if(matcher.matches())
@@ -355,7 +351,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	}
 
 	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, MaterializationContext context,
-		IProgressMonitor monitor) throws CoreException
+			IProgressMonitor monitor) throws CoreException
 	{
 		try
 		{
@@ -373,14 +369,19 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					MonitorUtils.complete(monitor);
 				return wb;
 			}
-	
+
 			Map<String, String> props = context.getProperties(resolution.getRequest());
 			IPath productPath = bindEntryPoint.getUniquePath(mat.getComponentLocation(), new ModelCache(props));
 			String bindingName = context.getBindingName(resolution, props);
-	
+
 			performManager.perform(cspec, bindEntryPoint.getName(), props, false, monitor);
-			Resolution newRes = LocalResolver.fromPath(productPath, resolution.getName());
-			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), newRes);
+
+			cspec = LocalResolver.fromPath(productPath, resolution.getName()).getCSpec();
+			resolution = new Resolution(cspec, resolution);
+			resolution.store();
+			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), cspec
+					.getComponentIdentifier());
+			newMat.store();
 			return new WorkspaceBinding(new Path(bindingName), newMat);
 		}
 		catch(CoreException e)

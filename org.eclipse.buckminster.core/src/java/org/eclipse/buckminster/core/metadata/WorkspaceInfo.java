@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.internal.version.VersionDesignator;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.IResolver;
@@ -32,6 +31,7 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -60,7 +60,9 @@ public class WorkspaceInfo
 	 */
 	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE, "generatedCSpec");
 
-	private static final HashMap<CSpec,IPath> s_locationCache = new HashMap<CSpec, IPath>();
+	private static final HashMap<ComponentIdentifier,IPath> s_locationCache = new HashMap<ComponentIdentifier, IPath>();
+
+	private static final IResource[] s_noResources = new IResource[0];
 
 	public static void clearCachedLocation(CSpec cspec)
 	{
@@ -173,7 +175,26 @@ public class WorkspaceInfo
 	 */
 	public static IPath getComponentLocation(ComponentIdentifier componentIdentifier) throws CoreException
 	{
-		return getComponentLocation(getResolution(componentIdentifier));
+		synchronized(s_locationCache)
+		{
+			IPath location = s_locationCache.get(componentIdentifier);
+			if(location != null)
+				return location;
+
+			Materialization mat = getMaterialization(componentIdentifier);
+			if(mat == null)
+			{
+				Resolution resolution = getResolution(componentIdentifier);
+				location = resolution.getProvider().getReaderType().getFixedLocation(resolution);
+				if(location == null)
+					throw new MissingComponentException(componentIdentifier.toString());
+			}
+			else
+				location = mat.getComponentLocation();
+
+			s_locationCache.put(componentIdentifier, location);
+			return location;
+		}
 	}
 
 	/**
@@ -188,38 +209,12 @@ public class WorkspaceInfo
 	 */
 	public static IPath getComponentLocation(CSpec cspec) throws CoreException
 	{
-		synchronized(s_locationCache)
-		{
-			IPath location = s_locationCache.get(cspec);
-			if(location == null)
-			{
-				location = getComponentLocation(getResolution(cspec.getComponentIdentifier()));
-				s_locationCache.put(cspec, location);
-			}
-			return location;
-		}
-	}
-
-	public static IPath getComponentLocation(Resolution resolution) throws CoreException
-	{
-		IPath fixed = resolution.getProvider().getReaderType().getFixedLocation(resolution);
-		if(fixed != null)
-			return fixed;
-
-		Materialization mat = getMaterialization(resolution);
-		if(mat == null)
-			throw new MissingComponentException(resolution.getCSpec().getComponentIdentifier().toString());
-		return mat.getComponentLocation();
+		return getComponentLocation(cspec.getComponentIdentifier());
 	}
 
 	public static CSpec getCSpec(IResource resource) throws CoreException
 	{
 		ComponentIdentifier id = getComponentIdentifier(resource);
-		if(id == null && resource instanceof IProject)
-		{
-			resyncAll();
-			id = getComponentIdentifier(resource);
-		}
 		return id == null ? null : getResolution(id).getCSpec();
 	}
 
@@ -242,26 +237,29 @@ public class WorkspaceInfo
 	 */
 	public static Materialization getMaterialization(Resolution resolution) throws CoreException
 	{
-		UUID resId = resolution.getId();
-		for(Materialization mat : StorageManager.getDefault().getMaterializations().getElements())
-			if(mat.getResolutionId().equals(resId))
-				return mat;
-		return null;
+		return getMaterialization(resolution.getComponentIdentifier());
 	}
 
 	/**
-	 * Returns the optional <code>WorkspaceBinding</code> for the materialized component.
-	 * @param materialization The materialization for which we want a WorkspaceBinding
-	 * @return The binding or <code>null</code> if it could not be found.
+	 * Finds the open project that corresponds to the <code>componentIdentifier</code> and return it.
+	 * @param componentIdentifier
+	 * @return The found project or <code>null</code> if no open project was found.
 	 * @throws CoreException
 	 */
-	public static WorkspaceBinding getWorkspaceBinding(Materialization materialization) throws CoreException
+	public static IProject getProject(ComponentIdentifier componentIdentifier) throws CoreException
 	{
-		UUID matId = materialization.getId();
-		for(WorkspaceBinding wb : StorageManager.getDefault().getWorkspaceBindings().getElements())
-			if(wb.getMaterializationId().equals(matId))
-				return wb;
-		return null;
+		return extractProject(getResources(componentIdentifier));
+	}
+
+	/**
+	 * Finds the open project that corresponds to the <code>materialization</code> and return it.
+	 * @param materialization
+	 * @return The found project or <code>null</code> if no open project was found.
+	 * @throws CoreException
+	 */
+	public static IProject getProject(Materialization materialization) throws CoreException
+	{
+		return extractProject(getResources(materialization));
 	}
 
 	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException
@@ -301,26 +299,6 @@ public class WorkspaceInfo
 		return candidate;
 	}
 
-	public static Resolution resolveLocal(ComponentRequest request) throws CoreException
-	{
-		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
-		qbld.setRootRequest(request);
-
-		// Add an advisor node that matches all queries and prohibits that we
-		// do something external.
-		//
-		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
-		nodeBld.setNamePattern(Pattern.compile(".*"));
-		nodeBld.setUseInstalled(true);
-		nodeBld.setUseProject(true);
-		nodeBld.setUseMaterialization(false); // We would have found it already
-		nodeBld.setUseResolutionSchema(false);
-		qbld.addAdvisorNode(nodeBld);
-
-		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));
-		return main.resolve(new NullProgressMonitor()).getResolution();
-	}
-
 	/**
 	 * Returns the <code>CSpec</code> that best corresponds to the given <code>request</code>.
 	 * @param request The component request
@@ -329,7 +307,7 @@ public class WorkspaceInfo
 	 * @throws AmbigousComponentException if more then one component is an equally good match
 	 * @throws CoreException for other persistent storage related issues
 	 */
-	public static Resolution getResolution(ComponentRequest request) throws CoreException
+	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException
 	{
 		Resolution candidate = null;
 		for(Resolution res : getActiveResolutions())
@@ -353,6 +331,9 @@ public class WorkspaceInfo
 
 		if(candidate == null)
 		{
+			if(fromResolver)
+				throw new MissingComponentException(request.toString());				
+
 			try
 			{
 				candidate = resolveLocal(request);
@@ -366,145 +347,80 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Obtains the resource that is currently bound to the given <code>componentIdentifier</code> and
-	 * returns it. This method may return <code>null</code> to indicate that no resource was found.
+	 * Obtains the resources currently bound to the given <code>componentIdentifier</code> and
+	 * returns them. An empty array is returned when no resource was found.
 	 * @param componentIdentifier The component to search for
-	 * @return The found workspace resource or <code>null</code> if no such resource exists.
+	 * @return The found workspace resources.
 	 * @throws CoreException
 	 */
-	public static IResource getResource(ComponentIdentifier componentIdentifier) throws CoreException
+	public static IResource[] getResources(ComponentIdentifier componentIdentifier) throws CoreException
 	{
-		ISaxableStorage<WorkspaceBinding> bindings = StorageManager.getDefault().getWorkspaceBindings();
-		WorkspaceBinding candidate = null;
-		long candidateTs = 0;
-		ComponentIdentifier candidateId = null;
-		for(TimestampedKey bindingKey : bindings.getTimestampedKeys())
+		ISaxableStorage<Materialization> mats = StorageManager.getDefault().getMaterializations();
+		for(Materialization mat : mats.getElements())
 		{
-			WorkspaceBinding binding = bindings.getElement(bindingKey.getKey());
-			CSpec cspec = binding.getMaterialization().getCSpec();
-
-			ComponentIdentifier cid = cspec.getComponentIdentifier();
-			if(componentIdentifier.equals(cid))
-			{
-				candidate = binding;
-				break;
-			}
-
-			if(!componentIdentifier.matches(cid))
-				continue;
-
-			if(candidate != null)
-			{
-				// Compare versions
-				//
-				int cmp = Trivial.compareAllowNull(cid.getVersion(), candidateId.getVersion());
-				if(cmp == 0)
-				{
-					long timeDiff = bindingKey.getCreationTime() - candidateTs;
-					if(timeDiff == 0)
-						throw new AmbigousComponentException(cid.toString());
-					cmp = timeDiff > 0 ? 1 : -1;
-				}
-				if(cmp < 0)
-					continue;
-			}
-			candidate = binding;
-			candidateTs = bindingKey.getCreationTime();
-			candidateId = cid;
+			if(componentIdentifier.equals(mat.getComponentIdentifier()))
+				return getResources(mat);
 		}
-
-		if(candidate == null)
-			return null;
-
-		return ResourcesPlugin.getWorkspace().getRoot().findMember(candidate.getWorkspaceRelativePath());
+		return s_noResources;
 	}
 
-	public static IResource getResource(ComponentRequest request) throws CoreException
-	{
-		ISaxableStorage<WorkspaceBinding> bindings = StorageManager.getDefault().getWorkspaceBindings();
-		WorkspaceBinding candidate = null;
-		long candidateTs = 0;
-		ComponentIdentifier candidateId = null;
-		for(TimestampedKey bindingKey : bindings.getTimestampedKeys())
+	public static IResource[] getResources(ComponentRequest request) throws CoreException
+	{		
+		IResource[] allFound = s_noResources;
+		ISaxableStorage<Materialization> mats = StorageManager.getDefault().getMaterializations();
+		for(Materialization mat : mats.getElements())
 		{
-			WorkspaceBinding binding = bindings.getElement(bindingKey.getKey());
-			CSpec cspec = binding.getMaterialization().getCSpec();
-
-			ComponentIdentifier cid = cspec.getComponentIdentifier();
-			if(!request.designates(cid))
+			if(!request.designates(mat.getComponentIdentifier()))
 				continue;
 
-			IVersionDesignator vd = request.getVersionDesignator();
-			if(vd != null && vd.isExplicit())
-			{
-				candidate = binding;
-				break;
-			}
+			IResource[] resources = getResources(mat);
+			int top = resources.length;
+			if(top == 0)
+				continue;
 
-			if(candidate != null)
+			if(allFound == s_noResources)
+				allFound = resources;
+			else
 			{
-				// Compare versions
-				//
-				int cmp = Trivial.compareAllowNull(cid.getVersion(), candidateId.getVersion());
-				if(cmp == 0)
-				{
-					long timeDiff = bindingKey.getCreationTime() - candidateTs;
-					if(timeDiff == 0)
-						throw new AmbigousComponentException(cid.toString());
-					cmp = timeDiff > 0 ? 1 : -1;
-				}
-				if(cmp < 0)
-					continue;
+				IResource[] concat = new IResource[allFound.length + top];
+				System.arraycopy(allFound, 0, concat, 0, allFound.length);
+				System.arraycopy(resources, 0, concat, allFound.length, top);
+				allFound = concat;
 			}
-			candidate = binding;
-			candidateTs = bindingKey.getCreationTime();
-			candidateId = cid;
 		}
-
-		if(candidate == null)
-			return null;
-
-		return ResourcesPlugin.getWorkspace().getRoot().findMember(candidate.getWorkspaceRelativePath());
+		return allFound;
 	}
 
-	public static void resyncAll() throws CoreException
+	public static IResource[] getResources(Materialization mat) throws CoreException
+	{		
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IPath location = mat.getComponentLocation();
+		return location.hasTrailingSeparator()
+			? wsRoot.findContainersForLocation(location)
+			: wsRoot.findFilesForLocation(location);
+	}
+
+	public static Resolution resolveLocal(ComponentRequest request) throws CoreException
 	{
-		validateMaterializations();
-		final HashMap<IPath,WorkspaceBinding> allBindings = new HashMap<IPath, WorkspaceBinding>();
-		for(WorkspaceBinding wb : StorageManager.getDefault().getWorkspaceBindings().getElements())
-			allBindings.put(wb.getWorkspaceRelativePath(), wb);
+		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
+		qbld.setRootRequest(request);
 
-		ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor()
-		{
-			public boolean visit(IResource resource) throws CoreException
-			{
-				if((resource instanceof IProject) && !((IProject)resource).isOpen())
-					return false;
+		// Add an advisor node that matches all queries and prohibits that we
+		// do something external.
+		//
+		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
+		nodeBld.setNamePattern(Pattern.compile(".*"));
+		nodeBld.setUseInstalled(true);
+		nodeBld.setUseProject(true);
+		nodeBld.setUseMaterialization(false); // We would have found it already
+		nodeBld.setUseResolutionSchema(false);
+		qbld.addAdvisorNode(nodeBld);
 
-				IPath path = resource.getFullPath().makeRelative().addTrailingSeparator();
-				String cidStr = resource.getPersistentProperty(PPKEY_COMPONENT_ID);
-				WorkspaceBinding wb = allBindings.get(path);
-				if(wb == null)
-				{
-					if(cidStr != null)
-						resource.setPersistentProperty(PPKEY_COMPONENT_ID, null);
-				}
-				else
-				{
-					String rcidStr = wb.getMaterialization().getResolution().getComponentIdentifier().toString();
-					if(cidStr == null || !cidStr.equals(rcidStr))
-						resource.setPersistentProperty(PPKEY_COMPONENT_ID, rcidStr);
-					allBindings.remove(path);
-				}
-				return true;
-			}
-		});
-
-		if(allBindings.size() > 0)
-		{
-			for(WorkspaceBinding wb : allBindings.values())
-				wb.remove();
-		}
+		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));
+		Resolution res = main.resolve(new NullProgressMonitor()).getResolution();
+		if(res == null)
+			throw new MissingComponentException(request.toString());
+		return res;
 	}
 
 	public static void setComponentIdentifier(IResource resource, ComponentIdentifier identifier) throws CoreException
@@ -517,5 +433,21 @@ public class WorkspaceInfo
 		for(Materialization mt : StorageManager.getDefault().getMaterializations().getElements())
 			if(!mt.getComponentLocation().toFile().exists())
 				mt.remove();
+	}
+
+	private static IProject extractProject(IResource[] resources)
+	{
+		int idx = resources.length;
+		while(--idx >= 0)
+		{
+			IResource resource = resources[idx];
+			if(resource instanceof IProject)
+			{
+				IProject project = (IProject)resource;
+				if(project.isOpen())
+					return project;
+			}
+		}
+		return null;
 	}
 }

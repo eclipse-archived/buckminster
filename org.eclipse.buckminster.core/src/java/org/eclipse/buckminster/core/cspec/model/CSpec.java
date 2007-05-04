@@ -57,12 +57,6 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 {
-	public static final String ATTR_CATEGORY = "category";
-
-	public static final String ATTR_VERSION = "version";
-
-	public static final String ATTR_VERSION_TYPE = "versionType";
-
 	public static final String ATTR_SHORT_DESC = "shortDesc";
 
 	public static final String ELEM_ACTIONS = "actions";
@@ -492,13 +486,13 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
 		String category = m_componentIdentifier.getCategory();
 		if(category != null)
-			Utils.addAttribute(attrs, ATTR_CATEGORY, category);
+			Utils.addAttribute(attrs, ComponentName.ATTR_CATEGORY, category);
 
 		IVersion version = m_componentIdentifier.getVersion();
 		if(version != null)
 		{
-			Utils.addAttribute(attrs, ATTR_VERSION, version.toString());
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, version.getType().getId());
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
 		}
 		if(m_shortDesc != null)
 			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);

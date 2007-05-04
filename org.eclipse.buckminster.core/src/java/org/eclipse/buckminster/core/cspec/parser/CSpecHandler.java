@@ -10,6 +10,8 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
@@ -114,13 +116,13 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 
 		m_builder = new CSpecBuilder();
 		m_builder.setName(getOptionalStringValue(attrs, NamedElement.ATTR_NAME));
-		m_builder.setCategory(getOptionalStringValue(attrs, CSpec.ATTR_CATEGORY));
+		m_builder.setCategory(getOptionalStringValue(attrs, ComponentName.ATTR_CATEGORY));
 		m_builder.setShortDesc(getOptionalStringValue(attrs, CSpec.ATTR_SHORT_DESC));
 
-		String tmp = getOptionalStringValue(attrs, CSpec.ATTR_VERSION);
+		String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
 		if(tmp != null)
 		{
-			String type = getOptionalStringValue(attrs, CSpec.ATTR_VERSION_TYPE);
+			String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
 			if(type == null)
 				type = OSGiVersionType.ID;
 			try

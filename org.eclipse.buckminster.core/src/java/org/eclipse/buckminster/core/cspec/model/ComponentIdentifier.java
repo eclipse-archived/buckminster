@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.CoreException;
 public class ComponentIdentifier extends ComponentName
 {
 	private final IVersion m_version;
+	public static final String ATTR_VERSION_TYPE = "versionType";
+	public static final String ATTR_VERSION = "version";
 
 	public ComponentIdentifier(String name, String categoryName, IVersion version)
 	{

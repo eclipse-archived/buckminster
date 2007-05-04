@@ -327,9 +327,6 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	{
 		UUID thisId = getId();
 		StorageManager sm = StorageManager.getDefault();
-		if(!sm.getMaterializations().getReferencingKeys(thisId, "resolutionId").isEmpty())
-			throw new ReferentialIntegrityException(this, "remove", "Referenced from Materialization");
-
 		if(!sm.getDepNodes().getReferencingKeys(thisId, "resolutionId").isEmpty())
 			throw new ReferentialIntegrityException(this, "remove", "Referenced from ResolvedNode");
 

@@ -14,7 +14,6 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -59,8 +58,6 @@ public class StorageManager
 
 	private final ISaxableStorage<Materialization> m_materializations;
 
-	private final ISaxableStorage<WorkspaceBinding> m_workspaceBindings;
-
 	public StorageManager(File baseLocation) throws CoreException, SAXException
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
@@ -80,9 +77,6 @@ public class StorageManager
 
 		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
 			pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
-
-		m_workspaceBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
-			pf.getWorkspaceBindingParser(), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
 
 		m_depNodes = new FileStorage<DepNode>(new File(baseLocation, DepNode.TAG), pf.getDepNodeParser(),
 			DepNode.class, DepNode.SEQUENCE_NUMBER);
@@ -132,12 +126,6 @@ public class StorageManager
 		return m_depNodes;
 	}
 
-	public synchronized ISaxableStorage<WorkspaceBinding> getWorkspaceBindings() throws CoreException
-	{
-		initialize();
-		return m_workspaceBindings;
-	}
-
 	class MetadataRefreshJob extends Job
 	{
 		public MetadataRefreshJob()
@@ -175,7 +163,7 @@ public class StorageManager
 	{
 		if(!m_initialized)
 		{
-			if(m_workspaceBindings.sequenceChanged() || m_materializations.sequenceChanged()
+			if(m_materializations.sequenceChanged()
 				|| m_resolutions.sequenceChanged() || m_cspecs.sequenceChanged()
 				|| m_providers.sequenceChanged())
 			{

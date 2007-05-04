@@ -57,7 +57,7 @@ public class ModelCache implements IModelCache
 			if(request instanceof ObtainedDependency)
 				cspec = ((ObtainedDependency)request).resolveCSpec(ownerCSpec, this);
 			else
-				cspec = WorkspaceInfo.getResolution(request).getCSpec();
+				cspec = WorkspaceInfo.getResolution(request, false).getCSpec();
 			m_cspecCache.put(request, cspec);
 		}
 		return cspec;

@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
@@ -34,7 +35,6 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
-import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -147,7 +147,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		{
 			try
 			{
-				Resolution res = WorkspaceInfo.getResolution(request);
+				Resolution res = WorkspaceInfo.getResolution(request, true);
 				if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 				{
 					// Resolution is from target platform.
@@ -168,13 +168,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 							//
 							res = null;
 						}
-						else if(WorkspaceInfo.getWorkspaceBinding(mat) != null)
+						else if(!query.useExistingProject() && WorkspaceInfo.getProject(mat) != null)
 						{
-							// This component is bound to the workspace. Perhaps we
-							// are not allowed to use it when we resolve?
+							// This component is bound to the workspace and we
+							// are not allowed to use it when we resolve
 							//
-							if(!query.useExistingProject())
-								res = null;
+							res = null;
 						}
 					}
 				}
@@ -209,16 +208,15 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			if(existingProject != null && existingProject.isOpen())
 			{
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
-				if(request.designates(resolution.getComponentIdentifier()))
+				ComponentIdentifier ci = resolution.getComponentIdentifier();
+				if(request.designates(ci))
 				{
-					// Make sure we have a binding for the project. This will also implicitly
-					// store a materialization, a resolution, and the cspec.
+					// Make sure we have a materialization for the project.
 					//
 					Materialization mat = new Materialization(
-						existingProject.getLocation().addTrailingSeparator(), resolution);
-					WorkspaceBinding binding = new WorkspaceBinding(
-						existingProject.getFullPath().addTrailingSeparator(), mat);
-					binding.store();
+						existingProject.getLocation().addTrailingSeparator(), ci);
+					mat.store();
+					resolution.store();
 					return new ResolvedNode(query, resolution);
 				}
 			}

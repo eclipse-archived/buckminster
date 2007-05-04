@@ -78,58 +78,68 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			prepMon.beginTask(null, resolutions.size() * 10);
 			for(Resolution cr : resolutions)
 			{
-				Materialization mat = WorkspaceInfo.getMaterialization(cr);
-				if(mat != null)
+				try
 				{
-					// The exact same resolution is already materialized.
+					cr.store();
+					Materialization mat = WorkspaceInfo.getMaterialization(cr);
+					if(mat != null)
+					{
+						// The resolution is already materialized.
+						//
+						adjustedMinfos.add(mat);
+						continue;
+					}
+	
+					ComponentIdentifier ci = cr.getComponentIdentifier();
+					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
+					IPath installLocation = context.getInstallLocation(cr);
+					mat = new Materialization(installLocation, ci);
+	
+					File file = installLocation.toFile();
+					if(file.exists() && conflictRes == ConflictResolution.KEEP)
+					{
+						boolean pathTypeOK = installLocation.hasTrailingSeparator() ? file.isDirectory() : !file.isDirectory();
+	
+						if(!pathTypeOK)
+							throw new FileFolderMismatchException(ci, installLocation);
+	
+						// Don't materialize this one. Instead, pretend that we
+						// just did.
+						//
+						logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
+										+ installLocation);
+	
+						mat.store();
+						adjustedMinfos.add(mat);
+						MonitorUtils.worked(prepMon, 10);
+						continue;
+					}
+	
+					// Ensure that the destination exists and that it is empty. This might cause a
+					// DestinationNotEmpty exception to be thrown.
 					//
-					adjustedMinfos.add(mat);
-					continue;
+					File folder = installLocation.hasTrailingSeparator()
+							? file
+							: file.getParentFile();
+					FileUtils.prepareDestination(folder, conflictRes != ConflictResolution.FAIL, MonitorUtils
+							.subMonitor(prepMon, 10));
+	
+					String readerType = cr.getProvider().getReaderTypeId();
+					List<Materialization> readerGroup = perReader.get(readerType);
+					if(readerGroup == null)
+					{
+						readerGroup = new ArrayList<Materialization>();
+						perReader.put(readerType, readerGroup);
+					}
+					readerGroup.add(mat);
+					totCount++;
 				}
-
-				ComponentIdentifier ci = cr.getComponentIdentifier();
-				ConflictResolution conflictRes = mspec.getConflictResolution(ci);
-				IPath installLocation = context.getInstallLocation(cr);
-				mat = new Materialization(installLocation, cr);
-
-				File file = installLocation.toFile();
-				if(file.exists() && conflictRes == ConflictResolution.KEEP)
+				catch(CoreException e)
 				{
-					boolean pathTypeOK = installLocation.hasTrailingSeparator() ? file.isDirectory() : !file.isDirectory();
-
-					if(!pathTypeOK)
-						throw new FileFolderMismatchException(ci, installLocation);
-
-					// Don't materialize this one. Instead, pretend that we
-					// just did.
-					//
-					logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
-									+ installLocation);
-
-					mat.store();
-					adjustedMinfos.add(mat);
-					MonitorUtils.worked(prepMon, 10);
-					continue;
+					if(!context.isContinueOnError())
+						throw e;
+					context.addException(e.getStatus());
 				}
-
-				// Ensure that the destination exists and that it is empty. This might cause a
-				// DestinationNotEmpty exception to be thrown.
-				//
-				File folder = installLocation.hasTrailingSeparator()
-						? file
-						: file.getParentFile();
-				FileUtils.prepareDestination(folder, conflictRes != ConflictResolution.FAIL, MonitorUtils
-						.subMonitor(prepMon, 10));
-
-				String readerType = cr.getProvider().getReaderTypeId();
-				List<Materialization> readerGroup = perReader.get(readerType);
-				if(readerGroup == null)
-				{
-					readerGroup = new ArrayList<Materialization>();
-					perReader.put(readerType, readerGroup);
-				}
-				readerGroup.add(mat);
-				totCount++;
 			}
 			prepMon.done();
 
@@ -156,13 +166,13 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					try
 					{
 						IPath location = mi.getComponentLocation();
-						reader.materialize(mi.getComponentLocation(), MonitorUtils.subMonitor(matMon, 80));
+						reader.materialize(location, MonitorUtils.subMonitor(matMon, 80));
 
 						// Remove any duplicates for the given location and then make
 						// sure the materialization is persisted.
 						//
 						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
-							mi = new Materialization(location.addTrailingSeparator(), mi.getResolution());
+							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
 						mi.store();
 						adjustedMinfos.add(mi);
 					}

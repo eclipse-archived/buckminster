@@ -26,7 +26,6 @@ import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -85,13 +84,13 @@ public class LocationEmitter extends PropertiesEmitter
 		}
 		else
 		{
-			IResource resource = WorkspaceInfo.getResource(cid);			
-			if(resource instanceof IProject)
+			IProject project = WorkspaceInfo.getProject(cid);
+			if(project != null)
 			{
 				// If this is a java project with a default output folder, then emitt that as a default
 				// artifact.
 				//
-				IPath dfltOutput = getDefaultOutputFolder((IProject)resource);
+				IPath dfltOutput = getDefaultOutputFolder(project);
 				if(dfltOutput != null)
 					this.addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput.toOSString());
 			}

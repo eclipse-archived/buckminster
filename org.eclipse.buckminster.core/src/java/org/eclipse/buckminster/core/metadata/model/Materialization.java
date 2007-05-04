@@ -8,17 +8,16 @@
 package org.eclipse.buckminster.core.metadata.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -38,39 +37,17 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 	public static final String ATTR_LOCATION = "location";
 	public static final String ATTR_RESOLUTION_ID = "resolutionId";
 
-	public static final int SEQUENCE_NUMBER = 1;
+	public static final int SEQUENCE_NUMBER = 2;
 
 	private final IPath m_componentLocation;
-	private final UUID m_resolutionId;
-	private transient Resolution m_resolution;
+	private final ComponentIdentifier m_componentIdentifier;
 
-	public Materialization(IPath destination, Resolution resolution)
+	public Materialization(IPath destination, ComponentIdentifier componentIdentifier)
 	{
-		this(destination, resolution.getId());
-		m_resolution = resolution;
-	}
-
-	public Materialization(IPath destination, UUID resolutionId)
-	{
-		if(destination == null || resolutionId == null)
+		if(destination == null || componentIdentifier == null)
 			throw new NullPointerException();
 		m_componentLocation = destination;
-		m_resolutionId = resolutionId;
-	}
-
-	public List<WorkspaceBinding> getBindings() throws CoreException
-	{
-		ISaxableStorage<WorkspaceBinding> bindings = StorageManager.getDefault().getWorkspaceBindings();
-
-		List<UUID> bindingIds = bindings.getReferencingKeys(getId(), "materializationId");
-		int top = bindingIds.size();
-		if(top == 0)
-			return Collections.emptyList();
-
-		ArrayList<WorkspaceBinding> result = new ArrayList<WorkspaceBinding>(top);
-		for(int idx = 0; idx < top; ++idx)
-			result.add(bindings.getElement(bindingIds.get(idx)));
-		return result;
+		m_componentIdentifier = componentIdentifier;
 	}
 
 	public final IPath getComponentLocation()
@@ -83,26 +60,14 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 		return TAG;
 	}
 
-	public ComponentIdentifier getComponentIdentifier() throws CoreException
+	public ComponentIdentifier getComponentIdentifier()
 	{
-		return getResolution().getComponentIdentifier();
+		return m_componentIdentifier;
 	}
 
-	public CSpec getCSpec() throws CoreException
+	public Resolution getResolution() throws CoreException
 	{
-		return getResolution().getCSpec();
-	}
-
-	public synchronized Resolution getResolution() throws CoreException
-	{
-		if(m_resolution == null)
-			m_resolution = StorageManager.getDefault().getResolutions().getElement(m_resolutionId);
-		return m_resolution;
-	}
-
-	public UUID getResolutionId()
-	{
-		return m_resolutionId;
+		return WorkspaceInfo.getResolution(m_componentIdentifier);
 	}
 
 	public boolean isPersisted() throws CoreException
@@ -128,63 +93,27 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 		return (list == null) ? destFile.length() > 0 : list.length > 0;
 	}
 
-	public void remove() throws CoreException
+	public synchronized void remove() throws CoreException
 	{
-		// Also remove the bindings
-		//
-		for(WorkspaceBinding binding : getBindings())
-			binding.remove();
-		
-		synchronized(this)
-		{
-			getStorage().removeElement(getId());
-			WorkspaceInfo.clearCachedLocation(getResolution().getCSpec());
-		}
+		getStorage().removeElement(getId());
 	}
 
 	public void store() throws CoreException
 	{
-		// Make sure the resolution is persisted
-		//
-		if(m_resolution == null)
-			//
-			// This will yield an exception if the resolution has not been
-			// persisted.
-			//
-			getResolution();
-		else
-			m_resolution.store();
-
 		// Remove any other materialization that appoints the same location
 		//
 		UUID thisId = getId();
 		ISaxableStorage<Materialization> mats = getStorage();		
 		mats.putElement(this);
-		WorkspaceInfo.clearCachedLocation(getResolution().getCSpec());
 
 		for(Materialization oldMat : mats.getElements())
 		{
 			if(oldMat.getId().equals(thisId))
 				continue;
 
-			if(!oldMat.getComponentLocation().equals(m_componentLocation))
-				continue;
-
-
-			// Move all bindings so they appoint this materialization, then remove
-			// the old materialization (will remove old bindings)
-			//
-			List<WorkspaceBinding> oldBindings = oldMat.getBindings();
-			oldMat.remove();
-
-			if(oldBindings.size() > 0)
-			{
-				for(WorkspaceBinding oldBinding : oldBindings)
-				{
-					WorkspaceBinding ws = new WorkspaceBinding(oldBinding.getWorkspaceRelativePath(), this);
-					ws.store();
-				}
-			}
+			if(oldMat.getComponentIdentifier().equals(m_componentIdentifier)
+			|| oldMat.getComponentLocation().equals(m_componentLocation))
+				oldMat.remove();
 		}
 	}
 
@@ -199,7 +128,17 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 	{
 		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
-		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
+		String category = m_componentIdentifier.getCategory();
+		if(category != null)
+			Utils.addAttribute(attrs, ComponentName.ATTR_CATEGORY, category);
+
+		IVersion version = m_componentIdentifier.getVersion();
+		if(version != null)
+		{
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
+		}
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, attrs);
 		receiver.endElement(namespace, localName, qName);
