@@ -15,11 +15,9 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
-import org.eclipse.buckminster.core.metadata.model.Materialization;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -153,14 +151,6 @@ public class CVSReaderType extends AbstractReaderType
 		}
 		KnownRepositories.getInstance().addRepository(wanted, true);
 		return wanted;
-	}
-
-	@Override
-	public void prepareMaterialization(List<Materialization> mtr, RMContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
-		// FIXME: Guarantee that all destinations has at least two segments
-		// (parent directory and module)
 	}
 
 	/**
@@ -416,7 +406,7 @@ public class CVSReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException
+	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		// Register the project with the CVSTeamProvider.
 		//
