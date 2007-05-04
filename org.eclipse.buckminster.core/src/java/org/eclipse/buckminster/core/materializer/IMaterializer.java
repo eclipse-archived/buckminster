@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -22,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * The IMaterializer deals with the task of materializing the components of a
- * {@link BillOfMaterials}.
+ * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}.
  * @see org.eclipse.buckminster.core.CorePlugin#getMaterializationService(String id)
  * @author Thomas Hallgren
  */
@@ -53,10 +51,7 @@ public interface IMaterializer
 	List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Install the given resolution. This method is normally called as part of {@link
-	 * #performInstallActions(BillOfMaterials, Set, RMContext, IProgressMonitor) but it is represented
-	 * here for the benefit of generator that migth need to call it explicitly for one single
-	 * component.
+	 * Install the given resolution.
 	 * @param resolution The resolution to install
 	 * @param context The context for the materialization.
 	 * @param monitor provides feedback to the user.

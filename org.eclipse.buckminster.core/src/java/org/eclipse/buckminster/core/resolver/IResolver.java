@@ -7,9 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.resolver;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -36,8 +36,7 @@ public interface IResolver
 	 * </pre>
 	 * 
 	 * @param monitor The monitor used for progress reporting
-	 * @return The resulting bill of materials. Might be partly resolved if the context returns true
-	 *         on {@link RMContext#isContinueOnError()}.
+	 * @return The resulting bill of materials. Might be partly resolved.
 	 * @throws CoreException
 	 */
 	BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException;
@@ -47,8 +46,7 @@ public interface IResolver
 	 * @param request The request that denotes the desired top component of the resulting
 	 *            <code>BillOfMaterials</code>.
 	 * @param monitor The monitor used for progress reporting
-	 * @return The resulting bill of materials. Might be partly resolved if the context returns true
-	 *         on {@link RMContext#isContinueOnError()}.
+	 * @return The resulting bill of materials. Might be partly resolved.
 	 * @throws CoreException
 	 */
 	BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor)
@@ -58,8 +56,7 @@ public interface IResolver
 	 * Attemt to resolve unresolved nodes of the <code>bom</code>. The resolution process will
 	 * use the {@link ComponentQuery} passed in the <code>context</code>, not the one stored in the <code>bom</code>.
 	 * @param monitor The monitor used for progress reporting
-	 * @return The resulting bill of materials. Might still be partly resolved if the context
-	 *         returns true on {@link RMContext#isContinueOnError()}.
+	 * @return The resulting bill of materials. Might still be partly resolved.
 	 * @throws CoreException
 	 */
 	BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException;
