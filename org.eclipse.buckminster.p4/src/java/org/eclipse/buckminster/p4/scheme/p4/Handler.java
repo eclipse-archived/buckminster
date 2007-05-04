@@ -19,7 +19,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
@@ -30,6 +29,7 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.URLReaderType;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -95,7 +95,7 @@ public class Handler extends AbstractURLStreamHandlerService
 					cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
 					m_reader = (ICatalogReader)p4ReaderType.getReader(
 						provider,
-						new RMContext(cqBld.createComponentQuery()).getRootNodeQuery(),
+						new ResolutionContext(cqBld.createComponentQuery()).getRootNodeQuery(),
 						VersionMatch.DEFAULT, nullMon);
 				}
 				else

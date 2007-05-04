@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.TimedHashMap;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
@@ -56,15 +57,16 @@ public class P4ReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution ci, RMContext context, boolean[] optional)
+	public IPath getMaterializationLocation(Resolution ci, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
-		DepotURI depotLocation = getDepotLocation(ci, context);
+		Map<String,String> properties = context.getProperties(ci.getRequest());
+		DepotURI depotLocation = getDepotLocation(ci, properties);
 		String localRoot = depotLocation.getLocalRoot();
 		IPath root = null;
 		if(localRoot != null)
 		{
-			localRoot = ExpandingProperties.expand(context.getProperties(ci.getRequest()), localRoot, 0);
+			localRoot = ExpandingProperties.expand(properties, localRoot, 0);
 			root = new Path(localRoot);
 		}
 		IPath depotPath = depotLocation.getDepotPath();
@@ -110,17 +112,18 @@ public class P4ReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public void prepareMaterialization(List<Materialization> mtr, RMContext context, IProgressMonitor monitor)
+	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
 		List<ClientSpec> modifiedClients = new ArrayList<ClientSpec>();
 		for(Materialization mi : mtr)
 		{
 			Resolution cr = mi.getResolution();
-			DepotURI depotLocation = getDepotLocation(cr, context);
+			ComponentRequest request = cr.getRequest();
+			DepotURI depotLocation = getDepotLocation(cr, context.getProperties(request));
 			ClientSpec client = this.getClient(depotLocation);
 			client.addLocation(depotLocation.getDepotPath(), mi.getComponentLocation());
-			if(context.getComponentQuery().useExistingArtifacts(cr.getRequest()) == ConflictResolution.UPDATE)
+			if(context.getMaterializationSpec().getConflictResolution(request) == ConflictResolution.REPLACE)
 				client.setClobber(true);
 			modifiedClients.add(client);
 		}
@@ -129,17 +132,17 @@ public class P4ReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
+	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
 		if(P4WSADBridge.isPresent())
-			P4WSADBridge.shareProject(project, getDepotLocation(cr, context));
+			P4WSADBridge.shareProject(project, getDepotLocation(cr, context.getProperties(cr.getRequest())));
 	}
 
-	public static DepotURI getDepotLocation(Resolution cr, RMContext context) throws CoreException
+	public static DepotURI getDepotLocation(Resolution cr, Map<String,String> properties) throws CoreException
 	{
-		return new DepotURI(cr.getRepository(context),
+		return new DepotURI(cr.getRepository(),
 			cr.getVersionMatch().getFixedVersionSelector().getBranchName(),
-			context.getProperties(cr.getRequest()));
+			properties);
 	}
 }
