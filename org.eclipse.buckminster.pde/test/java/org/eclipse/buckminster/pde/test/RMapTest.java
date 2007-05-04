@@ -13,7 +13,6 @@ package org.eclipse.buckminster.pde.test;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -21,6 +20,7 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -44,7 +44,7 @@ public class RMapTest extends PDETestCase
 		queryBld.addAdvisorNode(nodeBld);
 		ComponentQuery query = queryBld.createComponentQuery();
 
-		IResolver resolver = new MainResolver(new RMContext(query));
+		IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 		assertTrue("Resolve failed", bom.isFullyResolved());
 		Utils.serialize(bom.getResolution(), System.out);

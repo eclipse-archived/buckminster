@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.datatransfer.IImportStructureProvider;
@@ -100,7 +100,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				{
 				case FAIL:
 					throw new BuckminsterException("Project " + projectName + " already exists");
-				case REUSE:
+				case KEEP:
 					return;
 				default:
 				}
@@ -122,7 +122,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
 			FileUtils.prepareDestination(m_destination.toFile(),
-				m_query.useExistingArtifacts() == NotEmptyAction.OVERWRITE, MonitorUtils.subMonitor(monitor, 10));
+				m_query.useExistingArtifacts() == ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 10));
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));

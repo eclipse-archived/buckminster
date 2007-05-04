@@ -20,7 +20,7 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.query.model.NotEmptyAction;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -156,7 +156,7 @@ public class PluginImportOperation extends JarImportOperation
 				{
 				case FAIL:
 					throw new BuckminsterException("Project " + projectName + " already exists");
-				case REUSE:
+				case KEEP:
 					return;
 				default:
 				}
@@ -175,7 +175,7 @@ public class PluginImportOperation extends JarImportOperation
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
 			FileUtils.prepareDestination(m_destination.toFile(),
-					m_query.useExistingArtifacts() == NotEmptyAction.OVERWRITE, MonitorUtils.subMonitor(monitor, 1));
+					m_query.useExistingArtifacts() == ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 1));
 			description.setLocation(m_destination);
 
 			project.create(description, MonitorUtils.subMonitor(monitor, 1));

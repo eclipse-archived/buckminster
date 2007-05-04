@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -96,7 +97,7 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 	}
 
 	@Override
-	public synchronized void postMaterialization(IProgressMonitor monitor) throws CoreException
+	public synchronized void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		// Create needed classpath entries in each project
 		//

@@ -13,7 +13,6 @@ import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -26,6 +25,7 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.IPath;
@@ -57,7 +57,7 @@ public class ImportBundle
 		//
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest(m_bundleName, KeyConstants.PLUGIN_CATEGORY, null));
-		RMContext context = new RMContext(queryBld.createComponentQuery());
+		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 
 		// Create the provider that will perform the import.
 		//
@@ -94,6 +94,6 @@ public class ImportBundle
 		{
 			reader[0].close();
 		}
-		rt.postMaterialization(monitor);
+		rt.postMaterialization(null, monitor);
 	}
 }
