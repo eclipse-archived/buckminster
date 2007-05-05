@@ -282,7 +282,15 @@ public class Utils
 
 			s_saxTransformerFactory = (SAXTransformerFactory)tf;
 		}
-		s_saxTransformerFactory.setAttribute("indent-number", Integer.toString(indent));
+		try
+		{
+			s_saxTransformerFactory.setAttribute("indent-number", Integer.toString(indent));
+		}
+		catch(IllegalArgumentException e)
+		{
+			// This transformer doesn't support ident-number. We dont' consider that an error
+		}
+
 		try
 		{
 			return s_saxTransformerFactory.newTransformerHandler();
