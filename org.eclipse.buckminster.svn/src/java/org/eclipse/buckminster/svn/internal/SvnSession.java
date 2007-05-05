@@ -18,10 +18,13 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
+import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
@@ -118,7 +121,7 @@ public class SvnSession
 				bld.append(authority);
 			}
 			bld.append(fullPath.removeLastSegments(relPathLen));
-			m_urlLeadIn = bld.toString();
+			String urlLeadIn = bld.toString();
 
 			// Anything after 'trunk' is considered a module path. The module
 			// path
@@ -134,8 +137,6 @@ public class SvnSession
 			if(tmp != null)
 				subModule = new Path(tmp).makeRelative();
 			m_subModule = subModule;
-
-			m_clientAdapter = SVNProviderPlugin.getPlugin().createSVNClient();
 
 			boolean moduleBeforeTag = false;
 			boolean moduleAfterTag = false;
@@ -158,6 +159,81 @@ public class SvnSession
 			m_moduleAfterBranch = moduleAfterBranch;
 			m_branch = branch;
 			m_tag = tag;
+
+			// Let's see if our SVNRootUrl matches any of the known
+			// repositories.
+			//
+			int rank = 0;
+			SVNUrl ourRoot = new SVNUrl(urlLeadIn);
+			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
+			SVNRepositories repositories = svnPlugin.getRepositories();
+			for(ISVNRepositoryLocation location : repositories.getKnownRepositories())
+			{
+				SVNUrl repoRoot = location.getRepositoryRoot();
+				if(!Trivial.equalsAllowNull(repoRoot.getHost(), ourRoot.getHost()))
+					continue;
+
+				String repoProto = repoRoot.getProtocol().toLowerCase();
+				String ourProto = ourRoot.getProtocol().toLowerCase();
+
+				// We let the protocol svn match a repo that uses svn+ssh
+				//
+				boolean repoIsSSH = repoProto.equals("svn+ssh");
+				if(rank > 200 && !repoIsSSH)
+					continue;
+
+				if(!(repoProto.equals(ourProto) || (ourProto.equals("svn") && repoIsSSH)))
+					continue;
+
+				String[] ourPath = ourRoot.getPathSegments();
+				String[] repoPath = repoRoot.getPathSegments();
+				
+				idx = repoPath.length;
+				final int top = ourPath.length;
+				if(idx > top)
+					//
+					// repoPath is too qualified for our needs
+					//
+					continue;
+				
+				while(--idx >= 0)
+					if(!ourPath[idx].equals(repoPath[idx]))
+						break;
+
+				if(idx >= 0)
+					//
+					// repoPath is not a prefix of ourPath
+					//
+					continue;
+
+				urlLeadIn = repoRoot.toString();
+				int diff = top - repoPath.length;
+				if(diff > 0)
+				{
+					int myRank = (repoIsSSH ? 400 : 200) - diff;
+					if(rank > myRank)
+						continue;
+
+					// Append the rest of our path
+					//
+					bld.setLength(0);
+					bld.append(urlLeadIn);
+					for(idx = repoPath.length; idx < top; ++idx)
+					{
+						bld.append('/');
+						bld.append(ourPath[idx]);
+					}
+					urlLeadIn = bld.toString();
+				}
+				rank = (repoIsSSH ? 400 : 200) - diff;
+				m_clientAdapter = location.getSVNClient();
+				if(rank == 400)
+					break;
+			}
+			m_urlLeadIn = urlLeadIn;
+
+			if(m_clientAdapter == null)
+				m_clientAdapter = svnPlugin.createSVNClient();
 		}
 		catch(MalformedURLException e)
 		{
