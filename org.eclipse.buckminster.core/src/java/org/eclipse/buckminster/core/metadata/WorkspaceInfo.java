@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.internal.version.VersionDesignator;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -58,17 +57,28 @@ public class WorkspaceInfo
 	 * generated from other artifacts is stored.<br/> This property will be set on IResource elements that represent
 	 * component roots such as projects or resources that is inner bindings in projects.
 	 */
-	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE, "generatedCSpec");
+	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE,
+			"generatedCSpec");
 
-	private static final HashMap<ComponentIdentifier,IPath> s_locationCache = new HashMap<ComponentIdentifier, IPath>();
+	private static final HashMap<ComponentIdentifier, IPath> s_locationCache = new HashMap<ComponentIdentifier, IPath>();
+
+	private static final HashMap<ComponentIdentifier, Resolution> s_resolutionCache = new HashMap<ComponentIdentifier, Resolution>();
 
 	private static final IResource[] s_noResources = new IResource[0];
 
-	public static void clearCachedLocation(CSpec cspec)
+	public static void clearResolutionCache(ComponentIdentifier cid)
 	{
 		synchronized(s_locationCache)
 		{
-			s_locationCache.remove(cspec);
+			s_resolutionCache.remove(cid);
+		}
+	}
+
+	public static void clearCachedLocation(ComponentIdentifier cid)
+	{
+		synchronized(s_locationCache)
+		{
+			s_locationCache.remove(cid);
 		}
 	}
 
@@ -91,7 +101,7 @@ public class WorkspaceInfo
 
 	public static void forceRefreshOnAll(IProgressMonitor monitor)
 	{
-		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, "Problems during metadata refresh",null);
+		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, "Problems during metadata refresh", null);
 		try
 		{
 			clearPersistentPropertyOnAll();
@@ -126,7 +136,7 @@ public class WorkspaceInfo
 	{
 		// Add the newest version of each known resoluton
 		//
-		HashMap<ComponentName,TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
+		HashMap<ComponentIdentifier, TimestampedKey> resolutionKeys = new HashMap<ComponentIdentifier, TimestampedKey>();
 		ISaxableStorage<Resolution> ress = StorageManager.getDefault().getResolutions();
 		for(Resolution res : ress.getElements())
 		{
@@ -155,7 +165,9 @@ public class WorkspaceInfo
 		try
 		{
 			componentId = resource.getPersistentProperty(PPKEY_COMPONENT_ID);
-			return componentId == null ? null : ComponentIdentifier.parse(componentId);
+			return componentId == null
+					? null
+					: ComponentIdentifier.parse(componentId);
 		}
 		catch(CoreException e)
 		{
@@ -164,14 +176,17 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Returns the full path of the materialization for the component
-	 * denoted by the <code>componentIdentifier</code>
-	 *
-	 * @param componentIdentifier The identifier of the component
+	 * Returns the full path of the materialization for the component denoted by the <code>componentIdentifier</code>
+	 * 
+	 * @param componentIdentifier
+	 *            The identifier of the component
 	 * @return The path of the location
-	 * @throws MissingComponentException if the component cannot be found
-	 * @throws AmbigousComponentException if more then one component is an equally good match
-	 * @throws CoreException for other persistent storage related issues
+	 * @throws MissingComponentException
+	 *             if the component cannot be found
+	 * @throws AmbigousComponentException
+	 *             if more then one component is an equally good match
+	 * @throws CoreException
+	 *             for other persistent storage related issues
 	 */
 	public static IPath getComponentLocation(ComponentIdentifier componentIdentifier) throws CoreException
 	{
@@ -198,14 +213,17 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Returns the full path of the materialization for the component
-	 * denoted by the <code>componentIdentifier</code>
-	 *
-	 * @param cspec The cspec of the component
+	 * Returns the full path of the materialization for the component denoted by the <code>componentIdentifier</code>
+	 * 
+	 * @param cspec
+	 *            The cspec of the component
 	 * @return The path of the location
-	 * @throws MissingComponentException if the component cannot be found
-	 * @throws AmbigousComponentException if more then one component is an equally good match
-	 * @throws CoreException for other persistent storage related issues
+	 * @throws MissingComponentException
+	 *             if the component cannot be found
+	 * @throws AmbigousComponentException
+	 *             if more then one component is an equally good match
+	 * @throws CoreException
+	 *             for other persistent storage related issues
 	 */
 	public static IPath getComponentLocation(CSpec cspec) throws CoreException
 	{
@@ -215,7 +233,9 @@ public class WorkspaceInfo
 	public static CSpec getCSpec(IResource resource) throws CoreException
 	{
 		ComponentIdentifier id = getComponentIdentifier(resource);
-		return id == null ? null : getResolution(id).getCSpec();
+		return id == null
+				? null
+				: getResolution(id).getCSpec();
 	}
 
 	public static Materialization getMaterialization(ComponentIdentifier cid) throws CoreException
@@ -229,9 +249,11 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Returns the optional <code>Materialization</code> for the component. Components found in the
-	 * target platform will not have a materialization.
-	 * @param resolution The resolution for which we want a Materialization
+	 * Returns the optional <code>Materialization</code> for the component. Components found in the target platform
+	 * will not have a materialization.
+	 * 
+	 * @param resolution
+	 *            The resolution for which we want a Materialization
 	 * @return The materialization or <code>null</code> if it could not be found.
 	 * @throws CoreException
 	 */
@@ -242,6 +264,7 @@ public class WorkspaceInfo
 
 	/**
 	 * Finds the open project that corresponds to the <code>componentIdentifier</code> and return it.
+	 * 
 	 * @param componentIdentifier
 	 * @return The found project or <code>null</code> if no open project was found.
 	 * @throws CoreException
@@ -253,6 +276,7 @@ public class WorkspaceInfo
 
 	/**
 	 * Finds the open project that corresponds to the <code>materialization</code> and return it.
+	 * 
 	 * @param materialization
 	 * @return The found project or <code>null</code> if no open project was found.
 	 * @throws CoreException
@@ -264,48 +288,63 @@ public class WorkspaceInfo
 
 	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException
 	{
-		Resolution candidate = null;
-		for(Resolution res : getActiveResolutions())
+		synchronized(s_resolutionCache)
 		{
-			ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
-			if(!wanted.matches(cid))
-				continue;
-
-			if(wanted.getVersion() != null)
+			Resolution candidate = s_resolutionCache.get(wanted);
+			if(candidate == null)
 			{
-				candidate = res;
-				break;
+				for(Resolution res : getActiveResolutions())
+				{
+					ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
+					if(!wanted.matches(cid))
+						continue;
+
+					if(wanted.getVersion() != null)
+					{
+						candidate = res;
+						break;
+					}
+
+					if(candidate != null)
+						throw new AmbigousComponentException(wanted.toString());
+
+					candidate = res;
+				}
 			}
 
 			if(candidate != null)
-				throw new AmbigousComponentException(wanted.toString());
-			
-			candidate = res;
+			{
+				s_resolutionCache.put(wanted, candidate);
+				return candidate;
+			}
 		}
 
-		if(candidate == null)
+		IVersion v = wanted.getVersion();
+		IVersionDesignator vd = (v == null)
+				? null
+				: VersionDesignator.explicit(v);
+		try
 		{
-			IVersion v = wanted.getVersion();
-			IVersionDesignator vd = (v == null) ? null : VersionDesignator.explicit(v);
-			try
-			{
-				candidate = resolveLocal(new ComponentRequest(wanted.getName(), wanted.getCategory(), vd));
-			}
-			catch(CoreException e)
-			{
-				throw new MissingComponentException(wanted.toString());				
-			}
+			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getCategory(), vd));
 		}
-		return candidate;
+		catch(CoreException e)
+		{
+			throw new MissingComponentException(wanted.toString());
+		}
 	}
 
 	/**
 	 * Returns the <code>CSpec</code> that best corresponds to the given <code>request</code>.
-	 * @param request The component request
+	 * 
+	 * @param request
+	 *            The component request
 	 * @return The found Resolution
-	 * @throws MissingComponentException if the component cannot be found
-	 * @throws AmbigousComponentException if more then one component is an equally good match
-	 * @throws CoreException for other persistent storage related issues
+	 * @throws MissingComponentException
+	 *             if the component cannot be found
+	 * @throws AmbigousComponentException
+	 *             if more then one component is an equally good match
+	 * @throws CoreException
+	 *             for other persistent storage related issues
 	 */
 	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException
 	{
@@ -332,7 +371,7 @@ public class WorkspaceInfo
 		if(candidate == null)
 		{
 			if(fromResolver)
-				throw new MissingComponentException(request.toString());				
+				throw new MissingComponentException(request.toString());
 
 			try
 			{
@@ -340,16 +379,18 @@ public class WorkspaceInfo
 			}
 			catch(CoreException e)
 			{
-				throw new MissingComponentException(request.toString());				
+				throw new MissingComponentException(request.toString());
 			}
 		}
 		return candidate;
 	}
 
 	/**
-	 * Obtains the resources currently bound to the given <code>componentIdentifier</code> and
-	 * returns them. An empty array is returned when no resource was found.
-	 * @param componentIdentifier The component to search for
+	 * Obtains the resources currently bound to the given <code>componentIdentifier</code> and returns them. An empty
+	 * array is returned when no resource was found.
+	 * 
+	 * @param componentIdentifier
+	 *            The component to search for
 	 * @return The found workspace resources.
 	 * @throws CoreException
 	 */
@@ -365,7 +406,7 @@ public class WorkspaceInfo
 	}
 
 	public static IResource[] getResources(ComponentRequest request) throws CoreException
-	{		
+	{
 		IResource[] allFound = s_noResources;
 		ISaxableStorage<Materialization> mats = StorageManager.getDefault().getMaterializations();
 		for(Materialization mat : mats.getElements())
@@ -392,12 +433,12 @@ public class WorkspaceInfo
 	}
 
 	public static IResource[] getResources(Materialization mat) throws CoreException
-	{		
+	{
 		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IPath location = mat.getComponentLocation();
 		return location.hasTrailingSeparator()
-			? wsRoot.findContainersForLocation(location)
-			: wsRoot.findFilesForLocation(location);
+				? wsRoot.findContainersForLocation(location)
+				: wsRoot.findFilesForLocation(location);
 	}
 
 	public static Resolution resolveLocal(ComponentRequest request) throws CoreException

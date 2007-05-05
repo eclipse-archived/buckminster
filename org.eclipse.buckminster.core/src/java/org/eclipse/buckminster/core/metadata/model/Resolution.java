@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -325,6 +326,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public void remove() throws CoreException
 	{
+		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
+
 		UUID thisId = getId();
 		StorageManager sm = StorageManager.getDefault();
 		if(!sm.getDepNodes().getReferencingKeys(thisId, "resolutionId").isEmpty())
@@ -335,6 +338,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public void store() throws CoreException
 	{
+		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
+
 		if(m_cspec == null)
 			getCSpec();
 		else

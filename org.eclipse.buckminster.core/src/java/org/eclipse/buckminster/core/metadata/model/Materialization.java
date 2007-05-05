@@ -95,11 +95,14 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 
 	public synchronized void remove() throws CoreException
 	{
+		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
 		getStorage().removeElement(getId());
 	}
 
 	public void store() throws CoreException
 	{
+		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
+
 		// Remove any other materialization that appoints the same location
 		//
 		UUID thisId = getId();

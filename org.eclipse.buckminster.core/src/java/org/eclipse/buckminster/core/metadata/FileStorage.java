@@ -216,11 +216,19 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 	public synchronized void putElement(T element) throws CoreException
 	{
 		UUID id = element.getId();
-		if(containsKey(id))
-			return;
-
-		m_parsed.put(id, element);
-		persistImage(id, element.getImage());
+		long timestamp;
+		if(!containsKey(id))
+		{
+			m_parsed.put(id, element);
+			persistImage(id, element.getImage());
+			timestamp = System.currentTimeMillis();
+		}
+		else
+		{
+			timestamp = System.currentTimeMillis();
+			getElementFile(id).setLastModified(timestamp);
+		}
+		put(id, new TimestampedKey(id, timestamp));
 	}
 
 	public synchronized void putElement(UUID id, T element) throws CoreException
@@ -241,6 +249,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 
 		m_parsed.put(id, element);
 		persistImage(id, element.getImage());
+		put(id, new TimestampedKey(id, System.currentTimeMillis()));
 	}
 
 	public int readSequenceNumber() throws CoreException
@@ -342,7 +351,6 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		{
 			IOUtils.close(output);
 		}
-		put(elementId, new TimestampedKey(elementId, elementFile.lastModified()));
 	}
 
 	private void writeSequenceNumber(int sequenceNumber) throws CoreException

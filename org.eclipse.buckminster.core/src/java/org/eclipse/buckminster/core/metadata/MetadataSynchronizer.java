@@ -25,7 +25,6 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -305,11 +304,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(res.getCSpec().equals(oldCSpec))
 				return false;
 	
-			Logger logger = CorePlugin.getLogger();
-			if(logger.isDebugEnabled())
-				logger.debug("CSpec changed for project " + project.getName() + " ("
-					+ (oldCSpec == null ? null : oldCSpec.getId()) + " -> " + res.getCSpec().getId() + ")");
-	
 			Resolution oldRes = null;
 			if(oldCSpec != null)
 			{
@@ -328,6 +322,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				try
 				{
 					oldRes.remove();
+					oldCSpec.remove();
 				}
 				catch(ReferentialIntegrityException e)
 				{

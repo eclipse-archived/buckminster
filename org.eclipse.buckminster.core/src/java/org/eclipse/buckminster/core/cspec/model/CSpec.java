@@ -24,7 +24,6 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -32,7 +31,6 @@ import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -40,8 +38,6 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.runtime.Logger;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -405,30 +401,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public void store() throws CoreException
 	{
-		Logger logger = CorePlugin.getLogger();
-		ISaxableStorage<CSpec> cspecs = StorageManager.getDefault().getCSpecs();
-		if(cspecs.contains(this))
-			return;
-
-		if(logger.isDebugEnabled())
-		{
-			for(CSpec other : cspecs.getElements())
-			{
-				if(other.getId().equals(this.getId()))
-					return;
-
-				if(!other.getName().equals(this.getName())
-						|| !Trivial.equalsAllowNull(other.getCategory(), this.getCategory()))
-					continue;
-
-				if(Trivial.equalsAllowNull(other.getVersion(), this.getVersion()))
-				{
-					logger.debug(String.format("Storing multiple copies of CSpec %s. Old %s, new %s", this
-							.getComponentIdentifier(), other.getId(), this.getId()));
-				}
-			}
-		}
-		cspecs.putElement(this);
+		StorageManager.getDefault().getCSpecs().putElement(this);
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException
