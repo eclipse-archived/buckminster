@@ -6,12 +6,20 @@
     <cq:advisorNode namePattern="ant$" skipComponent="true"/>
     <cq:advisorNode namePattern="ant-launcher$" skipComponent="true"/>
     <cq:advisorNode namePattern="avalon-framework" skipComponent="true"/>
+    <cq:advisorNode namePattern="axiom-dom" skipComponent="true"/>
+    <cq:advisorNode namePattern="backport-util-concurrent" skipComponent="true"/>
+    <cq:advisorNode namePattern="geronimo-jms" skipComponent="true"/>
+    <cq:advisorNode namePattern="jakarta-httpcore" skipComponent="true"/>
     <cq:advisorNode namePattern="jaxme2" skipComponent="true"/>
     <cq:advisorNode namePattern="jaxen" skipComponent="true"/>
     <cq:advisorNode namePattern="junit" skipComponent="true"/>
+    <cq:advisorNode namePattern="log4j" skipComponent="true"/>
+    <cq:advisorNode namePattern="logging-config" skipComponent="true"/>
     <cq:advisorNode namePattern="logkit" skipComponent="true"/>
+    <cq:advisorNode namePattern="mockobjects" skipComponent="true"/>
     <cq:advisorNode namePattern="portlet" skipComponent="true"/>
-    <cq:advisorNode namePattern="servlet" skipComponent="true"/>
+    <cq:advisorNode namePattern="servlet$" skipComponent="true"/>
+    <cq:advisorNode namePattern="servlet-api$" skipComponent="true"/>
     <cq:advisorNode namePattern="woden" skipComponent="true"/>
     <cq:advisorNode namePattern="ws-commons-java5" skipComponent="true"/>
     <cq:advisorNode namePattern="xbean" skipComponent="true"/>
