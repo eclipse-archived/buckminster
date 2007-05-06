@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.jdt.internal.ClasspathEmitter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
