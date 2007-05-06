@@ -68,7 +68,7 @@
 		<attribute name="timestamp"/>
 		<attribute name="version"/>
 		<sequential>
-			<buckminster.substitute pattern="^\d+\.\d+\.\d+\.v(.*)$" property="@{component}.vts" value="@{version}" replacement="$1"/>
+			<buckminster.substitute pattern="^\d+\.\d+\.\d+\.v(\d{8}).*$" property="@{component}.vts" value="@{version}" replacement="$1"/>
 			<if>
 				<equals arg1="@{timestamp}" arg2="${@{component}.vts}"/>
 				<else>
