@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
@@ -167,7 +168,7 @@ public class SvnSession
 			SVNUrl ourRoot = new SVNUrl(urlLeadIn);
 			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
 			SVNRepositories repositories = svnPlugin.getRepositories();
-			for(ISVNRepositoryLocation location : repositories.getKnownRepositories())
+			for(ISVNRepositoryLocation location : repositories.getKnownRepositories(new NullProgressMonitor()))
 			{
 				SVNUrl repoRoot = location.getRepositoryRoot();
 				if(!Trivial.equalsAllowNull(repoRoot.getHost(), ourRoot.getHost()))
