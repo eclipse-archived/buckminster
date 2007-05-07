@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.svn.headless.feature"
       label="Buckminster - Subversion support for headless operation (Incubation)"
-      version="0.1.0.v20070505"
+      version="0.1.0.v20070507"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.svn">
 
