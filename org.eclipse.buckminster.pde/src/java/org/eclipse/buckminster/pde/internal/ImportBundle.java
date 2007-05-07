@@ -86,8 +86,9 @@ public class ImportBundle
 			// Fetch the cspec from the materialized component (it's changed)
 			//
 			CSpec cspec = LocalResolver.fromPath(m_outputDir, m_bundleName).getCSpec();
-			Materialization mat = new Materialization(m_outputDir,
-				new Resolution(cspec, node.getResolution()));
+			Resolution newRes = new Resolution(cspec, node.getResolution());
+			newRes.store();
+			Materialization mat = new Materialization(m_outputDir, cspec.getComponentIdentifier());
 			mat.store();
 		}
 		finally
