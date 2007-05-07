@@ -21,11 +21,10 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
-import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
+import org.tigris.subversion.subclipse.core.client.NotificationListener;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
@@ -167,8 +166,8 @@ public class SvnSession
 			int rank = 0;
 			SVNUrl ourRoot = new SVNUrl(urlLeadIn);
 			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
-			SVNRepositories repositories = svnPlugin.getRepositories();
-			for(ISVNRepositoryLocation location : repositories.getKnownRepositories())
+			ISVNRepositoryLocation bestMatch = null;
+			for(ISVNRepositoryLocation location : svnPlugin.getRepositories().getKnownRepositories())
 			{
 				SVNUrl repoRoot = location.getRepositoryRoot();
 				if(!Trivial.equalsAllowNull(repoRoot.getHost(), ourRoot.getHost()))
@@ -227,14 +226,19 @@ public class SvnSession
 					urlLeadIn = bld.toString();
 				}
 				rank = (repoIsSSH ? 400 : 200) - diff;
-				m_clientAdapter = location.getSVNClient();
+				bestMatch = location;
 				if(rank == 400)
 					break;
 			}
 			m_urlLeadIn = urlLeadIn;
 
-			if(m_clientAdapter == null)
+			if(bestMatch == null)
 				m_clientAdapter = svnPlugin.createSVNClient();
+			else
+			{
+				m_clientAdapter = bestMatch.getSVNClient();
+				m_clientAdapter.removeNotifyListener(NotificationListener.getInstance());
+			}
 		}
 		catch(MalformedURLException e)
 		{
