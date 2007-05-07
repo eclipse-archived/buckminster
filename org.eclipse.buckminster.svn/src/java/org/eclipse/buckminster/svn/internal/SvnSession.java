@@ -168,7 +168,7 @@ public class SvnSession
 			SVNUrl ourRoot = new SVNUrl(urlLeadIn);
 			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
 			SVNRepositories repositories = svnPlugin.getRepositories();
-			for(ISVNRepositoryLocation location : repositories.getKnownRepositories(new NullProgressMonitor()))
+			for(ISVNRepositoryLocation location : repositories.getKnownRepositories())
 			{
 				SVNUrl repoRoot = location.getRepositoryRoot();
 				if(!Trivial.equalsAllowNull(repoRoot.getHost(), ourRoot.getHost()))

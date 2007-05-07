@@ -174,18 +174,18 @@ public class VersionFinder extends SvnSession implements IVersionFinder
 		{
 			SVNUrl url = this.getSVNRootUrl(branches);
 			ISVNDirEntry[] entries = this.getClientAdapter().getList(url, SVNRevision.HEAD, false);
-			if(entries != null)
-				return entries;
+			if(entries == null)
+				entries = new ISVNDirEntry[0];
+			return entries;
 		}
 		catch(SVNClientException e)
 		{
-			// Assume that this is due to missing repository
+			throw BuckminsterException.wrap(e);
 		}
 		catch(MalformedURLException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
-		return new ISVNDirEntry[0];
 	}
 
 	private ISVNDirEntry getTrunkModuleRoot() throws CoreException
@@ -197,12 +197,11 @@ public class VersionFinder extends SvnSession implements IVersionFinder
 		}
 		catch(SVNClientException e)
 		{
-			// Assume that this is due to missing repository
+			throw BuckminsterException.wrap(e);
 		}
 		catch(MalformedURLException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
-		return null;
 	}
 }
