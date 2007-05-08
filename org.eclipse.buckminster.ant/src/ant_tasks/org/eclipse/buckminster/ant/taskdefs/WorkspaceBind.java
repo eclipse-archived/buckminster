@@ -15,6 +15,7 @@ import java.io.InputStream;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.util.FileUtils;
+import org.eclipse.buckminster.ant.tasks.WorkspaceBindTask;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
@@ -57,46 +58,10 @@ public class WorkspaceBind extends Task
 		if(!m_projectDir.isDirectory())
 			throw new BuildException(m_projectDir + " is not a directory", this.getLocation());
 
-		InputStream input = null;
-		IProjectDescription projDesc = null;
+		WorkspaceBindTask executor = new WorkspaceBindTask(m_projectDir);
 		try
 		{
-			input = new BufferedInputStream(new FileInputStream(new File(m_projectDir, IProjectDescription.DESCRIPTION_FILE_NAME)));
-			projDesc = ResourcesPlugin.getWorkspace().loadProjectDescription(input);
-		}
-		catch(Exception e)
-		{
-			throw new BuildException(e, this.getLocation());
-		}
-		finally
-		{
-			FileUtils.close(input);
-		}
-
-		try
-		{
-			// Set up whats needed to simulate a cquery that resolved to a local reader
-			// with eclipse.installed component type.
-			//
-			ComponentQueryBuilder qbld = new ComponentQueryBuilder();
-			qbld.setRootRequest(new ComponentRequest(projDesc.getName(), null, null));
-			ComponentQuery query = qbld.createComponentQuery();
-			ResolutionContext context = new ResolutionContext(query);
-			NodeQuery topQuery = context.getRootNodeQuery();
-
-			IPath projectPath = Path.fromOSString(m_projectDir.toString()).addTrailingSeparator();
-			Resolution resolution = LocalResolver.fromPath(topQuery, projectPath, null);
-			
-			Materialization mat = new Materialization(projectPath, resolution.getComponentIdentifier());
-			mat.store();
-
-			BillOfMaterials bom = BillOfMaterials.create(new ResolvedNode(topQuery, resolution), query);
-			MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
-			mspecBuilder.setName(bom.getViewName());
-			mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
-			MaterializationSpec mspec = mspecBuilder.createMaterializationSpec();
-			IMaterializer wsMat = CorePlugin.getDefault().getMaterializer(IMaterializer.WORKSPACE);
-			wsMat.performInstallAction(mat.getResolution(), new MaterializationContext(bom, mspec), new NullProgressMonitor());
+			executor.execute();
 		}
 		catch(Exception e)
 		{
