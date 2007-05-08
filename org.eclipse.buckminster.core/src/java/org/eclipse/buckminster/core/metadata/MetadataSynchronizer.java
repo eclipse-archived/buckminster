@@ -309,8 +309,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			{
 				oldRes = WorkspaceInfo.getResolution(oldCSpec.getComponentIdentifier());
 				res = new Resolution(res.getCSpec(), oldRes);
-				res.store();
 			}
+			res.store();
 
 			ComponentIdentifier ci = res.getComponentIdentifier();
 			Materialization mat = new Materialization(project.getLocation().addTrailingSeparator(), ci);
