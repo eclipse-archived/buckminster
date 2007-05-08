@@ -18,7 +18,7 @@
                 <property key="buckminster.eclipse.deleteuilauncher" value="false"/>
             </properties>
 			<prerequisites alias="action.requirements">
-				<attribute name="feature.runtimes"/>
+				<attribute name="feature.exports"/>
 				<attribute name="product.root.files"/>
 			</prerequisites>
             <products alias="action.output" base="${buckminster.output}/">
