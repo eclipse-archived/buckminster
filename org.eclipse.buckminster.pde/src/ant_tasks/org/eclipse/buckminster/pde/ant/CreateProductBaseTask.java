@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.eclipse.buckminster.pde.internal.CreateProductBase;
+import org.eclipse.buckminster.pde.tasks.CreateProductBase;
 import org.eclipse.core.runtime.Path;
 
 /**

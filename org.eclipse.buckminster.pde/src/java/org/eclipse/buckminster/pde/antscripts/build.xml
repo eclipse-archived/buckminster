@@ -41,6 +41,8 @@
 			<buckminster.filesetgroup refid="action.requirements.filesetgroup"/>
 		</buckminster.copy>
 
+		<buckminster.convertSiteToRuntime sitedir="${action.output}"/>
+
 		<buckminster.multichmod dir="${action.output}">
 			<propertyset>
 				<propertyref prefix="buckminster.install.permissions."/>

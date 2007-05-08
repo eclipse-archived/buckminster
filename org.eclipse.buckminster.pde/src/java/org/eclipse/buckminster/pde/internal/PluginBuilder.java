@@ -200,20 +200,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		return null;
 	}
 
-	private static boolean guessUnpack(IBuildModel buildModel)
-	{
-		IBuild build = buildModel.getBuild();
-		IBuildEntry jarsCompileOrder = build.getEntry(PROPERTY_JAR_ORDER);
-		if(jarsCompileOrder == null)
-			return false;
-
-		for(String token : jarsCompileOrder.getTokens())
-			if(!".".equals(token))
-				return true;
-
-		return false;
-	}
-
 	private static boolean isEnvironmentCompatible(IPluginModelBase modelBase) throws CoreException
 	{
 		BundleDescription bundleDesc = modelBase.getBundleDescription();
@@ -421,7 +407,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		// in order to function) and the one that is a jar file in itself.
 		//
 		CSpecBuilder cspec = getCSpec();
-		GroupBuilder generic = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_RUNTIME);
 		GroupBuilder classpath = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
 
 		IPath parentDir = new Path("..");
@@ -437,7 +422,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				ATTRIBUTE_BUNDLE_EXPORT, null);
 			pluginExport.addPath(new Path(buildArtifactName(plugin.getId(), plugin.getVersion(), true)));
 			pluginExport.setBase(parentDir);
-			generic.addLocalPrerequisite(pluginExport);
 			classpath.addLocalPrerequisite(pluginExport);
 		}
 		else
@@ -473,10 +457,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			ArtifactBuilder bundleFolder = cspec.addArtifact(ATTRIBUTE_BUNDLE_FOLDER, true, null, parentDir);
 			IPath bundlePath = new Path(buildArtifactName(plugin.getId(), plugin.getVersion(), false));
 			bundleFolder.addPath(bundlePath);
-
-			// The generic version (the one used at runtime) is the unpacked one
-			//
-			generic.addLocalPrerequisite(bundleFolder);
 
 			// Create the packed one (need a special temporary directory for this)
 			//
@@ -634,7 +614,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	{
 		CSpecBuilder cspec = getCSpec();
 
-		cspec.addGroup(ATTRIBUTE_BUNDLE_RUNTIME, true);
 		cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
 		GroupBuilder closure = cspec.addGroup(ATTRIBUTE_BUNDLE_CLOSURE, true);
@@ -656,16 +635,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		bundleExport.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, "build.update.jar", false);
 		bundleExport.setProductBase(OUTPUT_DIR.append("export").addTrailingSeparator());
 		bundleExport.addLocalPrerequisite(scriptBuilder.getName(), PdeAntActor.ALIAS_GENERATED_SCRIPT);
-
-		ActionBuilder bundleFolder = cspec.addAction(ATTRIBUTE_BUNDLE_FOLDER, true, AntActor.ID, false);
-		bundleFolder.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, TASK_UNJAR_NAMED, false);
-		bundleFolder.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, BUILD_FILE_ID, false);
-		bundleFolder.setProductBase(OUTPUT_DIR.append("folder"));
-		bundleFolder.setProductAlias(ALIAS_OUTPUT);
-		bundleFolder.addLocalPrerequisite(bundleExport);
-		bundleFolder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-
-		cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_RUNTIME).addLocalPrerequisite(guessUnpack(buildModel) ? bundleFolder : bundleExport);
 	}
 
 	private GroupBuilder getAttributeBuildRequirements() throws CoreException

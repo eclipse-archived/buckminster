@@ -15,7 +15,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.eclipse.buckminster.pde.internal.FeatureConsolidator;
+import org.eclipse.buckminster.pde.tasks.FeatureConsolidator;
 
 /**
  * Ant task that updates the version of plugins and included features found in a feature.xml file to reflect the actual

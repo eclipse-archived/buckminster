@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.pde.internal;
+package org.eclipse.buckminster.pde.tasks;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.internal.FeatureBuilder;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;

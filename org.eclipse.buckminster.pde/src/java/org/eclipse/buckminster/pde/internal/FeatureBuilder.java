@@ -61,8 +61,6 @@ public class FeatureBuilder extends PDEBuilder
 
 	private static final String ACTION_CREATE_EXPORT_FEATURE = "create.export.feature";
 
-	private static final String ACTION_CREATE_RUNTIME_FEATURE = "create.runtime.feature";
-
 	private static final String ACTION_COPY_FEATURES = "copy.features";
 
 	private static final String ACTION_COPY_PLUGINS = "copy.plugins";
@@ -73,13 +71,9 @@ public class FeatureBuilder extends PDEBuilder
 
 	private static final String GROUP_EXPORT_FEATURE_REFS = "export.feature.refs";
 
-	private static final String GROUP_RUNTIME_FEATURE_REFS = "runtime.feature.refs";
-
 	private static final IPath ARTIFACT_OUTPUT_DIR = OUTPUT_DIR.append("artifact");
 
 	private static final IPath EXPORT_OUTPUT = new Path("export");
-
-	private static final IPath RUNTIME_OUTPUT = new Path("runtime");
 
 	@Override
 	public String getCategory()
@@ -135,13 +129,11 @@ public class FeatureBuilder extends PDEBuilder
 		cspec.setVersion(sanitizeVersion(feature.getVersion()), VersionFactory.OSGiType.getId());
 		cspec.setCategory(KeyConstants.FEATURE_CATEGORY);
 
-		// Add the private groups for the export and runtime feature references. Their
+		// Add the private groups for the export feature references. Their
 		// public correspondance includes this feature as well
 		//
 		GroupBuilder exportRefs = cspec.addGroup(GROUP_EXPORT_FEATURE_REFS, false);
-		GroupBuilder runtimeRefs = cspec.addGroup(GROUP_RUNTIME_FEATURE_REFS, false);
 
-		GroupBuilder pluginRuntimeRefs = cspec.addGroup(ATTRIBUTE_BUNDLE_RUNTIME, true);
 		GroupBuilder pluginExportRefs = cspec.addGroup(ATTRIBUTE_BUNDLE_EXPORT, true);
 		cspec.addGroup(ATTRIBUTE_BUNDLE_CLOSURE, true);
 		cspec.addGroup(PRODUCT_ROOT_FILES, true);
@@ -158,14 +150,11 @@ public class FeatureBuilder extends PDEBuilder
 		// it builds up the PDE state.
 		//
 		addNonContributingPrerequisite(exportRefs, FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT);
-		addNonContributingPrerequisite(runtimeRefs, FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT);
-		addNonContributingPrerequisite(pluginRuntimeRefs, FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT);
 		addNonContributingPrerequisite(pluginExportRefs, FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT);
 
 		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 
 		GroupBuilder featureExport = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORT, true);
-		GroupBuilder featureRuntime = cspec.addGroup(ATTRIBUTE_FEATURE_RUNTIME, true);
 
 		if(properties != null)
 		{
@@ -200,10 +189,7 @@ public class FeatureBuilder extends PDEBuilder
 				else
 					continue;
 
-				// Add installer hints only to the runtime export. They are only needed when we
-				// build a product
-				//
-				addRootsPermissions(featureRuntime.getInstallerHintsForAdd(), key.substring(permIndex),
+				addRootsPermissions(featureExport.getInstallerHintsForAdd(), key.substring(permIndex),
 					entry.getValue());
 			}
 
@@ -231,7 +217,6 @@ public class FeatureBuilder extends PDEBuilder
 			createBinIncludesArtifact(feature, FEATURE_FILE);
 
 		createExportFeatureAction(feature);
-		createRuntimeFeatureAction(feature);
 
 		addFeatures(reader, feature.getIncludedFeatures());
 		addPlugins(reader, feature.getPlugins());
@@ -239,39 +224,15 @@ public class FeatureBuilder extends PDEBuilder
 		featureExport.addLocalPrerequisite(GROUP_EXPORT_FEATURE_REFS);
 		featureExport.addLocalPrerequisite(ACTION_CREATE_EXPORT_FEATURE);
 
-		featureRuntime.addLocalPrerequisite(GROUP_RUNTIME_FEATURE_REFS);
-		featureRuntime.addLocalPrerequisite(ACTION_CREATE_RUNTIME_FEATURE);
-
-		createCopyToStructure(true);
-		createCopyToStructure(false);
+		createCopyToStructure();
 	}
 
-	private void createCopyToStructure(boolean forSiteExport) throws CoreException
+	private void createCopyToStructure() throws CoreException
 	{
-		String copyFeaturesAction;
-		String copyPluginsAction;
-		String featuresPrereq;
-		String pluginsPrereq;
-		String exportName;
-		IPath structureRoot;
-		if(forSiteExport)
-		{
-			structureRoot = OUTPUT_DIR.append(EXPORT_OUTPUT);
-			copyFeaturesAction = ACTION_COPY_FEATURES + ".export";
-			copyPluginsAction = ACTION_COPY_PLUGINS + ".export";
-			featuresPrereq = ATTRIBUTE_FEATURE_EXPORT;
-			pluginsPrereq = ATTRIBUTE_BUNDLE_EXPORT;
-			exportName = ATTRIBUTE_FEATURE_EXPORTS;
-		}
-		else
-		{
-			structureRoot = OUTPUT_DIR.append(RUNTIME_OUTPUT);
-			copyFeaturesAction = ACTION_COPY_FEATURES + ".runtime";
-			copyPluginsAction = ACTION_COPY_PLUGINS + ".runtime";
-			featuresPrereq = ATTRIBUTE_FEATURE_RUNTIME;
-			pluginsPrereq = ATTRIBUTE_BUNDLE_RUNTIME;
-			exportName = ATTRIBUTE_FEATURE_RUNTIMES;
-		}
+		IPath structureRoot = OUTPUT_DIR.append(EXPORT_OUTPUT);
+		String copyFeaturesAction = ACTION_COPY_FEATURES + ".export";
+		String copyPluginsAction = ACTION_COPY_PLUGINS + ".export";
+
 		CSpecBuilder cspec = getCSpec();
 
 		// Copy all features (including this one) to the features directory.
@@ -279,7 +240,7 @@ public class FeatureBuilder extends PDEBuilder
 		ActionBuilder copyFeatures = cspec.addAction(copyFeaturesAction, false, "ant", false);
 		copyFeatures.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, BUILD_FILE_ID, false);
 		copyFeatures.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, TASK_COPY_GROUP, false);
-		copyFeatures.addLocalPrerequisite(featuresPrereq);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORT);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductBase(structureRoot);
 		copyFeatures.addProductPath(new Path(FEATURES_FOLDER).addTrailingSeparator());
@@ -290,13 +251,13 @@ public class FeatureBuilder extends PDEBuilder
 		ActionBuilder copyPlugins = cspec.addAction(copyPluginsAction, false, "ant", false);
 		copyPlugins.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, BUILD_FILE_ID, false);
 		copyPlugins.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, TASK_COPY_GROUP, false);
-		copyPlugins.addLocalPrerequisite(pluginsPrereq);
+		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_EXPORT);
 		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyPlugins.setProductBase(structureRoot);
 		copyPlugins.addProductPath(new Path(PLUGINS_FOLDER).addTrailingSeparator());
 		copyPlugins.setProductAlias(ALIAS_OUTPUT);
 
-		GroupBuilder exportFeature = cspec.addGroup(exportName, true);
+		GroupBuilder exportFeature = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 		exportFeature.addLocalPrerequisite(copyFeaturesAction);
 		exportFeature.addLocalPrerequisite(copyPluginsAction);
 	}
@@ -429,33 +390,6 @@ public class FeatureBuilder extends PDEBuilder
 			PdeAntActor.ALIAS_GENERATED_SCRIPT);
 	}
 
-	private void createRuntimeFeatureAction(IFeature feature) throws CoreException
-	{
-		CSpecBuilder cspec = getCSpec();
-		ActionBuilder featureRuntimeBuilder = cspec.addAction(ACTION_CREATE_RUNTIME_FEATURE, false,
-			PdeAntActor.ACTOR_ID, false);
-
-		featureRuntimeBuilder.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, "gather.bin.parts",
-			false);
-
-		// The generated script will use ${feature.base}/features as its output.
-		//
-		IPath featureBase = ARTIFACT_OUTPUT_DIR.append(RUNTIME_OUTPUT);
-		featureRuntimeBuilder.setProductBase(featureBase.append(FEATURES_FOLDER).addTrailingSeparator());
-		featureRuntimeBuilder.addProperty("feature.base", featureBase.toOSString(), false);
-
-		// We call the target agnostic ant-task here
-		//
-		featureRuntimeBuilder.addProperty("arch", "group", false);
-		featureRuntimeBuilder.addProperty("ws", "group", false);
-		featureRuntimeBuilder.addProperty("nl", "group", false);
-		featureRuntimeBuilder.addProperty("os", "group", false);
-
-		featureRuntimeBuilder.addProperty("feature.temp.folder", "${feature.base}", false);
-		featureRuntimeBuilder.addLocalPrerequisite(FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT,
-			PdeAntActor.ALIAS_GENERATED_SCRIPT);
-	}
-
 	void addFeatures(IComponentReader reader, IFeatureChild[] features) throws CoreException
 	{
 		if(features == null)
@@ -465,9 +399,7 @@ public class FeatureBuilder extends PDEBuilder
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder exportFeatureRefs = cspec.getRequiredGroup(GROUP_EXPORT_FEATURE_REFS);
-		GroupBuilder runtimeFeatureRefs = cspec.getRequiredGroup(GROUP_RUNTIME_FEATURE_REFS);
 		GroupBuilder exportPluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_EXPORT);
-		GroupBuilder runtimePluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_RUNTIME);
 		GroupBuilder pluginStateClosure = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_CLOSURE);
 		GroupBuilder productRootFiles = cspec.getGroup(PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
@@ -478,9 +410,7 @@ public class FeatureBuilder extends PDEBuilder
 
 			cspec.addDependency(dep);
 			exportFeatureRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORT);
-			runtimeFeatureRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_RUNTIME);
 			exportPluginRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_EXPORT);
-			runtimePluginRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_RUNTIME);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 			productRootFiles.addExternalPrerequisite(dep.getName(), PRODUCT_ROOT_FILES);
 			pluginStateClosure.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_CLOSURE);
@@ -499,7 +429,6 @@ public class FeatureBuilder extends PDEBuilder
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder exportPluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_EXPORT);
-		GroupBuilder runtimePluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_RUNTIME);
 		GroupBuilder pluginStateClosure = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_CLOSURE);
 		for(IFeaturePlugin plugin : plugins)
 		{
@@ -513,7 +442,6 @@ public class FeatureBuilder extends PDEBuilder
 	
 			cspec.addDependency(dep);
 			exportPluginRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_EXPORT);
-			runtimePluginRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_RUNTIME);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 			pluginStateClosure.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_CLOSURE);
 		}

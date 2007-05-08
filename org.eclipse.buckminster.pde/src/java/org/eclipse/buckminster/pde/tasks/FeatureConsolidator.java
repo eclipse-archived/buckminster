@@ -1,4 +1,4 @@
-package org.eclipse.buckminster.pde.internal;
+package org.eclipse.buckminster.pde.tasks;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalEditableFeatureModel;
 import org.eclipse.buckminster.runtime.IOUtils;

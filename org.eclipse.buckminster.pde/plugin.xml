@@ -87,6 +87,10 @@
         class="org.eclipse.buckminster.pde.ant.ImportBundleTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.importBundle"/>
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.ConvertSiteToRuntimeTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.convertSiteToRuntime"/>
 	</extension>
  <extension
        point="org.eclipse.buckminster.cmdline.prefmappings">
