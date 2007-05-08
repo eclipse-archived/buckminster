@@ -4,15 +4,15 @@
    <description url="http://download.eclipse.org/technology/buckminster/updates/headless-site.xml">
       The update site for Buckminster
    </description>
-   <feature url="features/org.eclipse.buckminster.core.headless.feature_0.1.0.v20070507.jar" id="org.eclipse.buckminster.core.headless.feature" version="0.1.0.v20070507"/>
+   <feature url="features/org.eclipse.buckminster.core.headless.feature_0.1.0.v20070508.jar" id="org.eclipse.buckminster.core.headless.feature" version="0.1.0.v20070508"/>
    <feature url="features/org.eclipse.buckminster.cvs.headless.feature_0.1.0.v20070504.jar" id="org.eclipse.buckminster.cvs.headless.feature" version="0.1.0.v20070504"/>
    <feature url="features/org.eclipse.buckminster.maven.feature_0.1.0.v20070504.jar" id="org.eclipse.buckminster.maven.feature" version="0.1.0.v20070504"/>
    <feature url="features/org.eclipse.buckminster.p4.headless.feature_0.1.0.v20070504.jar" id="org.eclipse.buckminster.p4.headless.feature" version="0.1.0.v20070504"/>
-   <feature url="features/org.eclipse.buckminster.pde.headless.feature_0.1.0.v20070507.jar" id="org.eclipse.buckminster.pde.headless.feature" version="0.1.0.v20070507"/>
+   <feature url="features/org.eclipse.buckminster.pde.headless.feature_0.1.0.v20070508.jar" id="org.eclipse.buckminster.pde.headless.feature" version="0.1.0.v20070508"/>
    <feature url="features/org.eclipse.buckminster.svn.headless.feature_0.1.0.v20070507.jar" id="org.eclipse.buckminster.svn.headless.feature" version="0.1.0.v20070507"/>
    <feature url="features/org.eclipse.buckminster.europatools.feature_0.1.0.v20070413.jar" id="org.eclipse.buckminster.europatools.feature" version="0.1.0.v20070413"/>
 
-   <!-- Eclipse 3.3M7 dependencies -->
+    <!-- Eclipse 3.3M7 dependencies -->
     <archive path="plugins/com.ibm.icu_3.6.1.v20070417.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.ibm.icu_3.6.1.v20070417.jar">
     <archive path="plugins/com.jcraft.jsch_0.1.28.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.jcraft.jsch_0.1.28.jar">
     <archive path="plugins/javax.servlet.jsp_2.0.0.v200703221034.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/javax.servlet.jsp_2.0.0.v200703221034.jar">
@@ -166,8 +166,8 @@
     <archive path="plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar">
     <archive path="plugins/org.junit4_4.3.1.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.junit4_4.3.1.jar">
     <archive path="plugins/org.junit_3.8.2.v200701261102.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.junit_3.8.2.v200701261102.jar">
-    <archive path="plugins/org.tigris.subversion.subclipse.core_1.2.1.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.core_1.2.1.jar">
-    <archive path="plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar">
-    <archive path="plugins/org.tigris.subversion.subclipse.ui_1.2.1.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.ui_1.2.1.jar">
-    <archive path="plugins/org.tigris.subversion.javahl.win32_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.javahl.win32_1.2.0.jar">
+    <archive path="plugins/org.tigris.subversion.javahl.win32_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.javahl.win32_1.0.5.jar">
+    <archive path="plugins/org.tigris.subversion.subclipse.core_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.subclipse.core_1.0.5.jar">
+    <archive path="plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar">
+    <archive path="plugins/org.tigris.subversion.subclipse_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.subclipse_1.0.5.jar">
 </site>
