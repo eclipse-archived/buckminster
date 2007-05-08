@@ -11,9 +11,9 @@
 	<property name="remote.queue.folder" value="${staging.area}" />
 	<property name="remote.output.folder" value="${staging.area}/out${build.timestamp}" />
 
-	<property name="input.folder" location="C:/Temp/b33_0413/org.eclipse.buckminster/site/buckminster.site-0.1.0.v20070413/plugins"/>
+	<property name="input.folder" location="C:/Temp/b33_0507/org.eclipse.buckminster/product"/>
 	<property name="output.folder" location="C:/Temp"/>
-	<property name="subject.file" value="org.eclipse.buckminster.runtime_0.1.0.v20070413.jar"/>
+	<property name="subject.file" value="buckminster.jnlp.product-0.1.0.v20070505-r32x_incubation.zip"/>
 
 	<property file="${user.home}/buildtools/committer-credentials.properties"/>
 
