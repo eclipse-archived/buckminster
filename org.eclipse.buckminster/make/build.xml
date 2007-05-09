@@ -62,5 +62,6 @@
 		<zip destfile="${archived.site}">
 			<fileset dir="${deployed.site}"/>
 		</zip>
+		<delete dir="${deployed.site}"/>
 	</target>
 </project>

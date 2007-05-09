@@ -11,16 +11,25 @@
 	<property name="remote.queue.folder" value="${staging.area}" />
 	<property name="remote.output.folder" value="${staging.area}/out${build.timestamp}" />
 
-	<property name="input.folder" location="C:/Temp/b33_0507/org.eclipse.buckminster/product"/>
-	<property name="output.folder" location="C:/Temp"/>
-	<property name="subject.file" value="buckminster.jnlp.product-0.1.0.v20070505-r32x_incubation.zip"/>
+	<!-- Convert the directory denoted by the requirement property into a property that
+		 appoints the file that it contains
+	-->
+	<pathconvert property="input.file">
+		<path>
+			<fileset dir="${requirement}" includes="*.zip"/>
+		</path>
+	</pathconvert>
+
+	<dirname file="${input.file}" property="input.folder"/>
+	<basename file="${input.file}" property="subject.file"/>
+	<property name="output.folder" location="${product.output}"/>
 
 	<property file="${user.home}/buildtools/committer-credentials.properties"/>
 
 	<target name="wait.for.output">
 		<echo message="Waiting for signing to complete" />
 		<waitfor checkevery="30" checkeveryunit="second" maxwait="10" maxwaitunit="minute">
-			<buckminster.antcallsuccess target="assert.output.present"/>
+			<buckminster.antcallsuccess target="assert.output.present" trapPattern="Remote command failed"/>
 		</waitfor>
 	</target>
 
@@ -38,7 +47,7 @@
 	<target name="pick.from.queue">
 		<echo message="Obtaining signed file from server" />
 		<scp file="${username}:${password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true"/>
-		<sshexec host="${signing.host}" username="${username}" password="${password}" command="rm -rf ${remote.output.folder}" timeout="10000" trust="true"/>
+		<sshexec host="${signing.host}" username="${username}" password="${password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
 	</target>
 
 	<target name="default" depends="queue.for.signing,wait.for.output,pick.from.queue"/>
