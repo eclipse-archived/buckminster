@@ -7,11 +7,15 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.parser;
 
+import java.util.UUID;
+
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -40,28 +44,47 @@ public class MaterializationHandler extends ExtensionAwareHandler
 	public void handleAttributes(Attributes attrs)
 	throws SAXException
 	{
-		String name = getStringValue(attrs, NamedElement.ATTR_NAME);
-		String category = getOptionalStringValue(attrs, ComponentName.ATTR_CATEGORY);
-		IVersion version = null;
-
-		String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
-		if(tmp != null)
+		ComponentIdentifier cid;
+		String name = getOptionalStringValue(attrs, NamedElement.ATTR_NAME);
+		if(name == null)
 		{
-			String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
-			if(type == null)
-				type = OSGiVersionType.ID;
+			// Backward compatibility. Look for resolutionId
+			//
+			UUID resolutionId = UUID.fromString(getStringValue(attrs, "resolutionId"));
 			try
 			{
-				version = VersionFactory.createVersion(type, tmp);
+				Resolution res = StorageManager.getDefault().getResolutions().getElement(resolutionId);
+				cid = res.getComponentIdentifier();
 			}
 			catch(CoreException e)
 			{
-				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
 		}
+		else
+		{
+			String category = getOptionalStringValue(attrs, ComponentName.ATTR_CATEGORY);
+			IVersion version = null;
+	
+			String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
+			if(tmp != null)
+			{
+				String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
+				if(type == null)
+					type = OSGiVersionType.ID;
+				try
+				{
+					version = VersionFactory.createVersion(type, tmp);
+				}
+				catch(CoreException e)
+				{
+					throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+				}
+			}
+			cid = new ComponentIdentifier(name, category, version);
+		}
 		m_materialization = new Materialization(
-				Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION)),
-				new ComponentIdentifier(name, category, version));
+				Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION)), cid);
 	}
 
 	public Materialization getMaterialization()
