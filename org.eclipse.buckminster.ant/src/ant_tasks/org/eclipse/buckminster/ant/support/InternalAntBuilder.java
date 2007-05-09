@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.tools.ant.AntTypeDefinition;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.ComponentHelper;
+import org.apache.tools.ant.DemuxOutputStream;
 import org.apache.tools.ant.Main;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
@@ -32,6 +33,7 @@ import org.eclipse.ant.core.AntCorePreferences;
 import org.eclipse.ant.core.Property;
 import org.eclipse.ant.core.Task;
 import org.eclipse.ant.core.Type;
+import org.eclipse.ant.internal.core.AntSecurityManager;
 import org.eclipse.buckminster.ant.AntPreferences;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -42,6 +44,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class InternalAntBuilder
 {
 	public InternalAntBuilder(IPath antHome)
@@ -59,18 +62,15 @@ public class InternalAntBuilder
 		//
 		synchronized(Path.class)
 		{
-			Path saveSysClasspath = Path.systemClasspath;
-
 			// This kind of replacement is really only suited for a single-threaded
 			// environment. We don't have much choice though, since System.out
 			// and System.err are very widely used. If we don't do this we will
 			// for instance loose all compiler output. Let's just hope nobody else
 			// changes them.
 			//
+			Path saveSysClasspath = Path.systemClasspath;
 			PrintStream saveOut = System.out;
 			PrintStream saveErr = System.err;
-			System.setOut(out);
-			System.setErr(err);
 
 			try
 			{
@@ -95,6 +95,7 @@ public class InternalAntBuilder
 
 		if(out == null)
 			out = System.out;
+
 		if(err == null)
 			err = System.err;
 
@@ -127,6 +128,11 @@ public class InternalAntBuilder
 		// tasks depend on it.
 		//
 		project.addReference("ant.projectHelper", helper);
+
+		System.setOut(new PrintStream(new DemuxOutputStream(project, false)));
+		System.setErr(new PrintStream(new DemuxOutputStream(project, true)));
+
+		project.fireBuildStarted();
 
 		IPath scriptDir = absoluteScriptFile.removeLastSegments(1);
 		if(baseDir != null && !baseDir.equals(scriptDir))
@@ -162,17 +168,22 @@ public class InternalAntBuilder
 		if(targets == null || targets.length == 0)
 			targets = new String[] { project.getDefaultTarget() };
 
-		project.fireBuildStarted();
 		project.log("Buildfile: " + scriptFile);
 
+		SecurityManager originalSM = System.getSecurityManager();
 		try
 		{
+			System.setSecurityManager(new AntSecurityManager(originalSM, Thread.currentThread()));
 			project.getExecutor().executeTargets(project, targets);
 			project.fireBuildFinished(null);
 		}
 		catch(Throwable t)
 		{
 			project.fireBuildFinished(t);
+		}
+		finally
+		{
+			System.setSecurityManager(originalSM);
 		}
 
 		Throwable buildResult = logger.getBuildResult();

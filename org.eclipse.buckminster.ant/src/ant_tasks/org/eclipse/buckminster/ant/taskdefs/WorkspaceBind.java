@@ -7,35 +7,11 @@
 ***************************************************************************/
 package org.eclipse.buckminster.ant.taskdefs;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.buckminster.ant.tasks.WorkspaceBindTask;
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
-import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.Materialization;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
-import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.resolver.LocalResolver;
-import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 
 /**
  * Makes Buckminster aware of a project and performs a workspace bind. This task

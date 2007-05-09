@@ -82,8 +82,9 @@ public class WorkspaceBindTask
 
 		IPath projectPath = Path.fromOSString(m_projectDir.toString()).addTrailingSeparator();
 		Resolution resolution = LocalResolver.fromPath(topQuery, projectPath, null);
-		
+
 		Materialization mat = new Materialization(projectPath, resolution.getComponentIdentifier());
+		resolution.store();
 		mat.store();
 
 		BillOfMaterials bom = BillOfMaterials.create(new ResolvedNode(topQuery, resolution), query);

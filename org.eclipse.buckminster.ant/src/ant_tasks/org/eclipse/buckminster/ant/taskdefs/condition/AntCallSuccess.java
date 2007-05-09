@@ -7,6 +7,9 @@
  ***************************************************************************/
 package org.eclipse.buckminster.ant.taskdefs.condition;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.CallTarget;
@@ -17,11 +20,28 @@ import org.apache.tools.ant.taskdefs.condition.Condition;
  */
 public class AntCallSuccess extends CallTarget implements Condition
 {
+	private String m_trapPattern;
+
 	public boolean eval() throws BuildException
 	{
 		Project p = getProject();
+		
+		if(m_trapPattern == null)
+			throw new BuildException("Missing required attribute 'trapPattern'", getLocation());
+
 		boolean wasKeepGoing = p.isKeepGoingMode();
 		p.setKeepGoingMode(true);
+
+		Pattern trapPattern;
+		try
+		{
+			trapPattern = Pattern.compile(m_trapPattern);
+
+		}
+		catch(PatternSyntaxException e)
+		{
+			throw new BuildException("Attribute 'trapPattern' is an invalid regexp: ", e, getLocation());
+		}
 
 		try
 		{
@@ -30,11 +50,22 @@ public class AntCallSuccess extends CallTarget implements Condition
 		}
 		catch(BuildException e)
 		{
-			return false;
+			String msg = e.getMessage();
+			if(msg != null)
+			{
+				if(trapPattern.matcher(msg).find())
+					return false;
+			}
+			throw e;
 		}
 		finally
 		{
 			p.setKeepGoingMode(wasKeepGoing);
 		}
+	}
+
+	public void setTrapPattern(String trappedException)
+	{
+		m_trapPattern = trappedException;
 	}
 }
