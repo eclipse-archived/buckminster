@@ -201,7 +201,6 @@
              targetID="org.eclipse.jdt.ui.JavaPerspective">
           <view
                 id="org.eclipse.buckminster.ui.views.BuckminsterView"
-                minimized="false"
                 relationship="stack"
                 relative="org.eclipse.ui.views.ContentOutline"
                 visible="false">
