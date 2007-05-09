@@ -46,6 +46,7 @@
 
 	<target name="pick.from.queue">
 		<echo message="Obtaining signed file from server" />
+		<mkdir dir="${output.folder}"/>
 		<scp file="${username}:${password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true"/>
 		<sshexec host="${signing.host}" username="${username}" password="${password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
 	</target>
