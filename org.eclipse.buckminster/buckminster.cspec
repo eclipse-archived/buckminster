@@ -15,7 +15,7 @@
 				<attribute name="site.source" alias="site"/>
 				<attribute component="org.eclipse.buckminster.update" name="feature.xml" alias="site.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/site"/>
+            <products base="${buckminster.output}/site" fileCount="1"/>
 		</public>
 
 		<public name="sign.site" actor="ant">
@@ -26,7 +26,7 @@
 			<prerequisites>
 				<attribute name="build.site" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.site" alias="product.output"/>
+            <products base="${buckminster.output}/signed.site" alias="product.output" fileCount="1"/>
 		</public>
 
 		<public name="build.product" actor="ant">
@@ -41,7 +41,7 @@
 				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
 				<attribute component="org.eclipse.buckminster.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/product" alias="product.output"/>
+            <products base="${buckminster.output}/product" alias="product.output" fileCount="1"/>
 		</public>
 
 		<public name="sign.product" actor="ant">
@@ -52,10 +52,10 @@
 			<prerequisites>
 				<attribute name="build.product" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.product" alias="product.output"/>
+            <products base="${buckminster.output}/signed.product" alias="product.output" fileCount="1"/>
 		</public>
 
-		<public name="build.jnlp.product" actor="ant">
+		<public name="build.jnlp.installer" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
 				<property key="targets" value="build.product" />
@@ -64,21 +64,21 @@
 				<property key="product.name" value="buckminster.jnlp.product" />
 			</properties>
 			<prerequisites>
-				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.buckminster.jnlp.product" alias="product"/>
+				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.jnlp.installer" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/jnlp.product" alias="product.output"/>
+            <products base="${buckminster.output}/jnlp.installer" alias="product.output" fileCount="1"/>
 		</public>
 
-		<public name="sign.jnlp.product" actor="ant">
+		<public name="sign.jnlp.installer" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
 				<property key="targets" value="default" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="build.jnlp.product" alias="requirement"/>
+				<attribute name="build.jnlp.installer" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.jnlp.product" alias="product.output"/>
+            <products base="${buckminster.output}/signed.jnlp.product" alias="product.output" fileCount="1"/>
 		</public>
 
 		<public name="clean" actor="ant">
@@ -97,12 +97,12 @@
 		<public name="build.all">
 			<attribute name="build.site"/>
 			<attribute name="build.product"/>
-			<attribute name="build.jnlp.product"/>
+			<attribute name="build.jnlp.installer"/>
 		</public>
 		<public name="sign.all">
 			<attribute name="sign.site"/>
 			<attribute name="sign.product"/>
-			<attribute name="sign.jnlp.product"/>
+			<attribute name="sign.jnlp.installer"/>
 		</public>
 		<private name="site.source">
 			<attribute component="org.eclipse.buckminster.update" name="feature.exports"/>
