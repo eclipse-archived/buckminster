@@ -20,6 +20,6 @@ public class PrerequisitesBuilder extends GroupBuilder
 	@Override
 	public Group createAttribute()
 	{
-		return new Prerequisites(this.getName(), this.getRebase(), getPrerequisiteList());
+		return new Prerequisites(this);
 	}
 }

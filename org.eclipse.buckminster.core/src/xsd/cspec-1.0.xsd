@@ -258,38 +258,37 @@
 				<element name="products">
 					<complexType>
 						<sequence>
-							<choice
-								minOccurs="0"
+							<choice minOccurs="0"
 								maxOccurs="unbounded">
-								<element
-									name="path"
-									type="cs:Path" />
-								<element
-									name="public"
+								<element name="path" type="cs:Path" />
+								<element name="public"
 									type="cs:Artifact" />
-								<element
-									name="private"
+								<element name="private"
 									type="cs:Artifact" />
 							</choice>
 						</sequence>
-						<attribute
-							name="alias"
-							type="string"
+						<attribute name="alias" type="string"
 							use="optional">
 							<annotation>
 								<documentation>
-									The name to use for properties and filesets that reflect the product
+									The name to use for properties and
+									filesets that reflect the product
 								</documentation>
 							</annotation>
 						</attribute>
-						<attribute
-							name="base"
-							type="string"
+						<attribute name="base" type="string"
 							use="optional">
 							<annotation>
-								<documentation>Base of all paths, relative to component root</documentation>
+								<documentation>
+									Base of all paths, relative to
+									component root
+								</documentation>
 							</annotation>
 						</attribute>
+						<attribute name="upToDatePolicy" type="cs:UpToDatePolicy"/>
+						<attribute name="fileCount" type="integer" use="optional"/>
+						<attribute name="pattern" type="string" use="optional"/>
+						<attribute name="replacement" type="string" use="optional"/>
 					</complexType>
 				</element>
 			</choice>
@@ -692,4 +691,37 @@
 			type="string"
 			use="required" />
 	</complexType>
+	<simpleType name="UpToDatePolicy">
+		<restriction base="string">
+			<annotation>
+				<documentation>
+					The up to date policy tells Buckminster how to go about determining the timestamp of a
+					product when deciding if it is up to date in respect to its prerequisites.
+				</documentation>
+			</annotation>
+			<enumeration value="DEFAULT">
+				<annotation>
+					<documentation>Never trust a product defined as a folder since the expected number of files is unknown</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="COUNT">
+				<annotation>
+					<documentation>Trust timestamp only when the product contains the number of files denoted in attribute 'count'</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="MAPPER">
+				<annotation>
+					<documentation>
+						Trust timestamp of a product that matches the action prerequisites in number and optional pattern.
+						The 'count' attribute may be used to denote file additions
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="NOT_EMPTY">
+				<annotation>
+					<documentation>Trust timestamp of any product that contains at least one file</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 </schema>

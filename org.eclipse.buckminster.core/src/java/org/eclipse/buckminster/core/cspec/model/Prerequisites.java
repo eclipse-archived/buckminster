@@ -7,9 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 
 /**
  * The special group that maintains the action prerequisites. It
@@ -22,9 +20,9 @@ public class Prerequisites extends Group
 	public static final String TAG = "prerequisites";
 	public static final String ATTR_ALIAS = "alias";
 
-	public Prerequisites(String alias, IPath prerequisiteRebase, List<Prerequisite> prerequisites)
+	public Prerequisites(PrerequisitesBuilder builder)
 	{
-		super(alias, false, null, null, prerequisiteRebase, prerequisites);
+		super(builder);
 	}
 
 	@Override

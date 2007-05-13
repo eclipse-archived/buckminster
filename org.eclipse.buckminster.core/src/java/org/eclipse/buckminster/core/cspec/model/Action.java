@@ -8,15 +8,16 @@
 package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
+import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
@@ -42,6 +43,10 @@ public class Action extends Attribute
 
 	public static final String ATTR_ASSIGN_CONSOLE_SUPPORT = "assignConsoleSupport";
 
+	public static final String ATTR_PRODUCT_FILE_COUNT = "fileCount";
+
+	public static final String ATTR_UP_TO_DATE_POLICY = "upToDatePolicy";
+
 	public static final String ELEM_ACTOR_PROPERTIES = "actorProperties";
 
 	public static final String ELEM_PROPERTIES = "properties";
@@ -57,7 +62,7 @@ public class Action extends Attribute
 	private final Set<IPath> m_products;
 
 	private final String m_productAlias;
-	
+
 	private final IPath m_productBase;
 
 	private final String m_actorName;
@@ -66,43 +71,35 @@ public class Action extends Attribute
 
 	private final boolean m_always;
 
-	private final Map<String,String> m_actorProperties;
+	private final int m_productFileCount;
 
-	private final Map<String,String> m_properties;
+	private final Map<String, String> m_actorProperties;
+
+	private final Map<String, String> m_properties;
 
 	private final boolean m_assignConsoleSupport;
+
+	private final UpToDatePolicy m_upToDatePolicy;
 
 	private Prerequisites m_prerequisites;
 
 	public static final String BINDING_NAME = "binding.name";
 
-	public Action(
-		String name,
-		boolean publ,
-		Map<String,String> installerHints,
-		Documentation documentation,
-		String actorName,
-		Map<String,String> actorProperties,
-		Map<String,String> properties,
-		Prerequisites prerequisites,
-		String productAlias,
-		IPath productBase,
-		Set<IPath> products,
-		boolean always,
-		boolean enabled,
-		boolean assignConsoleSupport)
+	public Action(ActionBuilder builder)
 	{
-		super(name, publ, installerHints, documentation);
-		m_actorName = actorName;
-		m_prerequisites = prerequisites;
-		m_always = always;
-		m_enabled = enabled;
-		m_assignConsoleSupport = assignConsoleSupport;
-		m_productAlias = productAlias;
-		m_productBase = productBase;
-		m_products = UUIDKeyed.createUnmodifiablePaths(products);
-		m_actorProperties = UUIDKeyed.createUnmodifiableProperties(actorProperties);
-		m_properties = UUIDKeyed.createUnmodifiableProperties(properties);
+		super(builder);
+		m_actorName = builder.getActorName();
+		m_prerequisites = new Prerequisites(builder.getPrerequisitesBuilder());
+		m_always = builder.isAlways();
+		m_enabled = builder.isEnabled();
+		m_assignConsoleSupport = builder.isAssignConsoleSupport();
+		m_productAlias = builder.getProductAlias();
+		m_productBase = builder.getProductBase();
+		m_productFileCount = builder.getProductFileCount();
+		m_products = UUIDKeyed.createUnmodifiablePaths(builder.getProductPaths());
+		m_actorProperties = UUIDKeyed.createUnmodifiableProperties(builder.getActorProperties());
+		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());
+		m_upToDatePolicy = builder.getUpToDatePolicy();
 	}
 
 	@Override
@@ -127,7 +124,7 @@ public class Action extends Attribute
 		}
 	}
 
-	public void addInstallerHints(IModelCache ctx, Map<String,String> installerHints) throws CoreException
+	public void addInstallerHints(IModelCache ctx, Map<String, String> installerHints) throws CoreException
 	{
 		CSpec cspec = getCSpec();
 		for(Prerequisite prereq : getPrerequisites())
@@ -173,19 +170,29 @@ public class Action extends Attribute
 		return m_productBase;
 	}
 
+	public int getProductFileCount()
+	{
+		return m_productFileCount;
+	}
+
 	public Set<IPath> getProductPaths()
 	{
 		return m_products;
 	}
 
-	public Map<String,String> getActorProperties()
+	public UpToDatePolicy getUpToDatePolicy()
+	{
+		return m_upToDatePolicy;
+	}
+
+	public Map<String, String> getActorProperties()
 	{
 		return m_actorProperties;
 	}
 
-	public String getBindingName(Map<String,String> globalProps)
+	public String getBindingName(Map<String, String> globalProps)
 	{
-		Map<String,String> actionProps = getProperties();
+		Map<String, String> actionProps = getProperties();
 		if(actionProps.containsKey(BINDING_NAME))
 		{
 			ExpandingProperties allProps = new ExpandingProperties(globalProps);
@@ -195,7 +202,7 @@ public class Action extends Attribute
 		return null;
 	}
 
-	public Map<String,String>  getProperties()
+	public Map<String, String> getProperties()
 	{
 		return m_properties;
 	}
@@ -270,6 +277,10 @@ public class Action extends Attribute
 			Utils.addAttribute(attrs, Prerequisite.ATTR_ALIAS, m_productAlias);
 		if(m_productBase != null)
 			Utils.addAttribute(attrs, Artifact.ATTR_BASE, m_productBase.toPortableString());
+		if(m_productFileCount >= 0)
+			Utils.addAttribute(attrs, ATTR_PRODUCT_FILE_COUNT, Integer.toString(m_productFileCount));
+		if(m_upToDatePolicy != UpToDatePolicy.DEFAULT)
+			Utils.addAttribute(attrs, ATTR_UP_TO_DATE_POLICY, m_upToDatePolicy.name());
 		ArrayList<ISaxableElement> allProds = new ArrayList<ISaxableElement>();
 		for(IPath path : m_products)
 			allProds.add((SaxablePath)path);
@@ -278,8 +289,7 @@ public class Action extends Attribute
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local)
-			throws CoreException
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local) throws CoreException
 	{
 		CSpec cspec = getCSpec();
 		ArrayList<PathGroup> pathGroups = new ArrayList<PathGroup>();
@@ -317,37 +327,91 @@ public class Action extends Attribute
 
 	public boolean isUpToDate(IModelCache ctx) throws CoreException
 	{
-		if(m_products.size() == 0)
-			//
-			// No product means it's never up to date.
-			//
-			return false;
+		if(m_upToDatePolicy == UpToDatePolicy.MAPPER)
+		{
+			Map<String, Long> prereqFiles = getPrerequisiteRelativeFiles(ctx);
+			Map<String, Long> productFiles = getProductRelativeFiles(ctx);
 
-		long first = getFirstModified(ctx);
-		if(first == 0)
-			//
-			// We are definitely not up-to-date.
-			//
-			return false;
+			int expectedFileCount = prereqFiles.size();
+			if(m_productFileCount > 0)
+				expectedFileCount += m_productFileCount;
 
+			if(productFiles.size() < expectedFileCount)
+				//
+				// Not enough files
+				//
+				return false;
+
+			// Don't consider products that we don't need since their timestamp
+			// might effect the outcome negatively
+			//
+			long oldest = Long.MAX_VALUE;
+			long newest = 0L;
+			for(Map.Entry<String,Long> entry : prereqFiles.entrySet())
+			{
+				Long tsObj = productFiles.get(entry.getKey());
+				if(tsObj == null)
+					//
+					// Oops, missing product
+					//
+					return false;
+
+				long ts = tsObj.longValue();
+				if(ts < oldest)
+					oldest = ts;
+				
+				ts = entry.getValue().longValue();
+				if(ts > newest)
+					newest = ts;
+
+				if(newest > oldest)
+					break;
+			}
+			return oldest >= newest;
+		}
+
+		int expectedFileCount;
+		switch(m_upToDatePolicy)
+		{
+		case COUNT:
+			expectedFileCount = m_productFileCount;
+			break;
+
+		case NOT_EMPTY:
+			expectedFileCount = 0;
+			break;
+
+		default:
+			expectedFileCount = -1;
+		}
+
+		int[] fileCountBin = new int[1];
+		long oldest = getFirstModified(ctx, expectedFileCount, fileCountBin);
+		return oldest >= getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin);
+	}
+
+	private Map<String, Long> getProductRelativeFiles(IModelCache ctx) throws CoreException
+	{
+		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
+		appendRelativeFiles(ctx, filesAndDates);
+		return filesAndDates;
+	}
+
+	private Map<String, Long> getPrerequisiteRelativeFiles(IModelCache ctx) throws CoreException
+	{
+		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
 		CSpec cspec = getCSpec();
 		for(Prerequisite pq : getPrerequisites())
 		{
-			Attribute ag = pq.getReferencedAttribute(cspec, ctx);
-			long pqTime = ag.getLastModified(ctx, first);
-			if(pqTime > first)
-			{
-				if(pqTime != Long.MAX_VALUE)
-					return false;
-
-				// That one was empty, i.e. no artifacts expected
-				//
+			if(!pq.isContributor())
 				continue;
-			}
+
+			Attribute ag = pq.getReferencedAttribute(cspec, ctx);
+			ag.appendRelativeFiles(ctx, filesAndDates);
 		}
-		return true;
+		return filesAndDates;
 	}
-	
+
 	@Override
 	void setCSPec(CSpec cspec)
 	{

@@ -71,7 +71,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public static final String TAG = "cspec";
 
-	public static final int SEQUENCE_NUMBER = 2;
+	public static final int SEQUENCE_NUMBER = 3;
 
 	private static final Comparator<Attribute> s_attributeSorter = new Comparator<Attribute>()
 	{

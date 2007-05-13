@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.cspec.model.Artifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -94,9 +95,22 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 	{
 		ActionHandler parent = (ActionHandler)this.getParentHandler();
 		parent.setProductAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
+		parent.setProductFileCount(getOptionalIntValue(attrs, Action.ATTR_PRODUCT_FILE_COUNT, -1));
 		String tmp = getOptionalStringValue(attrs, Artifact.ATTR_BASE);
 		if(tmp != null)
 			parent.setProductBase(Path.fromPortableString(tmp));
+		tmp = getOptionalStringValue(attrs, Action.ATTR_UP_TO_DATE_POLICY);
+		if(tmp != null)
+		{
+			try
+			{
+				parent.setUpToDatePolicy(UpToDatePolicy.valueOf(tmp));
+			}
+			catch(IllegalArgumentException e)
+			{
+				throw new SAXParseException('\'' + tmp + "' is not a valid UpToDatePolicy", getDocumentLocator());
+			}
+		}
 	}
 
 	final String getActionName()

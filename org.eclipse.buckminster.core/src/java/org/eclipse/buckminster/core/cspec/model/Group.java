@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
+import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
@@ -101,11 +101,11 @@ public class Group extends Attribute
 
 	private final IPath m_prerequisiteRebase;
 
-	public Group(String name, boolean publ, Map<String,String> installerHints, Documentation documentation, IPath prerequisiteRebase, List<Prerequisite> prerequisites)
+	public Group(GroupBuilder builder)
 	{
-		super(name, publ, installerHints, documentation);
-		m_prerequisiteRebase = prerequisiteRebase;
-		m_prerequisites = UUIDKeyed.createUnmodifiableList(prerequisites);
+		super(builder);
+		m_prerequisiteRebase = builder.getRebase();
+		m_prerequisites = UUIDKeyed.createUnmodifiableList(builder.getPrerequisiteList());
 	}
 
 	public IPath getPrerequisiteRebase()

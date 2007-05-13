@@ -74,7 +74,7 @@ public class GroupBuilder extends AttributeBuilder
 	@Override
 	public Group createAttribute()
 	{
-		return new Group(getName(), isPublic(), getInstallerHints(), getDocumentation(), m_rebase, getPrerequisiteList());
+		return new Group(this);
 	}
 
 	public IPath getRebase()
@@ -106,7 +106,7 @@ public class GroupBuilder extends AttributeBuilder
 		return m_prerequisites;
 	}
 
-	List<Prerequisite> getPrerequisiteList()
+	public List<Prerequisite> getPrerequisiteList()
 	{
 		int top = (m_prerequisites == null) ? 0 : m_prerequisites.size();
 		if(top == 0)

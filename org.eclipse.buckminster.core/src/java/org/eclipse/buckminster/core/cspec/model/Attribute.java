@@ -16,9 +16,11 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -49,6 +51,14 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	private final Documentation m_documentation;
 
 	private CSpec m_cspec;
+
+	Attribute(AttributeBuilder builder)
+	{
+		super(builder.getName());
+		m_public = builder.isPublic();
+		m_installerHints = UUIDKeyed.createUnmodifiableProperties(builder.getInstallerHints());
+		m_documentation = builder.getDocumentation();
+	}
 
 	Attribute(String name, boolean publ, Map<String, String> installerHints, Documentation documentation)
 	{
@@ -116,7 +126,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		// of doing equals(). The attribute name is unique within the
 		// cspec.
 		//
-		return m_cspec.equals(that.getCSpec()) && getName().equals(that.getName());
+		return m_cspec.equals(that.getCSpec()) && Trivial.equalsAllowNull(getName(), that.getName());
 	}
 
 	public final CSpec getCSpec()
@@ -158,12 +168,17 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		return m_documentation;
 	}
 
-	public long getFirstModified(IModelCache ctx) throws CoreException
+	public long getFirstModified(IModelCache ctx, int expectedFileCount, int[] fileCount) throws CoreException
 	{
+		PathGroup[] pqs = getPathGroups(ctx);
+		int idx = pqs.length;
+		if(idx > 1)
+			expectedFileCount = -1;
+
 		long oldest = Long.MAX_VALUE;
-		for(PathGroup pg : getPathGroups(ctx))
+		while(--idx >= 0)
 		{
-			long pgModTime = pg.getFirstModified();
+			long pgModTime = pqs[idx].getFirstModified(expectedFileCount, fileCount);
 			if(pgModTime < oldest)
 			{
 				oldest = pgModTime;
@@ -179,12 +194,25 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		return m_installerHints;
 	}
 
-	public long getLastModified(IModelCache ctx, long threshold) throws CoreException
+	public void appendRelativeFiles(IModelCache ctx, Map<String,Long> fileNames) throws CoreException
 	{
+		PathGroup[] pqs = getPathGroups(ctx);
+		int idx = pqs.length;
+		while(--idx >= 0)
+			pqs[idx].appendRelativeFiles(fileNames);
+	}
+
+	public long getLastModified(IModelCache ctx, long threshold, int[] fileCount) throws CoreException
+	{
+		PathGroup[] pqs = getPathGroups(ctx);
+		int count = 0;
+		int idx = pqs.length;
+		int[] countBin = new int[1];
 		long newest = 0L;
-		for(PathGroup pg : getPathGroups(ctx))
+		while(--idx >= 0)
 		{
-			long pgModTime = pg.getLastModified(threshold);
+			long pgModTime = pqs[idx].getLastModified(threshold, countBin);
+			count += countBin[0];
 			if(pgModTime > newest)
 			{
 				newest = pgModTime;
@@ -192,6 +220,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 					break;
 			}
 		}
+		fileCount[0] = count;
 		return newest == 0 ? Long.MAX_VALUE : newest;
 	}
 
@@ -254,7 +283,8 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	{
 		// The attribute is always unique within it's cspec.
 		//
-		return m_cspec.hashCode() * 31 + getName().hashCode();
+		String name = getName();
+		return m_cspec.hashCode() * 31 + (name == null ? 0 : name.hashCode());
 	}
 
 	public boolean isEnabled(IModelCache ctx)

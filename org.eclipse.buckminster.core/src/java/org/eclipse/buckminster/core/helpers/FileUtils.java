@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -105,15 +106,18 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * Perform an OS sensitive equality comparison between two paths. This is very different from
-	 * the {@link IPath#equals(Object)} since that method is case sensitive on all platforms.
+	 * Perform an OS sensitive equality comparison between two paths. This is very different from the
+	 * {@link IPath#equals(Object)} since that method is case sensitive on all platforms.
+	 * 
 	 * @param a
 	 * @param b
 	 * @return <code>true</code> if both paths are equal or both paths are <code>null</code>.
 	 */
 	public static boolean pathEquals(IPath a, IPath b)
 	{
-		return (a == null || b == null) ? a == b : a.toFile().equals(b.toFile());
+		return (a == null || b == null)
+				? a == b
+				: a.toFile().equals(b.toFile());
 	}
 
 	public static class DestinationNotEmptyException extends LocalizedException
@@ -196,17 +200,19 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * This method will assert that the <code>source</code> is not present inside the
-	 * <code>destination</code> and then call
-	 * {@link #prepareDestination(File destination, boolean overwrite)}.
-	 * @param source The source. Might be a file or a directory.
-	 * @param destination The destination directory.
-	 * @param overwrite <code>true</code> if the <code>destination</code> can be cleared prior
-	 *            to copy.
+	 * This method will assert that the <code>source</code> is not present inside the <code>destination</code> and
+	 * then call {@link #prepareDestination(File destination, boolean overwrite)}.
+	 * 
+	 * @param source
+	 *            The source. Might be a file or a directory.
+	 * @param destination
+	 *            The destination directory.
+	 * @param overwrite
+	 *            <code>true</code> if the <code>destination</code> can be cleared prior to copy.
 	 * @throws BuckminsterException
 	 */
 	public static void checkCopyConditions(File sourceFile, File destination, boolean overwrite,
-		IProgressMonitor monitor) throws BuckminsterException
+			IProgressMonitor monitor) throws BuckminsterException
 	{
 		// Assert that the destination is different from source and not a
 		// subdirectory inside
@@ -223,23 +229,25 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * This method will make sure that the <code>destination</code> points to an empty directory.
-	 * If <code>overwrite</code> is <code>true</code> and if <code>destination</code> is a
-	 * directory, any existing files in the <code>destination</code> directory will be removed. If
-	 * <code>overwrite</code> is <code>true</code> and <code>destination</code> is a file, it
-	 * will be removed and a directory will be created in its place. An
-	 * <code>DestinationNotEmptyException</code> will be thrown if <code>overwrite</code> is
-	 * <code>false</code> and the <code>destination</code> exists and is not an empty directory.
-	 * An attempt will be made to create the <code>destination</code> directory and needed parent
-	 * directories if <code>destination</code> points to a non-existing directory.
-	 * @param source The source. Might be a file or a directory.
-	 * @param destination The destination directory.
-	 * @param overwrite <code>true</code> if the <code>destination</code> can be cleared prior
-	 *            to copy.
+	 * This method will make sure that the <code>destination</code> points to an empty directory. If
+	 * <code>overwrite</code> is <code>true</code> and if <code>destination</code> is a directory, any existing
+	 * files in the <code>destination</code> directory will be removed. If <code>overwrite</code> is
+	 * <code>true</code> and <code>destination</code> is a file, it will be removed and a directory will be created
+	 * in its place. An <code>DestinationNotEmptyException</code> will be thrown if <code>overwrite</code> is
+	 * <code>false</code> and the <code>destination</code> exists and is not an empty directory. An attempt will be
+	 * made to create the <code>destination</code> directory and needed parent directories if <code>destination</code>
+	 * points to a non-existing directory.
+	 * 
+	 * @param source
+	 *            The source. Might be a file or a directory.
+	 * @param destination
+	 *            The destination directory.
+	 * @param overwrite
+	 *            <code>true</code> if the <code>destination</code> can be cleared prior to copy.
 	 * @throws BuckminsterException
 	 */
 	public static void prepareDestination(File destination, boolean overwrite, IProgressMonitor monitor)
-	throws BuckminsterException
+			throws BuckminsterException
 	{
 		if(destination.exists())
 		{
@@ -276,25 +284,26 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * Copy everything found in the <code>sourceDirectory</code> to the
-	 * <code>destinationDirectory</code>. The latter is created if it does not exist. If it
-	 * exists, and if <code>overwrite</code> is <code>true</code> then the destination will be
-	 * cleaned out and recreated. If <code>overwrite</code> is <code>false</code>, this method
-	 * will throw a {@link FileUtils.DestinationNotEmptyException}.
-	 * @param sourceDirectory The source directory for the copy
-	 * @param destinationDirectory The destination directory for the copy.
-	 * @param overwrite Set to true if an existing destination should be cleaned out prior to
-	 *            copying.
+	 * Copy everything found in the <code>sourceDirectory</code> to the <code>destinationDirectory</code>. The
+	 * latter is created if it does not exist. If it exists, and if <code>overwrite</code> is <code>true</code> then
+	 * the destination will be cleaned out and recreated. If <code>overwrite</code> is <code>false</code>, this
+	 * method will throw a {@link FileUtils.DestinationNotEmptyException}.
+	 * 
+	 * @param sourceDirectory
+	 *            The source directory for the copy
+	 * @param destinationDirectory
+	 *            The destination directory for the copy.
+	 * @param overwrite
+	 *            Set to true if an existing destination should be cleaned out prior to copying.
 	 * @throws CoreException
 	 */
 	public static void deepCopy(File sourceDirectory, File destinationDirectory, boolean overwrite,
-		IProgressMonitor monitor) throws CoreException
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1000);
 		try
 		{
-			checkCopyConditions(sourceDirectory, destinationDirectory, overwrite, MonitorUtils.subMonitor(
-				monitor, 100));
+			checkCopyConditions(sourceDirectory, destinationDirectory, overwrite, MonitorUtils.subMonitor(monitor, 100));
 			deepCopyUnchecked(sourceDirectory, destinationDirectory, MonitorUtils.subMonitor(monitor, 900));
 		}
 		finally
@@ -304,26 +313,32 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * Unzip the <code>source</code> contents to a <code>destDir</code> directory and give it
-	 * the name <code>destName</code>. This mehtod assumes that the source is the URL that points
-	 * to zipped contents, that destDir is a directory, and that a file named destName can be
-	 * created in destDir. If such a file exists already, an attempt will be made to overwrite.
-	 * @param source The source zipped content.
-	 * @param sourceRelPath Relative path to material inside the soruce file.
-	 * @param destDir The destination directory.
-	 * @param destName The name of the file relative to the destination.
-	 * @param monitor The progress monitor used during the operation
+	 * Unzip the <code>source</code> contents to a <code>destDir</code> directory and give it the name
+	 * <code>destName</code>. This mehtod assumes that the source is the URL that points to zipped contents, that
+	 * destDir is a directory, and that a file named destName can be created in destDir. If such a file exists already,
+	 * an attempt will be made to overwrite.
+	 * 
+	 * @param source
+	 *            The source zipped content.
+	 * @param sourceRelPath
+	 *            Relative path to material inside the soruce file.
+	 * @param destDir
+	 *            The destination directory.
+	 * @param destName
+	 *            The name of the file relative to the destination.
+	 * @param monitor
+	 *            The progress monitor used during the operation
 	 * @throws BuckminsterException
 	 */
-	public static void unzip(URL source, String sourceRelPath, File dest, boolean overwrite,
-		IProgressMonitor monitor) throws CoreException
+	public static void unzip(URL source, String sourceRelPath, File dest, boolean overwrite, IProgressMonitor monitor)
+			throws CoreException
 	{
 		monitor.beginTask(null, 1000);
 		InputStream input = null;
 		try
 		{
 			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(source,
-				MonitorUtils.subMonitor(monitor, 400)));
+					MonitorUtils.subMonitor(monitor, 400)));
 			unzip(input, sourceRelPath, dest, overwrite, MonitorUtils.subMonitor(monitor, 600));
 		}
 		catch(IOException e)
@@ -338,7 +353,7 @@ public abstract class FileUtils
 	}
 
 	public static void unzip(InputStream inputs, String sourceRelPath, File dest, boolean overwrite,
-		IProgressMonitor monitor) throws CoreException
+			IProgressMonitor monitor) throws CoreException
 	{
 		ZipEntry entry;
 		ZipInputStream input = null;
@@ -396,18 +411,23 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * Copy the <code>source</code> file to a <code>destDir</code> directory and give it the
-	 * name <code>destName</code>. This mehtod assumes that the source is a common file, that
-	 * destDir is a directory, and that a file named destName can be created in destDir. If such a
-	 * file exists already, an attempt will be made to overwrite.
-	 * @param source The source. Cannot be a directory.
-	 * @param destDir The destination directory.
-	 * @param destName The name of the file relative to the destination.
-	 * @throws IOException, MkdirException
+	 * Copy the <code>source</code> file to a <code>destDir</code> directory and give it the name
+	 * <code>destName</code>. This mehtod assumes that the source is a common file, that destDir is a directory, and
+	 * that a file named destName can be created in destDir. If such a file exists already, an attempt will be made to
+	 * overwrite.
+	 * 
+	 * @param source
+	 *            The source. Cannot be a directory.
+	 * @param destDir
+	 *            The destination directory.
+	 * @param destName
+	 *            The name of the file relative to the destination.
+	 * @throws IOException,
+	 *             MkdirException
 	 * @return The total number of bytes copied
 	 */
 	public static long copyFile(File source, File destDir, String destName, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		InputStream input = null;
 		try
@@ -426,18 +446,23 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * Copy the <code>source</code> contents to a <code>destDir</code> directory and give it the
-	 * name <code>destName</code>. This method assumes that source is not a catalog, that destDir
-	 * is a directory, and that a file named destName can be created in destDir. If such a file
-	 * exists already, an attempt will be made to overwrite.
-	 * @param source The source. Cannot be a directory.
-	 * @param destDir The destination directory.
-	 * @param destName The name of the file relative to the destination.
-	 * @throws IOException, MkdirException
+	 * Copy the <code>source</code> contents to a <code>destDir</code> directory and give it the name
+	 * <code>destName</code>. This method assumes that source is not a catalog, that destDir is a directory, and that
+	 * a file named destName can be created in destDir. If such a file exists already, an attempt will be made to
+	 * overwrite.
+	 * 
+	 * @param source
+	 *            The source. Cannot be a directory.
+	 * @param destDir
+	 *            The destination directory.
+	 * @param destName
+	 *            The name of the file relative to the destination.
+	 * @throws IOException,
+	 *             MkdirException
 	 * @return The total number of bytes copied
 	 */
 	public static long copyFile(URL source, File destDir, String destName, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		InputStream input = null;
 		try
@@ -456,7 +481,7 @@ public abstract class FileUtils
 	}
 
 	public static long copyFile(InputStream input, File destDir, String destName, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		OutputStream output = null;
 		monitor = MonitorUtils.ensureNotNull(monitor);
@@ -485,14 +510,13 @@ public abstract class FileUtils
 		}
 	}
 
-	public static long copyFile(InputStream input, OutputStream output, IProgressMonitor monitor)
-	throws IOException
+	public static long copyFile(InputStream input, OutputStream output, IProgressMonitor monitor) throws IOException
 	{
 		return copyFile(input, output, new byte[0x2000], monitor);
 	}
 
 	public static long copyFile(InputStream input, OutputStream output, byte[] buf, IProgressMonitor monitor)
-	throws IOException
+			throws IOException
 	{
 		long total = 0;
 		monitor = MonitorUtils.ensureNotNull(monitor);
@@ -607,6 +631,7 @@ public abstract class FileUtils
 
 	/**
 	 * Creates the given folder and any needed but nonexistent parent folders.
+	 * 
 	 * @param container
 	 * @throws CoreException
 	 */
@@ -644,14 +669,13 @@ public abstract class FileUtils
 		bld.add(Pattern.compile(expr));
 	}
 
-	public static void deepCopyUnchecked(File source, File dest, IProgressMonitor monitor)
-	throws CoreException
+	public static void deepCopyUnchecked(File source, File dest, IProgressMonitor monitor) throws CoreException
 	{
 		deepCopyUnchecked(source, dest, null, s_defaultExcludes, monitor);
 	}
 
 	public static void deepCopyUnchecked(File source, File dest, Pattern[] includes, Pattern[] excludes,
-		IProgressMonitor monitor) throws CoreException
+			IProgressMonitor monitor) throws CoreException
 	{
 		String sourceStr = source.toString().replace('\\', '/');
 		boolean isDir = source.isDirectory();
@@ -723,8 +747,8 @@ public abstract class FileUtils
 	private static HashSet<File> s_foldersToRemove;
 
 	/**
-	 * Creates a folder based on a generated name. The folder and all its content will be deleted
-	 * when the process exists.
+	 * Creates a folder based on a generated name. The folder and all its content will be deleted when the process
+	 * exists.
 	 */
 	public static synchronized File createTempFolder(String prefix, String suffix) throws CoreException
 	{
@@ -745,11 +769,13 @@ public abstract class FileUtils
 	}
 
 	/**
-	 * Creates a folder based on an abstract file handle. The folder and all its content will be
-	 * deleted when the process exists. The <code>tmpDir</code> directory must not exist when this
-	 * method is called.
-	 * @param tmpDir The directory to create
-	 * @throws MkdirException If the directory could not be created.
+	 * Creates a folder based on an abstract file handle. The folder and all its content will be deleted when the
+	 * process exists. The <code>tmpDir</code> directory must not exist when this method is called.
+	 * 
+	 * @param tmpDir
+	 *            The directory to create
+	 * @throws MkdirException
+	 *             If the directory could not be created.
 	 */
 	public static synchronized void createTempFolder(File tmpDir) throws MkdirException
 	{
@@ -792,8 +818,7 @@ public abstract class FileUtils
 	 * Helper method to calculate a digest for a file or a tree
 	 */
 	static public byte[] calculateDigest(File f, String algorithm, IProgressMonitor monitor)
-	throws NoSuchAlgorithmException,
-		IOException
+			throws NoSuchAlgorithmException, IOException
 	{
 		MessageDigest md = MessageDigest.getInstance(algorithm);
 		DigestOutputStream dos = new DigestOutputStream(NullOutputStream.INSTANCE, md);
@@ -809,39 +834,114 @@ public abstract class FileUtils
 		return md.digest();
 	}
 
-	/**
-	 * Returns the timestamp of the file or 0L in case a directory is appointed since we in that
-	 * case really don't know if something might be missing.
-	 * @param The file or directory to check.
-	 * @return The file modification time or 0L if the given file is not found or if it is a
-	 *         directory.
-	 */
-	public static long getFirstModified(File file)
+	public static void appendRelativeFiles(File directory, Map<String,Long> fileNames)
 	{
-		return file.isFile() ? file.lastModified() : 0L;
+		appendRelativeFiles(directory, fileNames, new StringBuilder());
+	}
+
+	public static void appendRelativeFiles(File directory, File relPath, Map<String,Long> fileNames)
+	{
+		String path = relPath.getPath();
+		File fileOrDir = new File(directory, path);
+		if(fileOrDir.isDirectory())
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.append(path);
+			appendRelativeFiles(fileOrDir, fileNames, builder);
+		}
+		else
+		{
+			long ts = fileOrDir.lastModified();
+			if(ts != 0L)
+				fileNames.put(path, new Long(ts));
+		}
 	}
 
 	/**
-	 * Returns the timestamp of the last modified file. If fileOrDir is a file, the timestamp will
-	 * be equal to the lastModified time of that file. If fileOrDir is a directory, this method will
-	 * recurse into itself with each file or directory found there. The search stops if a file is
-	 * encountered that has a timestamp greater or equal to <code>threshold</code>.
-	 * @param The file or directory to check.
-	 * @param threshold Stop if a file is found that is newer then threshold
-	 * @return The last modification time found on a file. If no file is found, this method returns
-	 *         0L.
+	 * <p>
+	 * If the <code>fileOrDir</code> is a file, and if the <code>expectedFileCount &lt;= 1</code>, this method
+	 * returns the timestamp for that file.
+	 * </p>
+	 * <p>
+	 * If <code>fileOrDir</code> is a directory the following rules apply:
+	 * <ul>
+	 * <li>if the <code>expectedFileCount</code> is <code>-1</code>, this method will return <code>0L</code>.</li>
+	 * <li>if the <code>expectedFileCount</code> is <code>0</code>, this method will return the timestamp of the
+	 * oldest file found using a recursive scan of all subdirectories.</li>
+	 * <li>if the <code>expectedFileCount</code> is a positive number, this method will return the timestamp of the
+	 * oldest file found using a recursive scan of all subdirectories provided the number of files is greater or equal
+	 * to that <code>expectedFileCount</code>.</li>
+	 * </ul>
+	 * </p>
+	 * <p>
+	 * for all other cases this method returns <code>0L</code>.
+	 * </p>
+	 * <p>The method will return the actual number of files found in the one element array parameter <code>realFileCount</code>.
+	 * 
+	 * @param fileOrDir The file or directory to check.
+	 * @param expectedFileCount <code>-1</code>, <code>0</code>, or a minimum expected file count.
+	 * @param realFileCount A one element array where the actual number of files is returned.
+	 * @return The file modification time according to the rules outlined for this method.
 	 */
-	public static long getLastModified(File fileOrDir, long threshold)
+	public static long getFirstModified(File fileOrDir, int expectedFileCount, int[] realFileCount)
+	{
+		if(fileOrDir.isFile() && expectedFileCount <= 1)
+		{
+			realFileCount[0] = 1;
+			return fileOrDir.lastModified();
+		}
+
+		long timestampHolder[] = new long[] { Long.MAX_VALUE };
+		int count = countFilesAndGetOldest(fileOrDir, 0, timestampHolder);
+		realFileCount[0] = count;
+		if(count == 0 || expectedFileCount < 0)
+			return 0L;
+
+		long timestamp = 0L;
+		if(expectedFileCount == 0 || count >= expectedFileCount)
+			timestamp = timestampHolder[0];
+
+		return timestamp;
+	}
+
+	/**
+	 * Returns the timestamp of the last modified file. If fileOrDir is a file, the timestamp will be equal to the
+	 * lastModified time of that file. If fileOrDir is a directory, this method will recurse into itself with each file
+	 * or directory found there. The search stops if a file is encountered that has a timestamp greater or equal to
+	 * <code>threshold</code>.
+	 * 
+	 * @param The
+	 *            file or directory to check.
+	 * @param threshold
+	 *            Stop if a file is found that is newer then threshold
+	 * @return The last modification time found on a file. If no file is found, this method returns 0L.
+	 */
+	public static long getLastModified(File fileOrDir, long threshold, int[] realFileCount)
 	{
 		if(threshold == 0)
-			return 0;
-
-		long lastModTime = 0;
-		if(fileOrDir.isDirectory())
 		{
-			for(String p : fileOrDir.list())
+			realFileCount[0] = 0;
+			return 0;
+		}
+
+		int count = 0;
+		long lastModTime = 0;
+		File[] files = fileOrDir.listFiles();
+		if(files == null)
+		{
+			if(fileOrDir.isFile())
 			{
-				long modTime = getLastModified(new File(fileOrDir, p), threshold);
+				lastModTime = fileOrDir.lastModified();
+				count = 1;
+			}
+		}
+		else
+		{
+			for(File p : files)
+			{
+				int dirFileCount[] = new int[] { 0 };
+				long modTime = getLastModified(p, threshold, dirFileCount);
+				count += dirFileCount[0];
 				if(modTime > lastModTime)
 				{
 					lastModTime = modTime;
@@ -850,16 +950,70 @@ public abstract class FileUtils
 				}
 			}
 		}
-		else
-			lastModTime = fileOrDir.lastModified();
+		realFileCount[0] = count;
 		return lastModTime;
+	}
+
+	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)
+	{
+		File[] files = fileOrDir.listFiles();
+		if(files == null)
+		{
+			if(fileOrDir.isFile())
+			{
+				long timestamp = fileOrDir.lastModified();
+				if(timestamp < timestampHolder[0])
+					timestampHolder[0] = timestamp;
+				count++;
+			}
+		}
+		else
+		{
+			for(File file : files)
+				count = countFilesAndGetOldest(file, count, timestampHolder);
+		}
+		return count;
+	}
+
+	private static void appendRelativeFiles(File directory, Map<String,Long> fileNames, StringBuilder path)
+	{
+		int pathLen = path.length();
+		if(pathLen > 0)
+		{
+			path.append(FILE_SEP);
+			pathLen = path.length();
+		}
+
+		File[] files = directory.listFiles();
+		if(files == null)
+			return;
+
+		int idx = files.length;
+		while(--idx >= 0)
+		{
+			File file = files[idx];
+			String sourceStr = file.toString().replace('\\', '/');
+
+			path.append(file.getName());
+			if(file.isDirectory())
+			{
+				if(!isMatch(sourceStr + '/', s_defaultExcludes, false))
+					appendRelativeFiles(file, fileNames, path);
+			}
+			else
+			{
+				if(!isMatch(sourceStr, s_defaultExcludes, false))
+					fileNames.put(path.toString(), new Long(file.lastModified()));
+			}
+			path.setLength(pathLen);
+		}
 	}
 
 	/**
 	 * internal helper method to read all files/dirs in a directory tree to a *single* outstream
 	 */
-	private static void deepCalculateDigest(File from, OutputStream os, int rootOffset,
-		IProgressMonitor monitor) throws IOException
+	private static void deepCalculateDigest(File from, OutputStream os, int rootOffset, IProgressMonitor monitor)
+			throws IOException
 	{
 		// get the file list, but *always* sort it to ensure we
 		// always process things in the same order as this is important
@@ -916,8 +1070,9 @@ public abstract class FileUtils
 	{
 		try
 		{
-			return path == null ? null : new File(FileLocator.toFileURL(
-				FileLocator.find(bundle, new Path(path), null)).toURI());
+			return path == null
+					? null
+					: new File(FileLocator.toFileURL(FileLocator.find(bundle, new Path(path), null)).toURI());
 		}
 		catch(Exception e)
 		{
@@ -925,11 +1080,12 @@ public abstract class FileUtils
 		}
 	}
 
-
 	public static IPath getFileAsPath(URL url)
 	{
 		File file = getFile(url);
-		return file == null ? null : new Path(file.toString());
+		return file == null
+				? null
+				: new Path(file.toString());
 	}
 
 	public static File getFile(URL url)
@@ -966,5 +1122,4 @@ public abstract class FileUtils
 		}
 		return null;
 	}
-
 }

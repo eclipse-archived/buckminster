@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.core.runtime.IPath;
 
@@ -58,19 +60,23 @@ public class PathGroup
 		return m_base;
 	}
 
-	public long getFirstModified()
+	public long getFirstModified(int expectedCount, int[] fileCount)
 	{
-		if(m_paths.length == 0)
+		int idx = m_paths.length;
+		if(idx == 0)
 			//
 			// We don't have any paths. Use everything below base
 			//
-			return FileUtils.getFirstModified(m_base.toFile());
+			return FileUtils.getFirstModified(m_base.toFile(), expectedCount, fileCount);
+
+		if(idx > 1)
+			expectedCount = -1;
 
 		long firstMod = Long.MAX_VALUE;
-		for(IPath path : m_paths)
+		while(--idx >= 0)
 		{
-			IPath absPath = m_base.append(path);
-			long modTime = FileUtils.getFirstModified(absPath.toFile());
+			IPath absPath = m_base.append(m_paths[idx]);
+			long modTime = FileUtils.getFirstModified(absPath.toFile(), expectedCount, fileCount);
 			if(modTime < firstMod)
 			{
 				firstMod = modTime;
@@ -81,19 +87,35 @@ public class PathGroup
 		return firstMod;
 	}
 
-	public long getLastModified(long threshold)
+	public void appendRelativeFiles(Map<String,Long> fileNames)
 	{
-		if(m_paths.length == 0)
+		int idx = m_paths.length;
+		if(idx == 0)
+		{
+			// We don't have any paths. Use everything below base
+			//
+			FileUtils.appendRelativeFiles(m_base.toFile(), fileNames);
+			return;
+		}
+
+		while(--idx >= 0)
+			FileUtils.appendRelativeFiles(m_base.toFile(), m_paths[idx].toFile(), fileNames);
+	}
+
+	public long getLastModified(long threshold, int[] fileCount)
+	{
+		int idx = m_paths.length;
+		if(idx == 0)
 			//
 			// We don't have any paths. Use everything below base
 			//
-			return FileUtils.getLastModified(m_base.toFile(), threshold);
+			return FileUtils.getLastModified(m_base.toFile(), threshold, fileCount);
 
 		long lastMod = 0;
-		for(IPath path : m_paths)
+		while(--idx >= 0)
 		{
-			IPath absPath = m_base.append(path);
-			long modTime = FileUtils.getLastModified(absPath.toFile(), threshold);
+			IPath absPath = m_base.append(m_paths[idx]);
+			long modTime = FileUtils.getLastModified(absPath.toFile(), threshold, fileCount);
 			if(modTime > lastMod)
 			{
 				lastMod = modTime;

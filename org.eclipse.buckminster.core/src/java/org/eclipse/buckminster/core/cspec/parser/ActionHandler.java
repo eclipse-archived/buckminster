@@ -12,6 +12,7 @@ import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.IPath;
@@ -73,14 +74,14 @@ public class ActionHandler extends AttributeHandler
 	
 	public ActionBuilder getActionBuilder()
 	{
-		return (ActionBuilder)this.getBuilder();
+		return (ActionBuilder)getBuilder();
 	}
 
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
-		ActionBuilder builder = this.getActionBuilder();
+		ActionBuilder builder = getActionBuilder();
 		builder.setActorName(getOptionalStringValue(attrs, Action.ATTR_ACTOR));
 		builder.setAlways(getOptionalBooleanValue(attrs, Action.ATTR_ALWAYS, Action.ALWAYS_DEFAULT));
 		builder.setEnabled(getOptionalBooleanValue(attrs, Action.ATTR_ENABLED, Action.ENABLED_DEFAULT));
@@ -90,22 +91,32 @@ public class ActionHandler extends AttributeHandler
 
 	final void addProductPath(IPath path)
 	{
-		this.getActionBuilder().addProductPath(path);
+		getActionBuilder().addProductPath(path);
 	}
 
 	final void setProductAlias(String productAlias)
 	{
-		this.getActionBuilder().setProductAlias(productAlias);
+		getActionBuilder().setProductAlias(productAlias);
+	}
+
+	final void setProductFileCount(int producFileCount)
+	{
+		getActionBuilder().setProductFileCount(producFileCount);
 	}
 
 	final void setProductBase(IPath productBase)
 	{
-		this.getActionBuilder().setProductBase(productBase);
+		getActionBuilder().setProductBase(productBase);
+	}
+
+	final void setUpToDatePolicy(UpToDatePolicy policy)
+	{
+		getActionBuilder().setUpToDatePolicy(policy);
 	}
 
 	@Override
 	protected AttributeBuilder createAttributeBuilder()
 	{
-		return this.getCSpecBuilder().createActionBuilder();
+		return getCSpecBuilder().createActionBuilder();
 	}
 }
