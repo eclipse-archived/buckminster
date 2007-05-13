@@ -15,7 +15,7 @@
 				<attribute name="site.source" alias="site"/>
 				<attribute component="org.eclipse.buckminster.update" name="feature.xml" alias="site.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/site" fileCount="1"/>
+            <products base="${buckminster.output}/site" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="sign.site" actor="ant">
@@ -26,7 +26,7 @@
 			<prerequisites>
 				<attribute name="build.site" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.site" alias="product.output" fileCount="1"/>
+            <products base="${buckminster.output}/signed.site" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="build.product" actor="ant">
@@ -41,7 +41,7 @@
 				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
 				<attribute component="org.eclipse.buckminster.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/product" alias="product.output" fileCount="1"/>
+            <products base="${buckminster.output}/product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="sign.product" actor="ant">
@@ -52,7 +52,7 @@
 			<prerequisites>
 				<attribute name="build.product" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.product" alias="product.output" fileCount="1"/>
+            <products base="${buckminster.output}/signed.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="build.jnlp.installer" actor="ant">
@@ -67,7 +67,7 @@
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.jnlp.installer" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/jnlp.installer" alias="product.output" fileCount="1"/>
+            <products base="${buckminster.output}/jnlp.installer" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="sign.jnlp.installer" actor="ant">
@@ -78,7 +78,7 @@
 			<prerequisites>
 				<attribute name="build.jnlp.installer" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.jnlp.product" alias="product.output" fileCount="1"/>
+            <products base="${buckminster.output}/signed.jnlp.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="clean" actor="ant">
