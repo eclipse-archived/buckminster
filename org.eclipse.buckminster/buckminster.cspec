@@ -4,6 +4,7 @@
  		<dependency name="org.eclipse.buckminster.update" category="feature"/>
 		<dependency name="org.eclipse.buckminster.product" category="feature"/>
 		<dependency name="org.eclipse.buckminster.jnlp.product" category="feature"/>
+		<dependency name="commons-net"/>
 	</dependencies>
 
 	<actions>
@@ -124,6 +125,17 @@
 			</prerequisites>
             <products base="${buckminster.output}/packed.jnlp.installer" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
+
+		<public name="publish.jnlp.installer" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/publish.ant" />
+				<property key="targets" value="ftp.publish" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="pack.jnlp.installer" alias="requirement"/>
+				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
+			</prerequisites>
+ 		</public>
 
 		<public name="clean" actor="ant">
 			<actorProperties>

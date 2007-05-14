@@ -33,28 +33,38 @@
 	</target>
 
 	<target name="queue.for.signing">
+		<fail message="The properties 'eclipse.committer.name' and 'eclipse.committer.password' must be set in order to do jar signing">
+			<condition>
+				<not>
+					<and>
+						<isset property="eclipse.committer.name"/>
+						<isset property="eclipse.committer.password"/>
+					</and>
+				</not>
+			</condition>
+		</fail>
 		<echo message="Queueing ${subject.file} for signing" />
-		<scp file="${input.folder}/${subject.file}" todir="${username}:${password}@${signing.host}:${remote.queue.folder}" trust="true"/>
-		<sshexec host="${signing.host}" username="${username}" password="${password}" command="/usr/bin/sign ${remote.queue.folder}/${subject.file} nomail ${remote.output.folder}" timeout="10000" trust="true"/>
+		<scp file="${input.folder}/${subject.file}" todir="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.queue.folder}" trust="true"/>
+		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="/usr/bin/sign ${remote.queue.folder}/${subject.file} nomail ${remote.output.folder}" timeout="10000" trust="true"/>
 	</target>
 
 	<target name="wait.for.output" depends="queue.for.signing">
 		<echo message="Waiting for signing to complete. This may take more then 20 minutes. (Expect to see several 'Remote command failed' messages)" />
 		<sleep minutes="2"/>
 		<waitfor checkevery="2" checkeveryunit="minute" maxwait="40" maxwaitunit="minute">
-			<buckminster.antcallsuccess target="assert.output.present" trapPattern="Remote command failed"/>
+			<buckminster.antcallsuccess target="assert.output.present" trapPattern="(Remote command failed)|(Auth cancel)"/>
 		</waitfor>
 	</target>
 	<target name="assert.output.present">
-		<sshexec host="${signing.host}" username="${username}" password="${password}" command="ls ${remote.output.folder}/${subject.file}" outputproperty="ls.result" timeout="10000" trust="true"/>
+		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="ls ${remote.output.folder}/${subject.file}" outputproperty="ls.result" timeout="10000" trust="true"/>
 		<echo message="Signing host = ${signing.host}, ls.result = ${ls.result}"/>
 	</target>
 
 	<target name="pick.from.queue" depends="wait.for.output">
 		<echo message="Obtaining signed file from server" />
 		<mkdir dir="${output.folder}"/>
-		<scp file="${username}:${password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true"/>
-		<sshexec host="${signing.host}" username="${username}" password="${password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
+		<scp file="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true"/>
+		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
 	</target>
 
 	<target name="sign.jars" depends="pick.from.queue"/>
@@ -64,5 +74,4 @@
 		<copy file="${input.file}" todir="${output.folder}"/>
 		<eclipse.jarProcessor pack="true" jar="${output.folder}/${subject.file}"/>
 	</target>
-
 </project>

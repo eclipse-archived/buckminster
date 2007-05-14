@@ -1,0 +1,40 @@
+<project>
+	<!--Not the prettiest way of appending jars to a classpath perhaps. But the
+		ftp task is already defined and redefining it with a new classpath doesn't
+		help and beleive it or not, this works.
+	-->
+	<target name="ftp.publish">
+		<java fork="true" classname="org.apache.tools.ant.launch.Launcher" failonerror="true" dir=".">
+			<classpath>
+				<path>
+					<path refid="commons-net.classpath"/>
+					<fileset dir="${eclipse.home}/plugins" includes="org.apache.ant_*/lib/ant-launcher.jar"/>
+				</path>
+			</classpath>
+			<arg value="-buildfile" />
+			<arg file="${ant.file}" />
+			<arg value="-Dftp.server=${ftp.server}" />
+			<arg value="-Dftp.username=${ftp.username}" />
+			<arg value="-Dftp.password=${ftp.password}" />
+			<arg value="-Drequirement=${requirement}" />
+			<arg value="publish" />
+		</java>
+	</target>
+
+	<target name="publish">
+		<fail message="The properties 'ftp.server', 'ftp.username', and 'ftp.password' must be set in order to do ftp publishing">
+			<condition>
+				<not>
+					<and>
+						<isset property="ftp.server" />
+						<isset property="ftp.username" />
+						<isset property="ftp.password" />
+					</and>
+				</not>
+			</condition>
+		</fail>
+		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="send" binary="true" remotedir="/buckminster" passive="true">
+			<fileset dir="${requirement}" />
+		</ftp>
+	</target>
+</project>
