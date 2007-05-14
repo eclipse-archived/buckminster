@@ -48,7 +48,11 @@ public class ConvertSiteToRuntime
 	{
 		IProgressMonitor nullMonitor = new NullProgressMonitor();
 		File featuresDir = new File(m_productRoot, FEATURES_DIR);
-		for(String featureCandidate : featuresDir.list())
+		String[] featureCandiates = featuresDir.list();
+		if(featureCandiates == null)
+			return;
+
+		for(String featureCandidate : featureCandiates)
 		{
 			if(!featureCandidate.endsWith(".jar"))
 				continue;

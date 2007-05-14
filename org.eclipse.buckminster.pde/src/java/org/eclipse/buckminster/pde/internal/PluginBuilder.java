@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -36,6 +37,7 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.jdt.internal.ClasspathReader;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.actor.PdeAntActor;
 import org.eclipse.buckminster.pde.internal.actor.PluginScriptGenerator;
 import org.eclipse.buckminster.pde.internal.model.ExternalBuildModel;
@@ -101,6 +103,8 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	private static final String PROPERTY_MANIFEST = "buckminster.jar.manifest";
 
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi";
+
+	private static final String SCRIPT_OUTPUT = "scripts";
 
 	@SuppressWarnings("serial")
 	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, IProgressMonitor monitor)
@@ -420,8 +424,8 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			//
 			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_EXPORT, true,
 				ATTRIBUTE_BUNDLE_EXPORT, null);
-			pluginExport.addPath(new Path(buildArtifactName(plugin.getId(), plugin.getVersion(), true)));
-			pluginExport.setBase(parentDir);
+			pluginExport.addPath(new Path(IPDEConstants.PLUGINS_FOLDER).append(buildArtifactName(plugin.getId(), plugin.getVersion(), true)));
+			pluginExport.setBase(new Path("../..")); // we want the site folder, i.e. the folder where the plugins dir resides
 			classpath.addLocalPrerequisite(pluginExport);
 		}
 		else
@@ -491,11 +495,8 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 
 		bundleExport.setProductAlias(ALIAS_OUTPUT);
 
-		// We cannot use OUTPUT_DIR here since it might be relative to the component root
-		// which in this case would point into the installation of the target platform
-		//
-		bundleExport.setProductBase(TEMP_DIR);
-		bundleExport.addProductPath(new Path(jarName));
+		bundleExport.setProductBase(OUTPUT_DIR);
+		bundleExport.addProductPath(new Path(PLUGINS_FOLDER).append(jarName));
 
 		bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		bundleExport.setPrerequisitesRebase(new Path("."));
@@ -626,7 +627,7 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		ActionBuilder scriptBuilder = cspec.addAction(
 			PluginScriptGenerator.ATTRIBUTE_GENERATED_PLUGIN_SCRIPT, false,
 			PluginScriptGenerator.ACTOR_ID, false);
-		scriptBuilder.setProductBase(TEMP_DIR);
+		scriptBuilder.setProductBase(OUTPUT_DIR.append(SCRIPT_OUTPUT));
 		scriptBuilder.addProductPath(new Path(BUILD_SCRIPT_NAME));
 		scriptBuilder.addLocalPrerequisite(ATTRIBUTE_BUNDLE_CLOSURE);
 
@@ -634,6 +635,9 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			false);
 		bundleExport.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, "build.update.jar", false);
 		bundleExport.setProductBase(OUTPUT_DIR.append("export").addTrailingSeparator());
+		bundleExport.addProductPath(new Path(PLUGINS_FOLDER).addTrailingSeparator());
+		bundleExport.setUpToDatePolicy(UpToDatePolicy.COUNT);
+		bundleExport.setProductFileCount(1);
 		bundleExport.addLocalPrerequisite(scriptBuilder.getName(), PdeAntActor.ALIAS_GENERATED_SCRIPT);
 	}
 

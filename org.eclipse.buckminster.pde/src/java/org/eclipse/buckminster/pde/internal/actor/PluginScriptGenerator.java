@@ -56,13 +56,13 @@ public class PluginScriptGenerator extends ScriptGenerator
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
 		Map<String,String> properties = ctx.getProperties();
-		IPath scriptPath = this.getScriptPath(ctx);
+		IPath scriptPath = getScriptPath(ctx);
 		String scriptName = scriptPath.lastSegment();
 		IPath buildFolder = scriptPath.removeLastSegments(1);
 
 		AbstractScriptGenerator.setConfigInfo(Config.genericConfig().toString(","));
 		MyModelBuildScriptGenerator generator = new MyModelBuildScriptGenerator();
-		this.initScript(generator, ctx, createStateFromPrerequisites(ctx, monitor));
+		initScript(generator, ctx, createStateFromPrerequisites(ctx, monitor));
 
 		generator.setSignJars(getBooleanProperty(properties, PROPERTY_SIGN_JARS, false));
 		generator.setModelId(ctx.getAction().getCSpec().getName());

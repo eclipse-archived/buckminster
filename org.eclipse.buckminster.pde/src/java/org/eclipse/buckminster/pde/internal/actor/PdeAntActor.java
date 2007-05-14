@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.IXMLConstants;
@@ -99,38 +98,40 @@ public class PdeAntActor extends JdtAntActor implements IXMLConstants, IPDEBuild
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
+		Action action = ctx.getAction();
+		IPath productDir = action.getProductBase();
+		if(productDir == null)
+			throw new BuckminsterException("Actor " + getId() + " requires a product that has a base");
+	
+		PathGroup[] groups = action.getPathGroups(ctx);
+		if(groups.length > 0)
+		{
+			if(!(groups.length == 1 || groups[0].getPaths().length == 1))
+				throw new BuckminsterException("The " + getId() + " must produce exactly one path");
+			productDir = productDir.append(groups[0].getPaths()[0]);
+		}	
+
 		Map<String, String> props = ctx.getProperties();
 		AntPropertySetter aps = new AntPropertySetter(new FeatureExportInfo());
 		Map<String, String> genProps = aps.getAntProperties();
 
-		String buildTempDirStr = props.get(KeyConstants.ACTION_TEMP);
-		File buildTempDir = ctx.makeAbsolute(new File(buildTempDirStr));
-		genProps.put(PROPERTY_BUILD_TEMP, buildTempDirStr);
-		buildTempDir.mkdirs();
+		File outputDir = ctx.makeAbsolute(new File(ExpandingProperties.expand(ctx.getProperties(), productDir.toOSString(), 0)));
+		File actionTempDir = ctx.makeAbsolute(new File(props.get(KeyConstants.ACTION_TEMP)));
 
-		IPath productBase = ctx.getAction().getProductBase();
-		if(productBase == null)
-			throw new BuckminsterException("Actor " + this.getId() + " requires a product that has a base");
-
-		File outputDir = ctx.makeAbsolute(new File(ExpandingProperties.expand(ctx.getProperties(), productBase.toOSString(), 0)));
-		String outputDirStr = outputDir.getPath();
-
-		File tempDir = new File(outputDir, PROPERTY_TEMP_FOLDER);
-		String tempDirStr = tempDir.getPath();
-		genProps.put(PROPERTY_TEMP_FOLDER, tempDirStr);
-		tempDir.mkdirs();
-
-		String category = ctx.getAction().getCSpec().getCategory();
+		String category = action.getCSpec().getCategory();
 		if(KeyConstants.PLUGIN_CATEGORY.equalsIgnoreCase(category))
 		{
-			genProps.put(PROPERTY_PLUGIN_DESTINATION, outputDirStr);
+			genProps.put(PROPERTY_PLUGIN_DESTINATION, outputDir.toString());
+			genProps.put(PROPERTY_BUILD_TEMP, getBuildFile(ctx).removeLastSegments(1).toOSString());
+			genProps.put(PROPERTY_PLUGIN_TEMP, new File(actionTempDir, PROPERTY_PLUGIN_TEMP).getPath());
+			genProps.put(PROPERTY_TEMP_FOLDER, new File(actionTempDir, PROPERTY_TEMP_FOLDER).getPath());
 			outputDir.mkdirs();
 		}
 
 		if(KeyConstants.FEATURE_CATEGORY.equalsIgnoreCase(category))
 		{
-			genProps.put(PROPERTY_FEATURE_DESTINATION, outputDirStr);
-			genProps.put(PROPERTY_FEATURE_TEMP_FOLDER, tempDirStr);
+			genProps.put(PROPERTY_FEATURE_DESTINATION, outputDir.getPath());
+			genProps.put(PROPERTY_FEATURE_TEMP_FOLDER, new File(actionTempDir, PROPERTY_FEATURE_TEMP_FOLDER).getPath());
 			outputDir.mkdirs();
 		}
 
@@ -139,12 +140,11 @@ public class PdeAntActor extends JdtAntActor implements IXMLConstants, IPDEBuild
 		monitor.beginTask(null, 100);
 		try
 		{
-			return super.internalPerform(ctx, MonitorUtils.subMonitor(monitor, 95));
+			return super.internalPerform(ctx, MonitorUtils.subMonitor(monitor, 90));
 		}
 		finally
 		{
-			FileUtils.deleteRecursive(tempDir, MonitorUtils.subMonitor(monitor, 5));
-			ctx.scheduleRemoval(new Path(buildTempDir.toString()));
+			FileUtils.deleteRecursive(actionTempDir, MonitorUtils.subMonitor(monitor, 5));
 			monitor.done();
 		}
 	}

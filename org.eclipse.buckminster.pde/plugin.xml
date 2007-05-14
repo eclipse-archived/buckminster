@@ -91,6 +91,14 @@
         class="org.eclipse.buckminster.pde.ant.ConvertSiteToRuntimeTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.convertSiteToRuntime"/>
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.JNLPSiteGeneratorTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.jnlpSiteGenerator"/>
+  <antTask
+        class="org.eclipse.pde.internal.build.jarprocessor.JarProcessorTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="eclipse.jarProcessor"/>
 	</extension>
  <extension
        point="org.eclipse.buckminster.cmdline.prefmappings">

@@ -50,6 +50,10 @@
 		</buckminster.multichmod>
 	</target>
 
+	<target name="create.eclipse.jnlp.product" depends="create.eclipse.product">
+		<buckminster.jnlpSiteGenerator sitedir="${action.output}"/>
+	</target>
+
 	<target name="create.packed.feature" depends="create.output.dir">
 		<buckminster.copy todir="${feature.dir}">
 			<buckminster.filesetgroup refid="feature.contents.filesetgroup"/>

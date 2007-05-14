@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.PropertiesParser;
@@ -41,6 +42,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.TargetPlatform;
+import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -73,7 +76,9 @@ public class FeatureBuilder extends PDEBuilder
 
 	private static final IPath ARTIFACT_OUTPUT_DIR = OUTPUT_DIR.append("artifact");
 
-	private static final IPath EXPORT_OUTPUT = new Path("export");
+	private static final String EXPORT_OUTPUT = "export";
+
+	private static final String SCRIPT_OUTPUT = "scripts";
 
 	@Override
 	public String getCategory()
@@ -141,7 +146,7 @@ public class FeatureBuilder extends PDEBuilder
 		ActionBuilder scriptBuilder = cspec.addAction(
 			FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT, false,
 			FeatureScriptGenerator.ACTOR_ID, false);
-		scriptBuilder.setProductBase(TEMP_DIR);
+		scriptBuilder.setProductBase(OUTPUT_DIR.append(SCRIPT_OUTPUT));
 		scriptBuilder.addProductPath(new Path(BUILD_SCRIPT_NAME));
 		scriptBuilder.addLocalPrerequisite(ATTRIBUTE_BUNDLE_CLOSURE);
 		scriptBuilder.addLocalPrerequisite(CSpec.SELF_ARTIFACT);
@@ -243,8 +248,8 @@ public class FeatureBuilder extends PDEBuilder
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORT);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductBase(structureRoot);
-		copyFeatures.addProductPath(new Path(FEATURES_FOLDER).addTrailingSeparator());
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
+		copyFeatures.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 
 		// Copy all plugins that all features (including this one) is including.
 		//
@@ -254,8 +259,8 @@ public class FeatureBuilder extends PDEBuilder
 		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_EXPORT);
 		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyPlugins.setProductBase(structureRoot);
-		copyPlugins.addProductPath(new Path(PLUGINS_FOLDER).addTrailingSeparator());
 		copyPlugins.setProductAlias(ALIAS_OUTPUT);
+		copyPlugins.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 
 		GroupBuilder exportFeature = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 		exportFeature.addLocalPrerequisite(copyFeaturesAction);
@@ -385,9 +390,12 @@ public class FeatureBuilder extends PDEBuilder
 		ActionBuilder featureExportBuilder = cspec.addAction(ACTION_CREATE_EXPORT_FEATURE, false,
 			PdeAntActor.ACTOR_ID, false);
 		featureExportBuilder.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, "build.update.jar", false);
-		featureExportBuilder.setProductBase(ARTIFACT_OUTPUT_DIR.append(EXPORT_OUTPUT).append(FEATURES_FOLDER).addTrailingSeparator());
+		featureExportBuilder.setProductBase(ARTIFACT_OUTPUT_DIR.append(EXPORT_OUTPUT));
+		featureExportBuilder.addProductPath(new Path(FEATURES_FOLDER).addTrailingSeparator());
 		featureExportBuilder.addLocalPrerequisite(FeatureScriptGenerator.ATTRIBUTE_GENERATED_FEATURE_SCRIPT,
 			PdeAntActor.ALIAS_GENERATED_SCRIPT);
+		featureExportBuilder.setUpToDatePolicy(UpToDatePolicy.COUNT);
+		featureExportBuilder.setProductFileCount(1);
 	}
 
 	void addFeatures(IComponentReader reader, IFeatureChild[] features) throws CoreException
@@ -430,11 +438,18 @@ public class FeatureBuilder extends PDEBuilder
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder exportPluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_EXPORT);
 		GroupBuilder pluginStateClosure = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_CLOSURE);
+		PluginModelManager manager = PDECore.getDefault().getModelManager();
 		for(IFeaturePlugin plugin : plugins)
 		{
+			// This is a quick and dirty solution. If the plugin is found in the
+			// target platform, include it. If not, don't.
+			// TODO: The correct solution is to always include it but to make
+			// it os/ws/arch dependent. Awaits implementation
+			//
 			if(!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(),
 				arch)))
-				continue;
+				if(manager.findEntry(plugin.getId()) == null)
+					continue;
 
 			ComponentRequest dep = createComponentRequest(plugin);
 			if(query.skipComponent(dep))

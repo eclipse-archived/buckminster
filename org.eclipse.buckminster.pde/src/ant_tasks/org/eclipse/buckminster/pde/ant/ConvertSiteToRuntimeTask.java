@@ -13,8 +13,6 @@ import java.io.File;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Reference;
 import org.eclipse.buckminster.pde.tasks.ConvertSiteToRuntime;
 
 /**
