@@ -27,18 +27,21 @@
 	<property file="${user.home}/buildtools/committer-credentials.properties"/>
 
 	<target name="normalize.jars">
-		<eclipse.jarProcessor normalize="true" jar="${input.file}" verbose="true"/>
+		<mkdir dir="${output.folder}"/>
+		<copy file="${input.file}" todir="${output.folder}"/>
+		<eclipse.jarProcessor normalize="true" jar="${output.folder}/${subject.file}"/>
 	</target>
 
-	<target name="queue.for.signing" depends="normalize.jars">
+	<target name="queue.for.signing">
 		<echo message="Queueing ${subject.file} for signing" />
 		<scp file="${input.folder}/${subject.file}" todir="${username}:${password}@${signing.host}:${remote.queue.folder}" trust="true"/>
 		<sshexec host="${signing.host}" username="${username}" password="${password}" command="/usr/bin/sign ${remote.queue.folder}/${subject.file} nomail ${remote.output.folder}" timeout="10000" trust="true"/>
 	</target>
 
 	<target name="wait.for.output" depends="queue.for.signing">
-		<echo message="Waiting for signing to complete" />
-		<waitfor checkevery="30" checkeveryunit="second" maxwait="10" maxwaitunit="minute">
+		<echo message="Waiting for signing to complete. This may take more then 20 minutes. (Expect to see several 'Remote command failed' messages)" />
+		<sleep minutes="2"/>
+		<waitfor checkevery="2" checkeveryunit="minute" maxwait="40" maxwaitunit="minute">
 			<buckminster.antcallsuccess target="assert.output.present" trapPattern="Remote command failed"/>
 		</waitfor>
 	</target>
@@ -54,10 +57,12 @@
 		<sshexec host="${signing.host}" username="${username}" password="${password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
 	</target>
 
-	<target name="pack.jars" depends="pick.from.queue">
-		<eclipse.jarProcessor pack="true" jar="${output.folder}/${subject.file}" verbose="true"/>
-	</target>
+	<target name="sign.jars" depends="pick.from.queue"/>
 
-	<target name="default" depends="pick.from.queue"/>
+	<target name="pack.jars">
+		<mkdir dir="${output.folder}"/>
+		<copy file="${input.file}" todir="${output.folder}"/>
+		<eclipse.jarProcessor pack="true" jar="${output.folder}/${subject.file}"/>
+	</target>
 
 </project>
