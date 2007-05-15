@@ -16,7 +16,7 @@
 				<attribute name="site.source" alias="site"/>
 				<attribute component="org.eclipse.buckminster.update" name="feature.xml" alias="site.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/site" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/site" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="normalize.site" actor="ant">
@@ -53,7 +53,7 @@
 				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
 				<attribute component="org.eclipse.buckminster.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/product" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="normalize.product" actor="ant">
@@ -90,7 +90,7 @@
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.jnlp.installer" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/jnlp.installer" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/jnlp.installer" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<public name="normalize.jnlp.installer" actor="ant">
