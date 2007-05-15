@@ -95,7 +95,7 @@ public abstract class FileUtils
 			super("Cannot copy {0} to {1} since the destination is equal to, or contained in, the source");
 			m_source = source.toString();
 			m_destination = destination.toString();
-			this.assignMessage();
+			assignMessage();
 		}
 
 		@Override
@@ -133,7 +133,7 @@ public abstract class FileUtils
 		{
 			super("Unable to use {0} as a destination for copy since it is not empty");
 			m_destination = destination.toString();
-			this.assignMessage();
+			assignMessage();
 		}
 
 		@Override
@@ -161,7 +161,7 @@ public abstract class FileUtils
 		{
 			super("Unable to delete {0}", e);
 			m_file = file.toString();
-			this.assignMessage();
+			assignMessage();
 		}
 
 		@Override
@@ -189,7 +189,7 @@ public abstract class FileUtils
 		{
 			super("Unable to create directory {0}", e);
 			m_directory = directory.toString();
-			this.assignMessage();
+			assignMessage();
 		}
 
 		@Override
@@ -249,38 +249,50 @@ public abstract class FileUtils
 	public static void prepareDestination(File destination, boolean overwrite, IProgressMonitor monitor)
 			throws BuckminsterException
 	{
-		if(destination.exists())
+		monitor.beginTask(null, 200);
+		try
 		{
-			monitor.beginTask(null, 200);
-			boolean isDirectory = destination.isDirectory();
-			MonitorUtils.worked(monitor, 10);
-
-			if(isDirectory)
+			File[] list = destination.listFiles();
+			MonitorUtils.worked(monitor, 30);
+			if(list == null)
 			{
-				File[] list = destination.listFiles();
-				MonitorUtils.worked(monitor, 30);
-				int numFiles = list.length;
-				if(numFiles > 0)
+				if(destination.isFile())
 				{
-					IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 160);
-					subMonitor.beginTask(null, numFiles * 100);
 					if(!overwrite)
-						throw new FileUtils.DestinationNotEmptyException(destination);
-					for(File file : list)
-						FileUtils.deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+						throw new DestinationNotEmptyException(destination);
+					if(!destination.delete())
+						throw new DeleteException(destination);
+					MonitorUtils.worked(monitor, 85);
 				}
-				else
-					MonitorUtils.worked(monitor, 160);
+				createDirectory(destination, MonitorUtils.subMonitor(monitor, 85));
 			}
 			else
 			{
-				if(!overwrite)
-					throw new FileUtils.DestinationNotEmptyException(destination);
-				FileUtils.deleteRecursive(destination, MonitorUtils.subMonitor(monitor, 190));
+				int numFiles = list.length;
+				if(numFiles > 0)
+				{
+					IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 170);
+					subMonitor.beginTask(null, numFiles * 100);
+					try
+					{
+						if(!overwrite)
+							throw new DestinationNotEmptyException(destination);
+						for(File file : list)
+							deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+					}
+					finally
+					{
+						subMonitor.done();
+					}
+				}
+				else
+					MonitorUtils.worked(monitor, 170);
 			}
 		}
-		else
-			FileUtils.createDirectory(destination, monitor);
+		finally
+		{
+			monitor.done();
+		}
 	}
 
 	/**
@@ -359,7 +371,7 @@ public abstract class FileUtils
 		ZipInputStream input = null;
 		monitor.beginTask(null, 600);
 		IProgressMonitor nullMon = null;
-		FileUtils.prepareDestination(dest, overwrite, MonitorUtils.subMonitor(monitor, 100));
+		prepareDestination(dest, overwrite, MonitorUtils.subMonitor(monitor, 100));
 		try
 		{
 			int ticksLeft = 500;
@@ -392,7 +404,7 @@ public abstract class FileUtils
 
 				if(entry.isDirectory())
 				{
-					FileUtils.createDirectory(new File(dest, name), subMonitor);
+					createDirectory(new File(dest, name), subMonitor);
 					continue;
 				}
 				copyFile(input, dest, name, subMonitor);
@@ -584,21 +596,34 @@ public abstract class FileUtils
 
 	public static void deleteRecursive(File file, IProgressMonitor monitor) throws DeleteException
 	{
+		monitor.beginTask(null, 1000);
 		try
 		{
-			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			File[] list = file.listFiles();
-			if(list != null)
+			int count = (list == null) ? 0 : list.length;
+			if(count > 0)
 			{
-				if(s_foldersToRemove != null)
-					s_foldersToRemove.remove(file);
+				IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 900);
+				subMon.beginTask(null, count * 100);
+				try
+				{
+					if(s_foldersToRemove != null)
+						s_foldersToRemove.remove(file);
 
-				for(File entry : list)
-					deleteRecursive(entry, MonitorUtils.subMonitor(monitor, 1));
+					while(--count >= 0)
+						deleteRecursive(list[count], MonitorUtils.subMonitor(subMon, 100));
+				}
+				finally
+				{
+					subMon.done();
+				}
 			}
+			else
+				MonitorUtils.worked(monitor, 900);
+
 			if(!file.delete() && file.exists())
 				throw new DeleteException(file);
-			MonitorUtils.worked(monitor, 1);
+			MonitorUtils.worked(monitor, 100);
 		}
 		catch(SecurityException e)
 		{
@@ -825,11 +850,11 @@ public abstract class FileUtils
 		if(f.isFile())
 		{
 			FileInputStream fis = new FileInputStream(f);
-			FileUtils.copyFile(fis, dos, monitor);
+			copyFile(fis, dos, monitor);
 			fis.close();
 		}
 		else
-			FileUtils.deepCalculateDigest(f, dos, f.getCanonicalPath().length() + 1, monitor);
+			deepCalculateDigest(f, dos, f.getCanonicalPath().length() + 1, monitor);
 		dos.close();
 		return md.digest();
 	}

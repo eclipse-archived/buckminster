@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -96,7 +97,8 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					mat = new Materialization(installLocation, ci);
 	
 					File file = installLocation.toFile();
-					if(file.exists() && conflictRes == ConflictResolution.KEEP)
+					boolean fileExists = file.exists();
+					if(fileExists && conflictRes == ConflictResolution.KEEP)
 					{
 						boolean pathTypeOK = installLocation.hasTrailingSeparator() ? file.isDirectory() : !file.isDirectory();
 	
@@ -118,12 +120,26 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					// Ensure that the destination exists and that it is empty. This might cause a
 					// DestinationNotEmpty exception to be thrown.
 					//
-					File folder = installLocation.hasTrailingSeparator()
-							? file
-							: file.getParentFile();
-					FileUtils.prepareDestination(folder, conflictRes != ConflictResolution.FAIL, MonitorUtils
-							.subMonitor(prepMon, 10));
-	
+					if(installLocation.hasTrailingSeparator())
+					{
+						// We are installing into folder. That folder must be empty
+						// out prior to the installation.
+						//
+						FileUtils.prepareDestination(file, conflictRes != ConflictResolution.FAIL, MonitorUtils.subMonitor(prepMon, 10));
+					}
+					else
+					{
+						// Assume that we are downloading a file and that the file should
+						// be given this name.
+						//
+						if(fileExists)
+						{
+							if(conflictRes == ConflictResolution.FAIL)
+								throw new FileUtils.DestinationNotEmptyException(file);
+							if(!file.delete() && file.exists())
+								throw new DeleteException(file);
+						}
+					}
 					String readerType = cr.getProvider().getReaderTypeId();
 					List<Materialization> readerGroup = perReader.get(readerType);
 					if(readerGroup == null)
