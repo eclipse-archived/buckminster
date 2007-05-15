@@ -415,9 +415,18 @@ public class CreateProductBase
 				}
 			}
 		}
+		File startupJar;
 		if(found == null)
-			throw BuckminsterException.wrap(new FileNotFoundException(pluginsDir + "org.eclipse.equinox.launcher_<version>.jar"));
-		FileUtils.copyFile(new File(pluginsDir, found), outputDirFile, "startup.jar", nullMonitor);
+		{
+			// Are we building against an older platform perhaps?
+			//
+			startupJar = new File(targetRoot, "startup.jar");
+			if(!startupJar.exists())
+				throw BuckminsterException.wrap(new FileNotFoundException(pluginsDir + "org.eclipse.equinox.launcher_<version>.jar"));
+		}
+		else
+			startupJar = new File(pluginsDir, found);
+		FileUtils.copyFile(startupJar, outputDirFile, "startup.jar", nullMonitor);
 	}
 
 	private State getState()
