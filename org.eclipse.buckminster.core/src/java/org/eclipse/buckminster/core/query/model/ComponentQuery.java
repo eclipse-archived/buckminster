@@ -78,8 +78,11 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		s_globalAdditions.putAll(BMProperties.getSystemProperties());
 
 		URL eclipseHome = Platform.getInstallLocation().getURL();
-		assert ("file".equals(eclipseHome.getProtocol()));
-		s_globalAdditions.put("eclipse.home", FileUtils.getFile(eclipseHome).toString());
+		if(eclipseHome != null)
+		{
+			assert ("file".equals(eclipseHome.getProtocol()));
+			s_globalAdditions.put("eclipse.home", FileUtils.getFile(eclipseHome).toString());
+		}
 		s_globalAdditions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString());
 		try
