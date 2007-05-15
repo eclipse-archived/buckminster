@@ -11,7 +11,9 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
@@ -187,7 +189,13 @@ public class ComponentRequest extends ComponentName
 		if(m_versionDesignator != null)
 		{
 			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionDesignator.toString());
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionDesignator.getVersion().getType().getId());
+			IVersion version = m_versionDesignator.getVersion();
+			if(version != null)
+			{
+				IVersionType vt = version.getType();
+				if(vt != null)
+					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
+			}
 		}
 	}
 }
