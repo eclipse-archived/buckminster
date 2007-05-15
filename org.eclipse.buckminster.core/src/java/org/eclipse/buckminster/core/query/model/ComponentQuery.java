@@ -14,6 +14,7 @@ import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_NS;
 import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_PREFIX;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -25,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,9 +80,15 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		URL eclipseHome = Platform.getInstallLocation().getURL();
 		if(eclipseHome != null)
 		{
+			CorePlugin.getLogger().debug("Platform install location: " + eclipseHome);
 			assert ("file".equals(eclipseHome.getProtocol()));
-			s_globalAdditions.put("eclipse.home", FileUtils.getFile(eclipseHome).toString());
+			File homeFile = FileUtils.getFile(eclipseHome);
+			if(homeFile != null)
+				s_globalAdditions.put("eclipse.home", homeFile.toString());
 		}
+		else
+			CorePlugin.getLogger().debug("Platform install location is NULL!");
+
 		s_globalAdditions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString());
 		try
@@ -240,7 +246,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 			{
 				// We allow missing properties but we log it nevertheless
 				//
-				Logger.getLogger(getClass().getName()).info("Unable to read property file '"
+				CorePlugin.getLogger().info("Unable to read property file '"
 					+ m_propertiesURL + "' : " + e.toString());
 			}
 			finally
