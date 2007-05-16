@@ -42,7 +42,9 @@ public class EclipseConsoleLogReceiver implements ILogReceiver
 		{
 			ourConsole = new IOConsole(title, type, null);
 			mgr.addConsoles(new IConsole[] { ourConsole });
-			ourConsole.activate();
+
+			// Don't activate the console. It will be activated on
+			// first write.
 		}
 
 		final IOConsoleOutputStream stream = ourConsole.newOutputStream();
