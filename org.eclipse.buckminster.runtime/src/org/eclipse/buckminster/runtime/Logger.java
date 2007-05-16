@@ -182,8 +182,8 @@ public class Logger
 
 	static
 	{
-		s_outStream = getLoggerStream(false);		
-		s_errStream = getLoggerStream(true);		
+		setOutStream(getLoggerStream(false));		
+		setErrStream(getLoggerStream(true));		
 	}
 
 	public void log(int level, String msg, Throwable t)
@@ -251,5 +251,15 @@ public class Logger
 			t.printStackTrace(System.err);
 			return sysStream;
 		}
+	}
+
+	public static void setOutStream(PrintStream out)
+	{
+		s_outStream = out;
+	}
+
+	public static void setErrStream(PrintStream err)
+	{
+		s_errStream = err;
 	}
 }
