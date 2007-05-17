@@ -241,6 +241,12 @@ public class ResolvedNode extends DepNode
 	public void store() throws CoreException
 	{
 		ISaxableStorage<DepNode> nodes = getStorage();
+		if(nodes.contains(this))
+			//
+			// Already stored. This also prevents recursion, shoult a
+			// circular dependency ever occur.
+			//
+			return;
 
 		if(m_resolution == null)
 			getResolution();
