@@ -333,8 +333,12 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			//
 			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName())))
 			{
-				cspec.addDependency(new ComponentRequest(SYSTEM_BUNDLE, KeyConstants.PLUGIN_CATEGORY, null));
-				addExternalPrerequisite(closure, SYSTEM_BUNDLE, ATTRIBUTE_BUNDLE_CLOSURE, false);
+				ComponentRequest sysDep = new ComponentRequest(SYSTEM_BUNDLE, KeyConstants.PLUGIN_CATEGORY, null);
+				if(!query.skipComponent(sysDep))
+				{
+					cspec.addDependency(sysDep);
+					addExternalPrerequisite(closure, SYSTEM_BUNDLE, ATTRIBUTE_BUNDLE_CLOSURE, false);
+				}
 			}
 			return;
 		}
