@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Headless Launcher (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.cmdline;singleton:=true
-Bundle-Version: 0.1.0.v20070413
+Bundle-Version: 0.1.0.v20070518
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.buckminster.runtime,
  org.eclipse.core.runtime

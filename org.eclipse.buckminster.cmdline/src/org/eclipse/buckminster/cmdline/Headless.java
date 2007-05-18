@@ -24,18 +24,18 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPlatformRunnable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 
 /**
  * This class controls all aspects of the application's execution
  */
-public class Headless implements IPlatformRunnable, OptionValueType
+public class Headless implements IApplication, OptionValueType
 {
 	public static class Invocation
 	{
@@ -111,13 +111,18 @@ public class Headless implements IPlatformRunnable, OptionValueType
 
 	private int m_logLevel = Logger.INFO;
 
+	public Object start(IApplicationContext context) throws Exception
+	{
+		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
+	}
+
 	public Object run(Object objArgs) throws Exception
 	{
 		Buckminster.setHeadless();
 		int exitValue = EXIT_FAIL;
 		try
 		{
-			exitValue = this.run((String[])objArgs);
+			exitValue = run((String[])objArgs);
 		}
 		catch(OperationCanceledException e)
 		{
@@ -136,18 +141,18 @@ public class Headless implements IPlatformRunnable, OptionValueType
 		{
 			System.err.println(e.getMessage());
 			if(e.isEmitHelp())
-				this.help(System.out);
+				help(System.out);
 		}
 		catch(Throwable e)
 		{
-			this.deeplyPrint(e, System.err, new Stack());
+			deeplyPrint(e, System.err, new Stack());
 		}
 		return new Integer(exitValue);
 	}
 
 	protected int run(String[] args) throws Exception
 	{
-		this.parse(args);
+		parse(args);
 		
 		Logger.setConsoleLevelThreshold(m_logLevel);
 		Logger.setEclipseLoggerLevelThreshold(m_logLevel);
@@ -155,7 +160,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 
 		if(m_help)
 		{
-			this.help(System.out);
+			help(System.out);
 			return EXIT_OK;
 		}
 
@@ -186,46 +191,6 @@ public class Headless implements IPlatformRunnable, OptionValueType
 			int exitValue = cmd.basicRun(commandName, ci, invocation.getArgs());
 			if(exitValue != EXIT_OK)
 				return exitValue;
-		}
-
-		// stop all jobs, first through mechanisms known to us,
-		// then any remaining
-		//
-		jobMgr.setProgressProvider(null);
-		jobMgr.suspend();
-		Job[] jobs = jobMgr.find(null);
-		for(int j = 0; j < jobs.length; ++j)
-			jobs[j].cancel();
-		jobMgr.resume();
-
-		// Give ongoing job some time to finish
-		//
-		final IProgressMonitor waitMonitor = new NullProgressMonitor();
-		Thread waiter = new Thread()
-		{
-			public void run()
-			{
-				try
-				{
-					jobMgr.join(null, waitMonitor);
-				}
-				catch(Exception e)
-				{
-				}
-			}
-		};
-		waiter.start();
-		waiter.join(5000);
-		if(waiter.isAlive())
-		{
-			System.err.println("Cancelling wait for remaning jobs");
-			waitMonitor.setCanceled(true);
-			waiter.join(3000);
-			if(waiter.isAlive())
-			{
-				System.err.println("Forced kill of wait for remaning jobs");
-				waiter.interrupt();
-			}
 		}
 		return EXIT_OK;
 	}
@@ -321,7 +286,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 	protected void help(PrintStream ps) throws Exception
 	{
 		PrintStream out = System.out;
-		InputStream is = this.getClass().getResourceAsStream("Headless.help");
+		InputStream is = getClass().getResourceAsStream("Headless.help");
 		if(is == null)
 			out.println("Help is not available");
 		else
@@ -341,7 +306,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 
 	private void deeplyPrint(IStatus status, PrintStream strm, Stack level)
 	{
-		strm.print(this.toLevelString(level));
+		strm.print(toLevelString(level));
 		String msg = status.getMessage();
 		strm.println(msg);
 		Throwable cause = status.getException();
@@ -349,7 +314,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 		{
 			strm.print("Caused by: ");
 			if(!m_displayStackTrace || (msg.equals(cause.getMessage()) || msg.equals(cause.toString())))
-				this.deeplyPrint(cause, strm, level);
+				deeplyPrint(cause, strm, level);
 		}
 
 		if(status.isMultiStatus())
@@ -359,7 +324,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 			for(int i = 0; i < children.length; i++)
 			{
 				level.push(new Integer(i + 1));
-				this.deeplyPrint(children[i], strm, level);
+				deeplyPrint(children[i], strm, level);
 				level.pop();
 			}
 		}
@@ -367,19 +332,19 @@ public class Headless implements IPlatformRunnable, OptionValueType
 
 	private void deeplyPrint(CoreException ce, PrintStream strm, Stack level)
 	{
-		strm.print(this.toLevelString(level));
+		strm.print(toLevelString(level));
 		if(m_displayStackTrace)
 			ce.printStackTrace(strm);
-		this.deeplyPrint(ce.getStatus(), strm, level);
+		deeplyPrint(ce.getStatus(), strm, level);
 	}
 
 	private void deeplyPrint(Throwable t, PrintStream strm, Stack level)
 	{
 		if(t instanceof CoreException)
-			this.deeplyPrint((CoreException)t, strm, level);
+			deeplyPrint((CoreException)t, strm, level);
 		else
 		{
-			strm.print(this.toLevelString(level));
+			strm.print(toLevelString(level));
 			if(m_displayStackTrace)
 				t.printStackTrace(strm);
 			else
@@ -389,7 +354,7 @@ public class Headless implements IPlatformRunnable, OptionValueType
 				if(cause != null)
 				{
 					strm.print("Caused by: ");
-					this.deeplyPrint(cause, strm, level);
+					deeplyPrint(cause, strm, level);
 				}
 			}
 		}
@@ -408,5 +373,11 @@ public class Headless implements IPlatformRunnable, OptionValueType
 		}
 		sb.append("]");
 		return sb.toString();
+	}
+
+	public void stop()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
