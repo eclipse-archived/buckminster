@@ -9,9 +9,9 @@ package org.eclipse.buckminster.core.internal.commands;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
  * The workspace command ensures that the workspace is in good shape
@@ -26,28 +26,29 @@ public abstract class WorkspaceCommand extends AbstractCommand
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception
 	{
+		monitor.beginTask(null, 1000);
 		try
 		{
-			return this.internalRun(monitor);
+			return this.internalRun(MonitorUtils.subMonitor(monitor, 900));
 		}
 		finally
 		{
-			closeWorkspace();
+			saveWorkspace(MonitorUtils.subMonitor(monitor, 100));
+			monitor.done();
 		}
 	}
 
 	protected abstract int internalRun(IProgressMonitor monitor) throws Exception;
 
-	@SuppressWarnings("restriction")
-	private static void closeWorkspace()
+	private static void saveWorkspace(IProgressMonitor monitor)
 	{
 		try
 		{
-			((org.eclipse.core.internal.resources.Workspace)ResourcesPlugin.getWorkspace()).close(new NullProgressMonitor());
+			ResourcesPlugin.getWorkspace().save(true, monitor);
 		}
 		catch(Throwable e)
 		{
-			Buckminster.getLogger().error("Error while closing workspace: " + e.getMessage(), e);
+			Buckminster.getLogger().error("Error while saving workspace: " + e.getMessage(), e);
 		}
 	}
 }
