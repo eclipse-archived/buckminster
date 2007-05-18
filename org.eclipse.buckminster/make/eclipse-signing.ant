@@ -27,6 +27,7 @@
 	<property file="${user.home}/buildtools/committer-credentials.properties"/>
 
 	<target name="normalize.jars">
+		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<copy file="${input.file}" todir="${output.folder}"/>
 		<eclipse.jarProcessor normalize="true" jar="${output.folder}/${subject.file}"/>
@@ -62,6 +63,7 @@
 
 	<target name="pick.from.queue" depends="wait.for.output">
 		<echo message="Obtaining signed file from server" />
+		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<scp file="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true"/>
 		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
@@ -70,6 +72,7 @@
 	<target name="sign.jars" depends="pick.from.queue"/>
 
 	<target name="pack.jars">
+		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<copy file="${input.file}" todir="${output.folder}"/>
 		<eclipse.jarProcessor pack="true" jar="${output.folder}/${subject.file}"/>
