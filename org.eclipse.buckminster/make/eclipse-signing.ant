@@ -16,7 +16,7 @@
 	-->
 	<pathconvert property="input.file">
 		<path>
-			<fileset dir="${requirement}" includes="*.zip"/>
+			<fileset refid="requirement.fileset"/>
 		</path>
 	</pathconvert>
 

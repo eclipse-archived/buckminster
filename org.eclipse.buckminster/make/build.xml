@@ -47,6 +47,19 @@
 		</buckminster.zip>
 	</target>
 
+	<target name="build.jnlp.package">
+		<rmdir dir="${buckminster.temp}/product"/>
+		<rmdir dir="${buckminster.temp}/exploded"/>
+		<mkdir dir="${buckminster.temp}/product"/>
+		<mkdir dir="${buckminster.temp}/exploded"/>
+		<zip destfile="${buckminster.temp}/product/product.zip" excludes="*.jar">
+			<zipfileset file="${installer.zip}"/>
+		</zip>
+		<jar basedir="${buckminster.temp}/product" destfile="${buckminster.temp}/exploded/product.jar"/>
+		<copy todir="${buckminster.temp}/exploded" file="${installer.jar}"/>
+		<zip dest="${product.output}" basedir="${buckminster.temp}/exploded"/>
+	</target>
+
 	<target name="build.site">
 		<extractFeatureVersion property="site.version" file="${site.feature.xml}"/>
 		<property name="deployed.site" location="${site.output}/buckminster.site-${site.version}"/>

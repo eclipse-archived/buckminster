@@ -4,6 +4,7 @@
  		<dependency name="org.eclipse.buckminster.update" category="feature"/>
 		<dependency name="org.eclipse.buckminster.product" category="feature"/>
 		<dependency name="org.eclipse.buckminster.jnlp.product" category="feature"/>
+		<dependency name="org.eclipse.buckminster.jnlp.bootstrap"/>
 		<dependency name="commons-net"/>
 	</dependencies>
 
@@ -136,6 +137,40 @@
 				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
 			</prerequisites>
  		</public>
+
+		<public name="normalize.jnlp.bootstrap" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="normalize.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute component="org.eclipse.buckminster.jnlp.bootstrap" name="java.binary.archive" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/normalized.jnlp.bootstrap" alias="product.output" upToDatePolicy="MAPPER"/>
+		</public>
+
+		<public name="sign.jnlp.bootstrap" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="sign.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="normalize.jnlp.bootstrap" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/signed.jnlp.bootstrap" alias="product.output" upToDatePolicy="MAPPER"/>
+		</public>
+
+		<public name="build.jnlp.package" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/build.xml" />
+				<property key="targets" value="build.jnlp.package" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="sign.jnlp.bootstrap" alias="bootstrap.jar"/>
+				<attribute name="pack.jnlp.installer" alias="installer.zip"/>
+			</prerequisites>
+            <products base="${buckminster.output}/jnlp.package" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
+		</public>
 
 		<public name="clean" actor="ant">
 			<actorProperties>
