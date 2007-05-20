@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.svn.internal;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,12 +22,16 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.client.NotificationListener;
+import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
+import org.tigris.subversion.svnclientadapter.ISVNPromptUserPassword;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
@@ -79,6 +84,157 @@ public class SvnSession
 
 	private final String m_tag;
 
+	private final String m_username;
+
+	private final String m_password;
+
+	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword
+	{
+		public String askQuestion(String realm, String question, boolean showAnswer, boolean maySave)
+		{
+			// We do not support questions
+			//
+			return null;
+		}
+
+		public int askTrustSSLServer(String info, boolean allowPermanently)
+		{
+			return ISVNPromptUserPassword.AcceptTemporary;		
+		}
+
+		public boolean askYesNo(String realm, String question, boolean yesIsDefault)
+		{
+			return yesIsDefault;
+		}
+
+		public String getPassword()
+		{
+			return m_password;
+		}
+
+		public int getSSHPort()
+		{
+			// We do not support SSH
+			//
+			return -1;
+		}
+
+		public String getSSHPrivateKeyPassphrase()
+		{
+			// We do not support SSH
+			//
+			return null;
+		}
+
+		public String getSSHPrivateKeyPath()
+		{
+			// We do not support SSH
+			//
+			return null;
+		}
+
+		public String getSSLClientCertPassword()
+		{
+			// We do not support SSL
+			//
+			return null;
+		}
+
+		public String getSSLClientCertPath()
+		{
+			// We do not support SSL
+			//
+			return null;
+		}
+
+		public String getUsername()
+		{
+			return m_username;
+		}
+
+		public boolean prompt(String realm, String username, boolean maySave)
+		{
+			// We support the password prompt only if we actually know the password 
+			//
+			return (m_password != null);
+		}
+
+		public boolean promptSSH(String realm, String username, int sshPort, boolean maySave)
+		{
+			// We do not support SSH prompt
+			//
+			return false;
+		}
+
+		public boolean promptSSL(String realm, boolean maySave)
+		{
+			// We do not support SSL prompt
+			//
+			return false;
+		}
+
+		public boolean promptUser(String realm, String username, boolean maySave)
+		{
+			// We *do* support user prompt
+			//
+			return true;
+		}
+
+		public boolean userAllowedSave()
+		{
+			// No need to save anything 
+			//
+			return false;
+		}
+	}
+
+	/**
+	 * Different versions of subclipse have different signatures for this method. We
+	 * want to cover them all.
+	 * @return
+	 */
+	private static Method s_getKnownRepositories;
+	private static Object[] s_getKnownRepositoriesArgs;
+
+	public static ISVNRepositoryLocation[] getKnownRepositories() throws CoreException
+	{
+		SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
+		SVNRepositories repos = svnPlugin.getRepositories();
+		Class<? extends SVNRepositories> reposClass = repos.getClass();
+
+		try
+		{
+			Method getter;
+			Object[] args;
+			synchronized(reposClass)
+			{
+				if(s_getKnownRepositories == null)
+				{
+					try
+					{
+						// Newer versions use the IProgressMonitor parameter
+						//
+						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories", new Class[] { IProgressMonitor.class });
+						s_getKnownRepositoriesArgs = new Object[] { new NullProgressMonitor() };
+					}
+					catch(NoSuchMethodException e)
+					{
+						// Older versions have no parameter.
+						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories", Trivial.EMPTY_CLASS_ARRAY);
+						s_getKnownRepositoriesArgs = Trivial.EMPTY_OBJECT_ARRAY;
+					}
+				}
+				getter = s_getKnownRepositories;
+				args = s_getKnownRepositoriesArgs;
+			}
+			return (ISVNRepositoryLocation[])getter.invoke(repos, args);
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
 	/**
 	 * @param repositoryURI The string representation of the URI that appoints the
 	 * trunk of repository module. No branch or tag information must be included.
@@ -114,12 +270,31 @@ public class SvnSession
 				bld.append(scheme);
 				bld.append(':');
 			}
-			String authority = uri.getRawAuthority();
+			
+			String username = null;
+			String password = null;
+			String authority = uri.getAuthority();
 			if(authority != null)
 			{
+				int atIdx = authority.indexOf('@');
+				if(atIdx > 0)
+				{
+					String authentication = authority.substring(0, atIdx);
+					authority = authority.substring(atIdx + 1);
+
+					int upSplit = authentication.indexOf(':');
+					if(upSplit > 0)
+					{
+						username = authentication.substring(0, upSplit);
+						password = authentication.substring(upSplit + 1);
+					}
+				}
 				bld.append("//");
 				bld.append(authority);
 			}
+			m_username = username;
+			m_password = password;
+
 			bld.append(fullPath.removeLastSegments(relPathLen));
 			String urlLeadIn = bld.toString();
 
@@ -167,7 +342,7 @@ public class SvnSession
 			SVNUrl ourRoot = new SVNUrl(urlLeadIn);
 			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
 			ISVNRepositoryLocation bestMatch = null;
-			for(ISVNRepositoryLocation location : svnPlugin.getRepositories().getKnownRepositories())
+			for(ISVNRepositoryLocation location : getKnownRepositories())
 			{
 				SVNUrl repoRoot = location.getRepositoryRoot();
 				if(!Trivial.equalsAllowNull(repoRoot.getHost(), ourRoot.getHost()))
@@ -239,6 +414,13 @@ public class SvnSession
 				m_clientAdapter = bestMatch.getSVNClient();
 				m_clientAdapter.removeNotifyListener(NotificationListener.getInstance());
 			}
+
+			// Add the UnattendedPromptUserPassword callback only in case
+			// the authentication data (at least the username) is actually
+			// specified in the URL
+			//
+			if(m_username != null)
+				m_clientAdapter.addPasswordCallback(new UnattendedPromptUserPassword());
 		}
 		catch(MalformedURLException e)
 		{
