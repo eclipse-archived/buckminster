@@ -29,45 +29,47 @@
 		</sequential>
 	</macrodef>
 
-	<property name="site.output" location="${buckminster.output}/site"/>
-	<property name="product.output" location="${buckminster.output}/product"/>
+	<property name="sp:site.output" location="${buckminster.output}/site"/>
+	<property name="sp:product.output" location="${buckminster.output}/product"/>
 
 	<target name="clean">
-		<delete dir="${product.output}" failonerror="false" quiet="false"/>
-		<delete dir="${site.output}" failonerror="false" quiet="false"/>
+		<delete dir="${sp:product.output}" failonerror="false" quiet="false"/>
+		<delete dir="${sp:site.output}" failonerror="false" quiet="false"/>
 	</target>
 
 	<target name="build.product">
-		<extractFeatureVersion property="product.version" file="${product.feature.xml}"/>
-		<property name="zipped.product" location="${product.output}/${product.name}-${product.version}_incubation.zip"/>
+		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>
+		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}_incubation.zip"/>
 
-		<mkdir dir="${product.output}"/>
+		<mkdir dir="${sp:product.output}"/>
 		<buckminster.zip destfile="${zipped.product}">
-			<buckminster.filesetgroup refid="product.filesetgroup"/>
+			<buckminster.filesetgroup value="${fs:product}"/>
 		</buckminster.zip>
 	</target>
 
 	<target name="build.jnlp.package">
 		<rmdir dir="${buckminster.temp}/product"/>
-		<rmdir dir="${buckminster.temp}/exploded"/>
 		<mkdir dir="${buckminster.temp}/product"/>
+
+		<rmdir dir="${buckminster.temp}/exploded"/>
 		<mkdir dir="${buckminster.temp}/exploded"/>
+
 		<zip destfile="${buckminster.temp}/product/product.zip" excludes="*.jar">
-			<zipfileset file="${installer.zip}"/>
+			<zipfileset file="${sp:installer.zip}"/>
 		</zip>
 		<jar basedir="${buckminster.temp}/product" destfile="${buckminster.temp}/exploded/product.jar"/>
-		<copy todir="${buckminster.temp}/exploded" file="${installer.jar}"/>
-		<zip dest="${product.output}" basedir="${buckminster.temp}/exploded"/>
+		<copy todir="${buckminster.temp}/exploded" file="${sp:installer.jar}"/>
+		<zip dest="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
 	</target>
 
 	<target name="build.site">
-		<extractFeatureVersion property="site.version" file="${site.feature.xml}"/>
-		<property name="deployed.site" location="${site.output}/buckminster.site-${site.version}"/>
-		<property name="archived.site" location="${site.output}/buckminster.archivedsite-${site.version}_incubation.zip"/>
+		<extractFeatureVersion property="site.version" file="${sp:site.feature.xml}"/>
+		<property name="deployed.site" location="${sp:site.output}/buckminster.site-${site.version}"/>
+		<property name="archived.site" location="${sp:site.output}/buckminster.archivedsite-${site.version}_incubation.zip"/>
 
 		<mkdir dir="${deployed.site}"/>
 		<buckminster.copy todir="${deployed.site}">
-			<buckminster.filesetgroup refid="site.filesetgroup"/>
+			<buckminster.filesetgroup value="${fs:site}"/>
 		</buckminster.copy>
 		<delete>
 			<fileset dir="${deployed.site}/plugins" excludes="org.eclipse.buckminster.*"/>

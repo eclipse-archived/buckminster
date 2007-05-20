@@ -14,6 +14,7 @@
 	<!-- Convert the directory denoted by the requirement property into a property that
 		 appoints the file that it contains
 	-->
+	<buckminster.valuefileset value="${fs:requirement}" id="requirement.fileset"/>
 	<pathconvert property="input.file">
 		<path>
 			<fileset refid="requirement.fileset"/>
@@ -22,7 +23,7 @@
 
 	<dirname file="${input.file}" property="input.folder"/>
 	<basename file="${input.file}" property="subject.file"/>
-	<property name="output.folder" location="${product.output}"/>
+	<property name="output.folder" location="${sp:product.output}"/>
 
 	<property file="${user.home}/buildtools/committer-credentials.properties"/>
 

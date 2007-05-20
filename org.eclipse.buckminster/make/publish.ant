@@ -4,6 +4,7 @@
 		help and beleive it or not, this works.
 	-->
 	<target name="ftp.publish">
+		<buckminster.valuepath id="commons-net.classpath" value="${fs:commons-net.classpath}"/>
 		<java fork="true" classname="org.apache.tools.ant.launch.Launcher" failonerror="true" dir=".">
 			<classpath>
 				<path>
@@ -16,7 +17,7 @@
 			<arg value="-Dftp.server=${ftp.server}" />
 			<arg value="-Dftp.username=${ftp.username}" />
 			<arg value="-Dftp.password=${ftp.password}" />
-			<arg value="-Drequirement=${requirement}" />
+			<arg value="-Drequirement=${sp:requirement}" />
 			<arg value="publish" />
 		</java>
 	</target>
@@ -34,7 +35,7 @@
 			</condition>
 		</fail>
 		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="send" binary="true" remotedir="/buckminster" passive="true">
-			<fileset dir="${requirement}" />
+			<fileset dir="${sp:requirement}" />
 		</ftp>
 	</target>
 </project>
