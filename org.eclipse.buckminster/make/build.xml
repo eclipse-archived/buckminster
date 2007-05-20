@@ -57,8 +57,12 @@
 		<zip destfile="${buckminster.temp}/product/product.zip" excludes="*.jar">
 			<zipfileset file="${sp:installer.zip}"/>
 		</zip>
+		<buckminster.valuefileset id="installer.zip" value="${fs:installer.zip}"/>
+		<pathconvert property="installer.zip">
+			<fileset refid="installer.zip"/>
+		</pathconvert>
 		<jar basedir="${buckminster.temp}/product" destfile="${buckminster.temp}/exploded/product.jar"/>
-		<copy todir="${buckminster.temp}/exploded" file="${sp:installer.zip}"/>
+		<copy todir="${buckminster.temp}/exploded" file="${installer.zip}"/>
 		<zip dest="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
 	</target>
 

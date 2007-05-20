@@ -88,7 +88,7 @@
 				<property key="product.name" value="buckminster.jnlp.installer" />
 			</properties>
 			<prerequisites>
-				<attribute component="org.eclipse.buckminster.jnlp.product" name="create.jnlp.installer" alias="product"/>
+				<attribute component="org.eclipse.buckminster.jnlp.product" name="jnlp.installer" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
             <products base="${buckminster.output}/jnlp.installer" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
