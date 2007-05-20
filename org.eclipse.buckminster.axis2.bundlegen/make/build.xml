@@ -8,7 +8,7 @@
  ************************************************************************-->
 
 <project name="project" default="generate.bundle" basedir="..">
-	<property name="projroot" location="${output}"/>
+	<property name="projroot" location="${sp:output}"/>
 
 	<target name="init">
 		<mkdir dir="${projroot}"/>
@@ -26,9 +26,9 @@
 		<property name="moduledir" location="${projroot}/modules"/>
 		<mkdir dir="${libdir}"/>
 		<buckminster.copy todir="${libdir}">
-			<buckminster.filesetgroup refid="required.jars.filesetgroup"/>
+			<buckminster.filesetgroup value="${fs:required.jars}"/>
 		</buckminster.copy>
-		
+
 		<!--The above copy will actually also copy the module archive (.mar)
 			so let's move it to the modules dir instead.
 		-->
