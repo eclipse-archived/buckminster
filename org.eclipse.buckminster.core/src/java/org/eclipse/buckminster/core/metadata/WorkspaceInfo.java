@@ -68,7 +68,7 @@ public class WorkspaceInfo
 
 	public static void clearResolutionCache(ComponentIdentifier cid)
 	{
-		synchronized(s_locationCache)
+		synchronized(s_resolutionCache)
 		{
 			s_resolutionCache.remove(cid);
 		}
@@ -243,8 +243,17 @@ public class WorkspaceInfo
 		// Add all components for which we have a materialization
 		//
 		for(Materialization mat : StorageManager.getDefault().getMaterializations().getElements())
+		{
 			if(cid.equals(mat.getComponentIdentifier()))
+			{
+				if(!mat.getComponentLocation().toFile().exists())
+				{
+					mat.remove();
+					mat = null;
+				}
 				return mat;
+			}
+		}
 		return null;
 	}
 
