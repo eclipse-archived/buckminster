@@ -48,10 +48,10 @@
 	</target>
 
 	<target name="build.jnlp.package">
-		<rmdir dir="${buckminster.temp}/product"/>
+		<delete dir="${buckminster.temp}/product"/>
 		<mkdir dir="${buckminster.temp}/product"/>
 
-		<rmdir dir="${buckminster.temp}/exploded"/>
+		<delete dir="${buckminster.temp}/exploded"/>
 		<mkdir dir="${buckminster.temp}/exploded"/>
 
 		<zip destfile="${buckminster.temp}/product/product.zip" excludes="*.jar">
