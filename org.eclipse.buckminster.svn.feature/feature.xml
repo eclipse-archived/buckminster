@@ -122,8 +122,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.tigris.subversion.subclipse.core" version="1.0.0" match="equivalent"/>
+      <import plugin="org.tigris.subversion.subclipse.core"/>
    </requires>
 
    <plugin
