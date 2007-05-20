@@ -97,6 +97,14 @@
 			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.filesetgroup" />
 		<antType
+			class="org.eclipse.buckminster.ant.types.ValueFileSet"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.valuefileset" />
+		<antType
+			class="org.eclipse.buckminster.ant.types.ValuePath"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.valuepath" />
+		<antType
 			class="org.eclipse.buckminster.ant.types.Path"
 			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.path" />

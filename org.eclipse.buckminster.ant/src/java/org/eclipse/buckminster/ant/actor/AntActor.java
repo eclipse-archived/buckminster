@@ -9,10 +9,7 @@ package org.eclipse.buckminster.ant.actor;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.ant.AntPlugin;
@@ -151,12 +148,12 @@ public class AntActor extends AbstractActor
 			ctx.getAction().addInstallerHints(ctx, props);
 			Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 			addActorPathGroups(ctx, namedPathGroupArrays);
-			Map<String, List<IPath>> fileSetGroups = convertNamedPathGroupArrays(namedPathGroupArrays);
+			addPathGroupArraysToProperties(namedPathGroupArrays, props);
 			MonitorUtils.worked(monitor, 10);
 
 			IPath location = ctx.getComponentLocation();
 			AntBuilder.invokeInternalAntBuilder(m_internalAntActor, buildFile, location,
-				getTargets(ctx), props, fileSetGroups, ctx.getOutputStream(),
+				getTargets(ctx), props, null, ctx.getOutputStream(),
 				ctx.getErrorStream());
 			MonitorUtils.worked(monitor, 90);
 			return Status.OK_STATUS;
@@ -237,27 +234,57 @@ public class AntActor extends AbstractActor
 		return FileUtils.getFileAsPath(rsURL);
 	}
 
-	private static Map<String, List<IPath>> convertNamedPathGroupArrays(Map<String, PathGroup[]> namedPGA)
+	private static void addPathGroupArraysToProperties(Map<String, PathGroup[]> namedPGA, Map<String, String> props)
 	{
 		if(namedPGA == null)
-			return null;
+			return;
 
-		HashMap<String, List<IPath>> namedFSG = new HashMap<String, List<IPath>>();
+		StringBuilder sp_bld = new StringBuilder();
+		StringBuilder fs_bld = new StringBuilder();
+		StringBuilder key_bld = new StringBuilder();
 		for(Map.Entry<String, PathGroup[]> namedPG : namedPGA.entrySet())
 		{
-			List<IPath> namedFS = namedFSG.get(namedPG.getKey());
-			if(namedFS == null)
+			PathGroup[] pathGroups = namedPG.getValue();
+			boolean singleton = (pathGroups.length == 1);
+			fs_bld.setLength(0);
+			sp_bld.setLength(0);
+			for(PathGroup pathGroup : pathGroups)
 			{
-				namedFS = new ArrayList<IPath>();
-				namedFSG.put(namedPG.getKey(), namedFS);
+				String base = pathGroup.getBase().toOSString();
+				fs_bld.append('?');	// Start of path group marker
+				fs_bld.append(base);
+				IPath[] paths = pathGroup.getPaths();
+				if(paths.length > 1)
+					singleton = false;
+
+				if(singleton)
+					sp_bld.append(base);
+
+				for(IPath path : paths)
+				{
+					String osPath = path.toOSString();
+					fs_bld.append(FileUtils.PATH_SEP);
+					fs_bld.append(osPath);
+					if(singleton)
+					{
+						sp_bld.append(FileUtils.FILE_SEP);
+						sp_bld.append(osPath);
+					}
+				}
 			}
-			for(PathGroup pg : namedPG.getValue())
+			String propKey = namedPG.getKey();
+			key_bld.setLength(0);
+			key_bld.append("fs:");
+			key_bld.append(propKey);
+			props.put(key_bld.toString(), fs_bld.toString());
+
+			if(singleton)
 			{
-				namedFS.add(pg.getBase());
-				for(IPath path : pg.getPaths())
-					namedFS.add(path);
+				key_bld.setLength(0);
+				key_bld.append("sp:");
+				key_bld.append(propKey);
+				props.put(key_bld.toString(), sp_bld.toString());
 			}
 		}
-		return namedFSG;
 	}
 }

@@ -1,13 +1,16 @@
 package org.eclipse.buckminster.ant.types;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Reference;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 
 public class FileSetGroup extends DataType implements Cloneable
 {
@@ -41,6 +44,29 @@ public class FileSetGroup extends DataType implements Cloneable
     	}
     	return m_fileSets == null ? Collections.<FileSet>emptyList() : m_fileSets;
     }
+
+	public void setValue(String value)
+	{
+		if(value == null)
+			return;
+
+		StringTokenizer fileSetDecls = new StringTokenizer(value.substring(1), "?");
+		while(fileSetDecls.hasMoreTokens())
+		{
+			StringTokenizer tokens = new StringTokenizer(fileSetDecls.nextToken(), FileUtils.PATH_SEP);
+			if(!tokens.hasMoreTokens())
+				continue;
+
+			FileSet fs = new FileSet();
+			fs.setProject(getProject());
+			fs.setDir(new File(tokens.nextToken()));
+			fs.setDefaultexcludes(true);
+	
+			while(tokens.hasMoreTokens())
+				fs.createInclude().setName(tokens.nextToken());
+			addFileset(fs);
+		}
+	}
 
     /**
      * Makes this instance in effect a reference to another Path instance.
