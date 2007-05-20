@@ -58,7 +58,7 @@
 			<zipfileset file="${sp:installer.zip}"/>
 		</zip>
 		<jar basedir="${buckminster.temp}/product" destfile="${buckminster.temp}/exploded/product.jar"/>
-		<copy todir="${buckminster.temp}/exploded" file="${sp:installer.jar}"/>
+		<copy todir="${buckminster.temp}/exploded" file="${sp:installer.zip}"/>
 		<zip dest="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
 	</target>
 
