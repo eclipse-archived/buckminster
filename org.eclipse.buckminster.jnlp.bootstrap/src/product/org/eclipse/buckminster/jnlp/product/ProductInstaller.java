@@ -1,29 +1,16 @@
-/*****************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
- * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the copyright holder
- * listed above, as the Initial Contributor under such license. The text of
- * such license is available at www.eclipse.org.
- *****************************************************************************/
-
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.product;
 
 import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Unpacker;
 import java.util.regex.Pattern;
@@ -31,22 +18,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-/**
- * This class is supposed to be called as a JNLP application. It pops up
- * a splash and the in will access a resource. The idea is that the resource
- * should be declared for lazy downloading and thus not triggered until
- * someone tries to access it. Since that access happens after the splash
- * has popped up, everything should be done in the right order.
- *
- * @author Thomas Hallgren 
- */
-public class Main
-{
-	// The package of the product.zip must correspond with the package declaration
-	// in the product.jnlp file.
-	//
-	private static final String PRODUCT_RESOURCE="/org/eclipse/buckminster/jnlp/product/product.zip";
+import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
 
+public class ProductInstaller implements IProductInstaller
+{
 	private static final String PACK_SUFFIX = ".pack.gz";
 
 	private static final int PACK_SUFFIX_LEN = PACK_SUFFIX.length();
@@ -60,55 +35,22 @@ public class Main
 	static
 	{
 		String fileSep = System.getProperty("file.separator");
-		s_fileSep = (fileSep == null || fileSep.length() < 1) ? '/' : fileSep.charAt(0);
+		s_fileSep = (fileSep == null || fileSep.length() < 1)
+				? '/'
+				: fileSep.charAt(0);
 	}
 
-	public static void close(InputStream input)
+	public static void close(Closeable closeable)
 	{
-		try
+		if(closeable != null)
 		{
-			input.close();
-		}
-		catch(IOException e)
-		{}
-	}
-
-	public static void close(OutputStream output)
-	{
-		try
-		{
-			output.close();
-		}
-		catch(IOException e)
-		{}
-	}
-
-	public static void main(String[] args)
-	{
-		try
-		{
-			Main main = new Main();
-			main.run(args);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
-	}
-
-	private static String getMainClassName(File launcherFile) throws IOException
-	{
-		JarFile jarFile = null;
-		try
-		{
-			jarFile = new JarFile(launcherFile);
-			Manifest manifest = jarFile.getManifest();
-			return (manifest == null) ? null : manifest.getMainAttributes().getValue(Attributes.Name.MAIN_CLASS);
-		}
-		finally
-		{
-			if(jarFile != null)
-				jarFile.close();
+			try
+			{
+				closeable.close();
+			}
+			catch(IOException e)
+			{
+			}
 		}
 	}
 
@@ -167,47 +109,20 @@ public class Main
 		}
 		else
 			launcher = new File(pluginsDir, found);
-		
+
 		return launcher;
 	}
 
-	synchronized File getInstallLocation() throws IOException
+	public void installProduct() throws IOException
 	{
-		if(m_installLocation == null)
-		{
-			String userHome = System.getProperty("user.home");
-			if(userHome != null)
-			{
-				String os = System.getProperty("os.name");
-				boolean isWindows = (os != null && os.length() >= 7 && "windows".equalsIgnoreCase(os.substring(0, 7)));
-				m_installLocation = new File(userHome, isWindows ? "Application Data\\buckminster" : ".buckminster");
-			}
-			else
-				m_installLocation = File.createTempFile("bucky", ".site");
-			m_installLocation.mkdirs();
-		}
-		return m_installLocation;
-	}
-
-	String getWorkspaceDir() throws IOException
-	{
-		String workspaceDir = System.getProperty("osgi.instance.area", null);
-		if(workspaceDir != null)
-		{
-			if(workspaceDir.startsWith(USER_HOME))
-				workspaceDir = System.getProperty("user.home") + workspaceDir.substring(USER_HOME.length());
-		}
-		return workspaceDir;
-	}
-
-	void installProduct() throws IOException
-	{
-		InputStream productZip = getClass().getResourceAsStream(PRODUCT_RESOURCE);
+		InputStream productZip = getClass().getResourceAsStream("product.zip");
 		if(productZip == null)
+		{
 			//
 			// Nothing to install
 			//
-			throw new RuntimeException("No product found at " + PRODUCT_RESOURCE);
+			throw new RuntimeException("Missing product.zip resource");
+		}
 
 		File installLocation = getInstallLocation();
 		try
@@ -229,7 +144,7 @@ public class Main
 						//
 						// First directory found is always the site root
 						//
-						m_siteRoot = file; 
+						m_siteRoot = file;
 				}
 				else
 				{
@@ -252,57 +167,70 @@ public class Main
 		finally
 		{
 			close(productZip);
-		}			
-	}
-
-	void run(String[] args)
-	{
-		showSplash();
-		try
-		{
-			installProduct();
-			startProduct(args);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
-		finally
-		{
-			tearDownSplash();
 		}
 	}
 
-	void startProduct(String[] args) throws Exception
+	public void startProduct(String[] args) throws Exception
 	{
 		File launcherFile = findEclipseLauncher();
-		String mainClassName = getMainClassName(launcherFile);
-		if(mainClassName == null)
-		{
-			System.err.println("No Main-Class declared in jar manifest");
-			return;
-		}
+		String javaHome = System.getProperty("java.home");
+		if(javaHome == null)
+			throw new RuntimeException("java.home property not set");
+
+		File javaBin = new File(javaHome, "bin");
+		File javaExe = new File(javaBin, isWindows() ? "javaw.exe" : "java");
+
+		if(!javaExe.exists())
+			throw new RuntimeException("Unable to locate java runtime");
 
 		ArrayList<String> allArgs = new ArrayList<String>();
+		allArgs.add(javaExe.toString());
+		allArgs.add("-jar");
+		allArgs.add(launcherFile.toString());
 		allArgs.add("-data");
 		allArgs.add(getWorkspaceDir());
-
+		allArgs.add("-application");
+		allArgs.add("org.eclipse.buckminster.jnlp.application");
 		for(String arg : args)
 			allArgs.add(arg);
 
-		URLClassLoader loader = new URLClassLoader(new URL[] { launcherFile.toURI().toURL() });
-		Class<?> mainClass = loader.loadClass(mainClassName);
-		Method main = mainClass.getMethod("main", new Class[] { args.getClass() });
-		int mods = main.getModifiers();
-		if(main.getReturnType() == void.class && Modifier.isStatic(mods) && Modifier.isPublic(mods))
-			main.invoke(null, new Object[] { allArgs.toArray(new String[allArgs.size()]) });
-		else
-			System.err.println("No public static void main(String[]) method found in main class");
+		Runtime runtime = Runtime.getRuntime();
+		runtime.exec(allArgs.toArray(new String[allArgs.size()]));
 	}
 
-	private void showSplash()
+	public static boolean isWindows()
 	{
+		String os = System.getProperty("os.name");
+		return os != null && os.length() >= 7 && "windows".equalsIgnoreCase(os.substring(0, 7));
+	}
 
+	synchronized File getInstallLocation() throws IOException
+	{
+		if(m_installLocation == null)
+		{
+			String userHome = System.getProperty("user.home");
+			if(userHome != null)
+			{
+				m_installLocation = new File(userHome, isWindows()
+						? "Application Data\\buckminster"
+						: ".buckminster");
+			}
+			else
+				m_installLocation = File.createTempFile("bucky", ".site");
+			m_installLocation.mkdirs();
+		}
+		return m_installLocation;
+	}
+
+	String getWorkspaceDir() throws IOException
+	{
+		String workspaceDir = System.getProperty("osgi.instance.area", null);
+		if(workspaceDir != null)
+		{
+			if(workspaceDir.startsWith(USER_HOME))
+				workspaceDir = System.getProperty("user.home") + workspaceDir.substring(USER_HOME.length());
+		}
+		return workspaceDir;
 	}
 
 	private synchronized File storeUnpacked(String packedName, InputStream packedInput) throws IOException
@@ -314,14 +242,27 @@ public class Main
 			m_unpacker = Pack200.newUnpacker();
 
 		JarOutputStream jarOut = null;
+		GZIPInputStream gzipInput = null;
 		try
 		{
+			// Wrap the incoming stream to prevent it from being closed
+			// when the GZIPInputStream is closed.
+			//
+			gzipInput = new GZIPInputStream(new FilterInputStream(packedInput)
+			{
+				@Override
+				public void close()
+				{
+				}
+			});
 			jarOut = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(unpackedFile)));
-			m_unpacker.unpack(new GZIPInputStream(packedInput), jarOut);
+			m_unpacker.unpack(gzipInput, jarOut);
+			gzipInput = null; // Closed by unpack
 		}
 		finally
 		{
 			close(jarOut);
+			close(gzipInput);
 		}
 		return unpackedFile;
 	}
@@ -341,10 +282,5 @@ public class Main
 		{
 			close(out);
 		}
-	}
-
-	private void tearDownSplash()
-	{
-
 	}
 }
