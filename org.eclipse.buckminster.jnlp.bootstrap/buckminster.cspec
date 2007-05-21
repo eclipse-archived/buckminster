@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cspec xmlns="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.jnlp.bootstrap" version="0.1.0" versionType="OSGi">
 	<artifacts>
-		<public name="java.binary.folder" base="bin/"/>
+		<public name="java.binary.folder" base="bin/boostrap"/>
+		<public name="product.binary.folder" base="bin/product"/>
 	</artifacts>
 	<actions>
 		<public name="java.binary.archive" actor="ant">
