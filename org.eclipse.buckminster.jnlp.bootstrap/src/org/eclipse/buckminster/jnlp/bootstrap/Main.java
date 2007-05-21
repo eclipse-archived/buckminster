@@ -27,6 +27,7 @@ import java.util.jar.Manifest;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Unpacker;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -41,6 +42,11 @@ import java.util.zip.ZipInputStream;
  */
 public class Main
 {
+	// The package of the product.zip must correspond with the package declaration
+	// in the product.jnlp file.
+	//
+	private static final String PRODUCT_RESOURCE="/org/eclipse/buckminster/jnlp/product/product.zip";
+
 	private static final String PACK_SUFFIX = ".pack.gz";
 
 	private static final int PACK_SUFFIX_LEN = PACK_SUFFIX.length();
@@ -196,14 +202,12 @@ public class Main
 
 	void installProduct() throws IOException
 	{
-		InputStream productZip = getClass().getResourceAsStream("product.zip");
+		InputStream productZip = getClass().getResourceAsStream(PRODUCT_RESOURCE);
 		if(productZip == null)
-		{
+			//
 			// Nothing to install
 			//
-			System.err.println("No product found");
-			return;
-		}
+			throw new RuntimeException("No product found at " + PRODUCT_RESOURCE);
 
 		File installLocation = getInstallLocation();
 		try
@@ -313,7 +317,7 @@ public class Main
 		try
 		{
 			jarOut = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(unpackedFile)));
-			m_unpacker.unpack(packedInput, jarOut);
+			m_unpacker.unpack(new GZIPInputStream(packedInput), jarOut);
 		}
 		finally
 		{

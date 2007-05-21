@@ -13,7 +13,7 @@
 				<attribute name="java.binary.folder"/>
 			</prerequisites>
             <products base="${buckminster.output}/" alias="action.output">
-				<path path="jnlp-bootstrap-${buckminster.version}.jar"/>
+				<path path="jnlp-bootstrap.jar"/>
             </products>
 		</public>
 	</actions>
