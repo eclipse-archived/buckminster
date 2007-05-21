@@ -52,8 +52,8 @@
 
 	<target name="wait.for.output" depends="queue.for.signing">
 		<echo message="Waiting for signing to complete. This may take more then 20 minutes. (Expect to see several 'Remote command failed' messages)" />
-		<sleep minutes="2"/>
-		<waitfor checkevery="2" checkeveryunit="minute" maxwait="40" maxwaitunit="minute">
+		<sleep seconds="30"/>
+		<waitfor checkevery="1" checkeveryunit="minute" maxwait="40" maxwaitunit="minute">
 			<buckminster.antcallsuccess target="assert.output.present" trapPattern="(Remote command failed)|(Auth cancel)"/>
 		</waitfor>
 	</target>

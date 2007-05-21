@@ -160,16 +160,49 @@
             <products base="${buckminster.output}/signed.jnlp.bootstrap" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
+		<public name="pack.jnlp.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="pack.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="build.jnlp.installer" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/packed.jnlp.product" alias="product.output" upToDatePolicy="MAPPER"/>
+		</public>
+
+		<public name="wrap.jnlp.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/build.xml" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="pack.jnlp.product" alias="installer.zip"/>
+			</prerequisites>
+            <products base="${buckminster.output}/wrapped.jnlp.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
+		</public>
+
+		<public name="sign.jnlp.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="sign.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="wrap.jnlp.product" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/signed.jnlp.product" alias="product.output" upToDatePolicy="MAPPER"/>
+		</public>
+
 		<public name="build.jnlp.package" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
-				<property key="targets" value="build.jnlp.package" />
 			</actorProperties>
 			<prerequisites>
 				<attribute name="sign.jnlp.bootstrap" alias="bootstrap.jar"/>
-				<attribute name="pack.jnlp.installer" alias="installer.zip"/>
+				<attribute name="sign.jnlp.product" alias="product.jar"/>
 			</prerequisites>
-            <products base="${buckminster.output}/jnlp.package" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
+            <products base="${buckminster.output}/" alias="product.output" upToDatePolicy="COUNT" fileCount="1">
+            	<path path="jnlp-package.zip"/>
+            </products>
 		</public>
 
 		<public name="clean" actor="ant">

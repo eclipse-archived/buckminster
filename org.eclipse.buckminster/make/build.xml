@@ -47,25 +47,37 @@
 		</buckminster.zip>
 	</target>
 
-	<target name="build.jnlp.package">
-		<delete dir="${buckminster.temp}/product"/>
-		<mkdir dir="${buckminster.temp}/product"/>
+	<target name="wrap.jnlp.product">
+		<property name="jar.exploded" location="${buckminster.temp}/product"/>
+		<delete dir="${jar.exploded}"/>
+		
+		<property name="product.package" location="${jar.exploded}/org/eclipse/buckminster/jnlp/product"/>
+		<mkdir dir="${product.package}"/>
 
-		<delete dir="${buckminster.temp}/exploded"/>
-		<mkdir dir="${buckminster.temp}/exploded"/>
-
-		<zip destfile="${buckminster.temp}/product/product.zip" excludes="*.jar">
-			<zipfileset file="${sp:installer.zip}"/>
-		</zip>
 		<buckminster.valuefileset id="installer.zip" value="${fs:installer.zip}"/>
 		<pathconvert property="installer.zip">
 			<path>
 				<fileset refid="installer.zip"/>
 			</path>
 		</pathconvert>
-		<jar basedir="${buckminster.temp}/product" destfile="${buckminster.temp}/exploded/product.jar"/>
-		<copy todir="${buckminster.temp}/exploded" file="${installer.zip}"/>
-		<zip dest="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}" excludes="**/*.jar"/>
+		</zip>
+		<mkdir dir="${sp:product.output}"/>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.jar"/>
+	</target>
+
+	<target name="build.jnlp.package">
+		<delete dir="${buckminster.temp}/exploded"/>
+		<mkdir dir="${buckminster.temp}/exploded"/>
+
+		<buckminster.valuefileset id="product.jar" value="${fs:product.jar}"/>
+		<buckminster.valuefileset id="bootstrap.jar" value="${fs:bootstrap.jar}"/>
+		<copy todir="${buckminster.temp}/exploded">
+			<fileset refid="product.jar"/>
+			<fileset refid="bootstrap.jar"/>
+		</copy>
+		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
 	</target>
 
 	<target name="build.site">
