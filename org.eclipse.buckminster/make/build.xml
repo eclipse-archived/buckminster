@@ -243,6 +243,8 @@
 			<fileset refid="product.jars"/>
 			<fileset refid="bootstrap.jar"/>
 		</copy>
+		<dirname file="${sp:product.output}" property="output.dir"/>
+		<mkdir dir="${output.dir}"/>
 		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
 	</target>
 
