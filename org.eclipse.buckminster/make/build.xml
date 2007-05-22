@@ -48,38 +48,221 @@
 	</target>
 
 	<target name="wrap.jnlp.product">
-		<property name="jar.exploded" location="${buckminster.temp}/product"/>
-		<delete dir="${jar.exploded}"/>
-		
+		<property name="jar.exploded" location="${buckminster.temp}/plaftmp"/>
 		<property name="product.package" location="${jar.exploded}/org/eclipse/buckminster/jnlp/product"/>
-		<mkdir dir="${product.package}"/>
+		<property name="product.jnlp" location="${sp:product.output}/product.jnlp"/>
+
+		<mkdir dir="${sp:product.output}"/>
+		<tstamp>
+			<format property="timestamp" timezone="UTC" pattern="'TS:' yyyy-MM-dd HH:mm:ss'Z'"/>
+		</tstamp>
+
+		<echo message="${timestamp}" file="${product.jnlp}"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+<jnlp codebase="$$$$codebase" href="$$$$href">
+	<information>
+		<title>Buckminster JNLP bootstrap</title>
+		<vendor>eclipse.org</vendor>
+	</information>
+	<security>
+		<all-permissions/>
+	</security>
+	<resources>
+		<package name="org.eclipse.buckminster.jnlp.product.ProductInstaller" part="product"/>
+	</resources>]]></echo>
 
 		<buckminster.valuefileset id="installer.classes" value="${fs:installer.classes}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-
 		<buckminster.valuefileset id="installer.zip" value="${fs:installer.zip}"/>
 		<pathconvert property="installer.zip">
 			<path>
 				<fileset refid="installer.zip"/>
 			</path>
 		</pathconvert>
+
+		<!--Create OS specific packages. os and arch names picked from
+			http://lopica.sourceforge.net/os.html
+		-->
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
 		<zip destfile="${product.package}/product.zip">
-			<zipfileset src="${installer.zip}" excludes="**/*.jar"/>
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="**/launcher"/>
+				<exclude name="**/*cairo*"/>
+				<exclude name="**/*.linux.*"/>
+				<exclude name="**/*.aix.*"/>
+				<exclude name="**/*.solaris.*"/>
+				<exclude name="**/*.x86_64_*"/>
+				<exclude name="**/*.macosx_*"/>
+				<exclude name="**/*.sparc_*"/>
+				<exclude name="**/*.ppc_*"/>
+			</zipfileset>
 		</zip>
-		<mkdir dir="${sp:product.output}"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.jar"/>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.windows.x86.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="Windows" arch="x86">
+		<jar part="product" download="lazy" href="product.windows.x86.jar"/>
+	</resources>]]></echo>
+
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="launcher"/>
+				<exclude name="**/*.win32.*"/>
+				<exclude name="**/*.aix.*"/>
+				<exclude name="**/*.solaris.*"/>
+				<exclude name="**/*.x86_64_*"/>
+				<exclude name="**/*.macosx_*"/>
+				<exclude name="**/*.sparc_*"/>
+				<exclude name="**/*.ppc_*"/>
+			</zipfileset>
+		</zip>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.linux.x86.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="Linux" arch="i386">
+		<jar part="product" download="lazy" href="product.linux.x86.jar"/>
+	</resources>]]></echo>
+
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="launcher"/>
+				<exclude name="**/*.win32.*"/>
+				<exclude name="**/*.aix.*"/>
+				<exclude name="**/*.solaris.*"/>
+				<exclude name="**/*.x86_1*"/>
+				<exclude name="**/*.x86_3*"/>
+				<exclude name="**/*.macosx_*"/>
+				<exclude name="**/*.sparc_*"/>
+				<exclude name="**/*.ppc_*"/>
+			</zipfileset>
+		</zip>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.linux.x86_64.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="Linux" arch="x86_64">
+		<jar part="product" download="lazy" href="product.linux.x86_64.jar"/>
+	</resources>]]></echo>
+
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="launcher"/>
+				<exclude name="**/*.win32.*"/>
+				<exclude name="**/*.aix.*"/>
+				<exclude name="**/*.solaris.*"/>
+				<exclude name="**/*.x86_*"/>
+				<exclude name="**/*.macosx_*"/>
+				<exclude name="**/*.sparc_*"/>
+			</zipfileset>
+		</zip>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.linux.ppc.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="Linux" arch="ppc">
+		<jar part="product" download="lazy" href="product.linux.ppc.jar"/>
+	</resources>]]></echo>
+
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="launcher"/>
+				<exclude name="**/*.win32.*"/>
+				<exclude name="**/*.linux.*"/>
+				<exclude name="**/*.aix.*"/>
+				<exclude name="**/*.solaris.*"/>
+				<exclude name="**/*.x86_*"/>
+				<exclude name="**/*.sparc_*"/>
+				<exclude name="**/*.ppc_*"/>
+			</zipfileset>
+		</zip>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.macosx.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="Mac OS X">
+		<jar part="product" download="lazy" href="product.macosx.jar"/>
+	</resources>]]></echo>
+
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="launcher"/>
+				<exclude name="**/*.win32.*"/>
+				<exclude name="**/*.linux.*"/>
+				<exclude name="**/*.aix.*"/>
+				<exclude name="**/*.x86_*"/>
+				<exclude name="**/*.macosx_*"/>
+				<exclude name="**/*.ppc_*"/>
+			</zipfileset>
+		</zip>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.solaris.sparc.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="Solaris" arch="sparc">
+		<jar part="product" download="lazy" href="product.solaris.sparc.jar"/>
+	</resources>]]></echo>
+
+		<delete dir="${jar.exploded}"/>
+		<mkdir dir="${product.package}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+		<zip destfile="${product.package}/product.zip">
+			<zipfileset src="${installer.zip}">
+				<exclude name="**/*.jar"/>
+				<exclude name="launcher"/>
+				<exclude name="**/*.win32.*"/>
+				<exclude name="**/*.linux.*"/>
+				<exclude name="**/*.solaris.*"/>
+				<exclude name="**/*.x86_*"/>
+				<exclude name="**/*.macosx_*"/>
+				<exclude name="**/*.sparc_*"/>
+			</zipfileset>
+		</zip>
+		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.aix.ppc.jar"/>
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<resources os="AIX" arch="Power">
+		<jar part="product" download="lazy" href="product.aix.ppc.jar"/>
+	</resources>]]></echo>
+
+		<echo file="${product.jnlp}" append="true"><![CDATA[
+	<component-desc/>
+</jnlp>
+]]></echo>
 	</target>
 
 	<target name="build.jnlp.package">
 		<delete dir="${buckminster.temp}/exploded"/>
 		<mkdir dir="${buckminster.temp}/exploded"/>
 
-		<buckminster.valuefileset id="product.jar" value="${fs:product.jar}"/>
+		<buckminster.valuefileset id="product.jars" value="${fs:product.jars}"/>
 		<buckminster.valuefileset id="bootstrap.jar" value="${fs:bootstrap.jar}"/>
 		<copy todir="${buckminster.temp}/exploded">
-			<fileset refid="product.jar"/>
+			<fileset refid="product.jars"/>
 			<fileset refid="bootstrap.jar"/>
 		</copy>
 		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>

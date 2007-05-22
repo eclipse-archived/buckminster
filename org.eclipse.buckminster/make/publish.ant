@@ -35,7 +35,7 @@
 			</condition>
 		</fail>
 		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="send" binary="true" remotedir="/buckminster" passive="true">
-			<fileset dir="${sp:requirement}" />
+			<fileset dir="${requirement}" />
 		</ftp>
 	</target>
 </project>
