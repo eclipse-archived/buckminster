@@ -54,6 +54,11 @@
 		<property name="product.package" location="${jar.exploded}/org/eclipse/buckminster/jnlp/product"/>
 		<mkdir dir="${product.package}"/>
 
+		<buckminster.valuefileset id="installer.classes" value="${fs:installer.classes}"/>
+		<copy todir="${jar.exploded}">
+			<fileset refid="installer.classes"/>
+		</copy>
+
 		<buckminster.valuefileset id="installer.zip" value="${fs:installer.zip}"/>
 		<pathconvert property="installer.zip">
 			<path>

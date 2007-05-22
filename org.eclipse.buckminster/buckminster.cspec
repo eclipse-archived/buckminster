@@ -177,6 +177,7 @@
 			</actorProperties>
 			<prerequisites>
 				<attribute name="pack.jnlp.product" alias="installer.zip"/>
+				<attribute component="org.eclipse.buckminster.jnlp.bootstrap" name="product.binary.folder" alias="installer.classes"/>
 			</prerequisites>
             <products base="${buckminster.output}/wrapped.jnlp.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
