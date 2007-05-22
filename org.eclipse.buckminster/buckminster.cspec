@@ -168,7 +168,7 @@
 				<attribute component="org.eclipse.buckminster.jnlp.bootstrap" name="java.binary.archive" alias="bootstrap.jar"/>
 				<attribute name="wrap.jnlp.product" alias="product.jars"/>
 			</prerequisites>
-            <products base="${buckminster.output}/" alias="product.output" upToDatePolicy="COUNT" fileCount="1">
+            <products base="${buckminster.output}/built.jnlp.package" alias="product.output" upToDatePolicy="COUNT" fileCount="1">
             	<path path="jnlp-package.zip"/>
             </products>
 		</public>
