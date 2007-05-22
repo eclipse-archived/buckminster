@@ -184,6 +184,17 @@
             <products base="${buckminster.output}/signed.jnlp.package" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
+		<public name="publish.jnlp.package" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/publish.ant" />
+				<property key="targets" value="ftp.publish" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="sign.jnlp.package" alias="requirement"/>
+				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
+			</prerequisites>
+ 		</public>
+
 		<public name="clean" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
