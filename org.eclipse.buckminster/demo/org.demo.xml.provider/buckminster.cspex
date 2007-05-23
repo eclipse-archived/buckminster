@@ -9,7 +9,7 @@
 
 	<cs:actions>
 
-		<cs:private name="buckminster.prebind" actor="ant">
+		<cs:public name="buckminster.prebind" actor="ant">
 
 			<cs:actorProperties>
 				<cs:property key="buildFile" value="make/prebind.xml" />
@@ -24,7 +24,7 @@
 				<cs:path path="jars/" />
 			</cs:products>
 
-		</cs:private>
+		</cs:public>
 		
 	</cs:actions>
 
