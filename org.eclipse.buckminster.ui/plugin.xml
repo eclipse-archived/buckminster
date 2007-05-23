@@ -137,17 +137,6 @@
 				menubarPath="org.eclipse.buckminster.ui.menu/org.eclipse.buckminster.ui.debug.menu/group1" />
 		</actionSet>
 	</extension>
-
-	<extension point="org.eclipse.ui.themes">
-		<themeElementCategory
-			id="org.eclipse.buckminster.ui.fontsandcolors" label="Buckminster" />
-		<fontDefinition
-			categoryId="org.eclipse.buckminster.ui.fontsandcolors"
-			id="processresultdialog_font" isEditable="true"
-			defaultsTo="org.eclipse.jface.textfont"
-			label="Process Result Dialog font" />
-		<theme id="org.eclipse.buckminster.ui.theme" />
-	</extension>
 	<extension point="org.eclipse.ui.startup">
 		<startup
 			class="org.eclipse.buckminster.ui.internal.EarlyStartup" />
@@ -201,6 +190,7 @@
              targetID="org.eclipse.jdt.ui.JavaPerspective">
           <view
                 id="org.eclipse.buckminster.ui.views.BuckminsterView"
+                minimized="false"
                 relationship="stack"
                 relative="org.eclipse.ui.views.ContentOutline"
                 visible="false">
