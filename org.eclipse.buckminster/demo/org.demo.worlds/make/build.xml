@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <project name="org.demo.worlds">
     <target name="java.binary.archives">
-    	<dirname property="output.dir" file="${output}"/>
+    	<dirname property="output.dir" file="${sp:output}"/>
+    	<buckminster.valuefileset id="input.fileset" value="${fs:input}"/>
     	<mkdir dir="${output.dir}"/>
-    	<jar destfile="${output}">
+    	<jar destfile="${sp:output}">
     		<fileset refid="input.fileset"/>
     	</jar>
     </target>
