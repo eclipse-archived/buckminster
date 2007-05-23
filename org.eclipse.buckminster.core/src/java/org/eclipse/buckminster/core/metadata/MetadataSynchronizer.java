@@ -300,7 +300,18 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 			queryBld.setRootRequest(request);
 			ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
-			Resolution res = LocalResolver.fromPath(context.getRootNodeQuery(), project.getLocation(), oldInfo);
+			Resolution res;
+			try
+			{
+				res = LocalResolver.fromPath(context.getRootNodeQuery(), project.getLocation(), oldInfo);
+			}
+			catch(Exception e)
+			{
+				// cspec for now. Ignore.
+				//
+				return false;
+			}
+
 			if(res.getCSpec().equals(oldCSpec))
 				return false;
 	
