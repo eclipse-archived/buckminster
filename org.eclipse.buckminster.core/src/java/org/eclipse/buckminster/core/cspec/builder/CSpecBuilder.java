@@ -197,6 +197,16 @@ public class CSpecBuilder
 		return m_dependencies == null ? null : m_dependencies.get(dependencyName);
 	}
 
+	public Map<String,GeneratorBuilder> getGenerators()
+	{
+		return m_generators;
+	}
+
+	public GeneratorBuilder getGenerator(String generatorName)
+	{
+		return m_generators == null ? null : m_generators.get(generatorName);
+	}
+
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
