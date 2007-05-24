@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.ui.ChangeAdapter;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.general.editor.Widgetin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
@@ -39,7 +40,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Thomas Hallgren
  */
-public class VersionDesignator
+public class VersionDesignator extends Widgetin
 {
 	enum DesignatorType
 	{
@@ -222,7 +223,7 @@ public class VersionDesignator
 		m_rangeLabel = UiUtils.createGridLabel(m_parentComposite, "Version:", 1, 0, SWT.NONE);
 
 		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, m_notifier, SWT.NONE);
-
+		
 		m_toComposite = new Composite(m_parentComposite, SWT.NONE);
 		m_toComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		m_toStackLayout = new StackLayout();
@@ -231,7 +232,7 @@ public class VersionDesignator
 		m_toEmptyLabel = UiUtils.createEmptyLabel(m_toComposite);
 
 		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, m_notifier, SWT.NONE);
-
+		
 		UiUtils.createGridLabel(m_parentComposite, "Type:", 1, 0, SWT.NONE);
 		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
@@ -256,7 +257,7 @@ public class VersionDesignator
 	{
 		return m_parentComposite.getDisplay();
 	}
-
+	
 	public IVersionDesignator getVersionDesignator()
 	{
 		int vdIndex = m_versionDsType.getSelectionIndex();
@@ -369,5 +370,4 @@ public class VersionDesignator
 		}
 
 	}
-
 }
