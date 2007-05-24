@@ -268,6 +268,18 @@ public class TextUtils
 				: txt.toString();
 	}
 
+	public static String notEmptyString(String txt)
+	{
+		if(txt == null)
+		{
+			return txt;
+		}
+		
+		return txt.length() == 0
+				? null
+				: txt.toString();
+	}
+
 	public static Map<String, String> queryAsParameters(String query)
 	{
 		if(query == null)
