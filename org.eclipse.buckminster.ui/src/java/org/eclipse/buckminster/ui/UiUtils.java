@@ -181,12 +181,18 @@ public class UiUtils
 
 	public static Composite createEmptyPanel(Composite parent)
 	{
+		return createEmptyPanel(parent, "");
+	}
+
+	public static Composite createEmptyPanel(Composite parent, String fictiveStringToSetWidth)
+	{
 		Composite hlpComposite = new Composite(parent, SWT.NONE);
 		hlpComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		StackLayout hlpStackLayout = new StackLayout();
 		hlpComposite.setLayout(hlpStackLayout);
 		Label hlpEmptyLabel = UiUtils.createEmptyLabel(hlpComposite);
-		UiUtils.createGridText(hlpComposite, 1, 0, null, SWT.NONE);
+		Text hlpFictiveText = UiUtils.createGridText(hlpComposite, 1, 0, null, SWT.NONE);
+		hlpFictiveText.setText(fictiveStringToSetWidth);
 		hlpStackLayout.topControl = hlpEmptyLabel;
 
 		return hlpComposite;
