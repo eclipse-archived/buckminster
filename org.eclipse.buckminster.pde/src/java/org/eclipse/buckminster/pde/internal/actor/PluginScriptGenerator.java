@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -65,7 +67,9 @@ public class PluginScriptGenerator extends ScriptGenerator
 		initScript(generator, ctx, createStateFromPrerequisites(ctx, monitor));
 
 		generator.setSignJars(getBooleanProperty(properties, PROPERTY_SIGN_JARS, false));
-		generator.setModelId(ctx.getAction().getCSpec().getName());
+		ComponentIdentifier cid = ctx.getAction().getCSpec().getComponentIdentifier();
+		IVersion version = cid.getVersion();
+		generator.setModelId(cid.getName(), version == null ? null : version.toString());
 
 		File baseDir = new Path(generator.getModel().getLocation()).toFile();
 		boolean custom = generator.isCustom();

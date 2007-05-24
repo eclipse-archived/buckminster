@@ -123,7 +123,7 @@ public class ScriptGenTest extends PDETestCase implements IXMLConstants, IPDEBui
 		generator.setBuildingOSGi(true);
 		generator.setSignJars(false);
 		generator.setBuildSiteFactory(factory);
-		generator.setModelId("org.eclipse.buckminster.pde");
+		generator.setModelId("org.eclipse.buckminster.pde", null);
 		generator.generate();
 
 		// Move generated files into a new location
