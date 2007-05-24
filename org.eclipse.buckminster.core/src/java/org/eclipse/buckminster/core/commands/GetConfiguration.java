@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.core.internal.commands;
+package org.eclipse.buckminster.core.commands;
 
 import java.net.URL;
 

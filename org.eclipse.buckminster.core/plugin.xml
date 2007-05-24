@@ -212,7 +212,7 @@
 	<extension point="org.eclipse.buckminster.cmdline.commands">
 		<command
         addhelpflags="true"
-        class="org.eclipse.buckminster.core.internal.commands.GetConfiguration"
+        class="org.eclipse.buckminster.core.commands.GetConfiguration"
         deprecatedBy="resolve"
         name="getconfiguration"
         status="DEPRECATED">
@@ -220,45 +220,87 @@
 		</command>
 		<command
 			addhelpflags="true"
-			class="org.eclipse.buckminster.core.internal.commands.Build"
+			class="org.eclipse.buckminster.core.commands.Build"
 			name="build"
 			status="NORMAL">
 			<alias name="make" />
 		</command>
 		<command
 			addhelpflags="true"
-			class="org.eclipse.buckminster.core.internal.commands.Perform"
+			class="org.eclipse.buckminster.core.commands.Perform"
 			name="perform"
 			status="NORMAL" />
 		<command
 			addhelpflags="true"
-			class="org.eclipse.buckminster.core.internal.commands.Clean"
+			class="org.eclipse.buckminster.core.commands.Clean"
 			name="clean"
 			status="NORMAL" />
 		<command
 			addhelpflags="true"
-			class="org.eclipse.buckminster.core.internal.commands.CreateManifest"
+			class="org.eclipse.buckminster.core.commands.CreateManifest"
 			name="createmanifest"
 			status="NORMAL">
 			<alias name="mkmf" />
 		</command>
 		<command
 			addhelpflags="true"
-			class="org.eclipse.buckminster.core.internal.commands.DiffManifest"
+			class="org.eclipse.buckminster.core.commands.DiffManifest"
 			name="diffmanifest"
 			status="NORMAL">
 			<alias name="diffmf" />
 		</command>
   <command
         addhelpflags="true"
-        class="org.eclipse.buckminster.core.internal.commands.Resolve"
+        class="org.eclipse.buckminster.core.commands.Resolve"
         name="resolve"
         status="NORMAL"/>
   <command
         addhelpflags="true"
-        class="org.eclipse.buckminster.core.internal.commands.Import"
+        class="org.eclipse.buckminster.core.commands.Import"
         name="import"
         status="NORMAL"/>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.SetPreference"
+            name="prefs.setpreference"
+            status="NORMAL">
+         <alias name="setpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ExportPreferences"
+            name="prefs.exportpreferences"
+            status="NORMAL">
+         <alias name="exportprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ImportPreferences"
+            name="prefs.importpreferences"
+            status="NORMAL">
+         <alias name="importprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.GetPreference"
+            name="prefs.getpreference"
+            status="NORMAL">
+         <alias name="getpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.UnsetPreference"
+            name="prefs.unsetpreference"
+            status="NORMAL">
+         <alias name="unsetpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ListPreferences"
+            name="prefs.listpreferences"
+            status="NORMAL">
+         <alias name="lsprefs"/>
+      </command>
 	</extension>
  <extension
        point="org.eclipse.buckminster.core.queryResolvers">

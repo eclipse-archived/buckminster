@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Core (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.core; singleton:=true
-Bundle-Version: 0.1.0.v20070520
+Bundle-Version: 0.1.0.v20070524
 Bundle-Activator: org.eclipse.buckminster.core.CorePlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
@@ -10,6 +10,7 @@ Export-Package: .,
  org.eclipse.buckminster.core,
  org.eclipse.buckminster.core.actor,
  org.eclipse.buckminster.core.build,
+ org.eclipse.buckminster.core.commands,
  org.eclipse.buckminster.core.common.model,
  org.eclipse.buckminster.core.common.parser,
  org.eclipse.buckminster.core.cspec,

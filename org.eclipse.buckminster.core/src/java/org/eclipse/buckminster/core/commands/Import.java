@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.core.internal.commands;
+package org.eclipse.buckminster.core.commands;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
