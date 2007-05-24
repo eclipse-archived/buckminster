@@ -164,7 +164,7 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			}
 
 			if(modelBase == null)
-				throw new BuckminsterException("Could not find " + BUNDLE_FILE + ", " + PLUGIN_FILE + " or "
+				throw new BuckminsterException(reader.getNodeQuery().getComponentRequest() + ": Could not find " + BUNDLE_FILE + ", " + PLUGIN_FILE + " or "
 					+ FRAGMENT_FILE);
 
 			if(reader.exists(BUILD_PROPERTIES_FILE, MonitorUtils.subMonitor(monitor, 1000)))

@@ -227,7 +227,16 @@ final class EclipseImportBase
 	final URL getRemoteLocation() throws CoreException
 	{
 		if(m_remoteLocation == null)
-			throw new BuckminsterException("site is not remote");
+		{
+			try
+			{
+				return m_location.toURI().toURL();
+			}
+			catch(MalformedURLException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
 		return m_remoteLocation;
 	}
 
