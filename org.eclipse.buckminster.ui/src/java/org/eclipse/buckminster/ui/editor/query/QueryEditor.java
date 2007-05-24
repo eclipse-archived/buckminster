@@ -39,6 +39,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
+import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.editor.Properties;
 import org.eclipse.buckminster.ui.editor.PropertiesModifyEvent;
 import org.eclipse.buckminster.ui.editor.PropertiesModifyListener;
@@ -74,8 +75,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -284,7 +283,7 @@ public class QueryEditor extends EditorPart
 
 	private Text m_documentation;
 
-	private CompoundModifyListener compoundModifyListener;
+	private CompoundModifyListener m_compoundModifyListener;
 
 	public String commitChanges(ComponentRequest[] requestRet)
 	{
@@ -447,7 +446,7 @@ public class QueryEditor extends EditorPart
 			IOUtils.close(stream);
 		}
 
-		compoundModifyListener = new CompoundModifyListener();
+		m_compoundModifyListener = new CompoundModifyListener();
 	}
 
 	@Override
@@ -1038,7 +1037,7 @@ public class QueryEditor extends EditorPart
 
 	private Control getAdvisorTabControl(Composite parent)
 	{
-		Composite tabComposite = getTabComposite(parent, "Advisor Nodes");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Advisor Nodes");
 
 		Composite advisorComposite = new Composite(tabComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(3, false);
@@ -1056,7 +1055,7 @@ public class QueryEditor extends EditorPart
 
 	private Control getDocumentationTabControl(Composite parent)
 	{
-		Composite tabComposite = getTabComposite(parent, "Documentation");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Documentation");
 
 		Composite descComposite = new Composite(tabComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
@@ -1065,11 +1064,11 @@ public class QueryEditor extends EditorPart
 		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		UiUtils.createGridLabel(descComposite, "Short Description:", 1, 0, SWT.NONE);
-		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, compoundModifyListener, SWT.NONE);
+		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
 
 		Label label = UiUtils.createGridLabel(descComposite, "Documentation:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, compoundModifyListener, SWT.MULTI
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, m_compoundModifyListener, SWT.MULTI
 				| SWT.V_SCROLL);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -1078,7 +1077,7 @@ public class QueryEditor extends EditorPart
 
 	private Control getMainTabControl(CTabFolder parent)
 	{
-		Composite tabComposite = getTabComposite(parent, "Main");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Main");
 
 		Composite nameComposite = new Composite(tabComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(3, false);
@@ -1093,14 +1092,14 @@ public class QueryEditor extends EditorPart
 		gridData.widthHint = labelWidth;
 		label.setLayoutData(gridData);
 
-		m_componentName = UiUtils.createGridText(nameComposite, 2, 0, compoundModifyListener, SWT.NONE);
+		m_componentName = UiUtils.createGridText(nameComposite, 2, 0, m_compoundModifyListener, SWT.NONE);
 
 		UiUtils.createGridLabel(nameComposite, "Category:", 1, 0, SWT.NONE);
 		m_componentCategory = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
 		m_componentCategory.setItems(ComponentCategory.getCategoryNames(true));
-		m_componentCategory.addModifyListener(compoundModifyListener);
+		m_componentCategory.addModifyListener(m_compoundModifyListener);
 
 		// not nice but I had to make equal 2 columns form different Composites
 		// the purpose of hlpComposite is to create empty space, the same size
@@ -1119,7 +1118,7 @@ public class QueryEditor extends EditorPart
 		versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
 		m_versionDesignator = new VersionDesignator(versionGroup);
-		m_versionDesignator.addVersionDesignatorListener(compoundModifyListener);
+		m_versionDesignator.addVersionDesignatorListener(m_compoundModifyListener);
 
 		Control control = m_versionDesignator.getVersionDsTypeLabel();
 		gridData = (GridData)control.getLayoutData();
@@ -1165,7 +1164,7 @@ public class QueryEditor extends EditorPart
 		propertiesComposite.setLayout(layout);
 		propertiesComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		m_propertyURL = UiUtils.createGridText(propertiesComposite, 1, 0, compoundModifyListener, SWT.NONE);
+		m_propertyURL = UiUtils.createGridText(propertiesComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
 		Button browseButton = new Button(propertiesComposite, SWT.PUSH);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		browseButton.setText("Browse...");
@@ -1231,7 +1230,7 @@ public class QueryEditor extends EditorPart
 		rmapComposite.setLayout(layout);
 		rmapComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		m_requestURL = UiUtils.createGridText(rmapComposite, 1, 0, compoundModifyListener, SWT.NONE);
+		m_requestURL = UiUtils.createGridText(rmapComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
 		browseButton = new Button(rmapComposite, SWT.PUSH);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		browseButton.setText("Browse...");
@@ -1270,7 +1269,7 @@ public class QueryEditor extends EditorPart
 
 	private Control getPropertiesTabControl(Composite parent)
 	{
-		Composite tabComposite = getTabComposite(parent, "Properties");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Properties");
 
 		/*
 		 * Group propertiesGroup = new Group(tabComposite, SWT.NONE); propertiesGroup.setText("Properties"); GridLayout
@@ -1281,7 +1280,7 @@ public class QueryEditor extends EditorPart
 		 * m_properties.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		 */
 		m_properties = new Properties(tabComposite, SWT.NONE);
-		m_properties.addPropertiesModifyListener(compoundModifyListener);
+		m_properties.addPropertiesModifyListener(m_compoundModifyListener);
 
 		return tabComposite;
 	}
@@ -1292,26 +1291,6 @@ public class QueryEditor extends EditorPart
 		return idx >= 0
 				? (AdvisorNodeBuilder)m_nodeTable.getElementAt(idx)
 				: null;
-	}
-
-	private Composite getTabComposite(Composite parent, String header)
-	{
-		Composite tabComposite = new Composite(parent, SWT.NONE);
-		tabComposite.setLayout(new GridLayout(1, true));
-		tabComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		tabComposite.setBackgroundMode(SWT.INHERIT_FORCE);
-
-		Label headerLabel = new Label(tabComposite, SWT.BOLD);
-		headerLabel.setText(header);
-		headerLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-		FontData fontData = new FontData();
-		fontData.setHeight(14);
-		headerLabel.setFont(new Font(tabComposite.getDisplay(), fontData));
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gridData.heightHint = 30;
-		headerLabel.setLayoutData(gridData);
-
-		return tabComposite;
 	}
 
 	private void loadComponent(boolean materialize)
