@@ -11,6 +11,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,14 @@ import org.eclipse.ui.IWorkbenchPartSite;
 public class InvokeAction implements IObjectActionDelegate
 {
 	private static final String LAST_ACTION_PROPERTIES_FILE = "lastActionPropertiesFile";
+
+	private static Comparator<Attribute> s_attributeComparator = new Comparator<Attribute>()
+	{
+		public int compare(Attribute o1, Attribute o2)
+		{
+			return o1.getName().compareTo(o2.getName());
+		}		
+	};
 
 	private class ActionsDialog extends Dialog
 	{
@@ -307,6 +317,7 @@ public class InvokeAction implements IObjectActionDelegate
 
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		m_propertiesFile = preferences.getString(LAST_ACTION_PROPERTIES_FILE);
+		Collections.sort(viableAttributes, s_attributeComparator);
 		ActionsDialog dialog = new ActionsDialog(shell, "Actions of " + m_selectedComponent.getName(),
 			viableAttributes);
 		if(dialog.open() != Window.OK)
