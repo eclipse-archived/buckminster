@@ -14,5 +14,5 @@ package org.eclipse.buckminster.ui.general.editor;
  */
 public enum TableModifyEventType
 {
-	ADD_ROW, REMOVE_ROW, UPDATE_ROW
+	ADD_ROW, REMOVE_ROW, UPDATE_ROW, SWAP_ROW
 }
