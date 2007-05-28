@@ -90,6 +90,10 @@
         class="org.eclipse.buckminster.ant.taskdefs.ResourceLocation"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.resourceLocation"/>
+  <antTask
+        class="org.eclipse.buckminster.ant.taskdefs.ComponentVersion"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.componentVersion"/>
 	</extension>
 	<extension point="org.eclipse.ant.core.antTypes">
 		<antType
