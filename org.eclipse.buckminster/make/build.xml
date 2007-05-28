@@ -59,7 +59,7 @@
 
 		<echo message="${timestamp}" file="${product.jnlp}"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
-<jnlp codebase="$$$$codebase" href="$$$$href">
+<jnlp codebase="$$$$codebase" href="$$$$name">
 	<information>
 		<title>Buckminster JNLP bootstrap</title>
 		<vendor>eclipse.org</vendor>
@@ -69,7 +69,7 @@
 	</security>
 	<resources>
 		<package name="org.eclipse.buckminster.jnlp.product.ProductInstaller" part="product"/>
-		<jar part="product" download="lazy" href="product.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/product.jar"/>
 	</resources>]]></echo>
 
 		<buckminster.valuefileset id="installer.classes" value="${fs:installer.classes}"/>
@@ -121,7 +121,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.windows.x86.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="Windows" arch="x86">
-		<jar part="product" download="lazy" href="platform.windows.x86.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.windows.x86.jar"/>
 	</resources>]]></echo>
 
 		<delete dir="${jar.exploded}"/>
@@ -139,7 +139,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.linux.x86.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="Linux" arch="i386">
-		<jar part="product" download="lazy" href="platform.linux.x86.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.linux.x86.jar"/>
 	</resources>]]></echo>
 
 		<delete dir="${jar.exploded}"/>
@@ -156,7 +156,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.linux.x86_64.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="Linux" arch="x86_64">
-		<jar part="product" download="lazy" href="platform.linux.x86_64.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.linux.x86_64.jar"/>
 	</resources>]]></echo>
 
 		<delete dir="${jar.exploded}"/>
@@ -173,7 +173,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.linux.ppc.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="Linux" arch="ppc">
-		<jar part="product" download="lazy" href="platform.linux.ppc.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.linux.ppc.jar"/>
 	</resources>]]></echo>
 
 		<delete dir="${jar.exploded}"/>
@@ -190,7 +190,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.macosx.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="Mac OS X">
-		<jar part="product" download="lazy" href="platform.macosx.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.macosx.jar"/>
 	</resources>]]></echo>
 
 		<delete dir="${jar.exploded}"/>
@@ -207,7 +207,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.solaris.sparc.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="Solaris" arch="sparc">
-		<jar part="product" download="lazy" href="platform.solaris.sparc.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.solaris.sparc.jar"/>
 	</resources>]]></echo>
 
 		<delete dir="${jar.exploded}"/>
@@ -224,7 +224,7 @@
 		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.aix.ppc.jar"/>
 		<echo file="${product.jnlp}" append="true"><![CDATA[
 	<resources os="AIX" arch="Power">
-		<jar part="product" download="lazy" href="platform.aix.ppc.jar"/>
+		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.aix.ppc.jar"/>
 	</resources>]]></echo>
 
 		<echo file="${product.jnlp}" append="true"><![CDATA[
