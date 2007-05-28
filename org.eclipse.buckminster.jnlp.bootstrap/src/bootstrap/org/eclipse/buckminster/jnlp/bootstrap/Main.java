@@ -64,14 +64,29 @@ public class Main
 	{
 		if(m_installLocation == null)
 		{
-			String userHome = System.getProperty("user.home");
-			if(userHome != null)
+			if(isWindows())
 			{
-				m_installLocation = new File(userHome, isWindows()
-						? "Application Data\\buckminster"
-						: ".buckminster");
+				File appData = null;
+				String appDataEnv = System.getenv("APPDATA");
+				if(appDataEnv != null)
+					appData = new File(appDataEnv);
+				else
+				{
+					String userHome = System.getProperty("user.home");
+					if(userHome != null)
+						appData = new File(userHome, "Application Data");
+				}
+				if(appData != null)
+					m_installLocation = new File(appData, "buckminster");
 			}
 			else
+			{
+				String userHome = System.getProperty("user.home");
+				if(userHome != null)
+					m_installLocation = new File(userHome, ".buckminster");
+			}
+
+			if(m_installLocation == null)
 				m_installLocation = File.createTempFile("bucky", ".site");
 			m_installLocation.mkdirs();
 		}
