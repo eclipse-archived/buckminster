@@ -14,42 +14,15 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
-import org.eclipse.buckminster.ui.general.editor.Table;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
+import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
 
 /**
  * @author Karel Brezina
  *
  */
-public class GeneratorsTable extends Table<GeneratorBuilder>
+public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 {
-
-	class NameValidator implements IValidator
-	{
-		public void validate(Object... arg) throws ValidatorException
-		{
-			String string = (String) arg[0];
-			
-			if(string == null || string.length() == 0)
-			{
-				throw new ValidatorException("Generator name cannot be empty");
-			}
-		}
-	}
-	
-	class AttributeValidator implements IValidator
-	{
-		public void validate(Object... arg) throws ValidatorException
-		{
-			String string = (String) arg[0];
-			
-			if(string == null || string.length() == 0)
-			{
-				throw new ValidatorException("Attribute cannot be empty");
-			}
-		}
-	}
-	
 	private CSpecBuilder m_cspecBuilder;
 	
 	public GeneratorsTable(List<GeneratorBuilder> data, CSpecBuilder cspecBuilder)
@@ -96,11 +69,11 @@ public class GeneratorsTable extends Table<GeneratorBuilder>
 		switch(idx)
 		{
 		case 0:
-			return new NameValidator();
+			return SimpleTable.createNotEmptyStringValidator("Generator name cannot be empty");
 		case 1:
-			return new AttributeValidator();
+			return SimpleTable.createNotEmptyStringValidator("Attribute cannot be empty");
 		default:
-			return Table.getEmptyValidator();
+			return SimpleTable.getEmptyValidator();
 		}
 	}
 }
