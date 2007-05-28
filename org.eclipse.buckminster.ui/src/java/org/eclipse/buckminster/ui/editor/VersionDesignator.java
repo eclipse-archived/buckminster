@@ -18,7 +18,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.ui.ChangeAdapter;
 import org.eclipse.buckminster.ui.UiUtils;
-import org.eclipse.buckminster.ui.general.editor.Widgetin;
+import org.eclipse.buckminster.ui.general.editor.simple.Widgetin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;

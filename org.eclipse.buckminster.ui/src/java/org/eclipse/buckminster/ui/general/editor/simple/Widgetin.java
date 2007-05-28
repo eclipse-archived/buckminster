@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.ui.general.editor;
+package org.eclipse.buckminster.ui.general.editor.simple;
 
 import java.util.ArrayList;
 import java.util.HashMap;

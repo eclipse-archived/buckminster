@@ -19,10 +19,11 @@ import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorListener;
-import org.eclipse.buckminster.ui.general.editor.IWidgetin;
-import org.eclipse.buckminster.ui.general.editor.Table;
+import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
-import org.eclipse.buckminster.ui.general.editor.WidgetinWrapper;
+import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
+import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
+import org.eclipse.buckminster.ui.general.editor.simple.WidgetinWrapper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -36,12 +37,11 @@ import org.eclipse.swt.widgets.Text;
  * @author Karel Brezina
  *
  */
-public class DependencyTable extends Table<DependencyBuilder>
+public class DependenciesTable extends SimpleTable<DependencyBuilder>
 {
-
 	private CSpecBuilder m_cspecBuilder;
 	
-	public DependencyTable(List<DependencyBuilder> data, CSpecBuilder cspecBuilder)
+	public DependenciesTable(List<DependencyBuilder> data, CSpecBuilder cspecBuilder)
 	{
 		super(data);
 		m_cspecBuilder = cspecBuilder;
@@ -195,5 +195,17 @@ public class DependencyTable extends Table<DependencyBuilder>
 		widgetins[2] = getWidgetin(parent, 2, fieldValues[2]);
 		
 		return widgetins;
+	}
+
+	@Override
+	public IValidator getFieldValidator(int idx)
+	{
+		switch(idx)
+		{
+		case 0:
+			return SimpleTable.createNotEmptyStringValidator("Dependency name cannot be empty");
+		default:
+			return SimpleTable.getEmptyValidator();
+		}
 	}
 }

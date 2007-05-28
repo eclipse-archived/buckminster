@@ -6,10 +6,11 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.ui.general.editor;
+package org.eclipse.buckminster.ui.general.editor.simple;
 
 import java.util.Arrays;
 
+import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -31,9 +32,9 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Karel Brezina
  */
-public class TableRowDialog<T> extends TitleAreaDialog
+public class SimpleTableRowDialog<T> extends TitleAreaDialog
 {
-	private final ITable<T> m_table;
+	private final ISimpleTable<T> m_table;
 	
 	private final Image m_windowImage;
 	
@@ -62,7 +63,7 @@ public class TableRowDialog<T> extends TitleAreaDialog
 	 * @param table wrapped editor data
 	 * @param row table row number that will be edited or -1 for new row
 	 */
-	public TableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL, ITable<T> table, int row)
+	public SimpleTableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL, ISimpleTable<T> table, int row)
 	{
 		super(parent);
 		
@@ -171,7 +172,7 @@ public class TableRowDialog<T> extends TitleAreaDialog
 		
 		for(int i = 0; i < m_table.getColumns(); i++)
 		{
-			m_widgetins[i].addListener(ITable.ERROR_MESSAGE_EVENT_TYPE, rowModifyListener);
+			m_widgetins[i].addListener(ISimpleTable.ERROR_MESSAGE_EVENT_TYPE, rowModifyListener);
 		}
 		
 		return textComposite;

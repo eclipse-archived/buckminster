@@ -6,7 +6,7 @@
  * prior written consent or license from Cloudsmith Inc.
  ******************************************************************/
 
-package org.eclipse.buckminster.ui.general.editor;
+package org.eclipse.buckminster.ui.general.editor.simple;
 
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.TableColumn;
  *   
  * @author Karel Brezina
  */
-public class TableEditor<T> extends Composite
+public class SimpleTableEditor<T> extends Composite
 {
 
 	class TableContentProvider implements IStructuredContentProvider
@@ -75,7 +75,7 @@ public class TableEditor<T> extends Composite
 		}
 	}
 
-	private final ITable<T> m_table;
+	private final ISimpleTable<T> m_table;
 	
 	private final Image m_windowImage;
 	
@@ -104,7 +104,7 @@ public class TableEditor<T> extends Composite
 	 * @param helpURL URL of help info - bypass to row editor TableRowDialog
 	 * @param style current composite style
 	 */
-	public TableEditor(Composite parent, ITable<T> table, Image windowImage, String windowTitle, Image wizardImage, String helpURL, int style)
+	public SimpleTableEditor(Composite parent, ISimpleTable<T> table, Image windowImage, String windowTitle, Image wizardImage, String helpURL, int style)
 	{
 		super(parent, style);
 		m_table = table;
@@ -244,8 +244,8 @@ public class TableEditor<T> extends Composite
 
 	private void newRow()
 	{
-		TableRowDialog<T> dialog =
-			new TableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, m_table, -1);
+		SimpleTableRowDialog<T> dialog =
+			new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, m_table, -1);
 		
 		if(dialog.open() == IDialogConstants.OK_ID)
 		{
@@ -255,8 +255,8 @@ public class TableEditor<T> extends Composite
 
 	private void editRow()
 	{
-		TableRowDialog<T> dialog =
-			new TableRowDialog<T>(
+		SimpleTableRowDialog<T> dialog =
+			new SimpleTableRowDialog<T>(
 					this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL,
 					m_table, m_tableViewer.getTable().getSelectionIndex());
 		
