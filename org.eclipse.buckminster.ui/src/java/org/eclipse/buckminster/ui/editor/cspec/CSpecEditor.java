@@ -14,12 +14,15 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -30,8 +33,8 @@ import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
-import org.eclipse.buckminster.ui.general.editor.TableEditor;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
+import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -94,6 +97,15 @@ public class CSpecEditor extends EditorPart
 			setDirty(true);
 		}
 	}
+	
+	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = new Comparator<CSpecElementBuilder>()
+	{
+
+		public int compare(CSpecElementBuilder o1, CSpecElementBuilder o2)
+		{
+			return o1.getName().compareTo(o2.getName());
+		}
+	};
 
 	private CSpecBuilder m_cspec;
 	
@@ -111,8 +123,8 @@ public class CSpecEditor extends EditorPart
 	private Combo m_componentCategory;
 	private Text m_versionString;
 	private Combo m_versionType;
-	private TableEditor<DependencyBuilder> m_dependenciesEditor;
-	private TableEditor<GeneratorBuilder> m_generatorsEditor;
+	private SimpleTableEditor<DependencyBuilder> m_dependenciesEditor;
+	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
 	private Text m_shortDesc;
 	private Text m_documentation;
 	private Button m_externalSaveAsButton;
@@ -359,7 +371,9 @@ public class CSpecEditor extends EditorPart
 			Map<String, DependencyBuilder> dependenciesMap = m_cspec.getDependencies();
 			if(dependenciesMap != null)
 			{
-				for(DependencyBuilder dependency : dependenciesMap.values())
+				DependencyBuilder[] builders = dependenciesMap.values().toArray(new DependencyBuilder[0]);
+				Arrays.sort(builders, s_cspecElementComparator);
+				for(DependencyBuilder dependency : builders)
 				{
 					m_dependencyBuilders.add(dependency);
 				}
@@ -369,7 +383,9 @@ public class CSpecEditor extends EditorPart
 			Map<String, GeneratorBuilder> generatorsMap = m_cspec.getGenerators();
 			if(generatorsMap != null)
 			{
-				for(GeneratorBuilder generator : generatorsMap.values())
+				GeneratorBuilder[] generators = generatorsMap.values().toArray(new GeneratorBuilder[0]);
+				Arrays.sort(generators, s_cspecElementComparator);
+				for(GeneratorBuilder generator : generators)
 				{
 					m_generatorBuilders.add(generator);
 				}
@@ -423,6 +439,18 @@ public class CSpecEditor extends EditorPart
 		CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
 		mainTab.setText("Main");
 		mainTab.setControl(getMainTabControl(m_tabFolder));
+
+		CTabItem actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		actionsTab.setText("Actions");
+		actionsTab.setControl(getActionsTabControl(m_tabFolder));
+
+		CTabItem artifactsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		artifactsTab.setText("Artifacts");
+		artifactsTab.setControl(getArtifactsTabControl(m_tabFolder));
+
+		CTabItem groupsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		groupsTab.setText("Groups");
+		groupsTab.setControl(getGroupsTabControl(m_tabFolder));
 
 		CTabItem dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
 		dependenciesTab.setText("Dependencies");
@@ -546,15 +574,36 @@ public class CSpecEditor extends EditorPart
 		return tabComposite;
 	}
 	
+	private Control getActionsTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
+
+		return tabComposite;
+	}
+
+	private Control getArtifactsTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Artifacts");
+
+		return tabComposite;
+	}
+
+	private Control getGroupsTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Groups");
+
+		return tabComposite;
+	}
+
 	@SuppressWarnings("unchecked")
 	private Control getDependenciesTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Dependencies");
 
-		DependencyTable table = new DependencyTable(m_dependencyBuilders, m_cspec);
+		DependenciesTable table = new DependenciesTable(m_dependencyBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
-		m_dependenciesEditor = new TableEditor<DependencyBuilder>(
+		m_dependenciesEditor = new SimpleTableEditor<DependencyBuilder>(
 				tabComposite,
 				table,
 				null,
@@ -574,7 +623,7 @@ public class CSpecEditor extends EditorPart
 		GeneratorsTable table = new GeneratorsTable(m_generatorBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
-		m_generatorsEditor = new TableEditor<GeneratorBuilder>(
+		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(
 				tabComposite,
 				table,
 				null,
