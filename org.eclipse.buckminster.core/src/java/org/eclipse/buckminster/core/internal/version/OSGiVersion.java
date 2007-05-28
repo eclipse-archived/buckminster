@@ -30,6 +30,17 @@ public class OSGiVersion extends TripletVersion
 				return o2 == null ? 0 : -1;
 			if(o2 == null)
 				return 1;
+
+			if(o1.equals(o2))
+				return 0;
+
+			// We consider an unresolved qualifier to be higher then anything else
+			//
+			if(o1.equals("qualifier"))
+				return 1;
+			if(o2.equals("qualifier"))
+				return -1;
+
 			return o1.compareTo(o2);
 		}
 	};
