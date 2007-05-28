@@ -131,7 +131,7 @@ public class FeatureBuilder extends PDEBuilder
 	{
 		CSpecBuilder cspec = getCSpec();
 		cspec.setName(feature.getId());
-		cspec.setVersion(sanitizeVersion(feature.getVersion()), VersionFactory.OSGiType.getId());
+		cspec.setVersion(feature.getVersion(), VersionFactory.OSGiType.getId());
 		cspec.setCategory(KeyConstants.FEATURE_CATEGORY);
 
 		// Add the private groups for the export feature references. Their

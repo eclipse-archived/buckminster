@@ -272,7 +272,7 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			CSpecBuilder cspec = getCSpec();
 			cspec.setName(pluginBase.getId());
 			cspec.setCategory(KeyConstants.PLUGIN_CATEGORY);
-			cspec.setVersion(sanitizeVersion(pluginBase.getVersion()), VersionFactory.OSGiType.getId());
+			cspec.setVersion(pluginBase.getVersion(), VersionFactory.OSGiType.getId());
 			convertModel(reader, pluginBase, MonitorUtils.subMonitor(monitor, 50));
 		}
 		finally

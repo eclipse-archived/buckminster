@@ -53,7 +53,7 @@ public class ProductTest extends TestCase
 		
 		File targetRoot = this.getTargetLocation().toFile();
 		File genRoot = new File("C:/temp/productRootFiles/win32.win32.x86");
-		FileUtils fs = FileUtils.newFileUtils();
+		FileUtils fs = FileUtils.getFileUtils();
 		fs.copyFile(new File(targetRoot, "eclipse.exe"), new File(genRoot, "eclipse.exe"));
 		fs.copyFile(new File(targetRoot, "startup.jar"), new File(genRoot, "startup.jar"));
 		

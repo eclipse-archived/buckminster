@@ -36,7 +36,6 @@ import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.IPluginReference;
-import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.osgi.framework.Version;
 
 /**
@@ -60,23 +59,6 @@ abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConst
 	private final CSpecBuilder m_cspec = new CSpecBuilder();
 
 	private boolean m_usingInstalledReader;
-
-	/**
-	 * A version might end with the keyword &quot;.qualifier&quot;. This tells Eclipse to calculate
-	 * that part of the qualifier when exporting a plugin/feature. For Buckminster, this means that
-	 * this part of the version doesn't exist yet.
-	 */
-	public static String sanitizeVersion(String versionStr)
-	{
-		if(versionStr != null)
-		{
-			int qualifierIdx = versionStr.indexOf('.' + IBuildPropertiesConstants.PROPERTY_QUALIFIER);
-			if(qualifierIdx != -1)
-				versionStr = versionStr.substring(0, qualifierIdx);
-		}
-		return versionStr;
-	}
-
 	public synchronized DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
@@ -105,7 +87,7 @@ abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConst
 	{
 		if(version.equals("0.0.0"))
 			version = null;
-		return new ComponentRequest(name, category, sanitizeVersion(version), VersionFactory.OSGiType.getId());
+		return new ComponentRequest(name, category, version, VersionFactory.OSGiType.getId());
 	}
 
 	ComponentRequest createComponentRequest(String name, String category, String version, int pdeMatchRule)
@@ -131,16 +113,15 @@ abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConst
 		return bld.toString();
 	}
 
-	public static String convertMatchRule(int pdeMatchRule, String origVersion)
+	public static String convertMatchRule(int pdeMatchRule, String version)
 	{
-		String version = sanitizeVersion(origVersion);
 		if(version == null || version.length() == 0 || version.equals("0.0.0"))
 			return null;
 
 		char c = version.charAt(0);
 		if(c == '[' || c == '(')
 			//
-			// OSGi range, just ignor the rule then.
+			// Already an OSGi range, just ignor the rule then.
 			//
 			return version;
 
@@ -154,15 +135,7 @@ abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConst
 			// If the version was sanitized, a perfect match will not find
 			// it.
 			//
-			String toVersion;
-			if(origVersion.length() == version.length())
-				toVersion = version;
-			else
-				// Should cover most calculated version ranges
-				//
-				toVersion = version + ".zzzzzzzz";
-
-			version = "[" + version + ',' + toVersion + "]";
+			version = "[" + version + ',' + version + "]";
 			break;
 		case IMatchRules.EQUIVALENT:
 			//
