@@ -65,12 +65,15 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			{
 				IResource resource = delta.getResource();
 				IPath path = resource.getLocation();
-				if(!(resource instanceof IFile))
-					path = path.addTrailingSeparator();
-
-				synchronized(MetadataSynchronizer.this)
+				if(path != null)
 				{
-					m_removedEntries.add(path);
+					if(!(resource instanceof IFile))
+						path = path.addTrailingSeparator();
+	
+					synchronized(MetadataSynchronizer.this)
+					{
+						m_removedEntries.add(path);
+					}
 				}
 			}
 			else
