@@ -69,7 +69,7 @@ public class PathGroup
 			//
 			return FileUtils.getFirstModified(m_base.toFile(), expectedCount, fileCount);
 
-		if(idx > 1)
+		if(idx > 1 && expectedCount > 0)
 			expectedCount = -1;
 
 		long firstMod = Long.MAX_VALUE;

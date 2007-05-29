@@ -172,7 +172,10 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	{
 		PathGroup[] pqs = getPathGroups(ctx);
 		int idx = pqs.length;
-		if(idx > 1)
+		if(idx > 1 && expectedFileCount > 0)
+			//
+			// We don't know how to distribute the count
+			//
 			expectedFileCount = -1;
 
 		long oldest = Long.MAX_VALUE;

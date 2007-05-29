@@ -345,8 +345,6 @@ public class Action extends Attribute
 			// Don't consider products that we don't need since their timestamp
 			// might effect the outcome negatively
 			//
-			long oldest = Long.MAX_VALUE;
-			long newest = 0L;
 			for(Map.Entry<String,Long> entry : prereqFiles.entrySet())
 			{
 				Long tsObj = productFiles.get(entry.getKey());
@@ -356,18 +354,15 @@ public class Action extends Attribute
 					//
 					return false;
 
-				long ts = tsObj.longValue();
-				if(ts < oldest)
-					oldest = ts;
-				
-				ts = entry.getValue().longValue();
-				if(ts > newest)
-					newest = ts;
-
-				if(newest > oldest)
-					break;
+				long productTs = tsObj.longValue();
+				long prereqTs = entry.getValue().longValue();
+				if(prereqTs > productTs)
+					//
+					// Prerequisite is newer
+					//
+					return false;
 			}
-			return oldest >= newest;
+			return true;
 		}
 
 		int expectedFileCount;

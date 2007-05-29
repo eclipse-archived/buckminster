@@ -945,12 +945,6 @@ public abstract class FileUtils
 	 */
 	public static long getLastModified(File fileOrDir, long threshold, int[] realFileCount)
 	{
-		if(threshold == 0)
-		{
-			realFileCount[0] = 0;
-			return 0;
-		}
-
 		int count = 0;
 		long lastModTime = 0;
 		File[] files = fileOrDir.listFiles();
