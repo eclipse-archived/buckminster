@@ -4,170 +4,170 @@
    <description url="http://download.eclipse.org/technology/buckminster/updates/headless-site.xml">
       The update site for Buckminster
    </description>
-   <feature url="features/org.eclipse.buckminster.core.headless.feature_0.1.0.v20070524.jar" id="org.eclipse.buckminster.core.headless.feature" version="0.1.0.v20070524"/>
-   <feature url="features/org.eclipse.buckminster.cvs.headless.feature_0.1.0.v20070504.jar" id="org.eclipse.buckminster.cvs.headless.feature" version="0.1.0.v20070504"/>
-   <feature url="features/org.eclipse.buckminster.maven.feature_0.1.0.v20070515.jar" id="org.eclipse.buckminster.maven.feature" version="0.1.0.v20070515"/>
-   <feature url="features/org.eclipse.buckminster.p4.headless.feature_0.1.0.v20070504.jar" id="org.eclipse.buckminster.p4.headless.feature" version="0.1.0.v20070504"/>
-   <feature url="features/org.eclipse.buckminster.pde.headless.feature_0.1.0.v20070524.jar" id="org.eclipse.buckminster.pde.headless.feature" version="0.1.0.v20070524"/>
-   <feature url="features/org.eclipse.buckminster.svn.headless.feature_0.1.0.v20070520.jar" id="org.eclipse.buckminster.svn.headless.feature" version="0.1.0.v20070520"/>
-   <feature url="features/org.eclipse.buckminster.europatools.feature_0.1.0.v20070413.jar" id="org.eclipse.buckminster.europatools.feature" version="0.1.0.v20070413"/>
+   <feature url="features/org.eclipse.buckminster.core.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.core.headless.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.cvs.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.cvs.headless.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.maven.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.maven.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.p4.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.p4.headless.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.pde.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.pde.headless.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.svn.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.svn.headless.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.europatools.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.europatools.feature" version="0.1.0.v20070529"/>
 
-    <!-- Eclipse 3.3M7 dependencies -->
+    <!-- Eclipse 3.3RC2 dependencies -->
     <archive path="plugins/com.ibm.icu_3.6.1.v20070417.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.ibm.icu_3.6.1.v20070417.jar">
     <archive path="plugins/com.jcraft.jsch_0.1.28.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.jcraft.jsch_0.1.28.jar">
-    <archive path="plugins/javax.servlet.jsp_2.0.0.v200703221034.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/javax.servlet.jsp_2.0.0.v200703221034.jar">
-    <archive path="plugins/javax.servlet_2.4.0.v200704241052.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/javax.servlet_2.4.0.v200704241052.jar">
-    <archive path="plugins/org.apache.commons.el_1.0.0.v200704241052.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.commons.el_1.0.0.v200704241052.jar">
-    <archive path="plugins/org.apache.commons.logging_1.0.4.v200701082340.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.commons.logging_1.0.4.v200701082340.jar">
-    <archive path="plugins/org.apache.jasper_5.5.17.v200704241052.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.jasper_5.5.17.v200704241052.jar">
-    <archive path="plugins/org.apache.lucene.analysis_1.9.1.v200703221049.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.lucene.analysis_1.9.1.v200703221049.jar">
-    <archive path="plugins/org.apache.lucene_1.9.1.v200703221049.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.lucene_1.9.1.v200703221049.jar">
-    <archive path="plugins/org.eclipse.ant.core_3.1.200.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ant.core_3.1.200.v20070426.jar">
-    <archive path="plugins/org.eclipse.ant.ui_3.2.100.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ant.ui_3.2.100.v20070426.jar">
-    <archive path="plugins/org.eclipse.compare_3.3.0.I20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.compare_3.3.0.I20070430.jar">
+    <archive path="plugins/javax.servlet.jsp_2.0.0.v200705231728.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/javax.servlet.jsp_2.0.0.v200705231728.jar">
+    <archive path="plugins/javax.servlet_2.4.0.v200705231727.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/javax.servlet_2.4.0.v200705231727.jar">
+    <archive path="plugins/org.apache.commons.el_1.0.0.v200705231731.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.commons.el_1.0.0.v200705231731.jar">
+    <archive path="plugins/org.apache.commons.logging_1.0.4.v200705231731.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.commons.logging_1.0.4.v200705231731.jar">
+    <archive path="plugins/org.apache.jasper_5.5.17.v200705231731.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.jasper_5.5.17.v200705231731.jar">
+    <archive path="plugins/org.apache.lucene.analysis_1.9.1.v200705231731.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.lucene.analysis_1.9.1.v200705231731.jar">
+    <archive path="plugins/org.apache.lucene_1.9.1.v200705231731.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.lucene_1.9.1.v200705231731.jar">
+    <archive path="plugins/org.eclipse.ant.core_3.1.200.v20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ant.core_3.1.200.v20070522.jar">
+    <archive path="plugins/org.eclipse.ant.ui_3.2.100.v20070511.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ant.ui_3.2.100.v20070511.jar">
+    <archive path="plugins/org.eclipse.compare_3.3.0.I20070524.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.compare_3.3.0.I20070524.jar">
     <archive path="plugins/org.eclipse.core.boot_3.1.100.v20060603.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.boot_3.1.100.v20060603.jar">
-    <archive path="plugins/org.eclipse.core.commands_3.3.0.I20070502-1300a.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.commands_3.3.0.I20070502-1300a.jar">
+    <archive path="plugins/org.eclipse.core.commands_3.3.0.I20070523-1500.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.commands_3.3.0.I20070523-1500.jar">
     <archive path="plugins/org.eclipse.core.contenttype_3.2.100.v20070319.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.contenttype_3.2.100.v20070319.jar">
-    <archive path="plugins/org.eclipse.core.databinding.beans_1.0.0.I20070430-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.databinding.beans_1.0.0.I20070430-0010.jar">
-    <archive path="plugins/org.eclipse.core.databinding_1.0.0.I20070501-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.databinding_1.0.0.I20070501-0010.jar">
-    <archive path="plugins/org.eclipse.core.expressions_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.expressions_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.core.filebuffers_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filebuffers_3.3.0.v20070503-0800.jar">
+    <archive path="plugins/org.eclipse.core.databinding.beans_1.0.0.I20070516-0010b.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.databinding.beans_1.0.0.I20070516-0010b.jar">
+    <archive path="plugins/org.eclipse.core.databinding_1.0.0.I20070523-1500.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.databinding_1.0.0.I20070523-1500.jar">
+    <archive path="plugins/org.eclipse.core.expressions_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.expressions_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.core.filebuffers_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filebuffers_3.3.0.v20070525-1050.jar">
     <archive path="plugins/org.eclipse.core.filesystem.linux.ppc_1.0.100.v20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.linux.ppc_1.0.100.v20070430.jar">
     <archive path="plugins/org.eclipse.core.filesystem.linux.x86_1.1.0.v20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.linux.x86_1.1.0.v20070416.jar">
-    <archive path="plugins/org.eclipse.core.filesystem.linux.x86_64_1.0.100.v20070503.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.linux.x86_64_1.0.100.v20070503.jar">
+    <archive path="plugins/org.eclipse.core.filesystem.linux.x86_64_1.0.100.v20070510.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.linux.x86_64_1.0.100.v20070510.jar">
     <archive path="plugins/org.eclipse.core.filesystem.macosx_1.0.0.v20060603.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.macosx_1.0.0.v20060603.jar">
     <archive path="plugins/org.eclipse.core.filesystem.solaris.sparc_1.0.100.v20070425.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.solaris.sparc_1.0.100.v20070425.jar">
-    <archive path="plugins/org.eclipse.core.filesystem.win32.x86_1.0.0.v20060603.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.win32.x86_1.0.0.v20060603.jar">
-    <archive path="plugins/org.eclipse.core.filesystem_1.1.0.v20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem_1.1.0.v20070430.jar">
+    <archive path="plugins/org.eclipse.core.filesystem.win32.x86_1.1.0.v20070510.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem.win32.x86_1.1.0.v20070510.jar">
+    <archive path="plugins/org.eclipse.core.filesystem_1.1.0.v20070510.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.filesystem_1.1.0.v20070510.jar">
     <archive path="plugins/org.eclipse.core.jobs_3.3.0.v20070423.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.jobs_3.3.0.v20070423.jar">
     <archive path="plugins/org.eclipse.core.net_1.0.0.I20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.net_1.0.0.I20070416.jar">
     <archive path="plugins/org.eclipse.core.resources.compatibility_3.2.100.v20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.resources.compatibility_3.2.100.v20070502.jar">
     <archive path="plugins/org.eclipse.core.resources.win32_3.3.0.v20070226.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.resources.win32_3.3.0.v20070226.jar">
-    <archive path="plugins/org.eclipse.core.resources_3.3.0.v20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.resources_3.3.0.v20070430.jar">
+    <archive path="plugins/org.eclipse.core.resources_3.3.0.v20070514.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.resources_3.3.0.v20070514.jar">
     <archive path="plugins/org.eclipse.core.runtime.compatibility.auth_3.2.100.v20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.100.v20070502.jar">
     <archive path="plugins/org.eclipse.core.runtime.compatibility_3.1.200.v20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.runtime.compatibility_3.1.200.v20070502.jar">
-    <archive path="plugins/org.eclipse.core.runtime_3.3.100.v20070409.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.runtime_3.3.100.v20070409.jar">
+    <archive path="plugins/org.eclipse.core.runtime_3.3.100.v20070510.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.runtime_3.3.100.v20070510.jar">
     <archive path="plugins/org.eclipse.core.variables_3.2.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.variables_3.2.0.v20070426.jar">
     <archive path="plugins/org.eclipse.cvs_1.0.0.v20070212.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.cvs_1.0.0.v20070212.jar">
-    <archive path="plugins/org.eclipse.debug.core_3.3.0.v20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.debug.core_3.3.0.v20070502.jar">
-    <archive path="plugins/org.eclipse.debug.ui_3.3.0.v20070502a.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.debug.ui_3.3.0.v20070502a.jar">
+    <archive path="plugins/org.eclipse.debug.core_3.3.0.v20070524b.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.debug.core_3.3.0.v20070524b.jar">
+    <archive path="plugins/org.eclipse.debug.ui_3.3.0.v20070524a.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.debug.ui_3.3.0.v20070524a.jar">
     <archive path="plugins/org.eclipse.equinox.app_1.0.0.v20070423.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.app_1.0.0.v20070423.jar">
     <archive path="plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.http.jetty_1.0.0.v20070427.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.http.jetty_1.0.0.v20070427.jar">
-    <archive path="plugins/org.eclipse.equinox.http.registry_1.0.0.v20070326.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.http.registry_1.0.0.v20070326.jar">
-    <archive path="plugins/org.eclipse.equinox.http.servlet_1.0.0.v20070402.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.http.servlet_1.0.0.v20070402.jar">
-    <archive path="plugins/org.eclipse.equinox.jsp.jasper.registry_1.0.0.v20070326.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.jsp.jasper.registry_1.0.0.v20070326.jar">
-    <archive path="plugins/org.eclipse.equinox.jsp.jasper_1.0.0.v20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.jsp.jasper_1.0.0.v20070416.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher_1.0.0.v20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher_1.0.0.v20070502.jar">
-    <archive path="plugins/org.eclipse.equinox.preferences_3.2.100.v20070409.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.preferences_3.2.100.v20070409.jar">
-    <archive path="plugins/org.eclipse.equinox.registry_3.3.0.v20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.registry_3.3.0.v20070416.jar">
-    <archive path="plugins/org.eclipse.help.appserver_3.1.200.v20070316.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.appserver_3.1.200.v20070316.jar">
-    <archive path="plugins/org.eclipse.help.base_3.3.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.base_3.3.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.help.ui_3.3.0.v20070501B.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.ui_3.3.0.v20070501B.jar">
-    <archive path="plugins/org.eclipse.help.webapp_3.3.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.webapp_3.3.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.help_3.3.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help_3.3.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.jdt.apt.core_3.3.0.v20070502-1600.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.apt.core_3.3.0.v20070502-1600.jar">
-    <archive path="plugins/org.eclipse.jdt.apt.pluggable.core_1.0.0.v20070503-1340.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.apt.pluggable.core_1.0.0.v20070503-1340.jar">
+    <archive path="plugins/org.eclipse.equinox.http.jetty_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.http.jetty_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.http.registry_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.http.registry_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.http.servlet_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.http.servlet_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.jsp.jasper.registry_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.jsp.jasper.registry_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.jsp.jasper_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.jsp.jasper_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.preferences_3.2.100.v20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.preferences_3.2.100.v20070522.jar">
+    <archive path="plugins/org.eclipse.equinox.registry_3.3.0.v20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.registry_3.3.0.v20070522.jar">
+    <archive path="plugins/org.eclipse.help.appserver_3.1.200.v20070510.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.appserver_3.1.200.v20070510.jar">
+    <archive path="plugins/org.eclipse.help.base_3.3.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.base_3.3.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.help.ui_3.3.0.v20070507.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.ui_3.3.0.v20070507.jar">
+    <archive path="plugins/org.eclipse.help.webapp_3.3.0.v20070524B.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help.webapp_3.3.0.v20070524B.jar">
+    <archive path="plugins/org.eclipse.help_3.3.0.v20070524.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.help_3.3.0.v20070524.jar">
+    <archive path="plugins/org.eclipse.jdt.apt.core_3.3.0.v20070523-1200.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.apt.core_3.3.0.v20070523-1200.jar">
+    <archive path="plugins/org.eclipse.jdt.apt.pluggable.core_1.0.0.v20070510-2000.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.apt.pluggable.core_1.0.0.v20070510-2000.jar">
     <archive path="plugins/org.eclipse.jdt.apt.ui_3.3.0.v20070430-1135.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.apt.ui_3.3.0.v20070430-1135.jar">
-    <archive path="plugins/org.eclipse.jdt.compiler.apt_1.0.0.v20070502-1700.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.compiler.apt_1.0.0.v20070502-1700.jar">
-    <archive path="plugins/org.eclipse.jdt.compiler.tool_1.0.0.v_755.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.compiler.tool_1.0.0.v_755.jar">
-    <archive path="plugins/org.eclipse.jdt.core.manipulation_1.1.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.core.manipulation_1.1.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jdt.core_3.3.0.v_755.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.core_3.3.0.v_755.jar">
-    <archive path="plugins/org.eclipse.jdt.debug.ui_3.2.100.v20070427.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.debug.ui_3.2.100.v20070427.jar">
-    <archive path="plugins/org.eclipse.jdt.doc.isv_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.doc.isv_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jdt.doc.user_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.doc.user_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jdt.junit.runtime_3.2.100.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.junit.runtime_3.2.100.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jdt.junit4.runtime_1.0.100.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.junit4.runtime_1.0.100.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jdt.junit_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.junit_3.3.0.v20070503-0800.jar">
+    <archive path="plugins/org.eclipse.jdt.compiler.apt_1.0.0.v20070510-2000.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.compiler.apt_1.0.0.v20070510-2000.jar">
+    <archive path="plugins/org.eclipse.jdt.compiler.tool_1.0.0.v_766.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.compiler.tool_1.0.0.v_766.jar">
+    <archive path="plugins/org.eclipse.jdt.core.manipulation_1.1.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.core.manipulation_1.1.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jdt.core_3.3.0.v_766.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.core_3.3.0.v_766.jar">
+    <archive path="plugins/org.eclipse.jdt.debug.ui_3.2.100.v20070524b.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.debug.ui_3.2.100.v20070524b.jar">
+    <archive path="plugins/org.eclipse.jdt.doc.isv_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.doc.isv_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jdt.doc.user_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.doc.user_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jdt.junit.runtime_3.2.100.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.junit.runtime_3.2.100.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jdt.junit4.runtime_1.0.100.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.junit4.runtime_1.0.100.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jdt.junit_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.junit_3.3.0.v20070525-1050.jar">
     <archive path="plugins/org.eclipse.jdt.launching.macosx_3.1.100.v20061211.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.launching.macosx_3.1.100.v20061211.jar">
-    <archive path="plugins/org.eclipse.jdt.launching_3.3.0.v20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.launching_3.3.0.v20070502.jar">
-    <archive path="plugins/org.eclipse.jdt.ui_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.ui_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jdt_3.2.100.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt_3.2.100.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jface.databinding_1.1.0.I20070501-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jface.databinding_1.1.0.I20070501-0010.jar">
-    <archive path="plugins/org.eclipse.jface.text_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jface.text_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.jface_3.3.0.I20070503-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jface_3.3.0.I20070503-0010.jar">
+    <archive path="plugins/org.eclipse.jdt.launching_3.3.0.v20070510.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.launching_3.3.0.v20070510.jar">
+    <archive path="plugins/org.eclipse.jdt.ui_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.ui_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jdt_3.2.100.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt_3.2.100.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jface.databinding_1.1.0.I20070523-1500.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jface.databinding_1.1.0.I20070523-1500.jar">
+    <archive path="plugins/org.eclipse.jface.text_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jface.text_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.jface_3.3.0.I20070525-1100.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jface_3.3.0.I20070525-1100.jar">
     <archive path="plugins/org.eclipse.jsch.core_1.0.0.I20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jsch.core_1.0.0.I20070426.jar">
-    <archive path="plugins/org.eclipse.jsch.ui_1.0.0.I20070501.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jsch.ui_1.0.0.I20070501.jar">
-    <archive path="plugins/org.eclipse.ltk.core.refactoring_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ltk.core.refactoring_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.ltk.ui.refactoring_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ltk.ui.refactoring_3.3.0.v20070503-0800.jar">
+    <archive path="plugins/org.eclipse.jsch.ui_1.0.0.I20070525.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jsch.ui_1.0.0.I20070525.jar">
+    <archive path="plugins/org.eclipse.ltk.core.refactoring_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ltk.core.refactoring_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.ltk.ui.refactoring_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ltk.ui.refactoring_3.3.0.v20070525-1050.jar">
     <archive path="plugins/org.eclipse.osgi.services_3.1.100.v20060918.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.osgi.services_3.1.100.v20060918.jar">
     <archive path="plugins/org.eclipse.osgi.util_3.1.100.v20060918.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.osgi.util_3.1.100.v20060918.jar">
-    <archive path="plugins/org.eclipse.osgi_3.3.0.v20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.osgi_3.3.0.v20070430.jar">
-    <archive path="plugins/org.eclipse.pde.core_3.3.0.v20070501-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.core_3.3.0.v20070501-0010.jar">
-    <archive path="plugins/org.eclipse.pde.doc.user_3.3.0.v20070410-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.doc.user_3.3.0.v20070410-0800.jar">
+    <archive path="plugins/org.eclipse.osgi_3.3.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.osgi_3.3.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.pde.core_3.3.0.v20070525-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.core_3.3.0.v20070525-0010.jar">
+    <archive path="plugins/org.eclipse.pde.doc.user_3.3.0.v20070523-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.doc.user_3.3.0.v20070523-0010.jar">
     <archive path="plugins/org.eclipse.pde.junit.runtime_3.3.0.v20070205-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.junit.runtime_3.3.0.v20070205-0010.jar">
     <archive path="plugins/org.eclipse.pde.runtime_3.3.0.v20070410-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.runtime_3.3.0.v20070410-0800.jar">
-    <archive path="plugins/org.eclipse.pde.ui.templates_3.3.0.v20070427-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.ui.templates_3.3.0.v20070427-0800.jar">
-    <archive path="plugins/org.eclipse.pde.ui_3.3.0.v20070502-1800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.ui_3.3.0.v20070502-1800.jar">
+    <archive path="plugins/org.eclipse.pde.ui.templates_3.3.0.v20070525-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.ui.templates_3.3.0.v20070525-0010.jar">
+    <archive path="plugins/org.eclipse.pde.ui_3.3.0.v20070525-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.ui_3.3.0.v20070525-0010.jar">
     <archive path="plugins/org.eclipse.pde_3.3.0.v20070403-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde_3.3.0.v20070403-0800.jar">
-    <archive path="plugins/org.eclipse.platform.doc.isv_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.platform.doc.isv_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.platform.doc.user_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.platform.doc.user_3.3.0.v20070503-0800.jar">
+    <archive path="plugins/org.eclipse.platform.doc.isv_3.3.0.v20070525-1346.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.platform.doc.isv_3.3.0.v20070525-1346.jar">
+    <archive path="plugins/org.eclipse.platform.doc.user_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.platform.doc.user_3.3.0.v20070525-1050.jar">
     <archive path="plugins/org.eclipse.rcp_3.2.0.v20060605.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.rcp_3.2.0.v20060605.jar">
-    <archive path="plugins/org.eclipse.search_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.search_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.gtk.linux.ppc_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.linux.ppc_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.linux.x86_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.motif.aix.ppc_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.motif.aix.ppc_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.win32.win32.x86_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.win32.win32.x86_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt.wpf.win32.x86_3.3.0.v3339.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.wpf.win32.x86_3.3.0.v3339.jar">
-    <archive path="plugins/org.eclipse.swt_3.3.0.v3339b.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt_3.3.0.v3339b.jar">
-    <archive path="plugins/org.eclipse.team.core_3.2.100.I20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.core_3.2.100.I20070502.jar">
-    <archive path="plugins/org.eclipse.team.cvs.core_3.3.0.I20070423.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.cvs.core_3.3.0.I20070423.jar">
+    <archive path="plugins/org.eclipse.search_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.search_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt.gtk.linux.ppc_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.linux.ppc_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_3.3.0.v3344e.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.linux.x86_3.3.0.v3344e.jar">
+    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt.motif.aix.ppc_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.motif.aix.ppc_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt.win32.win32.x86_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.win32.win32.x86_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt.wpf.win32.x86_3.3.0.v3344.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt.wpf.win32.x86_3.3.0.v3344.jar">
+    <archive path="plugins/org.eclipse.swt_3.3.0.v3344g.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.swt_3.3.0.v3344g.jar">
+    <archive path="plugins/org.eclipse.team.core_3.2.100.I20070525.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.core_3.2.100.I20070525.jar">
+    <archive path="plugins/org.eclipse.team.cvs.core_3.3.0.I20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.cvs.core_3.3.0.I20070522.jar">
     <archive path="plugins/org.eclipse.team.cvs.ssh2_3.2.100.I20070326.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.cvs.ssh2_3.2.100.I20070326.jar">
     <archive path="plugins/org.eclipse.team.cvs.ssh_3.2.100.I20061208.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.cvs.ssh_3.2.100.I20061208.jar">
-    <archive path="plugins/org.eclipse.team.cvs.ui_3.3.0.I20070501.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.cvs.ui_3.3.0.I20070501.jar">
-    <archive path="plugins/org.eclipse.team.ui_3.3.0.I20070502.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.ui_3.3.0.I20070502.jar">
-    <archive path="plugins/org.eclipse.text_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.text_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.ui.browser_3.2.100.v20070316.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.browser_3.2.100.v20070316.jar">
+    <archive path="plugins/org.eclipse.team.cvs.ui_3.3.0.I20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.cvs.ui_3.3.0.I20070523.jar">
+    <archive path="plugins/org.eclipse.team.ui_3.3.0.I20070524.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.team.ui_3.3.0.I20070524.jar">
+    <archive path="plugins/org.eclipse.text_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.text_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.ui.browser_3.2.100.v20070524A.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.browser_3.2.100.v20070524A.jar">
     <archive path="plugins/org.eclipse.ui.carbon_3.2.0.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.carbon_3.2.0.I20070319-0010.jar">
-    <archive path="plugins/org.eclipse.ui.cheatsheets_3.3.0.v20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.cheatsheets_3.3.0.v20070416.jar">
-    <archive path="plugins/org.eclipse.ui.console_3.2.0.v20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.console_3.2.0.v20070430.jar">
-    <archive path="plugins/org.eclipse.ui.editors_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.editors_3.3.0.v20070503-0800.jar">
+    <archive path="plugins/org.eclipse.ui.cheatsheets_3.3.0.v20070507.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.cheatsheets_3.3.0.v20070507.jar">
+    <archive path="plugins/org.eclipse.ui.console_3.2.0.v20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.console_3.2.0.v20070522.jar">
+    <archive path="plugins/org.eclipse.ui.editors_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.editors_3.3.0.v20070525-1050.jar">
     <archive path="plugins/org.eclipse.ui.externaltools_3.1.200.v20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.externaltools_3.1.200.v20070416.jar">
-    <archive path="plugins/org.eclipse.ui.forms_3.3.0.v20070501A.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.forms_3.3.0.v20070501A.jar">
-    <archive path="plugins/org.eclipse.ui.ide.application_1.0.0.I20070427-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.ide.application_1.0.0.I20070427-0010.jar">
-    <archive path="plugins/org.eclipse.ui.ide_3.3.0.I20070503-1400.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.ide_3.3.0.I20070503-1400.jar">
-    <archive path="plugins/org.eclipse.ui.intro_3.2.100.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.intro_3.2.100.v20070426.jar">
-    <archive path="plugins/org.eclipse.ui.navigator.resources_3.2.100.I20070424-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.navigator.resources_3.2.100.I20070424-0010.jar">
-    <archive path="plugins/org.eclipse.ui.navigator_3.3.0.I20070502-1800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.navigator_3.3.0.I20070502-1800.jar">
-    <archive path="plugins/org.eclipse.ui.net_1.0.0.I20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.net_1.0.0.I20070430.jar">
+    <archive path="plugins/org.eclipse.ui.forms_3.3.0.v20070511.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.forms_3.3.0.v20070511.jar">
+    <archive path="plugins/org.eclipse.ui.ide.application_1.0.0.I20070523-1500.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.ide.application_1.0.0.I20070523-1500.jar">
+    <archive path="plugins/org.eclipse.ui.ide_3.3.0.I20070525-1100.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.ide_3.3.0.I20070525-1100.jar">
+    <archive path="plugins/org.eclipse.ui.intro_3.2.100.v20070509.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.intro_3.2.100.v20070509.jar">
+    <archive path="plugins/org.eclipse.ui.navigator.resources_3.2.100.I20070523-1500.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.navigator.resources_3.2.100.I20070523-1500.jar">
+    <archive path="plugins/org.eclipse.ui.navigator_3.3.0.I20070523-1500.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.navigator_3.3.0.I20070523-1500.jar">
+    <archive path="plugins/org.eclipse.ui.net_1.0.0.I20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.net_1.0.0.I20070516.jar">
     <archive path="plugins/org.eclipse.ui.presentations.r21_3.2.0.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.presentations.r21_3.2.0.I20070319-0010.jar">
     <archive path="plugins/org.eclipse.ui.views.properties.tabbed_3.2.100.I20070424-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.views.properties.tabbed_3.2.100.I20070424-0010.jar">
     <archive path="plugins/org.eclipse.ui.views_3.2.100.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.views_3.2.100.I20070319-0010.jar">
     <archive path="plugins/org.eclipse.ui.win32_3.2.100.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.win32_3.2.100.I20070319-0010.jar">
-    <archive path="plugins/org.eclipse.ui.workbench.texteditor_3.3.0.v20070503-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.workbench.texteditor_3.3.0.v20070503-0800.jar">
-    <archive path="plugins/org.eclipse.ui.workbench_3.3.0.I20070503-1400.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.workbench_3.3.0.I20070503-1400.jar">
-    <archive path="plugins/org.eclipse.ui_3.3.0.I20070503-1400.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui_3.3.0.I20070503-1400.jar">
-    <archive path="plugins/org.eclipse.update.configurator_3.2.100.v20070430.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.configurator_3.2.100.v20070430.jar">
+    <archive path="plugins/org.eclipse.ui.workbench.texteditor_3.3.0.v20070525-1050.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.workbench.texteditor_3.3.0.v20070525-1050.jar">
+    <archive path="plugins/org.eclipse.ui.workbench_3.3.0.I20070525-1100.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.workbench_3.3.0.I20070525-1100.jar">
+    <archive path="plugins/org.eclipse.ui_3.3.0.I20070525-1100.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui_3.3.0.I20070525-1100.jar">
+    <archive path="plugins/org.eclipse.update.configurator_3.2.100.v20070507.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.configurator_3.2.100.v20070507.jar">
     <archive path="plugins/org.eclipse.update.core.linux_3.2.0.v20070413patches.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.core.linux_3.2.0.v20070413patches.jar">
     <archive path="plugins/org.eclipse.update.core.win32_3.2.100.v20061214.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.core.win32_3.2.100.v20061214.jar">
-    <archive path="plugins/org.eclipse.update.core_3.2.100.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.core_3.2.100.v20070426.jar">
+    <archive path="plugins/org.eclipse.update.core_3.2.100.v20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.core_3.2.100.v20070522.jar">
     <archive path="plugins/org.eclipse.update.scheduler_3.2.100.v20070413patches.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.scheduler_3.2.100.v20070413patches.jar">
-    <archive path="plugins/org.eclipse.update.ui_3.2.100.v20070416.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.ui_3.2.100.v20070416.jar">
-    <archive path="plugins/org.mortbay.jetty_5.1.11.v200701082340.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.mortbay.jetty_5.1.11.v200701082340.jar">
-    <archive path="plugins/org.apache.ant_1.7.0.v200704241635.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.ant_1.7.0.v200704241635.jar">
+    <archive path="plugins/org.eclipse.update.ui_3.2.100.v20070522.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.update.ui_3.2.100.v20070522.jar">
+    <archive path="plugins/org.mortbay.jetty_5.1.11.v200705231735.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.mortbay.jetty_5.1.11.v200705231735.jar">
+    <archive path="plugins/org.apache.ant_1.7.0.v200705232135.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.apache.ant_1.7.0.v200705232135.jar">
     <archive path="plugins/org.eclipse.core.runtime.compatibility.registry_3.2.100.v20070316.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.100.v20070316.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.0.v20070426.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.0.v20070426.jar">
-    <archive path="plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.0.v20070427.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.0.v20070427.jar">
-    <archive path="plugins/org.eclipse.jdt.debug_3.3.0.v20070501.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.debug_3.3.0.v20070501.jar">
-    <archive path="plugins/org.eclipse.pde.build_3.3.0.v20070430-1700.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.build_3.3.0.v20070430-1700.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.0.v20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.0.v20070516.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.0.v20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.0.v20070516.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.0.v20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.0.v20070516.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.0.v20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.0.v20070516.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.0.v20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.0.v20070516.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.0.v20070524.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.0.v20070524.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.0.v20070523.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.0.v20070523.jar">
+    <archive path="plugins/org.eclipse.jdt.debug_3.3.0.v20070524a.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.jdt.debug_3.3.0.v20070524a.jar">
+    <archive path="plugins/org.eclipse.pde.build_3.3.0.v20070524.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.pde.build_3.3.0.v20070524.jar">
     <archive path="plugins/org.eclipse.platform_3.3.0.v20070419.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.platform_3.3.0.v20070419.jar">
     <archive path="plugins/org.eclipse.sdk_3.3.0.v20070228-0800.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.sdk_3.3.0.v20070228-0800.jar">
-    <archive path="plugins/org.eclipse.tomcat_4.1.130.v20070316.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.tomcat_4.1.130.v20070316.jar">
-    <archive path="plugins/org.eclipse.ui.intro.universal_3.2.100.v20070427.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.intro.universal_3.2.100.v20070427.jar">
+    <archive path="plugins/org.eclipse.tomcat_4.1.130.v20070514.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.tomcat_4.1.130.v20070514.jar">
+    <archive path="plugins/org.eclipse.ui.intro.universal_3.2.100.v20070516.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.intro.universal_3.2.100.v20070516.jar">
     <archive path="plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar">
     <archive path="plugins/org.junit4_4.3.1.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.junit4_4.3.1.jar">
-    <archive path="plugins/org.junit_3.8.2.v200701261102.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.junit_3.8.2.v200701261102.jar">
-    <archive path="plugins/org.tigris.subversion.javahl.win32_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.javahl.win32_1.0.5.jar">
-    <archive path="plugins/org.tigris.subversion.subclipse.core_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.subclipse.core_1.0.5.jar">
-    <archive path="plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar">
-    <archive path="plugins/org.tigris.subversion.subclipse_1.0.5.jar" url="http://subclipse.tigris.org/update_1.0.x//plugins/org.tigris.subversion.subclipse_1.0.5.jar">
+    <archive path="plugins/org.junit_3.8.2.v200705231735.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/org.junit_3.8.2.v200705231735.jar">
+    <archive path="plugins/org.tigris.subversion.javahl.win32_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.javahl.win32_1.0.5.jar">
+    <archive path="plugins/org.tigris.subversion.subclipse.core_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.core_1.0.5.jar">
+    <archive path="plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar">
+    <archive path="plugins/org.tigris.subversion.subclipse_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse_1.0.5.jar">
 </site>
