@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster PDE Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.pde; singleton:=true
-Bundle-Version: 0.1.0.v20070524
+Bundle-Version: 0.1.0.v20070529
 Bundle-Activator: org.eclipse.buckminster.pde.PDEPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: pde.jar
