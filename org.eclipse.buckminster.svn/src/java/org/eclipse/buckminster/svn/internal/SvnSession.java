@@ -90,6 +90,9 @@ public class SvnSession
 
 	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword
 	{
+		private int m_promptUserLimit = 3;
+		private int m_promptPasswordLimit = 3;
+
 		public String askQuestion(String realm, String question, boolean showAnswer, boolean maySave)
 		{
 			// We do not support questions
@@ -155,8 +158,9 @@ public class SvnSession
 		public boolean prompt(String realm, String username, boolean maySave)
 		{
 			// We support the password prompt only if we actually know the password 
-			//
-			return (m_password != null);
+			// and only a limited number of times 
+ 			//
+			return m_password != null && --m_promptPasswordLimit >= 0;
 		}
 
 		public boolean promptSSH(String realm, String username, int sshPort, boolean maySave)
@@ -175,9 +179,9 @@ public class SvnSession
 
 		public boolean promptUser(String realm, String username, boolean maySave)
 		{
-			// We *do* support user prompt
-			//
-			return true;
+			// We do support the user prompt but only a limited number of times 
+ 			//
+			return --m_promptUserLimit >= 0;
 		}
 
 		public boolean userAllowedSave()
