@@ -47,7 +47,7 @@
 		</buckminster.zip>
 	</target>
 
-	<target name="wrap.jnlp.product">
+	<target name="wrap.jnlp">
 		<property name="jar.exploded" location="${buckminster.temp}/plaftmp"/>
 		<property name="product.package" location="${jar.exploded}/org/eclipse/buckminster/jnlp/product"/>
 		<property name="product.jnlp" location="${sp:product.output}/product.jnlp"/>
@@ -233,7 +233,7 @@
 ]]></echo>
 	</target>
 
-	<target name="build.jnlp.package">
+	<target name="zip.jnlp">
 		<delete dir="${buckminster.temp}/exploded"/>
 		<mkdir dir="${buckminster.temp}/exploded"/>
 

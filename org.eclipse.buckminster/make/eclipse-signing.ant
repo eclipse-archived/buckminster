@@ -10,6 +10,7 @@
 	<property name="build.timestamp" value="" />
 	<property name="remote.queue.folder" value="${staging.area}" />
 	<property name="remote.output.folder" value="${staging.area}/out${build.timestamp}" />
+	<property name="verbose" value="true"/>
 
 	<!-- Convert the directory denoted by the requirement property into a property that
 		 appoints the file that it contains
@@ -29,7 +30,7 @@
 		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<copy file="${input.file}" todir="${output.folder}"/>
-		<eclipse.jarProcessor normalize="true" jar="${output.folder}/${subject.file}"/>
+		<eclipse.jarProcessor verbose="${verbose}" normalize="true" jar="${output.folder}/${subject.file}"/>
 	</target>
 
 	<target name="local.sign.jars">
@@ -47,7 +48,7 @@
 		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<copy file="${input.file}" todir="${output.folder}"/>
-		<eclipse.jarProcessor sign="true" jar="${output.folder}/${subject.file}" keystore="${local.keystore.path}" alias="${local.keystore.alias}" storepass="${local.keystore.password}"/>
+		<eclipse.jarProcessor verbose="${verbose}" sign="true" jar="${output.folder}/${subject.file}" keystore="${local.keystore.path}" alias="${local.keystore.alias}" storepass="${local.keystore.password}"/>
 	</target>
 
 	<target name="queue.for.signing">
@@ -92,6 +93,6 @@
 		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<copy file="${input.file}" todir="${output.folder}"/>
-		<eclipse.jarProcessor pack="true" jar="${output.folder}/${subject.file}"/>
+		<eclipse.jarProcessor verbose="${verbose}" pack="true" jar="${output.folder}/${subject.file}"/>
 	</target>
 </project>

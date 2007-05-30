@@ -28,7 +28,7 @@
 			<prerequisites>
 				<attribute name="build.site" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/normalized.site" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/site.n" alias="product.output" upToDatePolicy="MAPPER"/>
 		</private>
 
 		<public name="sign.site" actor="ant">
@@ -39,7 +39,7 @@
 			<prerequisites>
 				<attribute name="normalize.site" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.site" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/site.s" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
 		<public name="build.product" actor="ant">
@@ -65,7 +65,7 @@
 			<prerequisites>
 				<attribute name="build.product" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/normalized.product" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/product.n" alias="product.output" upToDatePolicy="MAPPER"/>
 		</private>
 
 		<public name="sign.product" actor="ant">
@@ -76,99 +76,110 @@
 			<prerequisites>
 				<attribute name="normalize.product" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.product" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/product.s" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
-		<private name="build.jnlp.installer" actor="ant">
+		<private name="build.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
 				<property key="targets" value="build.product" />
 			</actorProperties>
 			<properties>
-				<property key="product.name" value="buckminster.jnlp.installer" />
+				<property key="product.name" value="buckminster.installer" />
 			</properties>
 			<prerequisites>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="jnlp.installer" alias="product"/>
 				<attribute component="org.eclipse.buckminster.jnlp.product" name="feature.xml" alias="product.feature.xml"/>
 			</prerequisites>
-            <products base="${buckminster.output}/jnlp.installer" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
+            <products base="${buckminster.output}/jnlp" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</private>
 
-		<private name="pack.jnlp.product" actor="ant">
+		<private name="pack.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
 				<property key="targets" value="pack.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="build.jnlp.installer" alias="requirement"/>
+				<attribute name="build.jnlp" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/packed.jnlp.product" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/jnlp.p" alias="product.output" upToDatePolicy="MAPPER"/>
 		</private>
 
-		<private name="wrap.jnlp.product" actor="ant">
+		<private name="wrap.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="pack.jnlp.product" alias="installer.zip"/>
+				<attribute name="pack.jnlp" alias="installer.zip"/>
 				<attribute component="org.eclipse.buckminster.jnlp.bootstrap" name="product.binary.folder" alias="installer.classes"/>
 			</prerequisites>
-            <products base="${buckminster.output}/wrapped.jnlp.product" alias="product.output" upToDatePolicy="NOT_EMPTY"/>
+            <products base="${buckminster.output}/jnlp.w" alias="product.output" upToDatePolicy="NOT_EMPTY"/>
 		</private>
 
-		<public name="build.jnlp.package" actor="ant">
+		<public name="zip.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/build.xml" />
 			</actorProperties>
 			<prerequisites>
 				<attribute component="org.eclipse.buckminster.jnlp.bootstrap" name="java.binary.archive" alias="bootstrap.jar"/>
-				<attribute name="wrap.jnlp.product" alias="product.jars"/>
+				<attribute name="wrap.jnlp" alias="product.jars"/>
 			</prerequisites>
-            <products base="${buckminster.output}/built.jnlp.package" alias="product.output" upToDatePolicy="COUNT" fileCount="1">
+            <products base="${buckminster.output}/jnlp.z" alias="product.output" upToDatePolicy="COUNT" fileCount="1">
             	<path path="jnlp-package.zip"/>
             </products>
 		</public>
 
-		<public name="sign.jnlp.package" actor="ant">
+		<private name="normalize.jnlp" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="normalize.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="zip.jnlp" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/jnlp.n" alias="product.output" upToDatePolicy="MAPPER"/>
+		</private>
+
+		<public name="sign.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
 				<property key="targets" value="sign.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="build.jnlp.package" alias="requirement"/>
+				<attribute name="normalize.jnlp" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/signed.jnlp.package" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/jnlp.s" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
-		<public name="local.sign.jnlp.package" actor="ant">
+		<public name="local.sign.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
 				<property key="targets" value="local.sign.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="build.jnlp.package" alias="requirement"/>
+				<attribute name="normalize.jnlp" alias="requirement"/>
 			</prerequisites>
-            <products base="${buckminster.output}/local.signed.jnlp.package" alias="product.output" upToDatePolicy="MAPPER"/>
+            <products base="${buckminster.output}/jnlp.ls" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
-		<public name="publish.jnlp.package" actor="ant">
+		<public name="publish.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/publish.ant" />
 				<property key="targets" value="ftp.publish" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="sign.jnlp.package" alias="requirement"/>
+				<attribute name="sign.jnlp" alias="requirement"/>
 				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
 			</prerequisites>
  		</public>
 
-		<public name="publish.local.jnlp.package" actor="ant">
+		<public name="publish.local.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/publish.ant" />
 				<property key="targets" value="ftp.publish" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="local.sign.jnlp.package" alias="requirement"/>
+				<attribute name="local.sign.jnlp" alias="requirement"/>
 				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
 			</prerequisites>
  		</public>
@@ -189,12 +200,12 @@
 		<public name="build.all">
 			<attribute name="build.site"/>
 			<attribute name="build.product"/>
-			<attribute name="build.jnlp.package"/>
+			<attribute name="build.jnlp"/>
 		</public>
 		<public name="sign.all">
 			<attribute name="sign.site"/>
 			<attribute name="sign.product"/>
-			<attribute name="sign.jnlp.package"/>
+			<attribute name="sign.jnlp"/>
 		</public>
 		<private name="site.source">
 			<attribute component="org.eclipse.buckminster.update" name="feature.exports"/>
