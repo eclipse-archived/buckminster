@@ -165,6 +165,11 @@ public class CSpecBuilder
 		return new GroupBuilder(this);
 	}
 
+	public Map<String,AttributeBuilder> getAttributes()
+	{
+		return m_attributes;
+	}
+
 	public ActionBuilder getAction(String name)
 	{
 		AttributeBuilder attr = getAttribute(name);
