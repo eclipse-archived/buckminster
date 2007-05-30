@@ -277,8 +277,13 @@ public class Main
 		allArgs.add(javaExe.toString());
 		allArgs.add("-jar");
 		allArgs.add(launcherFile.toString());
-		allArgs.add("-data");
-		allArgs.add(getWorkspaceDir());
+		
+		String wsDir = getWorkspaceDir();
+		if(wsDir != null)
+		{
+			allArgs.add("-data");
+			allArgs.add(wsDir);
+		}
 		allArgs.add("-application");
 		allArgs.add("org.eclipse.buckminster.jnlp.application");
 		for(String arg : args)
