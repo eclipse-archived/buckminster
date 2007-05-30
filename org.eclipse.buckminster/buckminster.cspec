@@ -140,6 +140,17 @@
             <products base="${buckminster.output}/signed.jnlp.package" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
+		<public name="local.sign.jnlp.package" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="local.sign.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="build.jnlp.package" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/local.signed.jnlp.package" alias="product.output" upToDatePolicy="MAPPER"/>
+		</public>
+
 		<public name="publish.jnlp.package" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/publish.ant" />
@@ -147,6 +158,17 @@
 			</actorProperties>
 			<prerequisites>
 				<attribute name="sign.jnlp.package" alias="requirement"/>
+				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
+			</prerequisites>
+ 		</public>
+
+		<public name="publish.local.jnlp.package" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/publish.ant" />
+				<property key="targets" value="ftp.publish" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="local.sign.jnlp.package" alias="requirement"/>
 				<attribute component="commons-net" name="java.binaries" alias="commons-net.classpath"/>
 			</prerequisites>
  		</public>

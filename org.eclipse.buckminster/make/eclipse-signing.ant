@@ -25,13 +25,29 @@
 	<basename file="${input.file}" property="subject.file"/>
 	<property name="output.folder" location="${sp:product.output}"/>
 
-	<property file="${user.home}/buildtools/committer-credentials.properties"/>
-
 	<target name="normalize.jars">
 		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
 		<copy file="${input.file}" todir="${output.folder}"/>
 		<eclipse.jarProcessor normalize="true" jar="${output.folder}/${subject.file}"/>
+	</target>
+
+	<target name="local.sign.jars">
+		<fail message="The properties 'local.keystore.path', 'local.keystore.alias', and 'local.keystore.password' must be set in order to do local jar signing">
+			<condition>
+				<not>
+					<and>
+						<isset property="local.keystore.path"/>
+						<isset property="local.keystore.alias"/>
+						<isset property="local.keystore.password"/>
+					</and>
+				</not>
+			</condition>
+		</fail>
+		<delete dir="${output.folder}"/>
+		<mkdir dir="${output.folder}"/>
+		<copy file="${input.file}" todir="${output.folder}"/>
+		<eclipse.jarProcessor sign="true" jar="${output.folder}/${subject.file}" keystore="${local.keystore.path}" alias="${local.keystore.alias}" storepass="${local.keystore.password}"/>
 	</target>
 
 	<target name="queue.for.signing">
