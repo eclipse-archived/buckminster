@@ -46,9 +46,13 @@
 			</condition>
 		</fail>
 		<delete dir="${output.folder}"/>
-		<mkdir dir="${output.folder}"/>
-		<copy file="${input.file}" todir="${output.folder}"/>
-		<eclipse.jarProcessor verbose="${verbose}" sign="true" jar="${output.folder}/${subject.file}" keystore="${local.keystore.path}" alias="${local.keystore.alias}" storepass="${local.keystore.password}"/>
+		<mkdir dir="${output.folder}/unzipped"/>
+		<unzip src="${input.file}" dest="${output.folder}/unzipped"/>
+		<signjar keystore="${local.keystore.path}" alias="${local.keystore.alias}" storepass="${local.keystore.password}">
+			<fileset dir="${output.folder}/unzipped" includes="**/*.jar"/>
+		</signjar>
+		<zip basedir="${output.folder}/unzipped" destfile="${output.folder}/${subject.file}"/>
+		<delete dir="${output.folder}/unzipped"/>
 	</target>
 
 	<target name="queue.for.signing">
