@@ -104,14 +104,7 @@ public class CSpecEditor extends EditorPart
 		}
 	}
 	
-	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = new Comparator<CSpecElementBuilder>()
-	{
-
-		public int compare(CSpecElementBuilder o1, CSpecElementBuilder o2)
-		{
-			return o1.getName().compareTo(o2.getName());
-		}
-	};
+	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = CSpecEditorUtils.getCSpecElementComparator();
 
 	private CSpecBuilder m_cspec;
 	
@@ -230,15 +223,13 @@ public class CSpecEditor extends EditorPart
 
 	private boolean commitChanges()
 	{
-// TODO uncomment
-/*		
 		if(m_actionsEditor.isInEditMode())
 		{
 			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current action edit?"))
 				return false;
 			m_actionsEditor.cancelRow();
 		}
-*/
+
 		if(m_artifactsEditor.isInEditMode())
 		{
 			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current artifact edit?"))
@@ -246,15 +237,13 @@ public class CSpecEditor extends EditorPart
 			m_artifactsEditor.cancelRow();
 		}
 
-// TODO uncomment
-/*		
-				if(m_groupsEditor.isInEditMode())
-				{
-					if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
-						return false;
-					m_groupsEditor.cancelRow();
-				}
-*/
+		if(m_groupsEditor.isInEditMode())
+		{
+			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
+				return false;
+			m_groupsEditor.cancelRow();
+		}
+
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
 		{
@@ -478,11 +467,9 @@ public class CSpecEditor extends EditorPart
 					? ""
 					: doc.toString()));
 			
-			// TODO uncomment
-			//m_actionsEditor.refresh();
+			m_actionsEditor.refresh();
 			m_artifactsEditor.refresh();
-			// TODO uncomment
-			//m_groupsEditor.refresh();
+			m_groupsEditor.refresh();
 			m_dependenciesEditor.refresh();
 			m_generatorsEditor.refresh();
 
@@ -655,9 +642,18 @@ public class CSpecEditor extends EditorPart
 		return tabComposite;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Control getActionsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
+
+		ActionsTable table = new ActionsTable(m_actionBuilders, m_cspec);
+		table.addTableModifyListener(m_compoundModifyListener);
+		
+		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(
+				tabComposite,
+				table,
+				SWT.NONE);
 
 		return tabComposite;
 	}
@@ -678,9 +674,18 @@ public class CSpecEditor extends EditorPart
 		return tabComposite;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Control getGroupsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Groups");
+
+		GroupsTable table = new GroupsTable(m_groupBuilders, m_cspec);
+		table.addTableModifyListener(m_compoundModifyListener);
+		
+		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(
+				tabComposite,
+				table,
+				SWT.NONE);
 
 		return tabComposite;
 	}
@@ -755,5 +760,4 @@ public class CSpecEditor extends EditorPart
 		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
 	}
-
 }
