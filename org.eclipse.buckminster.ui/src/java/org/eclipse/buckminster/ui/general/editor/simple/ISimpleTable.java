@@ -84,7 +84,13 @@ public interface ISimpleTable<T> extends ITable<T>
 	 */
 	public int[] getColumnWeights();
 		
-	
+	/**
+	 * Number of columns
+	 * 
+	 * @return number of columns
+	 */
+	public int getColumns();
+		
 	/**
 	 * Gets column Validator - checks value of a column field
 	 * 
