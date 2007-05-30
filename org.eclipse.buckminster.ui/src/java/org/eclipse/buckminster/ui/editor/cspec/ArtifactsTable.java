@@ -10,7 +10,6 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,15 +35,6 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 {
-	private Comparator<IPath> s_pathComparator = new Comparator<IPath>()
-	{
-
-		public int compare(IPath o1, IPath o2)
-		{
-			return o1.toOSString().compareTo(o2.toOSString());
-		}
-	};
-	
 	private Text m_basePathText;
 	private Text m_typeText;
 	private List<IPath> m_paths = new ArrayList<IPath>();
@@ -99,8 +89,8 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Paths", createPathsStackLayer(stackComposite));
+		addStackMapping("Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
@@ -169,7 +159,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		if(paths != null)
 		{
 			IPath[] pathArray = paths.toArray(new IPath[0]);
-			Arrays.sort(pathArray, s_pathComparator);
+			Arrays.sort(pathArray, EditorUtils.getPathComparator());
 			
 			for(IPath path : pathArray)
 			{

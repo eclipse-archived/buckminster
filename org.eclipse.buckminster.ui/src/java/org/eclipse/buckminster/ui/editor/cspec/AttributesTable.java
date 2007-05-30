@@ -10,7 +10,6 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -37,15 +36,6 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AttributesTable<T extends AttributeBuilder> extends OnePageTable<T>
 {
-	private Comparator<Property> s_propertyComparator = new Comparator<Property>()
-	{
-
-		public int compare(Property o1, Property o2)
-		{
-			return o1.getKey().compareTo(o2.getKey());
-		}
-	};
-
 	private CSpecBuilder m_cspec;
 	
 	private Text m_nameText;
@@ -122,7 +112,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends OnePag
 
 		EditorUtils.createHeaderLabel(ihComposite, "Installer Hints", 1);
 
-		InstallerHintsTable ihTable = new InstallerHintsTable(m_installerHints);
+		PropertiesTable ihTable = new PropertiesTable(m_installerHints);
 		
 		m_installerHintsEditor = new SimpleTableEditor<Property>(
 				ihComposite,
@@ -190,7 +180,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends OnePag
 				hlpList.add(new Property(key, properties.get(key)));
 			}
 			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, s_propertyComparator);
+			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
 			
 			for(Property property : propertyArray)
 			{
@@ -198,8 +188,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends OnePag
 			}
 		}
 		m_installerHintsEditor.refresh();
-		
-		
+			
 		Documentation doc = builder.getDocumentation();
 		m_documentationText.setText(TextUtils.notNullString(doc == null ? null : doc.toString()));
 	}
