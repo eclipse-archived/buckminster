@@ -9,12 +9,15 @@
 package org.eclipse.buckminster.jnlp.bootstrap;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -53,10 +56,12 @@ public class Main
 		{
 			Main main = new Main();
 			main.run(args);
+			Runtime.getRuntime().exit(0);
 		}
 		catch(Throwable t)
 		{
 			t.printStackTrace();
+			Runtime.getRuntime().exit(1);
 		}
 	}
 
@@ -116,33 +121,67 @@ public class Main
 
 	private Properties parseArguments(String[] args) throws IOException
 	{
-		String arg = null;
+		int urlIdx = -1;
 		for(int idx = 0; idx < args.length; ++idx)
 		{
 			if("-configURL".equals(args[idx]))
 			{
 				if(++idx < args.length)
 				{
-					arg = args[idx];
-					if(arg != null)
+					String arg = args[idx];
+					if(arg != null && arg.trim().length() > 0)
 					{
-						arg = arg.trim();
-						if(arg.length() == 0)
-							arg = null;
+						urlIdx = idx;
+						break;
 					}
 				}
 				break;
 			}
 		}
 
-		if(arg == null)
+		if(urlIdx == -1)
 			throw new RuntimeException("Missing required argument -configURL <URL to config properties>");
 
 		InputStream propStream = null;
+		OutputStream localStream = null;
 		try
 		{
-			URL propertiesURL = new URL(arg);
-			propStream = new BufferedInputStream(propertiesURL.openStream());
+			URL propertiesURL = new URL(args[urlIdx].trim());
+			if(!"file".equals(propertiesURL))
+			{
+				// Copy to local file. The installer that we bootstrap will need
+				// this too and we don't want an extra http GET just to get it.
+				//
+				int count;
+				byte[] bytes = new byte[8192];
+				ByteArrayOutputStream bld = new ByteArrayOutputStream();
+				propStream = propertiesURL.openStream();
+				while((count = propStream.read(bytes, 0, bytes.length)) > 0)
+					bld.write(bytes, 0, count);
+
+				propStream.close();
+				bytes = bld.toByteArray();
+				propStream = new ByteArrayInputStream(bytes);
+
+				// Create the local file
+				//
+				File localTemp = new File(getInstallLocation(), "temp");
+				if(!(localTemp.exists() || localTemp.mkdirs()))
+					throw new RuntimeException("Unable to create directory " + localTemp);
+
+				File localProps = File.createTempFile("config", "properties", localTemp);
+				localStream = new FileOutputStream(localProps);
+				localStream.write(bytes);
+
+				// Replace the configURL option value in the argument array with a pointer
+				// to the local file. We convert to URI first since the toURL() on File
+				// is broken (it doesn't convert spaces correctly).
+				//
+				args[urlIdx] = localProps.toURI().toURL().toExternalForm();
+			}
+			else
+				propStream = new BufferedInputStream(propertiesURL.openStream());
+
 			Properties props = new Properties();
 			props.load(propStream);
 			return props;
@@ -150,6 +189,7 @@ public class Main
 		finally
 		{
 			close(propStream);
+			close(localStream);
 		}		
 	}
 
