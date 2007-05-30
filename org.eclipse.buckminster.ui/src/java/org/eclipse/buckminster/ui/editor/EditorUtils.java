@@ -8,7 +8,10 @@
 
 package org.eclipse.buckminster.ui.editor;
 
+import java.util.Comparator;
+
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -23,6 +26,16 @@ import org.eclipse.swt.widgets.Label;
  */
 public class EditorUtils
 {
+	static class PathComparator implements Comparator<IPath>
+	{
+		public int compare(IPath o1, IPath o2)
+		{
+			return o1.toOSString().compareTo(o2.toOSString());
+		}
+	}
+	
+	private static Comparator<IPath> s_pathComparator = new PathComparator();
+
 	private EditorUtils()
 	{
 	}
@@ -53,5 +66,10 @@ public class EditorUtils
 		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
 		return label;
+	}
+	
+	public static Comparator<IPath> getPathComparator()
+	{
+		return s_pathComparator;
 	}
 }
