@@ -21,10 +21,15 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
+import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
+import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
@@ -34,6 +39,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
+import org.eclipse.buckminster.ui.general.editor.onepage.OnePageTableEditor;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -109,6 +115,9 @@ public class CSpecEditor extends EditorPart
 
 	private CSpecBuilder m_cspec;
 	
+	private List<ActionBuilder> m_actionBuilders = new ArrayList<ActionBuilder>();
+	private List<ArtifactBuilder> m_artifactBuilders = new ArrayList<ArtifactBuilder>();
+	private List<GroupBuilder> m_groupBuilders = new ArrayList<GroupBuilder>();
 	private List<DependencyBuilder> m_dependencyBuilders = new ArrayList<DependencyBuilder>();
 	private List<GeneratorBuilder> m_generatorBuilders = new ArrayList<GeneratorBuilder>();
 	
@@ -123,6 +132,9 @@ public class CSpecEditor extends EditorPart
 	private Combo m_componentCategory;
 	private Text m_versionString;
 	private Combo m_versionType;
+	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
+	private OnePageTableEditor<ArtifactBuilder> m_artifactsEditor;
+	private OnePageTableEditor<GroupBuilder> m_groupsEditor;
 	private SimpleTableEditor<DependencyBuilder> m_dependenciesEditor;
 	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
 	private Text m_shortDesc;
@@ -218,14 +230,30 @@ public class CSpecEditor extends EditorPart
 
 	private boolean commitChanges()
 	{
-// TODO use it
+// TODO uncomment
 /*		
-		if(m_nodeEditMode)
+		if(m_actionsEditor.isInEditMode())
 		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current node edit?"))
+			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current action edit?"))
 				return false;
-			cancelNode();
+			m_actionsEditor.cancelRow();
 		}
+*/
+		if(m_artifactsEditor.isInEditMode())
+		{
+			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current artifact edit?"))
+				return false;
+			m_artifactsEditor.cancelRow();
+		}
+
+// TODO uncomment
+/*		
+				if(m_groupsEditor.isInEditMode())
+				{
+					if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
+						return false;
+					m_groupsEditor.cancelRow();
+				}
 */
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
@@ -250,6 +278,36 @@ public class CSpecEditor extends EditorPart
 			return false;
 		}
 
+		try
+		{
+			Map<String, AttributeBuilder> attributesMap = m_cspec.getAttributes();
+			
+			if(attributesMap != null)
+			{
+				attributesMap.clear();
+			}
+			
+			for(ActionBuilder action : m_actionBuilders)
+			{
+				m_cspec.addAttribute(action);
+			}
+
+			for(ArtifactBuilder artifact : m_artifactBuilders)
+			{
+				m_cspec.addAttribute(artifact);
+			}
+
+			for(GroupBuilder group : m_groupBuilders)
+			{
+				m_cspec.addAttribute(group);
+			}
+		}
+		catch(AttributeAlreadyDefinedException e)
+		{
+			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+			return false;
+		}
+		
 		try
 		{
 			Map<String, DependencyBuilder> dependeciesMap = m_cspec.getDependencies();
@@ -367,6 +425,29 @@ public class CSpecEditor extends EditorPart
 			m_versionString.setText(TextUtils.notNullString(m_cspec.getVersion().toString()));
 			m_versionType.select(m_versionType.indexOf(m_cspec.getVersion().getType().getId()));
 
+			m_actionBuilders.clear();
+			m_artifactBuilders.clear();
+			m_groupBuilders.clear();
+			Map<String, AttributeBuilder> attributesMap = m_cspec.getAttributes();
+			if(attributesMap != null)
+			{
+				AttributeBuilder[] builders = attributesMap.values().toArray(new AttributeBuilder[0]);
+				Arrays.sort(builders, s_cspecElementComparator);
+				for(AttributeBuilder attribute : builders)
+				{
+					if(attribute instanceof ActionBuilder)
+					{
+						m_actionBuilders.add((ActionBuilder) attribute);
+					} else if(attribute instanceof ArtifactBuilder)
+					{
+						m_artifactBuilders.add((ArtifactBuilder) attribute);
+					} else if(attribute instanceof GroupBuilder)
+					{
+						m_groupBuilders.add((GroupBuilder) attribute);
+					}
+				}
+			}
+			
 			m_dependencyBuilders.clear();
 			Map<String, DependencyBuilder> dependenciesMap = m_cspec.getDependencies();
 			if(dependenciesMap != null)
@@ -397,14 +478,14 @@ public class CSpecEditor extends EditorPart
 					? ""
 					: doc.toString()));
 			
+			// TODO uncomment
+			//m_actionsEditor.refresh();
+			m_artifactsEditor.refresh();
+			// TODO uncomment
+			//m_groupsEditor.refresh();
 			m_dependenciesEditor.refresh();
 			m_generatorsEditor.refresh();
 
-// TODO use it
-/*		
-			refreshList();
-			nodeSelectionEvent();
-*/
 			m_needsRefresh = false;
 		}
 		finally
@@ -581,9 +662,18 @@ public class CSpecEditor extends EditorPart
 		return tabComposite;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Control getArtifactsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Artifacts");
+
+		ArtifactsTable table = new ArtifactsTable(m_artifactBuilders, m_cspec);
+		table.addTableModifyListener(m_compoundModifyListener);
+		
+		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(
+				tabComposite,
+				table,
+				SWT.NONE);
 
 		return tabComposite;
 	}
