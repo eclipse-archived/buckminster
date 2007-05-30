@@ -67,5 +67,7 @@ public interface IOnePageTable<T> extends ITable<T>
 	// TODO has to inform listeners about change
 	public boolean swapRows(int rowIdx, int idxOffset);
 
+	public void enableFields(boolean enabled);
+
 
 }

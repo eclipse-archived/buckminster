@@ -42,13 +42,6 @@ public interface ITable<T>
 	public void removeRow(int row);
 	
 	/**
-	 * Number of columns
-	 * 
-	 * @return number of columns
-	 */
-	public int getColumns();
-	
-	/**
 	 * Adds table modify listener
 	 * 
 	 * @param table modify listener

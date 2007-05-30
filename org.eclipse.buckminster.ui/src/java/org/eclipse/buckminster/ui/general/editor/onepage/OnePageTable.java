@@ -60,21 +60,42 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 
 	public void save(int rowIdx) throws ValidatorException
 	{
+		T newTableRow = createNewRow();
+		setRowValues(newTableRow);
+
 		if(rowIdx == -1)
 		{
-			T newTableRow = addRow();
+			getRows().add(newTableRow);
+
 			notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, null, newTableRow);
 		} else
 		{
-			T oldTableRow = getRow(rowIdx);
-			T newTableRow = updateRow(rowIdx);
+			T oldTableRow = getRows().set(rowIdx, newTableRow);
+
 			notifyListeners(TableModifyEventType.UPDATE_ROW, rowIdx, oldTableRow, newTableRow);
 		}
 	}
 
-	protected abstract T addRow() throws ValidatorException;
+	protected abstract T createNewRow();
+	
+	protected abstract void setRowValues(T row) throws ValidatorException;
 
-	protected abstract T updateRow(int rowIdx) throws ValidatorException;
+	public void refreshRow(int rowIdx)
+	{
+		T builder;
+
+		if(rowIdx == -1)
+		{
+			builder = createNewRow();
+		} else
+		{
+			builder = getRow(rowIdx);
+		}
+		
+		refreshRow(builder);
+	}
+
+	protected abstract void refreshRow(T builder);
 
 	public boolean swapRows(int rowIdx, int idxOffset)
 	{

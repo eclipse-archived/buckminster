@@ -104,18 +104,24 @@ public class OnePageTableEditor<T> extends Composite
 
 	private void initComposite()
 	{
-		createTableGroup(this);
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		setLayoutData(gridData);
 
-		createStackOptions(this);
+		createTableGroup();
 
-		createStack(this);
+		createStackOptions();
+
+		createStack();
 		
 		fillStackOptions();
 	}
 	
-	private void createTableGroup(Composite parent)
+	private void createTableGroup()
 	{
-		Composite componentTableGroup = new Composite(parent, SWT.NONE);
+		Composite componentTableGroup = new Composite(this, SWT.NONE);
 		GridLayout gl = new GridLayout(1, true);
 		gl.marginHeight = gl.marginWidth = 0;
 		componentTableGroup.setLayout(gl);
@@ -257,7 +263,7 @@ public class OnePageTableEditor<T> extends Composite
 	private void editOrCancelRow()
 	{
 		if(m_nodeEditMode)
-			cancelNode();
+			cancelRow();
 		else
 			editRow();
 	}
@@ -268,13 +274,18 @@ public class OnePageTableEditor<T> extends Composite
 		enableDisableButtonGroup();
 	}
 
-	private void cancelNode()
+	public void cancelRow()
 	{
 		m_nodeEditMode = false;
 		enableDisableButtonGroup();
 		refreshRow();
 	}
 
+	public boolean isInEditMode()
+	{
+		return m_nodeEditMode;
+	}
+	
 	private boolean saveRow()
 	{
 		boolean refreshListNeeded = false;
@@ -294,7 +305,7 @@ public class OnePageTableEditor<T> extends Composite
 		
 		if(refreshListNeeded)
 		{
-			refreshList();
+			refresh();
 		}
 
 		m_nodeEditMode = false;
@@ -308,7 +319,7 @@ public class OnePageTableEditor<T> extends Composite
 		if(row != -1)
 		{
 			m_table.removeRow(row);
-			refreshList();
+			refresh();
 		}
 	}
 
@@ -327,7 +338,7 @@ public class OnePageTableEditor<T> extends Composite
 	{
 		if(m_table.swapRows(getSelectionIndex(), idxOffset))
 		{
-			refreshList();
+			refresh();
 			
 			Table table = m_tableViewer.getTable();
 			int idx = table.getSelectionIndex() + idxOffset;
@@ -341,11 +352,40 @@ public class OnePageTableEditor<T> extends Composite
 		m_table.refreshRow(getSelectionIndex());
 	}
 	
-	private void refreshList()
+	public void refresh()
 	{
+		int lastSelected = getSelectionIndex();
+		
 		m_tableViewer.setInput(m_table);
+		
+		if(getSelectionIndex() == -1 && m_table.getRows().size() > 0)
+		{
+			if(lastSelected == -1 || lastSelected >= m_table.getRows().size())
+			{
+				m_tableViewer.getTable().setSelection(0);
+			} else
+			{
+				m_tableViewer.getTable().setSelection(lastSelected);
+			}
+		}
+		
+		enableDisableButtonGroup();
+		refreshRow();
+		
+		if(m_stackOptions.getSelectionCount() == 0)
+		{
+			setStackOption(0);
+		}
 	}
 
+	private void setStackOption(int idx)
+	{
+		String stackKey = m_table.getStackKeys().get(idx);
+		m_stackOptions.setSelection(m_stackOptions.getItem(idx));
+		m_stackLayout.topControl = m_table.getStackControl(stackKey);
+		m_stackComposite.layout();
+	}
+	
 	private void enableDisableButtonGroup()
 	{
 		if(m_nodeEditMode)
@@ -372,13 +412,12 @@ public class OnePageTableEditor<T> extends Composite
 			m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
 		}
 		m_tableViewer.getTable().setEnabled(!m_nodeEditMode);
-
-		// TODO enable / disable fields
+		m_table.enableFields(m_nodeEditMode);
 	}
 
-	private void createStackOptions(Composite parent)
+	private void createStackOptions()
 	{
-		Composite treeComposite = new Composite(parent, SWT.NONE);
+		Composite treeComposite = new Composite(this, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = layout.marginWidth = 0;
 		treeComposite.setLayout(layout);
@@ -415,9 +454,9 @@ public class OnePageTableEditor<T> extends Composite
 		}
 	}
 	
-	private void createStack(Composite parent)
+	private void createStack()
 	{
-		m_stackComposite = new Composite(parent, SWT.NONE);
+		m_stackComposite = new Composite(this, SWT.NONE);
 		m_stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		m_stackLayout = new StackLayout();
 		m_stackLayout.marginHeight = m_stackLayout.marginWidth = 0;
