@@ -224,15 +224,25 @@ public class Main
 			File siteRoot = getSiteRoot();
 			if(siteRoot == null)
 			{
+				/*
+				// test loop - uncomment to test splash progress without actually
+				// running under Java Web Start - i.e. keep this comment in the code.
+				DownloadServiceListener xdsl = SplashWindow.getDownloadServiceListener();
+				for(int i = 0; i < 101; i++)
+				{
+					xdsl.progress(null,"", 0L, 0L, i);
+					Thread.sleep(100);
+				}
+				*/
 				// Assume we don't have an installed product
 				//
 				DownloadService ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService");
-				DownloadServiceListener dsl = ds.getDefaultProgressWindow();
+				// DownloadServiceListener dsl = ds.getDefaultProgressWindow();
 				if(!ds.isPartCached(PRODUCT))
 				{
-			        SplashWindow.disposeSplash();
-					ds.loadPart(PRODUCT, dsl);
-			        SplashWindow.splash(splashData);
+			        // SplashWindow.disposeSplash();
+					ds.loadPart(PRODUCT, SplashWindow.getDownloadServiceListener());
+			        // SplashWindow.splash(splashData);
 				}
 
 				Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
