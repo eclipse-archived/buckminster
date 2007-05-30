@@ -18,9 +18,9 @@ import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
  * @author Karel Brezina
  *
  */
-public class InstallerHintsTable extends SimpleTable<Property>
+public class PropertiesTable extends SimpleTable<Property>
 {
-	public InstallerHintsTable(List<Property> data)
+	public PropertiesTable(List<Property> data)
 	{
 		super(data);
 	}
