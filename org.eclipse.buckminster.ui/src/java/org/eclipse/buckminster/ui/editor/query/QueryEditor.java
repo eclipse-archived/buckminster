@@ -177,14 +177,6 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
-	private static Label createHeaderLabel(Composite parent, String headerText, int horizontalSpan)
-	{
-		Label label = UiUtils.createGridLabel(parent, headerText, horizontalSpan, 0, SWT.NONE);
-		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-
-		return label;
-	}
-
 	private CTabFolder m_tabFolder;
 
 	private Text m_componentName;
@@ -676,7 +668,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("General", geComposite);
 
-		createHeaderLabel(geComposite, "General", 2);
+		EditorUtils.createHeaderLabel(geComposite, "General", 2);
 
 		UiUtils.createGridLabel(geComposite, "Name pattern:", 1, 0, SWT.NONE);
 
@@ -709,7 +701,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Attribute Qualification", aqComposite);
 
-		createHeaderLabel(aqComposite, "Attribute Qualification", 2);
+		EditorUtils.createHeaderLabel(aqComposite, "Attribute Qualification", 2);
 
 		UiUtils.createGridLabel(aqComposite, "Attributes:", 1, 0, SWT.NONE);
 		m_wantedAttributes = UiUtils.createGridText(aqComposite, 0, 0, null, SWT.NONE);
@@ -723,7 +715,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Project Name Mapping", pnmComposite);
 
-		createHeaderLabel(pnmComposite, "Project Name Mapping", 2);
+		EditorUtils.createHeaderLabel(pnmComposite, "Project Name Mapping", 2);
 
 		UiUtils.createGridLabel(pnmComposite, "Source pattern:", 1, 0, SWT.NONE);
 		m_replaceFrom = UiUtils.createGridText(pnmComposite, 0, 0, null, SWT.NONE);
@@ -737,7 +729,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Special Requirements", srComposite);
 
-		createHeaderLabel(srComposite, "Special Requirements", 2);
+		EditorUtils.createHeaderLabel(srComposite, "Special Requirements", 2);
 
 		UiUtils.createGridLabel(srComposite, "Mutable level:", 1, 0, SWT.NONE);
 		m_mutableLevel = UiUtils.createGridEnumCombo(srComposite, 0, 0, MutableLevel.values(), null, null, SWT.NONE);
@@ -751,7 +743,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Resolution Scope", kuComposite);
 
-		createHeaderLabel(kuComposite, "Resolution Scope", 2);
+		EditorUtils.createHeaderLabel(kuComposite, "Resolution Scope", 2);
 
 		UiUtils.createGridLabel(kuComposite, "Target Platform:", 1, 0, SWT.NONE);
 		m_useInstalled = UiUtils.createCheckButton(kuComposite, null, null);
@@ -767,7 +759,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Override", ovComposite);
 
-		createHeaderLabel(ovComposite, "Override", 3);
+		EditorUtils.createHeaderLabel(ovComposite, "Override", 3);
 
 		UiUtils.createGridLabel(ovComposite, "Override version", 1, 0, SWT.NONE);
 		m_enableOverride = UiUtils.createCheckButton(ovComposite, null, new SelectionAdapter()
@@ -791,7 +783,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Overlay Folder", ofComposite);
 
-		createHeaderLabel(ofComposite, "Overlay folder (for prototyping)", 2);
+		EditorUtils.createHeaderLabel(ofComposite, "Overlay folder (for prototyping)", 2);
 
 		UiUtils.createGridLabel(ofComposite, "Folder:", 1, 0, SWT.NONE);
 		m_overlayFolder = UiUtils.createGridText(ofComposite, 1, 0, null, SWT.NONE);
@@ -817,7 +809,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Properties", prComposite);
 
-		createHeaderLabel(prComposite, "Properties", 1);
+		EditorUtils.createHeaderLabel(prComposite, "Properties", 1);
 
 		m_nodeProperties = new Properties(prComposite, SWT.NONE);
 		m_nodeProperties.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -829,7 +821,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodesHash.put("Documentation", docComposite);
 
-		createHeaderLabel(docComposite, "Documentation", 1);
+		EditorUtils.createHeaderLabel(docComposite, "Documentation", 1);
 
 		m_nodeDocumentation = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
 		m_nodeDocumentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

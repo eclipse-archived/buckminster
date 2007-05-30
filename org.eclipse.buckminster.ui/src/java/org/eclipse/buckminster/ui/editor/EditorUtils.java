@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.editor;
 
+import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -44,5 +45,13 @@ public class EditorUtils
 		headerLabel.setLayoutData(gridData);
 
 		return tabComposite;
+	}
+	
+	public static Label createHeaderLabel(Composite parent, String headerText, int horizontalSpan)
+	{
+		Label label = UiUtils.createGridLabel(parent, headerText, horizontalSpan, 0, SWT.NONE);
+		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+
+		return label;
 	}
 }
