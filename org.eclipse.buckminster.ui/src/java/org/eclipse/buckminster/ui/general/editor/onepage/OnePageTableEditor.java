@@ -77,6 +77,7 @@ public class OnePageTableEditor<T> extends Composite
 	}
 
 	private IOnePageTable<T> m_table;
+	private boolean m_swapButtonsFlag;
 	
 	private boolean m_nodeEditMode = false;
 	
@@ -95,10 +96,11 @@ public class OnePageTableEditor<T> extends Composite
 	
 	private Composite m_stackComposite;
 	
-	public OnePageTableEditor(Composite parent, IOnePageTable<T> table, int style)
+	public OnePageTableEditor(Composite parent, IOnePageTable<T> table, boolean swapButtonsFlag, int style)
 	{
 		super(parent, style);
 		m_table = table;
+		m_swapButtonsFlag = swapButtonsFlag;
 		initComposite();
 	}
 
@@ -192,13 +194,6 @@ public class OnePageTableEditor<T> extends Composite
 		layout.marginWidth = layout.marginHeight = 0;
 		buttonBox1.setLayout(layout);
 
-		Composite buttonBox2 = new Composite(buttonBox, SWT.NULL);
-		// buttonBox2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
-		// false));
-		layout = new FillLayout(SWT.HORIZONTAL);
-		layout.marginWidth = layout.marginHeight = 0;
-		buttonBox2.setLayout(layout);
-
 		m_newOrSaveButton = UiUtils.createPushButton(buttonBox1, "New", new SelectionAdapter()
 		{
 			@Override
@@ -226,23 +221,33 @@ public class OnePageTableEditor<T> extends Composite
 			}
 		});
 
-		m_moveUpButton = UiUtils.createPushButton(buttonBox2, "Move up", new SelectionAdapter()
+		if(m_swapButtonsFlag)
 		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				swapAndReselect(0, -1);
-			}
-		});
+			Composite buttonBox2 = new Composite(buttonBox, SWT.NULL);
+			// buttonBox2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+			// false));
+			layout = new FillLayout(SWT.HORIZONTAL);
+			layout.marginWidth = layout.marginHeight = 0;
+			buttonBox2.setLayout(layout);
 
-		m_moveDownButton = UiUtils.createPushButton(buttonBox2, "Move down", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
+			m_moveUpButton = UiUtils.createPushButton(buttonBox2, "Move up", new SelectionAdapter()
 			{
-				swapAndReselect(1, 0);
-			}
-		});
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					swapAndReselect(0, -1);
+				}
+			});
+
+			m_moveDownButton = UiUtils.createPushButton(buttonBox2, "Move down", new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					swapAndReselect(1, 0);
+				}
+			});
+		}
 	}
 
 	private void newOrSaveRow()
@@ -396,8 +401,12 @@ public class OnePageTableEditor<T> extends Composite
 			m_editOrCancelButton.setText("Cancel");
 			m_editOrCancelButton.setEnabled(true);
 			m_removeButton.setEnabled(false);
-			m_moveUpButton.setEnabled(false);
-			m_moveDownButton.setEnabled(false);
+			
+			if(m_swapButtonsFlag)
+			{
+				m_moveUpButton.setEnabled(false);
+				m_moveDownButton.setEnabled(false);
+			}
 		}
 		else
 		{
@@ -408,8 +417,11 @@ public class OnePageTableEditor<T> extends Composite
 			m_editOrCancelButton.setText("Edit");
 			m_editOrCancelButton.setEnabled(idx >= 0);
 			m_removeButton.setEnabled(idx >= 0);
-			m_moveUpButton.setEnabled(idx > 0);
-			m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
+			if(m_swapButtonsFlag)
+			{
+				m_moveUpButton.setEnabled(idx > 0);
+				m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
+			}
 		}
 		m_tableViewer.getTable().setEnabled(!m_nodeEditMode);
 		m_table.enableFields(m_nodeEditMode);
