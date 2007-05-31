@@ -94,13 +94,24 @@
             <products base="${buckminster.output}/jnlp" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</private>
 
+		<private name="normalize.jnlp" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="normalize.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="build.jnlp" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/jnlp.n" alias="product.output" upToDatePolicy="MAPPER"/>
+		</private>
+
 		<private name="pack.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
 				<property key="targets" value="pack.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="build.jnlp" alias="requirement"/>
+				<attribute name="normalize.jnlp" alias="requirement"/>
 			</prerequisites>
             <products base="${buckminster.output}/jnlp.p" alias="product.output" upToDatePolicy="MAPPER"/>
 		</private>
@@ -129,17 +140,6 @@
             </products>
 		</public>
 
-		<private name="normalize.jnlp" actor="ant">
-			<actorProperties>
-				<property key="buildFile" value="make/eclipse-signing.ant" />
-				<property key="targets" value="normalize.jars" />
-			</actorProperties>
-			<prerequisites>
-				<attribute name="zip.jnlp" alias="requirement"/>
-			</prerequisites>
-            <products base="${buckminster.output}/jnlp.n" alias="product.output" upToDatePolicy="MAPPER"/>
-		</private>
-
 		<public name="sign.jnlp" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
@@ -157,7 +157,7 @@
 				<property key="targets" value="local.sign.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="normalize.jnlp" alias="requirement"/>
+				<attribute name="zip.jnlp" alias="requirement"/>
 			</prerequisites>
             <products base="${buckminster.output}/jnlp.ls" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
