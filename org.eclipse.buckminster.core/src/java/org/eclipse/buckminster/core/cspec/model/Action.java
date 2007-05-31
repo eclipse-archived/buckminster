@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -22,6 +23,7 @@ import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -327,6 +329,12 @@ public class Action extends Attribute
 
 	public boolean isUpToDate(IModelCache ctx) throws CoreException
 	{
+		Logger logger = CorePlugin.getLogger();
+		String failLeadIn = "";
+		boolean isDebug = logger.isDebugEnabled();
+		if(isDebug)
+			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this, m_upToDatePolicy);
+
 		if(m_upToDatePolicy == UpToDatePolicy.MAPPER)
 		{
 			Map<String, Long> prereqFiles = getPrerequisiteRelativeFiles(ctx);
@@ -337,10 +345,14 @@ public class Action extends Attribute
 				expectedFileCount += m_productFileCount;
 
 			if(productFiles.size() < expectedFileCount)
-				//
+			{
 				// Not enough files
 				//
+				if(isDebug)
+					logger.debug(
+						String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()), Integer.valueOf(expectedFileCount)));
 				return false;
+			}
 
 			// Don't consider products that we don't need since their timestamp
 			// might effect the outcome negatively
@@ -349,19 +361,30 @@ public class Action extends Attribute
 			{
 				Long tsObj = productFiles.get(entry.getKey());
 				if(tsObj == null)
-					//
+				{
 					// Oops, missing product
 					//
+					if(isDebug)
+						logger.debug(
+							String.format("%sNo product is matching requirement", failLeadIn, entry.getKey()));
 					return false;
+				}
 
 				long productTs = tsObj.longValue();
 				long prereqTs = entry.getValue().longValue();
 				if(prereqTs > productTs)
-					//
+				{
 					// Prerequisite is newer
 					//
+					if(isDebug)
+						logger.debug(
+							String.format("%sThe product for %s is older then its matching requirement", failLeadIn, entry.getKey()));
 					return false;
+				}
 			}
+			if(isDebug)
+				logger.debug(
+					String.format("Action %s using 'up to date' policy %s: Product is up to date", this, m_upToDatePolicy));
 			return true;
 		}
 
@@ -382,7 +405,41 @@ public class Action extends Attribute
 
 		int[] fileCountBin = new int[1];
 		long oldest = getFirstModified(ctx, expectedFileCount, fileCountBin);
-		return oldest >= getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin);
+		int fileCount = fileCountBin[0];
+		if(oldest == 0L || (expectedFileCount > 0 && expectedFileCount > fileCount))
+		{
+			if(isDebug)
+			{
+				switch(m_upToDatePolicy)
+				{
+				case DEFAULT:
+					logger.debug(
+						String.format("%sProduct has folders", failLeadIn));
+					break;
+				case NOT_EMPTY:
+					logger.debug(
+						String.format("%sProduct is empty", failLeadIn));
+					break;
+				default:
+					logger.debug(
+						String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(fileCountBin[0]), Integer.valueOf(expectedFileCount)));
+						break;
+				}
+			}
+			return false;
+		}
+
+		if(oldest >= getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin))
+		{
+			if(isDebug)
+				logger.debug(
+					String.format("Action %s using 'up to date' policy %s: Product is up to date", this, m_upToDatePolicy));
+			return true;
+		}
+		if(isDebug)
+			logger.debug(
+				String.format("%s: Product is older then prerequisite", failLeadIn));
+		return false;
 	}
 
 	private Map<String, Long> getProductRelativeFiles(IModelCache ctx) throws CoreException
