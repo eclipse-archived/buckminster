@@ -76,6 +76,9 @@ public class SplashWindow extends Window
 	 */
 	private Image m_image;
 
+	private static StringBuffer s_debugInfo = new StringBuffer();
+	private static String s_taskName = "Run";
+	
 	/**
 	 * This attribute indicates whether the method paint(Graphics) has been called at least once since the construction
 	 * of this window.<br>
@@ -219,7 +222,6 @@ public class SplashWindow extends Window
 			x += PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;
 		}
 	}
-
 	/**
 	 * Open's a splash window using the specified image.
 	 * 
@@ -228,6 +230,7 @@ public class SplashWindow extends Window
 	 */
 	public static void splash(Image image)
 	{
+		s_debugInfo.append("Splash; ");
 		if(s_instance == null && image != null)
 		{
 			Frame f = new Frame();
@@ -281,13 +284,28 @@ public class SplashWindow extends Window
 	 */
 	public static void disposeSplash()
 	{
+		s_debugInfo.append("Disposed; ");
 		if(s_instance != null)
 		{
+			logProgress(0, s_instance.m_progress);
 			s_instance.getOwner().dispose();
 			s_instance = null;
 		}
 	}
-
+	public static String getDebugString()
+	{
+		return s_debugInfo.toString();
+	}
+	private static void logProgress(int from, int to)
+	{
+		s_debugInfo.append(s_taskName);
+		s_debugInfo.append(": ");
+		s_debugInfo.append(from);
+		s_debugInfo.append("-");
+		s_debugInfo.append(to);
+		s_debugInfo.append("; ");
+		
+	}
 	public static void setProgress(int percentageDone)
 	{
 		if(s_instance != null)
@@ -297,6 +315,12 @@ public class SplashWindow extends Window
 			if(percentageDone < 0)
 				percentageDone = 0;
 
+			// if percentageDone is 0, it is considered to start a new "run" - log this
+			if(percentageDone == 0)
+			{
+				logProgress(0,s_instance.m_progress);
+			}
+			
 			// set the progress in splash window
 			
 			int tickw = PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;

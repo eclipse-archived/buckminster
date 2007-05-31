@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.jnlp.bootstrap;
 
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import javax.jnlp.ClipboardService;
 import javax.jnlp.DownloadService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
@@ -235,16 +237,32 @@ public class Main
 			File siteRoot = getSiteRoot();
 			if(siteRoot == null)
 			{
-				/*
+				/*// Uncomment to get two testloops of progress - do not use in production
 				// test loop - uncomment to test splash progress without actually
 				// running under Java Web Start - i.e. keep this comment in the code.
 				DownloadServiceListener xdsl = SplashWindow.getDownloadServiceListener();
 				for(int i = 0; i < 101; i++)
 				{
 					xdsl.progress(null,"", 0L, 0L, i);
-					Thread.sleep(100);
+					Thread.sleep(50);
 				}
+				for(int i = 0; i < 51; i++)
+				{
+					xdsl.progress(null,"", 0L, 0L, i);
+					Thread.sleep(50);
+				}
+				// For debugging purposes - obtain data from the splash and put them in user's clipboard
+				//
+				SplashWindow.disposeSplash();
+				System.err.print(SplashWindow.getDebugString());
 				*/
+				
+				/*// Uncomment to get debug string to clipboard - do not use in production
+				ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
+				StringSelection ss = new StringSelection(SplashWindow.getDebugString());
+				clipservice.setContents(ss);  
+				*/
+				
 				// Assume we don't have an installed product
 				//
 				DownloadService ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService");
