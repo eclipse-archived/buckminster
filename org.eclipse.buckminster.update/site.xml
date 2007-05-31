@@ -4,7 +4,7 @@
    <description url="http://download.eclipse.org/technology/buckminster/updates">
       The update site for Buckminster
    </description>
-   <feature url="features/org.eclipse.buckminster.core.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.core.feature" version="0.1.0.v20070529">
+   <feature url="features/org.eclipse.buckminster.core.feature_0.1.0.v20070531.jar" id="org.eclipse.buckminster.core.feature" version="0.1.0.v20070531">
       <category name="Buckminster (core)"/>
    </feature>
    <feature url="features/org.eclipse.buckminster.cvs.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.cvs.feature" version="0.1.0.v20070529">
