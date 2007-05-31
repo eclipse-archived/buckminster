@@ -653,6 +653,7 @@ public class CSpecEditor extends EditorPart
 		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(
 				tabComposite,
 				table,
+				false,
 				SWT.NONE);
 
 		return tabComposite;
@@ -669,6 +670,7 @@ public class CSpecEditor extends EditorPart
 		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(
 				tabComposite,
 				table,
+				false,
 				SWT.NONE);
 
 		return tabComposite;
@@ -685,6 +687,7 @@ public class CSpecEditor extends EditorPart
 		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(
 				tabComposite,
 				table,
+				false,
 				SWT.NONE);
 
 		return tabComposite;
