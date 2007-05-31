@@ -1,12 +1,14 @@
 package org.eclipse.buckminster.jnlp.product;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Unpacker;
@@ -89,31 +91,134 @@ public class ProductInstaller implements IProductInstaller
 			else
 			{
 				if(name.endsWith(PACK_SUFFIX))
-					//
+				{
 					// Pack200 compressed file
 					//
-					file = storeUnpacked(name, zipInput);
+					file = new File(installLocation, name.substring(0, name.length() - PACK_SUFFIX_LEN));
+					OutputStream output = new FileOutputStream(file);
+					try
+					{
+						storeUnpacked(zipInput, output);
+					}
+					finally
+					{
+						Main.close(output);
+					}
+				}
 				else
 				{
 					file = new File(installLocation, name);
 					storeVerbatim(file, zipInput);
 				}
+
+				if(file.getName().endsWith(".jar"))
+					recursiveUnpack(file);
 			}
+
 			long tz = zipEntry.getTime();
 			if(tz != -1L)
 				file.setLastModified(tz);
 		}
 	}
 
-	private synchronized File storeUnpacked(String packedName, InputStream packedInput) throws IOException
+	private void recursiveUnpack(File file) throws IOException
 	{
-		String unpackedName = packedName.substring(0, packedName.length() - PACK_SUFFIX_LEN);
-		File unpackedFile = new File(m_main.getInstallLocation(), unpackedName);
+		// Make sure this jar file doesn't contain packed entries
+		//
+		JarOutputStream jarOutput = null;
+		JarFile jarFile = new JarFile(file);
+		File tempFile = null;
+		try
+		{
+			boolean needRepack = false;
+			Enumeration<JarEntry> entries = jarFile.entries();
+			while(entries.hasMoreElements())
+			{
+				JarEntry entry = entries.nextElement();
+				if(entry.getName().endsWith(PACK_SUFFIX))
+				{
+					needRepack = true;
+					break;
+				}
+			}
+			if(!needRepack)
+				return;
+
+			// We need to repack this jar
+			//
+			byte[] copyBuf = new byte[8192];
+			tempFile = File.createTempFile("unpack", ".jar", file.getParentFile());
+			jarOutput = new JarOutputStream(new FileOutputStream(tempFile), jarFile.getManifest());
+			entries = jarFile.entries();
+			while(entries.hasMoreElements())
+			{
+				JarEntry entry = entries.nextElement();
+				String entryName = entry.getName();
+				if(entry.isDirectory())
+				{
+					if(!entryName.equalsIgnoreCase("meta-inf"))
+						//
+						// It's there already.
+						//
+						jarOutput.putNextEntry(entry);
+					continue;
+				}
+
+				if(entryName.equalsIgnoreCase("meta-inf/manifest.mf"))
+					//
+					// Manifest is already written to output
+					//
+					continue;
+
+				InputStream input = jarFile.getInputStream(entry);
+				try
+				{
+					if(entryName.endsWith(PACK_SUFFIX))
+					{
+						String unpackedName = entryName.substring(0, entryName.length() - PACK_SUFFIX_LEN);
+						JarEntry unpackedEntry = new JarEntry(unpackedName);
+						unpackedEntry.setMethod(JarEntry.DEFLATED);
+						jarOutput.putNextEntry(unpackedEntry);
+						storeUnpacked(input, jarOutput);
+					}
+					else
+					{
+						jarOutput.putNextEntry(entry);
+						int count;
+						while((count = input.read(copyBuf)) > 0)
+							jarOutput.write(copyBuf, 0, count);
+					}
+				}
+				finally
+				{
+					Main.close(input);
+				}
+			}
+		}
+		finally
+		{
+			Main.close(jarOutput);
+			jarFile.close();
+		}
+		File mvTemp = new File(file.getAbsolutePath() + ".move");
+		mvTemp.delete();
+		renameFile(file, mvTemp);
+		renameFile(tempFile, file);
+		mvTemp.delete();
+	}
+
+	private static void renameFile(File from, File to) throws IOException
+	{
+		if(!from.renameTo(to))
+			throw new RuntimeException(String.format("Unable to rename \"%s\" to \"%s\"", from, to));
+	}
+
+	private synchronized void storeUnpacked(InputStream packedInput, OutputStream result) throws IOException
+	{
 
 		if(m_unpacker == null)
 			m_unpacker = Pack200.newUnpacker();
 
-		JarOutputStream jarOut = null;
 		GZIPInputStream gzipInput = null;
 		try
 		{
@@ -127,16 +232,15 @@ public class ProductInstaller implements IProductInstaller
 				{
 				}
 			});
-			jarOut = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(unpackedFile)));
+			JarOutputStream jarOut = new JarOutputStream(result);
 			m_unpacker.unpack(gzipInput, jarOut);
 			gzipInput = null; // Closed by unpack
+			jarOut.finish();
 		}
 		finally
 		{
-			Main.close(jarOut);
 			Main.close(gzipInput);
 		}
-		return unpackedFile;
 	}
 
 	private synchronized void storeVerbatim(File file, InputStream packedInput) throws IOException
