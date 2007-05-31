@@ -921,14 +921,10 @@ public abstract class FileUtils
 		long timestampHolder[] = new long[] { Long.MAX_VALUE };
 		int count = countFilesAndGetOldest(fileOrDir, 0, timestampHolder);
 		realFileCount[0] = count;
-		if(count == 0 || expectedFileCount < 0)
+		if(count == 0 || expectedFileCount < 0 || timestampHolder[0] == Long.MAX_VALUE)
 			return 0L;
 
-		long timestamp = 0L;
-		if(expectedFileCount == 0 || count >= expectedFileCount)
-			timestamp = timestampHolder[0];
-
-		return timestamp;
+		return timestampHolder[0];
 	}
 
 	/**
@@ -966,13 +962,13 @@ public abstract class FileUtils
 				if(modTime > lastModTime)
 				{
 					lastModTime = modTime;
-					if(modTime >= threshold)
+					if(modTime > threshold)
 						break;
 				}
 			}
 		}
 		realFileCount[0] = count;
-		return lastModTime;
+		return lastModTime == 0 ? Long.MAX_VALUE : lastModTime;
 	}
 
 	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)

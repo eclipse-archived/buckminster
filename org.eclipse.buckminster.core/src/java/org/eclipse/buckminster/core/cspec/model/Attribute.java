@@ -172,6 +172,9 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	{
 		PathGroup[] pqs = getPathGroups(ctx);
 		int idx = pqs.length;
+		if(idx == 0)
+			return 0L;
+
 		if(idx > 1 && expectedFileCount > 0)
 			//
 			// We don't know how to distribute the count
@@ -189,7 +192,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 					break;
 			}
 		}
-		return oldest == Long.MAX_VALUE ? 0 : oldest;
+		return oldest;
 	}
 
 	public final Map<String, String> getInstallerHints()
@@ -214,12 +217,13 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		long newest = 0L;
 		while(--idx >= 0)
 		{
+			countBin[0] = 0;
 			long pgModTime = pqs[idx].getLastModified(threshold, countBin);
 			count += countBin[0];
 			if(pgModTime > newest)
 			{
 				newest = pgModTime;
-				if(newest >= threshold)
+				if(newest > threshold)
 					break;
 			}
 		}

@@ -112,17 +112,22 @@ public class PathGroup
 			return FileUtils.getLastModified(m_base.toFile(), threshold, fileCount);
 
 		long lastMod = 0;
+		int count = 0;
+		int[] countBin = new int[1];
 		while(--idx >= 0)
 		{
 			IPath absPath = m_base.append(m_paths[idx]);
-			long modTime = FileUtils.getLastModified(absPath.toFile(), threshold, fileCount);
+			countBin[0] = 0;
+			long modTime = FileUtils.getLastModified(absPath.toFile(), threshold, countBin);
+			count += countBin[0];
 			if(modTime > lastMod)
 			{
 				lastMod = modTime;
-				if(modTime >= threshold)
+				if(modTime > threshold)
 					break;
 			}
 		}
+		fileCount[0] = count;
 		return lastMod;
 	}
 

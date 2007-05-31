@@ -403,7 +403,7 @@ public class Action extends Attribute
 			expectedFileCount = -1;
 		}
 
-		int[] fileCountBin = new int[1];
+		int[] fileCountBin = new int[] { 0 };
 		long oldest = getFirstModified(ctx, expectedFileCount, fileCountBin);
 		int fileCount = fileCountBin[0];
 		if(oldest == 0L || (expectedFileCount > 0 && expectedFileCount > fileCount))
@@ -429,6 +429,7 @@ public class Action extends Attribute
 			return false;
 		}
 
+		fileCountBin[0] = 0;
 		if(oldest >= getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin))
 		{
 			if(isDebug)
