@@ -53,6 +53,21 @@ public abstract class URLUtils
 	 */
 	public static InputStream openStream(URL url, IProgressMonitor monitor) throws IOException
 	{
+		return openStream(url, monitor, null);
+	}
+
+	/**
+	 * This is a recommended way to retrieve the input stream for a generic URL. Any code doing
+	 * 'url.openStream()', should instead do 'URLUtils.openStream(url, <monitor-or-null>). There are
+	 * two benefits: 1) if a monitor is used, the action is cancellable. 2) it allows us to unify
+	 * behavior in the presence of certain URL protols (e.g. https => may need to handle SSL
+	 * certificates)
+	 * @param url the url to get the input stream from
+	 * @param monitor a monitor to report progress to and check for cancellation. Can be null.
+	 * @param fileInfo file info to set (if available)
+	 */
+	public static InputStream openStream(URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException
+	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		URLStreamRetrieverRunnable usrr = new URLStreamRetrieverRunnable(url);
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
@@ -65,6 +80,10 @@ public abstract class URLUtils
 				usrr.join(200);
     			MonitorUtils.worked(monitor, 1);
 			}
+			
+			if (usrr.getFileInfo() != null && fileInfo != null)
+				fileInfo.setAll(usrr.getFileInfo());
+			
 			return usrr.handOverStream();
 		}
 		catch(InterruptedException e)

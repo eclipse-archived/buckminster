@@ -12,13 +12,17 @@ package org.eclipse.buckminster.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -33,6 +37,8 @@ class URLStreamRetrieverRunnable extends Thread
 	private InputStream m_stream;
 
 	private Throwable m_thrownException;
+
+	private FileInfoBuilder m_fileInfo;
 
 	private static synchronized IURLConnectionProvider getConnectionProvider(URL url)
 	throws InvalidRegistryObjectException, CoreException
@@ -60,6 +66,20 @@ class URLStreamRetrieverRunnable extends Thread
 		return provider;
 	}
 
+	public static void getFileInfo(URLConnection conn, FileInfoBuilder infoBuilder)
+	{
+		String filename = parseContentDisposition(conn.getHeaderField("Content-Disposition"));
+		
+		if (filename == null || filename.trim().length() == 0)
+		{
+			filename = new Path(conn.getURL().getFile()).lastSegment();
+		}
+		
+		infoBuilder.setName(filename);
+		infoBuilder.setContentType(conn.getContentType());
+		infoBuilder.setSize(conn.getContentLength() != -1 ? Long.valueOf(conn.getContentLength()) : null);
+	}
+	
 	URLStreamRetrieverRunnable(URL url)
 	{
 		super("URLStreamRetriever");
@@ -70,13 +90,16 @@ class URLStreamRetrieverRunnable extends Thread
 			throw new NullPointerException();
 
 		m_url = url;
+		m_fileInfo = new FileInfoBuilder();
 	}
 
 	public void run()
 	{
 		try
 		{
-			m_stream = getConnectionProvider(m_url).openConnection(m_url).getInputStream();
+			URLConnection conn = getConnectionProvider(m_url).openConnection(m_url);
+			getFileInfo(conn, m_fileInfo);
+			m_stream = conn.getInputStream();
 		}
 		catch(Throwable t)
 		{
@@ -90,6 +113,11 @@ class URLStreamRetrieverRunnable extends Thread
 			interrupt();
 		IOUtils.close(m_stream);
 		m_stream = null;
+	}
+
+	IFileInfo getFileInfo()
+	{
+		return m_fileInfo;
 	}
 
 	InputStream handOverStream() throws IOException
@@ -112,5 +140,36 @@ class URLStreamRetrieverRunnable extends Thread
 			throw new IOException("No stream retrieved");
 		m_stream = null;
 		return stream;
+	}
+
+	/**
+	 * This regular expression is a simple Content-Disposition header parser.
+	 * Content-Disposition grammar is quite complex, this is really simplified.
+	 * It should be refactored in future versions using proper grammar. 
+	 */
+	private final static Pattern s_contentDispositionPattern = Pattern.compile(
+			".*;\\s*filename\\s*=\\s*(\"(?:[^\"\\\\]|\\\\.)*\"|[^;\"\\s]+)\\s*(?:;|$)");
+
+	private static String parseContentDisposition(String contentDisposition)
+	{
+		//Context-Dispositon syntax: attachment|inline[;filename="<filename>"]
+		//Try to extract the filename form it (and strip quotes if they're there)
+		
+		if (contentDisposition == null)
+			return null;
+		
+		String filename = null;
+		Matcher m = s_contentDispositionPattern.matcher(contentDisposition);
+		
+		if (m.matches())
+		{
+			filename = m.group(1);
+			if (filename.startsWith("\"") && filename.endsWith("\""))
+			{
+				filename = filename.substring(1, filename.length()-1).replaceAll("\\\\(.)", "$1");
+			}
+		}
+		
+		return filename;
 	}
 }
