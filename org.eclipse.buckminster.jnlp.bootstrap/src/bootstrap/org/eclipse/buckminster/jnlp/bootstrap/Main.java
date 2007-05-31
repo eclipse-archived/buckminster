@@ -18,13 +18,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.jnlp.DownloadService;
-import javax.jnlp.DownloadServiceListener;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 
@@ -52,15 +52,26 @@ public class Main
 
 	public static void main(String[] args)
 	{
+		Main main = new Main();
 		try
 		{
-			Main main = new Main();
 			main.run(args);
 			Runtime.getRuntime().exit(0);
 		}
 		catch(Throwable t)
-		{
-			t.printStackTrace();
+		{			
+			// PROPER ERROR HANDLING GOES HERE!
+			//
+			try
+			{
+				File errorFile = new File(main.getInstallLocation(), "error.log");
+				PrintStream ps = new PrintStream(new FileOutputStream(errorFile));
+				t.printStackTrace(ps);
+				ps.close();
+			}
+			catch(Throwable ignore)
+			{	
+			}
 			Runtime.getRuntime().exit(1);
 		}
 	}
