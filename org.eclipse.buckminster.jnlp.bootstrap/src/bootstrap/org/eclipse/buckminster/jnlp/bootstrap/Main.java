@@ -204,7 +204,7 @@ public class Main
 		}		
 	}
 
-	void run(String[] args)
+	void run(String[] args) throws Exception
 	{
 		try
 		{
@@ -261,15 +261,6 @@ public class Main
 				installer.installProduct(this);
 			}
 			startProduct(args);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
-		finally
-		{
-			// Give the app some time to start.
-			//
 			try
 			{
 				Thread.sleep(2000);
@@ -277,6 +268,11 @@ public class Main
 			catch(InterruptedException e)
 			{
 			}
+		}
+		finally
+		{
+			// Give the app some time to start.
+			//
 	        SplashWindow.disposeSplash();
 		}
 	}
