@@ -184,11 +184,12 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						IPath location = mi.getComponentLocation();
 						reader.materialize(location, MonitorUtils.subMonitor(matMon, 80));
 
+						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
+							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
+
 						// Remove any duplicates for the given location and then make
 						// sure the materialization is persisted.
 						//
-						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
-							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
 						mi.store();
 						adjustedMinfos.add(mi);
 					}

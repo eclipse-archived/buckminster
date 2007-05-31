@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.reader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -31,6 +32,13 @@ public interface IFileReader extends IComponentReader
 	 * Returns the input stream that was created at the call to {@link #open()}
 	 */
 	InputStream open(IProgressMonitor monitor) throws CoreException, IOException;
+	
+	/**
+	 * Returns the info about the file, or null if it's not available.
+	 * 
+	 * @return file info associated with the stream, or null if no info is available
+	 */
+	IFileInfo getFileInfo();
 
 	/**
 	 * Read a file and send the result to the <code>consumer</code>.

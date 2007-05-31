@@ -17,7 +17,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,25 +45,69 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 	public InputStream openURL(final URL url, IProgressMonitor monitor)
 	throws IOException, CoreException
 	{
+		return openURL(url, monitor, null);
+	}
+	
+	public InputStream openURL(final URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo)
+	throws IOException, CoreException
+	{
+		if (fileInfo != null)
+			fileInfo.reset();
+
 		if("file".equalsIgnoreCase(url.getProtocol()))
-			return URLUtils.openStream(url, monitor);
+			return URLUtils.openStream(url, monitor, fileInfo);
 
 		return this.open(new Materializer()
 		{
-			public File materialize(boolean[] isTemporary, IProgressMonitor mon)
+			public File materialize(boolean[] isTemporary, IProgressMonitor mon, FileInfoBuilder info)
 			throws IOException
 			{
+				if (info == null)
+					info = new FileInfoBuilder();
+
 				OutputStream output = null;
 				InputStream input = null;
 				try
 				{
+					MonitorUtils.ensureNotNull(mon);
+					mon.beginTask(null, 1000);
+					mon.subTask("Reading from " + url);
+
 					File tempFile = File.createTempFile("bmurl", ".cache");
-					input  = URLUtils.openStream(url, mon);
+					input  = URLUtils.openStream(url, MonitorUtils.subMonitor(mon, 100), info);
 					output = new FileOutputStream(tempFile);
 					byte[] buf = new byte[0x2000];
 					int count;
-					while((count = input.read(buf)) >= 0)
-						output.write(buf, 0, count);
+
+					IProgressMonitor writeMonitor = MonitorUtils.subMonitor(mon, 900);
+					
+					writeMonitor.beginTask(null,
+							info.getSize() != null ?
+									info.getSize().intValue()
+									:
+									IProgressMonitor.UNKNOWN);
+					try
+					{
+						ProgressStatistics progress = new ProgressStatistics(info.getSize() != null ? info.getSize().longValue() : -1);
+						progress.setConverter(ProgressStatistics.FILESIZE_CONVERTER);
+
+						while((count = input.read(buf)) >= 0)
+						{
+							output.write(buf, 0, count);
+							progress.increase(count);
+							
+							if (progress.shouldReport())
+								writeMonitor.subTask("Fetching " + info.getName() + " (" + progress.report() + ")");
+
+							MonitorUtils.worked(
+									writeMonitor,
+									info.getSize() != null ? count : 1);
+						}
+					}
+					finally
+					{
+						writeMonitor.done();
+					}
 					isTemporary[0] = true;
 					return tempFile;
 				}
@@ -69,6 +115,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 				{
 					IOUtils.close(input);
 					IOUtils.close(output);
+					MonitorUtils.complete(mon);
 				}
 			}
 
@@ -76,7 +123,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 			{
 				return url.toString();
 			}
-		}, monitor);
+		}, monitor, fileInfo);
 	}
 }
 

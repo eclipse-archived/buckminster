@@ -120,11 +120,14 @@ public class MaterializerJob extends WorkspaceJob
 				crs.add(cr);
 			}
 
-			int ticksPerM = 800 / resPerMat.size();
-			for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
+			if (resPerMat.size() > 0)
 			{
-				IMaterializer materializer = corePlugin.getMaterializer(entry.getKey());
-				materializer.materialize(entry.getValue(), m_context, MonitorUtils.subMonitor(monitor, ticksPerM));
+				int ticksPerM = 800 / resPerMat.size();
+				for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
+				{
+					IMaterializer materializer = corePlugin.getMaterializer(entry.getKey());
+					materializer.materialize(entry.getValue(), m_context, MonitorUtils.subMonitor(monitor, ticksPerM));
+				}
 			}
 			bom.store();
 			AbstractMaterializer.performInstallActions(bom, m_context, MonitorUtils.subMonitor(monitor, 100));

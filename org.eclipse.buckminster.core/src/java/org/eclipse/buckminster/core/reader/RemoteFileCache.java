@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.helpers.ShortDurationFileCache;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -33,7 +34,7 @@ public class RemoteFileCache extends ShortDurationFileCache
 	{
 		return this.open(new Materializer()
 		{
-			public File materialize(boolean[] isTemporary, IProgressMonitor mon)
+			public File materialize(boolean[] isTemporary, IProgressMonitor mon, FileInfoBuilder info)
 			throws IOException, CoreException
 			{
 				return remoteFile.getContents(isTemporary, mon);

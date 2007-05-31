@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -26,7 +28,7 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 {
 	public interface Materializer
 	{
-		File materialize(boolean[] isTemporary, IProgressMonitor monitor) throws IOException, CoreException;
+		File materialize(boolean[] isTemporary, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
 
 		String getKey();
 	}
@@ -45,6 +47,11 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 	}
 
 	public InputStream open(Materializer materializer, IProgressMonitor monitor) throws IOException, CoreException
+	{
+		return open(materializer, monitor, null);
+	}
+
+	public InputStream open(Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException
 	{
 		String key = materializer.getKey();
 		CacheEntry ce;
@@ -67,7 +74,7 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 		//
 		synchronized(ce)
 		{
-			ce.initialize(materializer, monitor);
+			ce.initialize(materializer, monitor, fileInfo);
 			return ce.open();
 		}
 	}
@@ -107,17 +114,23 @@ class CacheEntry
 	private File m_tempFile;
 
 	private boolean m_fileIsTemporary;
+	
+	private IFileInfo m_fileInfo = null;
 
-	public synchronized void initialize(ShortDurationFileCache.Materializer materializer, IProgressMonitor monitor) throws CoreException, IOException
+	public synchronized void initialize(ShortDurationFileCache.Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws CoreException, IOException
 	{
 		if(m_tempFile == null)
 		{
 			boolean[] isTemporary = new boolean[1];
-			m_tempFile = materializer.materialize(isTemporary, monitor);
+			m_tempFile = materializer.materialize(isTemporary, monitor, fileInfo);
 			m_fileIsTemporary = isTemporary[0];
 			if(m_fileIsTemporary)
 				m_tempFile.deleteOnExit();
+			if (fileInfo != null)
+				m_fileInfo = new FileInfoBuilder(fileInfo);
 		}
+		else if (fileInfo != null && m_fileInfo != null)
+			fileInfo.setAll(m_fileInfo);
 	}
 
 	public synchronized InputStream open() throws FileNotFoundException
