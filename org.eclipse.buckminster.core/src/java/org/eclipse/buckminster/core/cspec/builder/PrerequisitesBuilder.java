@@ -8,7 +8,6 @@
 package org.eclipse.buckminster.core.cspec.builder;
 
 import org.eclipse.buckminster.core.cspec.model.Group;
-import org.eclipse.buckminster.core.cspec.model.Prerequisites;
 
 public class PrerequisitesBuilder extends GroupBuilder
 {
@@ -20,6 +19,8 @@ public class PrerequisitesBuilder extends GroupBuilder
 	@Override
 	public Group createAttribute()
 	{
-		return new Prerequisites(this);
+		// Must be created by the owner action
+		//
+		throw new UnsupportedOperationException();
 	}
 }

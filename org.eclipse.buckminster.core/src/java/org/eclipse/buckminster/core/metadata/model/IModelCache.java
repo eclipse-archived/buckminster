@@ -3,7 +3,6 @@ package org.eclipse.buckminster.core.metadata.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.PathGroup;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.core.runtime.CoreException;
@@ -26,7 +25,7 @@ public interface IModelCache
 	/**
 	 * Returns the cache used when evaulating attribute path groups
 	 */
-	Map<Attribute,PathGroup[]> getPathGroupsCache();
+	Map<String,PathGroup[]> getPathGroupsCache();
 
 	/**
 	 * Returns the invocation properties.

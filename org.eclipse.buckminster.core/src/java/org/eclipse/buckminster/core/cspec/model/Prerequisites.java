@@ -19,10 +19,12 @@ public class Prerequisites extends Group
 {
 	public static final String TAG = "prerequisites";
 	public static final String ATTR_ALIAS = "alias";
+	private final Action m_owner;
 
-	public Prerequisites(PrerequisitesBuilder builder)
+	public Prerequisites(Action owner, PrerequisitesBuilder builder)
 	{
 		super(builder);
+		m_owner = owner;
 	}
 
 	@Override
@@ -35,5 +37,11 @@ public class Prerequisites extends Group
 	public String getNameAttributeName()
 	{
 		return ATTR_ALIAS;
+	}
+
+	@Override
+	public String getQualifiedName()
+	{
+		return getCSpec().getName() + '#' + m_owner.getName() + "_pqs";
 	}
 }

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.PathGroup;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ObtainedDependency;
@@ -25,7 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 public class ModelCache implements IModelCache
 {
 	private Map<String,String> m_properties;
-	private Map<Attribute, PathGroup[]> m_pathGroupsCache;
+	private Map<String, PathGroup[]> m_pathGroupsCache;
 	private Map<ComponentRequest, CSpec> m_cspecCache;
 
 	public ModelCache()
@@ -37,10 +36,10 @@ public class ModelCache implements IModelCache
 		m_properties = properties;
 	}
 
-	public synchronized Map<Attribute, PathGroup[]> getPathGroupsCache()
+	public synchronized Map<String, PathGroup[]> getPathGroupsCache()
 	{
 		if(m_pathGroupsCache == null)
-			m_pathGroupsCache = new HashMap<Attribute, PathGroup[]>();
+			m_pathGroupsCache = new HashMap<String, PathGroup[]>();
 		return m_pathGroupsCache;
 	}
 

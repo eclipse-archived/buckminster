@@ -245,7 +245,7 @@ public class PerformContext implements IActionContext
 		return m_outputStream;
 	}
 
-	public Map<Attribute,PathGroup[]> getPathGroupsCache()
+	public Map<String,PathGroup[]> getPathGroupsCache()
 	{
 		return m_globalCtx.getPathGroupsCache();
 	}

@@ -20,7 +20,6 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -109,24 +108,6 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		}
 		copy.m_cspec = null;
 		return copy;
-	}
-
-	@Override
-	public final boolean equals(Object o)
-	{
-		if(this == o)
-			return true;
-
-		if(!o.getClass().equals(getClass()))
-			return false;
-
-		Attribute that = (Attribute)o;
-
-		// The CSpec is UUID keyed and thus have a very efficient way
-		// of doing equals(). The attribute name is unique within the
-		// cspec.
-		//
-		return m_cspec.equals(that.getCSpec()) && Trivial.equalsAllowNull(getName(), that.getName());
 	}
 
 	public final CSpec getCSpec()
@@ -233,14 +214,15 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public final PathGroup[] getPathGroups(IModelCache ctx) throws CoreException
 	{
-		Map<Attribute,PathGroup[]> cache = ctx.getPathGroupsCache();
-		PathGroup[] pga = cache.get(this);
+		Map<String,PathGroup[]> cache = ctx.getPathGroupsCache();
+		String qName = getQualifiedName();
+		PathGroup[] pga = cache.get(qName);
 		if(pga == null)
 		{
 			ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
 			addDynamicProperties(local);
 			pga = internalGetPathGroups(ctx, local);
-			cache.put(this, pga);
+			cache.put(qName, pga);
 		}
 		return pga;
 	}
@@ -283,15 +265,6 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		if(uniquePath == null)
 			throw BuckminsterException.fromMessage("Unable to determine a unique product path for " + this);
 		return uniquePath;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		// The attribute is always unique within it's cspec.
-		//
-		String name = getName();
-		return m_cspec.hashCode() * 31 + (name == null ? 0 : name.hashCode());
 	}
 
 	public boolean isEnabled(IModelCache ctx)

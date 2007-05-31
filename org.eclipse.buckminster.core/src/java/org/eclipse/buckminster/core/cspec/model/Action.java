@@ -91,7 +91,7 @@ public class Action extends Attribute
 	{
 		super(builder);
 		m_actorName = builder.getActorName();
-		m_prerequisites = new Prerequisites(builder.getPrerequisitesBuilder());
+		m_prerequisites = new Prerequisites(this, builder.getPrerequisitesBuilder());
 		m_always = builder.isAlways();
 		m_enabled = builder.isEnabled();
 		m_assignConsoleSupport = builder.isAssignConsoleSupport();
