@@ -30,7 +30,7 @@ public class SiteFeatureReader extends AbstractRemoteReader
 
 	public boolean canMaterialize() throws BuckminsterException
 	{
-		return false;
+		return true;
 	}
 
 	public IFeature getFeature(IProgressMonitor monitor) throws CoreException
