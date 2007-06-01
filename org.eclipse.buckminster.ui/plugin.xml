@@ -137,10 +137,6 @@
 				menubarPath="org.eclipse.buckminster.ui.menu/org.eclipse.buckminster.ui.debug.menu/group1" />
 		</actionSet>
 	</extension>
-	<extension point="org.eclipse.ui.startup">
-		<startup
-			class="org.eclipse.buckminster.ui.internal.EarlyStartup" />
-	</extension>
     <extension
          point="org.eclipse.ui.newWizards">
       <category
