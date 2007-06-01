@@ -48,6 +48,10 @@ import javax.jnlp.DownloadServiceListener;
  * @version 2.2.1 2006-05-27 Abort when splash image can not be loaded. (original version)
  * @author Henrik Lindberg
  */
+
+// NOTE: Please keep commented code - it is used for debugging, but should not be used in production
+// It is kind of tricky to debug via JWS!
+//
 @SuppressWarnings("serial")
 public class SplashWindow extends Window
 {
@@ -76,7 +80,10 @@ public class SplashWindow extends Window
 	 */
 	private Image m_image;
 
-	private static StringBuffer s_debugInfo = new StringBuffer();
+	/* private static StringBuffer s_debugInfo = new StringBuffer(); */
+	// Please keep this variable, even if it is not read - future functionality will make use
+	// of it
+	@SuppressWarnings("unused")
 	private static String s_taskName = "Run";
 	
 	/**
@@ -230,7 +237,7 @@ public class SplashWindow extends Window
 	 */
 	public static void splash(Image image)
 	{
-		s_debugInfo.append("Splash; ");
+//		s_debugInfo.append("Splash; ");
 		if(s_instance == null && image != null)
 		{
 			Frame f = new Frame();
@@ -284,28 +291,28 @@ public class SplashWindow extends Window
 	 */
 	public static void disposeSplash()
 	{
-		s_debugInfo.append("Disposed; ");
+//		s_debugInfo.append("Disposed; ");
 		if(s_instance != null)
 		{
-			logProgress(0, s_instance.m_progress);
+//			logProgress(0, s_instance.m_progress);
 			s_instance.getOwner().dispose();
 			s_instance = null;
 		}
 	}
 	public static String getDebugString()
 	{
-		return s_debugInfo.toString();
+		return "";
+//		return s_debugInfo.toString();
 	}
-	private static void logProgress(int from, int to)
-	{
-		s_debugInfo.append(s_taskName);
-		s_debugInfo.append(": ");
-		s_debugInfo.append(from);
-		s_debugInfo.append("-");
-		s_debugInfo.append(to);
-		s_debugInfo.append("; ");
-		
-	}
+//	private static void logProgress(int from, int to)
+//	{
+//		s_debugInfo.append(s_taskName);
+//		s_debugInfo.append(": ");
+//		s_debugInfo.append(from);
+//		s_debugInfo.append("-");
+//		s_debugInfo.append(to);
+//		s_debugInfo.append("; \n");
+//	}
 	public static void setProgress(int percentageDone)
 	{
 		if(s_instance != null)
@@ -313,47 +320,68 @@ public class SplashWindow extends Window
 			if(percentageDone > 100)
 				percentageDone = 100;
 			if(percentageDone < 0)
+			{
+//				s_debugInfo.append("*");
 				percentageDone = 0;
-
-			// if percentageDone is 0, it is considered to start a new "run" - log this
-			if(percentageDone == 0)
-			{
-				logProgress(0,s_instance.m_progress);
 			}
-			
-			// set the progress in splash window
-			
-			int tickw = PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;
-			int w = s_instance.getWidth() - PROGRESS_XMARGIN * 2;
-			int n = w / tickw;
-			// if, by skipping the last gap, there is room for one more...
-			if(w - n * tickw >= PROGRESS_TICK_WIDTH)
-				n++;
-			
-			int n1 = s_instance.m_progress == 0
-					? 0
-					: (int)(((s_instance.m_progress / 100.0) * n + 0.5));
-			int n2 = percentageDone == 0
-					? 0
-					: (int)(((percentageDone / 100.0) * n + 0.5));
 
-			// in case progress goes in the reverse...
-			if(s_instance.m_progress > percentageDone)
+//			// if percentageDone is 0, it is considered to start a new "run" - log this
+//			if(percentageDone == 0)
+//			{
+//				logProgress(0,s_instance.m_progress);
+//			}
+			if(percentageDone == 0 && s_instance.m_progress > 0 && s_instance.m_progress < 95)
 			{
-				int tmp = n2;
-				n2 = n1;
-				n1 = tmp;
+				// progress did not go to (close to) 100 before it went to 0
+				// set it to 100 first, and repaint, then wait, and continue.
+				setProgressChecked(100);
+				try
+				{
+					Thread.sleep(50); // give user the chance to see it
+				}
+				catch(InterruptedException e)
+				{
+					// just ignore
+				}
 			}
-			
-			// set the new progress value
-			s_instance.m_progress = percentageDone;
-
-			// repaint the progressbar area - include only the area m1-m2 to reduce flicker
-			s_instance.repaint(PROGRESS_XMARGIN + n1 * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), 
-					s_instance.getHeight() - PROGRESS_TICK_HEIGHT - PROGRESS_YMARGIN, 
-					(n2-n1) * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), 
-					PROGRESS_TICK_HEIGHT);
+			setProgressChecked(percentageDone);
 		}
+	}
+	
+	private static void setProgressChecked(int percentageDone)
+		{
+		// set the progress in splash window
+		
+		int tickw = PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;
+		int w = s_instance.getWidth() - PROGRESS_XMARGIN * 2;
+		int n = w / tickw;
+		// if, by skipping the last gap, there is room for one more...
+		if(w - n * tickw >= PROGRESS_TICK_WIDTH)
+			n++;
+		
+		int n1 = s_instance.m_progress == 0
+				? 0
+				: (int)(((s_instance.m_progress / 100.0) * n + 0.5));
+		int n2 = percentageDone == 0
+				? 0
+				: (int)(((percentageDone / 100.0) * n + 0.5));
+
+		// in case progress goes in the reverse...
+		if(s_instance.m_progress > percentageDone)
+		{
+			int tmp = n2;
+			n2 = n1;
+			n1 = tmp;
+		}
+		
+		// set the new progress value
+		s_instance.m_progress = percentageDone;
+
+		// repaint the progressbar area - include only the area m1-m2 to reduce flicker
+		s_instance.repaint(PROGRESS_XMARGIN + n1 * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), 
+				s_instance.getHeight() - PROGRESS_TICK_HEIGHT - PROGRESS_YMARGIN, 
+				(n2-n1) * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), 
+				PROGRESS_TICK_HEIGHT);
 	}
 
 	public static DownloadServiceListener getDownloadServiceListener()
@@ -365,30 +393,85 @@ public class SplashWindow extends Window
 
 	private static class ProgressFacade implements DownloadServiceListener
 	{
+		private static long s_numberOfUnits;
+		private static long s_unitsProduced;
+
 		// From DownloadServiceListener
+		/**
+		 * Displays progress as 0% - resets progress.
+		 */
 		public void downloadFailed(URL arg0, String arg1)
 		{
+			s_taskName = "Failed";
 			// Don't know what to do... errors are up to someone else to display
 			SplashWindow.setProgress(0);
 		}
 
 		// From DownloadServiceListener
+		/**
+		 * Displays progress by showing percentage of total/readSoFar. All other parameters are ignored.
+		 */
 		public void progress(URL url, String version, long readSoFar, long total, int overallPercent)
 		{
-			SplashWindow.setProgress(overallPercent);
+			s_taskName = "Progress";
+			SplashWindow.setProgress((int)(total/readSoFar * 100));
 		}
 
 		// From DownloadServiceListener
+		/**
+		 * Displays progress by showing patchPercent. All other parameters are ignored.
+		 */
 		public void upgradingArchive(URL url, String version, int patchPercent, int overallPercent)
 		{
-			SplashWindow.setProgress(overallPercent);
+			s_taskName = "Upgrading";
+			SplashWindow.setProgress(patchPercent);
 		}
 
 		// From DownloadServiceListener
+		/**
+		 * Displays progress by showing percentage of total/entry. All other parameters are ignored.
+		 */
 		public void validating(URL url, String version, long entry, long total, int overallPercent)
 		{
-			SplashWindow.setProgress(overallPercent);
+			s_taskName = "Validating";
+			SplashWindow.setProgress((int)(total/entry * 100));
+		}
+		
+		/**
+		 * Starts a progress sequence. Sets a numberOfUntis to reach. Progress is reported via
+		 * taskProgress, taskIncrementalProgress, or taskDone. Sets progress to 0%. 
+		 * @param s
+		 * @param numberOfUnits
+		 */
+		public void setTask(String s, long numberOfUnits)
+		{
+			s_taskName = s;
+			s_numberOfUnits = numberOfUnits;
+			s_unitsProduced = 0L;
+			SplashWindow.setProgress(0);
+		}
+		/**
+		 * Report progress - how much of the task is done measured in same unit as set int
+		 * setTask. 
+		 * @param unitsProduced
+		 */
+		public void taskProgress(long unitsProduced)
+		{
+			s_unitsProduced = unitsProduced;
+			SplashWindow.setProgress((int)(s_numberOfUnits/unitsProduced * 100));
 		}
 
+		/**
+		 * Sets the task progress to 100%
+		 */
+		public void taskDone()
+		{
+			SplashWindow.setProgress(100);
+		}
+
+		public void taskIncrementalProgress(long increment)
+		{
+			taskProgress(s_unitsProduced + increment);
+		}
 	}
 }

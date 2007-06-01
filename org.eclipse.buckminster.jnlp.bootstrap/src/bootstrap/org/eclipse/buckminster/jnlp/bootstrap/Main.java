@@ -256,13 +256,7 @@ public class Main
 				SplashWindow.disposeSplash();
 				System.err.print(SplashWindow.getDebugString());
 				*/
-				
-				/*// Uncomment to get debug string to clipboard - do not use in production
-				ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
-				StringSelection ss = new StringSelection(SplashWindow.getDebugString());
-				clipservice.setContents(ss);  
-				*/
-				
+								
 				// Assume we don't have an installed product
 				//
 				DownloadService ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService");
@@ -278,6 +272,11 @@ public class Main
 				IProductInstaller installer = (IProductInstaller)installerClass.newInstance();
 				installer.installProduct(this);
 			}
+// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
+// in the clipboard.
+//			ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
+//			StringSelection ss = new StringSelection(SplashWindow.getDebugString());
+//			clipservice.setContents(ss);  
 			startProduct(args);
 			try
 			{
