@@ -64,7 +64,7 @@ public class PluginScriptGenerator extends ScriptGenerator
 
 		AbstractScriptGenerator.setConfigInfo(Config.genericConfig().toString(","));
 		MyModelBuildScriptGenerator generator = new MyModelBuildScriptGenerator();
-		initScript(generator, ctx, createStateFromPrerequisites(ctx, monitor));
+		initScript(generator, ctx);
 
 		generator.setSignJars(getBooleanProperty(properties, PROPERTY_SIGN_JARS, false));
 		ComponentIdentifier cid = ctx.getAction().getCSpec().getComponentIdentifier();

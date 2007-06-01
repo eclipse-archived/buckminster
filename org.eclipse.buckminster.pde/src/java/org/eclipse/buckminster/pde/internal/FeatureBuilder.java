@@ -140,7 +140,6 @@ public class FeatureBuilder extends PDEBuilder
 		GroupBuilder exportRefs = cspec.addGroup(GROUP_EXPORT_FEATURE_REFS, false);
 
 		GroupBuilder pluginExportRefs = cspec.addGroup(ATTRIBUTE_BUNDLE_EXPORT, true);
-		cspec.addGroup(ATTRIBUTE_BUNDLE_CLOSURE, true);
 		cspec.addGroup(PRODUCT_ROOT_FILES, true);
 
 		ActionBuilder scriptBuilder = cspec.addAction(
@@ -148,7 +147,6 @@ public class FeatureBuilder extends PDEBuilder
 			FeatureScriptGenerator.ACTOR_ID, false);
 		scriptBuilder.setProductBase(OUTPUT_DIR.append(SCRIPT_OUTPUT));
 		scriptBuilder.addProductPath(new Path(BUILD_SCRIPT_NAME));
-		scriptBuilder.addLocalPrerequisite(ATTRIBUTE_BUNDLE_CLOSURE);
 		scriptBuilder.addLocalPrerequisite(CSpec.SELF_ARTIFACT);
 
 		// Ensure that the script builder is run before we do anything else since
@@ -408,7 +406,6 @@ public class FeatureBuilder extends PDEBuilder
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder exportFeatureRefs = cspec.getRequiredGroup(GROUP_EXPORT_FEATURE_REFS);
 		GroupBuilder exportPluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_EXPORT);
-		GroupBuilder pluginStateClosure = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_CLOSURE);
 		GroupBuilder productRootFiles = cspec.getGroup(PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
 		{
@@ -421,7 +418,6 @@ public class FeatureBuilder extends PDEBuilder
 			exportPluginRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_EXPORT);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 			productRootFiles.addExternalPrerequisite(dep.getName(), PRODUCT_ROOT_FILES);
-			pluginStateClosure.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_CLOSURE);
 		}
 	}
 
@@ -437,7 +433,6 @@ public class FeatureBuilder extends PDEBuilder
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder exportPluginRefs = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_EXPORT);
-		GroupBuilder pluginStateClosure = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_CLOSURE);
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 		for(IFeaturePlugin plugin : plugins)
 		{
@@ -458,7 +453,6 @@ public class FeatureBuilder extends PDEBuilder
 			cspec.addDependency(dep);
 			exportPluginRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_EXPORT);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
-			pluginStateClosure.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_CLOSURE);
 		}
 	}
 

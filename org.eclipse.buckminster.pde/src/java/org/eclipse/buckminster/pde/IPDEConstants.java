@@ -53,11 +53,6 @@ public interface IPDEConstants
 	public static final String ATTRIBUTE_FULL_CLEAN = WellknownActions.BUCKMINSTER.CLEAN.toString();
 
 	/**
-	 * Denotes a list consisting the self artifact and the state closure of all dependencies
-	 */
-	public static final String ATTRIBUTE_BUNDLE_CLOSURE = "bundle.state.closure";
-
-	/**
 	 * Denotes a fully deployable bundle in packed formet
 	 */
 	public static final String ATTRIBUTE_BUNDLE_EXPORT = "bundle.export";

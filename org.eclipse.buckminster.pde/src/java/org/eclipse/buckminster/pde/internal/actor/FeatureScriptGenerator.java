@@ -69,7 +69,7 @@ public class FeatureScriptGenerator extends ScriptGenerator
 			}
 		};
 
-		initScript(generator, ctx, createStateFromPrerequisites(ctx, monitor));
+		initScript(generator, ctx);
 		generator.setSignJars(getBooleanProperty(properties, PROPERTY_SIGN_JARS, false));
 		generator.setGenerateIncludedFeatures(false);
 		generator.setAnalyseChildren(false);

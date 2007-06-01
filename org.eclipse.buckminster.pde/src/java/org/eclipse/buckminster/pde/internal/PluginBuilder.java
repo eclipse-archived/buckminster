@@ -301,7 +301,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 
 		GroupBuilder fullClean = cspec.getRequiredGroup(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
-		GroupBuilder closure = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_CLOSURE);
 
 		if(!isFragment && (reader instanceof ISiteReader))
 		{
@@ -322,7 +321,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				if(isProject)
 					addExternalPrerequisite(getAttributeBuildRequirements(), component, ATTRIBUTE_JAVA_BINARIES, false);
 				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, false);
-				addExternalPrerequisite(closure, component, ATTRIBUTE_BUNDLE_CLOSURE, false);
 			}
 		}
 
@@ -335,10 +333,7 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			{
 				ComponentRequest sysDep = new ComponentRequest(SYSTEM_BUNDLE, KeyConstants.PLUGIN_CATEGORY, null);
 				if(!query.skipComponent(sysDep))
-				{
 					cspec.addDependency(sysDep);
-					addExternalPrerequisite(closure, SYSTEM_BUNDLE, ATTRIBUTE_BUNDLE_CLOSURE, false);
-				}
 			}
 			return;
 		}
@@ -364,7 +359,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 
 			String component = dependency.getName();
 			addExternalPrerequisite(fullClean, component, ATTRIBUTE_FULL_CLEAN, optional);
-			addExternalPrerequisite(closure,   component, ATTRIBUTE_BUNDLE_CLOSURE, optional);
 			if(isProject)
 				addExternalPrerequisite(getAttributeBuildRequirements(), component, ATTRIBUTE_JAVA_BINARIES, optional);
 			if(pluginImport.isReexported())
@@ -621,8 +615,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 
 		cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
-		GroupBuilder closure = cspec.addGroup(ATTRIBUTE_BUNDLE_CLOSURE, true);
-		closure.addSelfRequirement();
 	}
 
 	private void createScriptExecutionAttributes(IBuildModel buildModel) throws CoreException
@@ -633,7 +625,6 @@ public class PluginBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			PluginScriptGenerator.ACTOR_ID, false);
 		scriptBuilder.setProductBase(OUTPUT_DIR.append(SCRIPT_OUTPUT));
 		scriptBuilder.addProductPath(new Path(BUILD_SCRIPT_NAME));
-		scriptBuilder.addLocalPrerequisite(ATTRIBUTE_BUNDLE_CLOSURE);
 
 		ActionBuilder bundleExport = cspec.addAction(ATTRIBUTE_BUNDLE_EXPORT, true, PdeAntActor.ACTOR_ID,
 			false);
