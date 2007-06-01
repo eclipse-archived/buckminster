@@ -209,7 +209,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 			}
 		}
 		fileCount[0] = count;
-		return newest == 0 ? Long.MAX_VALUE : newest;
+		return newest;
 	}
 
 	public final PathGroup[] getPathGroups(IModelCache ctx) throws CoreException
