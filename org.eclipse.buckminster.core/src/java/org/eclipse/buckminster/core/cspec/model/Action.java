@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -378,7 +379,8 @@ public class Action extends Attribute
 					//
 					if(isDebug)
 						logger.debug(
-							String.format("%sThe product for %s is older then its matching requirement", failLeadIn, entry.getKey()));
+							String.format("%sThe product for %s of age %s is older then its matching requirement with age %s",
+								failLeadIn, entry.getKey(), new Date(productTs), new Date(prereqTs)));
 					return false;
 				}
 			}
@@ -430,7 +432,8 @@ public class Action extends Attribute
 		}
 
 		fileCountBin[0] = 0;
-		if(oldest >= getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin))
+		long prereqAge = getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin);
+		if(oldest >= prereqAge)
 		{
 			if(isDebug)
 				logger.debug(
@@ -439,7 +442,7 @@ public class Action extends Attribute
 		}
 		if(isDebug)
 			logger.debug(
-				String.format("%s: Product is older then prerequisite", failLeadIn));
+				String.format("%s: Product of age %s is older then prerequisite of age %s", failLeadIn, new Date(oldest), new Date(prereqAge)));
 		return false;
 	}
 

@@ -968,7 +968,7 @@ public abstract class FileUtils
 			}
 		}
 		realFileCount[0] = count;
-		return lastModTime == 0 ? Long.MAX_VALUE : lastModTime;
+		return lastModTime;
 	}
 
 	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)
