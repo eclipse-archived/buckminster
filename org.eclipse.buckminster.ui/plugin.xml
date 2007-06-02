@@ -106,16 +106,16 @@
 		<actionSet id="org.eclipse.buckminster.ui.project"
 			label="%BuckminsterProjectActions" visible="true">
 			<action
-				class="org.eclipse.buckminster.ui.actions.OpenQueryAction"
-				definitionId="org.eclipse.buckminster.ui.actions.OpenQueryAction"
-				id="org.eclipse.buckminster.ui.openQuery" label="%OpenQuery"
-				menubarPath="file/open" />
-			<action
 				class="org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction"
 				definitionId="org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction"
 				id="org.eclipse.buckminster.ui.viewChosenCSpec"
 				label="%ViewChosenCSpec"
-				menubarPath="navigate/open.ext" />
+				menubarPath="file/open" />
+			<action
+				class="org.eclipse.buckminster.ui.actions.OpenQueryAction"
+				definitionId="org.eclipse.buckminster.ui.actions.OpenQueryAction"
+				id="org.eclipse.buckminster.ui.openQuery" label="%OpenQuery"
+				menubarPath="file/open" />
 		</actionSet>
 	</extension>
     <extension
