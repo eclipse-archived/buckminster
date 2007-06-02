@@ -16,7 +16,6 @@ import java.net.URL;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.resolver.ResourceMapCache;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -45,7 +44,7 @@ public class Redirect extends Matcher
 		try
 		{
 			URL url = new URL(ExpandingProperties.expand(query.getProperties(), m_url, 0));
-			return ResourceMapCache.getResourceMap(url).getSearchPath(query);
+			return ResourceMap.fromURL(url).getSearchPath(query);
 		}
 		catch(MalformedURLException e)
 		{

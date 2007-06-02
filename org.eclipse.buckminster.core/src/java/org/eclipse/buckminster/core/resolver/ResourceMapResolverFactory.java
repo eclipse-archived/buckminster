@@ -112,7 +112,8 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	{
 		if(isOverrideQueryURL())
 			url = getResourceMapURL();
-		return ResourceMapCache.getResourceMap(url);
+
+		return ResourceMap.fromURL(url);
 	}
 
 	public int getResolverThreadsMax()

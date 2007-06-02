@@ -10,6 +10,10 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,13 +32,17 @@ import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
+import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -60,6 +68,30 @@ public class ResourceMap implements ISaxable, ISaxableElement
 	private final Map<String, String> m_properties = new ExpandingProperties(null);
 
 	private Documentation m_documentation;
+
+	public static ResourceMap fromURL(URL url) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			input = URLUtils.openStream(url, null);
+			IParserFactory pf = CorePlugin.getDefault().getParserFactory();
+			IParser<ResourceMap> rmapParser = pf.getResourceMapParser(true);
+			return rmapParser.parse(url.toString(), new BufferedInputStream(input));
+		}
+		catch(SAXException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
 
 	public void addMatcher(Matcher matcher)
 	{
