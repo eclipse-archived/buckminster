@@ -8,6 +8,10 @@
 
 package org.eclipse.buckminster.ui.prefs;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.prefs.IPreferenceDescriptor;
 import org.eclipse.buckminster.core.prefs.IPreferenceValidator;
 import org.eclipse.buckminster.core.resolver.IResolverFactory;
@@ -16,6 +20,10 @@ import org.eclipse.buckminster.runtime.IBuckminsterPreferenceConstants;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
@@ -27,11 +35,19 @@ import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Thomas Hallgren
@@ -257,5 +273,64 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 			m_resolversParent.setLayout(m_resolversStack);
 			m_resolversParent.setVisible(false);
 		}
+
+		Group tsGroup = new Group(getFieldEditorParent(), SWT.NONE);
+		tsGroup.setLayout(new GridLayout(2, false));
+		tsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		tsGroup.setText("Troubleshooting");
+		UiUtils.createPushButton(tsGroup, "Clear URL cache", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				CorePlugin plugin = CorePlugin.getDefault();
+				plugin.clearRemoteFileCache();
+				plugin.clearURLCache();
+			}
+		});
+
+		UiUtils.createPushButton(tsGroup, "Refresh Meta-data", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent ev)
+			{
+				IWorkbench workbench = PlatformUI.getWorkbench();
+
+				IWorkbenchWindow wbWin = workbench.getActiveWorkbenchWindow();
+				if(wbWin == null)
+				{
+					// Not very likely. Just run it in the UI thread without monitor
+					//
+					WorkspaceInfo.forceRefreshOnAll(new NullProgressMonitor());
+					return;
+				}
+				try
+				{
+					wbWin.run(true, true, new IRunnableWithProgress()
+					{
+						public void run(IProgressMonitor monitor) throws InvocationTargetException,
+								InterruptedException
+						{
+							try
+							{
+								WorkspaceInfo.forceRefreshOnAll(monitor);
+							}
+							catch(OperationCanceledException e)
+							{
+								throw new InterruptedException();
+							}
+						}
+					});
+				}
+				catch(InterruptedException e)
+				{
+				}
+				catch(Exception e)
+				{
+					CorePlugin.getLogger().error(e.toString(), e);
+					// We don't care to display exceptions here
+				}
+			}
+		});
 	}
 }

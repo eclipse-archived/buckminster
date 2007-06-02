@@ -17,20 +17,21 @@
 			id="org.eclipse.buckminster.ui.projectaction"
 			objectClass="org.eclipse.core.resources.IResource"
 			adaptable="true">
-			<menu id="org.eclipse.buckminster.ui.popup.menu"
-				label="Buckminster">
+			<menu
+         id="org.eclipse.buckminster.ui.popup.menu"
+         label="Buckminster">
 				<separator name="cspec" />
 			</menu>
 			<action
 				class="org.eclipse.buckminster.ui.actions.ViewCSpecAction"
 				id="org.eclipse.buckminster.ui.viewCSpec" enablesFor="1"
-				label="View CSpec..."
+				label="%ViewCSpec"
 				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec">
 			</action>
 			<action
 				class="org.eclipse.buckminster.ui.actions.InvokeAction"
 				enablesFor="1" id="org.eclipse.buckminster.ui.invokeAction"
-				label="Invoke action"
+				label="%InvokeAction"
 				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec" />
 		</objectContribution>
 	</extension>
@@ -104,37 +105,17 @@
 	<extension point="org.eclipse.ui.actionSets">
 		<actionSet id="org.eclipse.buckminster.ui.project"
 			label="%BuckminsterProjectActions" visible="true">
-			<menu id="org.eclipse.buckminster.ui.menu"
-				label="%Buckminster">
-				<separator name="group1" />
-				<separator name="group2" />
-			</menu>
-			<menu id="org.eclipse.buckminster.ui.debug.menu"
-				label="%Debug" path="org.eclipse.buckminster.ui.menu/group2">
-				<separator name="group1" />
-			</menu>
 			<action
 				class="org.eclipse.buckminster.ui.actions.OpenQueryAction"
 				definitionId="org.eclipse.buckminster.ui.actions.OpenQueryAction"
 				id="org.eclipse.buckminster.ui.openQuery" label="%OpenQuery"
-				menubarPath="org.eclipse.buckminster.ui.menu/group1" />
+				menubarPath="file/open" />
 			<action
 				class="org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction"
 				definitionId="org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction"
 				id="org.eclipse.buckminster.ui.viewChosenCSpec"
 				label="%ViewChosenCSpec"
-				menubarPath="org.eclipse.buckminster.ui.menu/group1" />
-			<action
-				class="org.eclipse.buckminster.ui.actions.debug.ForceWorkspaceInfoChangedAction"
-				definitionId="org.eclipse.buckminster.ui.actions.debug.ForceWorkspaceInfoChangedAction"
-				id="org.eclipse.buckminster.ui.forceWorkspaceInfoChanged"
-				label="%ForceWorkspaceInfoChanged"
-				menubarPath="org.eclipse.buckminster.ui.menu/org.eclipse.buckminster.ui.debug.menu/group1" />
-			<action
-				class="org.eclipse.buckminster.ui.actions.debug.ClearURLCacheAction"
-				definitionId="org.eclipse.buckminster.ui.actions.debug.ClearURLCacheAction"
-				id="org.eclipse.buckminster.ui.clearURLCache" label="%ClearURLCache"
-				menubarPath="org.eclipse.buckminster.ui.menu/org.eclipse.buckminster.ui.debug.menu/group1" />
+				menubarPath="navigate/open.ext" />
 		</actionSet>
 	</extension>
     <extension
