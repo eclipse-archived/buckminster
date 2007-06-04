@@ -51,6 +51,10 @@ public class Main
 	private File m_installLocation;
 	
 	public static final String PROP_SPLASH_IMAGE = "splashImage";
+	
+	public static final String PROP_STARTUP_TIME = "startupTime";
+	
+	public static final int DEFAULT_STARTUP_TIME = 2000;
 
 	public static void main(String[] args)
 	{
@@ -284,9 +288,9 @@ public class Main
 				// Two seconds to start, with progressbar. The time is an
 				// estimate of course.
 				//
-				int idx = 20;
-				monitor.setTask("Starting", idx);
-				while(--idx >= 0)
+				int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue() / 100;
+				monitor.setTask("Starting", startupTime);
+				while(--startupTime >= 0)
 				{
 					Thread.sleep(100);
 					monitor.taskIncrementalProgress(1);

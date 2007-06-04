@@ -47,15 +47,18 @@ public class ProductInstaller implements IProductInstaller
 
 	private Unpacker m_unpacker;
 
+	private static final String PROP_UNPACK_COUNT = "unpackCount";
+	private static final int DEFAULT_UNPACK_COUNT = 80;
+
 	public void installProduct(Main main, ProgressFacade monitor) throws IOException
 	{
 		m_main = main;
 
 		// We know that we have about 80 packed files to process. Since we're streaming
 		// everything in one go, it's a bit hard to find the exact number.
-		// TODO: Control this using a property in the jnlp file
 		//
-		monitor.setTask("Unpacking", 100);	// 80 + 10 + 10
+		int unpackCount = Integer.getInteger(PROP_UNPACK_COUNT, DEFAULT_UNPACK_COUNT).intValue();
+		monitor.setTask("Unpacking", unpackCount + 20);
 		installResource("product.zip", monitor);
 		installResource("platform.zip", monitor);
 		monitor.taskDone();
