@@ -235,6 +235,7 @@ public class Main
 			}
 
 			File siteRoot = getSiteRoot();
+			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 			if(siteRoot == null)
 			{
 				/*// Uncomment to get two testloops of progress - do not use in production
@@ -264,13 +265,13 @@ public class Main
 				if(!ds.isPartCached(PRODUCT))
 				{
 			        // SplashWindow.disposeSplash();
-					ds.loadPart(PRODUCT, SplashWindow.getDownloadServiceListener());
+					ds.loadPart(PRODUCT, monitor);
 			        // SplashWindow.splash(splashData);
 				}
 
 				Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
 				IProductInstaller installer = (IProductInstaller)installerClass.newInstance();
-				installer.installProduct(this);
+				installer.installProduct(this, monitor);
 			}
 // NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
 // in the clipboard.
@@ -280,7 +281,16 @@ public class Main
 			startProduct(args);
 			try
 			{
-				Thread.sleep(2000);
+				// Two seconds to start, with progressbar. The time is an
+				// estimate of course.
+				//
+				int idx = 20;
+				monitor.setTask("Starting", idx);
+				while(--idx >= 0)
+				{
+					Thread.sleep(100);
+					monitor.taskIncrementalProgress(1);
+				}
 			}
 			catch(InterruptedException e)
 			{

@@ -15,5 +15,5 @@ import java.io.IOException;
  */
 public interface IProductInstaller
 {
-	void installProduct(Main main) throws IOException;
+	void installProduct(Main main, ProgressFacade monitor) throws IOException;
 }

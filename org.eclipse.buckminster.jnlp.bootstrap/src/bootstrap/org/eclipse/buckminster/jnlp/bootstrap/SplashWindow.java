@@ -20,9 +20,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
-
-import javax.jnlp.DownloadServiceListener;
 
 /**
  * A Splash window.
@@ -73,8 +70,8 @@ public class SplashWindow extends Window
 	/**
 	 * The current download listener. (Singleton design pattern).
 	 */
-	private static DownloadServiceListener s_listener;
-	
+	private static ProgressFacade s_listener;
+
 	/**
 	 * The splash image which is displayed on the splash window.
 	 */
@@ -229,6 +226,16 @@ public class SplashWindow extends Window
 			x += PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;
 		}
 	}
+
+	/**
+	 * Sets the name of the task for progress monitoring
+	 * @param taskName The task name
+	 */
+	public static void setTaskName(String taskName)
+	{
+		s_taskName = taskName;
+	}
+
 	/**
 	 * Open's a splash window using the specified image.
 	 * 
@@ -384,94 +391,10 @@ public class SplashWindow extends Window
 				PROGRESS_TICK_HEIGHT);
 	}
 
-	public static DownloadServiceListener getDownloadServiceListener()
+	public static ProgressFacade getDownloadServiceListener()
 	{
 		if(s_listener == null)
-			s_listener = new SplashWindow.ProgressFacade();
+			s_listener = new ProgressFacade();
 		return s_listener;
-	}
-
-	private static class ProgressFacade implements DownloadServiceListener
-	{
-		private static long s_numberOfUnits;
-		private static long s_unitsProduced;
-
-		// From DownloadServiceListener
-		/**
-		 * Displays progress as 0% - resets progress.
-		 */
-		public void downloadFailed(URL arg0, String arg1)
-		{
-			s_taskName = "Failed";
-			// Don't know what to do... errors are up to someone else to display
-			SplashWindow.setProgress(0);
-		}
-
-		// From DownloadServiceListener
-		/**
-		 * Displays progress by showing percentage of total/readSoFar. All other parameters are ignored.
-		 */
-		public void progress(URL url, String version, long readSoFar, long total, int overallPercent)
-		{
-			s_taskName = "Progress";
-			SplashWindow.setProgress((int)(total/readSoFar * 100));
-		}
-
-		// From DownloadServiceListener
-		/**
-		 * Displays progress by showing patchPercent. All other parameters are ignored.
-		 */
-		public void upgradingArchive(URL url, String version, int patchPercent, int overallPercent)
-		{
-			s_taskName = "Upgrading";
-			SplashWindow.setProgress(patchPercent);
-		}
-
-		// From DownloadServiceListener
-		/**
-		 * Displays progress by showing percentage of total/entry. All other parameters are ignored.
-		 */
-		public void validating(URL url, String version, long entry, long total, int overallPercent)
-		{
-			s_taskName = "Validating";
-			SplashWindow.setProgress((int)(total/entry * 100));
-		}
-		
-		/**
-		 * Starts a progress sequence. Sets a numberOfUntis to reach. Progress is reported via
-		 * taskProgress, taskIncrementalProgress, or taskDone. Sets progress to 0%. 
-		 * @param s
-		 * @param numberOfUnits
-		 */
-		public void setTask(String s, long numberOfUnits)
-		{
-			s_taskName = s;
-			s_numberOfUnits = numberOfUnits;
-			s_unitsProduced = 0L;
-			SplashWindow.setProgress(0);
-		}
-		/**
-		 * Report progress - how much of the task is done measured in same unit as set int
-		 * setTask. 
-		 * @param unitsProduced
-		 */
-		public void taskProgress(long unitsProduced)
-		{
-			s_unitsProduced = unitsProduced;
-			SplashWindow.setProgress((int)(s_numberOfUnits/unitsProduced * 100));
-		}
-
-		/**
-		 * Sets the task progress to 100%
-		 */
-		public void taskDone()
-		{
-			SplashWindow.setProgress(100);
-		}
-
-		public void taskIncrementalProgress(long increment)
-		{
-			taskProgress(s_unitsProduced + increment);
-		}
 	}
 }

@@ -18,6 +18,7 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
+import org.eclipse.buckminster.jnlp.bootstrap.ProgressFacade;
 
 public class ProductInstaller implements IProductInstaller
 {
@@ -46,16 +47,25 @@ public class ProductInstaller implements IProductInstaller
 
 	private Unpacker m_unpacker;
 
-	public void installProduct(Main main) throws IOException
+	public void installProduct(Main main, ProgressFacade monitor) throws IOException
 	{
 		m_main = main;
-		installResource("product.zip");
-		installResource("platform.zip");
+
+		// We know that we have about 80 packed files to process. Since we're streaming
+		// everything in one go, it's a bit hard to find the exact number.
+		// TODO: Control this using a property in the jnlp file
+		//
+		monitor.setTask("Unpacking", 100);	// 80 + 10 + 10
+		installResource("product.zip", monitor);
+		installResource("platform.zip", monitor);
+		monitor.taskDone();
 	}
 
-	private void installResource(String resourceName) throws IOException
+	private void installResource(String resourceName, ProgressFacade monitor) throws IOException
 	{
+		monitor.taskIncrementalProgress(5);
 		InputStream resourceZip = getClass().getResourceAsStream(resourceName);
+		monitor.taskIncrementalProgress(5);
 		if(resourceZip == null)
 		{
 			//
@@ -66,7 +76,7 @@ public class ProductInstaller implements IProductInstaller
 
 		try
 		{
-			installFromStream(resourceZip);
+			installFromStream(resourceZip, monitor);
 		}
 		finally
 		{
@@ -74,7 +84,7 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
-	private void installFromStream(InputStream productZip) throws IOException
+	private void installFromStream(InputStream productZip, ProgressFacade monitor) throws IOException
 	{
 		File installLocation = m_main.getInstallLocation();
 		ZipInputStream zipInput = new ZipInputStream(productZip);
@@ -99,6 +109,7 @@ public class ProductInstaller implements IProductInstaller
 					try
 					{
 						storeUnpacked(zipInput, output);
+						monitor.taskIncrementalProgress(1);
 					}
 					finally
 					{
@@ -107,12 +118,17 @@ public class ProductInstaller implements IProductInstaller
 				}
 				else
 				{
+					// This is so quick that it doesn't generate a progress tick
+					//
 					file = new File(installLocation, name);
 					storeVerbatim(file, zipInput);
 				}
 
 				if(file.getName().endsWith(".jar"))
-					recursiveUnpack(file);
+				{
+					if(recursiveUnpack(file))
+						monitor.taskIncrementalProgress(1);
+				}
 			}
 
 			long tz = zipEntry.getTime();
@@ -121,7 +137,7 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
-	private void recursiveUnpack(File file) throws IOException
+	private boolean recursiveUnpack(File file) throws IOException
 	{
 		// Make sure this jar file doesn't contain packed entries
 		//
@@ -142,7 +158,7 @@ public class ProductInstaller implements IProductInstaller
 				}
 			}
 			if(!needRepack)
-				return;
+				return false;
 
 			// We need to repack this jar
 			//
@@ -205,6 +221,7 @@ public class ProductInstaller implements IProductInstaller
 		renameFile(file, mvTemp);
 		renameFile(tempFile, file);
 		mvTemp.delete();
+		return true;
 	}
 
 	private static void renameFile(File from, File to) throws IOException
