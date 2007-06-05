@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.ui.general.editor.onepage;
+package org.eclipse.buckminster.ui.general.editor.structured;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.buckminster.ui.general.editor.Table;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEventType;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -42,11 +43,25 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 		return m_stackMap.get(stackKey);
 	}
 
+	private void clearStackMapping()
+	{
+		m_stackKeys.clear();
+		m_stackMap.clear();
+	}
+	
 	public List<String> getStackKeys()
 	{
 		return m_stackKeys;
 	}
+	
+	public void fillStackComposite(Composite stackComposite)
+	{
+		clearStackMapping();
+		fillStack(stackComposite);
+	}
 
+	protected abstract void fillStack(Composite stackComposite);
+	
 	protected void addStackMapping(String key, Control control)
 	{
 		m_stackKeys.add(key);

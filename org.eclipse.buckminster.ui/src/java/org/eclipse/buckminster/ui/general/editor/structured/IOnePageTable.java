@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.ui.general.editor.onepage;
+package org.eclipse.buckminster.ui.general.editor.structured;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public interface IOnePageTable<T> extends ITable<T>
 	
 	
 	
-	public void fillStack(Composite stackComposite);
+	public void fillStackComposite(Composite stackComposite);
 	public List<String> getStackKeys();
 	public Control getStackControl(String stackKey);
 	public void refreshRow(int rowIdx);
