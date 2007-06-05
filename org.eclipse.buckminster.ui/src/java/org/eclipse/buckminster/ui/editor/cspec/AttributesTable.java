@@ -72,6 +72,11 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 	@Override
 	protected void setRowValues(T builder) throws ValidatorException
 	{
+		if(UiUtils.trimmedValue(m_nameText) == null)
+		{
+			throw new ValidatorException("Name can not be empty.");
+		}
+		
 		builder.setName(UiUtils.trimmedValue(m_nameText));	
 		builder.setPublic(m_publicCheck.getSelection());
 		
