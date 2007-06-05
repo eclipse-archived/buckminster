@@ -77,6 +77,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		}
 	}
 
+	@Override
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));

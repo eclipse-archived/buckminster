@@ -70,37 +70,45 @@ public abstract class StructuredTableEditor<T> extends Composite
 		public String getColumnText(Object element, int columnIndex)
 		{
 			Object field = m_table.getTableViewerField((T)element, columnIndex);
-			return field == null ? "" : field.toString();
+			return field == null
+					? ""
+					: field.toString();
 		}
 	}
 
-	private final IOnePageTable<T> m_table;
+	private final IStructuredTable<T> m_table;
+
 	private final boolean m_swapButtonsFlag;
 
 	private TableViewer m_tableViewer;
+
 	private int m_lastSelectedRow = -1;
-	
+
 	private Button m_newButton;
+
 	private Button m_editButton;
+
 	private Button m_removeButton;
+
 	private Button m_moveUpButton;
+
 	private Button m_moveDownButton;
-	
+
 	private Tree m_stackOptions;
-	
+
 	private StackLayout m_stackLayout;
-	
+
 	private Composite m_stackComposite;
-	
-	public StructuredTableEditor(Composite parent, IOnePageTable<T> table, boolean swapButtonsFlag, int style)
+
+	public StructuredTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
 		super(parent, style);
 		m_table = table;
 		m_swapButtonsFlag = swapButtonsFlag;
-		
+
 		initComposite();
 	}
-	
+
 	protected Button getEditButton()
 	{
 		return m_editButton;
@@ -155,7 +163,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 	{
 		return m_tableViewer;
 	}
-	
+
 	protected boolean isSwapButtonAllowed()
 	{
 		return m_swapButtonsFlag;
@@ -170,20 +178,22 @@ public abstract class StructuredTableEditor<T> extends Composite
 	}
 
 	protected abstract void initComposite();
+
 	protected abstract Composite createTableGroupComposite(Composite parent);
+
 	protected abstract Composite createTableButtonsComposite(Composite parent);
-	
+
 	protected void createTableGroup(Composite parent)
 	{
 		Composite componentTableGroup = createTableGroupComposite(parent);
-		
+
 		Table table = new Table(componentTableGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION);
 
 		//table.setHeaderVisible(false);
 		table.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(50);
-		
+
 		int tableIdx = 0;
 		for(int idx = 0; idx < m_table.getTableViewerColumns(); idx++)
 		{
@@ -208,7 +218,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		{
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				 rowSelection();
+				rowSelection();
 			}
 		});
 		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
@@ -221,14 +231,14 @@ public abstract class StructuredTableEditor<T> extends Composite
 				}
 			}
 		});
-		
+
 		createTableButtons(componentTableGroup);
 	}
 
 	protected void createTableButtons(Composite parent)
 	{
 		Composite buttonBox = createTableButtonsComposite(parent);
-		
+
 		m_newButton = UiUtils.createPushButton(buttonBox, "New", new SelectionAdapter()
 		{
 			@Override
@@ -277,9 +287,11 @@ public abstract class StructuredTableEditor<T> extends Composite
 			});
 		}
 	}
-	
+
 	protected abstract void newRow();
+
 	protected abstract void editRow();
+
 	protected abstract void rowSelectionEvent();
 
 	private void rowSelection()
@@ -287,13 +299,13 @@ public abstract class StructuredTableEditor<T> extends Composite
 		updateLastSelectedRow();
 		rowSelectionEvent();
 	}
-	
+
 	protected void saveRow() throws ValidatorException
 	{
 		boolean refreshListNeeded = false;
-	
+
 		m_table.save(getSelectionIndex());
-		
+
 		// TODO set it properly
 		refreshListNeeded = true;
 
@@ -304,7 +316,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 		enableDisableButtonGroup();
 	}
-	
+
 	protected void removeRow()
 	{
 		int row = getSelectionIndex();
@@ -319,13 +331,13 @@ public abstract class StructuredTableEditor<T> extends Composite
 	{
 		return m_tableViewer.getTable().getSelectionIndex();
 	}
-	
+
 	protected void swapAndReselect(int idxOffset, int selectionOffset)
 	{
 		if(m_table.swapRows(getSelectionIndex(), idxOffset))
 		{
 			refresh();
-			
+
 			Table table = m_tableViewer.getTable();
 			int idx = table.getSelectionIndex() + idxOffset;
 			table.select(idx + selectionOffset);
@@ -338,13 +350,14 @@ public abstract class StructuredTableEditor<T> extends Composite
 	protected void refreshTable()
 	{
 		m_tableViewer.setInput(m_table);
-		
+
 		if(getSelectionIndex() == -1 && m_table.getRows().size() > 0)
 		{
 			if(m_lastSelectedRow == -1)
 			{
 				m_tableViewer.getTable().setSelection(0);
-			} else
+			}
+			else
 			{
 				if(m_lastSelectedRow >= m_table.getRows().size())
 				{
@@ -362,20 +375,20 @@ public abstract class StructuredTableEditor<T> extends Composite
 	protected void refreshRow()
 	{
 		m_table.refreshRow(getSelectionIndex());
-		
+
 		if(m_stackOptions.getSelectionCount() == 0)
 		{
 			setStackOption(0);
 		}
 	}
-	
+
 	protected abstract void enableDisableButtonGroup();
 
 	protected void enableFields(boolean enabled)
 	{
 		m_table.enableFields(enabled);
 	}
-	
+
 	private void setStackOption(int idx)
 	{
 		String stackKey = m_table.getStackKeys().get(idx);
@@ -383,7 +396,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		m_stackLayout.topControl = m_table.getStackControl(stackKey);
 		m_stackComposite.layout();
 	}
-	
+
 	protected void createStackOptions(Composite parent)
 	{
 		Composite treeComposite = new Composite(parent, SWT.NONE);
@@ -422,7 +435,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			item.setText(stackKey);
 		}
 	}
-	
+
 	protected void createStack(Composite parent)
 	{
 		m_stackComposite = new Composite(parent, SWT.NONE);

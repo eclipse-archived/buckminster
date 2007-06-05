@@ -23,17 +23,18 @@ import org.eclipse.swt.widgets.Control;
  * @author Karel Brezina
  *
  */
-public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<T>
+public abstract class StructuredTable<T> extends Table<T> implements IStructuredTable<T>
 {
 	private List<String> m_stackKeys = new ArrayList<String>();
+
 	private Map<String, Control> m_stackMap = new HashMap<String, Control>();
-	
+
 	/**
 	 * Creates Table instance
 	 * 
 	 * @param data input data that will be edited
 	 */
-	public OnePageTable(List<T> data)
+	public StructuredTable(List<T> data)
 	{
 		super(data);
 	}
@@ -48,12 +49,12 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 		m_stackKeys.clear();
 		m_stackMap.clear();
 	}
-	
+
 	public List<String> getStackKeys()
 	{
 		return m_stackKeys;
 	}
-	
+
 	public void fillStackComposite(Composite stackComposite)
 	{
 		clearStackMapping();
@@ -61,7 +62,7 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 	}
 
 	protected abstract void fillStack(Composite stackComposite);
-	
+
 	protected void addStackMapping(String key, Control control)
 	{
 		m_stackKeys.add(key);
@@ -83,7 +84,8 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 			getRows().add(newTableRow);
 
 			notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, null, newTableRow);
-		} else
+		}
+		else
 		{
 			T oldTableRow = getRows().set(rowIdx, newTableRow);
 
@@ -92,7 +94,7 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 	}
 
 	protected abstract T createNewRow();
-	
+
 	protected abstract void setRowValues(T row) throws ValidatorException;
 
 	public void refreshRow(int rowIdx)
@@ -102,11 +104,12 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 		if(rowIdx == -1)
 		{
 			builder = createNewRow();
-		} else
+		}
+		else
 		{
 			builder = getRow(rowIdx);
 		}
-		
+
 		refreshRow(builder);
 	}
 
@@ -125,15 +128,15 @@ public abstract class OnePageTable<T> extends Table<T> implements IOnePageTable<
 		}
 
 		data.set(idx - 1, data.set(idx, data.get(idx - 1)));
-		
+
 		int newIdx = rowIdx + idxOffset;
-		
+
 		if(idxOffset == 0)
 		{
 			newIdx = rowIdx - 1;
 		}
 		notifyListeners(TableModifyEventType.SWAP_ROW, newIdx, data.get(rowIdx), data.get(newIdx));
-		
+
 		return true;
 	}
 }

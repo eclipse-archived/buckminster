@@ -74,6 +74,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		return getCSpecBuilder().createActionBuilder();
 	}
 
+	@Override
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));

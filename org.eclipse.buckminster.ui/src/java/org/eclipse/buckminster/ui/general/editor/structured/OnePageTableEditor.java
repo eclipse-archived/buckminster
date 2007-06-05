@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Table;
 public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 {
 	private boolean m_nodeEditMode = false;
-		
-	public OnePageTableEditor(Composite parent, IOnePageTable<T> table, boolean swapButtonsFlag, int style)
+
+	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
 		super(parent, table, swapButtonsFlag, style);
 	}
@@ -47,10 +47,10 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 		createStackOptions(this);
 
 		createStack(this);
-		
+
 		fillStackOptions();
 	}
-	
+
 	@Override
 	protected Composite createTableGroupComposite(Composite parent)
 	{
@@ -62,7 +62,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 
 		return componentTableGroup;
 	}
-	
+
 	@Override
 	protected Composite createTableButtonsComposite(Composite parent)
 	{
@@ -80,7 +80,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	protected void createTableButtons(Composite parent)
 	{
 		Composite buttonBox = createTableButtonsComposite(parent);
-		
+
 		Composite buttonBox1 = new Composite(buttonBox, SWT.NULL);
 		// buttonBox1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
 		// false));
@@ -187,7 +187,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 		m_nodeEditMode = true;
 		enableDisableButtonGroup();
 	}
-	
+
 	public void cancelRow()
 	{
 		m_nodeEditMode = false;
@@ -199,22 +199,23 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	{
 		return m_nodeEditMode;
 	}
-	
+
 	private void save()
 	{
 		try
 		{
-			saveRow();		}
+			saveRow();
+		}
 		catch(ValidatorException e)
 		{
 			MessageDialog.openError(getShell(), "Error", e.getMessage());
 			return;
 		}
-		
+
 		m_nodeEditMode = false;
 		enableDisableButtonGroup();
 	}
-	
+
 	@Override
 	protected void rowSelectionEvent()
 	{
@@ -241,7 +242,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			getEditButton().setText("Cancel");
 			getEditButton().setEnabled(true);
 			getRemoveButton().setEnabled(false);
-			
+
 			if(isSwapButtonAllowed())
 			{
 				getMoveUpButton().setEnabled(false);

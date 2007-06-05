@@ -85,6 +85,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		}
 	}
 	
+	@Override
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));

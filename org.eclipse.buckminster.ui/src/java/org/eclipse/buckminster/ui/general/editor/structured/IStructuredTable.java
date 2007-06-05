@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Karel Brezina
  *
  */
-public interface IOnePageTable<T> extends ITable<T>
+public interface IStructuredTable<T> extends ITable<T>
 {
 	/**
 	 * Gets a value from table row at a given position
@@ -36,14 +36,14 @@ public interface IOnePageTable<T> extends ITable<T>
 	 * @return number of columns
 	 */
 	public int getTableViewerColumns();
-	
+
 	/**
 	 * Gets column headers
 	 * 
 	 * @return column headers
 	 */
 	public String[] getTableViewerColumnHeaders();
-	
+
 	/**
 	 * Gets column weights of columns in TableEditor. Higher weight means larger space in table editor.
 	 * Weight 0 means that column will not be displayed in table editor (this value is accessible
@@ -53,21 +53,19 @@ public interface IOnePageTable<T> extends ITable<T>
 	 */
 	public int[] getTableViewerColumnWeights();
 
-	
-	
-	
-	
 	public void fillStackComposite(Composite stackComposite);
+
 	public List<String> getStackKeys();
+
 	public Control getStackControl(String stackKey);
+
 	public void refreshRow(int rowIdx);
-	
+
 	public void save(int rowIdx) throws ValidatorException;
-	
+
 	// TODO has to inform listeners about change
 	public boolean swapRows(int rowIdx, int idxOffset);
 
 	public void enableFields(boolean enabled);
-
 
 }

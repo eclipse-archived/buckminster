@@ -29,7 +29,8 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 {
 	class EditRowDialog extends TableRowDialog
 	{
-		public EditRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage, String helpURL, boolean newRow)
+		public EditRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage,
+				String helpURL, boolean newRow)
 		{
 			super(parentShell, windowImage, windowTitle, wizardImage, helpURL, newRow);
 		}
@@ -40,7 +41,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 			Composite composite = (Composite)super.createDialogArea(parent);
 
 			Composite rowComposite = new Composite(composite, SWT.NONE);
-			
+
 			GridLayout layout = new GridLayout(2, false);
 			rowComposite.setLayout(layout);
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -49,20 +50,20 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 			createStackOptions(rowComposite);
 
 			createStack(rowComposite);
-			
+
 			fillStackOptions();
 
 			refreshRow();
-			
+
 			return rowComposite;
 		}
-			
+
 		@Override
 		protected void enableDisableOkButton()
 		{
 			getButton(IDialogConstants.OK_ID).setEnabled(true);
 		}
-		
+
 		@Override
 		protected void buttonPressed(int buttonId)
 		{
@@ -78,18 +79,22 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 					return;
 				}
 			}
-			
+
 			setReturnCode(buttonId);
-			close();		
+			close();
 		}
 	}
-	
+
 	private final Image m_windowImage;
+
 	private final String m_windowTitle;
+
 	private final Image m_wizardImage;
+
 	private final String m_helpURL;
-	
-	public TwoPagesTableEditor(Composite parent, IOnePageTable<T> table, boolean swapButtonsFlag, Image windowImage, String windowTitle, Image wizardImage, String helpURL, int style)
+
+	public TwoPagesTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, Image windowImage,
+			String windowTitle, Image wizardImage, String helpURL, int style)
 	{
 		super(parent, table, swapButtonsFlag, style);
 		m_windowImage = windowImage;
@@ -97,7 +102,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		m_wizardImage = wizardImage;
 		m_helpURL = helpURL;
 	}
-	
+
 	@Override
 	protected void initComposite()
 	{
@@ -121,7 +126,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 
 		return componentTableGroup;
 	}
-	
+
 	@Override
 	protected Composite createTableButtonsComposite(Composite parent)
 	{
@@ -131,7 +136,6 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 
 		return buttonBox;
 	}
-
 
 	@Override
 	protected void newRow()
@@ -143,9 +147,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	@Override
 	protected void editRow()
 	{
-		new EditRowDialog(
-				this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, true)
-			.open();
+		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, true).open();
 	}
 
 	@Override
@@ -167,10 +169,10 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		Table table = getTableViewer().getTable();
 		int top = table.getItemCount();
 		int idx = getSelectionIndex();
-		
+
 		getEditButton().setEnabled(idx >= 0);
 		getRemoveButton().setEnabled(idx >= 0);
-		
+
 		if(isSwapButtonAllowed())
 		{
 			getMoveUpButton().setEnabled(idx > 0);

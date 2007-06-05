@@ -19,8 +19,8 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
-import org.eclipse.buckminster.ui.general.editor.onepage.OnePageTable;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
+import org.eclipse.buckminster.ui.general.editor.structured.StructuredTable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Karel Brezina
  *
  */
-public abstract class AttributesTable<T extends AttributeBuilder> extends OnePageTable<T>
+public abstract class AttributesTable<T extends AttributeBuilder> extends StructuredTable<T>
 {
 	private CSpecBuilder m_cspec;
 	
