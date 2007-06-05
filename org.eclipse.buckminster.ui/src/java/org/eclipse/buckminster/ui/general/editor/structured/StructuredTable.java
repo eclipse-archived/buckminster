@@ -61,6 +61,11 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		fillStack(stackComposite);
 	}
 
+	/**
+	 * Fills controls to the stack composite
+	 * 
+	 * @param stackComposite
+	 */
 	protected abstract void fillStack(Composite stackComposite);
 
 	protected void addStackMapping(String key, Control control)
@@ -93,8 +98,19 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		}
 	}
 
+	/**
+	 * Creates new row
+	 * 
+	 * @return new row
+	 */
 	protected abstract T createNewRow();
 
+	/**
+	 * Sets values from controls to row
+	 * 
+	 * @param row data row
+	 * @throws ValidatorException
+	 */
 	protected abstract void setRowValues(T row) throws ValidatorException;
 
 	public void refreshRow(int rowIdx)
@@ -113,6 +129,11 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		refreshRow(builder);
 	}
 
+	/**
+	 * Refreshes controls from a given data row
+	 * 
+	 * @param builder
+	 */
 	protected abstract void refreshRow(T builder);
 
 	public boolean swapRows(int rowIdx, int idxOffset)
