@@ -92,7 +92,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 			case 2:
 				return getVersionDesignator(parent, idx, value);
 			default:
-				return super.getWidgetin(parent, idx, value);
+				return getTextWidgetin(parent, idx, value);
 		}
 	}
 
