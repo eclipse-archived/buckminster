@@ -10,17 +10,13 @@ package org.eclipse.buckminster.ui.general.editor.simple;
 
 import java.util.Arrays;
 
+import org.eclipse.buckminster.ui.general.editor.TableRowDialog;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -32,25 +28,15 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Karel Brezina
  */
-public class SimpleTableRowDialog<T> extends TitleAreaDialog
+public class SimpleTableRowDialog<T> extends TableRowDialog
 {
 	private final ISimpleTable<T> m_table;
-	
-	private final Image m_windowImage;
-	
-	private final String m_windowTitle;
-	
-	private final Image m_wizardImage;
-
-	private final String m_helpURL;
 	
 	private final int m_row;
 	
 	private final boolean m_newRow;
 	
 	private IWidgetin[] m_widgetins;
-
-	private Button m_okButton;
 
 	/**
 	 * Creates row editor
@@ -65,75 +51,12 @@ public class SimpleTableRowDialog<T> extends TitleAreaDialog
 	 */
 	public SimpleTableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL, ISimpleTable<T> table, int row)
 	{
-		super(parent);
+		super(parent, windowImage, windowTitle, wizardImage, helpURL, (row == -1));
 		
 		m_table = table;
-		m_windowImage = windowImage;
-		m_windowTitle = windowTitle;
-		m_wizardImage = wizardImage;
-		m_helpURL = helpURL;
 		m_row = row;
 		m_newRow = (row == -1);
 		m_widgetins = new IWidgetin[table.getColumns()];
-	}
-
-	@Override
-	public boolean isHelpAvailable()
-    {
-    	return m_helpURL != null;	    	
-    }
-	
-    @Override
-	protected Control createHelpControl(Composite parent)
-	{
-		Control helpControl = super.createHelpControl(parent);
-		helpControl.addHelpListener(new HelpListener(){
-
-			public void helpRequested(HelpEvent e)
-			{
-				if(m_helpURL != null)
-				{
-					Program.launch(m_helpURL);
-				}
-			}});
-		
-		return helpControl;
-	}
-	
-	@Override
-	protected void configureShell(Shell newShell)
-	{
-		super.configureShell(newShell);
-		newShell.setText(m_windowTitle);
-		
-		if(m_windowImage != null)
-		{
-			newShell.setImage(m_windowImage);
-		}
-	}
-
-	@Override
-	protected Control createContents(Composite parent)
-	{
-		Control contents = super.createContents(parent);
-
-		if(m_wizardImage != null)
-		{
-			setTitleImage(m_wizardImage);
-		}
-		
-		if(m_newRow)
-		{
-			setTitle("New Row");
-			setMessage("Enter new row fields.");
-		}
-		else
-		{
-			setTitle("Edit Row");
-			setMessage("Edit row fields.");
-		}
-
-		return contents;
 	}
 
 	@Override
@@ -179,14 +102,7 @@ public class SimpleTableRowDialog<T> extends TitleAreaDialog
 	}
 
 	@Override
-	protected void createButtonsForButtonBar(Composite parent)
-	{
-		m_okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-		enableDisableOkButton();
-	}
-
-	private void enableDisableOkButton()
+	protected void enableDisableOkButton()
 	{
 		boolean valid = true;
 
@@ -202,7 +118,7 @@ public class SimpleTableRowDialog<T> extends TitleAreaDialog
 			valid = false;
 		}
 		
-		m_okButton.setEnabled(valid);
+		getButton(IDialogConstants.OK_ID).setEnabled(valid);
 	}
 	
 	@Override
@@ -230,7 +146,7 @@ public class SimpleTableRowDialog<T> extends TitleAreaDialog
 			catch(ValidatorException e)
 			{
 				setErrorMessage(e.getMessage());
-				m_okButton.setEnabled(false);
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
 				
 				return;
 			}
