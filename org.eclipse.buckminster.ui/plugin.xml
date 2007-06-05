@@ -148,4 +148,11 @@
             id="org.eclipse.buckminster.ui.wizards.NewCSPECWizard"
             name="Component Specification file"/>
    </extension>
+    <extension
+          point="org.eclipse.ui.intro.configExtension">
+       <configExtension
+             configId="org.eclipse.ui.intro.universalConfig"
+             content="intro/intro.xml">
+       </configExtension>
+    </extension>
 </plugin>
