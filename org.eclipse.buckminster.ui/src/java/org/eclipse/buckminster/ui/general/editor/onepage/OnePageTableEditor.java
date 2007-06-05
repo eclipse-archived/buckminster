@@ -161,7 +161,6 @@ public class OnePageTableEditor<T> extends Composite
 			public void selectionChanged(SelectionChangedEvent event)
 			{
 				 rowSelectionEvent();
-				 enableDisableButtonGroup();
 			}
 		});
 		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
@@ -255,10 +254,10 @@ public class OnePageTableEditor<T> extends Composite
 		if(m_nodeEditMode)
 			saveRow();
 		else
-			newNode();
+			newRow();
 	}
 
-	private void newNode()
+	private void newRow()
 	{
 		m_tableViewer.getTable().deselectAll();
 		refreshRow();
@@ -291,7 +290,7 @@ public class OnePageTableEditor<T> extends Composite
 		return m_nodeEditMode;
 	}
 	
-	private boolean saveRow()
+	private void saveRow()
 	{
 		boolean refreshListNeeded = false;
 		
@@ -305,7 +304,7 @@ public class OnePageTableEditor<T> extends Composite
 		catch(ValidatorException e)
 		{
 			MessageDialog.openError(getShell(), "Error", e.getMessage());
-			return false;
+			return;
 		}
 		
 		if(refreshListNeeded)
@@ -315,7 +314,6 @@ public class OnePageTableEditor<T> extends Composite
 
 		m_nodeEditMode = false;
 		enableDisableButtonGroup();
-		return true;
 	}
 	
 	private void removeRow()
@@ -352,11 +350,6 @@ public class OnePageTableEditor<T> extends Composite
 		}
 	}
 
-	private void refreshRow()
-	{
-		m_table.refreshRow(getSelectionIndex());
-	}
-	
 	public void refresh()
 	{
 		int lastSelected = getSelectionIndex();
@@ -376,13 +369,18 @@ public class OnePageTableEditor<T> extends Composite
 		
 		enableDisableButtonGroup();
 		refreshRow();
+	}
+
+	private void refreshRow()
+	{
+		m_table.refreshRow(getSelectionIndex());
 		
 		if(m_stackOptions.getSelectionCount() == 0)
 		{
 			setStackOption(0);
 		}
 	}
-
+	
 	private void setStackOption(int idx)
 	{
 		String stackKey = m_table.getStackKeys().get(idx);
