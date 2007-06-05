@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -118,7 +117,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends OnePag
 				ihComposite,
 				ihTable,
 				null,
-				"Artifact - Installer Hint",
+				"Attribute - Installer Hint",
 				null,
 				null,
 				SWT.NONE);
@@ -170,23 +169,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends OnePag
 		m_nameText.setText(TextUtils.notNullString(builder.getName()));
 		m_publicCheck.setSelection(builder.isPublic());
 		
-		m_installerHints.clear();
-		ExpandingProperties properties = builder.getInstallerHints();
-		if(properties != null)
-		{
-			List<Property> hlpList = new ArrayList<Property>();
-			for(String key : properties.keySet())
-			{
-				hlpList.add(new Property(key, properties.get(key)));
-			}
-			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
-			
-			for(Property property : propertyArray)
-			{
-				m_installerHints.add(property);
-			}
-		}
+		CSpecEditorUtils.copyAndSortItems(builder.getInstallerHints(), m_installerHints);
 		m_installerHintsEditor.refresh();
 			
 		Documentation doc = builder.getDocumentation();

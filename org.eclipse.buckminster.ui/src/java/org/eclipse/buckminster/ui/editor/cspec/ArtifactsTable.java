@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -154,18 +153,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		m_basePathText.setText(TextUtils.notNullString(basePath ==  null ? null : basePath.toOSString()));
 		m_typeText.setText(TextUtils.notNullString(builder.getType()));
 		
-		m_paths.clear();
-		Set<IPath> paths = builder.getPaths();
-		if(paths != null)
-		{
-			IPath[] pathArray = paths.toArray(new IPath[0]);
-			Arrays.sort(pathArray, EditorUtils.getPathComparator());
-			
-			for(IPath path : pathArray)
-			{
-				m_paths.add(path);
-			}
-		}
+		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths, EditorUtils.getPathComparator());
 		m_pathsEditor.refresh();
 	}
 

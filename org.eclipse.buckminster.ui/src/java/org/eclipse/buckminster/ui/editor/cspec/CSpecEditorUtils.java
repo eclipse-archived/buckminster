@@ -8,8 +8,13 @@
 
 package org.eclipse.buckminster.ui.editor.cspec;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 
 /**
@@ -49,5 +54,41 @@ public class CSpecEditorUtils
 	public static Comparator<Property> getPropertyComparator()
 	{
 		return s_propertyComparator;
+	}
+	
+	public static void copyAndSortItems(ExpandingProperties src, List<Property> trgt)
+	{
+		trgt.clear();
+		if(src != null)
+		{
+			List<Property> hlpList = new ArrayList<Property>();
+			for(String key : src.keySet())
+			{
+				hlpList.add(new Property(key, src.get(key)));
+			}
+			Property[] propertyArray = hlpList.toArray(new Property[0]);
+			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
+			
+			for(Property property : propertyArray)
+			{
+				trgt.add(property);
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> void copyAndSortItems(Collection<T> src, List<T> trgt, Comparator<? super T> comparator)
+	{
+		trgt.clear();
+		if(src != null)
+		{
+			T[] pathArray = (T[]) src.toArray();
+			Arrays.sort(pathArray, comparator);
+			
+			for(T path : pathArray)
+			{
+				trgt.add(path);
+			}
+		}
 	}
 }
