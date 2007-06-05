@@ -9,13 +9,16 @@
 package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
+import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -24,6 +27,7 @@ import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -49,6 +53,15 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private SimpleTableEditor<IPath> m_productPathsEditor;
 	private List<Property> m_properties = new ArrayList<Property>();
 	private SimpleTableEditor<Property> m_propertiesEditor;
+	
+	private Text m_prereqNameText;
+	private Button m_prereqPublicCheck;
+	private List<Property> m_prereqInstallerHints = new ArrayList<Property>();
+	private SimpleTableEditor<Property> m_prereqInstallerHintsEditor;
+	private Text m_prereqDocumentationText;
+	private Text m_prereqRebasePathText;
+	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
+	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
 	public ActionsTable(List<ActionBuilder> data, CSpecBuilder cspec)
 	{
@@ -69,6 +82,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		addStackMapping("Properties", createPropertiesStackLayer(stackComposite));
 		addStackMapping("Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
+		addStackMapping("Prerequisites - Main", createPrereqGeneralStackLayer(stackComposite));
+		addStackMapping("Prerequisites - List", createPrereqListStackLayer(stackComposite));
+		addStackMapping("Prerequisites - Hints", createPrereqInstallerHintsStackLayer(stackComposite));
+		addStackMapping("Prerequisites - Doc", createPrereqDocumentationStackLayer(stackComposite));
 	}
 
 	private Control createGeneralStackLayer(Composite stackComposite)
@@ -176,6 +193,95 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		return composite;
 	}
 	
+	private Control createPrereqGeneralStackLayer(Composite stackComposite)
+	{
+		Composite geComposite = new Composite(stackComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		geComposite.setLayout(layout);
+
+		EditorUtils.createHeaderLabel(geComposite, "Prerequisites - Main", 2);
+
+		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
+
+		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+
+		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
+
+		m_prereqPublicCheck = UiUtils.createCheckButton(geComposite, null, null);
+
+		UiUtils.createGridLabel(geComposite, "Rebase Path:", 1, 0, SWT.NONE);
+
+		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+
+		return geComposite;
+	}
+
+	private Control createPrereqListStackLayer(Composite stackComposite)
+	{
+		Composite preComposite = new Composite(stackComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		preComposite.setLayout(layout);
+
+		EditorUtils.createHeaderLabel(preComposite, "Prerequisites - List", 1);
+
+		// Uses an empty GroupBuilder (createNewRow())
+		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
+		// Need to create "PrerequisiteBuilder"s again while saving them
+
+		PrerequisitesTable preTable = new PrerequisitesTable(m_prerequisites, createNewRow().getPrerequisitesBuilder());
+		 
+		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
+				preComposite,
+				preTable,
+				null,
+				"Action - Prerequisite",
+				null,
+				null,
+				SWT.NONE);
+
+		return preComposite;
+	}
+
+	protected Control createPrereqInstallerHintsStackLayer(Composite stackComposite)
+	{
+		Composite ihComposite = new Composite(stackComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		ihComposite.setLayout(layout);
+
+		EditorUtils.createHeaderLabel(ihComposite, "Prerequisites - Installer Hints", 1);
+
+		PropertiesTable ihTable = new PropertiesTable(m_prereqInstallerHints);
+		
+		m_prereqInstallerHintsEditor = new SimpleTableEditor<Property>(
+				ihComposite,
+				ihTable,
+				null,
+				"Prerequisite - Installer Hint",
+				null,
+				null,
+				SWT.NONE);
+
+		return ihComposite;
+	}
+	
+	protected Control createPrereqDocumentationStackLayer(Composite stackComposite)
+	{
+		Composite docComposite = new Composite(stackComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		docComposite.setLayout(layout);
+
+		EditorUtils.createHeaderLabel(docComposite, "Prerequisites - Documentation", 1);
+
+		m_prereqDocumentationText = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
+		m_prereqDocumentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		return docComposite;
+	}
+	
 	@Override
 	protected void setRowValues(ActionBuilder builder) throws ValidatorException
 	{
@@ -195,57 +301,97 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		}
 		builder.setProductBase(prodBasePath);
 
-		m_actorProperties.clear();
 		ExpandingProperties properties = builder.getActorProperties();
-		if(properties != null)
-		{
-			List<Property> hlpList = new ArrayList<Property>();
-			for(String key : properties.keySet())
-			{
-				hlpList.add(new Property(key, properties.get(key)));
-			}
-			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
-			
-			for(Property property : propertyArray)
-			{
-				m_actorProperties.add(property);
-			}
-		}
-		m_actorPropertiesEditor.refresh();
 		
-		m_productPaths.clear();
-		Set<IPath> productPaths = builder.getProductPaths();
-		if(productPaths != null)
-		{
-			IPath[] pathArray = productPaths.toArray(new IPath[0]);
-			Arrays.sort(pathArray, EditorUtils.getPathComparator());
-			
-			for(IPath path : pathArray)
-			{
-				m_productPaths.add(path);
-			}
-		}
-		m_productPathsEditor.refresh();
-
-		m_properties.clear();
-		properties = builder.getProperties();
 		if(properties != null)
 		{
-			List<Property> hlpList = new ArrayList<Property>();
-			for(String key : properties.keySet())
-			{
-				hlpList.add(new Property(key, properties.get(key)));
-			}
-			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
+			properties.clear();
+		}
+		for(Property property : m_actorProperties)
+		{
+			builder.addActorProperty(property.getKey(), property.getValue(), true);
+		}
+		
+		Set<IPath> paths = builder.getProductPaths();
+		
+		if(paths != null)
+		{
+			builder.getProductPaths().clear();
+		}
+		for(IPath path : m_productPaths)
+		{
+			builder.addProductPath(path);
+		}
+
+		properties = builder.getProperties();
+		
+		if(properties != null)
+		{
+			properties.clear();
+		}
+		for(Property property : m_properties)
+		{
+			builder.addProperty(property.getKey(), property.getValue(), true);
+		}
+		
+		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
+		
+		prereqBuilder.setName(UiUtils.trimmedValue(m_prereqNameText));	
+		prereqBuilder.setPublic(m_prereqPublicCheck.getSelection());
+		
+		ExpandingProperties hints = prereqBuilder.getInstallerHints();
+		
+		if(hints != null)
+		{
+			hints.clear();
+		}
+		for(Property property : m_prereqInstallerHints)
+		{
+			prereqBuilder.addInstallerHint(property.getKey(), property.getValue());
+		}
 			
-			for(Property property : propertyArray)
+		String doc = UiUtils.trimmedValue(m_prereqDocumentationText);
+		
+		try
+		{
+			prereqBuilder.setDocumentation(doc == null ? null : Documentation.parse(doc));
+		}
+		catch(Exception e)
+		{
+			throw new ValidatorException(e.getMessage());
+		}
+		
+		String rebasePathString = UiUtils.trimmedValue(m_prereqRebasePathText);
+		IPath rebasePath = null;
+
+		if(rebasePathString != null)
+		{
+			rebasePath = Path.fromOSString(rebasePathString);
+		}
+		prereqBuilder.setRebase(rebasePath);
+
+		List<PrerequisiteBuilder> prerequisites = prereqBuilder.getPrerequisites();
+
+		if(prerequisites != null)
+		{
+			prerequisites.clear();
+		}
+		for(PrerequisiteBuilder prerequisite : m_prerequisites)
+		{
+			// Original "prerequisite" is created with a different PrerequisitesBuilder (an empty one)
+			// Need to created again and copy attributes
+			PrerequisiteBuilder newPrerequisite = prereqBuilder.createPrerequisiteBuilder();
+			newPrerequisite.initFrom(prerequisite.createPrerequisite());
+			
+			try
 			{
-				m_properties.add(property);
+				prereqBuilder.addPrerequisite(newPrerequisite);
+			}
+			catch(PrerequisiteAlreadyDefinedException e)
+			{
+				throw new ValidatorException(e.getMessage());
 			}
 		}
-		m_propertiesEditor.refresh();
 	}
 	@Override
 	protected void refreshRow(ActionBuilder builder)
@@ -264,57 +410,33 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 						null :
 						prodBasePath.toOSString()));
 		
-		m_actorProperties.clear();
-		ExpandingProperties properties = builder.getActorProperties();
-		if(properties != null)
-		{
-			List<Property> hlpList = new ArrayList<Property>();
-			for(String key : properties.keySet())
-			{
-				hlpList.add(new Property(key, properties.get(key)));
-			}
-			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
-			
-			for(Property property : propertyArray)
-			{
-				m_actorProperties.add(property);
-			}
-		}
+		CSpecEditorUtils.copyAndSortItems(builder.getActorProperties(), m_actorProperties);
 		m_actorPropertiesEditor.refresh();
 
-		m_productPaths.clear();
-		Set<IPath> paths = builder.getProductPaths();
-		if(paths != null)
-		{
-			IPath[] pathArray = paths.toArray(new IPath[0]);
-			Arrays.sort(pathArray, EditorUtils.getPathComparator());
-			
-			for(IPath path : pathArray)
-			{
-				m_productPaths.add(path);
-			}
-		}
+		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths, EditorUtils.getPathComparator());
 		m_productPathsEditor.refresh();
 
-		m_properties.clear();
-		properties = builder.getProperties();
-		if(properties != null)
-		{
-			List<Property> hlpList = new ArrayList<Property>();
-			for(String key : properties.keySet())
-			{
-				hlpList.add(new Property(key, properties.get(key)));
-			}
-			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
-			
-			for(Property property : propertyArray)
-			{
-				m_properties.add(property);
-			}
-		}
+		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);
 		m_propertiesEditor.refresh();
+	
+		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
+		
+		m_prereqNameText.setText(TextUtils.notNullString(prereqBuilder.getName()));
+		m_prereqPublicCheck.setSelection(prereqBuilder.isPublic());
+		
+		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getInstallerHints(), m_prereqInstallerHints);
+		m_prereqInstallerHintsEditor.refresh();
+			
+		Documentation doc = prereqBuilder.getDocumentation();
+		m_prereqDocumentationText.setText(TextUtils.notNullString(doc == null ? null : doc.toString()));
+
+		IPath rebasePath = prereqBuilder.getRebase();
+		m_prereqRebasePathText.setText(TextUtils.notNullString(rebasePath == null
+				? null
+				: rebasePath.toOSString()));
+
+		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getCSpecElementComparator());
+		m_prerequisitesEditor.refresh();
 	}
 
 	@Override
@@ -330,6 +452,12 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_prodBaseText.setEnabled(enabled);
 		m_actorPropertiesEditor.setEnabled(enabled);
 		m_productPathsEditor.setEnabled(enabled);
-		m_propertiesEditor.setEnabled(enabled);
+		m_propertiesEditor.setEnabled(enabled);		
+		m_prereqNameText.setEnabled(enabled);
+		m_prereqPublicCheck.setEnabled(enabled);
+		m_prereqInstallerHintsEditor.setEnabled(enabled);
+		m_prereqDocumentationText.setEnabled(enabled);
+		m_prereqRebasePathText.setEnabled(enabled);
+		m_prerequisitesEditor.setEnabled(enabled);
 	}
 }
