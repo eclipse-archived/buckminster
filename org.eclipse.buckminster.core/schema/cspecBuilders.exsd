@@ -57,7 +57,7 @@
                   The interface that this builder must implement.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.buckminster.core.IResolutionBuilder"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.buckminster.core.ctype.IResolutionBuilder"/>
                </appInfo>
             </annotation>
          </attribute>
