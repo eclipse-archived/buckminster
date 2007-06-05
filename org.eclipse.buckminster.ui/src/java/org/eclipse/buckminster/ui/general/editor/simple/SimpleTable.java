@@ -18,7 +18,11 @@ import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
@@ -122,6 +126,11 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 	protected IWidgetin getWidgetin(Composite parent, final int idx, Object value)
 	{
+		return getTextWidgetin(parent, idx, value);
+	}
+		
+	protected IWidgetin getTextWidgetin(Composite parent, final int idx, Object value)
+	{
 		final Text text = UiUtils.createGridText(parent, 1, 0, null, SWT.NONE);
 		
 		final IWidgetin widgetin = new WidgetinWrapper(text);
@@ -142,6 +151,33 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		});
 
 		return widgetin;
+	}
+
+	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Object value)
+	{
+		final Button checkBox = new Button(parent, SWT.CHECK);
+		final IWidgetin widgetin = new WidgetinWrapper(checkBox);
+
+		GridData data = new GridData(SWT.FILL, SWT.CENTER, false, false);
+		checkBox.setLayoutData(data);
+
+		Boolean realValue = value == null ? Boolean.FALSE : (Boolean) value;
+
+		checkBox.setSelection(realValue.booleanValue());
+		checkBox.setData(realValue);
+		
+		checkBox.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Boolean selectionValue = Boolean.valueOf(checkBox.getSelection());
+				checkBox.setData(selectionValue);
+				validateFieldInFieldListener(widgetin, getFieldValidator(idx), selectionValue);				
+			}
+		});
+
+		return widgetin;		
 	}
 
 	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues)
