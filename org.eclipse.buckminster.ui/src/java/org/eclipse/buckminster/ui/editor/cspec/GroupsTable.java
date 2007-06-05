@@ -1,12 +1,9 @@
 package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
@@ -29,8 +26,6 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 	{
 		super(data, cspec);
 	}
-
-	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = CSpecEditorUtils.getCSpecElementComparator();
 
 	private Text m_rebasePathText;
 
@@ -66,9 +61,14 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		}
 		for(PrerequisiteBuilder prerequisite : m_prerequisites)
 		{
+			// Original "prerequisite" is created with a different GroupBuilder (an empty one)
+			// Need to created again and copy attributes
+			PrerequisiteBuilder newPrerequisite = builder.createPrerequisiteBuilder();
+			newPrerequisite.initFrom(prerequisite.createPrerequisite());
+			
 			try
 			{
-				builder.addPrerequisite(prerequisite);
+				builder.addPrerequisite(newPrerequisite);
 			}
 			catch(PrerequisiteAlreadyDefinedException e)
 			{
@@ -118,19 +118,21 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		EditorUtils.createHeaderLabel(preComposite, "Prerequisites", 1);
 
-		// TODO uncomment
-		/*		
-		 PrerequisitesTable preTable = new PrerequisitesTable(m_prerequisites);
+		// Uses an empty GroupBuilder (createNewRow())
+		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
+		// Need to create "PrerequisiteBuilder"s again while saving them
+
+		PrerequisitesTable preTable = new PrerequisitesTable(m_prerequisites, createNewRow());
 		 
-		 m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
-		 preComposite,
-		 preTable,
-		 null,
-		 "Group - Prerequisite",
-		 null,
-		 null,
-		 SWT.NONE);
-		 */
+		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
+				preComposite,
+				preTable,
+				null,
+				"Group - Prerequisite",
+				null,
+				null,
+				SWT.NONE);
+
 		return preComposite;
 	}
 
@@ -144,20 +146,8 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				? null
 				: rebasePath.toOSString()));
 
-		m_prerequisites.clear();
-		List<PrerequisiteBuilder> prerequisites = builder.getPrerequisites();
-		if(prerequisites != null)
-		{
-			PrerequisiteBuilder[] prerequisiteArray = prerequisites.toArray(new PrerequisiteBuilder[0]);
-			Arrays.sort(prerequisiteArray, s_cspecElementComparator);
-
-			for(PrerequisiteBuilder prerequisite : prerequisiteArray)
-			{
-				m_prerequisites.add(prerequisite);
-			}
-		}
-		// TODO uncomment
-		//m_prerequisitesEditor.refresh();
+		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getCSpecElementComparator());
+		m_prerequisitesEditor.refresh();
 	}
 
 	@Override
@@ -166,7 +156,6 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		super.enableFields(enabled);
 
 		m_rebasePathText.setEnabled(enabled);
-		// TODO uncomment
-		//m_prerequisitesEditor.setEnabled(enabled);
+		m_prerequisitesEditor.setEnabled(enabled);
 	}
 }
