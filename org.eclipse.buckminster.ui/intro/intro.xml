@@ -7,7 +7,7 @@
        			label="Buckminster" url="http://wiki.eclipse.org/index.php/Buckminster_Project"
        			id="orgeclipsebuckminsterui-introLink" style-id="content-link">
           		<text>
-          		Buckminster is a set of features for automating build, assemble &amp; deploy
+          		Buckminster is a set of features for automating build, assemble, and deploy
           		development processes in component-based development</text>
        		</link>
        	</group>
