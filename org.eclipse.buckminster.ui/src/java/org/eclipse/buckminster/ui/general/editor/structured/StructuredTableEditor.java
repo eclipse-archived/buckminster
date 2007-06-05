@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
@@ -422,11 +423,21 @@ public abstract class StructuredTableEditor<T> extends Composite
 					TreeItem item = (TreeItem)e.item;
 					m_stackLayout.topControl = m_table.getStackControl(item.getText());
 					m_stackComposite.layout();
+					focusStackComposite();
 				}
 			}
 		});
 	}
 
+	protected void focusStackComposite()
+	{
+		Control focusControl = (Control) m_stackLayout.topControl.getData("focusControl");
+		if(focusControl != null)
+		{
+			focusControl.setFocus();
+		}
+	}
+	
 	protected void fillStackOptions()
 	{
 		for(String stackKey : m_table.getStackKeys())

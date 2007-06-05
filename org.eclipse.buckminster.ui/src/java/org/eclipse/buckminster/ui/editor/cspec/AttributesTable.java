@@ -54,6 +54,11 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 		return m_cspec;
 	}
 	
+	protected Text getNameText()
+	{
+		return m_nameText;
+	}
+	
 	protected void setNameText(Text nameText)
 	{
 		m_nameText = nameText;
@@ -136,6 +141,8 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 
 		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
 		m_documentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		docComposite.setData("focusControl", m_documentationText);
 
 		return docComposite;
 	}

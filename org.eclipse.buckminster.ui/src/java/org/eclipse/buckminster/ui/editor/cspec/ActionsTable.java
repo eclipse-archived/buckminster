@@ -122,6 +122,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createGridLabel(geComposite, "Product Base Path:", 1, 0, SWT.NONE);
 		m_prodBaseText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
 
+		geComposite.setData("focusControl", getNameText());
+		
 		return geComposite;
 	}
 
@@ -215,6 +217,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
 
+		geComposite.setData("focusControl", m_prereqNameText);
+		
 		return geComposite;
 	}
 
@@ -280,6 +284,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_prereqDocumentationText = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
 		m_prereqDocumentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		docComposite.setData("focusControl", m_prereqDocumentationText);
+		
 		return docComposite;
 	}
 	

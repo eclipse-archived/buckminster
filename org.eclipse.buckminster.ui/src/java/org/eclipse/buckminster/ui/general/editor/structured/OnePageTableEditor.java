@@ -186,6 +186,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	{
 		m_nodeEditMode = true;
 		enableDisableButtonGroup();
+		focusStackComposite();
 	}
 
 	public void cancelRow()

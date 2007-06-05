@@ -119,6 +119,8 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		m_typeText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
 		
+		geComposite.setData("focusControl", getNameText());
+
 		return geComposite;
 	}
 	

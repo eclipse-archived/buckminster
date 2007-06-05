@@ -107,6 +107,8 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
 
+		geComposite.setData("focusControl", getNameText());
+		
 		return geComposite;
 	}
 
