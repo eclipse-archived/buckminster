@@ -351,6 +351,16 @@ public class CSpecEditor extends EditorPart
 			return false;
 		}
 
+		try
+		{
+			m_cspec.createCSpec().verifyConsistency();
+		}
+		catch(CoreException e)
+		{
+			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+			return false;
+		}
+		
 		return true;
 	}
 
