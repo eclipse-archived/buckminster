@@ -69,9 +69,11 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 		switch(idx)
 		{
 		case 0:
-			return SimpleTable.createNotEmptyStringValidator("Generator name cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator("Generator name can not be empty");
 		case 1:
-			return SimpleTable.createNotEmptyStringValidator("Attribute cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator("Attribute can not be empty");
+		case 2:
+			return SimpleTable.createNotEmptyStringValidator("Component name can not be empty");
 		default:
 			return SimpleTable.getEmptyValidator();
 		}
