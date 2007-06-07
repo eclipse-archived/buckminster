@@ -146,7 +146,7 @@
 				<property key="targets" value="sign.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="normalize.jnlp" alias="requirement"/>
+				<attribute name="zip.jnlp" alias="requirement"/>
 			</prerequisites>
             <products base="${buckminster.output}/jnlp.s" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
