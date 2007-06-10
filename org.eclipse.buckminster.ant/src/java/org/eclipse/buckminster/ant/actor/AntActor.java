@@ -250,7 +250,8 @@ public class AntActor extends AbstractActor
 			sp_bld.setLength(0);
 			for(PathGroup pathGroup : pathGroups)
 			{
-				String base = pathGroup.getBase().toOSString();
+				IPath basePath = pathGroup.getBase();
+				String base = basePath.toOSString();
 				fs_bld.append('?');	// Start of path group marker
 				fs_bld.append(base);
 				IPath[] paths = pathGroup.getPaths();
@@ -267,7 +268,8 @@ public class AntActor extends AbstractActor
 					fs_bld.append(osPath);
 					if(singleton)
 					{
-						sp_bld.append(FileUtils.FILE_SEP);
+						if(!basePath.hasTrailingSeparator())
+							sp_bld.append(FileUtils.FILE_SEP);
 						sp_bld.append(osPath);
 					}
 				}

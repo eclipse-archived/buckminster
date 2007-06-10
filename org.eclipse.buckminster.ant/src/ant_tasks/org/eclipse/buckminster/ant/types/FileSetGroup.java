@@ -47,7 +47,7 @@ public class FileSetGroup extends DataType implements Cloneable
 
 	public void setValue(String value)
 	{
-		if(value == null)
+		if(value == null || value.length() == 0)
 			return;
 
 		StringTokenizer fileSetDecls = new StringTokenizer(value.substring(1), "?");
