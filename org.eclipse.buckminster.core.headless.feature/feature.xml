@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.core.headless.feature"
       label="Buckminster - Core Headless (Incubation)"
-      version="0.1.0.v20070605"
+      version="0.1.0.v20070610"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
