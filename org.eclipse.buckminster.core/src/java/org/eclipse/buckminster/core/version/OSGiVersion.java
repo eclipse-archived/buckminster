@@ -8,11 +8,9 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.core.internal.version;
+package org.eclipse.buckminster.core.version;
 
 import java.util.Comparator;
-
-import org.eclipse.buckminster.core.version.TripletVersion;
 
 /**
  * @author Thomas Hallgren
@@ -45,7 +43,7 @@ public class OSGiVersion extends TripletVersion
 		}
 	};
 
-	OSGiVersion(OSGiVersionType type, int major, int minor, int micro, String qualifier)
+	public OSGiVersion(IVersionType type, int major, int minor, int micro, String qualifier)
 	{
 		super(type, major, minor, micro, qualifier);
 	}

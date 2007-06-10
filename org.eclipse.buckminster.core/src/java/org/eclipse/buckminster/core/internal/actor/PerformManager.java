@@ -125,8 +125,6 @@ public class PerformManager implements IPerformManager
 				PerformContext ctx = new PerformContext(globalCtx, action, userProps, forced, out, err);
 				if(!forced && action.isUpToDate(ctx))
 				{
-					if(logger.isDebugEnabled())
-						logger.debug("action " + action + " is up to date");
 					MonitorUtils.worked(monitor, 100);
 					continue;
 				}

@@ -8,10 +8,8 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.core.internal.version;
+package org.eclipse.buckminster.core.version;
 
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
 
 /**
  * @author Thomas Hallgren

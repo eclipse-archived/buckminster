@@ -121,6 +121,11 @@ public class ActionBuilder extends AttributeBuilder
 		return m_actorProperties;
 	}
 
+	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
+	{
+		return m_prerequisitesBuilder.getPrerequisite(prerequisteName);
+	}
+
 	public PrerequisitesBuilder getPrerequisitesBuilder()
 	{
 		return m_prerequisitesBuilder;

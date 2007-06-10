@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
@@ -107,7 +108,17 @@ public class WorkspaceInfo
 			clearPersistentPropertyOnAll();
 			MetadataSynchronizer mds = MetadataSynchronizer.getDefault();
 			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-			monitor.beginTask(null, projects.length * 50);
+			monitor.beginTask(null, 100 + projects.length * 50);
+
+			// Re-resolve all known bundles from the target platform
+			//
+			for(Resolution resolution : getActiveResolutions())
+				if(resolution.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					resolveLocal(resolution.getRequest());
+			monitor.worked(100);
+
+			// Re-resolve all projects
+			//
 			for(IProject project : projects)
 			{
 				monitor.subTask("Refreshing " + project.getName());
@@ -455,14 +466,26 @@ public class WorkspaceInfo
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
 		qbld.setRootRequest(request);
 
-		// Add an advisor node that matches all queries and prohibits that we
-		// do something external.
+		// Add an advisor node that matches the request and prohibits that we
+		// do something using an existing materialization or something external.
 		//
 		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
+		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$"));
+		nodeBld.setCategory(request.getCategory());
+		nodeBld.setUseInstalled(true);
+		nodeBld.setUseProject(true);
+		nodeBld.setUseMaterialization(false);
+		nodeBld.setUseResolutionSchema(false);
+		qbld.addAdvisorNode(nodeBld);
+
+		// Add an advisor node that matches all remaining components and prohibits that we
+		// do something external.
+		//
+		nodeBld = new AdvisorNodeBuilder();
 		nodeBld.setNamePattern(Pattern.compile(".*"));
 		nodeBld.setUseInstalled(true);
 		nodeBld.setUseProject(true);
-		nodeBld.setUseMaterialization(false); // We would have found it already
+		nodeBld.setUseMaterialization(true);
 		nodeBld.setUseResolutionSchema(false);
 		qbld.addAdvisorNode(nodeBld);
 

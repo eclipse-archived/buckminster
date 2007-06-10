@@ -39,6 +39,9 @@ public class PerformContext implements IActionContext
 
 	private static PathGroup[] normalizePathGroups(PathGroup[] pathGroups) throws CoreException
 	{
+		if(pathGroups.length == 0)
+			return pathGroups;
+
 		HashMap<IPath, ArrayList<IPath>> newPathGroups = new HashMap<IPath, ArrayList<IPath>>();
 		for(PathGroup pathGroup : pathGroups)
 		{
@@ -136,23 +139,20 @@ public class PerformContext implements IActionContext
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, this);
 			PathGroup[] paths = ag.getPathGroups(this);
-			if(paths.length > 0)
+			paths = normalizePathGroups(paths);
+			if(!prereq.isExternal())
 			{
-				paths = normalizePathGroups(paths);
-				if(!prereq.isExternal())
-				{
-					if(prereqRebase != null)
-						paths = Group.rebase(prereqRebase, paths);
-				}
-				String alias = prereq.getAlias();
-				if(alias != null)
-					pgas.put(alias, paths);
-				else
-					pgas.put(prefix + prereq, paths);
-
-				for(PathGroup path : paths)
-					allRequiredPaths.add(path);
+				if(prereqRebase != null)
+					paths = Group.rebase(prereqRebase, paths);
 			}
+			String alias = prereq.getAlias();
+			if(alias != null)
+				pgas.put(alias, paths);
+			else
+				pgas.put(prefix + prereq, paths);
+
+			for(PathGroup path : paths)
+				allRequiredPaths.add(path);
 		}
 
 		if(allRequiredPaths.size() > 0)

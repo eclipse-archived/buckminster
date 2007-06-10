@@ -50,6 +50,12 @@ public class GroupBuilder extends AttributeBuilder
 		m_prerequisites.add(prerequisite);
 	}
 
+	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
+	{
+		int idx = indexOfPrerequisite(m_prerequisites, prerequisteName);
+		return (idx < 0) ? null : m_prerequisites.get(idx);
+	}
+
 	@Override
 	public void removePrerequisite(String prerequisteName)
 	{

@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.internal.version;
 
 import java.util.Date;
 
+import org.eclipse.buckminster.core.version.AbstractVersion;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 

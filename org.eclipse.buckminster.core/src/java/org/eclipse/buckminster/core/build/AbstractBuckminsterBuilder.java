@@ -103,16 +103,6 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 				? true
 				: isDeltaMatching(args, this.getProject(), this.getDelta(this.getProject()), m_notifyOnChangedResources));
 
-		Logger logger = CorePlugin.getLogger();
-		if(logger.isDebugEnabled())
-		{
-			logger.debug(
-				"Build : matching delta='" + isDeltaMatching +
-				"', project='" + this.getProject().getName() +
-				"', kind='" + kindToString(kind) +
-				"', args='" + args.toString() + '\'');
-		}
-
 		IProject[] projects = null;
 		if(!disabled && (isDeltaMatching || !m_initialBuildDone))
 		{
@@ -120,8 +110,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 
 			boolean needsPrintStream = isPrintingEnabledForKind(args, kind);
 
-			String binfo = this.getBestName(args) + " - " + this.getProject().getName();
-
+			Logger logger = CorePlugin.getLogger();
 			try
 			{
 				if(needsPrintStream)
@@ -135,9 +124,10 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 					m_errStream = System.err;
 				}
 
-				m_outStream.print("=== START: ");
-				m_outStream.print(binfo);
-				m_outStream.println(" ===");
+				if(logger.isDebugEnabled())
+					logger.debug(
+						String.format("[start AntBuilder(%s)] : %s - %s",
+							kindToString(kind), getBestName(args), getProject().getName()));
 
 				projects = doBuild(kind, args, monitor);
 
@@ -172,10 +162,8 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 			}
 			finally
 			{
-				m_outStream.print("=== END: ");
-				m_outStream.print(binfo);
-				m_outStream.println(" ===");
-				m_outStream = null;
+				if(logger.isDebugEnabled())
+					logger.debug(String.format("[end AntBuilder(%s)]", kindToString(kind)));
 			}
 		}
 		return projects;

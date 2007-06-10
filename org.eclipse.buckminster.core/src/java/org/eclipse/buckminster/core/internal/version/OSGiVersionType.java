@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.internal.version;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.OSGiVersion;
 
 /**
  * @author Thomas Hallgren

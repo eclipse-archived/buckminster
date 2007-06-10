@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.internal.version.AbstractVersion;
 
 /**
  * @author Thomas Hallgren

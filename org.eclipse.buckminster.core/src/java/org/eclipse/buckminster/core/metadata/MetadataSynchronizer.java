@@ -313,7 +313,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			}
 			catch(Exception e)
 			{
-				// cspec for now. Ignore.
+				// assume corruct cspec for now. Ignore.
 				//
 				return false;
 			}
