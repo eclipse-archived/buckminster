@@ -36,6 +36,7 @@ import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.cspecgen.bundle.BundleBuilder;
 import org.eclipse.buckminster.pde.internal.imports.FeatureImportOperation;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -233,7 +234,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 						200));
 					try
 					{
-						return PluginBuilder.parsePluginModelBase(reader, MonitorUtils.subMonitor(monitor,
+						return BundleBuilder.parsePluginModelBase(reader, MonitorUtils.subMonitor(monitor,
 							800));
 					}
 					finally

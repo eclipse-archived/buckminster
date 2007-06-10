@@ -10,11 +10,16 @@
 package org.eclipse.buckminster.pde.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.FileSet;
+import org.eclipse.buckminster.ant.types.FileSetGroup;
 import org.eclipse.buckminster.pde.tasks.FeatureConsolidator;
 
 /**
@@ -27,20 +32,78 @@ import org.eclipse.buckminster.pde.tasks.FeatureConsolidator;
  */
 public class FeatureConsolidatorTask extends Task
 {
-	private File m_featureFile;
+	private File m_input;
 
-	private Path m_featureAndPluginPath;
+	private File m_output;
+
+	private boolean m_generateVersionSuffix;
+
+	private File m_propertiesFile;
+
+	private int m_maxVersionSuffixLength = -1;
+	
+	private String m_qualifier;
+
+	private int m_significantDigits = -1;
+
+	private ArrayList<FileSet> m_fileSets;
+
+	private ArrayList<FileSetGroup> m_fileSetGroups;
+
+	/**
+	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
+	 */
+	public void add(FileSetGroup fsGroup) throws BuildException
+	{
+		if(m_fileSetGroups == null)
+			m_fileSetGroups = new ArrayList<FileSetGroup>();
+		m_fileSetGroups.add(fsGroup);
+	}
+
+	/**
+	 * Adds a nested <code>&lt;fileset&gt;</code> element.
+	 */
+	public void addFileset(FileSet fs) throws BuildException
+	{
+		if(m_fileSets == null)
+			m_fileSets = new ArrayList<FileSet>();
+		m_fileSets.add(fs);
+	}
 
 	@Override
 	public void execute() throws BuildException
 	{
 		try
 		{
-			if(m_featureFile == null)
-				throw new BuildException("Missing attribute featureFile", this.getLocation());
-			if(m_featureAndPluginPath == null)
-				throw new BuildException("Missing nested element featureAndPluginPath", this.getLocation());
-			FeatureConsolidator fc = new FeatureConsolidator(m_featureFile, m_featureAndPluginPath.list());
+	    	if(m_fileSetGroups != null)
+	    	{
+	    		for(FileSetGroup fsg : m_fileSetGroups)
+		    		for(FileSet fs : fsg.getFileSets())
+		    			addFileset(fs);
+	    		m_fileSetGroups = null;
+	    	}
+
+	    	if(m_input == null)
+				throw new BuildException("Missing attribute input", getLocation());
+			if(m_output == null)
+				throw new BuildException("Missing attribute output", getLocation());
+
+			Project proj = getProject();
+			List<File> featuresAndPlugins;
+			if(m_fileSets == null)
+				featuresAndPlugins = Collections.emptyList();
+			else
+			{
+				featuresAndPlugins = new ArrayList<File>();
+				for(FileSet fs : m_fileSets)
+				{
+		            DirectoryScanner ds = fs.getDirectoryScanner(proj);
+		            File dir = fs.getDir(proj);
+		            for(String file : ds.getIncludedFiles())
+		            	featuresAndPlugins.add(new File(dir, file));
+				}
+			}
+			FeatureConsolidator fc = new FeatureConsolidator(m_input, m_output, m_propertiesFile, featuresAndPlugins, m_qualifier, m_generateVersionSuffix, m_maxVersionSuffixLength, m_significantDigits);
 			fc.run();
 		}
 		catch(Exception e)
@@ -49,28 +112,41 @@ public class FeatureConsolidatorTask extends Task
 		}
 	}
 
-	public Path createFeatureAndPluginPath()
+	public void setGenerateVersionSuffix(boolean flag)
 	{
-		if(m_featureAndPluginPath == null)
-			m_featureAndPluginPath = new Path(this.getProject());
-		return m_featureAndPluginPath.createPath();
+		m_generateVersionSuffix = flag;
 	}
 
-	public void setFeatureFile(File featureFile)
+	public void setMaxVersionSuffixLength(int len)
 	{
-		m_featureFile = featureFile;
+		m_maxVersionSuffixLength = len;
 	}
 
-	public void setFeatureAndPluginPathRef(Reference r)
+	public void setSignificantDigits(int count)
 	{
-		this.createFeatureAndPluginPath().setRefid(r);
+		m_significantDigits = count;
 	}
 
-	public void setFeatureAndPluginPath(Path featureAndPluginPath)
+	public void setQualifier(String qualifier)
 	{
-		if(m_featureAndPluginPath == null)
-			m_featureAndPluginPath = featureAndPluginPath;
+		m_qualifier = qualifier;
+	}
+
+	public void setInputFile(File input)
+	{
+		m_input = input;
+	}
+
+	public void setOutputFile(File output)
+	{
+		m_output = output;
+	}
+
+	public void setPropertiesFile(String propertiesFile)
+	{
+		if(propertiesFile == null || propertiesFile.length() == 0)
+			m_propertiesFile = null;
 		else
-			m_featureAndPluginPath.append(featureAndPluginPath);
+			m_propertiesFile = new File(propertiesFile);
 	}
 }

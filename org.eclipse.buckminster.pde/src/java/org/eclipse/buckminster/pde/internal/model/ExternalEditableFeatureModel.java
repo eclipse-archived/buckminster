@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -26,7 +28,7 @@ import org.eclipse.pde.core.IEditableModel;
 import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 
 /**
- * The Eclipse external model is not editable.
+ * The Eclipse external model is not editable but this subclass is.
  * 
  * @author Thomas Hallgren
  */
@@ -35,7 +37,9 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 {
 	private static final long serialVersionUID = 5818223312516456482L;
 
+	private int m_contextQualifierLength = -1;
 	private boolean m_dirty;
+
 	private final File m_externalFile;
 
 	public ExternalEditableFeatureModel(File externalFile)
@@ -43,10 +47,31 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 		m_externalFile = externalFile;
 	}
 
+	public int getContextQualifierLength()
+	{
+		return m_contextQualifierLength;
+	}
+
+	public boolean isDirty()
+	{
+		return m_dirty;
+	}
+
 	@Override
 	public boolean isEditable()
 	{
 		return true;
+	}
+
+	private static final Pattern s_ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s");
+
+	public static int getContextQualifierLength(InputStream input)
+	{
+		int ctxQualLen = -1;
+		Scanner scanner = new Scanner(input);
+		if(scanner.findWithinHorizon(s_ctxQualLenPattern, 100) != null)
+			ctxQualLen = Integer.parseInt(scanner.match().group(1));
+		return ctxQualLen;
 	}
 
 	@Override
@@ -66,23 +91,50 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 		{
 			IOUtils.close(input);
 		}
+
+		int ctxQualLen = -1; 
+		if(getFeature().getVersion().indexOf('-') > 0)
+		{
+			try
+			{
+				ctxQualLen = getContextQualifierLength(new FileInputStream(m_externalFile));
+			}
+			catch(FileNotFoundException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				IOUtils.close(input);
+			}
+			m_contextQualifierLength = ctxQualLen;
+		}
 	}
 
 	public void save()
 	{
-		PrintWriter output = null;
 		try
 		{
-			output = new PrintWriter(m_externalFile, "UTF-8");
-			this.save(output);
+			save(m_externalFile);
 		}
 		catch(FileNotFoundException e)
 		{
 			PDEPlugin.getLogger().error("Unable to save feature model", e);
 		}
+	}
+
+	public void save(File outputFile) throws FileNotFoundException
+	{
+		PrintWriter output = null;
+		try
+		{
+			output = new PrintWriter(outputFile, "UTF-8");
+			this.save(output);
+		}
 		catch(UnsupportedEncodingException e)
 		{
 			PDEPlugin.getLogger().error("UTF-8 is not supported", e);
+			throw new RuntimeException(e);
 		}
 		finally
 		{
@@ -90,19 +142,21 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 		}
 	}
 
-	public boolean isDirty()
-	{
-		return m_dirty;
-	}
-
 	public void save(PrintWriter writer)
 	{
 		if(isLoaded())
 		{
 			writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			if(getFeature().getVersion().indexOf('-') > 0 && m_contextQualifierLength != -1)
+				writer.println("<!-- contextQualifierLength=" + m_contextQualifierLength + " -->");
 			feature.write("", writer);
 		}
 		setDirty(false);
+	}
+
+	public void setContextQualifierLength(int contextQualifierLength)
+	{
+		m_contextQualifierLength = contextQualifierLength;
 	}
 
 	public void setDirty(boolean dirty)

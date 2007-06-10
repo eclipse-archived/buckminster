@@ -29,7 +29,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
-import org.eclipse.buckminster.pde.internal.FeatureBuilder;
+import org.eclipse.buckminster.pde.cspecgen.feature.FeatureBuilder;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;

@@ -5,8 +5,8 @@
     	<!-- Define known builders -->
 	<extension
 		point="org.eclipse.buckminster.core.cspecBuilders">
-		<builder id="plugin2cspec" class="org.eclipse.buckminster.pde.internal.PluginBuilder" />
-		<builder id="feature2cspec" class="org.eclipse.buckminster.pde.internal.FeatureBuilder" />
+		<builder id="plugin2cspec" class="org.eclipse.buckminster.pde.cspecgen.bundle.BundleBuilder" />
+		<builder id="feature2cspec" class="org.eclipse.buckminster.pde.cspecgen.feature.FeatureBuilder" />
 	</extension>
  <extension
        point="org.eclipse.buckminster.core.componentTypes">
@@ -45,21 +45,6 @@
           substituteNamePattern="^(.*)$"/>
  </extension>
  <extension
-       point="org.eclipse.buckminster.core.actors">
-    <actor
-          ID="pde.ant"
-          class="org.eclipse.buckminster.pde.internal.actor.PdeAntActor"
-          name="PDE Ant Actor"/>
-    <actor
-          ID="plugin.script.generator"
-          class="org.eclipse.buckminster.pde.internal.actor.PluginScriptGenerator"
-          name="Plugin Script Generator"/>
-    <actor
-          ID="feature.script.generator"
-          class="org.eclipse.buckminster.pde.internal.actor.FeatureScriptGenerator"
-          name="Feature Script Generator"/>
- </extension>
- <extension
        point="org.eclipse.buckminster.core.parserExtensions">
       <parserExtension
             namespace="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
@@ -83,6 +68,10 @@
         class="org.eclipse.buckminster.pde.ant.FeatureConsolidatorTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.consolidateFeature"/>
+  <antTask
+        class="org.eclipse.buckminster.pde.ant.BundleConsolidatorTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.consolidateBundle"/>
   <antTask
         class="org.eclipse.buckminster.pde.ant.ImportBundleTask"
         library="ant_tasks/ant_tasks.jar"

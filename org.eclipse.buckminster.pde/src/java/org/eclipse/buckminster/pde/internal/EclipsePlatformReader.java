@@ -116,12 +116,26 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 
 	public List<IFragmentModel> getFragmentsFor(String pluginId)
 	{
-		return ((EclipsePlatformReaderType)this.getReaderType()).getFragmentsFor(pluginId);
+		return ((EclipsePlatformReaderType)getReaderType()).getFragmentsFor(pluginId);
+	}
+
+	public synchronized IPluginModelBase getPluginModelBase() throws CoreException
+	{
+		if(m_type != InstalledType.PLUGIN)
+			throw new IllegalStateException("Plugin requested from a reader initialized to read Features");
+
+		if(m_model == null)
+		{
+			m_model = getBestPlugin(getDesiredVersion());
+			if(m_model == null)
+				throw new MissingComponentException(m_componentName);
+		}
+		return (IPluginModelBase)m_model;
 	}
 
 	public IPluginModelBase getPluginModelBase(String pluginId, String version)
 	{
-		return ((EclipsePlatformReaderType)this.getReaderType()).getBestPlugin(pluginId, version);
+		return ((EclipsePlatformReaderType)getReaderType()).getBestPlugin(pluginId, version);
 	}
 
 	public InstalledType getType()
@@ -144,14 +158,14 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		String installLocation;
 		if(m_type == InstalledType.PLUGIN)
 		{
-			IPluginModelBase model = this.getPluginModelBase();
+			IPluginModelBase model = getPluginModelBase();
 			if(model == null)
 				return null;
 			installLocation = model.getInstallLocation();
 		}
 		else
 		{
-			IFeatureModel model = this.getFeatureModel();
+			IFeatureModel model = getFeatureModel();
 			if(model == null)
 				return null;
 			installLocation = model.getInstallLocation();
@@ -198,7 +212,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 	{
 		try
 		{
-			return this.getResolvedFile(fileName, null) != null;
+			return getResolvedFile(fileName, null) != null;
 		}
 		catch(FileNotFoundException e)
 		{
@@ -217,7 +231,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		try
 		{
 			InputStream[] isHolder = new InputStream[1];
-			String systemId = this.getResolvedFile(fileName, isHolder);
+			String systemId = getResolvedFile(fileName, isHolder);
 			input = new BufferedInputStream(isHolder[0]);
 			return consumer.consumeStream(this, systemId, input, monitor);
 		}
@@ -227,13 +241,13 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		}
 	}
 
-	synchronized IFeatureModel getFeatureModel()
+	public synchronized IFeatureModel getFeatureModel()
 	{
 		if(m_type != InstalledType.FEATURE)
 			return null;
 
 		if(m_model == null)
-			m_model = this.getBestFeature(this.getDesiredVersion());
+			m_model = getBestFeature(getDesiredVersion());
 		return (IFeatureModel)m_model;
 	}
 
@@ -244,34 +258,20 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 			: KeyConstants.FEATURE_CATEGORY;
 	}
 
-	synchronized IPluginModelBase getPluginModelBase() throws CoreException
-	{
-		if(m_type != InstalledType.PLUGIN)
-			throw new IllegalStateException("Plugin requested from a reader initialized to read Features");
-
-		if(m_model == null)
-		{
-			m_model = this.getBestPlugin(this.getDesiredVersion());
-			if(m_model == null)
-				throw new MissingComponentException(m_componentName);
-		}
-		return (IPluginModelBase)m_model;
-	}
-
 	private IFeatureModel getBestFeature(String desiredVersion)
 	{
-		return ((EclipsePlatformReaderType)this.getReaderType()).getBestFeature(m_componentName, desiredVersion);
+		return ((EclipsePlatformReaderType)getReaderType()).getBestFeature(m_componentName, desiredVersion);
 	}
 
 	private IPluginModelBase getBestPlugin(String desiredVersion)
 	{
-		return ((EclipsePlatformReaderType)this.getReaderType()).getBestPlugin(m_componentName, desiredVersion);
+		return ((EclipsePlatformReaderType)getReaderType()).getBestPlugin(m_componentName, desiredVersion);
 	}
 
 	private String getDesiredVersion()
 	{
 		String desiredVersion = null;
-		ProviderMatch vsMatch = this.getProviderMatch();
+		ProviderMatch vsMatch = getProviderMatch();
 		if(vsMatch != null)
 		{
 			IVersion version = vsMatch.getVersionMatch().getVersion();

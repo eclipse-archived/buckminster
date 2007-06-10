@@ -10,9 +10,17 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
 @SuppressWarnings("restriction")
 public interface IPDEConstants
 {
-	public static final String ALIAS_OUTPUT = "action.output";
+	static final String ALIAS_BUNDLES = "bundles";
 
-	public static final String ALIAS_REQUIREMENTS = "action.requirements";
+	static final String ALIAS_FEATURES = "features";
+
+	static final String ALIAS_OUTPUT = "action.output";
+
+	static final String ALIAS_REQUIREMENTS = "action.requirements";
+
+	static final String ALIAS_MANIFEST = "manifest";
+
+	static final String ALIAS_PROPERTIES = "properties";
 
 	/**
 	 * The feature in a format suitable for an update site. No sub-features nor bundles are
@@ -20,132 +28,126 @@ public interface IPDEConstants
 	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be the folder containing
 	 * the feature.
 	 */
-	public static final String ATTRIBUTE_FEATURE_EXPORT = "feature.export";
+	static final String ATTRIBUTE_FEATURE_JAR = "feature.jar";
 
 	/**
-	 * Denotes a fully deployable feature with all included features and bundles in a format
+	 * Denotes group consisting of this feature in jar format and all included features,
+	 * also in jar format.
+	 */
+	static final String ATTRIBUTE_FEATURE_JARS = "feature.jars";
+
+	/**
+	 * Denotes group consisting of this feature and all included features and bundles in a format
 	 * sutiable for publishing on an update site. The base of the attribute
 	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be folder that contains
 	 * the <code>features</code> and <code>plugins</code> folders.
 	 */
-	public static final String ATTRIBUTE_FEATURE_EXPORTS = "feature.exports";
-
-	/**
-	 * The feature in a format suitable for a runtime. No sub-features nor bundles are included. The
-	 * base of the attribute
-	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be the folder containing
-	 * the feature.
-	 */
-	public static final String ATTRIBUTE_FEATURE_RUNTIME = "feature.runtime";
-
-	/**
-	 * Denotes a fully deployable feature with all included features and bundles in a format
-	 * sutiable for a runtime. This target is intended for product builds. The base of the attribute
-	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be the folder that
-	 * contains the <code>features</code> and <code>plugins</code> folders.
-	 */
-	public static final String ATTRIBUTE_FEATURE_RUNTIMES = "feature.runtimes";
+	static final String ATTRIBUTE_FEATURE_EXPORTS = "feature.exports";
 
 	/**
 	 * The attribut that, when triggered, will clean out all built artifacts including the Eclipse
 	 * build. This attribute has no resulting product.
 	 */
-	public static final String ATTRIBUTE_FULL_CLEAN = WellknownActions.BUCKMINSTER.CLEAN.toString();
+	static final String ATTRIBUTE_FULL_CLEAN = WellknownActions.BUCKMINSTER.CLEAN.toString();
 
 	/**
-	 * Denotes a fully deployable bundle in packed formet
+	 * Denotes a fully deployable bundle in jar format
 	 */
-	public static final String ATTRIBUTE_BUNDLE_EXPORT = "bundle.export";
+	static final String ATTRIBUTE_BUNDLE_JAR = "bundle.jar";
 
 	/**
 	 * Denotes a list consisting of a fully deployable bundle in jar format along with all
-	 * bundles that it reexports.
+	 * bundles that it re-exports, also in jar format.
 	 */
-	public static final String ATTRIBUTE_BUNDLE_EXPORTS = "bundle.exports";
+	static final String ATTRIBUTE_BUNDLE_JARS = "bundle.jars";
 
 	/**
-	 * Denotes a fully deployable bundle in unpacked format
+	 * Denotes a bundle in unpacked format
 	 */
-	public static final String ATTRIBUTE_BUNDLE_FOLDER = "bundle.folder";
-
-	/**
-	 * Denotes a fully deployable bundle, packed or unpacked, whichever is best for the given
-	 * bundle.
-	 */
-	public static final String ATTRIBUTE_BUNDLE_RUNTIME = "bundle.runtime";
-
-	/**
-	 * Denotes a list consisting of a fully deployable bundle along with all bundles that it
-	 * reexports. The bundles are packed or unpacked, whichever is best for each given bundle.
-	 */
-	public static final String ATTRIBUTE_BUNDLE_RUNTIMES = "bundle.runtimes";
+	static final String ATTRIBUTE_BUNDLE_FOLDER = "bundle.folder";
 
 	/**
 	 * Denotes the external classpath for the bundle. This will be the sum of all exported
 	 * binaries from the imported bundles plus the exported contribution of this bundle.
 	 */
-	public static final String ATTRIBUTE_JAVA_BINARIES = WellKnownExports.JAVA_BINARIES;
+	static final String ATTRIBUTE_JAVA_BINARIES = WellKnownExports.JAVA_BINARIES;
 
 	/**
 	 * Denotes the bundle classpath. This will be the sum of all exported
 	 * binaries from the imported bundles plus the full contribution of this bundle.
 	 */
-	public static final String ATTRIBUTE_BUNDLE_CLASSPATH = "bundle.classpath";
+	static final String ATTRIBUTE_BUNDLE_CLASSPATH = "bundle.classpath";
 
-	public static final String BUILD_FILE_ID = "buckminster.pdetasks";
+	static final String ATTRIBUTE_BUILD_PROPERTIES = "build.properties";
 
-	public static final String BUILD_PROPERTIES_FILE = IPDEBuildConstants.PROPERTIES_FILE;
+	static final String ATTRIBUTE_JAR_CONTENTS = "jar.contents";
 
-	public static final String BUNDLE_FILE = IPDEBuildConstants.MANIFEST_FOLDER + '/'
+	static final String ATTRIBUTE_MANIFEST = "manifest";
+
+	static final String ATTRIBUTE_RAW_MANIFEST = "raw.manifest";
+
+	static final String BUILD_FILE_ID = "buckminster.pdetasks";
+
+	static final String BUILD_PROPERTIES_FILE = IPDEBuildConstants.PROPERTIES_FILE;
+
+	static final String BUNDLE_FILE = IPDEBuildConstants.MANIFEST_FOLDER + '/'
 		+ IPDEBuildConstants.MANIFEST;
 
-	public static final String FEATURE_FILE = "feature.xml";
+	static final String FEATURE_FILE = "feature.xml";
 
-	public static final String FEATURE_NATURE = "org.eclipse.pde.FeatureNature";
+	static final String FEATURE_NATURE = "org.eclipse.pde.FeatureNature";
 
-	public static final String FEATURES_FOLDER = IPDEBuildConstants.DEFAULT_FEATURE_LOCATION;
+	static final String FEATURES_FOLDER = IPDEBuildConstants.DEFAULT_FEATURE_LOCATION;
 
-	public static final String FRAGMENT_FILE = "fragment.xml";
+	static final String FRAGMENT_FILE = "fragment.xml";
 
-	public static final String HINT_PERMISSIONS = "permissions";
+	static final String HINT_PERMISSIONS = "permissions";
 
-	public static final String MANIFEST = IPDEBuildConstants.MANIFEST;
+	static final String MANIFEST = IPDEBuildConstants.MANIFEST;
 
-	public static final IPath OUTPUT_DIR = new Path(KeyConstants.ACTION_OUTPUT_REF + '/');
+	static final IPath OUTPUT_DIR = new Path(KeyConstants.ACTION_OUTPUT_REF + '/');
 
-	public static final String PLUGIN_FILE = "plugin.xml";
+	static final String PLUGIN_FILE = "plugin.xml";
 
-	public static final String PLUGIN_NATURE = "org.eclipse.pde.PluginNature";
+	static final String PLUGIN_NATURE = "org.eclipse.pde.PluginNature";
 
-	public static final String PLUGINS_FOLDER = IPDEBuildConstants.DEFAULT_PLUGIN_LOCATION;
+	static final String PLUGINS_FOLDER = IPDEBuildConstants.DEFAULT_PLUGIN_LOCATION;
 
 	/**
 	 * Appoints all files that PDE features wants to copy to the root of a product they are included
 	 * in.
 	 */
-	public static final String PRODUCT_ROOT_FILES = "product.root.files";
+	static final String PRODUCT_ROOT_FILES = "product.root.files";
 
-	public static final String PROP_DELETE_DIR = "dir.to.delete";
+	static final String PROP_DELETE_DIR = "dir.to.delete";
 
-	public static final String PROP_DELETE_FILE = "file.to.delete";
+	static final String PROP_DELETE_FILE = "file.to.delete";
 
-	public static final String SITE_FILE = "site.xml";
+	static final String SITE_FILE = "site.xml";
 
-	public static final String TASK_COPY_GROUP = "copy.group";
+	static final String TASK_COPY_GROUP = "copy.group";
 
-	public static final String TASK_CREATE_JAR = "create.jar";
+	static final String TASK_EXPAND_BUNDLE_VERSION = "expand.bundle.version";
 
-	public static final String TASK_CREATE_JAR_WM = "create.jar.with.manifest";
+	static final String TASK_EXPAND_FEATURE_VERSION = "expand.feature.version";
 
-	public static final String TASK_DELETE_DIR = "delete.dir";
+	static final String TASK_CREATE_BUNDLE_JAR = "create.bundle.jar";
 
-	public static final String TASK_DELETE_FILE = "delete.file";
+	static final String TASK_CREATE_FEATURE_JAR = "create.feature.jar";
 
-	public static final String TASK_DELETE_GROUP = "delete.group";
+	static final String TASK_CREATE_JAR = "create.jar";
 
-	public static final String TASK_UNJAR_NAMED = "unjar.named";
+	static final String TASK_CREATE_JAR_WM = "create.jar.with.manifest";
 
-	public static final String TASK_UNZIP = "unzip";
+	static final String TASK_DELETE_DIR = "delete.dir";
 
-	public static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
+	static final String TASK_DELETE_FILE = "delete.file";
+
+	static final String TASK_DELETE_GROUP = "delete.group";
+
+	static final String TASK_UNJAR_NAMED = "unjar.named";
+
+	static final String TASK_UNZIP = "unzip";
+
+	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
 }

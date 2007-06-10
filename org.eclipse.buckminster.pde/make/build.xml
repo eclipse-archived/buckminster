@@ -3,7 +3,13 @@
 	<target name="ant-tasks">
 		<mkdir dir="../bin/ant_tasks" />
 		<mkdir dir="../ant_tasks" />
-		<javac classpath="${bm.classpath}" srcdir="../src/ant_tasks" destdir="../bin/ant_tasks" />
+		<buckminster.resourceLocation path="org.eclipse.buckminster.ant" property="buckminster.ant"/>
+		<javac srcdir="../src/ant_tasks" destdir="../bin/ant_tasks">
+			<classpath>
+				<pathelement path="${bm.classpath}"/>
+				<pathelement path="${buckminster.ant}/ant_tasks/ant_tasks.jar"/>
+			</classpath>
+		</javac>
 		<jar basedir="../bin/ant_tasks" destfile="../ant_tasks/ant_tasks.jar" />
 	</target>
 
