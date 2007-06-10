@@ -8,10 +8,10 @@
 	</artifacts>
 
 	<actions>
-		<public name="create.buckminster.jnlp.product" actor="ant">
+		<public name="jnlp.installer" actor="ant">
             <actorProperties>
                 <property key="buildFileId" value="buckminster.pdetasks"/>
-                <property key="targets" value="create.eclipse.product"/>
+                <property key="targets" value="create.eclipse.jnlp.product"/>
             </actorProperties>
             <properties>
                 <property key="buckminster.eclipse.productFile" value="buckminster.jnlp.product"/>
@@ -19,10 +19,9 @@
             </properties>
 			<prerequisites alias="action.requirements">
 				<attribute name="feature.exports"/>
-				<attribute name="product.root.files"/>
 			</prerequisites>
-            <products alias="action.output" base="${buckminster.output}/">
-                <path path="buckminster/"/>
+            <products alias="action.output" base="${buckminster.output}" upToDatePolicy="NOT_EMPTY">
+            	<path path="installer/"/>
             </products>
 		</public>
 	</actions>
