@@ -4,13 +4,13 @@
    <description url="http://download.eclipse.org/technology/buckminster/updates/headless-site.xml">
       The update site for Buckminster
    </description>
-   <feature url="features/org.eclipse.buckminster.core.headless.feature_0.1.0.v20070605.jar" id="org.eclipse.buckminster.core.headless.feature" version="0.1.0.v20070605"/>
+   <feature url="features/org.eclipse.buckminster.core.headless.feature_0.1.0.v20070610.jar" id="org.eclipse.buckminster.core.headless.feature" version="0.1.0.v20070610"/>
    <feature url="features/org.eclipse.buckminster.cvs.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.cvs.headless.feature" version="0.1.0.v20070529"/>
    <feature url="features/org.eclipse.buckminster.maven.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.maven.feature" version="0.1.0.v20070529"/>
    <feature url="features/org.eclipse.buckminster.p4.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.p4.headless.feature" version="0.1.0.v20070529"/>
-   <feature url="features/org.eclipse.buckminster.pde.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.pde.headless.feature" version="0.1.0.v20070529"/>
-   <feature url="features/org.eclipse.buckminster.svn.headless.feature_0.1.0.v20070601.jar" id="org.eclipse.buckminster.svn.headless.feature" version="0.1.0.v20070601"/>
-   <feature url="features/org.eclipse.buckminster.europatools.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.europatools.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.pde.headless.feature_0.1.0.v20070610.jar" id="org.eclipse.buckminster.pde.headless.feature" version="0.1.0.v20070610"/>
+   <feature url="features/org.eclipse.buckminster.svn.headless.feature_0.1.0.v20070529.jar" id="org.eclipse.buckminster.svn.headless.feature" version="0.1.0.v20070529"/>
+   <feature url="features/org.eclipse.buckminster.europatools.feature_0.1.0.v20070413.jar" id="org.eclipse.buckminster.europatools.feature" version="0.1.0.v20070413"/>
 
     <!-- Eclipse 3.3RC2 dependencies -->
      <archive path="plugins/com.ibm.icu_3.6.1.v20070417.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.ibm.icu_3.6.1.v20070417.jar"/>
