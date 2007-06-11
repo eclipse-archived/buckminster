@@ -285,8 +285,7 @@ public class CSpecFromSource extends CSpecGenerator
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_JARS);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
-		copyFeatures.setProductBase(OUTPUT_DIR_SITE);
-		copyFeatures.addProductPath(new Path(FEATURES_FOLDER).addTrailingSeparator());
+		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));
 		copyFeatures.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 
 		// Copy all plug-ins that all features (including this one) is including.
@@ -295,13 +294,13 @@ public class CSpecFromSource extends CSpecGenerator
 		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS);
 		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyPlugins.setProductAlias(ALIAS_OUTPUT);
-		copyPlugins.setProductBase(OUTPUT_DIR_SITE);
-		copyPlugins.addProductPath(new Path(PLUGINS_FOLDER).addTrailingSeparator());
+		copyPlugins.setProductBase(OUTPUT_DIR_SITE.append(PLUGINS_FOLDER));
 		copyPlugins.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(ACTION_COPY_FEATURES);
 		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);
+		featureExports.setRebase(OUTPUT_DIR_SITE);
 	}
 
 	private void createFeatureManifestAction() throws CoreException
