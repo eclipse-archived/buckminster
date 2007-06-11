@@ -367,7 +367,7 @@ public class Action extends Attribute
 					//
 					if(isDebug)
 						logger.debug(
-							String.format("%sNo product is matching requirement", failLeadIn, entry.getKey()));
+							String.format("%sNo product is matching requirement %s", failLeadIn, entry.getKey()));
 					return false;
 				}
 
