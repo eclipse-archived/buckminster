@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.product"
       label="Buckminster Product (Incubation)"
-      version="0.1.0.v20070531"
+      version="0.1.0.v20070610"
       provider-name="Eclipse.org">
 
    <description>
@@ -67,13 +67,6 @@ The text of such license is available at www.eclipse.org.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.runtime.compatibility.registry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
 
    <plugin
          id="org.eclipse.equinox.common"
