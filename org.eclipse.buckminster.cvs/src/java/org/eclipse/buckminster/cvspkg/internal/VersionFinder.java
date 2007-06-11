@@ -117,7 +117,7 @@ public class VersionFinder extends CVSSession implements IVersionFinder
 			switch(exact.getType())
 			{
 			case TAG:
-				fixed = new CVSTag(exact.toString(), CVSTag.VERSION);
+				fixed = new CVSTag(exact.getQualifier(), CVSTag.VERSION);
 				break;
 			case LATEST:
 				if(!exact.isDefaultBranch())
