@@ -44,6 +44,17 @@ public class FileSystemMaterializer extends AbstractMaterializer
 {
 	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
 	{
+		if(Platform.OS_WIN32.equals(Platform.getOS()))
+		{
+			File userDir = null;
+			String appDataEnv = System.getenv("APPDATA");
+			if(appDataEnv != null)
+			{
+				userDir = new File(appDataEnv + "\\buckminster");
+				return Path.fromOSString(new File(userDir, "downloads").toString());
+			}
+		}
+
 		Location userLocation = Platform.getUserLocation();
 		if(userLocation != null)
 		{
@@ -51,7 +62,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			if(userDir != null)
 			{
 				if(Platform.OS_WIN32.equals(Platform.getOS()))
-					userDir = new File(userDir, "Application Data\\Buckminster");
+					userDir = new File(userDir, "Application Data\\buckminster");
 				else
 					userDir = new File(userDir, "buckminster");
 				return Path.fromOSString(new File(userDir, "downloads").toString());
