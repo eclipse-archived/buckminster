@@ -13,27 +13,11 @@
 			<run class="org.eclipse.buckminster.ant.internal.build.AntBuilder" />
 		</builder>
 	</extension>
-	<extension
-		id="StrictAntBuilder"
-		name="%StrictAntBuilder"
-		point="org.eclipse.core.resources.builders">
-		<builder isConfigurable="true">
-			<run class="org.eclipse.buckminster.ant.internal.build.StrictAntBuilder" />
-		</builder>
-	</extension>
 	<extension point="org.eclipse.buckminster.core.incrementalBuilders">
 		<builder ID="org.eclipse.buckminster.ant.AntBuilder" />
-		<builder ID="org.eclipse.buckminster.ant.StrictAntBuilder" />
 	</extension>
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
 		<extraClasspathEntry library="ant_tasks/ant_tasks.jar" />
-	</extension>
-	<extension point="org.eclipse.buckminster.cmdline.commands">
-		<command
-			addhelpflags="true"
-			class="org.eclipse.buckminster.ant.commands.Ant"
-			name="ant"
-			status="NORMAL" />
 	</extension>
 	<extension point="org.eclipse.buckminster.core.actors">
 		<actor
@@ -62,6 +46,10 @@
 			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.lastTimestamp"
 			class="org.eclipse.buckminster.ant.taskdefs.LastTimestamp" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.lastRevision"
+			class="org.eclipse.buckminster.ant.taskdefs.LastRevision" />
 		<antTask
 			class="org.eclipse.buckminster.ant.taskdefs.Jar"
 			library="ant_tasks/ant_tasks.jar"

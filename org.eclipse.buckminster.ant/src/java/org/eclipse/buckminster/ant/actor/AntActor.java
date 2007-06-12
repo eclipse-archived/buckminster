@@ -8,12 +8,14 @@
 package org.eclipse.buckminster.ant.actor;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import org.eclipse.buckminster.ant.AntPlugin;
-import org.eclipse.buckminster.ant.internal.build.AntBuilder;
+import org.eclipse.buckminster.ant.AntBuilderConstants;
+import org.eclipse.buckminster.ant.AntRunner;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
@@ -47,10 +49,6 @@ public class AntActor extends AbstractActor
 
 	public final static String BUILD_SCRIPT_RESOURCE = "resource";
 
-	// This is the actual ant project.
-	//
-	private Object m_internalAntActor;
-
 	protected final IPath getBuildFile(IActionContext ctx) throws CoreException
 	{
 		// script name must always be relative to project root
@@ -60,15 +58,15 @@ public class AntActor extends AbstractActor
 		if(buildFile == null)
 		{
 			if(buildFileId == null)
-				throw new BuckminsterException("Property not set: " + AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE);
+				throw new BuckminsterException("Property not set: " + AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE);
 
 			buildFileId = ExpandingProperties.expand(ctx.getProperties(), buildFileId, 0);
 			return this.getBuildFileExtension(buildFileId);
 		}
 
 		if(buildFileId != null)
-			throw new BuckminsterException("Properties " + AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE + " and "
-				+ AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + " are mutually exclusive");
+			throw new BuckminsterException("Properties " + AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE + " and "
+				+ AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + " are mutually exclusive");
 
 		buildFile = ExpandingProperties.expand(ctx.getProperties(), buildFile, 0);
 		IPath buildFilePath = new Path(buildFile);
@@ -80,17 +78,17 @@ public class AntActor extends AbstractActor
 
 	protected String getBuildFileProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.emptyTrimmedStringAsNull(this.getActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE));
+		return TextUtils.emptyTrimmedStringAsNull(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
 	}
 
 	protected String getBuildFileIdProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.emptyTrimmedStringAsNull(this.getActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
+		return TextUtils.emptyTrimmedStringAsNull(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
 	}
 
 	protected final String getTargetsString(IActionContext ctx)
 	{
-		String tlist = this.getActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS);
+		String tlist = this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_TARGETS);
 
 		// if no targets field has been defined, use the action name
 		//
@@ -133,12 +131,12 @@ public class AntActor extends AbstractActor
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 100);
 		monitor.subTask(ctx.getAction().getQualifiedName());
+		
+		PrintStream origOut = System.out;
+		PrintStream origErr = System.err;
 		try
 		{
 			IPath buildFile = this.getBuildFile(ctx);
-
-			if(m_internalAntActor == null)
-				m_internalAntActor = AntBuilder.createInternalAntBuilder();
 
 			// We add the installer hints onto the context properties.
 			//
@@ -149,13 +147,18 @@ public class AntActor extends AbstractActor
 			Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 			addActorPathGroups(ctx, namedPathGroupArrays);
 			addPathGroupArraysToProperties(namedPathGroupArrays, props);
+			props.put("basedir", ctx.getComponentLocation().toOSString());
 			MonitorUtils.worked(monitor, 10);
 
-			IPath location = ctx.getComponentLocation();
-			AntBuilder.invokeInternalAntBuilder(m_internalAntActor, buildFile, location,
-				getTargets(ctx), props, null, ctx.getOutputStream(),
-				ctx.getErrorStream());
-			MonitorUtils.worked(monitor, 90);
+			System.setOut(ctx.getOutputStream());
+			System.setErr(ctx.getErrorStream());
+
+			AntRunner runner = new AntRunner();
+			runner.setBuildFileLocation(buildFile);
+			runner.setExecutionTargets(getTargets(ctx));
+			runner.setBuildLogger("org.eclipse.buckminster.ant.support.AntBuildLogger");
+			runner.addUserProperties(props);
+			runner.run(MonitorUtils.subMonitor(monitor, 90));
 			return Status.OK_STATUS;
 		}
 		catch(OperationCanceledException e)
@@ -165,23 +168,25 @@ public class AntActor extends AbstractActor
 		catch(Error e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			AntPlugin.getLogger().error(t.toString(), t);
+			CorePlugin.getLogger().error(t.toString(), t);
 			throw e;
 		}
 		catch(RuntimeException e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			AntPlugin.getLogger().error(t.toString(), t);
+			CorePlugin.getLogger().error(t.toString(), t);
 			throw e;
 		}
 		catch(CoreException e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			AntPlugin.getLogger().error(t.toString(), t);
+			CorePlugin.getLogger().error(t.toString(), t);
 			throw e;
 		}
 		finally
 		{
+			System.setOut(origOut);
+			System.setErr(origErr);
 			monitor.done();
 		}
 	}
@@ -190,7 +195,7 @@ public class AntActor extends AbstractActor
 	{
 		IConfigurationElement resourceElem = null;
 		IExtensionRegistry er = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntPlugin.BUILD_SCRIPT_POINT))
+		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntBuilderConstants.BUILD_SCRIPT_POINT))
 		{
 			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
 			{
@@ -201,7 +206,7 @@ public class AntActor extends AbstractActor
 
 		if(resourceElem == null)
 			throw new BuckminsterException("No extension found defines "
-				+ AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + ": " + buildFileId);
+				+ AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + ": " + buildFileId);
 
 		// The resource must be loaded by the bundle that contributes it
 		//
@@ -213,7 +218,7 @@ public class AntActor extends AbstractActor
 		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
 		if(rsURL == null)
 			throw new BuckminsterException("Extension found using "
-				+ AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + " " + buildFileId
+				+ AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + " " + buildFileId
 				+ " appoints a non existing resource");
 
 		try

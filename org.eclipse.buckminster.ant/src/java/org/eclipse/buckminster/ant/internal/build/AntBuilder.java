@@ -10,16 +10,17 @@
 package org.eclipse.buckminster.ant.internal.build;
 
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ant.core.AntCorePlugin;
-import org.eclipse.buckminster.ant.AntPlugin;
+import org.eclipse.buckminster.ant.AntBuilderConstants;
+import org.eclipse.buckminster.ant.AntRunner;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.build.AbstractBuckminsterBuilder;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -48,140 +49,155 @@ import org.eclipse.core.runtime.Path;
  * 
  * @author Thomas Hallgren
  */
-public class AntBuilder extends AbstractAntBuilder
+public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilderConstants
 {
-	private static final IPath s_antHome;
-
-	private static final Method s_buildMethod;
-
-	private static final Constructor<? extends Object> s_ctor;
-
-	private static final ClassLoader s_antLoader;
-
-	static
-	{
-		AntCorePlugin plugin = AntCorePlugin.getPlugin();
-		s_antLoader = plugin.getNewClassLoader();
-		Thread curr = Thread.currentThread();
-		ClassLoader currCtxLoader = curr.getContextClassLoader();
-		try
-		{
-			curr.setContextClassLoader(s_antLoader);
-			Class<?> internalAntRunnerClass = s_antLoader.loadClass("org.eclipse.buckminster.ant.support.InternalAntBuilder");
-			s_buildMethod = internalAntRunnerClass.getMethod("build", IPath.class, IPath.class, String[].class, Map.class, Map.class, PrintStream.class, PrintStream.class);
-			s_ctor = internalAntRunnerClass.getConstructor(IPath.class);
-			s_antHome = new Path(plugin.getPreferences().getDefaultAntHome());
-		}
-		catch (Throwable e)
-		{
-			throw new ExceptionInInitializerError(e);
-		}
-		finally
-		{
-			curr.setContextClassLoader(currCtxLoader);
-		}
-	}
-
-	// This is the actual ant project.
-	//
-	private Object m_internalAntBuilder;
-
-	/**
-	 * Creates the opaque internal ant builder. The builder is created
-	 * using the special ant Classloader.
-	 * @return An instance of the <code>org.eclipse.buckminster.ant.support.InternalAntBuilder</code> class.
-	 * @throws CoreException If the builder could not be created for some reason.
-	 */
-	public static Object createInternalAntBuilder() throws CoreException
-	{
-		Thread curr = Thread.currentThread();
-		ClassLoader currCtxLoader = curr.getContextClassLoader();
-		try
-		{
-			curr.setContextClassLoader(s_antLoader);
-			return s_ctor.newInstance(s_antHome);
-		}
-		catch (Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			curr.setContextClassLoader(currCtxLoader);
-		}
-	}
-
-	/**
-	 * Invokes the internal ant builder.
-	 * @param builder A builder created by {@link #createInternalAntBuilder()}.
-	 * @param absoluteScriptFile The absolute path to the build script.
-	 * @param baseDir The base directory to use for the execution (might be <code>null</code>).
-	 * @param targets An array of targets to execute. Might be <code>null</code> or empty for default target execution.
-	 * @param userProps Properties (key value pairs) to pass to the build.
-	 * @param out A stream that will receive normal output from the build.
-	 * @param err A stream that will receive error output from the build.
-	 * @throws CoreException
-	 */
-	public static void invokeInternalAntBuilder(Object builder, IPath absoluteScriptFile, IPath baseDir, String[] targets, Map<String, String> userProps, Map<String,List<IPath>> fileSetGroups, PrintStream out, PrintStream err)
-	throws CoreException
-	{
-		Thread curr = Thread.currentThread();
-		ClassLoader currCtxLoader = curr.getContextClassLoader();
-		try
-		{
-			curr.setContextClassLoader(s_antLoader);
-			s_buildMethod.invoke(builder, absoluteScriptFile, baseDir, targets, userProps, fileSetGroups, out, err);
-		}
-		catch (Throwable e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			curr.setContextClassLoader(currCtxLoader);
-		}
-	}
+	private IFile m_scriptFile;
 
 	@Override
 	protected IProject[] doBuild(int kind, Map<String,String> args, IProgressMonitor monitor) throws CoreException
 	{
+		PrintStream origOut = System.out;
+		PrintStream origErr = System.err;
 		try
 		{
-			if (m_internalAntBuilder == null)
-				m_internalAntBuilder = createInternalAntBuilder();
-				
-			String target = this.getTarget(args, kind);
+			String target = getTarget(args, kind);
 			String[] targets = target == null ? null : new String[] { target };
 	
 			// only set the 'kind' property if a propname is given
 			//
 			String kindPropName = AbstractBuckminsterBuilder.getValue(args, ARG_BUILD_KIND_PROPERTY_KEY);
-			Map<String, String> props = this.getFixedProperties(args);
+			Map<String, String> props = getFixedProperties(args);
 			if(kindPropName != null)
 				props.put(kindPropName, AbstractBuckminsterBuilder.kindToString(kind));
 			
-			invokeInternalAntBuilder(
-				m_internalAntBuilder,
-				this.getScriptFile(args).getLocation(),
-				this.getBaseDir(args),
-				targets,
-				props,
-				null,
-				this.getOutStream(),
-				this.getErrStream());
+			IPath baseDir = getBaseDir(args);
+			if(baseDir != null)
+				props.put("basedir", baseDir.toOSString());
+
+			System.setOut(getOutStream());
+			System.setErr(getErrStream());
+
+			AntRunner runner = new AntRunner();
+			runner.setBuildFileLocation(getScriptFile(args).getLocation());
+			runner.setExecutionTargets(targets);
+			runner.setBuildLogger("org.eclipse.buckminster.ant.support.AntBuildLogger");
+			runner.addUserProperties(props);
+			runner.run(monitor);
 		}
 		catch(CoreException e)
 		{
-			AntPlugin.getLogger().error(e.getMessage(), e);
+			CorePlugin.getLogger().error(e.getMessage(), e);
 			throw e;
 		}
-
+		finally
+		{
+			System.setOut(origOut);
+			System.setErr(origErr);
+		}
 		return null;
 	}
 
-	@Override
-	protected void scriptFileChanged()
+	/**
+	 * Returns the script file
+	 * @param args The map of arguments that where passed to the build.
+	 * @return The script file.
+	 */
+	protected IFile getScriptFile(Map<String, String> args) throws CoreException
 	{
-		m_internalAntBuilder = null;
+		if(m_scriptFile == null)
+		{
+			// script name must always be relative to project root
+			//
+			String scriptFile = getValue(args, ARG_SCRIPT_FILE_KEY);
+			if(scriptFile == null)
+				scriptFile = DEFAULT_SCRIPT_FILE;
+			IPath relativeScriptFilePath = new Path(scriptFile);
+			if(relativeScriptFilePath.isAbsolute())
+				throw new BuckminsterException("The script file name must be relative to the project root: "
+					+ scriptFile);
+			m_scriptFile = getProject().getFile(relativeScriptFilePath);
+			notifyOnChangedResources(new IResource[] { m_scriptFile });
+
+		}
+		return m_scriptFile;
+	}
+
+	/**
+	 * The path to use as <code>basedir</code> in the ant build.
+	 * @param args The map of arguments that where passed to the build.
+	 * @return The basedir of the build or <code>null</code> if not set.
+	 */
+	protected IPath getBaseDir(Map<String, String> args)
+	{
+		String baseDir = getValue(args, ARG_OVERRIDE_BASEDIR_KEY);
+		IPath baseDirPath = null;
+		if(baseDir != null)
+		{
+			baseDirPath = new Path(baseDir);
+			if(!baseDirPath.isAbsolute())
+				baseDirPath = getProject().getLocation().append(baseDirPath);
+		}
+		return baseDirPath;
+	}
+
+	/**
+	 * Returns the target for a specific <code>kind</code> of build or <code>null</code> if no
+	 * target has been specificed for the <code>kind</code>.
+	 * @param args The map of arguments that where passed to the build.
+	 * @param kind The
+	 *            {@link org.eclipse.core.resources.IncrementalProjectBuilder IncrementalProjectBuilder}
+	 *            build kind.
+	 * @return The name of the target.
+	 */
+	protected String getTarget(Map<String, String> args, int kind)
+	{
+		String target = null;
+		if(kind == AUTO_BUILD)
+			target = getValue(args, ARG_AUTO_KIND_TARGET_KEY);
+		else if(kind == CLEAN_BUILD)
+		{
+			target = getValue(args, ARG_CLEAN_KIND_TARGET_KEY);
+			if(target == null)
+				target = DEFAULT_CLEAN_KIND_TARGET;
+		}
+		else if(kind == FULL_BUILD)
+			target = getValue(args, ARG_FULL_KIND_TARGET_KEY);
+		else if(kind == INCREMENTAL_BUILD)
+			target = getValue(args, ARG_INCREMENTAL_KIND_TARGET_KEY);
+		return target;
+	}
+
+	/**
+	 * Returns a new map with fixed properties that are guaranteed not to change between each build.
+	 * The method will return a new map for each call and it is ok if the caller wishes to add more
+	 * entries to that map.
+	 * @param args The map of arguments that where passed to the build.
+	 * @return A map of fixed properties.
+	 */
+	protected Map<String, String> getFixedProperties(Map<String, String> args)
+	{
+		Map<String, String> props = new HashMap<String, String>();
+
+		// only set the 'component name' property if a propname is given
+		//
+		String componentPropName = getValue(args, ARG_COMPONENT_NAME_PROPERTY_KEY);
+		if(componentPropName != null)
+			props.put(componentPropName, getProject().getName());
+		return props;
+	}
+
+	@Override
+	protected void resourcesChangeNotification(IResource[] changedResources)
+	{
+		// should only be the scriptfile at this time...
+		// if someone did something to the build script, force a full build
+		//
+		for(IResource r : changedResources)
+			if(r.equals(m_scriptFile))
+			{
+				forgetLastBuiltState();
+				m_scriptFile = null;
+				break;
+			}
 	}
 }
