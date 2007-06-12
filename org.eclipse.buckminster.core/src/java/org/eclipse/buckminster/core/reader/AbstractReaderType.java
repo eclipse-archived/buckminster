@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +74,16 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
 	{
 		return null;
+	}
+
+	public long getLastRevision(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
+	{
+		return -1;
+	}
+
+	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		return -1;
 	}
 
 	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor) throws CoreException

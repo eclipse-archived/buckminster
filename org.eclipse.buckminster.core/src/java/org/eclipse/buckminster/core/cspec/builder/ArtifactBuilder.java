@@ -80,7 +80,7 @@ public class ArtifactBuilder extends AttributeBuilder
 
 	public void setBase(IPath base)
 	{
-		m_base = base;
+		m_base = (base == null) ? null : base.addTrailingSeparator();
 	}
 
 	public void setType(String type)

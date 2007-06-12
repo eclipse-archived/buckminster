@@ -104,7 +104,7 @@ public class GroupBuilder extends AttributeBuilder
 
 	public void setRebase(IPath rebase)
 	{
-		m_rebase = rebase;
+		m_rebase = rebase == null ? null : rebase.addTrailingSeparator();
 	}
 
 	public List<PrerequisiteBuilder> getPrerequisites()

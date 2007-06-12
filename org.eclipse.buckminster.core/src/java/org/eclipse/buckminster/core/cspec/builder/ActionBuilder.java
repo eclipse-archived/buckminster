@@ -254,7 +254,7 @@ public class ActionBuilder extends AttributeBuilder
 
 	public void setProductBase(IPath productBase)
 	{
-		m_productBase = productBase;
+		m_productBase = productBase == null ? null : productBase.addTrailingSeparator();
 	}
 
 	public void setProductFileCount(int productFileCount)

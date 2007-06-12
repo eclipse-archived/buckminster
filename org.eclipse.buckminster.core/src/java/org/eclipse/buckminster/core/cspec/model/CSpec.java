@@ -38,6 +38,7 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -113,12 +114,19 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 					throws CoreException
 			{
 				IPath me = getComponentLocation();
-				String leaf = me.lastSegment();
+				PathGroup meGroup;
 				if(me.hasTrailingSeparator())
-					leaf = leaf + '/';
+					//
+					// A folder will act as the base for the component
+					//
+					meGroup = new PathGroup(me, Trivial.EMPTY_PATH_ARRAY);
+				else
+					// The parent folder will be the base since the component itself
+					// is a file.
+					//
+					meGroup = new PathGroup(me.removeLastSegments(1).addTrailingSeparator(), new IPath[] { new Path(me.lastSegment()) });
 
-				return new PathGroup[] { new PathGroup(me.removeLastSegments(1).addTrailingSeparator(),
-						new IPath[] { new Path(leaf) }) };
+				return new PathGroup[] { meGroup };
 			}
 		};
 		m_selfAttribute.setCSPec(this);

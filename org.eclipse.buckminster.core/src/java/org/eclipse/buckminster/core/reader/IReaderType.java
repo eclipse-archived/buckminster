@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -180,10 +181,31 @@ public interface IReaderType extends IBuckminsterExtension
 	 * Returns the last modification date for the repository or null if that cannot
 	 * be determined.
 	 * @param repositoryLocation
-	 * @param versionSelect the desired version to check for or <code>null</code> if none.
+	 * @param versionSelector the desired version to check for or <code>null</code> if none.
 	 * @param monitor The monitor used for progress reporting
 	 * @return The last modification timestamp.
 	 * @throws CoreException
 	 */
 	Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Returns the last revision for the repository location or -1 if that cannot
+	 * be determined.
+	 * @param repositoryLocation
+	 * @param versionSelector the desired version to check for or <code>null</code> if none.
+	 * @param monitor The monitor used for progress reporting
+	 * @return The last revision
+	 * @throws CoreException
+	 */
+	long getLastRevision(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Returns the last revision for the working copy or -1 if that cannot
+	 * be determined.
+	 * @param workingCopy
+	 * @param monitor The monitor used for progress reporting
+	 * @return The last revision
+	 * @throws CoreException
+	 */
+	long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException;
 }
