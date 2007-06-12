@@ -49,8 +49,6 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class CSpecFromBinary extends CSpecGenerator
 {
-	private static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";
-
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi";
 
 	private final ICatalogReader m_reader;
@@ -216,8 +214,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			// since this artifact is not a workspace artifact
 			//
 			String jarName = buildArtifactName(true);
-			ActionBuilder bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_JAR_WM, true);
-			bundleExport.addProperty(ALIAS_MANIFEST, MANIFEST_PATH, false);
+			ActionBuilder bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_ZIP, true);
 
 			bundleExport.setProductAlias(ALIAS_OUTPUT);
 			bundleExport.setProductBase(OUTPUT_DIR);

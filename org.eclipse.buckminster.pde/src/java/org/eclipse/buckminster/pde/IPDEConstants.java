@@ -137,6 +137,8 @@ public interface IPDEConstants
 
 	static final String TASK_CREATE_JAR = "create.jar";
 
+	static final String TASK_CREATE_ZIP = "create.zip";
+
 	static final String TASK_CREATE_JAR_WM = "create.jar.with.manifest";
 
 	static final String TASK_DELETE_DIR = "delete.dir";
