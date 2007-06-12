@@ -11,11 +11,15 @@ public interface IBuckminsterPreferenceConstants
 {
 	public static final String LOG_LEVEL_CONSOLE = "logLevelConsole";
 
-	public static final int LOG_LEVEL_CONSOLE_DEFAULT = Logger.INFO;
-
 	public static final String LOG_LEVEL_ECLIPSE_LOGGER = "logLevelEclipseLogger";
 
-	public static final int LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT = Logger.INFO;
+	public static final String LOG_LEVEL_ANT_LOGGER = "logLevelAntLogger";
+
+	public static final int LOG_LEVEL_CONSOLE_DEFAULT = Logger.INFO;
+
+	public static final int LOG_LEVEL_ANT_LOGGER_DEFAULT = Logger.WARNING;
+
+	public static final int LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT = Logger.WARNING;
 
 	public static final String LOG_ECLIPSE_TO_CONSOLE = "logEclipseToConsole";
 

@@ -28,6 +28,7 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		s_prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
 		s_defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
 		s_defaultNode.putInt(LOG_LEVEL_CONSOLE, LOG_LEVEL_CONSOLE_DEFAULT);
+		s_defaultNode.putInt(LOG_LEVEL_ANT_LOGGER, LOG_LEVEL_ANT_LOGGER_DEFAULT);
 		s_defaultNode.putInt(LOG_LEVEL_ECLIPSE_LOGGER, LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT);
 		s_defaultNode.putBoolean(LOG_ECLIPSE_TO_CONSOLE, LOG_ECLIPSE_TO_CONSOLE_DEFAULT);
 		s_defaultNode.put(SITE_NAME, SITE_NAME_DEFAULT);
@@ -73,6 +74,11 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		return s_prefsNode.getInt(LOG_LEVEL_CONSOLE, LOG_LEVEL_CONSOLE_DEFAULT);
 	}
 
+	public static int getLogLevelAntLogger()
+	{
+		return s_prefsNode.getInt(LOG_LEVEL_ANT_LOGGER, LOG_LEVEL_ANT_LOGGER_DEFAULT);
+	}
+
 	public static int getLogLevelEclipseLogger()
 	{
 		return s_prefsNode.getInt(LOG_LEVEL_ECLIPSE_LOGGER, LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT);
@@ -110,6 +116,11 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static void setLogLevelConsole(int logLevel)
 	{
 		s_prefsNode.putInt(LOG_LEVEL_CONSOLE, logLevel);
+	}
+
+	public static void setLogLevelAntLogger(int logLevel)
+	{
+		s_prefsNode.putInt(LOG_LEVEL_ANT_LOGGER, logLevel);
 	}
 
 	public static void setLogLevelEclipseLogger(int logLevel)
