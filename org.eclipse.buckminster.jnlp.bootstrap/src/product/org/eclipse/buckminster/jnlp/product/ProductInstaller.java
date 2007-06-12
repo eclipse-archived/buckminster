@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.jnlp.product;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
+import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
 import org.eclipse.buckminster.jnlp.bootstrap.ProgressFacade;
 
@@ -50,7 +52,7 @@ public class ProductInstaller implements IProductInstaller
 	private static final String PROP_UNPACK_COUNT = "unpackCount";
 	private static final int DEFAULT_UNPACK_COUNT = 80;
 
-	public void installProduct(Main main, ProgressFacade monitor) throws IOException
+	public void installProduct(Main main, ProgressFacade monitor) throws JNLPException
 	{
 		m_main = main;
 
@@ -64,7 +66,7 @@ public class ProductInstaller implements IProductInstaller
 		monitor.taskDone();
 	}
 
-	private void installResource(String resourceName, ProgressFacade monitor) throws IOException
+	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException
 	{
 		monitor.taskIncrementalProgress(5);
 		InputStream resourceZip = getClass().getResourceAsStream(resourceName);
@@ -87,56 +89,92 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
-	private void installFromStream(InputStream productZip, ProgressFacade monitor) throws IOException
+	private void installFromStream(InputStream productZip, ProgressFacade monitor) throws JNLPException
 	{
 		File installLocation = m_main.getInstallLocation();
 		ZipInputStream zipInput = new ZipInputStream(productZip);
 		ZipEntry zipEntry;
-		while((zipEntry = zipInput.getNextEntry()) != null)
+		try
 		{
-			String name = osAdjustName(zipEntry.getName());
-			File file;
-			if(zipEntry.isDirectory())
+			while((zipEntry = zipInput.getNextEntry()) != null)
 			{
-				file = new File(installLocation, name);
-				file.mkdirs();
-			}
-			else
-			{
-				if(name.endsWith(PACK_SUFFIX))
+				String name = osAdjustName(zipEntry.getName());
+				File file;
+				if(zipEntry.isDirectory())
 				{
-					// Pack200 compressed file
-					//
-					file = new File(installLocation, name.substring(0, name.length() - PACK_SUFFIX_LEN));
-					OutputStream output = new FileOutputStream(file);
-					try
-					{
-						storeUnpacked(zipInput, output);
-						monitor.taskIncrementalProgress(1);
-					}
-					finally
-					{
-						Main.close(output);
-					}
+					file = new File(installLocation, name);
+					file.mkdirs();
 				}
 				else
 				{
-					// This is so quick that it doesn't generate a progress tick
-					//
-					file = new File(installLocation, name);
-					storeVerbatim(file, zipInput);
+					if(name.endsWith(PACK_SUFFIX))
+					{
+						// Pack200 compressed file
+						//
+						file = new File(installLocation, name.substring(0, name.length() - PACK_SUFFIX_LEN));
+						OutputStream output;
+						try
+						{
+							output = new FileOutputStream(file);
+						}
+						catch(FileNotFoundException e)
+						{
+							throw new JNLPException("Can not create file: " + file.toString(), "Check disk space, system permissions and try again", e);
+						}
+						try
+						{
+							try
+							{
+								storeUnpacked(zipInput, output);
+							}
+							catch(IOException e)
+							{
+								throw new JNLPException("Can not unzip and save to file: " + file.toString(), "Check disk space, system permissions and try again", e);
+							}
+							monitor.taskIncrementalProgress(1);
+						}
+						finally
+						{
+							Main.close(output);
+						}
+					}
+					else
+					{
+						// This is so quick that it doesn't generate a progress tick
+						//
+						file = new File(installLocation, name);
+						try
+						{
+							storeVerbatim(file, zipInput);
+						}
+						catch(IOException e)
+						{
+							throw new JNLPException("Can not save to file: " + file.toString(), "Check disk space, system permissions and try again", e);
+						}
+					}
+
+					if(file.getName().endsWith(".jar"))
+					{
+						try
+						{
+							if(recursiveUnpack(file))
+								monitor.taskIncrementalProgress(1);
+						}
+						catch(IOException e)
+						{
+							throw new JNLPException("Can not unpack file: " + file.toString(), "Check disk space, system permissions and try again", e);
+						}
+					}
 				}
 
-				if(file.getName().endsWith(".jar"))
-				{
-					if(recursiveUnpack(file))
-						monitor.taskIncrementalProgress(1);
-				}
+				long tz = zipEntry.getTime();
+				if(tz != -1L)
+					file.setLastModified(tz);
 			}
-
-			long tz = zipEntry.getTime();
-			if(tz != -1L)
-				file.setLastModified(tz);
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Can not read materialization wizard resource", "Check your internet connection and try again", e);
 		}
 	}
 
@@ -196,7 +234,7 @@ public class ProductInstaller implements IProductInstaller
 					{
 						String unpackedName = entryName.substring(0, entryName.length() - PACK_SUFFIX_LEN);
 						JarEntry unpackedEntry = new JarEntry(unpackedName);
-						unpackedEntry.setMethod(JarEntry.DEFLATED);
+						unpackedEntry.setMethod(ZipEntry.DEFLATED);
 						jarOutput.putNextEntry(unpackedEntry);
 						storeUnpacked(input, jarOutput);
 					}
@@ -227,7 +265,7 @@ public class ProductInstaller implements IProductInstaller
 		return true;
 	}
 
-	private static void renameFile(File from, File to) throws IOException
+	private static void renameFile(File from, File to)
 	{
 		if(!from.renameTo(to))
 			throw new RuntimeException(String.format("Unable to rename \"%s\" to \"%s\"", from, to));
@@ -252,6 +290,7 @@ public class ProductInstaller implements IProductInstaller
 				{
 				}
 			});
+			
 			JarOutputStream jarOut = new JarOutputStream(result);
 			m_unpacker.unpack(gzipInput, jarOut);
 			gzipInput = null; // Closed by unpack

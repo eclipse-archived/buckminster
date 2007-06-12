@@ -8,12 +8,10 @@
 
 package org.eclipse.buckminster.jnlp.bootstrap;
 
-import java.io.IOException;
-
 /**
  * @author Thomas Hallgren
  */
 public interface IProductInstaller
 {
-	void installProduct(Main main, ProgressFacade monitor) throws IOException;
+	void installProduct(Main main, ProgressFacade monitor) throws JNLPException;
 }
