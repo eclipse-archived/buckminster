@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.eclipse.buckminster.pde.tasks;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,29 +31,31 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class BundleConsolidator extends VersionConsolidator
 {
-	private final Manifest m_manifest;
+	private final byte[] m_bytes;
 
 	public BundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier)
 			throws IOException
 	{
 		super(outputFile, propertiesFile, qualifier);
-
-		InputStream input = null;
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		InputStream input = new FileInputStream(inputFile);
 		try
 		{
-			input = new BufferedInputStream(new FileInputStream(inputFile));
-			m_manifest = new Manifest(input);
+			IOUtils.copy(input, output);
 		}
 		finally
 		{
 			IOUtils.close(input);
 		}
+		m_bytes = output.toByteArray();
 	}
 
 	public void run() throws IOException
 	{
-		Attributes a = m_manifest.getMainAttributes();
+		Manifest manifest = new Manifest(new ByteArrayInputStream(m_bytes));
+		Attributes a = manifest.getMainAttributes();
 		String symbolicName = a.getValue(Constants.BUNDLE_SYMBOLICNAME);
+		boolean changed = false;
 		if(symbolicName != null)
 		{
 			String id;
@@ -71,15 +74,24 @@ public class BundleConsolidator extends VersionConsolidator
 			{
 				String newVersion = replaceQualifierInVersion(version, id);
 				if(!version.equals(newVersion))
+				{
 					a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion);
+					changed = true;
+				}
 			}
 		}
 
 		OutputStream out = null;
 		try
 		{
-			out = new BufferedOutputStream(new FileOutputStream(getOutputFile()));
-			m_manifest.write(out);
+			out = new FileOutputStream(getOutputFile());
+			if(changed)
+			{
+				out = new BufferedOutputStream(out);
+				manifest.write(out);
+			}
+			else
+				out.write(m_bytes);
 		}
 		finally
 		{
