@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.pde.cspecgen;
 
-import org.eclipse.buckminster.ant.AntPlugin;
+import org.eclipse.buckminster.ant.AntBuilderConstants;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -59,8 +59,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected ActionBuilder addAntAction(String actionName, String targetName, boolean asPublic) throws CoreException
 	{
 		ActionBuilder action = m_cspecBuilder.addAction(actionName, asPublic, AntActor.ID, false);
-		action.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_TARGETS, targetName, false);
-		action.addActorProperty(AntPlugin.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, BUILD_FILE_ID, false);
+		action.addActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_TARGETS, targetName, false);
+		action.addActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, BUILD_FILE_ID, false);
 		return action;
 	}
 

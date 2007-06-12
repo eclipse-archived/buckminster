@@ -10,13 +10,16 @@
 
 package org.eclipse.buckminster.pde.cspecgen.bundle;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
@@ -24,6 +27,8 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -33,6 +38,7 @@ import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.core.plugin.ISharedPluginModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginBase;
+import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.osgi.framework.Constants;
 
 /**
@@ -143,7 +149,8 @@ public class CSpecFromBinary extends CSpecGenerator
 		IPath parentDir = new Path("..");
 		ISharedPluginModel model = m_plugin.getModel();
 		String location = model.getInstallLocation();
-		boolean isFile = (location != null && new File(location).isFile());
+		File locationFile = (location != null) ? new File(location) : null;
+		boolean isFile = (locationFile != null) && locationFile.isFile();
 
 		if(isFile)
 		{
@@ -160,9 +167,32 @@ public class CSpecFromBinary extends CSpecGenerator
 		{
 			// This bundle is a folder. Gather artifacts to be included in the classpath
 			//
-			String bundleClassPath = null;
+			IBundle bundle = null;
 			if(m_plugin instanceof BundlePluginBase)
-				bundleClassPath = ((BundlePluginBase)m_plugin).getBundle().getHeader(Constants.BUNDLE_CLASSPATH);
+				bundle = ((BundlePluginBase)m_plugin).getBundle();
+			else
+			{
+				if(locationFile != null && locationFile.isDirectory())
+				{
+					InputStream input = null;
+					try
+					{
+						input = new BufferedInputStream(new FileInputStream(new File(locationFile, BUNDLE_FILE)));
+						ExternalBundleModel ebm = new ExternalBundleModel();
+						ebm.load(input, false);
+						bundle = ebm.getBundle();
+					}
+					catch(IOException e)
+					{}
+					finally
+					{
+						IOUtils.close(input);
+					}
+				}
+			}
+			String bundleClassPath = null;
+			if(bundle != null)
+				bundleClassPath = bundle.getHeader(Constants.BUNDLE_CLASSPATH);
 
 			if(bundleClassPath == null)
 				classpath.addSelfRequirement();
@@ -181,13 +211,21 @@ public class CSpecFromBinary extends CSpecGenerator
 
 				classpath.addLocalPrerequisite(bundleClasspath);
 			}
-			ArtifactBuilder bundleFolder = cspec.addArtifact(ATTRIBUTE_BUNDLE_FOLDER, true, null, parentDir);
-			IPath bundlePath = new Path(buildArtifactName(false));
-			bundleFolder.addPath(bundlePath);
 
-			// Create the jared bundle (need a special temporary directory for this)
+			// In order to create a jar of the unpackedPlugin, we need a temporary directory
+			// since this artifact is not a workspace artifact
 			//
-			createBundleExportAction(bundleFolder);
+			String jarName = buildArtifactName(true);
+			ActionBuilder bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_JAR_WM, true);
+			bundleExport.addProperty(ALIAS_MANIFEST, MANIFEST_PATH, false);
+
+			bundleExport.setProductAlias(ALIAS_OUTPUT);
+			bundleExport.setProductBase(OUTPUT_DIR);
+			bundleExport.addProductPath(Path.fromPortableString(jarName));
+
+			bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+			bundleExport.getPrerequisitesBuilder().addSelfRequirement();
+			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 		}
 		monitor.done();
 	}
@@ -207,23 +245,5 @@ public class CSpecFromBinary extends CSpecGenerator
 		else
 			bld.append('/');
 		return bld.toString();
-	}
-
-	private void createBundleExportAction(AttributeBuilder unpackedPlugin) throws CoreException
-	{
-		// In order to create a jar of the unpackedPlugin, we need a temporary directory
-		// since this artifact is not a workspace artifact
-		//
-		String jarName = buildArtifactName(true);
-		ActionBuilder bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_JAR_WM, true);
-		bundleExport.addProperty(ALIAS_MANIFEST, MANIFEST_PATH, false);
-
-		bundleExport.setProductAlias(ALIAS_OUTPUT);
-		bundleExport.setProductBase(OUTPUT_DIR);
-		bundleExport.addProductPath(Path.fromPortableString(jarName));
-
-		bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-		bundleExport.addLocalPrerequisite(unpackedPlugin);
-		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 	}
 }
