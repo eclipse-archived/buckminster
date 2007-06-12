@@ -238,6 +238,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		addField(new DirectoryFieldEditor(BUCKMINSTER_PROJECT_CONTENTS, "Buckminster project folder", getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_CONSOLE, "Console logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, "Eclipse logger level:", LogLevel.values(), getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, "Ant logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, "Copy Eclipse log events to Console", getFieldEditorParent()));
 		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, "Resolver order", getFieldEditorParent()));
 
