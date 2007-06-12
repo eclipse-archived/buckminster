@@ -261,7 +261,8 @@ public class CSpecFromSource extends CSpecGenerator
 		IPath manifestFolder = new Path(IPDEBuildConstants.MANIFEST_FOLDER).addTrailingSeparator();
 		AttributeBuilder manifest = null;
 		OSGiVersion version = (OSGiVersion)cspec.getVersion();
-		boolean versionExpansion = version.getQualifier().startsWith("qualifier");
+		String versionQualifier = version.getQualifier();
+		boolean versionExpansion = versionQualifier != null ? versionQualifier.startsWith("qualifier") : false;
 		if(versionExpansion)
 		{
 			// Add the build.properties artifact. We want to manage that separately since it
