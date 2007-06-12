@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.svn.internal;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -449,6 +450,18 @@ public class SvnSession
 			if(root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedRevision().getNumber();
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public long getLastChangeNumber(File workingCopy) throws CoreException
+	{
+		try
+		{
+			return m_clientAdapter.getInfoFromWorkingCopy(workingCopy).getLastChangedRevision().getNumber();
 		}
 		catch(Exception e)
 		{

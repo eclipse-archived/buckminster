@@ -9,8 +9,10 @@
  *******************************************************************************/
 package org.eclipse.buckminster.svn.internal;
 
+import java.io.File;
 import java.util.Date;
 
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -22,6 +24,9 @@ import org.eclipse.buckminster.core.version.VersionSelectorType;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
+import org.tigris.subversion.svnclientadapter.ISVNInfo;
+import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 
 /**
@@ -36,8 +41,8 @@ public class SvnReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor)
-	throws CoreException
+	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector,
+			IProgressMonitor monitor) throws CoreException
 	{
 		String branch = null;
 		String tag = null;
@@ -59,7 +64,52 @@ public class SvnReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public long getLastRevision(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor)
+			throws CoreException
+	{
+		String branch = null;
+		String tag = null;
+		if(versionSelector != null)
+		{
+			branch = versionSelector.getBranchName();
+			if(versionSelector.getType() == VersionSelectorType.TAG)
+				tag = versionSelector.getQualifier();
+		}
+		SvnSession session = new SvnSession(repositoryLocation, branch, tag);
+		try
+		{
+			return session.getLastChangeNumber();
+		}
+		finally
+		{
+			session.close();
+		}
+	}
+
+	@Override
+	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		try
+		{
+			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
+					.getInfoFromWorkingCopy(workingCopy);
+			if(info != null)
+			{
+				SVNRevision.Number lastRev = info.getLastChangedRevision();
+				if(lastRev != null)
+					return lastRev.getNumber();
+			}
+			return -1;
+		}
+		catch(SVNClientException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	@Override
+	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider.getURI(nodeQuery.getProperties()));
