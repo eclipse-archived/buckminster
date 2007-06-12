@@ -87,9 +87,9 @@ public class MaterializationContext extends RMContext
 	}
 
 	/**
-	 * Obtains the default relative install locatoin for a given resolution. The method
+	 * Obtains the default relative install location for a given resolution. The method
 	 * consults the component category if present and then appends the name of the
-	 * component. A trailing separater will be appended if the expected artifact is
+	 * component. A trailing separator will be appended if the expected artifact is
 	 * a directory.
 	 *
 	 * @param resolution The resolution for which we want a relative install location
@@ -104,14 +104,22 @@ public class MaterializationContext extends RMContext
 		if(cc != null)
 			relativeLocation = cc.getRelativeLocation();
 
-		IPath leaf = Path.fromPortableString(cName.getName());
-		if(relativeLocation == null)
-			relativeLocation = leaf;
+		if(resolution.getProvider().getReaderType().isFileReader())
+		{
+			if(relativeLocation == null)
+				relativeLocation = Path.EMPTY;
+		}
 		else
-			relativeLocation = relativeLocation.append(leaf);
+		{
+			IPath leaf = Path.fromPortableString(cName.getName());
+			if(relativeLocation == null)
+				relativeLocation = leaf;
+			else
+				relativeLocation = relativeLocation.append(leaf);
 
-		if(!resolution.getProvider().getReaderType().isFileReader())
 			relativeLocation = relativeLocation.addTrailingSeparator();
+		}
+
 		return relativeLocation;
 	}
 
