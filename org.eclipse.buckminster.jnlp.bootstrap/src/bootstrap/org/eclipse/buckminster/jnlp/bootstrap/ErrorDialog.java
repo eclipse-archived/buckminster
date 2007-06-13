@@ -150,7 +150,10 @@ public class ErrorDialog extends Dialog
 			@Override
 			public void keyPressed(KeyEvent e)
 			{
-				finish();
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					finish();
+				}
 			}
 		});
 		p.add(m_okButton);

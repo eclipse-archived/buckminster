@@ -105,7 +105,10 @@ public class ServiceDialog extends Dialog
 			@Override
 			public void keyPressed(KeyEvent e)
 			{
-				finish();
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					finish();
+				}
 			}
 		});
 		p.add(b);
