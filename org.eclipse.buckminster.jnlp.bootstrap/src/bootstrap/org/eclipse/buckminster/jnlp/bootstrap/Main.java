@@ -48,7 +48,9 @@ public class Main
 	private static final String USER_HOME = "@user.home";
 
 	private File m_installLocation;
-	
+
+	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot";
+
 	public static final String PROP_SPLASH_IMAGE = "splashImage";
 	
 	public static final String PROP_WINDOW_ICON = "windowIcon";
@@ -341,10 +343,14 @@ public class Main
 				}
 			}
 			
-			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
+			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
 			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
 			if(splashImageData != null)
 		        SplashWindow.splash(splashImageData, windowIconData);
+
+			// Load the splashImage that will be used during the start of the app
+			//
+			splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
 
 			File siteRoot = getSiteRoot();
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
@@ -412,6 +418,14 @@ public class Main
 				// Two seconds to start, with progressbar. The time is an
 				// estimate of course.
 				//
+				if(splashImageData != null)
+				{
+					// Switch splash screen
+					//
+			        SplashWindow.disposeSplash();
+			        SplashWindow.splash(splashImageData, windowIconData);
+				}
+
 				int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue() / 100;
 				monitor.setTask("Starting", startupTime);
 				while(--startupTime >= 0)
@@ -426,8 +440,6 @@ public class Main
 		}
 		finally
 		{
-			// Give the app some time to start.
-			//
 	        SplashWindow.disposeSplash();
 		}
 	}
