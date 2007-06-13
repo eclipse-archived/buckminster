@@ -17,7 +17,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -50,7 +49,7 @@ import java.awt.event.MouseEvent;
 // It is kind of tricky to debug via JWS!
 //
 @SuppressWarnings("serial")
-public class SplashWindow extends Window
+public class SplashWindow extends Frame
 {
 	private static final int PROGRESS_XMARGIN = 4;
 
@@ -107,24 +106,38 @@ public class SplashWindow extends Window
 	 * 
 	 * @param parent
 	 *            the parent of the window.
-	 * @param image
+	 * @param splashImage
 	 *            the splash image.
+	 * @param windowIconImage
+	 *            the taskbar icon image
 	 */
-	private SplashWindow(Frame parent, Image image)
+	private SplashWindow(Image splashImage, Image windowIconImage)
 	{
-		super(parent);
-		this.m_image = image;
-
-		// Load the image
+		// Load the images
 		MediaTracker mt = new MediaTracker(this);
-		mt.addImage(image, 0);
+		mt.addImage(splashImage, 0);
+		if (windowIconImage != null)
+			mt.addImage(windowIconImage, 1);
 		try
 		{
 			mt.waitForID(0);
+			if (windowIconImage != null)
+				mt.waitForID(1);
 		}
 		catch(InterruptedException ie)
 		{
 		}
+		
+		setUndecorated(true);
+		setTitle("Configuring Materializer Infrastructure");
+		
+		if (windowIconImage != null)
+			if (!mt.isErrorID(1))
+				setIconImage(windowIconImage);
+			else
+				System.err.println("Warning: SplashWindow couldn't load window icon.");
+
+		this.m_image = splashImage;
 
 		// Abort on failure
 		if(mt.isErrorID(0))
@@ -140,8 +153,8 @@ public class SplashWindow extends Window
 		}
 
 		// Center the window on the screen
-		int imgWidth = image.getWidth(this);
-		int imgHeight = image.getHeight(this);
+		int imgWidth = splashImage.getWidth(this);
+		int imgHeight = splashImage.getHeight(this);
 		setSize(imgWidth, imgHeight);
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((screenDim.width - imgWidth) / 2, (screenDim.height - imgHeight) / 2);
@@ -239,18 +252,16 @@ public class SplashWindow extends Window
 	/**
 	 * Open's a splash window using the specified image.
 	 * 
-	 * @param image
+	 * @param splashImage
 	 *            The splash image.
 	 */
-	public static void splash(Image image)
+	public static void splash(Image splashImage, Image windowIconImage)
 	{
 //		s_debugInfo.append("Splash; ");
-		if(s_instance == null && image != null)
+		if(s_instance == null && splashImage != null)
 		{
-			Frame f = new Frame();
-
 			// Create the splash image
-			s_instance = new SplashWindow(f, image);
+			s_instance = new SplashWindow(splashImage, windowIconImage);
 
 			// Show the window.
 			s_instance.setVisible(true);
@@ -282,14 +293,15 @@ public class SplashWindow extends Window
 	/**
 	 * Open's a splash window using the specified image.
 	 * 
-	 * @param imageURL
-	 *            The url of the splash image.
 	 */
-	public static void splash(byte[] imageBytes)
+	public static void splash(byte[] splashImageBytes, byte[] windowIconBytes)
 	{
-		if(imageBytes != null)
+		if(splashImageBytes != null)
 		{
-			splash(Toolkit.getDefaultToolkit().createImage(imageBytes));
+			Image splashImage = Toolkit.getDefaultToolkit().createImage(splashImageBytes);
+			Image windowIconImage = windowIconBytes != null ?
+					Toolkit.getDefaultToolkit().createImage(windowIconBytes) : null;
+			splash(splashImage, windowIconImage);
 		}
 	}
 
@@ -302,7 +314,8 @@ public class SplashWindow extends Window
 		if(s_instance != null)
 		{
 //			logProgress(0, s_instance.m_progress);
-			s_instance.getOwner().dispose();
+			//s_instance.getOwner().dispose();
+			s_instance.dispose();
 			s_instance = null;
 		}
 	}

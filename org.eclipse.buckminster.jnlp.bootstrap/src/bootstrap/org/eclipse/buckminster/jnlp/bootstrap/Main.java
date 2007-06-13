@@ -51,6 +51,8 @@ public class Main
 	
 	public static final String PROP_SPLASH_IMAGE = "splashImage";
 	
+	public static final String PROP_WINDOW_ICON = "windowIcon";
+
 	public static final String PROP_SERVICE_AVAILABLE = "serviceAvailable";
 	
 	public static final String PROP_SERVICE_MESSAGE = "serviceMessage";
@@ -339,31 +341,10 @@ public class Main
 				}
 			}
 			
-			tmp = props.getProperty(PROP_SPLASH_IMAGE);
-			byte[] splashData = null;
-			if(tmp != null)
-			{
-				InputStream is = null;
-				try
-				{
-					is = new URL(tmp).openStream();
-					ByteArrayOutputStream os = new ByteArrayOutputStream();
-					byte[] buf = new byte[0x1000];
-					int count;
-					while((count = is.read(buf)) > 0)
-						os.write(buf, 0, count);
-					splashData = os.toByteArray();
-
-				} catch(IOException e)
-				{
-					throw new JNLPException("Unable to read a splash screen image", "Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-				}
-				finally
-				{
-					close(is);
-				}
-		        SplashWindow.splash(splashData);
-			}
+			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
+			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
+			if(splashImageData != null)
+		        SplashWindow.splash(splashImageData, windowIconData);
 
 			File siteRoot = getSiteRoot();
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
@@ -449,6 +430,35 @@ public class Main
 			//
 	        SplashWindow.disposeSplash();
 		}
+	}
+
+	private byte[] loadData(String url) throws JNLPException
+	{
+		byte[] data = null;
+		if(url != null)
+		{
+			InputStream is = null;
+			try
+			{
+				is = new URL(url).openStream();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				byte[] buf = new byte[0x1000];
+				int count;
+				while((count = is.read(buf)) > 0)
+					os.write(buf, 0, count);
+				data = os.toByteArray();
+
+			} catch(IOException e)
+			{
+				throw new JNLPException("Unable to read a splash screen or window icon image", "Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+			}
+			finally
+			{
+				close(is);
+			}
+		}
+		
+		return data;
 	}
 
 	public void startProduct(String[] args) throws JNLPException
