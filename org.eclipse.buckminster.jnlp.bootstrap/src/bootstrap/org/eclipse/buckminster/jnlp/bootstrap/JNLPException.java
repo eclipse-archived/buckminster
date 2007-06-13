@@ -18,19 +18,27 @@ public class JNLPException extends Exception
 
 	private String m_solution;
 	
-	public JNLPException(String message, String solution, Throwable cause)
+	private String m_errorCode;
+	
+	public JNLPException(String message, String solution, String errorCode, Throwable cause)
 	{
 		super(message, cause);
 		m_solution = solution;
+		m_errorCode = errorCode;
 	}
 	
-	public JNLPException(String message, String solution)
+	public JNLPException(String message, String solution, String errorCode)
 	{
-		this(message, solution, null);
+		this(message, solution, errorCode, null);
 	}
 	
 	public String getSolution()
 	{
 		return m_solution;
+	}
+	
+	public String getErrorCode()
+	{
+		return m_errorCode;
 	}
 }

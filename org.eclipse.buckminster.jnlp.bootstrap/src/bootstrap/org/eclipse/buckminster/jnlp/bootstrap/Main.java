@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.jnlp.bootstrap;
 
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -60,7 +61,7 @@ public class Main
 	
 	public static final int DEFAULT_STARTUP_TIME = 2000;
 
-	private String m_errorURL = null;
+	private String m_errorURL = ERROR_HELP_URL;
 	
 	public static void main(String[] args)
 	{
@@ -72,6 +73,7 @@ public class Main
 		}
 		catch(Throwable t)
 		{			
+			
 			if(t instanceof JNLPException)
 			{
 				JNLPException e = (JNLPException) t;
@@ -82,10 +84,20 @@ public class Main
 					problem += "\n\nCause: " + e.getCause().getMessage();
 				}
 				
-				new ErrorDialog("Materializer can not be started", problem, e.getSolution(), main.getErrorURL()).setVisible(true);
+				new ErrorDialog(
+						"Materializer can not be started",
+						problem,
+						e.getSolution(),
+						main.getErrorURL() == null ? null : main.getErrorURL() + "?errorCode=" + e.getErrorCode())
+					.setVisible(true);
 			} else
 			{
-				new ErrorDialog("Materializer can not be started", t.getMessage(), "Check your java installation and try again", main.getErrorURL()).setVisible(true);
+				new ErrorDialog(
+						"Materializer can not be started",
+						t.getMessage(),
+						"Check your java installation and try again",
+						main.getErrorURL() == null ? null : main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION)
+					.setVisible(true);
 			}
 			
 			try
@@ -137,7 +149,7 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not create a temp file", "Check disk space, system permissions and try again", e);
+					throw new JNLPException("Can not create a temp file", "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 			}
 			m_installLocation.mkdirs();
@@ -188,7 +200,7 @@ public class Main
 
 		if(urlIdx == -1)
 		{
-			throw new JNLPException("Missing required argument -configURL <URL to config properties>", "Report the error and try later");
+			throw new JNLPException("Missing required argument -configURL <URL to config properties>", "Report the error and try later", ERROR_CODE_MISSING_ARGUMENT_EXCEPTION);
 		}
 
 		InputStream propStream = null;
@@ -202,7 +214,7 @@ public class Main
 			}
 			catch(MalformedURLException e)
 			{
-				throw new JNLPException("Can not read URL to config properties", "Report the error and try later", e);
+				throw new JNLPException("Can not read URL to config properties", "Report the error and try later", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
 			if(!"file".equals(propertiesURL))
 			{
@@ -222,7 +234,7 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Unable to get information about the materialization", "Check your internet connection and try again", e);
+					throw new JNLPException("Unable to get information about the materialization", "Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 				}
 				bytes = bld.toByteArray();
 				propStream = new ByteArrayInputStream(bytes);
@@ -231,7 +243,7 @@ public class Main
 				//
 				File localTemp = new File(getInstallLocation(), "temp");
 				if(!(localTemp.exists() || localTemp.mkdirs()))
-					throw new JNLPException("Unable to create directory " + localTemp, "Check your system permissions and try again");
+					throw new JNLPException("Unable to create directory " + localTemp, "Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION);
 
 				File localProps;
 				try
@@ -240,7 +252,7 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not create a temp file", "Check disk space, system permissions and try again", e);
+					throw new JNLPException("Can not create a temp file", "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 				try
 				{
@@ -249,7 +261,7 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not write to a temp file", "Check your system permissions and try again", e);
+					throw new JNLPException("Can not write to a temp file", "Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 
 				// Replace the configURL option value in the argument array with a pointer
@@ -262,7 +274,7 @@ public class Main
 				}
 				catch(MalformedURLException e)
 				{
-					throw new JNLPException("Can not read from a temp file", "Check your system permissions and try again", e);
+					throw new JNLPException("Can not read from a temp file", "Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 			}
 			else
@@ -272,7 +284,7 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Unable to get information about the materialization", "Check your internet connection and try again", e);
+					throw new JNLPException("Unable to get information about the materialization", "Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 				}
 
 			Properties props = new Properties();
@@ -282,7 +294,7 @@ public class Main
 			}
 			catch(IOException e)
 			{
-				throw new JNLPException("Unable to read materialization information", "Check your system permissions, internet connection and try again", e);
+				throw new JNLPException("Unable to read materialization information", "Check your system permissions, internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 			}
 			return props;
 		}
@@ -344,7 +356,7 @@ public class Main
 
 				} catch(IOException e)
 				{
-					throw new JNLPException("Unable to read a splash screen image", "Check your internet connection and try again", e);
+					throw new JNLPException("Unable to read a splash screen image", "Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 				}
 				finally
 				{
@@ -392,7 +404,7 @@ public class Main
 				}
 				catch(Exception e)
 				{
-					throw new JNLPException("Can not download materialization wizard", "Check disk space, system permissions, internet connection and try again", e);
+					throw new JNLPException("Can not download materialization wizard", "Check disk space, system permissions, internet connection and try again", ERROR_CODE_DOWNLOAD_EXCEPTION, e);
 				}
 
 				IProductInstaller installer;
@@ -403,7 +415,7 @@ public class Main
 				}
 				catch(Exception e)
 				{
-					throw new JNLPException("Can not find materialization wizard resource", "Report the error and try later", e);
+					throw new JNLPException("Can not find materialization wizard resource", "Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
 				}
 				
 				installer.installProduct(this, monitor);
@@ -445,7 +457,7 @@ public class Main
 		String javaHome = System.getProperty("java.home");
 		if(javaHome == null)
 		{
-			throw new JNLPException("System propery java.home is not set", "Set the system property which should point to java home directory and try again");
+			throw new JNLPException("System propery java.home is not set", "Set the system property which should point to java home directory and try again", ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
 		}
 
 		File javaBin = new File(javaHome, "bin");
@@ -453,7 +465,7 @@ public class Main
 
 		if(!javaExe.exists())
 		{
-			throw new JNLPException("Unable to locate java runtime", "Check java installation and try again");
+			throw new JNLPException("Unable to locate java runtime", "Check java installation and try again", ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
 		}
 
 		ArrayList<String> allArgs = new ArrayList<String>();
@@ -480,7 +492,7 @@ public class Main
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again", e);
+			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again", ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
 		}
 	}
 
@@ -529,14 +541,14 @@ public class Main
 		File siteRoot = getSiteRoot();
 		if(siteRoot == null)
 		{
-			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(), "Check disk space, system permissions and try again");
+			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(), "Check disk space, system permissions and try again", ERROR_CODE_SITE_ROOT_EXCEPTION);
 		}
 
 		File pluginsDir = new File(siteRoot, "plugins");
 		String[] names = pluginsDir.list();
 		if(names == null)
 		{
-			throw new JNLPException(pluginsDir + " is not a directory", "Report the error and try later");
+			throw new JNLPException(pluginsDir + " is not a directory", "Report the error and try later", ERROR_CODE_DIRECTORY_EXCEPTION);
 		}
 
 		String found = null;
@@ -564,7 +576,7 @@ public class Main
 			launcher = new File(siteRoot, "startup.jar");
 			if(!launcher.exists())
 			{
-				throw new JNLPException("Can not find file: " + pluginsDir + "org.eclipse.equinox.launcher_<version>.jar", "Clear your java and browser cache and try again");
+				throw new JNLPException("Can not find file: " + pluginsDir + "org.eclipse.equinox.launcher_<version>.jar", "Clear your java cache, browser cache and try again", ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION);
 			}
 		}
 		else

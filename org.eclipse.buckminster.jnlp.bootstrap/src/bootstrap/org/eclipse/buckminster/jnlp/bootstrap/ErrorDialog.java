@@ -107,7 +107,7 @@ public class ErrorDialog extends Dialog
 		{
 			p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
 			p.add(new Label("Read more at:"));
-			final TextField tf = new TextField(helpURL);
+			final TextField tf = new TextField(helpURL, 55);
 			
 			tf.addFocusListener(new FocusAdapter(){
 
@@ -121,7 +121,6 @@ public class ErrorDialog extends Dialog
 				}});
 				
 			tf.setEditable(false);
-			tf.selectAll();	
 			p.add(tf);
 			tp.add("South", p);
 		}

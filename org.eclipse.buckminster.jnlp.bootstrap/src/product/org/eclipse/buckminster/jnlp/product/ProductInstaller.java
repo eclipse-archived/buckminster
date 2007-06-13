@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.jnlp.product;
 
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -119,7 +120,7 @@ public class ProductInstaller implements IProductInstaller
 						}
 						catch(FileNotFoundException e)
 						{
-							throw new JNLPException("Can not create file: " + file.toString(), "Check disk space, system permissions and try again", e);
+							throw new JNLPException("Can not create file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 						}
 						try
 						{
@@ -129,7 +130,7 @@ public class ProductInstaller implements IProductInstaller
 							}
 							catch(IOException e)
 							{
-								throw new JNLPException("Can not unzip and save to file: " + file.toString(), "Check disk space, system permissions and try again", e);
+								throw new JNLPException("Can not unzip and save to file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 							}
 							monitor.taskIncrementalProgress(1);
 						}
@@ -149,7 +150,7 @@ public class ProductInstaller implements IProductInstaller
 						}
 						catch(IOException e)
 						{
-							throw new JNLPException("Can not save to file: " + file.toString(), "Check disk space, system permissions and try again", e);
+							throw new JNLPException("Can not save to file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 						}
 					}
 
@@ -162,7 +163,7 @@ public class ProductInstaller implements IProductInstaller
 						}
 						catch(IOException e)
 						{
-							throw new JNLPException("Can not unpack file: " + file.toString(), "Check disk space, system permissions and try again", e);
+							throw new JNLPException("Can not unpack file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 						}
 					}
 				}
@@ -174,7 +175,7 @@ public class ProductInstaller implements IProductInstaller
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not read materialization wizard resource", "Check your internet connection and try again", e);
+			throw new JNLPException("Can not read materialization wizard resource", "Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 	}
 
