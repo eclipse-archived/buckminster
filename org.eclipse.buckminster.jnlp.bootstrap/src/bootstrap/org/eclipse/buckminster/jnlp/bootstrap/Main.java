@@ -529,8 +529,6 @@ public class Main
 					SplashWindow.windowToFront();
 					Thread.sleep(timeToSleep);
 				}
-
-				// If the JNLP application did not give us any sync message, let's just hide the splash window
 			}
 			catch(InterruptedException e)
 			{
