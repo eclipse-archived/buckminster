@@ -9,10 +9,14 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -55,6 +59,40 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	public final String getCategory()
 	{
 		return m_categoryName;
+	}
+
+	public String getProjectName() throws CoreException
+	{
+		String name = getName();
+
+		ComponentCategory cc = ComponentCategory.getCategory(m_categoryName);
+		if(cc == null)
+			//
+			// No category.
+			//
+			return name;
+
+		Pattern desiredMatch = cc.getDesiredNamePattern();
+		if(desiredMatch == null || desiredMatch.matcher(name).find())
+			//
+			// We have a category but no desire to change the name
+			//
+			return name;
+
+		Pattern repFrom = cc.getSubstituteNamePattern();
+		String repTo = cc.getNameSubstitution();
+
+		if(repFrom == null || repTo == null)
+			throw new BuckminsterException("Category: " + m_categoryName + " defines desiredNamePattern but no substitution");
+
+		Matcher matcher = repFrom.matcher(name);
+		if(matcher.matches())
+		{
+			String repl = matcher.replaceAll(repTo).trim();
+			if(repl.length() > 0)
+				name = repl;
+		}
+		return name;
 	}
 
 	public Map<String,String> getProperties()
