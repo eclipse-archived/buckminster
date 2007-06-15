@@ -19,12 +19,10 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 
 /**
  * The <code>NodeQuery</code> combines the {@link IComponentQuery} with one
@@ -111,29 +109,9 @@ public class NodeQuery
 		throw new IllegalStateException("ResolutionContext requested during Materialization");
 	}
 
-	public IPath getMaterializationLocation() throws CoreException
-	{
-		return getComponentQuery().getMaterializationLocation(getComponentRequest());
-	}
-
 	public final URL getOverlayFolder() throws CoreException
 	{
 		return getComponentQuery().getOverlayFolder(getComponentRequest());
-	}
-
-	/**
-	 * A matching advisor node might contain a reqular expression based
-	 * name substitution intended to produce the project name that the
-	 * component will use in the Eclipse workspace. If such an expression
-	 * is present, and if it matches the name found in the request, then
-	 * the replacement takes place and the new name is returned. If not,
-	 * the component name is returned.
-	 * @return The name to use for the project that corresponds to the
-	 * nodes component.
-	 */
-	public String getProjectName() throws CoreException
-	{
-		return getComponentQuery().getProjectName(getComponentRequest());
 	}
 
 	/**
@@ -228,19 +206,6 @@ public class NodeQuery
 	public boolean skipComponent() throws CoreException
 	{
 		return getComponentQuery().skipComponent(getComponentRequest());
-	}
-
-	/**
-	 * When the resolver sees that the location for an intended materialization
-	 * is not empty while still not known as the root of a materialized
-	 * component, it will ask if it should treat the existing artifacts as a
-	 * materialization, if it should overwrite them, or if it should fail.
-	 * 
-	 * @return An enum denoting the verdict.
-	 */
-	public ConflictResolution useExistingArtifacts() throws CoreException
-	{
-		return getComponentQuery().useExistingArtifacts(getComponentRequest());
 	}
 
 	/**

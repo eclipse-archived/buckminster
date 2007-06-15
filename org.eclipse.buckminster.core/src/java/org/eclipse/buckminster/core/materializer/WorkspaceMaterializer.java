@@ -10,22 +10,19 @@ package org.eclipse.buckminster.core.materializer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -113,7 +110,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				//
 				// Default to project.
 				//
-				wsRelativePath = Path.fromPortableString(getDefaultProjectName(resolution));
+				wsRelativePath = Path.fromPortableString(getDefaultProjectName(context.getMaterializationSpec(), resolution));
 		}
 		else
 		{
@@ -316,37 +313,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private String getDefaultProjectName(Resolution resolution) throws CoreException
+	private String getDefaultProjectName(MaterializationSpec mspec, Resolution resolution) throws CoreException
 	{
-		ComponentRequest cname = resolution.getRequest();
-		String name = cname.getName();
-		String categoryName = cname.getCategory();
-		ComponentCategory cc = ComponentCategory.getCategory(categoryName);
-		if(cc == null)
-			return name;
-
-		Pattern desiredMatch = cc.getDesiredNamePattern();
-		if(desiredMatch == null || desiredMatch.matcher(name).find())
-			//
-			// We have a category but no desire to change the name
-			//
-			return name;
-
-		Pattern repFrom = cc.getSubstituteNamePattern();
-		String repTo = cc.getNameSubstitution();
-
-		if(repFrom == null || repTo == null)
-			throw new BuckminsterException("Category: " + categoryName
-					+ " defines desiredNamePattern but no substitution");
-
-		Matcher matcher = repFrom.matcher(name);
-		if(matcher.matches())
-		{
-			String repl = matcher.replaceAll(repTo).trim();
-			if(repl.length() > 0)
-				name = repl;
-		}
-		return name;
+		return mspec.getProjectName(resolution.getRequest());
 	}
 
 	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, MaterializationContext context,

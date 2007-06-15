@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -93,6 +94,27 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		for(MaterializationNodeBuilder nodeBuilder : builder.getNodes())
 			nodes.add(nodeBuilder.createMaterializationNode());
 		m_nodes = UUIDKeyed.createUnmodifiableList(nodes);
+	}
+
+	public String getProjectName(ComponentName cName) throws CoreException
+	{
+		MaterializationNode node = getMatchingNode(cName);
+		if(node == null)
+			return cName.getProjectName();
+
+		Pattern bindingNamePattern = node.getBindingNamePattern();
+		String bindingNameReplacement = node.getBindingNameReplacement();
+		if(bindingNamePattern == null || bindingNameReplacement == null)
+			return cName.getProjectName();
+
+		Matcher matcher = bindingNamePattern.matcher(cName.getName());
+		if(matcher.matches())
+		{
+			String repl = matcher.replaceAll(bindingNameReplacement).trim();
+			if(repl.length() > 0)
+				return repl;
+		}
+		return cName.getProjectName();
 	}
 
 	public String getDefaultTag()

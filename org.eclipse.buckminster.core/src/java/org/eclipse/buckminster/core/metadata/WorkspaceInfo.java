@@ -475,7 +475,7 @@ public class WorkspaceInfo
 		nodeBld.setUseInstalled(true);
 		nodeBld.setUseProject(true);
 		nodeBld.setUseMaterialization(false);
-		nodeBld.setUseResolutionSchema(false);
+		nodeBld.setUseResolutionScheme(false);
 		qbld.addAdvisorNode(nodeBld);
 
 		// Add an advisor node that matches all remaining components and prohibits that we
@@ -486,7 +486,7 @@ public class WorkspaceInfo
 		nodeBld.setUseInstalled(true);
 		nodeBld.setUseProject(true);
 		nodeBld.setUseMaterialization(true);
-		nodeBld.setUseResolutionSchema(false);
+		nodeBld.setUseResolutionScheme(false);
 		qbld.addAdvisorNode(nodeBld);
 
 		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));

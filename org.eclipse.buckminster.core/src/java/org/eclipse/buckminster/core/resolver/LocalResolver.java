@@ -199,7 +199,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			IProject existingProject = null;
 			try
 			{
-				existingProject = wsRoot.getProject(query.getProjectName());
+				existingProject = wsRoot.getProject(request.getProjectName());
 			}
 			catch(IllegalArgumentException e)
 			{

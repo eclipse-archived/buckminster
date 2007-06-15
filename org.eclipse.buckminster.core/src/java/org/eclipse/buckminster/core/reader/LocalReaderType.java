@@ -15,7 +15,6 @@ import java.net.URI;
 
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersionQuery;
@@ -82,8 +81,6 @@ public class LocalReaderType extends URLCatalogReaderType
 	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return nodeQuery.useExistingArtifacts() == ConflictResolution.KEEP
-			? new DefaultVersionFinder()
-			: s_blindFinder;
+		return s_blindFinder;
 	}
 }

@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -34,7 +33,6 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.IProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
-import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
@@ -44,7 +42,6 @@ import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
@@ -57,7 +54,6 @@ import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.xml.sax.ContentHandler;
@@ -116,7 +112,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	public static final String TAG = "componentQuery";
 
-	public static final int SEQUENCE_NUMBER = 2;
+	public static final int SEQUENCE_NUMBER = 3;
 
 	public static ComponentQuery fromStream(String systemId, InputStream stream) throws CoreException
 	{
@@ -273,30 +269,6 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return null;
 	}
 
-	public IPath getMaterializationLocation(ComponentName cName) throws CoreException
-	{
-		IPath location = null;
-		AdvisorNode node = getMatchingNode(cName);
-		String projectName = getProjectName(cName);
-		if(node != null)
-			location = node.getMaterializationLocation(projectName);
-
-		if(location == null)
-		{
-			IPath relativeLocation = null;
-			IPath cRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-			ComponentCategory cc = ComponentCategory.getCategory(cName.getCategory());
-			if(cc != null)
-				relativeLocation = cc.getRelativeLocation();
-
-			if(relativeLocation != null)
-				location = cRoot.append(relativeLocation).append(cName.getName());
-			else
-				location = cRoot.append(projectName);
-		}
-		return location;
-	}
-
 	/**
 	 * Primarily intended for the ResolverAdviceEditor.
 	 * 
@@ -316,58 +288,6 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getOverlayFolder();
-	}
-
-	public String getProjectName(ComponentName cName) throws CoreException
-	{
-		String name = cName.getName();
-		AdvisorNode node = getMatchingNode(cName);
-		Pattern repFrom = null;
-		String  repTo = null;
-
-		// Any replacement found in the advisor node?
-		//
-		if(node != null)
-		{
-			repFrom = node.getReplaceFrom();
-			repTo   = node.getReplaceTo();
-		}
-
-		// If the advicor node did not have a complete replace
-		// pattern, perhaps we have a category that has?
-		//
-		if(repFrom == null || repTo == null)
-		{
-			String categoryName = cName.getCategory();
-			ComponentCategory cc = ComponentCategory.getCategory(categoryName);
-			if(cc == null)
-				//
-				// No category.
-				//
-				return name;
-
-			Pattern desiredMatch = cc.getDesiredNamePattern();
-			if(desiredMatch == null || desiredMatch.matcher(name).find())
-				//
-				// We have a category but no desire to change the name
-				//
-				return name;
-
-			repFrom = cc.getSubstituteNamePattern();
-			repTo = cc.getNameSubstitution();
-
-			if(repFrom == null || repTo == null)
-				throw new BuckminsterException("Category: " + categoryName + " defines desiredNamePattern but no substitution");
-		}
-
-		Matcher matcher = repFrom.matcher(name);
-		if(matcher.matches())
-		{
-			String repl = matcher.replaceAll(repTo).trim();
-			if(repl.length() > 0)
-				name = repl;
-		}
-		return name;
 	}
 
 	public Map<String, String> getProperties(ComponentName cName)
@@ -524,12 +444,6 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 		handler.endElement(namespace, localName, qName);
 		handler.endPrefixMapping(BM_CQUERY_PREFIX);
-	}
-
-	public ConflictResolution useExistingArtifacts(ComponentName cName)
-	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? ConflictResolution.FAIL : node.whenNotEmpty();
 	}
 
 	public boolean useExistingProject(ComponentName cName)

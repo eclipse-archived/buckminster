@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
@@ -43,10 +42,6 @@ public class AdvisorNodeBuilder
 
 	private boolean m_prune;
 
-	private Pattern m_replaceFrom;
-
-	private String m_replaceTo;
-
 	private boolean m_skipComponent;
 
 	private SourceLevel m_sourceLevel;
@@ -59,9 +54,7 @@ public class AdvisorNodeBuilder
 
 	private IVersionDesignator m_versionOverride;
 
-	private ConflictResolution m_whenNotEmpty;
-
-	private boolean m_useResolutionSchema;
+	private boolean m_useResolutionScheme;
 
 	private boolean m_systemDiscovery;
 	
@@ -99,8 +92,6 @@ public class AdvisorNodeBuilder
 		m_namePattern = null;
 		m_overlayFolder = null;
 		m_prune = false;
-		m_replaceFrom = null;
-		m_replaceTo = null;
 		m_skipComponent = false;
 		m_allowCircularDependency = false;
 		m_sourceLevel = SourceLevel.INDIFFERENT;
@@ -108,8 +99,7 @@ public class AdvisorNodeBuilder
 		m_useMaterialization = true;
 		m_useProject = true;
 		m_versionOverride = null;
-		m_whenNotEmpty = ConflictResolution.FAIL;
-		m_useResolutionSchema = true;
+		m_useResolutionScheme = true;
 		m_systemDiscovery = true;
 		m_branchPath = null;
 		m_resolutionPath = null;
@@ -163,16 +153,6 @@ public class AdvisorNodeBuilder
 		return m_properties;
 	}
 
-	public Pattern getReplaceFrom()
-	{
-		return m_replaceFrom;
-	}
-
-	public String getReplaceTo()
-	{
-		return m_replaceTo;
-	}
-
 	public SourceLevel getSourceLevel()
 	{
 		return m_sourceLevel;
@@ -181,11 +161,6 @@ public class AdvisorNodeBuilder
 	public IVersionDesignator getVersionOverride()
 	{
 		return m_versionOverride;
-	}
-
-	public ConflictResolution getWhenNotEmpty()
-	{
-		return m_whenNotEmpty;
 	}
 
 	public void initFrom(AdvisorNode node)
@@ -202,16 +177,13 @@ public class AdvisorNodeBuilder
 		if(props.size() > 0)
 			m_properties = new HashMap<String,String>(props);
 		m_prune = node.isPrune();
-		m_replaceFrom = node.getReplaceFrom();
-		m_replaceTo = node.getReplaceTo();
 		m_skipComponent = node.skipComponent();
 		m_sourceLevel = node.getSourceLevel();
 		m_useInstalled = node.isUseInstalled();
 		m_useMaterialization = node.isUseMaterialization();
 		m_useProject = node.isUseProject();
 		m_versionOverride = node.getVersionOverride();
-		m_whenNotEmpty = node.getWhenNotEmpty();
-		m_useResolutionSchema = node.isUseResolutionSchema();
+		m_useResolutionScheme = node.isUseResolutionScheme();
 		m_systemDiscovery = node.isSystemDiscovery();
 		m_branchPath = node.getBranchPath();
 		m_resolutionPath = node.getResolutionPath();
@@ -237,9 +209,9 @@ public class AdvisorNodeBuilder
 		return m_useProject;
 	}
 
-	public boolean isUseResolutionSchema()
+	public boolean isUseResolutionScheme()
 	{
-		return m_useResolutionSchema;
+		return m_useResolutionScheme;
 	}
 	
 	public boolean isSystemDiscovery()
@@ -292,16 +264,6 @@ public class AdvisorNodeBuilder
 		m_prune = prune;
 	}
 
-	public void setReplaceFrom(Pattern replaceFrom)
-	{
-		m_replaceFrom = replaceFrom;
-	}
-
-	public void setReplaceTo(String replaceTo)
-	{
-		m_replaceTo = replaceTo;
-	}
-
 	public void setSkipComponent(boolean skipComponent)
 	{
 		m_skipComponent = skipComponent;
@@ -331,14 +293,9 @@ public class AdvisorNodeBuilder
 		m_versionOverride = versionOverride;
 	}
 
-	public void setWhenNotEmpty(ConflictResolution whenNotEmpty)
+	public void setUseResolutionScheme(boolean useResolutionScheme)
 	{
-		m_whenNotEmpty = whenNotEmpty == null ? ConflictResolution.FAIL : whenNotEmpty;
-	}
-
-	public void setUseResolutionSchema(boolean useResolutionSchema)
-	{
-		m_useResolutionSchema = useResolutionSchema;
+		m_useResolutionScheme = useResolutionScheme;
 	}
 	
 	public void setSystemDiscovery(boolean systemDiscovery)
@@ -374,10 +331,5 @@ public class AdvisorNodeBuilder
 	public boolean useProject()
 	{
 		return m_useProject;
-	}
-
-	public ConflictResolution whenNotEmpty()
-	{
-		return m_whenNotEmpty;
 	}
 }

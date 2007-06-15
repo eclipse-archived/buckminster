@@ -26,11 +26,17 @@ public class MaterializationNode extends MaterializationDirective
 	public static final String ATTR_CATEGORY = "category";
 	public static final String ATTR_EXCLUDE = "exclude";
 	public static final String ATTR_RESOURCE_PATH = "resourcePath";
+	public static final String ATTR_BINDING_NAME_PATTERN = "bindingNamePattern";
+	public static final String ATTR_BINDING_NAME_REPLACEMENT = "bindingNameReplacement";
+	public static final String ATTR_UNPACK = "unpack";
 
 	private final Pattern m_namePattern;
 	private final String m_category;
 	private final boolean m_exclude;
 	private final IPath m_resourcePath;
+	private final Pattern m_bindingNamePattern;
+	private final String m_bindingNameReplacement;
+	private final boolean m_unpack;
 
 	public MaterializationNode(MaterializationNodeBuilder builder)
 	{
@@ -39,6 +45,9 @@ public class MaterializationNode extends MaterializationDirective
 		m_category = builder.getCategory();
 		m_exclude = builder.isExclude();
 		m_resourcePath = builder.getResourcePath();
+		m_bindingNamePattern = builder.getBindingNamePattern();
+		m_bindingNameReplacement = builder.getBindingNameReplacement();
+		m_unpack = builder.isUnpack();
 	}
 
 	public String getDefaultTag()
@@ -61,6 +70,21 @@ public class MaterializationNode extends MaterializationDirective
 		return m_resourcePath;
 	}
 
+	public Pattern getBindingNamePattern()
+	{
+		return m_bindingNamePattern;
+	}
+
+	public String getBindingNameReplacement()
+	{
+		return m_bindingNameReplacement;
+	}
+
+	public boolean isUnpack()
+	{
+		return m_unpack;
+	}
+
 	public boolean isExclude()
 	{
 		return m_exclude;
@@ -77,5 +101,11 @@ public class MaterializationNode extends MaterializationDirective
 			Utils.addAttribute(attrs, ATTR_RESOURCE_PATH, m_resourcePath.toPortableString());
 		if(m_exclude)
 			Utils.addAttribute(attrs, ATTR_EXCLUDE, "true");
+		if(m_bindingNamePattern != null)
+			Utils.addAttribute(attrs, ATTR_BINDING_NAME_PATTERN, m_bindingNamePattern.toString());
+		if(m_bindingNameReplacement != null)
+			Utils.addAttribute(attrs, ATTR_BINDING_NAME_REPLACEMENT, m_bindingNameReplacement);
+		if(m_unpack)
+			Utils.addAttribute(attrs, ATTR_UNPACK, "true");
 	}
 }

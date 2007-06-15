@@ -14,13 +14,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
@@ -88,27 +86,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setNamePattern(Pattern.compile(this.getStringValue(attrs, AdvisorNode.ATTR_NAME_PATTERN)));
 		m_builder.setCategory(getOptionalStringValue(attrs, AdvisorNode.ATTR_CATEGORY));
 
-		String tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_REPLACE_FROM);
-		String to = getOptionalStringValue(attrs, AdvisorNode.ATTR_REPLACE_TO);
-		if(tmp != null)
-		{
-			if(to == null)
-				throw new SAXParseException("replaceFrom without replaceTo", this.getDocumentLocator());
-
-			try
-			{
-				m_builder.setReplaceFrom(Pattern.compile(tmp));
-			}
-			catch(PatternSyntaxException e)
-			{
-				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-			}
-			m_builder.setReplaceTo(to);
-		}
-		else if(to != null)
-			throw new SAXParseException("replaceTo without replaceFrom", this.getDocumentLocator());
-
-		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_OVERLAY_FOLDER);
+		String tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_OVERLAY_FOLDER);
 		if(tmp != null)
 		{
 			try
@@ -128,23 +106,6 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_SOURCE_LEVEL);
 		if(tmp != null)
 			m_builder.setSourceLevel(SourceLevel.valueOf(tmp));
-
-		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_WHEN_NOT_EMPTY);
-		if(tmp != null)
-		{
-			if("OVERWRITE".equalsIgnoreCase(tmp))
-				tmp = "REPLACE";
-			else if("REUSE".equals(tmp))
-				tmp = "KEEP";
-
-			try
-			{
-				m_builder.setWhenNotEmpty(ConflictResolution.valueOf(tmp));
-			}
-			catch(IllegalArgumentException e)
-			{
-			}
-		}
 
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_VERSION_OVERRIDE);
 		if(tmp != null)
@@ -179,7 +140,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setUseInstalled(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_INSTALLED, true));
 		m_builder.setUseMaterialization(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_MATERIALIZATION, true));
 		m_builder.setUseProject(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_PROJECT, true));
-		m_builder.setUseResolutionSchema(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_RESOLUTION_SCHEMA, true));
+		m_builder.setUseResolutionScheme(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_RESOLUTION_SCHEME, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
 		m_builder.setBranchPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_BRANCH_PATH), ","));
 		m_builder.setResolutionPath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_RESOLUTION_PATH),

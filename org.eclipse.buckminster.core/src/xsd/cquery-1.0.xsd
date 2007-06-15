@@ -89,29 +89,6 @@
 				<documentation>The source level used when the feasibility of a provider is determined.</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="replaceFrom" type="string" use="optional">
-			<annotation>
-				<documentation>
-					A replacement pattern matching the component name when creating a workspace project name. The result
-					is then produced by replaceTo.
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="replaceTo" type="string" use="optional">
-			<annotation>
-				<documentation>
-					A replacement string that produces the resulting project name from a name matched by pattern
-					replaceFrom.
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="whenNotEmpty" type="cq:NotEmptyAction" default="FAIL" use="optional">
-			<annotation>
-				<documentation>
-					Action to take when the location intended for a materialization is found to be non-empty.
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="allowCircularDependency" type="boolean" default="false" use="optional">
 			<annotation>
 				<documentation>Allow that matched components participate in circular dependency chains</documentation>
@@ -160,7 +137,7 @@
 				<documentation>The version type for the versionOverride.</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useResolutionSchema" type="boolean" use="optional"></attribute>
+		<attribute name="useResolutionScheme" type="boolean" use="optional"></attribute>
 		<attribute name="systemDiscovery" type="boolean" use="optional"></attribute>
 		<attribute name="branch" type="string" use="optional"></attribute>
 		<attribute name="resolutionPath" type="string" use="optional"></attribute>
@@ -171,24 +148,6 @@
 			<enumeration value="REJECT" />
 			<enumeration value="DESIRE" />
 			<enumeration value="REQUIRE" />
-		</restriction>
-	</simpleType>
-	<simpleType name="NotEmptyAction">
-		<restriction base="string">
-			<enumeration value="FAIL" />
-			<enumeration value="REPLACE" />
-			<enumeration value="UPDATE" />
-			<enumeration value="KEEP" />
-			<enumeration value="OVERWRITE">
-				<annotation>
-					<documentation>Deprecated, use REPLACE or UPDATE</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="REUSE">
-				<annotation>
-					<documentation>Deprecated, use KEEP</documentation>
-				</annotation>
-			</enumeration>
 		</restriction>
 	</simpleType>
 </schema>

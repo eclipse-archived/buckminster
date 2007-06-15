@@ -158,6 +158,30 @@
 						<documentation>If set, matched components will be excluded.</documentation>
 					</annotation>
 				</attribute>
+				<attribute name="bindingNamePattern" type="string" use="optional">
+					<annotation>
+						<documentation>
+							A replacement pattern matched against the component name when creating a workspace project name.
+							Must be used in combination with bindingNameReplacement
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="bindingNameReplacement" type="string" use="optional">
+					<annotation>
+						<documentation>
+							A replacement string that produces the resulting project name from a name matched by pattern
+							bindingNamePattern.
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="unpack" type="boolean" use="optional">
+					<annotation>
+						<documentation>
+							Indicates that the materializer should download the artifact to a temporary location
+							and then unpack it as part of the materialization process.
+						</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>

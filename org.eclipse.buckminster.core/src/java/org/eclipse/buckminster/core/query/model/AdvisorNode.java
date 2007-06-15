@@ -18,7 +18,6 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.ISaxableElement;
@@ -42,10 +41,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_PRUNE = "prune";
 
-	public static final String ATTR_REPLACE_FROM = "replaceFrom";
-
-	public static final String ATTR_REPLACE_TO = "replaceTo";
-
 	public static final String ATTR_SKIP_COMPONENT = "skipComponent";
 
 	public static final String ATTR_SOURCE_LEVEL = "sourceLevel";
@@ -64,7 +59,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_WHEN_NOT_EMPTY = "whenNotEmpty";
 	
-	public static final String ATTR_USE_RESOLUTION_SCHEMA = "useResolutionSchema";
+	public static final String ATTR_USE_RESOLUTION_SCHEME = "useResolutionSchema";
 
 	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery";
 
@@ -92,10 +87,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	private final boolean m_prune;
 
-	private final Pattern m_replaceFrom;
-
-	private final String m_replaceTo;
-
 	private final boolean m_skipComponent;
 
 	private final SourceLevel m_sourceLevel;
@@ -107,10 +98,8 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	private final boolean m_useProject;
 
 	private final IVersionDesignator m_versionOverride;
-
-	private final ConflictResolution m_whenNotEmpty;
 	
-	private final boolean m_useResolutionSchema;
+	private final boolean m_useResolutionScheme;
 
 	private final boolean m_systemDiscovery;
 	
@@ -128,15 +117,12 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		m_prune = bld.isPrune();
 		m_mutableLevel = bld.getMutableLevel();
 		m_sourceLevel = bld.getSourceLevel();
-		m_whenNotEmpty = bld.getWhenNotEmpty();
-		m_replaceFrom = bld.getReplaceFrom();
-		m_replaceTo = bld.getReplaceTo();
 		m_skipComponent = bld.skipComponent();
 		m_useInstalled = bld.useInstalled();
 		m_useMaterialization = bld.useMaterialization();
 		m_useProject = bld.useProject();
 		m_versionOverride = bld.getVersionOverride();
-		m_useResolutionSchema = bld.isUseResolutionSchema();
+		m_useResolutionScheme = bld.isUseResolutionScheme();
 		m_systemDiscovery = bld.isSystemDiscovery();
 		m_branchPath = bld.getBranchPath();
 		m_resolutionPath = bld.getResolutionPath();
@@ -200,16 +186,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_properties;
 	}
 
-	public final Pattern getReplaceFrom()
-	{
-		return m_replaceFrom;
-	}
-
-	public final String getReplaceTo()
-	{
-		return m_replaceTo;
-	}
-
 	public final String[] getResolutionPath()
 	{
 		return m_resolutionPath;
@@ -223,11 +199,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public final IVersionDesignator getVersionOverride()
 	{
 		return m_versionOverride;
-	}
-
-	public final ConflictResolution getWhenNotEmpty()
-	{
-		return m_whenNotEmpty;
 	}
 
 	public final boolean isPrune()
@@ -255,9 +226,9 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_useProject;
 	}
 
-	public final boolean isUseResolutionSchema()
+	public final boolean isUseResolutionScheme()
 	{
-		return m_useResolutionSchema;
+		return m_useResolutionScheme;
 	}
 
 	public final boolean skipComponent()
@@ -278,16 +249,10 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, m_mutableLevel.name());
 		if(m_sourceLevel != SourceLevel.INDIFFERENT)
 			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, m_sourceLevel.name());
-		if(m_whenNotEmpty != ConflictResolution.FAIL)
-			Utils.addAttribute(attrs, ATTR_WHEN_NOT_EMPTY, m_whenNotEmpty.name());
 		if(m_skipComponent)
 			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true");
 		if(m_allowCircularDependency)
 			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true");
-		if(m_replaceFrom != null)
-			Utils.addAttribute(attrs, ATTR_REPLACE_FROM, m_replaceFrom.toString());
-		if(m_replaceTo != null)
-			Utils.addAttribute(attrs, ATTR_REPLACE_TO, m_replaceTo);
 		if(!m_useInstalled)
 			Utils.addAttribute(attrs, ATTR_USE_INSTALLED, "false");
 		if(!m_useMaterialization)
@@ -304,8 +269,8 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		if(m_prune)
 			Utils.addAttribute(attrs, ATTR_PRUNE, "true");
-		if(!m_useResolutionSchema)
-			Utils.addAttribute(attrs, ATTR_USE_RESOLUTION_SCHEMA, "false");
+		if(!m_useResolutionScheme)
+			Utils.addAttribute(attrs, ATTR_USE_RESOLUTION_SCHEME, "false");
 		if(!m_systemDiscovery)
 			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
 
@@ -337,10 +302,5 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public final boolean useProject()
 	{
 		return m_useProject;
-	}
-	
-	public final ConflictResolution whenNotEmpty()
-	{
-		return m_whenNotEmpty;
 	}
 }
