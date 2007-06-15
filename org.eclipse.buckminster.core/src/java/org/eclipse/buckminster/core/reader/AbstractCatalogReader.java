@@ -47,13 +47,13 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 	public final File getContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
 	{
-		ProviderMatch ri = this.getProviderMatch();
+		ProviderMatch ri = getProviderMatch();
 		Logger logger = CorePlugin.getLogger();
 
 		monitor.beginTask(null, 100);
 		try
 		{
-			File addOnFolder = this.getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
+			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
 			if(addOnFolder != null)
 			{
 				File addOnFile = new File(addOnFolder, fileName);
@@ -62,7 +62,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 					if(logger.isDebugEnabled())
 					{
 						logger.debug(String.format("Provider %s(%s): getContents will use overlay %s for file = %s",
-								this.getReaderType().getId(),
+								getReaderType().getId(),
 								ri.getRepositoryURI(),
 								addOnFile,
 								fileName));
@@ -72,7 +72,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 					return addOnFile;
 				}
 			}	
-			return this.innerGetContents(fileName, isTemporary, MonitorUtils.subMonitor(monitor, 90));
+			return innerGetContents(fileName, isTemporary, MonitorUtils.subMonitor(monitor, 90));
 		}
 		finally
 		{
@@ -85,13 +85,13 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		monitor.beginTask(null, 100);
 		try
 		{
-			File addOnFolder = this.getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
+			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
 			if(addOnFolder != null && new File(addOnFolder, fileName).exists())
 			{
 				MonitorUtils.worked(monitor, 90);
 				return true;
 			}
-			return this.innerExists(fileName, MonitorUtils.subMonitor(monitor, 90));
+			return innerExists(fileName, MonitorUtils.subMonitor(monitor, 90));
 		}
 		finally
 		{
@@ -104,9 +104,9 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		monitor.beginTask(null, 100);
 		try
 		{
-			File addOnFolder = this.getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
+			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
 			if(addOnFolder == null)
-				return this.innerReadFile(fileName, consumer, MonitorUtils.subMonitor(monitor, 90));
+				return innerReadFile(fileName, consumer, MonitorUtils.subMonitor(monitor, 90));
 	
 			InputStream tmp = null;
 			IProgressMonitor overlayReadMon = MonitorUtils.subMonitor(monitor, 10);
@@ -125,7 +125,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			{
 				IOUtils.close(tmp);
 			}
-			return this.innerReadFile(fileName, consumer, MonitorUtils.subMonitor(monitor, 80));
+			return innerReadFile(fileName, consumer, MonitorUtils.subMonitor(monitor, 80));
 		}
 		finally
 		{
@@ -139,7 +139,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		monitor.beginTask(null, 100);
 		try
 		{
-			File addOnFolder = this.getOverlayFolder(MonitorUtils.subMonitor(monitor, 50));
+			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 50));
 			if(addOnFolder != null)
 			{
 				// Copy the addOnFolder. Overwrite is always OK for addOnFolders
@@ -159,13 +159,15 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
 	{
+		isTemporary[0] = false;
 		OutputStream tmp = null;
+		File tempFile = null;
 		try
 		{
-			File tempFile = this.createTempFile();
+			tempFile = createTempFile();
 			tmp = new FileOutputStream(tempFile);
 			final OutputStream out = tmp;
-			this.readFile(fileName, new IStreamConsumer<Object>()
+			readFile(fileName, new IStreamConsumer<Object>()
 			{
 				public Object consumeStream(IComponentReader reader, String streamName, InputStream stream,
 						IProgressMonitor mon) throws IOException
@@ -184,6 +186,8 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		finally
 		{
 			IOUtils.close(tmp);
+			if(!isTemporary[0] && tempFile != null)
+				tempFile.delete();
 		}
 	}
 
