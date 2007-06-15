@@ -105,7 +105,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 
 							private final int m_timeout;
 
-							private Thread m_reporter;
+							private boolean m_running;
 
 							public ProgressReporter(IProgressMonitor reporterMonitor,
 									ProgressStatistics reporterProgress, String format, int timeout)
@@ -114,13 +114,13 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 								m_reporterProgress = reporterProgress;
 								m_format = format;
 								m_timeout = timeout;
+								m_running = true;
 							}
 
 							@Override
 							public void run()
 							{
-								m_reporter = this;
-								while(m_reporter != null)
+								while(m_running)
 								{
 									try
 									{
@@ -131,18 +131,15 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 										// ignore, it's ok
 									}
 
-									if(m_reporter != null && m_reporterProgress.shouldReport())
+									if(m_running && m_reporterProgress.shouldReport())
 										m_reporterMonitor.subTask(String.format(m_format, m_reporterProgress.report()));
 								}
 							}
 
 							public synchronized void stopReporting()
 							{
-								if(m_reporter != null)
-								{
-									m_reporter.interrupt();
-									m_reporter = null;
-								}
+								m_running = false;
+								interrupt();
 							}
 						}
 
