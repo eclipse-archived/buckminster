@@ -14,8 +14,10 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -89,14 +91,17 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 
 	private void createProject(IProgressMonitor monitor) throws CoreException
 	{
-		String projectName = m_query.getProjectName();
+		MaterializationContext context = (MaterializationContext)m_query.getContext();
+		ComponentRequest request = m_query.getComponentRequest();
+		String projectName = request.getProjectName();
 		monitor.beginTask("Importing feature " + projectName, 100);
 		IProject project = m_root.getProject(projectName);
 		try
 		{
+			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
 			if(project.exists())
 			{
-				switch(m_query.useExistingArtifacts())
+				switch(conflictResolution)
 				{
 				case FAIL:
 					throw new BuckminsterException("Project " + projectName + " already exists");
@@ -122,7 +127,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
 			FileUtils.prepareDestination(m_destination.toFile(),
-				m_query.useExistingArtifacts() == ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 10));
+					conflictResolution == ConflictResolution.REPLACE, MonitorUtils.subMonitor(monitor, 10));
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));

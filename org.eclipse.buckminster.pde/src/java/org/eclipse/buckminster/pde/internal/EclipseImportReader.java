@@ -138,11 +138,15 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 	{
 		monitor.beginTask(null, 1000);
 
-		final File destFile = createTempFile();
-		final OutputStream output = new FileOutputStream(destFile);
-		MonitorUtils.worked(monitor, 200);
+		File destFile = null;
+		OutputStream output = null;
+		isTemporary[0] = false;
 		try
 		{
+			destFile = createTempFile();
+			output = new FileOutputStream(destFile);
+
+			MonitorUtils.worked(monitor, 200);
 			if(m_base.isLocal())
 			{
 				InputStream input = null;
@@ -172,12 +176,13 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 					? PLUGINS_FOLDER : FEATURES_FOLDER, MonitorUtils.subMonitor(monitor, 200));
 				try
 				{
+					final OutputStream out = output;
 					reader.readFile(fileName, new IStreamConsumer<Object>()
 					{
 						public Object consumeStream(IComponentReader rdr, String streamName, InputStream stream,
 							IProgressMonitor sub) throws IOException
 						{
-							FileUtils.copyFile(stream, output, sub);
+							FileUtils.copyFile(stream, out, sub);
 							return null;
 						}
 					}, MonitorUtils.subMonitor(monitor, 600));
@@ -187,13 +192,15 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 					reader.close();
 				}
 			}
+			isTemporary[0] = true;
+			return destFile;
 		}
 		finally
 		{
 			IOUtils.close(output);
+			if(!isTemporary[0] && destFile != null)
+				destFile.delete();
 		}
-		isTemporary[0] = true;
-		return destFile;
 	}
 
 	@SuppressWarnings("deprecation")

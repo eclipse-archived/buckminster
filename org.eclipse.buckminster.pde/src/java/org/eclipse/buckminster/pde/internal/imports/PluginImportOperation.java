@@ -18,8 +18,10 @@ import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -120,11 +122,14 @@ public class PluginImportOperation extends JarImportOperation
 
 	public void importPlugin(IProgressMonitor monitor) throws CoreException
 	{
-		String projectName = m_query.getProjectName();
+		MaterializationContext context = (MaterializationContext)m_query.getContext();
+		ComponentRequest request = m_query.getComponentRequest();
+		String projectName = request.getProjectName();
 		String id = m_model.getPluginBase().getId();
 		monitor.beginTask("Importing plugin " + id, 7);
 		try
 		{
+			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
 			IProject project = findProject(projectName);
 			BundleDescription desc = m_model.getBundleDescription();
 			if(desc != null)
@@ -152,7 +157,7 @@ public class PluginImportOperation extends JarImportOperation
 
 			if(project.exists())
 			{
-				switch(m_query.useExistingArtifacts())
+				switch(conflictResolution)
 				{
 				case FAIL:
 					throw new BuckminsterException("Project " + projectName + " already exists");
@@ -175,7 +180,7 @@ public class PluginImportOperation extends JarImportOperation
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
 			FileUtils.prepareDestination(m_destination.toFile(),
-					m_query.useExistingArtifacts() == ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 1));
+					conflictResolution == ConflictResolution.REPLACE, MonitorUtils.subMonitor(monitor, 1));
 			description.setLocation(m_destination);
 
 			project.create(description, MonitorUtils.subMonitor(monitor, 1));
