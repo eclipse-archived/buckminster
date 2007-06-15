@@ -126,8 +126,9 @@ public class CVSReader extends AbstractRemoteReader
 		Session session = m_session.getReaderSession(new SubProgressMonitor(monitor, 800,
 			SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 
-		File tempFile = this.createTempFile();
-		Writer out = new BufferedWriter(new FileWriter(tempFile));
+		isTemporary[0] = false;
+		Writer out = null;
+		File tempFile = null;
 		try
 		{
 			RepositoryMetaData metaData = getMetaData(MonitorUtils.subMonitor(monitor, 200));
@@ -141,7 +142,6 @@ public class CVSReader extends AbstractRemoteReader
 			if(tag.getType() == CVSTag.DATE && metaData.getLastModification().compareTo(tag.asDate()) <= 0)
 				tag = null;
 
-			StringWriter err = new StringWriter();
 
 			// Append correct tag unless it's CVSTag.DEFAULT
 			//
@@ -164,8 +164,13 @@ public class CVSReader extends AbstractRemoteReader
 			String fullName = m_session.getModuleName() + '/' + fileName;
 			session.sendArgument(fullName);
 
+			tempFile = createTempFile();
+			out = new BufferedWriter(new FileWriter(tempFile));
+
+			StringWriter err = new StringWriter();
 			IStatus outcome = CVSReaderType.executeRequest(session, "co", out, err, new SubProgressMonitor(
 				monitor, 1000, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
+
 			if(ICommandOutputListener.OK != outcome)
 			{
 				// All serious errors yield an exception. Not finding a file is not
@@ -180,11 +185,8 @@ public class CVSReader extends AbstractRemoteReader
 				while(last >= 0 && Character.isWhitespace(errBuff.charAt(last)))
 					--last;
 				++last;
-
 				throw new FileNotFoundException(errBuff.substring(0, last));
 			}
-			out.close();
-			out = null;
 
 			if(tempFile.length() == 0)
 			{
@@ -193,8 +195,6 @@ public class CVSReader extends AbstractRemoteReader
 				//
 				if(metaData.seenInAttic(fileName))
 				{
-					tempFile.delete();
-					//
 					// Assume that this version is indeed in the attic.
 					//
 					throw new FileNotFoundException(fileName);
@@ -206,6 +206,8 @@ public class CVSReader extends AbstractRemoteReader
 		finally
 		{
 			IOUtils.close(out);
+			if(!isTemporary[0] && tempFile != null)
+				tempFile.delete();
 			monitor.done();
 		}
 	}
