@@ -142,7 +142,7 @@ public class SplashWindow extends Frame
 		}
 
 		setUndecorated(true);
-		setTitle("Configuring Materializer Infrastructure");
+		setTitle("Configuring Materialization Infrastructure");
 
 		if(windowIconImage != null)
 		{
@@ -365,15 +365,6 @@ public class SplashWindow extends Frame
 					? Toolkit.getDefaultToolkit().createImage(windowIconBytes)
 					: null;
 			splash(splashImageBoot, splashImage, windowIconImage);
-		}
-	}
-
-	public static void windowToFront()
-	{
-		if(s_instance != null)
-		{
-			s_instance.setAlwaysOnTop(true);
-			s_instance.setAlwaysOnTop(false);
 		}
 	}
 

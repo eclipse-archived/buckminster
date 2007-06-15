@@ -68,15 +68,11 @@ public class Main
 
 	public static final String PROP_STARTUP_TIME = "startupTime";
 
-	public static final int DEFAULT_STARTUP_TIME = 2000;
+	public static final int DEFAULT_STARTUP_TIME = 4000;
 
 	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout";
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 30000;
-
-	public static final String PROP_SPLASH_MINIMUM_TIME = "splashMinTime";
-
-	public static final int DEFAULT_SPLASH_MINIMUM_TIME = 4000;
 
 	private File m_installLocation;
 
@@ -388,11 +384,9 @@ public class Main
 				}
 			}
 
+			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
 			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
 			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
-			int splashMinimumTime = Integer.getInteger(PROP_SPLASH_MINIMUM_TIME, DEFAULT_SPLASH_MINIMUM_TIME)
-					.intValue();
-			long splashStartTime = (new Date()).getTime();
 
 			File siteRoot = getSiteRoot();
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
@@ -450,7 +444,7 @@ public class Main
 			// ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
 			// StringSelection ss = new StringSelection(SplashWindow.getDebugString());
 			// clipservice.setContents(ss);
-			startProduct(args);
+			startProduct(args, (new Date()).getTime() + startupTime);
 			try
 			{
 				// Two seconds to start, with progressbar. The time is an
@@ -466,7 +460,7 @@ public class Main
 						SplashWindow.setSplashImage(SplashWindow.SPLASH_IMAGE_ID);
 				}
 
-				int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue() / 100;
+				startupTime /= 100;
 				monitor.setTask("Starting", startupTime);
 				while(--startupTime >= 0 && !m_jnlpProductStarted)
 				{
@@ -483,8 +477,8 @@ public class Main
 				// Check often if the process is still alive; if not, break the loop
 				if(m_process != null)
 				{
-					startupTime = Integer.getInteger(PROP_STARTUP_TIMEOUT, DEFAULT_STARTUP_TIMEOUT).intValue() / 100;
-					while(--startupTime >= 0 && !m_jnlpProductStarted)
+					int startupTimeOut = Integer.getInteger(PROP_STARTUP_TIMEOUT, DEFAULT_STARTUP_TIMEOUT).intValue() / 100;
+					while(--startupTimeOut >= 0 && !m_jnlpProductStarted)
 						try
 						{
 							processExitValue = m_process.exitValue();
@@ -518,16 +512,6 @@ public class Main
 					throw new JNLPException("Unable to launch materializer within timeout",
 							"Check your machine (might be too slow or too busy)",
 							ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
-				}
-
-				// Now we know that the JNLP application has been launched. We'll hold the splash window in front of the
-				// application for the rest of the time up to the required splash display time.
-
-				long timeToSleep = splashMinimumTime - ((new Date()).getTime() - splashStartTime);
-				if(timeToSleep > 0 && m_jnlpProductStarted)
-				{
-					SplashWindow.windowToFront();
-					Thread.sleep(timeToSleep);
 				}
 			}
 			catch(InterruptedException e)
@@ -571,7 +555,7 @@ public class Main
 		return data;
 	}
 
-	public void startProduct(String[] args) throws JNLPException
+	public void startProduct(String[] args, long popupAfter) throws JNLPException
 	{
 		File launcherFile = findEclipseLauncher();
 		String javaHome = System.getProperty("java.home");
@@ -614,6 +598,9 @@ public class Main
 		allArgs.add(syncString);
 		
 		allArgs.add("-consoleLog");
+		
+		allArgs.add("-popupAfter");
+		allArgs.add("" + popupAfter);
 		
 		allArgs.add("-ws");
 
