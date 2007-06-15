@@ -191,6 +191,11 @@ public class Main
 		return isOs("aix");
 	}
 
+	public static boolean isMaxOSx()
+	{
+		return isOs("mac os x");
+	}
+
 	public static boolean isOs(String osName)
 	{
 		String os = System.getProperty("os.name");
@@ -618,6 +623,8 @@ public class Main
 			allArgs.add("win32");
 		else if(isAix())
 			allArgs.add("motif");
+		else if(isMaxOSx())
+			allArgs.add("carbon");
 		else
 			allArgs.add("gtk");
 
