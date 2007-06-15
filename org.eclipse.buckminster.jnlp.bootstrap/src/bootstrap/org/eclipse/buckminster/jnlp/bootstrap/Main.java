@@ -183,8 +183,18 @@ public class Main
 
 	public static boolean isWindows()
 	{
+		return isOs("windows");
+	}
+
+	public static boolean isAix()
+	{
+		return isOs("aix");
+	}
+
+	public static boolean isOs(String osName)
+	{
 		String os = System.getProperty("os.name");
-		return os != null && os.length() >= 7 && "windows".equalsIgnoreCase(os.substring(0, 7));
+		return os != null && os.length() >= osName.length() && osName.equalsIgnoreCase(os.substring(0, osName.length()));
 	}
 
 	public String getWorkspaceDir() throws JNLPException
@@ -603,6 +613,15 @@ public class Main
 		allArgs.add(syncString);
 		
 		allArgs.add("-consoleLog");
+		
+		allArgs.add("-ws");
+
+		if(isWindows())
+			allArgs.add("win32");
+		else if(isAix())
+			allArgs.add("motif");
+		else
+			allArgs.add("gtk");
 
 		Runtime runtime = Runtime.getRuntime();
 		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
