@@ -228,10 +228,6 @@ public class QueryEditor extends EditorPart
 
 	private Button m_prune;
 
-	private Text m_replaceFrom;
-
-	private Text m_replaceTo;
-
 	private boolean m_needsRefresh;
 
 	private Button m_newOrSaveButton;
@@ -758,20 +754,6 @@ public class QueryEditor extends EditorPart
 		UiUtils.createGridLabel(aqComposite, "Prune According To Attributes:", 1, 0, SWT.NONE);
 		m_prune = UiUtils.createCheckButton(aqComposite, null, null);
 
-		Composite pnmComposite = new Composite(m_nodesStackComposite, SWT.NONE);
-		layout = new GridLayout(2, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		pnmComposite.setLayout(layout);
-
-		m_nodesHash.put("Project Name Mapping", pnmComposite);
-
-		EditorUtils.createHeaderLabel(pnmComposite, "Project Name Mapping", 2);
-
-		UiUtils.createGridLabel(pnmComposite, "Source pattern:", 1, 0, SWT.NONE);
-		m_replaceFrom = UiUtils.createGridText(pnmComposite, 0, 0, null, SWT.NONE);
-		UiUtils.createGridLabel(pnmComposite, "Replacement:", 1, 0, SWT.NONE);
-		m_replaceTo = UiUtils.createGridText(pnmComposite, 0, 0, null, SWT.NONE);
-
 		Composite srComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -1059,9 +1041,6 @@ public class QueryEditor extends EditorPart
 		m_overlayBrowseButton.setEnabled(enableRest);
 		m_wantedAttributes.setEnabled(enableRest);
 		m_prune.setEnabled(enableRest);
-
-		m_replaceFrom.setEnabled(enableRest);
-		m_replaceTo.setEnabled(enableRest);
 
 		m_mutableLevel.setEnabled(enableRest);
 		m_sourceLevel.setEnabled(enableRest);
@@ -1392,14 +1371,12 @@ public class QueryEditor extends EditorPart
 		m_overlayFolder.setText(TextUtils.notNullString(node.getOverlayFolder()));
 		m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.concat(node.getAttributes(), ",")));
 		m_prune.setSelection(node.isPrune());
-		m_replaceFrom.setText(TextUtils.notNullString(node.getReplaceFrom()));
-		m_replaceTo.setText(TextUtils.notNullString(node.getReplaceTo()));
 		m_mutableLevel.select(m_mutableLevel.indexOf(node.getMutableLevel().toString()));
 		m_sourceLevel.select(m_sourceLevel.indexOf(node.getSourceLevel().toString()));
 		m_skipComponent.setSelection(node.skipComponent());
 		m_useInstalled.setSelection(node.useInstalled());
 		m_useMaterialization.setSelection(node.useMaterialization());
-		m_useResolutionService.setSelection(node.isUseResolutionSchema());
+		m_useResolutionService.setSelection(node.isUseResolutionScheme());
 
 		IVersionDesignator vs = node.getVersionOverride();
 		boolean enableOverride = (vs != null);
@@ -1521,13 +1498,9 @@ public class QueryEditor extends EditorPart
 		if(override)
 			versionOverride = m_versionOverride.getVersionDesignator();
 
-		pattern = null;
-		String tmp = UiUtils.trimmedValue(m_replaceFrom);
 		try
 		{
-			if(tmp != null)
-				pattern = Pattern.compile(patternStr);
-			tmp = UiUtils.trimmedValue(m_overlayFolder);
+			String tmp = UiUtils.trimmedValue(m_overlayFolder);
 			node.setOverlayFolder(tmp == null
 					? null
 					: URLUtils.normalizeToURL(tmp));
@@ -1540,14 +1513,11 @@ public class QueryEditor extends EditorPart
 
 		node.setSkipComponent(m_skipComponent.getSelection());
 
-		tmp = UiUtils.trimmedValue(m_wantedAttributes);
+		String tmp = UiUtils.trimmedValue(m_wantedAttributes);
 		if(tmp != null)
 			for(String attribute : tmp.split(","))
 				node.addAttribute(attribute);
 		node.setPrune(m_prune.getSelection());
-
-		node.setReplaceFrom(pattern);
-		node.setReplaceTo(UiUtils.trimmedValue(m_replaceTo));
 
 		int idx = m_mutableLevel.getSelectionIndex();
 		node.setMutableLevel(idx >= 0
@@ -1561,7 +1531,7 @@ public class QueryEditor extends EditorPart
 
 		node.setUseInstalled(m_useInstalled.getSelection());
 		node.setUseMaterialization(m_useMaterialization.getSelection());
-		node.setUseResolutionSchema(m_useResolutionService.getSelection());
+		node.setUseResolutionScheme(m_useResolutionService.getSelection());
 
 		node.setVersionOverride(versionOverride);
 
