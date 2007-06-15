@@ -383,23 +383,20 @@ public class Main
 				}
 			}
 
-			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
+			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
 			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
 			int splashMinimumTime = Integer.getInteger(PROP_SPLASH_MINIMUM_TIME, DEFAULT_SPLASH_MINIMUM_TIME)
 					.intValue();
 			long splashStartTime = (new Date()).getTime();
 
-			if(splashImageData != null)
-				SplashWindow.splash(splashImageData, windowIconData);
-
-			// Load the splashImage that will be used during the start of the app
-			//
-			splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
-
 			File siteRoot = getSiteRoot();
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 			if(siteRoot == null)
 			{
+				byte[] splashImageBootData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
+				if(splashImageBootData != null || splashImageData != null)
+					SplashWindow.splash(splashImageBootData, splashImageData, windowIconData);
+
 				/*
 				 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to
 				 * test splash progress without actually // running under Java Web Start - i.e. keep this comment in the
@@ -409,7 +406,6 @@ public class Main
 				 * the splash and put them in user's clipboard // SplashWindow.disposeSplash();
 				 * System.err.print(SplashWindow.getDebugString());
 				 */
-
 				try
 				{
 					// Assume we don't have an installed product
@@ -459,8 +455,10 @@ public class Main
 				{
 					// Switch splash screen
 					//
-			        SplashWindow.disposeSplash();
-			        SplashWindow.splash(splashImageData, windowIconData);
+					if(!SplashWindow.splashIsUp())
+						SplashWindow.splash(null, splashImageData, windowIconData);
+					else
+						SplashWindow.setSplashImage(SplashWindow.SPLASH_IMAGE_ID);
 				}
 
 				int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue() / 100;

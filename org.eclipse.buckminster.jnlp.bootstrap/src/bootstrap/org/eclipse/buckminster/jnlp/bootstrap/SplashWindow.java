@@ -71,17 +71,23 @@ public class SplashWindow extends Frame
 	 */
 	private static ProgressFacade s_listener;
 
+	public static final int SPLASH_IMAGE_BOOT_ID = 0;
+	public static final int SPLASH_IMAGE_ID = 1;
+
+	private static final int WINDOW_ICON_ID = 2;
+
 	/**
-	 * The splash image which is displayed on the splash window.
+	 * The two splash images which is displayed on the splash window.
 	 */
-	private Image m_image;
+	private final Image[] m_images = new Image[2];
+	private int m_imageId = SPLASH_IMAGE_BOOT_ID;
 
 	/* private static StringBuffer s_debugInfo = new StringBuffer(); */
 	// Please keep this variable, even if it is not read - future functionality will make use
 	// of it
 	@SuppressWarnings("unused")
 	private static String s_taskName = "Run";
-	
+
 	/**
 	 * This attribute indicates whether the method paint(Graphics) has been called at least once since the construction
 	 * of this window.<br>
@@ -111,39 +117,57 @@ public class SplashWindow extends Frame
 	 * @param windowIconImage
 	 *            the taskbar icon image
 	 */
-	private SplashWindow(Image splashImage, Image windowIconImage)
+	private SplashWindow(Image splashImageBoot, Image splashImage, Image windowIconImage)
 	{
 		// Load the images
 		MediaTracker mt = new MediaTracker(this);
-		mt.addImage(splashImage, 0);
-		if (windowIconImage != null)
-			mt.addImage(windowIconImage, 1);
+		if(splashImageBoot != null)
+			mt.addImage(splashImageBoot, SPLASH_IMAGE_BOOT_ID);
+		if(splashImage != null)
+			mt.addImage(splashImage, SPLASH_IMAGE_ID);
+		if(windowIconImage != null)
+			mt.addImage(windowIconImage, WINDOW_ICON_ID);
+
 		try
 		{
-			mt.waitForID(0);
-			if (windowIconImage != null)
-				mt.waitForID(1);
+			if(splashImageBoot != null)
+				mt.waitForID(SPLASH_IMAGE_BOOT_ID);
+			if(splashImage != null)
+				mt.waitForID(SPLASH_IMAGE_ID);
+			if(windowIconImage != null)
+				mt.waitForID(WINDOW_ICON_ID);
 		}
 		catch(InterruptedException ie)
 		{
 		}
-		
+
 		setUndecorated(true);
 		setTitle("Configuring Materializer Infrastructure");
-		
-		if (windowIconImage != null)
-			if (!mt.isErrorID(1))
+
+		if(windowIconImage != null)
+		{
+			if(!mt.isErrorID(WINDOW_ICON_ID))
 				setIconImage(windowIconImage);
 			else
 				System.err.println("Warning: SplashWindow couldn't load window icon.");
+		}
 
-		this.m_image = splashImage;
+		if(splashImageBoot != null && mt.isErrorID(SPLASH_IMAGE_BOOT_ID))
+		{
+			System.err.println("Warning: SplashWindow couldn't load splash boot image.");
+			splashImageBoot = null;
+		}
+
+		if(splashImage != null && mt.isErrorID(SPLASH_IMAGE_ID))
+		{
+			System.err.println("Warning: SplashWindow couldn't load splash image.");
+			splashImage = null;
+		}
 
 		// Abort on failure
-		if(mt.isErrorID(0))
+		if(splashImageBoot == null && splashImage == null)
 		{
 			setSize(0, 0);
-			System.err.println("Warning: SplashWindow couldn't load splash image.");
 			synchronized(this)
 			{
 				m_paintCalled = true;
@@ -151,13 +175,6 @@ public class SplashWindow extends Frame
 			}
 			return;
 		}
-
-		// Center the window on the screen
-		int imgWidth = splashImage.getWidth(this);
-		int imgHeight = splashImage.getHeight(this);
-		setSize(imgWidth, imgHeight);
-		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((screenDim.width - imgWidth) / 2, (screenDim.height - imgHeight) / 2);
 
 		// Users shall be able to close the splash window by
 		// clicking on its display area. This mouse listener
@@ -177,17 +194,48 @@ public class SplashWindow extends Frame
 					SplashWindow.this.m_paintCalled = true;
 					SplashWindow.this.notifyAll();
 				}
-				
-				//Dispose was changed to just ICONIFIED so that the window would not completely disappear
-				//(it is registered on the task bar)
-				//dispose();
+
+				// Dispose was changed to just ICONIFIED so that the window would not completely disappear
+				// (it is registered on the task bar)
+				// dispose();
 				setExtendedState(Frame.ICONIFIED);
 
 			}
 		};
 		addMouseListener(disposeOnClick);
+		m_progressColor = new Color(0xd8e5ee);
 
-		this.m_progressColor = new Color(0xd8e5ee);
+		m_images[SPLASH_IMAGE_BOOT_ID] = splashImageBoot;
+		m_images[SPLASH_IMAGE_ID] = splashImage;
+		setImageId((splashImageBoot == null) ? SPLASH_IMAGE_ID : SPLASH_IMAGE_BOOT_ID);
+	}
+
+	public static void setSplashImage(int imageId)
+	{
+		s_instance.setImageId(imageId);
+	}
+
+	private void setImageId(int imageId)
+	{
+		if(!(imageId == SPLASH_IMAGE_BOOT_ID || imageId == SPLASH_IMAGE_ID))
+			throw new IllegalArgumentException("Splash imageId is out of range");
+
+		Image image = m_images[imageId];
+		if(image == null)
+			//
+			// We don't permit this since the image is null
+			//
+			return;
+
+		m_imageId = imageId;
+
+		// Center the window on the screen
+		int imgWidth = image.getWidth(this);
+		int imgHeight = image.getHeight(this);
+		setSize(imgWidth, imgHeight);
+		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation((screenDim.width - imgWidth) / 2, (screenDim.height - imgHeight) / 2);
+		repaint();
 	}
 
 	/**
@@ -209,7 +257,7 @@ public class SplashWindow extends Frame
 	@Override
 	public void paint(Graphics g)
 	{
-		g.drawImage(m_image, 0, 0, this);
+		g.drawImage(m_images[m_imageId], 0, 0, this);
 
 		// Notify method splash that the window
 		// has been painted.
@@ -225,10 +273,10 @@ public class SplashWindow extends Frame
 		}
 
 		// Continue with painting progress
-		int y = this.getHeight() - PROGRESS_YMARGIN - PROGRESS_TICK_HEIGHT;
+		int y = getHeight() - PROGRESS_YMARGIN - PROGRESS_TICK_HEIGHT;
 		int x = PROGRESS_XMARGIN;
 		int tickw = PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;
-		int w = this.getWidth() - PROGRESS_XMARGIN * 2;
+		int w = getWidth() - PROGRESS_XMARGIN * 2;
 		int n = w / tickw;
 		// if, by skipping the last gap, there is room for one more...
 		if(w - n * tickw >= PROGRESS_TICK_WIDTH)
@@ -247,7 +295,9 @@ public class SplashWindow extends Frame
 
 	/**
 	 * Sets the name of the task for progress monitoring
-	 * @param taskName The task name
+	 * 
+	 * @param taskName
+	 *            The task name
 	 */
 	public static void setTaskName(String taskName)
 	{
@@ -260,13 +310,13 @@ public class SplashWindow extends Frame
 	 * @param splashImage
 	 *            The splash image.
 	 */
-	public static void splash(Image splashImage, Image windowIconImage)
+	public static void splash(Image splashImageBoot, Image splashImage, Image windowIconImage)
 	{
-//		s_debugInfo.append("Splash; ");
+// s_debugInfo.append("Splash; ");
 		if(s_instance == null && splashImage != null)
 		{
 			// Create the splash image
-			s_instance = new SplashWindow(splashImage, windowIconImage);
+			s_instance = new SplashWindow(splashImageBoot, splashImage, windowIconImage);
 
 			// Show the window.
 			s_instance.setVisible(true);
@@ -299,53 +349,69 @@ public class SplashWindow extends Frame
 	 * Open's a splash window using the specified image.
 	 * 
 	 */
-	public static void splash(byte[] splashImageBytes, byte[] windowIconBytes)
+	public static void splash(byte[] splashImageBootBytes, byte[] splashImageBytes, byte[] windowIconBytes)
 	{
 		if(splashImageBytes != null)
 		{
-			Image splashImage = Toolkit.getDefaultToolkit().createImage(splashImageBytes);
-			Image windowIconImage = windowIconBytes != null ?
-					Toolkit.getDefaultToolkit().createImage(windowIconBytes) : null;
-			splash(splashImage, windowIconImage);
+			Image splashImageBoot = splashImageBootBytes != null
+					? Toolkit.getDefaultToolkit().createImage(splashImageBootBytes)
+					: null;
+
+			Image splashImage = splashImageBytes != null
+					? Toolkit.getDefaultToolkit().createImage(splashImageBytes)
+					: null;
+
+			Image windowIconImage = windowIconBytes != null
+					? Toolkit.getDefaultToolkit().createImage(windowIconBytes)
+					: null;
+			splash(splashImageBoot, splashImage, windowIconImage);
 		}
 	}
 
 	public static void windowToFront()
 	{
-		if (s_instance != null)
+		if(s_instance != null)
 		{
 			s_instance.setAlwaysOnTop(true);
 			s_instance.setAlwaysOnTop(false);
 		}
 	}
+
 	/**
 	 * Closes the splash window.
 	 */
 	public static void disposeSplash()
 	{
-//		s_debugInfo.append("Disposed; ");
+// s_debugInfo.append("Disposed; ");
 		if(s_instance != null)
 		{
-//			logProgress(0, s_instance.m_progress);
-			//s_instance.getOwner().dispose();
+// logProgress(0, s_instance.m_progress);
+			// s_instance.getOwner().dispose();
 			s_instance.dispose();
 			s_instance = null;
 		}
 	}
+
+	public static boolean splashIsUp()
+	{
+		return s_instance != null;
+	}
+
 	public static String getDebugString()
 	{
 		return "";
-//		return s_debugInfo.toString();
+// return s_debugInfo.toString();
 	}
-//	private static void logProgress(int from, int to)
-//	{
-//		s_debugInfo.append(s_taskName);
-//		s_debugInfo.append(": ");
-//		s_debugInfo.append(from);
-//		s_debugInfo.append("-");
-//		s_debugInfo.append(to);
-//		s_debugInfo.append("; \n");
-//	}
+
+// private static void logProgress(int from, int to)
+// {
+// s_debugInfo.append(s_taskName);
+// s_debugInfo.append(": ");
+// s_debugInfo.append(from);
+// s_debugInfo.append("-");
+// s_debugInfo.append(to);
+// s_debugInfo.append("; \n");
+// }
 	public static void setProgress(int percentageDone)
 	{
 		if(s_instance != null)
@@ -354,15 +420,15 @@ public class SplashWindow extends Frame
 				percentageDone = 100;
 			if(percentageDone < 0)
 			{
-//				s_debugInfo.append("*");
+// s_debugInfo.append("*");
 				percentageDone = 0;
 			}
 
-//			// if percentageDone is 0, it is considered to start a new "run" - log this
-//			if(percentageDone == 0)
-//			{
-//				logProgress(0,s_instance.m_progress);
-//			}
+// // if percentageDone is 0, it is considered to start a new "run" - log this
+// if(percentageDone == 0)
+// {
+// logProgress(0,s_instance.m_progress);
+// }
 			if(percentageDone == 0 && s_instance.m_progress > 0 && s_instance.m_progress < 95)
 			{
 				// progress did not go to (close to) 100 before it went to 0
@@ -380,18 +446,18 @@ public class SplashWindow extends Frame
 			setProgressChecked(percentageDone);
 		}
 	}
-	
+
 	private static void setProgressChecked(int percentageDone)
-		{
+	{
 		// set the progress in splash window
-		
+
 		int tickw = PROGRESS_TICK_WIDTH + PROGRESS_TICK_GAP;
 		int w = s_instance.getWidth() - PROGRESS_XMARGIN * 2;
 		int n = w / tickw;
 		// if, by skipping the last gap, there is room for one more...
 		if(w - n * tickw >= PROGRESS_TICK_WIDTH)
 			n++;
-		
+
 		int n1 = s_instance.m_progress == 0
 				? 0
 				: (int)(((s_instance.m_progress / 100.0) * n + 0.5));
@@ -406,14 +472,13 @@ public class SplashWindow extends Frame
 			n2 = n1;
 			n1 = tmp;
 		}
-		
+
 		// set the new progress value
 		s_instance.m_progress = percentageDone;
 
 		// repaint the progressbar area - include only the area m1-m2 to reduce flicker
-		s_instance.repaint(PROGRESS_XMARGIN + n1 * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), 
-				s_instance.getHeight() - PROGRESS_TICK_HEIGHT - PROGRESS_YMARGIN, 
-				(n2-n1) * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), 
+		s_instance.repaint(PROGRESS_XMARGIN + n1 * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH), s_instance.getHeight()
+				- PROGRESS_TICK_HEIGHT - PROGRESS_YMARGIN, (n2 - n1) * (PROGRESS_TICK_GAP + PROGRESS_TICK_WIDTH),
 				PROGRESS_TICK_HEIGHT);
 	}
 
