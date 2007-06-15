@@ -177,7 +177,12 @@ public class SplashWindow extends Frame
 					SplashWindow.this.m_paintCalled = true;
 					SplashWindow.this.notifyAll();
 				}
-				dispose();
+				
+				//Dispose was changed to just ICONIFIED so that the window would not completely disappear
+				//(it is registered on the task bar)
+				//dispose();
+				setExtendedState(Frame.ICONIFIED);
+
 			}
 		};
 		addMouseListener(disposeOnClick);
@@ -305,6 +310,14 @@ public class SplashWindow extends Frame
 		}
 	}
 
+	public static void windowToFront()
+	{
+		if (s_instance != null)
+		{
+			s_instance.setAlwaysOnTop(true);
+			s_instance.setAlwaysOnTop(false);
+		}
+	}
 	/**
 	 * Closes the splash window.
 	 */

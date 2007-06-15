@@ -30,6 +30,8 @@ public interface BootstrapConstants
 
 	public static final String ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION = "LauncherNotFoundException";
 
+	public static final String ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION = "LauncherNotStartedException";
+
 	public static final String ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION = "MalformedPropertyException";
 
 	public static final String ERROR_CODE_MATERIALIZATION_EXCEPTION = "MaterializationException";

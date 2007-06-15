@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp.bootstrap;
 
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -17,11 +18,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -47,26 +50,46 @@ public class Main
 
 	private static final String USER_HOME = "@user.home";
 
-	private File m_installLocation;
-
 	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot";
 
 	public static final String PROP_SPLASH_IMAGE = "splashImage";
-	
+
 	public static final String PROP_WINDOW_ICON = "windowIcon";
 
 	public static final String PROP_SERVICE_AVAILABLE = "serviceAvailable";
-	
+
 	public static final String PROP_SERVICE_MESSAGE = "serviceMessage";
-	
+
+	public static final String PROP_MAX_CAPTURED_LINES = "maxErrorLines";
+
+	public static final int DEFAULT_MAX_CAPTURED_LINES = 1000;
+
 	public static final String PROP_ERROR_URL = "errorURL";
-	
+
 	public static final String PROP_STARTUP_TIME = "startupTime";
-	
+
 	public static final int DEFAULT_STARTUP_TIME = 2000;
 
+	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout";
+
+	public static final int DEFAULT_STARTUP_TIMEOUT = 30000;
+
+	public static final String PROP_SPLASH_MINIMUM_TIME = "splashMinTime";
+
+	public static final int DEFAULT_SPLASH_MINIMUM_TIME = 4000;
+
+	private File m_installLocation;
+
 	private String m_errorURL = ERROR_HELP_URL;
-	
+
+	private boolean m_jnlpProductStarted = false;
+
+	private Process m_process = null;
+
+	private TailLineBuffer m_tailOut = null;
+
+	private TailLineBuffer m_tailErr = null;
+
 	public static void main(String[] args)
 	{
 		Main main = new Main();
@@ -76,34 +99,30 @@ public class Main
 			Runtime.getRuntime().exit(0);
 		}
 		catch(Throwable t)
-		{			
-			
+		{
+
 			if(t instanceof JNLPException)
 			{
-				JNLPException e = (JNLPException) t;
+				JNLPException e = (JNLPException)t;
 				String problem = e.getMessage();
-				
+
 				if(e.getCause() != null)
 				{
 					problem += "\n\nCause: " + e.getCause().getMessage();
 				}
-				
-				new ErrorDialog(
-						"Materializer can not be started",
-						problem,
-						e.getSolution(),
-						main.getErrorURL() == null ? null : main.getErrorURL() + "?errorCode=" + e.getErrorCode())
-					.setVisible(true);
-			} else
-			{
-				new ErrorDialog(
-						"Materializer can not be started",
-						t.getMessage(),
-						"Check your java installation and try again",
-						main.getErrorURL() == null ? null : main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION)
-					.setVisible(true);
+
+				new ErrorDialog("Materializer can not be started", problem, e.getSolution(), main.getErrorURL() == null
+						? null
+						: main.getErrorURL() + "?errorCode=" + e.getErrorCode()).setVisible(true);
 			}
-			
+			else
+			{
+				new ErrorDialog("Materializer can not be started", t.getMessage(),
+						"Check your java installation and try again", main.getErrorURL() == null
+								? null
+								: main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION).setVisible(true);
+			}
+
 			try
 			{
 				File errorFile = new File(main.getInstallLocation(), "error.log");
@@ -112,9 +131,9 @@ public class Main
 				ps.close();
 			}
 			catch(Throwable ignore)
-			{	
+			{
 			}
-			
+
 			Runtime.getRuntime().exit(1);
 		}
 	}
@@ -153,7 +172,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not create a temp file", "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException("Can not create a temp file",
+							"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 			}
 			m_installLocation.mkdirs();
@@ -204,7 +224,8 @@ public class Main
 
 		if(urlIdx == -1)
 		{
-			throw new JNLPException("Missing required argument -configURL <URL to config properties>", "Report the error and try later", ERROR_CODE_MISSING_ARGUMENT_EXCEPTION);
+			throw new JNLPException("Missing required argument -configURL <URL to config properties>",
+					"Report the error and try later", ERROR_CODE_MISSING_ARGUMENT_EXCEPTION);
 		}
 
 		InputStream propStream = null;
@@ -218,7 +239,8 @@ public class Main
 			}
 			catch(MalformedURLException e)
 			{
-				throw new JNLPException("Can not read URL to config properties", "Report the error and try later", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+				throw new JNLPException("Can not read URL to config properties", "Report the error and try later",
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
 			if(!"file".equals(propertiesURL))
 			{
@@ -238,7 +260,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Unable to get information about the materialization", "Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+					throw new JNLPException("Unable to get information about the materialization",
+							"Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 				}
 				bytes = bld.toByteArray();
 				propStream = new ByteArrayInputStream(bytes);
@@ -247,7 +270,8 @@ public class Main
 				//
 				File localTemp = new File(getInstallLocation(), "temp");
 				if(!(localTemp.exists() || localTemp.mkdirs()))
-					throw new JNLPException("Unable to create directory " + localTemp, "Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION);
+					throw new JNLPException("Unable to create directory " + localTemp,
+							"Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION);
 
 				File localProps;
 				try
@@ -256,7 +280,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not create a temp file", "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException("Can not create a temp file",
+							"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 				try
 				{
@@ -265,7 +290,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not write to a temp file", "Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException("Can not write to a temp file",
+							"Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 
 				// Replace the configURL option value in the argument array with a pointer
@@ -278,7 +304,8 @@ public class Main
 				}
 				catch(MalformedURLException e)
 				{
-					throw new JNLPException("Can not read from a temp file", "Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException("Can not read from a temp file",
+							"Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
 				}
 			}
 			else
@@ -288,7 +315,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Unable to get information about the materialization", "Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+					throw new JNLPException("Unable to get information about the materialization",
+							"Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 				}
 
 			Properties props = new Properties();
@@ -298,7 +326,9 @@ public class Main
 			}
 			catch(IOException e)
 			{
-				throw new JNLPException("Unable to read materialization information", "Check your system permissions, internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+				throw new JNLPException("Unable to read materialization information",
+						"Check your system permissions, internet connection and try again",
+						ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 			}
 			return props;
 		}
@@ -306,7 +336,7 @@ public class Main
 		{
 			close(propStream);
 			close(localStream);
-		}		
+		}
 	}
 
 	void run(String[] args) throws JNLPException
@@ -314,25 +344,25 @@ public class Main
 		try
 		{
 			Properties props = parseArguments(args);
-			
+
 			String tmp = props.getProperty(PROP_ERROR_URL);
-			
+
 			if(tmp != null)
 			{
 				m_errorURL = tmp;
 			}
-			
+
 			tmp = props.getProperty(PROP_SERVICE_AVAILABLE);
-			
+
 			boolean serviceAvailable = true;
-			
+
 			if(tmp != null && "false".equalsIgnoreCase(tmp))
 			{
 				serviceAvailable = false;
 			}
-			
+
 			String serviceMessage = props.getProperty(PROP_SERVICE_MESSAGE);
-			
+
 			if(!serviceAvailable || (serviceMessage != null && serviceMessage.length() > 0))
 			{
 				new ServiceDialog(serviceMessage, serviceAvailable).setVisible(true);
@@ -342,11 +372,15 @@ public class Main
 					return;
 				}
 			}
-			
+
 			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
 			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
+			int splashMinimumTime = Integer.getInteger(PROP_SPLASH_MINIMUM_TIME, DEFAULT_SPLASH_MINIMUM_TIME)
+					.intValue();
+			long splashStartTime = (new Date()).getTime();
+
 			if(splashImageData != null)
-		        SplashWindow.splash(splashImageData, windowIconData);
+				SplashWindow.splash(splashImageData, windowIconData);
 
 			// Load the splashImage that will be used during the start of the app
 			//
@@ -356,26 +390,16 @@ public class Main
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 			if(siteRoot == null)
 			{
-				/*// Uncomment to get two testloops of progress - do not use in production
-				// test loop - uncomment to test splash progress without actually
-				// running under Java Web Start - i.e. keep this comment in the code.
-				DownloadServiceListener xdsl = SplashWindow.getDownloadServiceListener();
-				for(int i = 0; i < 101; i++)
-				{
-					xdsl.progress(null,"", 0L, 0L, i);
-					Thread.sleep(50);
-				}
-				for(int i = 0; i < 51; i++)
-				{
-					xdsl.progress(null,"", 0L, 0L, i);
-					Thread.sleep(50);
-				}
-				// For debugging purposes - obtain data from the splash and put them in user's clipboard
-				//
-				SplashWindow.disposeSplash();
-				System.err.print(SplashWindow.getDebugString());
-				*/
-								
+				/*
+				 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to
+				 * test splash progress without actually // running under Java Web Start - i.e. keep this comment in the
+				 * code. DownloadServiceListener xdsl = SplashWindow.getDownloadServiceListener(); for(int i = 0; i <
+				 * 101; i++) { xdsl.progress(null,"", 0L, 0L, i); Thread.sleep(50); } for(int i = 0; i < 51; i++) {
+				 * xdsl.progress(null,"", 0L, 0L, i); Thread.sleep(50); } // For debugging purposes - obtain data from
+				 * the splash and put them in user's clipboard // SplashWindow.disposeSplash();
+				 * System.err.print(SplashWindow.getDebugString());
+				 */
+
 				try
 				{
 					// Assume we don't have an installed product
@@ -384,14 +408,16 @@ public class Main
 					// DownloadServiceListener dsl = ds.getDefaultProgressWindow();
 					if(!ds.isPartCached(PRODUCT))
 					{
-					    // SplashWindow.disposeSplash();
+						// SplashWindow.disposeSplash();
 						ds.loadPart(PRODUCT, monitor);
-					    // SplashWindow.splash(splashData);
+						// SplashWindow.splash(splashData);
 					}
 				}
 				catch(Exception e)
 				{
-					throw new JNLPException("Can not download materialization wizard", "Check disk space, system permissions, internet connection and try again", ERROR_CODE_DOWNLOAD_EXCEPTION, e);
+					throw new JNLPException("Can not download materialization wizard",
+							"Check disk space, system permissions, internet connection and try again",
+							ERROR_CODE_DOWNLOAD_EXCEPTION, e);
 				}
 
 				IProductInstaller installer;
@@ -402,16 +428,17 @@ public class Main
 				}
 				catch(Exception e)
 				{
-					throw new JNLPException("Can not find materialization wizard resource", "Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
+					throw new JNLPException("Can not find materialization wizard resource",
+							"Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
 				}
-				
+
 				installer.installProduct(this, monitor);
 			}
-// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
-// in the clipboard.
-//			ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
-//			StringSelection ss = new StringSelection(SplashWindow.getDebugString());
-//			clipservice.setContents(ss);  
+			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
+			// in the clipboard.
+			// ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
+			// StringSelection ss = new StringSelection(SplashWindow.getDebugString());
+			// clipservice.setContents(ss);
 			startProduct(args);
 			try
 			{
@@ -428,11 +455,69 @@ public class Main
 
 				int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue() / 100;
 				monitor.setTask("Starting", startupTime);
-				while(--startupTime >= 0)
+				while(--startupTime >= 0 && !m_jnlpProductStarted)
 				{
 					Thread.sleep(100);
 					monitor.taskIncrementalProgress(1);
 				}
+
+				monitor.taskDone();
+
+				int processExitValue = 0;
+				boolean processTerminated = false;
+
+				// Add some grace startup time with progress bar frozen at 100%
+				// Check often if the process is still alive; if not, break the loop
+				if(m_process != null)
+				{
+					startupTime = Integer.getInteger(PROP_STARTUP_TIMEOUT, DEFAULT_STARTUP_TIMEOUT).intValue() / 100;
+					while(--startupTime >= 0 && !m_jnlpProductStarted)
+						try
+						{
+							processExitValue = m_process.exitValue();
+							processTerminated = true;
+							break;
+						}
+						catch(IllegalThreadStateException e)
+						{
+							// The process is still alive, let's wait
+							Thread.sleep(100);
+						}
+				}
+
+				if(!m_jnlpProductStarted)
+				{
+					if(processTerminated)
+					{
+						String capturedErrors = m_tailErr.getLinesAsString();
+						String capturedOutput = m_tailOut.getLinesAsString();
+
+						throw new JNLPException("Unable to launch materializer:\nExit code: " + processExitValue
+								+ (capturedErrors != null
+										? "\nCaptured errors:\n" + capturedErrors
+										: "")
+								+ (capturedOutput != null
+										? "\nCaptured output:\n" + capturedOutput
+										: ""), "Read error description above", ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
+					}
+
+					m_process.destroy();
+					throw new JNLPException("Unable to launch materializer within timeout",
+							"Check your machine (might be too slow or too busy)",
+							ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
+				}
+
+				// Now we know that the JNLP application has been launched. We'll hold the splash window in front of the
+				// application for the rest of the time up to the required splash display time.
+
+				long timeToSleep = splashMinimumTime - ((new Date()).getTime() - splashStartTime);
+				if(timeToSleep > 0 && m_jnlpProductStarted)
+				{
+					SplashWindow.windowToFront();
+					Thread.sleep(timeToSleep);
+				}
+
+				// If the JNLP application did not give us any sync message, let's just hide the splash window
 			}
 			catch(InterruptedException e)
 			{
@@ -440,7 +525,7 @@ public class Main
 		}
 		finally
 		{
-	        SplashWindow.disposeSplash();
+			SplashWindow.disposeSplash();
 		}
 	}
 
@@ -460,16 +545,18 @@ public class Main
 					os.write(buf, 0, count);
 				data = os.toByteArray();
 
-			} catch(IOException e)
+			}
+			catch(IOException e)
 			{
-				throw new JNLPException("Unable to read a splash screen or window icon image", "Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+				throw new JNLPException("Unable to read a splash screen or window icon image",
+						"Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 			}
 			finally
 			{
 				close(is);
 			}
 		}
-		
+
 		return data;
 	}
 
@@ -479,22 +566,27 @@ public class Main
 		String javaHome = System.getProperty("java.home");
 		if(javaHome == null)
 		{
-			throw new JNLPException("System propery java.home is not set", "Set the system property which should point to java home directory and try again", ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
+			throw new JNLPException("System propery java.home is not set",
+					"Set the system property which should point to java home directory and try again",
+					ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
 		}
 
 		File javaBin = new File(javaHome, "bin");
-		File javaExe = new File(javaBin, isWindows() ? "javaw.exe" : "java");
+		File javaExe = new File(javaBin, isWindows()
+				? "javaw.exe"
+				: "java");
 
 		if(!javaExe.exists())
 		{
-			throw new JNLPException("Unable to locate java runtime", "Check java installation and try again", ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
+			throw new JNLPException("Unable to locate java runtime", "Check java installation and try again",
+					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
 		}
 
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(javaExe.toString());
 		allArgs.add("-jar");
 		allArgs.add(launcherFile.toString());
-		
+
 		String wsDir = getWorkspaceDir();
 		if(wsDir != null)
 		{
@@ -506,15 +598,94 @@ public class Main
 		for(String arg : args)
 			allArgs.add(arg);
 
-		Runtime runtime = Runtime.getRuntime();
+		final String syncString = "sync info: application launched";
+		allArgs.add("-syncString");
+		allArgs.add(syncString);
 		
+		allArgs.add("-consoleLog");
+
+		Runtime runtime = Runtime.getRuntime();
+		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
+		m_tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
+
 		try
 		{
-			runtime.exec(allArgs.toArray(new String[allArgs.size()]));
+			m_process = runtime.exec(allArgs.toArray(new String[allArgs.size()]));
+			InputStream is = m_process.getInputStream();
+			InputStream eis = m_process.getErrorStream();
+			final BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			final BufferedReader erd = new BufferedReader(new InputStreamReader(eis));
+
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					String line;
+					try
+					{
+						while((line = rd.readLine()) != null)
+						{
+							if(syncString.equals(line))
+								m_jnlpProductStarted = true;
+							m_tailOut.writeLine(line);
+						}
+					}
+					catch(IOException e)
+					{
+						System.err.println("Error reading from JNLP application standard output: " + e.getMessage());
+					}
+					finally
+					{
+						if(rd != null)
+							try
+							{
+								rd.close();
+							}
+							catch(IOException e)
+							{
+								// that's a bad luck :-(
+							}
+					}
+				}
+
+			}.start();
+
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					String line;
+					try
+					{
+						while((line = erd.readLine()) != null)
+							m_tailErr.writeLine(line);
+					}
+					catch(IOException e)
+					{
+						System.err.println("Error reading from JNLP application standard error: " + e.getMessage());
+					}
+					finally
+					{
+						if(erd != null)
+							try
+							{
+								erd.close();
+							}
+							catch(IOException e)
+							{
+								// that's a bad luck :-(
+							}
+					}
+				}
+
+			}.start();
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again", ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
+			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again",
+					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
 		}
 	}
 
@@ -523,8 +694,9 @@ public class Main
 	private File m_siteRoot;
 
 	/**
-	 * Returns the most recent folder that has a plugins and features
-	 * subfolder or <code>null</code> if no such folder can be found.
+	 * Returns the most recent folder that has a plugins and features subfolder or <code>null</code> if no such folder
+	 * can be found.
+	 * 
 	 * @return The most recent site root folder or <code>null</code>.
 	 * @throws IOException
 	 */
@@ -541,8 +713,8 @@ public class Main
 				{
 					long candidateTime = candidate.lastModified();
 					if((bestCandidate == null || bestCandidateTime < candidateTime)
-					&& new File(candidate, "plugins").isDirectory()
-					&& new File(candidate, "features").isDirectory())
+							&& new File(candidate, "plugins").isDirectory()
+							&& new File(candidate, "features").isDirectory())
 					{
 						bestCandidate = candidate;
 						bestCandidateTime = candidateTime;
@@ -563,14 +735,16 @@ public class Main
 		File siteRoot = getSiteRoot();
 		if(siteRoot == null)
 		{
-			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(), "Check disk space, system permissions and try again", ERROR_CODE_SITE_ROOT_EXCEPTION);
+			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(),
+					"Check disk space, system permissions and try again", ERROR_CODE_SITE_ROOT_EXCEPTION);
 		}
 
 		File pluginsDir = new File(siteRoot, "plugins");
 		String[] names = pluginsDir.list();
 		if(names == null)
 		{
-			throw new JNLPException(pluginsDir + " is not a directory", "Report the error and try later", ERROR_CODE_DIRECTORY_EXCEPTION);
+			throw new JNLPException(pluginsDir + " is not a directory", "Report the error and try later",
+					ERROR_CODE_DIRECTORY_EXCEPTION);
 		}
 
 		String found = null;
@@ -598,7 +772,9 @@ public class Main
 			launcher = new File(siteRoot, "startup.jar");
 			if(!launcher.exists())
 			{
-				throw new JNLPException("Can not find file: " + pluginsDir + "org.eclipse.equinox.launcher_<version>.jar", "Clear your java cache, browser cache and try again", ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION);
+				throw new JNLPException("Can not find file: " + pluginsDir
+						+ "org.eclipse.equinox.launcher_<version>.jar",
+						"Clear your java cache, browser cache and try again", ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION);
 			}
 		}
 		else
@@ -620,7 +796,7 @@ public class Main
 			}
 		}
 	}
-	
+
 	private String getErrorURL()
 	{
 		return m_errorURL;
