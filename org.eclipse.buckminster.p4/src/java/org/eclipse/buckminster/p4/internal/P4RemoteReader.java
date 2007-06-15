@@ -181,11 +181,19 @@ public class P4RemoteReader extends AbstractRemoteReader
 		DepotFile file = getConnection().getFile(m_depotURI.getDepotPath().append(fileName).toPortableString());
 		if(file == null)
 			throw new FileNotFoundException(fileName);
-		
+
 		File destFile = createTempFile();
-		file.copyTo(destFile);
-		isTemporary[0] = true;
-		return destFile;
+		try
+		{
+			file.copyTo(destFile);
+			isTemporary[0] = true;
+			return destFile;
+		}
+		finally
+		{
+			if(!isTemporary[0])
+				destFile.delete();
+		}
 	}
 }
 
