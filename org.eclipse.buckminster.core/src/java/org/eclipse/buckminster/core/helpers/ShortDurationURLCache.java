@@ -24,10 +24,9 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
  * @author thhal
- *
+ * 
  */
 public class ShortDurationURLCache extends ShortDurationFileCache
 {
@@ -42,16 +41,15 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 		super(keepAlive, prefix, suffix, tempDir);
 	}
 
-	public InputStream openURL(final URL url, IProgressMonitor monitor)
-	throws IOException, CoreException
+	public InputStream openURL(final URL url, IProgressMonitor monitor) throws IOException, CoreException
 	{
 		return openURL(url, monitor, null);
 	}
-	
-	public InputStream openURL(final URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo)
-	throws IOException, CoreException
+
+	public InputStream openURL(final URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException,
+			CoreException
 	{
-		if (fileInfo != null)
+		if(fileInfo != null)
 			fileInfo.reset();
 
 		if("file".equalsIgnoreCase(url.getProtocol()))
@@ -60,9 +58,9 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 		return this.open(new Materializer()
 		{
 			public File materialize(boolean[] isTemporary, IProgressMonitor mon, FileInfoBuilder info)
-			throws IOException
+					throws IOException
 			{
-				if (info == null)
+				if(info == null)
 					info = new FileInfoBuilder();
 
 				OutputStream output = null;
@@ -74,52 +72,55 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 					mon.subTask("Reading from " + url);
 
 					File tempFile = File.createTempFile("bmurl", ".cache");
-					input  = URLUtils.openStream(url, MonitorUtils.subMonitor(mon, 100), info);
+					input = URLUtils.openStream(url, MonitorUtils.subMonitor(mon, 100), info);
 					output = new FileOutputStream(tempFile);
 					byte[] buf = new byte[0x2000];
 					int count;
 
 					IProgressMonitor writeMonitor = MonitorUtils.subMonitor(mon, 900);
-					
-					writeMonitor.beginTask(null,
-							info.getSize() != null ?
-									info.getSize().intValue()
-									:
-									IProgressMonitor.UNKNOWN);
+
+					writeMonitor.beginTask(null, info.getSize() != null
+							? info.getSize().intValue()
+							: IProgressMonitor.UNKNOWN);
 					try
 					{
-						ProgressStatistics progress = new ProgressStatistics(info.getSize() != null ? info.getSize().longValue() : -1);
+						ProgressStatistics progress = new ProgressStatistics(info.getSize() != null
+								? info.getSize().longValue()
+								: -1);
 						progress.setConverter(ProgressStatistics.FILESIZE_CONVERTER);
-						
+
 						/*
-						 * This class is used for reporting a good progress information even if the download is stalled for a while.
-						 * If specified timeout expires before something is read from the input, a new progress message is generated.
-						 * This enables e.g. reporting recalculated download speed which would be frozen if we simply waited for data.
+						 * This class is used for reporting a good progress information even if the download is stalled
+						 * for a while. If specified timeout expires before something is read from the input, a new
+						 * progress message is generated. This enables e.g. reporting recalculated download speed which
+						 * would be frozen if we simply waited for data.
 						 */
 						class ProgressReporter extends Thread
 						{
-							private IProgressMonitor m_reporterMonitor;
-							private ProgressStatistics m_reporterProgress;
-							private String m_format;
-							private int m_timeout;
-							private boolean m_running;
+							private final IProgressMonitor m_reporterMonitor;
+
+							private final ProgressStatistics m_reporterProgress;
+
+							private final String m_format;
+
+							private final int m_timeout;
+
 							private Thread m_reporter;
-							
-							public ProgressReporter(IProgressMonitor reporterMonitor, ProgressStatistics reporterProgress, String format, int timeout)
+
+							public ProgressReporter(IProgressMonitor reporterMonitor,
+									ProgressStatistics reporterProgress, String format, int timeout)
 							{
 								m_reporterMonitor = reporterMonitor;
 								m_reporterProgress = reporterProgress;
 								m_format = format;
 								m_timeout = timeout;
-								m_running = true;
 							}
 
 							@Override
 							public void run()
 							{
-								m_reporter = Thread.currentThread();
-								
-								while (m_running)
+								m_reporter = this;
+								while(m_reporter != null)
 								{
 									try
 									{
@@ -129,20 +130,24 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 									{
 										// ignore, it's ok
 									}
-									
-									if (m_running && m_reporterProgress.shouldReport())
+
+									if(m_reporter != null && m_reporterProgress.shouldReport())
 										m_reporterMonitor.subTask(String.format(m_format, m_reporterProgress.report()));
 								}
 							}
-							
-							public void stopReporting()
+
+							public synchronized void stopReporting()
 							{
-								m_running = false;
-								m_reporter.interrupt();
+								if(m_reporter != null)
+								{
+									m_reporter.interrupt();
+									m_reporter = null;
+								}
 							}
 						}
 
-						ProgressReporter progressReporter = new ProgressReporter(writeMonitor, progress, "Fetching " + info.getName() + " (%s)", progress.getReportInterval());
+						ProgressReporter progressReporter = new ProgressReporter(writeMonitor, progress, "Fetching "
+								+ info.getName() + " (%s)", progress.getReportInterval());
 						progressReporter.start();
 
 						try
@@ -151,13 +156,13 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 							{
 								output.write(buf, 0, count);
 								progress.increase(count);
-								
+
 								// Bump the reporter to report the change
 								progressReporter.interrupt();
-								
-								MonitorUtils.worked(
-										writeMonitor,
-										info.getSize() != null ? count : 1);
+
+								MonitorUtils.worked(writeMonitor, info.getSize() != null
+										? count
+										: 1);
 							}
 						}
 						finally
@@ -187,4 +192,3 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 		}, monitor, fileInfo);
 	}
 }
-
