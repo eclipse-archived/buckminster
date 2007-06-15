@@ -193,10 +193,12 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			IOException
 	{
 		ISVNClientAdapter clientAdapter = m_session.getClientAdapter();
+		File destFile = null;
 		OutputStream output = null;
 		InputStream input = null;
 
 		int ticksLeft = 3;
+		isTemporary[0] = false;
 		monitor.beginTask(fileName, ticksLeft);
 		try
 		{
@@ -213,7 +215,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 					throw new FileNotFoundException(url.toString());
 			}
 
-			File destFile = this.createTempFile();
+			destFile = this.createTempFile();
 			output = new FileOutputStream(destFile);
 			while(bytesRead > 0)
 			{
@@ -254,6 +256,8 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		{
 			IOUtils.close(input);
 			IOUtils.close(output);
+			if(!isTemporary[0] && destFile != null)
+				destFile.delete();
 			if(ticksLeft > 0)
     			MonitorUtils.worked(monitor, ticksLeft);
 			monitor.done();
