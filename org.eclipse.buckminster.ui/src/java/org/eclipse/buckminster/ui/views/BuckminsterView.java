@@ -1025,7 +1025,7 @@ public class BuckminsterView extends ViewPart
 					UiUtils.openError(getViewSite().getShell(), "Parse error", e);
 				}
 			}
-			
+
 			if("cquery".equalsIgnoreCase(resource.getFileExtension()))
 			{
 				try

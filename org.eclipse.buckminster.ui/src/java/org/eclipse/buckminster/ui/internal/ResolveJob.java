@@ -20,7 +20,6 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.ui.wizards.QueryWizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,14 +62,14 @@ public class ResolveJob extends Job
 		{
 			Display display = m_site.getShell().getDisplay();
 			ComponentRequest rootRequest = query.getRootRequest();
+			final BillOfMaterials bom = m_resolver.resolve(rootRequest, monitor);
+			IStatus status = ctx.getStatus();
+			if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
+				return status;
+			CorePlugin.logWarningsAndErrors(status);
+
 			if(!m_materialize)
 			{
-				final BillOfMaterials bom = m_resolver.resolve(rootRequest, monitor);
-				IStatus status = ctx.getStatus();
-				if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-					return status;
-				CorePlugin.logWarningsAndErrors(status);
-
 				display.asyncExec(new Runnable()
 				{
 					public void run()
@@ -81,17 +80,8 @@ public class ResolveJob extends Job
 				return Status.OK_STATUS;
 			}
 
-			monitor.beginTask(null, 2000);
-			monitor.subTask("Resolving and materializing " + rootRequest.getName());
 			try
 			{
-				BillOfMaterials bom = m_resolver.resolve(rootRequest, MonitorUtils.subMonitor(monitor, 1000));
-				IStatus status = m_resolver.getContext().getStatus();
-
-				if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-					return status;
-				CorePlugin.logWarningsAndErrors(status);
-
 				if(bom.isFullyResolved() || ctx.isContinueOnError())
 				{
 					setName("Materializing");
@@ -104,7 +94,7 @@ public class ResolveJob extends Job
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
 
-					MaterializerJob.run(matCtx, MonitorUtils.subMonitor(monitor, 1000));
+					MaterializerJob.run(matCtx);
 					status = ctx.getStatus();
 					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
 						return status;

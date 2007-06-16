@@ -12,11 +12,14 @@ package org.eclipse.buckminster.ui.internal;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 public class MaterializeAndBindRunnable extends WorkspaceModifyOperation
@@ -26,6 +29,34 @@ public class MaterializeAndBindRunnable extends WorkspaceModifyOperation
 	public MaterializeAndBindRunnable(MaterializationContext context)
 	{
 		m_context = context;
+	}
+
+	public static void run(IRunnableContext runner, MaterializationContext context) throws CoreException
+	{
+		MaterializeAndBindRunnable runnable = new MaterializeAndBindRunnable(context);
+		JobBlocker blocker = MaterializerJob.blockJobs();
+		try
+		{
+			runner.run(true, true, runnable);
+			
+			// We wait to give the event manager a chance to deliver all
+			// events while the JobBlocker still active. This gives us
+			// a chance to add dynamic dependencies to projects
+			//
+			Thread.sleep(3000);
+		}
+		catch(InvocationTargetException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(InterruptedException e)
+		{
+			throw new OperationCanceledException();
+		}
+		finally
+		{
+			blocker.release();
+		}
 	}
 
 	@Override
