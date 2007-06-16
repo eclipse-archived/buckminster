@@ -6,10 +6,10 @@
 		schema="schema/incrementalBuilderEditors.exsd" />
 
 	<extension point="org.eclipse.ui.importWizards">
-		<wizard id="org.eclipse.buckminster.ui.ImportBOM"
-			name="%ImportBOMWizardShortDescription" icon="icons/materialize.png"
+		<wizard id="org.eclipse.buckminster.ui.Import"
+			name="%ImportWizardShortDescription" icon="icons/materialize.png"
 			class="org.eclipse.buckminster.ui.wizards.QueryWizard">
-			<description>%ImportBOMWizardLongDescription</description>
+			<description>%ImportWizardLongDescription</description>
 		</wizard>
 	</extension>
 	<extension point="org.eclipse.ui.popupMenus">

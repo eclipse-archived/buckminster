@@ -14,11 +14,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.parser.IParserFactory;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.core.resolver.IResolver;
+import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -37,6 +46,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -49,7 +59,7 @@ public class SelectBOMPage extends AbstractQueryPage
 
 	private Button m_loadButton;
 
-	private URL m_bomURL;
+	private URL m_bomOrMSpecURL;
 
 	public SelectBOMPage()
 	{
@@ -62,7 +72,7 @@ public class SelectBOMPage extends AbstractQueryPage
 		QueryWizard qw = getQueryWizard();
 		if(message != null)
 		{
-			m_bomURL = null;
+			m_bomOrMSpecURL = null;
 			qw.resetBOM();
 		}
 
@@ -105,7 +115,8 @@ public class SelectBOMPage extends AbstractQueryPage
 
 		Label lbl = new Label(composite, SWT.NONE);
 		lbl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-		lbl.setText("Select a Bill of Materials (use a URL or a file system path)");
+		lbl.setText("Enter a URL of either MSPEC, BOM, or CQUERY (use a URL or a file system path)");
+		lbl.setToolTipText("Enter a URL that appoints either a Materialization Specification, a Bill of Materials, or a Component Query");
 
 		final Text fileName = new Text(composite, SWT.BORDER);
 		fileName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -113,7 +124,7 @@ public class SelectBOMPage extends AbstractQueryPage
 		{
 			public void modifyText(ModifyEvent me)
 			{
-				setBOMFile(UiUtils.trimmedValue((Text)me.widget));
+				setBomOrMSpecFile(UiUtils.trimmedValue((Text)me.widget));
 			}
 		});
 
@@ -123,7 +134,7 @@ public class SelectBOMPage extends AbstractQueryPage
 			public void widgetSelected(SelectionEvent se)
 			{
 				FileDialog dlg = new FileDialog(getShell());
-				dlg.setFilterExtensions(new String[] { "*.bom" });
+				dlg.setFilterExtensions(new String[] { "*.mspec", "*.cquery", "*.bom" });
 				String name = dlg.open();
 				if(name != null)
 					fileName.setText(name);
@@ -136,7 +147,7 @@ public class SelectBOMPage extends AbstractQueryPage
 			@Override
 			public void widgetSelected(SelectionEvent se)
 			{
-				loadBOM();
+				loadBomOrMSpec();
 			}
 		});
 		m_loadButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));
@@ -157,7 +168,7 @@ public class SelectBOMPage extends AbstractQueryPage
 		return composite;
 	}
 
-	void loadBOM()
+	void loadBomOrMSpec()
 	{
 		try
 		{
@@ -165,13 +176,78 @@ public class SelectBOMPage extends AbstractQueryPage
 			{
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 				{
+					URL urlToParse = m_bomOrMSpecURL;
 					InputStream input = null;
+					monitor.beginTask(null, 100);
 					try
 					{
-						input = URLUtils.openStream(m_bomURL, monitor);
-						BillOfMaterials bom = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true).parse(m_bomURL.toString(), input);
+						AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
+						QueryWizard wizard = getQueryWizard();
+						MaterializationSpecBuilder mspecBld = wizard.getMaterializationSpec();
+						input = URLUtils.openStream(urlToParse, MonitorUtils.subMonitor(monitor, 10));
+						FileUtils.copyFile(input, byteBld, MonitorUtils.subMonitor(monitor, 10));
+						input.close();
+						input = byteBld.getInputStream();
+
+						IParserFactory pf = CorePlugin.getDefault().getParserFactory();
+						MaterializationSpec mspec;
+						try
+						{
+							mspec = pf.getMaterializationSpecParser(true).parse(urlToParse.toString(), input);
+						}
+						catch(SAXException e)
+						{
+							// Assume this was not an mspec
+							//
+							mspec = null;
+						}
+						MonitorUtils.worked(monitor, 5);
+
+						if(mspec != null)
+						{
+							mspecBld.initFrom(mspec);
+							urlToParse = mspec.getURL();
+							input = URLUtils.openStream(mspec.getURL(), MonitorUtils.subMonitor(monitor, 10));
+							byteBld.reset();
+							FileUtils.copyFile(input, byteBld, MonitorUtils.subMonitor(monitor, 10));
+							input.close();
+						}
+						else
+						{
+							mspecBld.setURL(urlToParse);
+							MonitorUtils.worked(monitor, 20);
+						}
+						input = byteBld.getInputStream();
+
+						BillOfMaterials bom;
+						ComponentQuery cquery;
+						try
+						{
+							cquery = pf.getComponentQueryParser(true).parse(urlToParse.toString(), input);
+						}
+						catch(SAXException e)
+						{
+							// Assume this was not a cquery, restart input
+							//
+							cquery = null;
+						}
+						MonitorUtils.worked(monitor, 5);
+
+						if(cquery != null)
+						{
+							IResolver resolver = new MainResolver(new ResolutionContext(cquery));
+							resolver.getContext().setContinueOnError(true);
+							bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 40));
+						}
+						else
+						{
+							input = byteBld.getInputStream();
+							bom = pf.getBillOfMaterialsParser(true).parse(urlToParse.toString(), input);
+							MonitorUtils.worked(monitor, 40);
+						}
 						bom = BillOfMaterials.importGraph((ExportedBillOfMaterials)bom);
-						getQueryWizard().setBOM(bom);
+						wizard.setBOM(bom);
+						MonitorUtils.worked(monitor, 10);
 					}
 					catch(Throwable e)
 					{
@@ -180,6 +256,7 @@ public class SelectBOMPage extends AbstractQueryPage
 					finally
 					{
 						IOUtils.close(input);
+						monitor.done();
 					}
 				}	
 			});
@@ -194,9 +271,9 @@ public class SelectBOMPage extends AbstractQueryPage
 		}
 	}
 
-	void setBOMFile(final String bomFile)
+	void setBomOrMSpecFile(final String bomFile)
 	{
-		m_bomURL = null;
+		m_bomOrMSpecURL = null;
 		if(bomFile == null)
 		{
 			setErrorMessage(null);
@@ -230,7 +307,7 @@ public class SelectBOMPage extends AbstractQueryPage
 			}
 			else
 			{
-				m_bomURL = url;
+				m_bomOrMSpecURL = url;
 				m_loadButton.setEnabled(true);
 				setErrorMessage(null);
 			}
@@ -240,8 +317,8 @@ public class SelectBOMPage extends AbstractQueryPage
 			m_loadButton.setEnabled(false);
 			if(file.isFile() && file.canRead())
 			{
-				m_bomURL = url;
-				loadBOM();
+				m_bomOrMSpecURL = url;
+				loadBomOrMSpec();
 			}
 			else
 				setErrorMessage("File does not exist");

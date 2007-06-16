@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.ui.wizards;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.materializer.AbstractMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
@@ -35,9 +37,14 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.editor.SaveRunnable;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -48,6 +55,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -60,10 +69,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /**
  * @author Kenneth Olwing
@@ -207,7 +218,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		createComponentTableGroup(topComposite);
 		createSettingsGroup(topComposite);
-
+		createButtonGroup(topComposite);
 		return topComposite;
 	}
 
@@ -481,6 +492,98 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		catch(CoreException e)
 		{
 			displayException(e);
+		}
+	}
+
+	void saveMSPECInFileSystem()
+	{
+		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
+		dlg.setFilterExtensions(new String[] { "*.mspec" });
+		String location = dlg.open();
+		if(location == null)
+			return;
+		saveToPath(new Path(location));
+	}
+
+	void saveMSPECInWorkspace()
+	{
+		SaveAsDialog dialog = new SaveAsDialog(getShell());
+		if(dialog.open() == Window.CANCEL)
+			return;
+
+		IPath filePath = dialog.getResult();
+		if(filePath == null)
+			return;
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IFile file = workspace.getRoot().getFile(filePath);
+		saveToPath(file.getLocation());
+	}
+
+	private void createButtonGroup(Composite parent)
+	{
+		Composite buttons = new Composite(parent, SWT.NONE);
+		buttons.setLayout(new GridLayout(3, false));
+		buttons.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
+
+		Button saveButton = UiUtils.createPushButton(buttons, "Save MSPEC", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				saveMSPECInWorkspace();
+			}
+		});
+		saveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, true, false));
+
+		Button extSaveButton = UiUtils.createPushButton(buttons, "External Save MSPEC", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				saveMSPECInFileSystem();
+			}
+		});
+		extSaveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));
+	}
+
+	private void saveToPath(IPath path)
+	{
+		QueryWizard wizard = getQueryWizard();
+		IWizardContainer container = wizard.getContainer();
+		try
+		{
+			MaterializationSpecBuilder mspecBuilder = wizard.getMaterializationSpec();
+			IPath parent = path.removeLastSegments(1);
+			String name = path.lastSegment();
+			URL bomURL = mspecBuilder.getURL();
+			if(bomURL == null)
+			{
+				String bomName;
+				if(name.endsWith(".mspec"))
+					bomName = name.substring(0, name.length() - 5) + "bom";
+				else
+					bomName = name + ".bom";
+	
+				IPath bomPath = parent.append(bomName);
+				SaveRunnable sr = new SaveRunnable(wizard.getBOM().exportGraph(), bomPath);
+				container.run(true, true, sr);
+				bomURL = bomPath.toFile().toURI().toURL();
+				mspecBuilder.setURL(bomURL);
+			}
+
+			SaveRunnable sr = new SaveRunnable(mspecBuilder.createMaterializationSpec(), path);
+			container.run(true, true, sr);
+		}
+		catch(InterruptedException e)
+		{
+		}
+		catch(Exception e)
+		{
+			CoreException t = BuckminsterException.wrap(e);
+			String msg = "Unable to save file " + path;
+			CorePlugin.getLogger().error(msg, t);
+			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
 		}
 	}
 

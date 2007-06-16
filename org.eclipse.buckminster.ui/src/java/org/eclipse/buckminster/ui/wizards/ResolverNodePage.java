@@ -585,6 +585,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		{
 			SaveRunnable sr = new SaveRunnable(wizard.getBOM().exportGraph(), path);
 			container.run(true, true, sr);
+			wizard.getMaterializationSpec().setURL(path.toFile().toURI().toURL());
 		}
 		catch(InterruptedException e)
 		{
