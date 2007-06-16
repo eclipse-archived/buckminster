@@ -286,10 +286,14 @@ public class QueryEditor extends EditorPart
 		if(name == null)
 			return "The component must have a name";
 
-		String category = m_componentCategory.getItem(m_componentCategory.getSelectionIndex());
-		if(category.length() == 0)
-			category = null;
-
+		String category = null;
+		int idx = m_componentCategory.getSelectionIndex();
+		if(idx >= 0)
+		{
+			category = m_componentCategory.getItem(idx);
+			if(category.length() == 0)
+				category = null;
+		}
 		requestRet[0] = new ComponentRequest(name, category, m_versionDesignator.getVersionDesignator());
 		return null;
 	}
