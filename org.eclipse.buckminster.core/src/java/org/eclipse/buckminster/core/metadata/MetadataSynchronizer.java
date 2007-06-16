@@ -25,15 +25,17 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -46,11 +48,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+@SuppressWarnings("restriction")
 public class MetadataSynchronizer implements IResourceChangeListener
 {
 	private static final MetadataSynchronizer s_default = new MetadataSynchronizer();
 
 	private final HashMap<IPath,String> m_cspecSources = new HashMap<IPath,String>();
+
+	private final HashMap<String,IPath> m_deletedProjectLocations = new HashMap<String,IPath>();
 
 	private final Set<IProject> m_projectsNeedingUpdate = new HashSet<IProject>();
 
@@ -64,34 +69,44 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(kind == IResourceDelta.REMOVED)
 			{
 				IResource resource = delta.getResource();
-				if(resource != null)
+				if(resource == null)
+					return false;
+
+				IPath path = resource.getLocation();
+				if(path == null)
 				{
-					IPath path = resource.getLocation();
-					if(path != null)
-					{
-						if(!(resource instanceof IFile))
-							path = path.addTrailingSeparator();
-		
-						synchronized(MetadataSynchronizer.this)
-						{
-							m_removedEntries.add(path);
-						}
-					}
-				}
-			}
-			else
-			{
-				if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
-				{
-					IPath path = delta.getFullPath();
-					if(path.segmentCount() > 1 && m_cspecSources.containsKey(path.removeFirstSegments(1)))
-					{
-						synchronized(MetadataSynchronizer.this)
-						{
-							m_projectsNeedingUpdate.add(delta.getResource().getProject());
-						}
+					IProject project = resource.getProject();
+					if(project == null)
+						return true;
+
+					IPath projPath = m_deletedProjectLocations.get(project.getName());
+					if(projPath == null)
 						return false;
+
+					path = projPath.append(resource.getProjectRelativePath());
+				}
+
+				if(!(resource instanceof IFile))
+					path = path.addTrailingSeparator();
+
+				synchronized(MetadataSynchronizer.this)
+				{
+					m_removedEntries.add(path);
+				}
+				return true;
+			}
+
+			if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
+			{
+				IResource resource = delta.getResource();
+				IPath path = resource.getProjectRelativePath();
+				if((path.isEmpty() && resource instanceof IProject) || m_cspecSources.containsKey(path))
+				{
+					synchronized(MetadataSynchronizer.this)
+					{
+						m_projectsNeedingUpdate.add(resource.getProject());
 					}
+					return false;
 				}
 			}
 			return true;
@@ -138,7 +153,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		public MetadataRefreshJob()
 		{
 			super("Metadata refresh");
-			setPriority(BUILD);
+			setPriority(SHORT);
 		}
 
 		@Override
@@ -219,9 +234,18 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 	public void resourceChanged(IResourceChangeEvent event)
 	{
+		if(event.getType() == IResourceChangeEvent.PRE_DELETE)
+		{
+			IResource resource = event.getResource();
+			if(resource instanceof IProject)
+				m_deletedProjectLocations.put(resource.getName(), resource.getLocation());
+			return;
+		}
+
 		try
 		{
 			event.getDelta().accept(new Visitor());
+			m_deletedProjectLocations.clear();
 		}
 		catch(CoreException e)
 		{
@@ -262,28 +286,13 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					s_default.registerCSpecSource(new Path(metaPath), componentType);
 			}
 		}
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(s_default, IResourceChangeEvent.PRE_BUILD);
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		ws.addResourceChangeListener(s_default, IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
 	}
 
 	public boolean refreshProject(IProject project, IProgressMonitor monitor) throws CoreException
 	{
-		if(project.getName().equals(CorePlugin.BUCKMINSTER_PROJECT))
-			return false;
-
-		if(!project.exists())
-		{
-			// Project has been removed. Verify that we have no dangling
-			// materializations.
-			//
-			for(Materialization mat : StorageManager.getDefault().getMaterializations().getElements())
-			{
-				if(!mat.getComponentLocation().toFile().exists())
-					mat.remove();
-			}
-			return false;
-		}
-
-		if(!project.isOpen())
+		if(project.getName().equals(CorePlugin.BUCKMINSTER_PROJECT) || !project.isOpen())
 		{
 			MonitorUtils.complete(monitor);
 			return false;
@@ -310,6 +319,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			try
 			{
 				res = LocalResolver.fromPath(context.getRootNodeQuery(), project.getLocation(), oldInfo);
+				monitor.worked(50);
 			}
 			catch(Exception e)
 			{
@@ -319,8 +329,11 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			}
 
 			if(res.getCSpec().equals(oldCSpec))
+			{
+				updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
 				return false;
-	
+			}
+
 			Resolution oldRes = null;
 			if(oldCSpec != null)
 			{
@@ -347,7 +360,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					// cannot be removed at this point.
 				}
 			}
-			updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 30));
+			updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
 			return true;
 		}
 		finally
@@ -364,22 +377,21 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		{
 			// No use continuing. Project doesn't have any references.
 			//
-			MonitorUtils.worked(monitor, 50);
+			MonitorUtils.complete(monitor);
 			return;
 		}
 
 		// Create a set containing the references that are already present
 		//
-		IProject[] oldRefs = project.getReferencedProjects();
-		HashSet<String> oldSet = new HashSet<String>(oldRefs.length);
-		ArrayList<IProject> refdProjs = new ArrayList<IProject>();
-		for(IProject oldRef : oldRefs)
-		{
+		ProjectDescription projDesc = (ProjectDescription)project.getDescription();
+		IProject[] refs = projDesc.getAllReferences(false);
+		HashSet<String> oldSet = new HashSet<String>(refs.length);
+		for(IProject oldRef : refs)
 			oldSet.add(oldRef.getName());
-			refdProjs.add(oldRef);
-		}
 
-		boolean changed = false;
+		Logger logger = CorePlugin.getLogger();
+		monitor.beginTask(null, 50 + crefs.size() * 10);
+		ArrayList<IProject> refdProjs = null;
 		for(ComponentRequest cref : crefs)
 		{
 			for(IResource resource : WorkspaceInfo.getResources(cref))
@@ -394,26 +406,44 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				IProject refdProj = (IProject)resource;
 				if(!refdProj.isOpen())
 				{
-					CorePlugin.getLogger().warning(
+					logger.warning(
 						"Project " + project.getName() + " references a closed project: " + cref.getName());
 				}
 				else if(!oldSet.contains(refdProj.getName()))
 				{
 					// Didn't have this one.
 					//
+					if(refdProjs == null)
+					{
+						refdProjs = new ArrayList<IProject>();
+						for(IProject dynRef : projDesc.getDynamicReferences(false))
+							refdProjs.add(dynRef);
+					}
 					refdProjs.add(refdProj);
-					changed = true;
 				}
 			}
+			monitor.worked(10);
 		}
 
-		if(changed)
+		if(refdProjs != null)
 		{
-			IProjectDescription projDesc = project.getDescription();
-			projDesc.setDynamicReferences(refdProjs.toArray(new IProject[refdProjs.size()]));
+			refs = refdProjs.toArray(new IProject[refdProjs.size()]);
+			projDesc.setDynamicReferences(refs);
 			project.setDescription(projDesc, MonitorUtils.subMonitor(monitor, 50));
+			if(logger.isDebugEnabled())
+			{
+				StringBuilder bld = new StringBuilder();
+				bld.append("Project ");
+				bld.append(project.getName());
+				bld.append(" now has dynamic dependencies to");
+				for(IProject ref : refs)
+				{
+					bld.append(' ');
+					bld.append(ref.getName());
+				}
+				logger.debug(bld.toString());
+			}
 		}
-		else
-			MonitorUtils.complete(monitor);
+		monitor.done();
 	}
 }

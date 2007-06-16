@@ -78,7 +78,7 @@ public class Import extends WorkspaceInitCommand
 				}
 				MaterializationContext matCtx = new MaterializationContext(bom, mspec);
 				matCtx.setContinueOnError(continueOnError);
-				MaterializerJob.run(matCtx, MonitorUtils.subMonitor(monitor, 60));
+				MaterializerJob.run(matCtx);
 				logger.info("Import complete.");
 			}
 			finally

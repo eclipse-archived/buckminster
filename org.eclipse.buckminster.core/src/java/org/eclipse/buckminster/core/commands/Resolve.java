@@ -105,7 +105,7 @@ public class Resolve extends WorkspaceInitCommand
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
-					MaterializerJob.run(matCtx, MonitorUtils.subMonitor(monitor, 60));
+					MaterializerJob.run(matCtx);
 				}
 				logger.info("Query complete.");
 			}

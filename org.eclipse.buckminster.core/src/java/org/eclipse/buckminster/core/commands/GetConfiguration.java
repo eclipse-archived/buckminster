@@ -37,7 +37,7 @@ public class GetConfiguration extends WorkspaceCommand
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		System.out.println("Using workspace at " + Platform.getInstanceLocation().getURL().toString() + "...");
-		monitor.beginTask(null, 4);
+		monitor.beginTask(null, 3);
 		try
 		{
 			ComponentQuery query = ComponentQuery.fromURL(m_url, MonitorUtils.subMonitor(monitor, 1));
@@ -60,7 +60,7 @@ public class GetConfiguration extends WorkspaceCommand
 			mspecBuilder.setName(bom.getViewName());
 			mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
-			MaterializerJob.run(matCtx, MonitorUtils.subMonitor(monitor, 1));
+			MaterializerJob.run(matCtx);
 			MonitorUtils.worked(monitor, 1);
 			System.out.println("Query complete.");
 		}

@@ -24,7 +24,6 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.test.rmap.RMapTestCase;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -66,6 +65,6 @@ public class SimpleLoaderTestCase extends TestCase
 		mspecBuilder.setName(bom.getViewName());
 		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
-		MaterializerJob.run(matCtx, MonitorUtils.subMonitor(m_nullMonitor, 1));
+		MaterializerJob.run(matCtx);
 	}
 }

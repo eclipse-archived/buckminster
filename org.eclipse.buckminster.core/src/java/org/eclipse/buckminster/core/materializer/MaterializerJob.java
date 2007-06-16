@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -38,16 +37,12 @@ public class MaterializerJob extends WorkspaceJob
 {
 	private final MaterializationContext m_context;
 
-	public static void run(MaterializationContext context, IProgressMonitor monitor)
+	public static void run(MaterializationContext context)
 	throws CoreException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-
-		// set up for reporting at least some progress
-		//
+		JobBlocker blocker = blockJobs();
 		try
 		{
-			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			MaterializerJob mbJob = new MaterializerJob(context);
 			mbJob.schedule();
 			mbJob.join(); // longrunning
@@ -57,6 +52,12 @@ public class MaterializerJob extends WorkspaceJob
 				throw new OperationCanceledException();
 			if(!status.isOK())
 				throw new CoreException(status);
+			
+			// We wait to give the event manager a chance to deliver all
+			// events while the JobBlocker still active. This gives us
+			// a chance to add dynamic dependencies to projects
+			//
+			Thread.sleep(3000);
 		}
 		catch(InterruptedException e)
 		{
@@ -68,7 +69,7 @@ public class MaterializerJob extends WorkspaceJob
 		}
 		finally
 		{
-			monitor.done();
+			blocker.release();
 		}
 	}
 
@@ -95,12 +96,17 @@ public class MaterializerJob extends WorkspaceJob
 		this.setRule(ResourcesPlugin.getWorkspace().getRoot());
 	}
 
-	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
+	public static JobBlocker blockJobs()
 	{
 		JobBlocker jobBlocker = new JobBlocker();
 		jobBlocker.addNameBlock("Building workspace");
 		jobBlocker.addNameBlock("Periodic workspace save.");
+		return jobBlocker;
+	}
+
+	@Override
+	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
+	{
 		monitor.beginTask(null, 1000);
 		try
 		{
@@ -140,13 +146,7 @@ public class MaterializerJob extends WorkspaceJob
 		finally
 		{
 			monitor.done();
-			jobBlocker.release();
 		}
-
-		// We blocked all workspace builds during this process so
-		// initiating a new one here is necessary.
-		//
-		ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, 100));
 		return Status.OK_STATUS;
 	}
 }
