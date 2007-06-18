@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster UI Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.ui; singleton:=true
-Bundle-Version: 0.1.0.v20070612
+Bundle-Version: 0.1.0.v20070618
 Bundle-Activator: org.eclipse.buckminster.ui.UiPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
