@@ -13,12 +13,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -250,18 +248,14 @@ public class InvokeAction implements IObjectActionDelegate
 		public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
 		{
 			IPerformManager pm = CorePlugin.getPerformManager();
-			Map<String, String> props = new HashMap<String, String>();
-			String outputRoot = System.getProperty(KeyConstants.ACTION_OUTPUT_ROOT);
-			if(outputRoot != null)
-				props.put(KeyConstants.ACTION_OUTPUT_ROOT, outputRoot);
-
+			Map<String, String> props = null;
 			if(m_propertiesFile != null)
 			{
 				BufferedInputStream input = null;
 				try
 				{
 					input = new BufferedInputStream(new FileInputStream(m_propertiesFile));
-					props.putAll(new BMProperties(input));
+					props = new BMProperties(input);
 				}
 				catch(IOException e)
 				{
