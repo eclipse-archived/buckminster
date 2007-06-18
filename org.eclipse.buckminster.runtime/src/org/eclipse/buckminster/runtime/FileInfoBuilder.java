@@ -10,12 +10,14 @@ package org.eclipse.buckminster.runtime;
 
 /**
  * @author Filip Hrbek
- *
+ * 
  */
 public class FileInfoBuilder implements IFileInfo
 {
 	private String m_name;
+
 	private String m_contentType;
+
 	private Long m_size;
 
 	/**
@@ -65,13 +67,16 @@ public class FileInfoBuilder implements IFileInfo
 	{
 		return m_name;
 	}
+
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public final void setName(String name)
 	{
 		m_name = name;
 	}
+
 	/**
 	 * @return the contentType
 	 */
@@ -79,13 +84,16 @@ public class FileInfoBuilder implements IFileInfo
 	{
 		return m_contentType;
 	}
+
 	/**
-	 * @param contentType the contentType to set
+	 * @param contentType
+	 *            the contentType to set
 	 */
 	public final void setContentType(String contentType)
 	{
 		m_contentType = contentType;
 	}
+
 	/**
 	 * @return the size
 	 */
@@ -93,8 +101,10 @@ public class FileInfoBuilder implements IFileInfo
 	{
 		return m_size;
 	}
+
 	/**
-	 * @param size the size to set
+	 * @param size
+	 *            the size to set
 	 */
 	public final void setSize(Long size)
 	{
@@ -108,7 +118,9 @@ public class FileInfoBuilder implements IFileInfo
 	{
 		String[] extensions = getExtensions();
 
-		return extensions.length > 0 ? extensions[0] : null;
+		return extensions.length > 0
+				? extensions[0]
+				: null;
 	}
 
 	/**
@@ -116,26 +128,21 @@ public class FileInfoBuilder implements IFileInfo
 	 */
 	public String[] getExtensions()
 	{
-		//A very stupid implementation for now... Should use some real MIME type mapping,
-		//e.g. from javax.activation
-		if (m_contentType != null)
+		// A very stupid implementation for now... Should use some real MIME type mapping,
+		// e.g. from javax.activation
+		if(m_contentType != null)
 		{
-			if (m_contentType.endsWith("/zip") ||
-				m_contentType.endsWith("/x-zip-compressed") ||
-				m_contentType.endsWith("/x-compressed") ||
-				m_contentType.endsWith("/x-zip"))
-				return new String[] {"zip"};
-			else if (m_contentType.endsWith("/gzip") ||
-					 m_contentType.endsWith("/x-gzip"))
-				return new String[] {"tgz"};
-			else if (m_contentType.endsWith("/x-tar"))
-				return new String[] {"tgz"};
-			else if (m_contentType.endsWith("/java-archive") ||
-					 m_contentType.endsWith("/x-jar"))
-				return new String[] {"jar"};
-			if (m_contentType.endsWith("/exe") ||
-					m_contentType.endsWith("/x-msdownload"))
-					return new String[] {"exe"};
+			if(m_contentType.endsWith("/zip") || m_contentType.endsWith("/x-zip-compressed")
+					|| m_contentType.endsWith("/x-compressed") || m_contentType.endsWith("/x-zip"))
+				return new String[] { "zip" };
+			else if(m_contentType.endsWith("/gzip") || m_contentType.endsWith("/x-gzip"))
+				return new String[] { "tgz" };
+			else if(m_contentType.endsWith("/x-tar"))
+				return new String[] { "tgz" };
+			else if(m_contentType.endsWith("/java-archive") || m_contentType.endsWith("/x-jar"))
+				return new String[] { "jar" };
+			if(m_contentType.endsWith("/exe") || m_contentType.endsWith("/x-msdownload"))
+				return new String[] { "exe" };
 		}
 
 		return new String[0];
