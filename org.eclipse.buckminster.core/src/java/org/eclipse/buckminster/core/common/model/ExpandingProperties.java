@@ -91,19 +91,27 @@ public class ExpandingProperties implements IProperties
 
 	public ExpandingProperties(Map<String, String> dflts)
 	{
-		Map<String, ValueHolder> dfv;
 		Map<String, ValueHolder> overlay = new HashMap<String, ValueHolder>();
-		if(dflts instanceof ExpandingProperties)
-			m_map = new MapUnion<String, ValueHolder>(overlay, ((ExpandingProperties)dflts).m_map);
-		else if(dflts != null)
+		if(dflts == null || dflts.size() == 0)
 		{
-			dfv = new HashMap<String,ValueHolder>();
-			for(Map.Entry<String, String> de : dflts.entrySet())
-				dfv.put(de.getKey(), new Constant(de.getValue()));
-			m_map = new MapUnion<String, ValueHolder>(overlay, dfv);
-		}
-		else
 			m_map = overlay;
+			return;
+		}
+
+		Map<String,ValueHolder> dfltMap;
+		if(dflts instanceof ExpandingProperties)
+			dfltMap = ((ExpandingProperties)dflts).m_map;
+		else
+		{
+			dfltMap = new HashMap<String,ValueHolder>(dflts.size());
+			for(Map.Entry<String, String> de : dflts.entrySet())
+			{
+				ValueHolder vh = new Constant(de.getValue());
+				vh.setMutable(true);
+				dfltMap.put(de.getKey(), vh);
+			}
+		}
+		m_map = new MapUnion<String, ValueHolder>(overlay, dfltMap);
 	}
 
 	public void clear()
@@ -176,7 +184,7 @@ public class ExpandingProperties implements IProperties
 	public String get(Object key)
 	{
 		return key instanceof String
-			? this.getExpandedProperty((String)key, 0)
+			? getExpandedProperty((String)key, 0)
 			: null;
 	}
 
@@ -233,14 +241,14 @@ public class ExpandingProperties implements IProperties
 
 	public String put(String key, String propVal)
 	{
-		return this.convertValue(this.setProperty(key, new Constant(propVal)), 0);
+		return convertValue(setProperty(key, new Constant(propVal)), 0);
 	}
 
 	public String put(String key, String propVal, boolean mutable)
 	{
 		Constant vh = new Constant(propVal);
 		vh.setMutable(mutable);
-		return this.convertValue(this.setProperty(key, vh), 0);
+		return convertValue(setProperty(key, vh), 0);
 	}
 
 	public void putAll(Map<? extends String, ? extends String> t)
@@ -250,12 +258,12 @@ public class ExpandingProperties implements IProperties
 			// Defer expansion until access.
 			//
 			for(Map.Entry<String, ValueHolder> ee : ((ExpandingProperties)t).m_map.entrySet())
-				this.setProperty(ee.getKey(), ee.getValue());
+				setProperty(ee.getKey(), ee.getValue());
 		}
 		else
 		{
 			for(Map.Entry<? extends String, ? extends String> ee : t.entrySet())
-				this.setProperty(ee.getKey(), new Constant(ee.getValue()));
+				setProperty(ee.getKey(), new Constant(ee.getValue()));
 		}
 	}
 
@@ -361,12 +369,12 @@ public class ExpandingProperties implements IProperties
 		TreeSet<String> sorted = new TreeSet<String>();
 		if(includeDefaults)
 		{
-			for(String key : this.keySet())
+			for(String key : keySet())
 				sorted.add(key);
 		}
 		else
 		{
-			for(String name : this.overlayKeySet())
+			for(String name : overlayKeySet())
 				sorted.add(name);
 		}
 

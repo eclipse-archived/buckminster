@@ -34,7 +34,6 @@ public interface KeyConstants
 	public static final String ACTION_OUTPUT      = "buckminster.output";
 	public static final String ACTION_HOME        = "buckminster.home";
 	public static final String ACTION_TEMP        = "buckminster.temp";
-	public static final String DEFAULT_ACTION_OUTPUT = "buckminster.bin";
 	public static final String ACTION_OUTPUT_REF  = "${" + ACTION_OUTPUT + "}";
 	public static final String ACTION_TEMPDIR_REF  = "${" + ACTION_TEMP + "}";
 }

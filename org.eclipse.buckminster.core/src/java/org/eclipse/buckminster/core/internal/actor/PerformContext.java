@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -108,7 +107,7 @@ public class PerformContext implements IActionContext
 	{
 		m_globalCtx = globalCtx;
 		m_action = action;
-		m_properties = new ExpandingProperties(properties);
+		m_properties = properties;
 		m_forced = forced;
 		m_outputStream = out;
 		m_errorStream = err;

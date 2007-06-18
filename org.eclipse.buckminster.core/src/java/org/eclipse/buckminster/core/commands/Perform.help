@@ -3,15 +3,22 @@ This command performs actions on components
 usage: perform
        [{ -? | --help }]
        [{-D | --define} <key>[=<value>]]
+       [{-P | --properties} <URL or Path>]
        [{-W | --maxWarnings} <n>]
        <component>#<action> [<component>#<action> ...]
-       
+
  -?
 --help
   Show this help text
  -D
 --define
-  Defines properties to be used during the perform
+  Defines a property as a key=value pair. The value may include ant-style expansion constructs
+  that will be expanded using both System properties and other properties that has been set.
+ -P <URL or Path>
+--properties <URL or Path>
+  The URL or file system path of a properties file. The values in the file may include ant-style
+  expansion constructs that will be expanded using both System properties and other properties
+  that has been set.
  -W
 --maxwarnings
   Give the number of warnings acceptable. If the number of warnings are higher,

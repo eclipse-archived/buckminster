@@ -7,6 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.commands;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +28,10 @@ import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,13 +42,15 @@ public class Perform extends WorkspaceCommand
 {
 	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", OptionValueType.REQUIRED);
 
+	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", OptionValueType.REQUIRED);
+
 	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings", OptionValueType.REQUIRED);
 
 	static private final OptionDescriptor FORCED_DESCRIPTOR = new OptionDescriptor('F', "force", OptionValueType.NONE);
 
 	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$");
 	
-	private final Map<String, String> m_props = new HashMap<String, String>();
+	private Map<String, String> m_props;
 	
 	private int m_maxWarnings = -1;
 
@@ -60,7 +69,7 @@ public class Perform extends WorkspaceCommand
 
 		if(status.isOK())
 			return 0;
-		
+
 		System.err.print(status.getMessage());
 
 		// Get all problem markers. Sort them by timestamp
@@ -131,6 +140,7 @@ public class Perform extends WorkspaceCommand
 	protected void getOptionDescriptors(List appendHere) throws Exception
 	{
 		appendHere.add(DEFINE_DESCRIPTOR);
+		appendHere.add(PROPERTIES_DESCRIPTOR);
 		appendHere.add(MAXWARNINGS_DESCRIPTOR);
 		appendHere.add(FORCED_DESCRIPTOR);
 	}
@@ -140,12 +150,38 @@ public class Perform extends WorkspaceCommand
 	{
 		if(option.is(DEFINE_DESCRIPTOR))
 		{
-			Matcher m = DEFINE_PATTERN.matcher(option.getValue());
+			String v = option.getValue();
+			Matcher m = DEFINE_PATTERN.matcher(v);
 			if(!m.matches())
-				throw new IllegalArgumentException("Not a key[=value] string : " + option.getValue());
+				throw new IllegalArgumentException("Not a key[=value] string : " + v);
 			String key = m.group(1);
 			String value = m.group(2) == null ? "" : m.group(2);
+			if(m_props == null)
+				 m_props = new HashMap<String, String>();
 			m_props.put(key, value);
+		}
+		if(option.is(PROPERTIES_DESCRIPTOR))
+		{
+			String v = option.getValue();
+			InputStream input = null;
+			try
+			{
+				URL propsURL = URLUtils.normalizeToURL(v);
+				input = new BufferedInputStream(URLUtils.openStream(propsURL, null));
+				Map<String,String> props = new BMProperties(input);
+				if(m_props == null)
+					m_props = props;
+				else
+					m_props.putAll(props);
+			}
+			catch(MalformedURLException e)
+			{
+				throw new IllegalArgumentException("Invalid URL or Path: " + v);
+			}
+			finally
+			{
+				IOUtils.close(input);
+			}
 		}
 		else if(option.is(MAXWARNINGS_DESCRIPTOR))
 			m_maxWarnings = Integer.parseInt(option.getValue());

@@ -71,8 +71,11 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	throws CoreException
 	{
 		String actionOutput;
-		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		CSpec cspec = getCSpec();
+		IPath buckminsterTempRoot = Path.fromOSString(
+				System.getProperty("java.io.tmpdir")).append("buckminster").append(cspec.getName());
+
+		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		if(outputRoot != null)
 		{
 			// Output root must be qualified with component name to avoid
@@ -81,12 +84,10 @@ public abstract class Attribute extends NamedElement implements Cloneable
 			actionOutput = Path.fromOSString(outputRoot).append(cspec.getName()).toPortableString();
 		}
 		else
-			actionOutput = cspec.getComponentLocation().append(KeyConstants.DEFAULT_ACTION_OUTPUT).toOSString();
+			actionOutput = buckminsterTempRoot.append("build").toPortableString();
 
 		properties.put(KeyConstants.ACTION_OUTPUT, actionOutput);
-		properties.put(KeyConstants.ACTION_TEMP,
-			Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster").append(
-				cspec.getName()).toPortableString());
+		properties.put(KeyConstants.ACTION_TEMP, buckminsterTempRoot.append("temp").toPortableString());
 		properties.put(COMPONENT_HOME, cspec.getComponentLocation().toOSString());
 		properties.putAll(cspec.getComponentIdentifier().getProperties());
 	}

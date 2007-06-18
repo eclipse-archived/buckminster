@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.runtime.Logger;
@@ -65,7 +66,7 @@ public class PerformManager implements IPerformManager
 			forced, monitor);
 	}
 
-	public IStatus perform(List<Attribute> attributes, Map<String, String> props, boolean forced,
+	public IStatus perform(List<Attribute> attributes, Map<String, String> userProps, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
 		// calculate a flat dependency list of actions to be done
@@ -89,25 +90,26 @@ public class PerformManager implements IPerformManager
 				logger.debug(bld.toString());
 			}
 
+			Map<String,String> systemProps = BMProperties.getSystemProperties();
 			MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
 			for(Action action : actionList)
 			{
 				// We use ExpandingProperties all the way so that the expansion is deferred
 				//
-				Map<String, String> userProps = new ExpandingProperties();
+				Map<String, String> allProps = new ExpandingProperties(systemProps);
 
 				// enter all the context properties defined in the action as user props
 				//
-				userProps.putAll(action.getProperties());
+				allProps.putAll(action.getProperties());
 
 				// enter all the global properties passed to this perform
 				//
-				if(props != null)
-					userProps.putAll(props);
+				if(userProps != null)
+					allProps.putAll(userProps);
 
 				// Add action specific dynamic properties
 				//
-				action.addDynamicProperties(userProps);
+				action.addDynamicProperties(allProps);
 
 				IActor actor = ActorFactory.getInstance().getActor(action);
 				PrintStream out;
@@ -122,7 +124,7 @@ public class PerformManager implements IPerformManager
 					out = s_nullPrintStream;
 					err = s_nullPrintStream;
 				}
-				PerformContext ctx = new PerformContext(globalCtx, action, userProps, forced, out, err);
+				PerformContext ctx = new PerformContext(globalCtx, action, allProps, forced, out, err);
 				if(!forced && action.isUpToDate(ctx))
 				{
 					MonitorUtils.worked(monitor, 100);
