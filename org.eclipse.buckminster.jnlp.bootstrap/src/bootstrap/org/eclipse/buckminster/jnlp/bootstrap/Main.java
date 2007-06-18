@@ -48,8 +48,6 @@ public class Main
 
 	private static final String PRODUCT = "product";
 
-	private static final String USER_HOME = "@user.home";
-
 	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot";
 
 	public static final String PROP_SPLASH_IMAGE = "splashImage";
@@ -73,6 +71,8 @@ public class Main
 	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout";
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 30000;
+
+	private File m_applicationData;
 
 	private File m_installLocation;
 
@@ -134,33 +134,45 @@ public class Main
 		}
 	}
 
-	public synchronized File getInstallLocation() throws JNLPException
+	public synchronized File getApplicationDataLocation() throws JNLPException
 	{
-		if(m_installLocation == null)
+		if(m_applicationData == null)
 		{
 			if(isWindows())
 			{
-				File appData = null;
 				String appDataEnv = System.getenv("APPDATA");
+
 				if(appDataEnv != null)
-					appData = new File(appDataEnv);
+					m_applicationData = new File(appDataEnv);
 				else
 				{
 					String userHome = System.getProperty("user.home");
 					if(userHome != null)
-						appData = new File(userHome, "Application Data");
+						m_applicationData = new File(userHome, "Application Data");
 				}
-				if(appData != null)
-					m_installLocation = new File(appData, "buckminster");
 			}
 			else
 			{
 				String userHome = System.getProperty("user.home");
 				if(userHome != null)
-					m_installLocation = new File(userHome, ".buckminster");
+					m_applicationData = new File(userHome, ".buckminster");
 			}
+		}
+		return m_applicationData;
+	}
 
-			if(m_installLocation == null)
+	public synchronized File getInstallLocation() throws JNLPException
+	{
+		if(m_installLocation == null)
+		{
+			if(getApplicationDataLocation() != null)
+			{
+				if(isWindows())
+					m_installLocation = new File(getApplicationDataLocation(), "buckminster");
+				else
+					m_installLocation = new File(getApplicationDataLocation(), ".buckminster");
+			}
+			else
 			{
 				try
 				{
@@ -174,6 +186,7 @@ public class Main
 			}
 			m_installLocation.mkdirs();
 		}
+		
 		return m_installLocation;
 	}
 
@@ -201,10 +214,10 @@ public class Main
 	public String getWorkspaceDir() throws JNLPException
 	{
 		String workspaceDir = System.getProperty("osgi.instance.area", null);
-		if(workspaceDir != null)
+		if(workspaceDir == null)
 		{
-			if(workspaceDir.startsWith(USER_HOME))
-				workspaceDir = System.getProperty("user.home") + workspaceDir.substring(USER_HOME.length());
+			//have the workspace location the same as the product installation
+			workspaceDir = getInstallLocation().getAbsolutePath();
 		}
 		return workspaceDir;
 	}
