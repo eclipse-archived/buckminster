@@ -93,6 +93,13 @@ public class TimedHashMap<K,V> implements Map<K,V>
 		m_evictionPolicy = evictionPolicy;
 	}
 
+	public void cancel(K key)
+	{
+		TimedEntry entry = m_map.get(key);
+		if(entry != null)
+			entry.cancel();
+	}
+
 	public V put(K key, V value)
 	{
 		V oldVal;
@@ -111,8 +118,21 @@ public class TimedHashMap<K,V> implements Map<K,V>
 
 			m_map.put(key, entry);
 		}
-		s_timer.schedule(entry, m_keepAliveTime);
+		if(scheduleOnPut())
+			s_timer.schedule(entry, m_keepAliveTime);
 		return oldVal;
+	}
+
+	public void schedule(K key)
+	{
+		TimedEntry entry = m_map.get(key);
+		if(entry != null)
+			s_timer.schedule(entry, m_keepAliveTime);
+	}
+
+	public boolean scheduleOnPut()
+	{
+		return true;
 	}
 
 	public int size()

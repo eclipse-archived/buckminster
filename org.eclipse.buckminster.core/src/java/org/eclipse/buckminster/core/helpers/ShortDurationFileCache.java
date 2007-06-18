@@ -61,11 +61,11 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 		//
 		synchronized(this)
 		{
-			ce = this.get(key);
+			ce = get(key);
 			if(ce == null)
 			{
 				ce = new CacheEntry();
-				this.put(key, ce);
+				put(key, ce);
 			}
 		}
 
@@ -74,9 +74,21 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 		//
 		synchronized(ce)
 		{
-			ce.initialize(materializer, monitor, fileInfo);
+			ce.initialize(this, materializer, monitor, fileInfo);
 			return ce.open();
 		}
+	}
+
+	/**
+	 * This method will always return false since we want to defer scheduling until
+	 * the completion of a materialization.
+	 *
+	 * @return false
+	 */
+	@Override
+	public boolean scheduleOnPut()
+	{
+		return false;
 	}
 }
 
@@ -117,20 +129,38 @@ class CacheEntry
 	
 	private IFileInfo m_fileInfo = null;
 
-	public synchronized void initialize(ShortDurationFileCache.Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws CoreException, IOException
+	public synchronized void initialize(ShortDurationFileCache cache, ShortDurationFileCache.Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws CoreException, IOException
 	{
-		if(m_tempFile == null)
+		boolean success = false;
+		try
 		{
-			boolean[] isTemporary = new boolean[1];
-			m_tempFile = materializer.materialize(isTemporary, monitor, fileInfo);
-			m_fileIsTemporary = isTemporary[0];
-			if(m_fileIsTemporary)
-				m_tempFile.deleteOnExit();
-			if (fileInfo != null)
-				m_fileInfo = new FileInfoBuilder(fileInfo);
+			if(m_tempFile == null)
+			{
+				boolean[] isTemporary = new boolean[1];
+				m_tempFile = materializer.materialize(isTemporary, monitor, fileInfo);
+				m_fileIsTemporary = isTemporary[0];
+				if(m_fileIsTemporary)
+					m_tempFile.deleteOnExit();
+				if (fileInfo != null)
+					m_fileInfo = new FileInfoBuilder(fileInfo);
+				cache.schedule(materializer.getKey());
+			}
+			else if (fileInfo != null && m_fileInfo != null)
+				fileInfo.setAll(m_fileInfo);
+
+			// All is well. No exceptions will bring us here.
+			//
+			success = true;
 		}
-		else if (fileInfo != null && m_fileInfo != null)
-			fileInfo.setAll(m_fileInfo);
+		finally
+		{
+			if(!success)
+				//
+				// We're leaving because of some exception. Remove the
+				// entry immediately.
+				//
+				cache.remove(materializer.getKey());
+		}
 	}
 
 	public synchronized InputStream open() throws FileNotFoundException
