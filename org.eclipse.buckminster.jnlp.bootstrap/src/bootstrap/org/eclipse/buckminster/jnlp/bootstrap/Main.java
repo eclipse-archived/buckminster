@@ -213,13 +213,8 @@ public class Main
 
 	public String getWorkspaceDir() throws JNLPException
 	{
-		String workspaceDir = System.getProperty("osgi.instance.area", null);
-		if(workspaceDir == null)
-		{
-			//have the workspace location the same as the product installation
-			workspaceDir = getInstallLocation().getAbsolutePath();
-		}
-		return workspaceDir;
+		//have the workspace location the same as the product installation
+		return getInstallLocation().getAbsolutePath();
 	}
 
 	void installProduct() throws IOException, UnavailableServiceException
