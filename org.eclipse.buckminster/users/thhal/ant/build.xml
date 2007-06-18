@@ -6,7 +6,6 @@
 
 	<target name="list.timestamps">
 		<listPluginTimestamp component="org.eclipse.buckminster.ant"/>
-		<listPluginTimestamp component="org.eclipse.buckminster.ant.ui"/>
 		<listPluginTimestamp component="org.eclipse.buckminster.cmdline"/>
 		<listPluginTimestamp component="org.eclipse.buckminster.core"/>
 		<listPluginTimestamp component="org.eclipse.buckminster.cvs"/>
