@@ -618,7 +618,7 @@ public class Main
 			allArgs.add(wsDir);
 		}
 		allArgs.add("-application");
-		allArgs.add("org.eclipse.buckminster.jnlp.applicationX");
+		allArgs.add("org.eclipse.buckminster.jnlp.application");
 		for(String arg : args)
 			allArgs.add(arg);
 
