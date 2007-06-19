@@ -155,7 +155,7 @@ public class Main
 			{
 				String userHome = System.getProperty("user.home");
 				if(userHome != null)
-					m_applicationData = new File(userHome, ".buckminster");
+					m_applicationData = new File(userHome);
 			}
 		}
 		return m_applicationData;
@@ -617,7 +617,10 @@ public class Main
 		else if(isAix())
 			allArgs.add("motif");
 		else if(isMaxOSx())
+		{
 			allArgs.add("carbon");
+			allArgs.add("-XstartOnFirstThread");
+		}
 		else
 			allArgs.add("gtk");
 
