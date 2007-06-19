@@ -16,6 +16,7 @@ import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
+import java.awt.SystemColor;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.Toolkit;
@@ -65,7 +66,7 @@ public class ErrorDialog extends Frame
 		});
 
 		setLayout(new BorderLayout());
-		setBackground(null);
+		setBackground(SystemColor.control);
 		
 		Panel tp = new Panel(new BorderLayout(0, 0));
 
@@ -94,6 +95,29 @@ public class ErrorDialog extends Frame
 		TextArea ta = new TextArea(problem, 10, 70);
 		ta.setEditable(false);
 		ta.setFocusable(true);
+		
+		ta.addFocusListener(new FocusAdapter(){
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+				if(! m_focusRepaired) // OK button should be focused first
+				{
+					m_okButton.requestFocus();
+				}
+			}});
+		
+		ta.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					finish();
+				}
+			}
+		});
+
 		p.add(ta);
 		
 		Panel sp = new Panel(new BorderLayout());
@@ -105,6 +129,20 @@ public class ErrorDialog extends Frame
 		ta = new TextArea(solution, 3, 70);
 		ta.setEditable(false);
 		ta.setFocusable(true);
+		
+		ta.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					finish();
+				}
+			}
+		});
+
 		p.add(ta);
 		
 		if(helpURL != null)
@@ -113,16 +151,19 @@ public class ErrorDialog extends Frame
 			p.add(new Label("Read more at:"));
 			final TextField tf = new TextField(helpURL, 55);
 			
-			tf.addFocusListener(new FocusAdapter(){
+			tf.addKeyListener(new KeyAdapter()
+			{
 
 				@Override
-				public void focusGained(FocusEvent e)
+				public void keyPressed(KeyEvent e)
 				{
-					if(! m_focusRepaired) // OK button should be focused first
+					if(e.getKeyCode() == KeyEvent.VK_ENTER)
 					{
-						m_okButton.requestFocus();
+						finish();
 					}
-				}});
+				}
+			});
+
 				
 			tf.setEditable(false);
 			p.add(tf);
