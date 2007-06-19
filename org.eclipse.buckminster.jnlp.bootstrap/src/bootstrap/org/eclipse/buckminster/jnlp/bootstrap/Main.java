@@ -9,6 +9,9 @@
 package org.eclipse.buckminster.jnlp.bootstrap;
 
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
+
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -85,6 +88,12 @@ public class Main
 	private TailLineBuffer m_tailOut = null;
 
 	private TailLineBuffer m_tailErr = null;
+	
+	private Image m_splashImageBoot = null;
+
+	private Image m_splashImage = null;
+
+	private Image m_windowIconImage = null;
 
 	public static void main(String[] args)
 	{
@@ -109,14 +118,14 @@ public class Main
 
 				new ErrorDialog("Materializer can not be started", problem, e.getSolution(), main.getErrorURL() == null
 						? null
-						: main.getErrorURL() + "?errorCode=" + e.getErrorCode()).setVisible(true);
+						: main.getErrorURL() + "?errorCode=" + e.getErrorCode(), main.getWindowIconImage()).setVisible(true);
 			}
 			else
 			{
 				new ErrorDialog("Materializer can not be started", t.getMessage(),
 						"Check your java installation and try again", main.getErrorURL() == null
 								? null
-								: main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION).setVisible(true);
+								: main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION, main.getWindowIconImage()).setVisible(true);
 			}
 
 			try
@@ -130,7 +139,6 @@ public class Main
 			{
 			}
 
-			Runtime.getRuntime().exit(1);
 		}
 	}
 
@@ -393,16 +401,29 @@ public class Main
 			}
 
 			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
+			byte[] splashImageBootData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
 			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
 			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
 
+			m_splashImageBoot = splashImageBootData != null
+			? Toolkit.getDefaultToolkit().createImage(splashImageBootData)
+			: null;
+
+			m_splashImage = splashImageData != null
+			? Toolkit.getDefaultToolkit().createImage(splashImageData)
+			: null;
+
+			m_windowIconImage = windowIconData!= null
+			? Toolkit.getDefaultToolkit().createImage(windowIconData)
+			: null;
+
+			
 			File siteRoot = getSiteRoot();
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 			if(siteRoot == null)
 			{
-				byte[] splashImageBootData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
 				if(splashImageBootData != null || splashImageData != null)
-					SplashWindow.splash(splashImageBootData, splashImageData, windowIconData);
+					SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
 
 				/*
 				 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to
@@ -463,7 +484,7 @@ public class Main
 					// Switch splash screen
 					//
 					if(!SplashWindow.splashIsUp())
-						SplashWindow.splash(null, splashImageData, windowIconData);
+						SplashWindow.splash(null, m_splashImage, m_windowIconImage);
 					else
 						SplashWindow.setSplashImage(SplashWindow.SPLASH_IMAGE_ID);
 				}
@@ -597,7 +618,7 @@ public class Main
 			allArgs.add(wsDir);
 		}
 		allArgs.add("-application");
-		allArgs.add("org.eclipse.buckminster.jnlp.application");
+		allArgs.add("org.eclipse.buckminster.jnlp.applicationX");
 		for(String arg : args)
 			allArgs.add(arg);
 
@@ -821,4 +842,10 @@ public class Main
 	{
 		return m_errorURL;
 	}
+
+	private Image getWindowIconImage()
+	{
+		return m_windowIconImage;
+	}
+
 }

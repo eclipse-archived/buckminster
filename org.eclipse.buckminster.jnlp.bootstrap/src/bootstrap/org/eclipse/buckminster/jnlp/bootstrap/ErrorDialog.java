@@ -10,10 +10,10 @@ package org.eclipse.buckminster.jnlp.bootstrap;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextArea;
@@ -32,11 +32,11 @@ import java.awt.event.WindowEvent;
  * @author kaja
  *
  */
-public class ErrorDialog extends Dialog
+public class ErrorDialog extends Frame
 {
 	private static final long serialVersionUID = 0L;
 
-	private static final String ERROR_TITLE = "Error";
+	private static final String ERROR_TITLE = "Materialization Error";
 
 	private static final String ERROR_ICON = "error.png";
 
@@ -48,9 +48,12 @@ public class ErrorDialog extends Dialog
 	
 	private boolean m_focusRepaired = false;
 	
-	public ErrorDialog(String title, String problem, String solution, String helpURL)
+	public ErrorDialog(String title, String problem, String solution, String helpURL, Image windowIconImage)
 	{
-		super(new Frame(), ERROR_TITLE, true);
+		super(ERROR_TITLE);
+
+		if(windowIconImage != null)
+			setIconImage(windowIconImage);
 
 		addWindowListener(new WindowAdapter()
 		{
@@ -62,6 +65,7 @@ public class ErrorDialog extends Dialog
 		});
 
 		setLayout(new BorderLayout());
+		setBackground(null);
 		
 		Panel tp = new Panel(new BorderLayout(0, 0));
 
@@ -87,9 +91,9 @@ public class ErrorDialog extends Dialog
 		
 		p = new Panel(new FlowLayout(FlowLayout.LEFT));
 		pp.add("South", p);
-		TextArea ta = new TextArea(problem, 3, 70);
+		TextArea ta = new TextArea(problem, 10, 70);
 		ta.setEditable(false);
-		ta.setFocusable(false);
+		ta.setFocusable(true);
 		p.add(ta);
 		
 		Panel sp = new Panel(new BorderLayout());
@@ -100,7 +104,7 @@ public class ErrorDialog extends Dialog
 		sp.add("South", p);
 		ta = new TextArea(solution, 3, 70);
 		ta.setEditable(false);
-		ta.setFocusable(false);
+		ta.setFocusable(true);
 		p.add(ta);
 		
 		if(helpURL != null)
@@ -171,7 +175,8 @@ public class ErrorDialog extends Dialog
 	
 	private void finish()
 	{
-		getOwner().dispose();
+		dispose();
+		System.exit(-1);
 	}
 }
 

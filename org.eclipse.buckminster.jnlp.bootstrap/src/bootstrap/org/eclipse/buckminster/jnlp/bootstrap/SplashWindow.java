@@ -346,29 +346,6 @@ public class SplashWindow extends Frame
 	}
 
 	/**
-	 * Open's a splash window using the specified image.
-	 * 
-	 */
-	public static void splash(byte[] splashImageBootBytes, byte[] splashImageBytes, byte[] windowIconBytes)
-	{
-		if(splashImageBytes != null)
-		{
-			Image splashImageBoot = splashImageBootBytes != null
-					? Toolkit.getDefaultToolkit().createImage(splashImageBootBytes)
-					: null;
-
-			Image splashImage = splashImageBytes != null
-					? Toolkit.getDefaultToolkit().createImage(splashImageBytes)
-					: null;
-
-			Image windowIconImage = windowIconBytes != null
-					? Toolkit.getDefaultToolkit().createImage(windowIconBytes)
-					: null;
-			splash(splashImageBoot, splashImage, windowIconImage);
-		}
-	}
-
-	/**
 	 * Closes the splash window.
 	 */
 	public static void disposeSplash()
