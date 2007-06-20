@@ -707,18 +707,9 @@ public class Main
 					}
 					finally
 					{
-						if(rd != null)
-							try
-							{
-								rd.close();
-							}
-							catch(IOException e)
-							{
-								// that's a bad luck :-(
-							}
+						close(rd);
 					}
 				}
-
 			}.start();
 
 			new Thread()
@@ -738,18 +729,9 @@ public class Main
 					}
 					finally
 					{
-						if(erd != null)
-							try
-							{
-								erd.close();
-							}
-							catch(IOException e)
-							{
-								// that's a bad luck :-(
-							}
+						close(erd);
 					}
 				}
-
 			}.start();
 		}
 		catch(IOException e)
