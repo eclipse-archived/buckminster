@@ -90,7 +90,7 @@ public class Main
 	private TailLineBuffer m_tailOut = null;
 
 	private TailLineBuffer m_tailErr = null;
-	
+
 	private Image m_splashImageBoot = null;
 
 	private Image m_splashImage = null;
@@ -101,7 +101,7 @@ public class Main
 	{
 		Main main = new Main();
 		try
-		{	
+		{
 			main.run(args);
 			Runtime.getRuntime().exit(0);
 		}
@@ -118,21 +118,22 @@ public class Main
 					problem += "\n\nStack Trace:\n" + getStackTrace(e.getCause());
 				}
 
-				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem, e.getSolution(), main.getErrorURL() == null
-						? null
-						: main.getErrorURL() + "?errorCode=" + e.getErrorCode()).open();
+				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem, e.getSolution(),
+						main.getErrorURL() == null
+								? null
+								: main.getErrorURL() + "?errorCode=" + e.getErrorCode()).open();
 			}
 			else
 			{
 				String problem = t.getMessage();
-				
+
 				if(problem == null)
 				{
 					problem = "Unknonw runtime exception";
 				}
-				
+
 				problem += "\n\nStack Trace:\n" + getStackTrace(t);
-				
+
 				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem,
 						"Check your java installation and try again", main.getErrorURL() == null
 								? null
@@ -159,11 +160,11 @@ public class Main
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
-		pw.close();				
+		pw.close();
 
 		return sw.toString();
 	}
-	
+
 	public synchronized File getApplicationDataLocation() throws JNLPException
 	{
 		if(m_applicationData == null)
@@ -216,7 +217,7 @@ public class Main
 			}
 			m_installLocation.mkdirs();
 		}
-		
+
 		return m_installLocation;
 	}
 
@@ -238,12 +239,13 @@ public class Main
 	public static boolean isOs(String osName)
 	{
 		String os = System.getProperty("os.name");
-		return os != null && os.length() >= osName.length() && osName.equalsIgnoreCase(os.substring(0, osName.length()));
+		return os != null && os.length() >= osName.length()
+				&& osName.equalsIgnoreCase(os.substring(0, osName.length()));
 	}
 
 	public String getWorkspaceDir() throws JNLPException
 	{
-		//have the workspace location the same as the product installation
+		// have the workspace location the same as the product installation
 		return getInstallLocation().getAbsolutePath();
 	}
 
@@ -428,54 +430,57 @@ public class Main
 			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
 
 			m_splashImageBoot = splashImageBootData != null
-			? Toolkit.getDefaultToolkit().createImage(splashImageBootData)
-			: null;
+					? Toolkit.getDefaultToolkit().createImage(splashImageBootData)
+					: null;
 
 			m_splashImage = splashImageData != null
-			? Toolkit.getDefaultToolkit().createImage(splashImageData)
-			: null;
+					? Toolkit.getDefaultToolkit().createImage(splashImageData)
+					: null;
 
-			m_windowIconImage = windowIconData!= null
-			? Toolkit.getDefaultToolkit().createImage(windowIconData)
-			: null;
+			m_windowIconImage = windowIconData != null
+					? Toolkit.getDefaultToolkit().createImage(windowIconData)
+					: null;
 
-			
 			File siteRoot = getSiteRoot();
 			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
-			if(siteRoot == null)
+			boolean productUpdated = false;
+			if(siteRoot == null && splashImageBootData != null || splashImageData != null)
+				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
+
+			/*
+			 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to test
+			 * splash progress without actually // running under Java Web Start - i.e. keep this comment in the code.
+			 * DownloadServiceListener xdsl = SplashWindow.getDownloadServiceListener(); for(int i = 0; i < 101; i++) {
+			 * xdsl.progress(null,"", 0L, 0L, i); Thread.sleep(50); } for(int i = 0; i < 51; i++) {
+			 * xdsl.progress(null,"", 0L, 0L, i); Thread.sleep(50); } // For debugging purposes - obtain data from the
+			 * splash and put them in user's clipboard // SplashWindow.disposeSplash();
+			 * System.err.print(SplashWindow.getDebugString());
+			 */
+			try
 			{
-				if(splashImageBootData != null || splashImageData != null)
-					SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
-
-				/*
-				 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to
-				 * test splash progress without actually // running under Java Web Start - i.e. keep this comment in the
-				 * code. DownloadServiceListener xdsl = SplashWindow.getDownloadServiceListener(); for(int i = 0; i <
-				 * 101; i++) { xdsl.progress(null,"", 0L, 0L, i); Thread.sleep(50); } for(int i = 0; i < 51; i++) {
-				 * xdsl.progress(null,"", 0L, 0L, i); Thread.sleep(50); } // For debugging purposes - obtain data from
-				 * the splash and put them in user's clipboard // SplashWindow.disposeSplash();
-				 * System.err.print(SplashWindow.getDebugString());
-				 */
-				try
+				// Assume we don't have an installed product
+				//
+				DownloadService ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService");
+				// DownloadServiceListener dsl = ds.getDefaultProgressWindow();
+				if(!ds.isPartCached(PRODUCT))
 				{
-					// Assume we don't have an installed product
-					//
-					DownloadService ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService");
-					// DownloadServiceListener dsl = ds.getDefaultProgressWindow();
-					if(!ds.isPartCached(PRODUCT))
-					{
-						// SplashWindow.disposeSplash();
-						ds.loadPart(PRODUCT, monitor);
-						// SplashWindow.splash(splashData);
-					}
+					if(!SplashWindow.splashIsUp() && (splashImageBootData != null || splashImageData != null))
+						SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
+					// SplashWindow.disposeSplash();
+					ds.loadPart(PRODUCT, monitor);
+					// SplashWindow.splash(splashData);
+					productUpdated = true;
 				}
-				catch(Exception e)
-				{
-					throw new JNLPException("Can not download materialization wizard",
-							"Check disk space, system permissions, internet connection and try again",
-							ERROR_CODE_DOWNLOAD_EXCEPTION, e);
-				}
+			}
+			catch(Exception e)
+			{
+				throw new JNLPException("Can not download materialization wizard",
+						"Check disk space, system permissions, internet connection and try again",
+						ERROR_CODE_DOWNLOAD_EXCEPTION, e);
+			}
 
+			if(productUpdated)
+			{
 				IProductInstaller installer;
 				try
 				{
@@ -553,10 +558,10 @@ public class Main
 						throw new JNLPException("Unable to launch materializer:\nExit code: " + processExitValue
 								+ (capturedErrors != null
 										? "\nCaptured errors:\n" + capturedErrors
-										: "")
-								+ (capturedOutput != null
+										: "") + (capturedOutput != null
 										? "\nCaptured output:\n" + capturedOutput
-										: ""), "Read error description above", ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
+										: ""), "Read error description above",
+								ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
 					}
 
 					m_process.destroy();
@@ -647,12 +652,12 @@ public class Main
 		final String syncString = "sync info: application launched";
 		allArgs.add("-syncString");
 		allArgs.add(syncString);
-		
+
 		allArgs.add("-consoleLog");
-		
+
 		allArgs.add("-popupAfter");
 		allArgs.add("" + popupAfter);
-		
+
 		allArgs.add("-ws");
 
 		if(isWindows())
@@ -668,8 +673,10 @@ public class Main
 			allArgs.add("gtk");
 
 		Runtime runtime = Runtime.getRuntime();
-		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
-		m_tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
+		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
+				.intValue());
+		m_tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
+				.intValue());
 
 		try
 		{

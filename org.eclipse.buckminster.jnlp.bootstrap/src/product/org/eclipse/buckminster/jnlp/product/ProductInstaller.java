@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -18,6 +19,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
 import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
@@ -30,6 +32,8 @@ public class ProductInstaller implements IProductInstaller
 	private static final int PACK_SUFFIX_LEN = PACK_SUFFIX.length();
 
 	private static final char s_fileSep;
+
+	private static HashSet<File> s_foldersToRemove = null;
 
 	static
 	{
@@ -51,6 +55,7 @@ public class ProductInstaller implements IProductInstaller
 	private Unpacker m_unpacker;
 
 	private static final String PROP_UNPACK_COUNT = "unpackCount";
+
 	private static final int DEFAULT_UNPACK_COUNT = 80;
 
 	public void installProduct(Main main, ProgressFacade monitor) throws JNLPException
@@ -61,10 +66,45 @@ public class ProductInstaller implements IProductInstaller
 		// everything in one go, it's a bit hard to find the exact number.
 		//
 		int unpackCount = Integer.getInteger(PROP_UNPACK_COUNT, DEFAULT_UNPACK_COUNT).intValue();
-		monitor.setTask("Unpacking", unpackCount + 20);
+		monitor.setTask("Unpacking", unpackCount + 30);
+
+		deleteRecursive(new File(m_main.getInstallLocation(), "installer"));
+		monitor.taskIncrementalProgress(10);
+
 		installResource("product.zip", monitor);
 		installResource("platform.zip", monitor);
 		monitor.taskDone();
+	}
+
+	private static void deleteRecursive(File file) throws JNLPException
+	{
+		if(!file.exists())
+			return;
+
+		try
+		{
+			File[] list = file.listFiles();
+			int count = (list == null)
+					? 0
+					: list.length;
+			if(count > 0)
+			{
+				if(s_foldersToRemove != null)
+					s_foldersToRemove.remove(file);
+
+				while(--count >= 0)
+					deleteRecursive(list[count]);
+			}
+
+			if(!file.delete() && file.exists())
+				throw new JNLPException("Unable to delete " + file.getAbsolutePath(), "Check file permissions",
+						BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION);
+		}
+		catch(SecurityException e)
+		{
+			throw new JNLPException("Unable to delete " + file.getAbsolutePath() + ": " + e.getMessage(),
+					"Check file permissions", BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e);
+		}
 	}
 
 	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException
@@ -120,7 +160,9 @@ public class ProductInstaller implements IProductInstaller
 						}
 						catch(FileNotFoundException e)
 						{
-							throw new JNLPException("Can not create file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+							throw new JNLPException("Can not create file: " + file.toString(),
+									"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION,
+									e);
 						}
 						try
 						{
@@ -130,7 +172,9 @@ public class ProductInstaller implements IProductInstaller
 							}
 							catch(IOException e)
 							{
-								throw new JNLPException("Can not unzip and save to file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+								throw new JNLPException("Can not unzip and save to file: " + file.toString(),
+										"Check disk space, system permissions and try again",
+										ERROR_CODE_FILE_IO_EXCEPTION, e);
 							}
 							monitor.taskIncrementalProgress(1);
 						}
@@ -150,7 +194,9 @@ public class ProductInstaller implements IProductInstaller
 						}
 						catch(IOException e)
 						{
-							throw new JNLPException("Can not save to file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+							throw new JNLPException("Can not save to file: " + file.toString(),
+									"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION,
+									e);
 						}
 					}
 
@@ -163,7 +209,9 @@ public class ProductInstaller implements IProductInstaller
 						}
 						catch(IOException e)
 						{
-							throw new JNLPException("Can not unpack file: " + file.toString(), "Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+							throw new JNLPException("Can not unpack file: " + file.toString(),
+									"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION,
+									e);
 						}
 					}
 				}
@@ -175,7 +223,8 @@ public class ProductInstaller implements IProductInstaller
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not read materialization wizard resource", "Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+			throw new JNLPException("Can not read materialization wizard resource",
+					"Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 	}
 
@@ -291,7 +340,7 @@ public class ProductInstaller implements IProductInstaller
 				{
 				}
 			});
-			
+
 			JarOutputStream jarOut = new JarOutputStream(result);
 			m_unpacker.unpack(gzipInput, jarOut);
 			gzipInput = null; // Closed by unpack
