@@ -479,7 +479,7 @@ public class Main
 						ERROR_CODE_DOWNLOAD_EXCEPTION, e);
 			}
 
-			if(productUpdated)
+			if(siteRoot == null || productUpdated)
 			{
 				IProductInstaller installer;
 				try
