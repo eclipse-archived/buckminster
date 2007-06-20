@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -99,7 +101,7 @@ public class Main
 	{
 		Main main = new Main();
 		try
-		{
+		{	
 			main.run(args);
 			Runtime.getRuntime().exit(0);
 		}
@@ -113,19 +115,28 @@ public class Main
 
 				if(e.getCause() != null)
 				{
-					problem += "\n\nCause: " + e.getCause().getMessage();
+					problem += "\n\nStack Trace:\n" + getStackTrace(e.getCause());
 				}
 
-				new ErrorDialog("Materializer can not be started", problem, e.getSolution(), main.getErrorURL() == null
+				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem, e.getSolution(), main.getErrorURL() == null
 						? null
-						: main.getErrorURL() + "?errorCode=" + e.getErrorCode(), main.getWindowIconImage()).setVisible(true);
+						: main.getErrorURL() + "?errorCode=" + e.getErrorCode()).open();
 			}
 			else
 			{
-				new ErrorDialog("Materializer can not be started", t.getMessage(),
+				String problem = t.getMessage();
+				
+				if(problem == null)
+				{
+					problem = "Unknonw runtime exception";
+				}
+				
+				problem += "\n\nStack Trace:\n" + getStackTrace(t);
+				
+				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem,
 						"Check your java installation and try again", main.getErrorURL() == null
 								? null
-								: main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION, main.getWindowIconImage()).setVisible(true);
+								: main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION).open();
 			}
 
 			try
@@ -139,9 +150,20 @@ public class Main
 			{
 			}
 
+			Runtime.getRuntime().exit(-1);
 		}
 	}
 
+	private static String getStackTrace(Throwable e)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		pw.close();				
+
+		return sw.toString();
+	}
+	
 	public synchronized File getApplicationDataLocation() throws JNLPException
 	{
 		if(m_applicationData == null)
@@ -392,7 +414,7 @@ public class Main
 
 			if(!serviceAvailable || (serviceMessage != null && serviceMessage.length() > 0))
 			{
-				new ServiceDialog(serviceMessage, serviceAvailable).setVisible(true);
+				new ServiceDialog(getWindowIconImage(), serviceMessage, serviceAvailable).open();
 
 				if(!serviceAvailable)
 				{
