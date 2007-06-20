@@ -12,7 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
@@ -33,7 +32,7 @@ import java.awt.event.WindowEvent;
  * @author kaja
  *
  */
-public class ErrorDialog extends Frame
+public class ErrorDialog extends JNLPDialog
 {
 	private static final long serialVersionUID = 0L;
 
@@ -49,12 +48,9 @@ public class ErrorDialog extends Frame
 	
 	private boolean m_focusRepaired = false;
 	
-	public ErrorDialog(String title, String problem, String solution, String helpURL, Image windowIconImage)
+	public ErrorDialog(Image windowIconImage, String title, String problem, String solution, String helpURL)
 	{
-		super(ERROR_TITLE);
-
-		if(windowIconImage != null)
-			setIconImage(windowIconImage);
+		super(windowIconImage, ERROR_TITLE);
 
 		addWindowListener(new WindowAdapter()
 		{
@@ -212,12 +208,6 @@ public class ErrorDialog extends Frame
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setBounds((screen.width - width) / 2, (screen.height - height) / 2, width, height);
-	}
-	
-	private void finish()
-	{
-		dispose();
-		System.exit(-1);
 	}
 }
 
