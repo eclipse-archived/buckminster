@@ -18,7 +18,7 @@ public class FileInfoBuilder implements IFileInfo
 
 	private String m_contentType;
 
-	private Long m_size;
+	private long m_size = -1;
 
 	/**
 	 * Creates an empty FileInfoBuilder
@@ -45,7 +45,7 @@ public class FileInfoBuilder implements IFileInfo
 	{
 		m_name = null;
 		m_contentType = null;
-		m_size = null;
+		m_size = -1;
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class FileInfoBuilder implements IFileInfo
 	/**
 	 * @return the size
 	 */
-	public final Long getSize()
+	public final long getSize()
 	{
 		return m_size;
 	}
@@ -106,7 +106,7 @@ public class FileInfoBuilder implements IFileInfo
 	 * @param size
 	 *            the size to set
 	 */
-	public final void setSize(Long size)
+	public final void setSize(long size)
 	{
 		m_size = size;
 	}

@@ -25,9 +25,9 @@ public interface IFileInfo
 	public String getContentType();
 
 	/**
-	 * @return the size (may return null)
+	 * @return the size or -1 if the size is not known
 	 */
-	public Long getSize();
+	public long getSize();
 	
 	/**
 	 * @return the most suitable extension (may return null)

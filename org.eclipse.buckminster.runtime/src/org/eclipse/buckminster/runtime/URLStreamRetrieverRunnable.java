@@ -77,9 +77,9 @@ class URLStreamRetrieverRunnable extends Thread
 		
 		infoBuilder.setName(filename);
 		infoBuilder.setContentType(conn.getContentType());
-		infoBuilder.setSize(conn.getContentLength() != -1 ? Long.valueOf(conn.getContentLength()) : null);
+		infoBuilder.setSize(conn.getContentLength());
 	}
-	
+
 	URLStreamRetrieverRunnable(URL url)
 	{
 		super("URLStreamRetriever");
