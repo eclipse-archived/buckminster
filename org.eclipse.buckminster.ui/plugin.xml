@@ -43,17 +43,15 @@
 		</page>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
-		<page adaptable="true"
+		<page
 			class="org.eclipse.buckminster.ui.internal.properties.ProjectPropertyPage"
 			id="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
-			name="%ProjectPropertyPage.name"
-			objectClass="org.eclipse.core.resources.IProject" />
-		<page adaptable="true"
+			name="%ProjectPropertyPage.name"/>
+		<page
 			category="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
 			class="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
 			id="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
-			name="%ProjectBuildersPropertyPage.name"
-			objectClass="org.eclipse.core.resources.IProject" />
+			name="%ProjectBuildersPropertyPage.name"/>
 	</extension>
 	<extension
 		point="org.eclipse.buckminster.ui.incrementalBuilderEditors">
