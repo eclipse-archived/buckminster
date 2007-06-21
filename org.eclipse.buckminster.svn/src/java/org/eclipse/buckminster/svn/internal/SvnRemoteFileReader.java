@@ -83,13 +83,11 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			switch(vc.getType())
 			{
 			case TAG:
-				branch = null;
 				tag = vm.getVersion().isDefault()
 						? null
 						: vc.createSelector(vm.getVersion()).getQualifier();
 				break;
 			default:
-				tag = null;
 				branch = vs.isDefaultBranch()
 						? null
 						: vs.getBranchName();
