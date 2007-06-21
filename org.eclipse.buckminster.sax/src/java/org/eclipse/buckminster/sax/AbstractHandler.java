@@ -8,10 +8,13 @@
 package org.eclipse.buckminster.sax;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -57,6 +60,34 @@ public abstract class AbstractHandler extends DefaultHandler
 				value = null;
 		}
 		return value;
+	}
+
+	/**
+	 * Returns an attribute that is compiled into a regular expression
+	 * pattern. This method returns <code>null</code> when the attribute is
+	 * <code>null</code> or an empty String.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The compiled pattern or <code>null</code>.
+	 * @throws SAXParseException when the attribute is not null or empty and cannot
+	 * be compiled into a regular expression pattern.
+	 */
+	public Pattern getOptionalPatternValue(Attributes attrs, String qName) throws SAXParseException
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		if(value == null || value.length() == 0)
+			return null;
+		try
+		{
+			return Pattern.compile(value);
+		}
+		catch(PatternSyntaxException e)
+		{
+			throw new SAXParseException("The value of attribute " + qName + " is not a valid regular expression", getDocumentLocator(), e);
+		}
 	}
 
 	/**
@@ -173,6 +204,26 @@ public abstract class AbstractHandler extends DefaultHandler
 	protected String getStringValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
 	{
 		String value = getOptionalStringValue(attrs, qName);
+		if(value == null)
+			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
+		return value;
+	}
+
+	/**
+	 * Returns an attribute that is compiled into a regular expression
+	 * pattern.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The compiled pattern.
+	 * @throws MissingRequiredAttributeException when the attribute is not null or empty
+	 * @throws SAXParseException when the attribute value cannot be compiled into a regular expression pattern.
+	 */
+	protected Pattern getPatternValue(Attributes attrs, String qName) throws SAXParseException, MissingRequiredAttributeException
+	{
+		Pattern value = getOptionalPatternValue(attrs, qName);
 		if(value == null)
 			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
 		return value;
