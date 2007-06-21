@@ -79,14 +79,12 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 
 					IProgressMonitor writeMonitor = MonitorUtils.subMonitor(mon, 900);
 
-					writeMonitor.beginTask(null, info.getSize() != null
-							? info.getSize().intValue()
+					writeMonitor.beginTask(null, info.getSize() > 0
+							? (int)info.getSize()
 							: IProgressMonitor.UNKNOWN);
 					try
 					{
-						ProgressStatistics progress = new ProgressStatistics(info.getSize() != null
-								? info.getSize().longValue()
-								: -1);
+						ProgressStatistics progress = new ProgressStatistics(info.getSize());
 						progress.setConverter(ProgressStatistics.FILESIZE_CONVERTER);
 
 						/*
@@ -157,9 +155,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 								// Bump the reporter to report the change
 								progressReporter.interrupt();
 
-								MonitorUtils.worked(writeMonitor, info.getSize() != null
-										? count
-										: 1);
+								MonitorUtils.worked(writeMonitor, info.getSize() > 0 ? count : 1);
 							}
 						}
 						finally
