@@ -19,7 +19,7 @@
    <feature url="features/org.eclipse.buckminster.pde.feature_0.1.0.v20070615.jar" id="org.eclipse.buckminster.pde.feature" version="0.1.0.v20070615">
       <category name="Buckminster (optional)"/>
    </feature>
-   <feature url="features/org.eclipse.buckminster.svn.feature_0.1.0.v20070615.jar" id="org.eclipse.buckminster.svn.feature" version="0.1.0.v20070615">
+   <feature url="features/org.eclipse.buckminster.svn.feature_0.1.0.v20070626.jar" id="org.eclipse.buckminster.svn.feature" version="0.1.0.v20070626">
       <category name="Buckminster (optional)"/>
    </feature>
 
