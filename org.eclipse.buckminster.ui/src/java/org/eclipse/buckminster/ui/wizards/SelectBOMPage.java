@@ -243,9 +243,9 @@ public class SelectBOMPage extends AbstractQueryPage
 						{
 							input = byteBld.getInputStream();
 							bom = pf.getBillOfMaterialsParser(true).parse(urlToParse.toString(), input);
+							bom = BillOfMaterials.importGraph((ExportedBillOfMaterials)bom);
 							MonitorUtils.worked(monitor, 40);
 						}
-						bom = BillOfMaterials.importGraph((ExportedBillOfMaterials)bom);
 						wizard.setBOM(bom);
 						MonitorUtils.worked(monitor, 10);
 					}

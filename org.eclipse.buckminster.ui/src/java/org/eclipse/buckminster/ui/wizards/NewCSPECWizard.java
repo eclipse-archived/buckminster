@@ -38,23 +38,23 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 	{
 		StringBuffer contents = new StringBuffer(300);
 		contents.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		contents.append("<cs:cspec\n");
+		contents.append("<cspec\n");
 		contents.append("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		contents.append("    xmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"\n");
-		contents.append("    xmlns:cs=\"http://www.eclipse.org/buckminster/CSpec-1.0\"\n");
-		contents.append("    <cs:dependencies>\n");
+		contents.append("    xmlns=\"http://www.eclipse.org/buckminster/CSpec-1.0\"\n");
+		contents.append("    <dependencies>\n");
 		contents.append("        <!-- Place your Dependencies here -->\n");
-		contents.append("    </cs:dependencies>\n");
-		contents.append("    <cs:artifacts>\n");
+		contents.append("    </dependencies>\n");
+		contents.append("    <artifacts>\n");
 		contents.append("        <!-- Place your Artifacts here -->\n");
-		contents.append("    </cs:artifacts>\n");
-		contents.append("    <cs:actions>\n");
+		contents.append("    </artifacts>\n");
+		contents.append("    <actions>\n");
 		contents.append("        <!-- Place your Actions here -->\n");
-		contents.append("    </cs:actions>\n");
-		contents.append("    <cs:groups>\n");
+		contents.append("    </actions>\n");
+		contents.append("    <groups>\n");
 		contents.append("        <!-- Place your Groups here -->\n");
-		contents.append("    </cs:groups>\n");
-		contents.append("</cs:cspec>\n");
+		contents.append("    </groups>\n");
+		contents.append("</cspec>\n");
 
 		return new ByteArrayInputStream(contents.toString().getBytes());
 	}

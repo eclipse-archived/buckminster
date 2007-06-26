@@ -23,7 +23,7 @@ public class NewCSPEXWizardPage extends NewBMFileWizardPage
 	 */
 	public NewCSPEXWizardPage(ISelection selection)
 	{
-		super(selection, "new_cspex.cspex", "cspex");
+		super(selection, "buckminster.cspex", "cspex");
 		setTitle("New Buckminster Component Specification Extension File");
 		setDescription("This wizard creates a new file with *.cspex extension that can be opened by an XML or text editor. "
 				+ "A CSPEX allows you to extend a generated specification.");

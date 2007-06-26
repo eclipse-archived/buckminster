@@ -23,7 +23,7 @@ public class NewCSPECWizardPage extends NewBMFileWizardPage
 	 */
 	public NewCSPECWizardPage(ISelection selection)
 	{
-		super(selection, "new_cspec.cspec", "cspec");
+		super(selection, "buckminster.cspec", "cspec");
 		setTitle("New Buckminster Component Specification File");
 		setDescription("This wizard creates a new file with *.cspec extension that can be opened by an XML or text editor. "
 				+ "A CSPEC is used when a specification can not be generated.");
