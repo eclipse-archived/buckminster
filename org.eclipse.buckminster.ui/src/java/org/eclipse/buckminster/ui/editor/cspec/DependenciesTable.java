@@ -98,7 +98,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 
 	private IWidgetin getName(Composite parent, final int idx, Object value)
 	{
-		final Text text = UiUtils.createGridText(parent, 2, 0, null, SWT.NONE);
+		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
 		
 		final IWidgetin widgetin = new WidgetinWrapper(text);
 		

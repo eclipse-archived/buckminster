@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.materializer.AbstractMaterializer;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -45,6 +46,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -68,9 +70,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -168,6 +173,214 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 	}
 
+	class ResolutionDetails extends TitleAreaDialog
+	{
+		private Combo m_conflictResolution;
+
+		private Text m_defaultSuffix;
+
+		private Label m_defaultSuffixLabel;
+
+		private Button m_expandButton;
+
+		private Text m_installLocation;
+
+		private Combo m_materializer;
+
+		private Text m_resourcePath;
+
+		private Label m_resourcePathLabel;
+
+		private Button m_unpackButton;
+
+		private Text m_workspaceLocation;
+
+		private Button m_workspaceLocationBrowse;
+
+		private Label m_workspaceLocationLabel;
+
+		private final String m_title;
+
+		private final MaterializationNodeBuilder m_node;
+
+		public ResolutionDetails(Shell parentShell, Resolution resolution) throws CoreException
+		{
+			super(parentShell);
+			m_node = getMaterializationNode(resolution);
+			m_title = resolution.getRequest().getViewName();
+		}
+
+		@Override
+		protected Control createContents(Composite parent)
+		{
+			Control contents = super.createContents(parent);
+			String materializer = m_node.getMaterializer();
+			int matIdx = 0;
+			if(materializer != null)
+			{
+				matIdx = m_materializer.indexOf(materializer);
+				if(matIdx < 0)
+					matIdx = 0;
+			}
+			m_materializer.select(matIdx);
+
+			ConflictResolution nodeRes = m_node.getConflictResolution();
+			m_conflictResolution.select(nodeRes == null ? 0 : nodeRes.ordinal() + 1);
+			setTextValue(m_resourcePath, m_node.getResourcePath());
+			setTextValue(m_installLocation, m_node.getInstallLocation());
+			setTextValue(m_workspaceLocation, m_node.getWorkspaceLocation());
+
+			m_unpackButton.setSelection(m_node.isUnpack());
+			m_expandButton.setSelection(m_node.isExpand());
+			setTextValue(m_defaultSuffix, m_node.getSuffix());
+
+			setTitle(m_title);
+			updateMaterializerView();
+			updateUnpackView();
+
+			return contents;
+		}
+
+		@Override
+	    protected Control createDialogArea(Composite parent)
+		{
+			Control dialogParent = super.createDialogArea(parent);
+			Composite myParent = new Composite((Composite)dialogParent, SWT.NONE);
+			myParent.setLayout(new GridLayout(5, false));
+			myParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+			UiUtils.createGridLabel(myParent, "Destination type:", 2, 0, SWT.NONE);
+			m_materializer = UiUtils.createGridCombo(myParent, 2, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
+			UiUtils.createEmptyLabel(myParent).setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+			m_materializer.setItems(AbstractMaterializer.getMaterializerIDs(true));
+			m_materializer.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent se)
+				{
+					updateMaterializerView();
+				}
+			});
+
+			m_installLocation = UiUtils.createGridLabeledText(myParent, "Location:", 2, 2, SWT.NONE, null);
+			UiUtils.createPushButton(myParent, "Browse...", new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent se)
+				{
+					DirectoryDialog dd = new DirectoryDialog(getShell());
+					String newLoc = dd.open();
+					if(newLoc != null)
+						m_installLocation.setText(newLoc);
+				}
+			}).setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+
+			UiUtils.createGridLabel(myParent, "On non empty install location:", 2, 0, SWT.NONE);
+			m_conflictResolution = UiUtils.createGridCombo(myParent, 2, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
+			UiUtils.createEmptyLabel(myParent).setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+			m_conflictResolution.add("");
+			for(ConflictResolution value : ConflictResolution.values())
+				m_conflictResolution.add(value.toString());
+
+			m_unpackButton = UiUtils.createCheckButton(myParent, "Unpack", new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent se)
+				{
+					updateUnpackView();
+				}
+			});
+			m_expandButton = UiUtils.createCheckButton(myParent, "Expand", null);
+			m_defaultSuffixLabel = UiUtils.createGridLabel(myParent, "Default suffix:", 1, 0, SWT.NONE);
+			m_defaultSuffix = UiUtils.createGridText(myParent, 2, 0, SWT.NONE);
+
+			m_workspaceLocationLabel = UiUtils.createGridLabel(myParent, "Workspace:", 2, 0, SWT.NONE);
+			m_workspaceLocation = UiUtils.createGridText(myParent, 2, 0, SWT.NONE);
+			m_workspaceLocationBrowse = UiUtils.createPushButton(myParent, "Browse...", new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent se)
+				{
+					DirectoryDialog dd = new DirectoryDialog(getShell());
+					String newLoc = dd.open();
+					if(newLoc != null)
+						m_workspaceLocation.setText(newLoc);
+				}
+			});
+			m_workspaceLocationBrowse.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+
+			m_resourcePathLabel = UiUtils.createGridLabel(myParent, "Project Name:", 2, 0, SWT.NONE);
+			m_resourcePath = UiUtils.createGridText(myParent, 3, 0, SWT.NONE);
+			return dialogParent;
+		}
+
+		@Override
+		protected void okPressed()
+		{
+			String tmp = UiUtils.trimmedValue(m_installLocation);
+			m_node.setInstallLocation(tmp == null ? null : Path.fromOSString(tmp));
+
+			int idx = m_materializer.getSelectionIndex();
+			m_node.setMaterializer(idx <= 0 ? null : m_materializer.getItem(idx));
+
+			idx = m_conflictResolution.getSelectionIndex();
+			m_node.setConflictResolution(idx <= 0 ? null : ConflictResolution.values()[idx-1]);
+
+			if(m_unpackButton.getSelection())
+			{
+				m_node.setUnpack(true);
+				m_node.setExpand(m_expandButton.getSelection());
+				m_node.setSuffix(UiUtils.trimmedValue(m_defaultSuffix));
+			}
+			else
+				m_node.setUnpack(false);
+
+			if(isUsingWorkspace())
+			{
+				tmp = UiUtils.trimmedValue(m_resourcePath);
+				m_node.setResourcePath(tmp == null ? null : Path.fromOSString(tmp));
+				
+				tmp = UiUtils.trimmedValue(m_workspaceLocation);
+				m_node.setWorkspaceLocation(tmp == null ? null : Path.fromOSString(tmp));
+			}
+			super.okPressed();
+		}
+
+		private boolean isUsingWorkspace()
+		{
+			int idx = m_materializer.getSelectionIndex();
+			String id = (idx >= 0) ? m_materializer.getItem(idx) : "";
+			boolean useWorkspace;
+			if(id.length() == 0)
+			{
+				int globalIdx = m_globalMaterializer.getSelectionIndex();
+				String globalId = (globalIdx >= 0) ? m_globalMaterializer.getItem(globalIdx) : "";
+				useWorkspace = globalId.length() == 0 || IMaterializer.WORKSPACE.equals(globalId);
+			}
+			else
+				useWorkspace = IMaterializer.WORKSPACE.equals(id);
+			return useWorkspace;
+		}
+
+		private void updateMaterializerView()
+		{
+			boolean useWorkspace = isUsingWorkspace();
+			m_resourcePathLabel.setEnabled(useWorkspace);
+			m_resourcePath.setEnabled(useWorkspace);
+			m_workspaceLocationLabel.setEnabled(useWorkspace);
+			m_workspaceLocation.setEnabled(useWorkspace);
+			m_workspaceLocationBrowse.setEnabled(useWorkspace);
+		}
+
+		private void updateUnpackView()
+		{
+			boolean unpack = m_unpackButton.getSelection();
+			m_expandButton.setEnabled(unpack);
+			m_defaultSuffixLabel.setEnabled(unpack);
+			m_defaultSuffix.setEnabled(unpack);
+		}
+	}
+
 	static class ResolutionViewerSorter extends ViewerSorter
 	{
 		private final ResolutionComparator m_nodeComparator = new ResolutionComparator();
@@ -179,27 +392,33 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 	}
 
+	private static void setTextValue(Text text, Object value)
+	{
+		String txt = "";
+		if(value != null)
+			txt = value.toString().trim();
+		text.setText(txt);
+	}
+
+	private Button m_advancedButton;
+
 	private TableViewer m_componentTable;
 
 	private Combo m_globalConflictResolutionCombo;
 
-	private Combo m_conflictResolutionCombo;
-
-	private Button m_skipButton;
-
-	private Group m_settingsGroup;
-
-	private Composite m_nodeComposite;
+	private Text m_globalInstallLocation;
 
 	private Combo m_globalMaterializer;
 
-	private Text m_globalInstallLocation;
+	private Label m_globalWorkspaceLocationLabel;
 
-	private Combo m_materializer;
+	private Text m_globalWorkspaceLocation;
 
-	private Text m_installLocation;
+	private Button m_globalWorkspaceLocationBrowse;
 
-	private Text m_resourcePath;
+	private Group m_settingsGroup;
+
+	private Button m_skipButton;
 
 	private Button m_useDefaultsButton;
 
@@ -249,13 +468,63 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				: null;
 	}
 
+	void saveMSPECInFileSystem()
+	{
+		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
+		dlg.setFilterExtensions(new String[] { "*.mspec" });
+		String location = dlg.open();
+		if(location == null)
+			return;
+		saveToPath(new Path(location));
+	}
+
+	void saveMSPECInWorkspace()
+	{
+		SaveAsDialog dialog = new SaveAsDialog(getShell());
+		if(dialog.open() == Window.CANCEL)
+			return;
+
+		IPath filePath = dialog.getResult();
+		if(filePath == null)
+			return;
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IFile file = workspace.getRoot().getFile(filePath);
+		saveToPath(file.getLocation());
+	}
+
 	private String browseForLocation(Resolution node)
 	{
-		// FIXME - this should use a dialog supplied by the repo provider
 		DirectoryDialog dd = new DirectoryDialog(getShell());
 		String dir = dd.open();
-
 		return dir;
+	}
+
+	private void createButtonGroup(Composite parent)
+	{
+		Composite buttons = new Composite(parent, SWT.NONE);
+		buttons.setLayout(new GridLayout(3, false));
+		buttons.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
+
+		Button saveButton = UiUtils.createPushButton(buttons, "Save MSPEC", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				saveMSPECInWorkspace();
+			}
+		});
+		saveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, true, false));
+
+		Button extSaveButton = UiUtils.createPushButton(buttons, "External Save MSPEC", new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				saveMSPECInFileSystem();
+			}
+		});
+		extSaveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));
 	}
 
 	private void createComponentTableGroup(Composite parent)
@@ -264,6 +533,25 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		globalSettings.setText("Global settings");
 		globalSettings.setLayout(new GridLayout(3, false));
 		globalSettings.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		UiUtils.createGridLabel(globalSettings, "Destination type:", 1, 0, SWT.NONE);
+		m_globalMaterializer = UiUtils.createGridCombo(globalSettings, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
+				| SWT.SIMPLE);
+		UiUtils.createEmptyLabel(globalSettings);
+		m_globalMaterializer.setItems(AbstractMaterializer.getMaterializerIDs(true));
+		m_globalMaterializer.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent se)
+			{
+				Combo combo = (Combo)se.getSource();
+				int idx = combo.getSelectionIndex();
+				String materializerId = (idx >= 0)
+						? combo.getItem(idx)
+						: null;
+				setGlobalMaterializer(materializerId);
+			}
+		});
 
 		m_globalInstallLocation = UiUtils.createLabeledText(globalSettings, "Location:", 0, new ModifyListener()
 		{
@@ -288,29 +576,33 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			}
 		});
 
-		UiUtils.createGridLabel(globalSettings, "Materializer:", 1, 0, SWT.NONE);
-		m_globalMaterializer = UiUtils.createGridCombo(globalSettings, 2, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SIMPLE);
-		m_globalMaterializer.setItems(AbstractMaterializer.getMaterializerIDs(true));
-		m_globalMaterializer.addSelectionListener(new SelectionAdapter()
+		m_globalWorkspaceLocationLabel = UiUtils.createGridLabel(globalSettings, "Workspace:", 1, 0, SWT.NONE);
+		m_globalWorkspaceLocation = UiUtils.createGridText(globalSettings, 1, 0, SWT.NONE, new ModifyListener()
+		{
+			public void modifyText(ModifyEvent me)
+			{
+				Text fld = (Text)me.getSource();
+				String txt = UiUtils.trimmedValue(fld);
+				setGlobalWorkspaceLocation(txt == null
+						? null
+						: new Path(txt));
+			}
+		});
+		m_globalWorkspaceLocationBrowse = UiUtils.createPushButton(globalSettings, "Browse...", new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
 			{
-				Combo combo = (Combo)se.getSource();
-				int idx = combo.getSelectionIndex();
-				String materializerId = idx >= 0
-						? combo.getItem(idx)
-						: "";
-				if(materializerId.length() == 0)
-					materializerId = null;
-				setGlobalMaterializer(materializerId);
+				String newLoc = browseForLocation(getSelectedComponent());
+				if(newLoc != null)
+					m_globalWorkspaceLocation.setText(newLoc);
 			}
 		});
 
 		UiUtils.createGridLabel(globalSettings, "On non empty install location:", 1, 0, SWT.NONE);
-		m_globalConflictResolutionCombo = UiUtils.createGridCombo(globalSettings, 2, 0, null, null, SWT.DROP_DOWN
+		m_globalConflictResolutionCombo = UiUtils.createGridCombo(globalSettings, 1, 0, null, null, SWT.DROP_DOWN
 				| SWT.READ_ONLY | SWT.SIMPLE);
+		UiUtils.createEmptyLabel(globalSettings);
 		for(ConflictResolution value : ConflictResolution.values())
 			m_globalConflictResolutionCombo.add(value.toString());
 		m_globalConflictResolutionCombo.select(0);
@@ -369,7 +661,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 	private void createSettingsGroup(Composite parent)
 	{
 		m_settingsGroup = new Group(parent, SWT.NONE);
-		m_settingsGroup.setLayout(new GridLayout(2, false));
+		m_settingsGroup.setLayout(new GridLayout(3, false));
 		m_settingsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 		m_skipButton = UiUtils.createCheckButton(m_settingsGroup, "Skip this component", new SelectionAdapter()
@@ -394,82 +686,54 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		});
 		m_useDefaultsButton.setSelection(true);
 
-		m_nodeComposite = new Composite(m_settingsGroup, SWT.NONE);
-		m_nodeComposite.setLayout(new GridLayout(3, false));
-		m_nodeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-
-		UiUtils.createGridLabel(m_nodeComposite, "Materializer:", 1, 0, SWT.NONE);
-		m_materializer = UiUtils.createGridCombo(m_nodeComposite, 2, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SIMPLE);
-		m_materializer.setItems(AbstractMaterializer.getMaterializerIDs(true));
-		m_materializer.addSelectionListener(new SelectionAdapter()
+		m_advancedButton = UiUtils.createPushButton(m_settingsGroup, "Advanced...", new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
 			{
-				Combo combo = (Combo)se.getSource();
-				int idx = combo.getSelectionIndex();
-				String materializerId = idx >= 0
-						? combo.getItem(idx)
-						: "";
-				if(materializerId.length() == 0)
-					materializerId = null;
-				setMaterializer(getSelectedComponent(), materializerId);
+				displayResolutionDetails();
 			}
 		});
+	}
 
-		m_installLocation = UiUtils.createLabeledText(m_nodeComposite, "Location:", 0, new ModifyListener()
-		{
-			public void modifyText(ModifyEvent me)
-			{
-				Text fld = (Text)me.getSource();
-				String txt = UiUtils.trimmedValue(fld);
-				setLocation(getSelectedComponent(), txt == null
-						? null
-						: new Path(txt));
-			}
-		});
-		m_installLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+	private void displayResolutionDetails()
+	{
+		Resolution resolution = getSelectedComponent();
+		if(resolution == null)
+			return;
 
-		UiUtils.createPushButton(m_nodeComposite, "Browse...", new SelectionAdapter()
+		try
 		{
-			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
-				String newLoc = browseForLocation(getSelectedComponent());
-				if(newLoc != null)
-					m_installLocation.setText(newLoc);
-			}
-		});
-
-		UiUtils.createGridLabel(m_nodeComposite, "On non empty install location:", 1, 0, SWT.NONE);
-		m_conflictResolutionCombo = new Combo(m_nodeComposite, SWT.NONE);
-		for(ConflictResolution value : ConflictResolution.values())
-			m_conflictResolutionCombo.add(value.toString());
-		m_conflictResolutionCombo.select(0);
-		m_conflictResolutionCombo.addSelectionListener(new SelectionAdapter()
+			ResolutionDetails resolutionDetails = new ResolutionDetails(getShell(), resolution);
+			if(resolutionDetails.open() == Window.OK)
+				updatePageCompletion();
+		}
+		catch(CoreException e)
 		{
-			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
-				conflictResolutionEvent(((Combo)se.getSource()).getSelectionIndex());
-			}
-		});
-		m_conflictResolutionCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-
-		m_resourcePath = UiUtils.createLabeledText(m_nodeComposite, "ProjectBinding name:", 0, new ModifyListener()
-		{
-			public void modifyText(ModifyEvent me)
-			{
-				setProjectName(getSelectedComponent(), UiUtils.trimmedValue((Text)me.getSource()));
-			}
-		});
-		m_resourcePath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+			displayException(e);
+		}
 	}
 
 	private TableViewer getComponentTable()
 	{
 		return m_componentTable;
+	}
+
+	private MaterializationNodeBuilder getMaterializationNode(Resolution resolution) throws CoreException
+	{
+		QueryWizard wizard = getQueryWizard();
+		ComponentName cname = resolution.getComponentIdentifier();
+		MaterializationSpecBuilder mspec = wizard.getMaterializationSpec();
+		MaterializationNodeBuilder node = mspec.getMatchingNode(cname);
+		if(node == null)
+		{
+			node = new MaterializationNodeBuilder();
+			node.setNamePattern(Pattern.compile("^\\Q" + cname.getName() + "\\E$"));
+			node.setCategory(cname.getCategory());
+			mspec.getNodes().add(node);
+		}
+		wizard.invalidateMaterializationContext();
+		return node;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -478,73 +742,17 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		return (List<Resolution>)getComponentTable().getInput();
 	}
 
-	private void setLocation(Resolution selected, IPath path)
+	private void globalConflictResolutionEvent(int ordinal)
 	{
-		try
+		QueryWizard wizard = getQueryWizard();
+		MaterializationContext context = wizard.getMaterializationContext();
+		MaterializationSpec mspec = context.getMaterializationSpec();
+		ConflictResolution cr = ConflictResolution.values()[ordinal];
+		if(!cr.equals(mspec.getConflictResolution()))
 		{
-			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			if(!Trivial.equalsAllowNull(context.getInstallLocation(selected), path))
-			{
-				getMaterializationNode(selected).setInstallLocation(path);
-				updatePageCompletion();
-			}
+			wizard.getMaterializationSpec().setConflictResolution(cr);
+			wizard.invalidateMaterializationContext();
 		}
-		catch(CoreException e)
-		{
-			displayException(e);
-		}
-	}
-
-	void saveMSPECInFileSystem()
-	{
-		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.mspec" });
-		String location = dlg.open();
-		if(location == null)
-			return;
-		saveToPath(new Path(location));
-	}
-
-	void saveMSPECInWorkspace()
-	{
-		SaveAsDialog dialog = new SaveAsDialog(getShell());
-		if(dialog.open() == Window.CANCEL)
-			return;
-
-		IPath filePath = dialog.getResult();
-		if(filePath == null)
-			return;
-
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IFile file = workspace.getRoot().getFile(filePath);
-		saveToPath(file.getLocation());
-	}
-
-	private void createButtonGroup(Composite parent)
-	{
-		Composite buttons = new Composite(parent, SWT.NONE);
-		buttons.setLayout(new GridLayout(3, false));
-		buttons.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
-
-		Button saveButton = UiUtils.createPushButton(buttons, "Save MSPEC", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				saveMSPECInWorkspace();
-			}
-		});
-		saveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, true, false));
-
-		Button extSaveButton = UiUtils.createPushButton(buttons, "External Save MSPEC", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				saveMSPECInFileSystem();
-			}
-		});
-		extSaveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));
 	}
 
 	private void saveToPath(IPath path)
@@ -564,7 +772,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 					bomName = name.substring(0, name.length() - 5) + "bom";
 				else
 					bomName = name + ".bom";
-	
+
 				IPath bomPath = parent.append(bomName);
 				SaveRunnable sr = new SaveRunnable(wizard.getBOM().exportGraph(), bomPath);
 				container.run(true, true, sr);
@@ -624,6 +832,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			MaterializationContext context = wizard.getMaterializationContext();
 			if(!Trivial.equalsAllowNull(context.getMaterializationSpec().getMaterializerID(), materializer))
 			{
+				if(materializer != null && materializer.length() == 0)
+					materializer = null;
 				wizard.getMaterializationSpec().setMaterializer(materializer);
 				wizard.invalidateMaterializationContext();
 				setSelectedComponentValues(getSelectedComponent());
@@ -635,65 +845,27 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 	}
 
-	private void globalConflictResolutionEvent(int ordinal)
-	{
-		QueryWizard wizard = getQueryWizard();
-		MaterializationContext context = wizard.getMaterializationContext();
-		MaterializationSpec mspec = context.getMaterializationSpec();
-		ConflictResolution cr = ConflictResolution.values()[ordinal];
-		if(!cr.equals(mspec.getConflictResolution()))
-		{
-			wizard.getMaterializationSpec().setConflictResolution(cr);
-			wizard.invalidateMaterializationContext();
-		}
-	}
-
-	private void setMaterializer(Resolution selected, String materializer)
+	private void setGlobalWorkspaceLocation(IPath path)
 	{
 		try
 		{
-			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(selected.getRequest());
-			String nodeMat = (node == null)
-					? null
-					: node.getMaterializerID();
-			if(!Trivial.equalsAllowNull(nodeMat, materializer))
+			if(path != null)
 			{
-				getMaterializationNode(selected).setMaterializer(materializer);
-				updatePageCompletion();
-			}
-		}
-		catch(CoreException e)
-		{
-			displayException(e);
-		}
-	}
-
-	private void setProjectName(Resolution resolution, String name)
-	{
-		try
-		{
-			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution.getRequest());
-			IPath path = (name == null)
-					? null
-					: Path.fromPortableString(name);
-
-			if(node == null)
-			{
-				if(path != null)
+				if(!path.isAbsolute())
 				{
-					getMaterializationNode(resolution).setResourcePath(path);
-					updatePageCompletion();
+					setErrorMessage("\"" + path + "\" is not an absolute path");
+					return;
 				}
 			}
-			else
+
+			QueryWizard wizard = getQueryWizard();
+			MaterializationContext context = wizard.getMaterializationContext();
+			if(!Trivial.equalsAllowNull(context.getMaterializationSpec().getWorkspaceLocation(), path))
 			{
-				if(!Trivial.equalsAllowNull(path, node.getResourcePath()))
-				{
-					getMaterializationNode(resolution).setResourcePath(path);
-					updatePageCompletion();
-				}
+				wizard.getMaterializationSpec().setWorkspaceLocation(path);
+				wizard.invalidateMaterializationContext();
+				getComponentTable().setInput(wizard.getBOM().findAll(null));
+				setSelectedComponentValues(getSelectedComponent());
 			}
 		}
 		catch(CoreException e)
@@ -716,11 +888,6 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		MaterializationSpec mspec = context.getMaterializationSpec();
 		MaterializationNode node = mspec.getMatchingNode(resolution.getRequest());
 
-		IPath destination = mspec.getInstallLocation();
-		m_globalInstallLocation.setText(destination == null
-				? ""
-				: destination.toOSString());
-
 		int matIdx = 0;
 		String materializer = mspec.getMaterializerID();
 		if(materializer != null)
@@ -731,6 +898,29 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 		m_globalMaterializer.select(matIdx);
 
+		IPath p = mspec.getInstallLocation();
+		m_globalInstallLocation.setText(p == null
+				? ""
+				: p.toOSString());
+
+		if(materializer == null || IMaterializer.WORKSPACE.equals(materializer))
+		{
+			p = mspec.getWorkspaceLocation();
+			m_globalWorkspaceLocation.setText(p == null
+					? ""
+					: p.toOSString());
+
+			m_globalWorkspaceLocationLabel.setEnabled(true);
+			m_globalWorkspaceLocation.setEnabled(true);
+			m_globalWorkspaceLocationBrowse.setEnabled(true);
+		}
+		else
+		{
+			m_globalWorkspaceLocationLabel.setEnabled(false);
+			m_globalWorkspaceLocation.setEnabled(false);
+			m_globalWorkspaceLocationBrowse.setEnabled(false);
+		}
+
 		ConflictResolution cr = mspec.getConflictResolution();
 		if(cr == null)
 			cr = ConflictResolution.getDefault();
@@ -738,60 +928,15 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		boolean useDefaults = node == null;
 		boolean skip = mspec.isExcluded(request);
-		destination = context.getInstallLocation(resolution);
+		boolean canMaterialize = resolution.isMaterializable();
 
 		m_settingsGroup.setText(resolution.getRequest().getViewName());
-		if(node != null)
-		{
-			IPath resourcePath = node.getResourcePath();
-			m_resourcePath.setText(resourcePath == null
-					? ""
-					: resourcePath.toPortableString());
-		}
-		else
-			m_resourcePath.setText("");
 
-		materializer = (node == null)
-				? null
-				: node.getMaterializerID();
-		matIdx = 0;
-		if(materializer != null)
-		{
-			matIdx = m_materializer.indexOf(materializer);
-			if(matIdx < 0)
-				matIdx = 0;
-		}
-		m_materializer.select(matIdx);
-		m_installLocation.setText(destination.toOSString());
 		m_skipButton.setSelection(skip);
 		m_useDefaultsButton.setSelection(useDefaults);
-		m_conflictResolutionCombo.select(mspec.getConflictResolution(request).ordinal());
-		UiUtils.setEnabledRecursively(m_nodeComposite, !useDefaults);
-
-		// Show/Hide all except the button.
-		//
-		UiUtils.setChildrenVisible(m_settingsGroup, !skip && resolution.isMaterializable());
-		if(skip)
-			m_skipButton.setVisible(true);
-
+		m_useDefaultsButton.setEnabled(!skip && canMaterialize);
+		m_advancedButton.setEnabled(!skip && !useDefaults && canMaterialize);
 		updatePageCompletion();
-	}
-
-	private MaterializationNodeBuilder getMaterializationNode(Resolution resolution) throws CoreException
-	{
-		QueryWizard wizard = getQueryWizard();
-		ComponentName cname = resolution.getComponentIdentifier();
-		MaterializationSpecBuilder mspec = wizard.getMaterializationSpec();
-		MaterializationNodeBuilder node = mspec.getMatchingNode(cname);
-		if(node == null)
-		{
-			node = new MaterializationNodeBuilder();
-			node.setNamePattern(Pattern.compile("^\\Q" + cname.getName() + "\\E$"));
-			node.setCategory(cname.getCategory());
-			mspec.getNodes().add(node);
-		}
-		wizard.invalidateMaterializationContext();
-		return node;
 	}
 
 	private void skipEvent(boolean skip)
@@ -891,13 +1036,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				else
 				{
 					if(node == null)
-					{
-						node = new MaterializationNodeBuilder();
-						node.setNamePattern(Pattern.compile("^\\Q" + rq.getName() + "\\E$"));
-						node.setCategory(rq.getCategory());
-						bld.getNodes().add(node);
-						wizard.invalidateMaterializationContext();
-					}
+						getMaterializationNode(resolution);
 				}
 				setSelectedComponentValues(resolution);
 			}
@@ -905,26 +1044,6 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				displayException(e);
 			}
-		}
-	}
-
-	private void conflictResolutionEvent(int ordinal)
-	{
-		Resolution resolution = getSelectedComponent();
-		if(resolution == null && ordinal < 0)
-			return;
-
-		try
-		{
-			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			MaterializationSpec mspec = context.getMaterializationSpec();
-			ConflictResolution cr = ConflictResolution.values()[ordinal];
-			if(!cr.equals(mspec.getConflictResolution(resolution.getRequest())))
-				getMaterializationNode(resolution).setConflictResolution(cr);
-		}
-		catch(CoreException e)
-		{
-			displayException(e);
 		}
 	}
 }

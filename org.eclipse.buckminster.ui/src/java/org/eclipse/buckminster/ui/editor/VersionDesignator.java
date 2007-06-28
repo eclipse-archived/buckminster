@@ -222,7 +222,7 @@ public class VersionDesignator extends Widgetin
 
 		m_rangeLabel = UiUtils.createGridLabel(m_parentComposite, "Version:", 1, 0, SWT.NONE);
 
-		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, m_notifier, SWT.NONE);
+		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, SWT.NONE, m_notifier);
 		
 		m_toComposite = new Composite(m_parentComposite, SWT.NONE);
 		m_toComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -231,7 +231,7 @@ public class VersionDesignator extends Widgetin
 
 		m_toEmptyLabel = UiUtils.createEmptyLabel(m_toComposite);
 
-		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, m_notifier, SWT.NONE);
+		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, SWT.NONE, m_notifier);
 		
 		UiUtils.createGridLabel(m_parentComposite, "Type:", 1, 0, SWT.NONE);
 		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY

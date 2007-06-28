@@ -722,7 +722,7 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(geComposite, "Name pattern:", 1, 0, SWT.NONE);
 
-		m_namePattern = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_namePattern = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
 		UiUtils.createGridLabel(geComposite, "Matched category:", 1, 0, SWT.NONE);
 
@@ -754,7 +754,7 @@ public class QueryEditor extends EditorPart
 		EditorUtils.createHeaderLabel(aqComposite, "Attribute Qualification", 2);
 
 		UiUtils.createGridLabel(aqComposite, "Attributes:", 1, 0, SWT.NONE);
-		m_wantedAttributes = UiUtils.createGridText(aqComposite, 0, 0, null, SWT.NONE);
+		m_wantedAttributes = UiUtils.createGridText(aqComposite, 0, 0, SWT.NONE);
 		UiUtils.createGridLabel(aqComposite, "Prune According To Attributes:", 1, 0, SWT.NONE);
 		m_prune = UiUtils.createCheckButton(aqComposite, null, null);
 
@@ -822,7 +822,7 @@ public class QueryEditor extends EditorPart
 		EditorUtils.createHeaderLabel(ofComposite, "Overlay folder (for prototyping)", 2);
 
 		UiUtils.createGridLabel(ofComposite, "Folder:", 1, 0, SWT.NONE);
-		m_overlayFolder = UiUtils.createGridText(ofComposite, 1, 0, null, SWT.NONE);
+		m_overlayFolder = UiUtils.createGridText(ofComposite, 1, 0, SWT.NONE);
 		Label label = UiUtils.createEmptyLabel(ofComposite);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		m_overlayBrowseButton = new Button(ofComposite, SWT.PUSH);
@@ -859,7 +859,7 @@ public class QueryEditor extends EditorPart
 
 		EditorUtils.createHeaderLabel(docComposite, "Documentation", 1);
 
-		m_nodeDocumentation = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
+		m_nodeDocumentation = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
 		m_nodeDocumentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		m_nodeTree.setSelection(m_nodeTree.getItem(0));
@@ -1089,12 +1089,11 @@ public class QueryEditor extends EditorPart
 		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		UiUtils.createGridLabel(descComposite, "Short Description:", 1, 0, SWT.NONE);
-		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
+		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 
 		Label label = UiUtils.createGridLabel(descComposite, "Documentation:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, m_compoundModifyListener, SWT.MULTI
-				| SWT.V_SCROLL);
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL, m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
@@ -1117,7 +1116,7 @@ public class QueryEditor extends EditorPart
 		gridData.widthHint = labelWidth;
 		label.setLayoutData(gridData);
 
-		m_componentName = UiUtils.createGridText(nameComposite, 2, 0, m_compoundModifyListener, SWT.NONE);
+		m_componentName = UiUtils.createGridText(nameComposite, 2, 0, SWT.NONE, m_compoundModifyListener);
 
 		UiUtils.createGridLabel(nameComposite, "Category:", 1, 0, SWT.NONE);
 		m_componentCategory = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
@@ -1189,7 +1188,7 @@ public class QueryEditor extends EditorPart
 		propertiesComposite.setLayout(layout);
 		propertiesComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		m_propertyURL = UiUtils.createGridText(propertiesComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
+		m_propertyURL = UiUtils.createGridText(propertiesComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 		Button browseButton = new Button(propertiesComposite, SWT.PUSH);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		browseButton.setText("Browse...");
@@ -1255,7 +1254,7 @@ public class QueryEditor extends EditorPart
 		rmapComposite.setLayout(layout);
 		rmapComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		m_requestURL = UiUtils.createGridText(rmapComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
+		m_requestURL = UiUtils.createGridText(rmapComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 		browseButton = new Button(rmapComposite, SWT.PUSH);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		browseButton.setText("Browse...");

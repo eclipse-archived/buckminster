@@ -99,13 +99,13 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		EditorUtils.createHeaderLabel(geComposite, "General", 2);
 
 		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
-		setNameText(UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE));
+		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
 
 		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
 
 		UiUtils.createGridLabel(geComposite, "Actor Name:", 1, 0, SWT.NONE);
-		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
 		UiUtils.createGridLabel(geComposite, "Always:", 1, 0, SWT.NONE);
 		m_alwaysCheck = UiUtils.createCheckButton(geComposite, null, null);
@@ -117,10 +117,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_enabledCheck = UiUtils.createCheckButton(geComposite, null, null);
 
 		UiUtils.createGridLabel(geComposite, "Product Alias:", 1, 0, SWT.NONE);
-		m_prodAliasText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_prodAliasText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
 		UiUtils.createGridLabel(geComposite, "Product Base Path:", 1, 0, SWT.NONE);
-		m_prodBaseText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_prodBaseText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
 		geComposite.setData("focusControl", getNameText());
 		
@@ -207,7 +207,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
 
-		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
 		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
 
@@ -215,7 +215,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createGridLabel(geComposite, "Rebase Path:", 1, 0, SWT.NONE);
 
-		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
 		geComposite.setData("focusControl", m_prereqNameText);
 		
@@ -281,7 +281,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		EditorUtils.createHeaderLabel(docComposite, "Prerequisites - Documentation", 1);
 
-		m_prereqDocumentationText = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
+		m_prereqDocumentationText = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
 		m_prereqDocumentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		docComposite.setData("focusControl", m_prereqDocumentationText);

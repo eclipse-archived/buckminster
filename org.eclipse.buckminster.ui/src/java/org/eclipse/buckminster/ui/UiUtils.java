@@ -66,8 +66,16 @@ public class UiUtils
 
 	public static Text createLabeledText(Composite parent, String label, int style, ModifyListener listener)
 	{
+		return createGridLabeledText(parent, label, 1, 1, style, listener);
+	}
+
+	public static Text createGridLabeledText(Composite parent, String label, int labelCols, int textCols, int style, ModifyListener listener)
+	{
+		if(labelCols < 1 || textCols < 1)
+			throw new IllegalArgumentException();
+
 		final Label lbl = new Label(parent, SWT.NONE);
-		lbl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		lbl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, labelCols, 1));
 		lbl.setText(label);
 
 		Text text = new Text(parent, SWT.BORDER | style)
@@ -84,7 +92,7 @@ public class UiUtils
 			{
 			}
 		};
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, textCols, 1));
 		if(listener != null)
 			text.addModifyListener(listener);
 		return text;
@@ -191,7 +199,7 @@ public class UiUtils
 		StackLayout hlpStackLayout = new StackLayout();
 		hlpComposite.setLayout(hlpStackLayout);
 		Label hlpEmptyLabel = UiUtils.createEmptyLabel(hlpComposite);
-		Text hlpFictiveText = UiUtils.createGridText(hlpComposite, 1, 0, null, SWT.NONE);
+		Text hlpFictiveText = UiUtils.createGridText(hlpComposite, 1, 0, SWT.NONE);
 		hlpFictiveText.setText(fictiveStringToSetWidth);
 		hlpStackLayout.topControl = hlpEmptyLabel;
 
@@ -263,14 +271,17 @@ public class UiUtils
 		return lbl;
 	}
 
-	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, ModifyListener listener,
-			int style)
+	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, int style)
 	{
-		return createNoBorderGridText(parent, horizontalSpan, widthHint, listener, SWT.BORDER | style);
+		return createNoBorderGridText(parent, horizontalSpan, widthHint, SWT.BORDER | style, null);
 	}
 
-	public static Text createNoBorderGridText(Composite parent, int horizontalSpan, int widthHint,
-			ModifyListener listener, int style)
+	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, int style, ModifyListener listener)
+	{
+		return createNoBorderGridText(parent, horizontalSpan, widthHint, SWT.BORDER | style, listener);
+	}
+
+	public static Text createNoBorderGridText(Composite parent, int horizontalSpan, int widthHint, int style, ModifyListener listener)
 	{
 		Text text = new Text(parent, style);
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);

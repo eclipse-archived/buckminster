@@ -144,7 +144,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 
 		EditorUtils.createHeaderLabel(docComposite, "Documentation", 1);
 
-		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, null, SWT.MULTI);
+		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
 		m_documentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		docComposite.setData("focusControl", m_documentationText);

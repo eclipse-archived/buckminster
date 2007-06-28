@@ -131,7 +131,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		
 	protected IWidgetin getTextWidgetin(Composite parent, final int idx, Object value)
 	{
-		final Text text = UiUtils.createGridText(parent, 1, 0, null, SWT.NONE);
+		final Text text = UiUtils.createGridText(parent, 1, 0, SWT.NONE, null);
 		
 		final IWidgetin widgetin = new WidgetinWrapper(text);
 		

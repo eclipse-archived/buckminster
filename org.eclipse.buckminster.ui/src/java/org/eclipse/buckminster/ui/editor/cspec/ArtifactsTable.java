@@ -105,7 +105,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
 
-		setNameText(UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE));
+		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
 
 		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
 
@@ -113,11 +113,11 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		
 		UiUtils.createGridLabel(geComposite, "Base Path:", 1, 0, SWT.NONE);
 
-		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		
 		UiUtils.createGridLabel(geComposite, "Type:", 1, 0, SWT.NONE);
 
-		m_typeText = UiUtils.createGridText(geComposite, 1, 0, null, SWT.NONE);
+		m_typeText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		
 		geComposite.setData("focusControl", getNameText());
 

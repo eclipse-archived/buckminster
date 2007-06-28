@@ -888,7 +888,7 @@ public class BuckminsterView extends ViewPart
 	{
 		Label label = UiUtils.createGridLabel(parent, "Info:", 0, 0, SWT.NONE);
 		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-		m_infoText = UiUtils.createGridText(parent, 0, 0, null, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
+		m_infoText = UiUtils.createGridText(parent, 0, 0, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
 		//m_projectInfoText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
 		GridData layoutData = (GridData) m_infoText.getLayoutData();

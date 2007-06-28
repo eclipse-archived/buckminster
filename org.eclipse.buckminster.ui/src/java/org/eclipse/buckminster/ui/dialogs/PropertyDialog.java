@@ -87,7 +87,7 @@ public class PropertyDialog extends Dialog
 		textComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Label label = UiUtils.createGridLabel(textComposite, "Key:", 1, 0, SWT.NONE);
-		m_keyText = UiUtils.createGridText(textComposite, 1, 0, null, SWT.NONE);
+		m_keyText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
 		GridData data = (GridData)m_keyText.getLayoutData();
 		data.widthHint = 300;
 		m_keyText.setLayoutData(data);
@@ -99,7 +99,7 @@ public class PropertyDialog extends Dialog
 		}
 
 		UiUtils.createGridLabel(textComposite, "Value:", 1, 0, SWT.NONE);
-		m_valueText = UiUtils.createGridText(textComposite, 1, 0, null, SWT.NONE);
+		m_valueText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
 
 		m_keyText.setText(m_property == null ? "" : m_property.getKey());
 		m_valueText.setText(m_property == null	? "" : m_property.getValue());

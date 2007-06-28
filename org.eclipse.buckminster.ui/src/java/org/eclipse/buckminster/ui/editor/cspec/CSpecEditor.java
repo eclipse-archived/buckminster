@@ -598,7 +598,7 @@ public class CSpecEditor extends EditorPart
 		gridData.widthHint = labelWidth;
 		label.setLayoutData(gridData);
 
-		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
+		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 
 		UiUtils.createGridLabel(nameComposite, "Category:", 1, 0, SWT.NONE);
 		m_componentCategory = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
@@ -629,7 +629,7 @@ public class CSpecEditor extends EditorPart
 		gridData.widthHint = labelWidth - layout.marginWidth - 3;
 		versionLabel.setLayoutData(gridData);
 
-		m_versionString = UiUtils.createGridText(versionGroup, 1, 0, m_compoundModifyListener, SWT.NONE);
+		m_versionString = UiUtils.createGridText(versionGroup, 1, 0, SWT.NONE, m_compoundModifyListener);
 /*		
 		gridData = (GridData)m_versionString.getLayoutData();
 		gridData.widthHint = textWidth;
@@ -754,12 +754,12 @@ public class CSpecEditor extends EditorPart
 		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		UiUtils.createGridLabel(descComposite, "Short Description:", 1, 0, SWT.NONE);
-		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, m_compoundModifyListener, SWT.NONE);
+		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 
 		Label label = UiUtils.createGridLabel(descComposite, "Documentation:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, m_compoundModifyListener, SWT.MULTI
-				| SWT.V_SCROLL);
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI
+				| SWT.V_SCROLL, m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
