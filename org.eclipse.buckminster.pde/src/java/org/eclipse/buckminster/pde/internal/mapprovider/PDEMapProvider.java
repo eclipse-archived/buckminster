@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -232,7 +233,7 @@ public class PDEMapProvider extends Provider
 				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
 				try
 				{
-					reader.innerMaterialize(new Path(tempFolder.toString()),
+					((ICatalogReader)reader).innerMaterialize(new Path(tempFolder.toString()),
 						MonitorUtils.subMonitor(monitor, 400));
 				}
 				finally

@@ -132,7 +132,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				{
 					// Highest found version wins
 					//
-					if(candidate == null || v == null || v.compareTo(candidate) > 0)
+					if(candidate == null || v.compareTo(candidate) > 0)
 						candidate = v;
 					continue;
 				}

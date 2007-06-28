@@ -566,7 +566,6 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 		else
 		{
-			cpEntries = new ArrayList<IClasspathEntry>();
 			for(String src : srcIncl.getTokens())
 			{
 				boolean found = false;

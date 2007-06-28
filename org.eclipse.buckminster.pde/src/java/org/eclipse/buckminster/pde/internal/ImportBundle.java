@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
@@ -81,7 +82,7 @@ public class ImportBundle
 
 			// Materialize the plugin, i.e. import it into the workspace
 			//
-			reader[0].materialize(m_outputDir, monitor);
+			((ICatalogReader)reader[0]).materialize(m_outputDir, monitor);
 
 			// Fetch the cspec from the materialized component (it's changed)
 			//
