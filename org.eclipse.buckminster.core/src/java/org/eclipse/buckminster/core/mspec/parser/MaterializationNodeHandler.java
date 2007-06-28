@@ -8,17 +8,14 @@
 
 package org.eclipse.buckminster.core.mspec.parser;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.Path;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -26,6 +23,8 @@ import org.xml.sax.SAXParseException;
 public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 {
 	public static final String TAG = MaterializationNode.TAG;
+
+	private UnpackHandler m_unpackHandler;
 
 	public MaterializationNodeHandler(AbstractHandler parent)
 	{
@@ -41,27 +40,30 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
-		MaterializationNodeBuilder builder = (MaterializationNodeBuilder)getBuilder();
-		builder.setNamePattern(Pattern.compile(this.getStringValue(attrs, MaterializationNode.ATTR_NAME_PATTERN)));
+		MaterializationNodeBuilder builder = getMaterializationNodeBuilder();
+		builder.setNamePattern(getPatternValue(attrs, MaterializationNode.ATTR_NAME_PATTERN));
 		builder.setCategory(getOptionalStringValue(attrs, MaterializationNode.ATTR_CATEGORY));
-		builder.setExclude("true".equalsIgnoreCase(getOptionalStringValue(attrs, MaterializationNode.ATTR_EXCLUDE)));
+		builder.setExclude(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXCLUDE, false));
 		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_RESOURCE_PATH);
 		if(tmp != null)
 			builder.setResourcePath(Path.fromPortableString(tmp));
-		tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_BINDING_NAME_PATTERN);
-		if(tmp != null)
-		{
-			try
-			{
-				builder.setBindingNamePattern(Pattern.compile(tmp));
-			}
-			catch(PatternSyntaxException e)
-			{
-				throw new SAXParseException("Attribute \"" + MaterializationNode.ATTR_BINDING_NAME_PATTERN + "\" is not a valid regexp", getDocumentLocator(), e);
-			}
-		}
+		builder.setBindingNamePattern(getOptionalPatternValue(attrs, MaterializationNode.ATTR_BINDING_NAME_PATTERN));
 		builder.setBindingNameReplacement(getOptionalStringValue(attrs, MaterializationNode.ATTR_BINDING_NAME_REPLACEMENT));
-		builder.setUnpack(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_UNPACK, false));
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		ChildHandler ch;
+		if(UnpackHandler.TAG.equals(localName))
+		{
+			if(m_unpackHandler == null)
+				m_unpackHandler = new UnpackHandler(this);
+			ch = m_unpackHandler;
+		}
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
 	}
 
 	@Override

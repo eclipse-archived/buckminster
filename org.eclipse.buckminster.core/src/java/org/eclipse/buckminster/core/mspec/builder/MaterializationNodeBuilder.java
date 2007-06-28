@@ -24,7 +24,9 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	private boolean m_exclude;
 	private Pattern m_bindingNamePattern;
 	private String m_bindingNameReplacement;
+	private String m_suffix;
 	private boolean m_unpack;
+	private boolean m_expand = true;
 
 	// Only valid when materializing into workspace
 	//
@@ -41,6 +43,8 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		m_bindingNamePattern = null;
 		m_bindingNameReplacement = null;
 		m_unpack = false;
+		m_expand = true;
+		m_suffix = null;
 	}
 
 	public MaterializationNode createMaterializationNode()
@@ -78,6 +82,16 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		return m_resourcePath;
 	}
 
+	public String getSuffix()
+	{
+		return m_suffix;
+	}
+
+	public boolean isExpand()
+	{
+		return m_expand;
+	}
+
 	public boolean isUnpack()
 	{
 		return m_unpack;
@@ -108,6 +122,8 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		m_bindingNamePattern = mn.getBindingNamePattern();
 		m_bindingNameReplacement = mn.getBindingNameReplacement();
 		m_unpack = mn.isUnpack();
+		m_expand = mn.isExpand();
+		m_suffix = mn.getSuffix();
 	}
 
 	public boolean isExclude()
@@ -120,9 +136,19 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		m_exclude = exclude;
 	}
 
+	public void setExpand(boolean expand)
+	{
+		m_expand = expand;
+	}
+
 	public void setResourcePath(IPath resourcePath)
 	{
 		m_resourcePath = resourcePath;
+	}
+
+	public void setSuffix(String suffix)
+	{
+		m_suffix = suffix;
 	}
 
 	public void setUnpack(boolean unpack)

@@ -69,7 +69,7 @@ public class CSpecBuilderTestCase extends TestCase
 		UUID providerId = provider.getId();
 		
 		Resolution resolution = new Resolution(c.getId(), vs, fixed, providerId, true, request,
-			Collections.<String>emptySet(), provider.getURI(Collections.<String,String>emptyMap()));
+			Collections.<String>emptySet(), provider.getURI(Collections.<String,String>emptyMap()), null, null, -1);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 		Utils.serialize(resolution, ostream);

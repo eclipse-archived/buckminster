@@ -74,6 +74,10 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 		if(tmp != null)
 			m_builder.setInstallLocation(Path.fromPortableString(tmp));
 
+		tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_WORKSPACE_LOCATION);
+		if(tmp != null)
+			m_builder.setWorkspaceLocation(Path.fromPortableString(tmp));
+
 		m_builder.setMaterializer(getOptionalStringValue(attrs, MaterializationDirective.ATTR_MATERIALIZER));
 
 		tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_CONFLICT_RESOLUTION);

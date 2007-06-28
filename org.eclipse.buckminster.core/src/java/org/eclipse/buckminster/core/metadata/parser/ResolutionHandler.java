@@ -7,16 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.parser;
 
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_ATTRIBUTES;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_CSPEC_ID;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_FIXED_VERSION_SELECTOR;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_MATERIALIZABLE;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_PROVIDER_ID;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_REPOSITORY;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_VERSION;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ATTR_VERSION_TYPE;
-import static org.eclipse.buckminster.core.metadata.model.Resolution.ELEM_REQUEST;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -54,6 +44,9 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	private IVersionSelector m_fixedVersionSelector;
 	private boolean m_materializable;
 	private String m_repository;
+	private String m_remoteName;
+	private String m_contentType;
+	private long m_size;
 
 	public ResolutionHandler(AbstractHandler parent)
 	{
@@ -65,26 +58,29 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	{
 		try
 		{
-			m_cspecId = UUID.fromString(this.getStringValue(attrs, ATTR_CSPEC_ID));
-			String version = getOptionalStringValue(attrs, ATTR_VERSION);
+			m_cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
+			String version = getOptionalStringValue(attrs, Resolution.ATTR_VERSION);
 			if(version != null)
 			{
-				String tmp = getOptionalStringValue(attrs, ATTR_VERSION_TYPE);
+				String tmp = getOptionalStringValue(attrs, Resolution.ATTR_VERSION_TYPE);
 				IVersionType versionType = CorePlugin.getDefault().getVersionType(tmp);
 				m_version = versionType.fromString(version);
 			}
 			else
 				m_version = null;
 
-			String fixedSelector = this.getStringValue(attrs, ATTR_FIXED_VERSION_SELECTOR);
+			String fixedSelector = this.getStringValue(attrs, Resolution.ATTR_FIXED_VERSION_SELECTOR);
 			m_fixedVersionSelector = VersionSelectorFactory.fromString(fixedSelector);
-			m_materializable = this.getBooleanValue(attrs, ATTR_MATERIALIZABLE);
-			m_providerId = UUID.fromString(getStringValue(attrs, ATTR_PROVIDER_ID));
-			m_repository = getStringValue(attrs, ATTR_REPOSITORY);
+			m_materializable = this.getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
+			m_providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
+			m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
+			m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
+			m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
+			m_size = getOptionalLongValue(attrs, Resolution.ATTR_SIZE, -1);
 			m_request = null;
 
 			m_attributes.clear();
-			String attributes = getOptionalStringValue(attrs, ATTR_ATTRIBUTES);
+			String attributes = getOptionalStringValue(attrs, Resolution.ATTR_ATTRIBUTES);
 			if(attributes != null)
 			{
 				for(String attr : attributes.split(","))
@@ -101,7 +97,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
-		if(ELEM_REQUEST.equals(localName))
+		if(Resolution.ELEM_REQUEST.equals(localName))
 			ch = m_componentRequestHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
@@ -112,7 +108,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	{
 		if(m_request == null)
 			throw new SAXParseException("Missing required element <" +
-					XMLConstants.BM_METADATA_PREFIX + '.' + ELEM_REQUEST + '>',
+					XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST + '>',
 					this.getDocumentLocator());
 
 		return new Resolution(
@@ -123,7 +119,10 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				m_materializable,
 				m_request,
 				m_attributes,
-				m_repository);
+				m_repository,
+				m_remoteName,
+				m_contentType,
+				m_size);
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.core.materializer;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -16,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -23,15 +25,22 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
  */
 public class MaterializationContext extends RMContext
 {
+	public static final String DECOMPRESSORS_POINT = "decompressors";
+	public static final String EXPANDERS_POINT = "expanders";
+
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
 
@@ -66,7 +75,7 @@ public class MaterializationContext extends RMContext
 		catch(MissingComponentException e)
 		{
 			// expected but if we get here there's no
-			// materialization entry
+			// previous materialization entry
 		}
 
 		// Consult the reader type.
@@ -79,6 +88,121 @@ public class MaterializationContext extends RMContext
 		// Consult the component category to get a relative location
 		//
 		return getDefaultRootInstallLocation(resolution).append(getDefaultRelativeInstallLocation(resolution));
+	}
+
+	IPath processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
+	throws CoreException
+	{
+		ComponentName cName = resolution.getComponentIdentifier();
+		MaterializationSpec mspec = getMaterializationSpec();
+		String name = resolution.getRemoteName();
+		if(name == null)
+		{
+			// No filename is available, let's use a name built from <componentname>_<version><suffix>
+			//
+			StringBuilder nameBld = new StringBuilder(cName.getName());
+			IVersion version = resolution.getVersion();
+			if(version != null)
+			{
+				nameBld.append('_');
+				version.toString(nameBld);
+			}
+			String suffix = mspec.getSuffix(cName);
+			if(suffix == null)
+				suffix = ".dat";
+			nameBld.append(suffix);
+			name = nameBld.toString();
+		}
+
+		if(!mspec.isUnpack(cName))
+			return new Path(name);
+
+		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = extRegistry.getConfigurationElementsFor(DECOMPRESSORS_POINT);
+		int idx = elems.length;
+		String[][] suffixes = new String[idx][];
+		while(--idx >= 0)
+			suffixes[idx] = TextUtils.split(elems[idx].getAttribute("suffixes"), ",");
+
+		ArrayList<IDecompressor> decompressorList = null;
+		while(name.length() > 0)
+		{
+			// Find the suffix that matches the most characters at the
+			// end of the path
+			//
+			int matchIdx = -1;
+			int matchLen = -1;
+			idx = elems.length;
+			while(--idx >= 0)
+			{
+				for(String suffix : suffixes[idx])
+				{
+					if(suffix.length() > matchLen && name.endsWith(suffix))
+					{
+						matchLen = suffix.length();
+						matchIdx = idx;
+					}
+				}
+			}
+
+			if(matchIdx < 0)
+				//
+				// No matching decompressor was found
+				//
+				break;
+
+			if(decompressorsHandle != null)
+			{
+				if(decompressorList == null)
+					decompressorList = new ArrayList<IDecompressor>();
+	
+				IConfigurationElement elem = elems[matchIdx];
+				decompressorList.add(IDecompressor.class.cast(elem.createExecutableExtension("class")));
+			}
+
+			// Strip of suffix managed by this decompressor
+			//
+			name = name.substring(0, name.length() - matchLen);
+		}
+		if(decompressorList != null)
+			decompressorsHandle[0] = decompressorList.toArray(new IDecompressor[decompressorList.size()]);
+
+		if(!mspec.isExpand(cName))
+			return new Path(name);
+
+		elems = extRegistry.getConfigurationElementsFor(EXPANDERS_POINT);
+		idx = elems.length;
+		suffixes = new String[idx][];
+		while(--idx >= 0)
+			suffixes[idx] = TextUtils.split(elems[idx].getAttribute("suffixes"), ",");
+
+		// Find the suffix that matches the most characters at the
+		// end of the path
+		//
+		int matchIdx = -1;
+		int matchLen = -1;
+		idx = elems.length;
+		while(--idx >= 0)
+		{
+			for(String suffix : suffixes[idx])
+			{
+				if(suffix.length() > matchLen && name.endsWith(suffix))
+				{
+					matchLen = suffix.length();
+					matchIdx = idx;
+				}
+			}
+		}
+		if(matchIdx >= 0)
+		{
+			if(expanderHandle != null)
+				expanderHandle[0] = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class"));
+			name = name.substring(0, name.length() - matchLen);
+		}
+
+		// We now consider the result to be a folder
+		//
+		return new Path(name).addTrailingSeparator();
 	}
 
 	public IPath getDefaultRootInstallLocation(Resolution resolution) throws CoreException
@@ -108,6 +232,14 @@ public class MaterializationContext extends RMContext
 		{
 			if(relativeLocation == null)
 				relativeLocation = Path.EMPTY;
+
+			IPath remotePath = processUnpack(resolution, null, null);
+			relativeLocation = relativeLocation.append(remotePath.lastSegment());
+			if(remotePath.hasTrailingSeparator())
+				//
+				// Will expand into a folder
+				//
+				relativeLocation = relativeLocation.addTrailingSeparator();
 		}
 		else
 		{
@@ -116,10 +248,8 @@ public class MaterializationContext extends RMContext
 				relativeLocation = leaf;
 			else
 				relativeLocation = relativeLocation.append(leaf);
-
 			relativeLocation = relativeLocation.addTrailingSeparator();
 		}
-
 		return relativeLocation;
 	}
 
@@ -136,7 +266,6 @@ public class MaterializationContext extends RMContext
 		IPath location = getDefaultInstallLocation(resolution, optional);
 		if(!optional[0])
 			return location;
-
 
 		IPath rootLocation = m_materializationSpec.getInstallLocation();
 		IPath nodeLocation = null;
@@ -183,5 +312,40 @@ public class MaterializationContext extends RMContext
 		if(node != null)
 			p.putAll(node.getProperties());
 		return p;
+	}
+
+	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
+	{
+		IPath nodeLocation = null;
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		if(node != null)
+		{
+			nodeLocation = node.getWorkspaceLocation();
+			if(nodeLocation != null)
+			{
+				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation.toOSString(), 0));
+				if(nodeLocation.isAbsolute())
+					return nodeLocation;
+			}
+		}
+
+		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
+		if(rootLocation == null)
+		{
+			if(nodeLocation == null)
+				return getInstallLocation(resolution);
+
+			rootLocation = m_materializationSpec.getInstallLocation();
+			if(rootLocation == null)
+				rootLocation = getDefaultRootInstallLocation(resolution);
+		}
+
+		rootLocation = Path.fromOSString(ExpandingProperties.expand(this, rootLocation.toOSString(), 0));	
+		rootLocation = rootLocation.makeAbsolute();
+
+		if(nodeLocation != null)
+			rootLocation = rootLocation.append(nodeLocation);
+		return rootLocation;
 	}
 }

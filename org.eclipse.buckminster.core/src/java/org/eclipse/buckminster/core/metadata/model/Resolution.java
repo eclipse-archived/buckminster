@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -30,6 +31,7 @@ import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -64,6 +66,12 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public static final String ATTR_REPOSITORY = "repository";
 
+	public static final String ATTR_REMOTE_NAME = "remoteName";
+
+	public static final String ATTR_CONTENT_TYPE = "contentType";
+
+	public static final String ATTR_SIZE = "size";
+
 	public static final String ELEM_REQUEST = "request";
 
 	public static final int SEQUENCE_NUMBER = 1;
@@ -82,6 +90,12 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	private final UUID m_cspecId;
 
+	private final String m_remoteName;
+
+	private final String m_contentType;
+
+	private final long m_size;
+
 	private transient CSpec m_cspec;
 
 	private transient Provider m_provider;
@@ -97,13 +111,26 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_attributes = UUIDKeyed.createUnmodifiableSet(nq.getRequiredAttributes());
 		m_provider = provider;
 		m_providerId = provider.getId();
-
-		if(providerMatch == null)
-			m_versionMatch = VersionMatch.DEFAULT;
-		else
-			m_versionMatch = providerMatch.getVersionMatch();
+		m_versionMatch = providerMatch.getVersionMatch();
 		m_materializable = reader.canMaterialize();
 		m_repository = providerMatch.getRepositoryURI();
+		
+		String contentType = null;
+		String remoteName = null;
+		long size = -1L;
+		if(reader instanceof IFileReader)
+		{
+			IFileInfo fileInfo = ((IFileReader)reader).getFileInfo();
+			if(fileInfo != null)
+			{
+				contentType = fileInfo.getContentType();
+				remoteName = fileInfo.getName();
+				size = fileInfo.getSize();
+			}
+		}
+		m_remoteName = remoteName;
+		m_contentType = contentType;
+		m_size = size;
 	}
 
 	public Resolution(CSpec cspec, Resolution old) throws CoreException
@@ -117,6 +144,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_versionMatch = old.getVersionMatch();
 		m_materializable = old.isMaterializable();
 		m_repository = old.getRepository();
+		m_remoteName = old.getRemoteName();
+		m_contentType = old.getContentType();
+		m_size = old.getSize();
 	}
 
 	public Resolution(IVersion version, Resolution old) throws CoreException
@@ -130,11 +160,14 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_versionMatch = new VersionMatch(version, old.getVersionMatch().getFixedVersionSelector());
 		m_materializable = old.isMaterializable();
 		m_repository = old.getRepository();
+		m_remoteName = old.getRemoteName();
+		m_contentType = old.getContentType();
+		m_size = old.getSize();
 	}
 
 	public Resolution(UUID cspecId, IVersion version, IVersionSelector fixedVersionSelector, UUID providerId,
 		boolean materializeable, ComponentRequest request, Set<String> attributes,
-		String repository)
+		String repository, String remoteName, String contentType, long size)
 	{
 		m_cspecId = cspecId;
 		m_providerId = providerId;
@@ -144,6 +177,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_request = request;
 		m_attributes = UUIDKeyed.createUnmodifiableSet(attributes);
 		m_repository = repository;
+		m_remoteName = remoteName;
+		m_contentType = contentType;
+		m_size = size;
 	}
 
 	public Set<String> getAttributes()
@@ -171,6 +207,11 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		if(m_cspec == null)
 			m_cspec = StorageManager.getDefault().getCSpecs().getElement(m_cspecId);
 		return m_cspec;
+	}
+
+	public String getContentType()
+	{
+		return m_contentType;
 	}
 
 	/**
@@ -217,14 +258,24 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		return m_providerId;
 	}
 
-	public String getRepository() throws CoreException
+	public String getRepository()
 	{
 		return m_repository;
+	}
+
+	public String getRemoteName()
+	{
+		return m_remoteName;
 	}
 
 	public final QualifiedDependency getQualifiedDependency()
 	{
 		return new QualifiedDependency(m_request, m_attributes);
+	}
+
+	public long getSize()
+	{
+		return m_size;
 	}
 
 	/**
@@ -384,6 +435,13 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable ? "true" : "false");
 		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_providerId.toString());
 		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
+
+		if(m_remoteName != null)
+			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
+		if(m_contentType != null)
+			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
+		if(m_size != -1)
+			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
 
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		handler.startElement(namespace, localName, qName, attrs);

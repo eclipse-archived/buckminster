@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -28,7 +29,9 @@ public class MaterializationNode extends MaterializationDirective
 	public static final String ATTR_RESOURCE_PATH = "resourcePath";
 	public static final String ATTR_BINDING_NAME_PATTERN = "bindingNamePattern";
 	public static final String ATTR_BINDING_NAME_REPLACEMENT = "bindingNameReplacement";
-	public static final String ATTR_UNPACK = "unpack";
+	public static final String ELEM_UNPACK = "unpack";
+	public static final String ATTR_SUFFIX = "suffix";
+	public static final String ATTR_EXPAND = "expand";
 
 	private final Pattern m_namePattern;
 	private final String m_category;
@@ -36,7 +39,9 @@ public class MaterializationNode extends MaterializationDirective
 	private final IPath m_resourcePath;
 	private final Pattern m_bindingNamePattern;
 	private final String m_bindingNameReplacement;
+	private final String m_suffix;
 	private final boolean m_unpack;
+	private final boolean m_expand;
 
 	public MaterializationNode(MaterializationNodeBuilder builder)
 	{
@@ -48,6 +53,8 @@ public class MaterializationNode extends MaterializationDirective
 		m_bindingNamePattern = builder.getBindingNamePattern();
 		m_bindingNameReplacement = builder.getBindingNameReplacement();
 		m_unpack = builder.isUnpack();
+		m_expand = builder.isExpand();
+		m_suffix = builder.getSuffix();
 	}
 
 	public String getDefaultTag()
@@ -80,9 +87,19 @@ public class MaterializationNode extends MaterializationDirective
 		return m_bindingNameReplacement;
 	}
 
+	public String getSuffix()
+	{
+		return m_suffix;
+	}
+
 	public boolean isUnpack()
 	{
 		return m_unpack;
+	}
+
+	public boolean isExpand()
+	{
+		return m_exclude;
 	}
 
 	public boolean isExclude()
@@ -105,7 +122,22 @@ public class MaterializationNode extends MaterializationDirective
 			Utils.addAttribute(attrs, ATTR_BINDING_NAME_PATTERN, m_bindingNamePattern.toString());
 		if(m_bindingNameReplacement != null)
 			Utils.addAttribute(attrs, ATTR_BINDING_NAME_REPLACEMENT, m_bindingNameReplacement);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(receiver, namespace, prefix);
 		if(m_unpack)
-			Utils.addAttribute(attrs, ATTR_UNPACK, "true");
+		{
+			AttributesImpl attrs = new AttributesImpl();
+			if(!m_expand)
+				Utils.addAttribute(attrs, ATTR_EXPAND, "false");
+			if(m_suffix != null)
+				Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
+			String qName = Utils.makeQualifiedName(prefix, ELEM_UNPACK);
+			receiver.startElement(namespace, ELEM_UNPACK, qName, attrs);
+			receiver.endElement(namespace, ELEM_UNPACK, qName);
+		}
 	}
 }

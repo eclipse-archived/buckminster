@@ -99,6 +99,30 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
+	public final void materialize(IPath destination, IProgressMonitor monitor) throws CoreException
+	{
+		ProviderMatch pm = this.getProviderMatch();
+		Logger logger = CorePlugin.getLogger();
+		if(logger.isDebugEnabled())
+		{
+			logger.debug(String.format("Provider %s(%s): materializing to %s",
+				this.getReaderType().getId(),
+				pm.getRepositoryURI(),
+				destination));
+		}
+
+		monitor.beginTask(null, 100);
+		try
+		{
+			innerMaterialize(destination, MonitorUtils.subMonitor(monitor, 80));
+			copyOverlay(destination, MonitorUtils.subMonitor(monitor, 10));
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
 	public final <T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor.beginTask(null, 100);

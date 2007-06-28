@@ -125,9 +125,16 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public ConflictResolution getConflictResolution(ComponentName cName)
 	{
 		MaterializationNode node = getMatchingNode(cName);
-		ConflictResolution cr = (node == null ? getConflictResolution() : node.getConflictResolution());
+		ConflictResolution cr = null;
+		if(node != null)
+			cr = node.getConflictResolution();
+
 		if(cr == null)
-			cr = ConflictResolution.getDefault();
+		{
+			cr = getConflictResolution();
+			if(cr == null)
+				cr = ConflictResolution.getDefault();
+		}
 		return cr;
 	}
 
@@ -187,6 +194,12 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_shortDesc;
 	}
 
+	public String getSuffix(ComponentName cname)
+	{
+		MaterializationNode node = getMatchingNode(cname);
+		return node == null ? null : node.getSuffix();
+	}
+
 	public URL getURL()
 	{
 		return m_url;
@@ -196,6 +209,18 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	{
 		MaterializationNode node = getMatchingNode(cname);
 		return node != null && node.isExclude();
+	}
+
+	public boolean isExpand(ComponentName cName)
+	{
+		MaterializationNode node = getMatchingNode(cName);
+		return node != null && node.isExpand();
+	}
+
+	public boolean isUnpack(ComponentName cName)
+	{
+		MaterializationNode node = getMatchingNode(cName);
+		return node != null && node.isUnpack();
 	}
 
 	public void toSax(ContentHandler handler) throws SAXException

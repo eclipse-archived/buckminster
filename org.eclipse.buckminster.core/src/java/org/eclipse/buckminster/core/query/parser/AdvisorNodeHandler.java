@@ -13,7 +13,6 @@ package org.eclipse.buckminster.core.query.parser;
 import java.io.IOException;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
@@ -83,7 +82,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_builder = new AdvisorNodeBuilder();
-		m_builder.setNamePattern(Pattern.compile(this.getStringValue(attrs, AdvisorNode.ATTR_NAME_PATTERN)));
+		m_builder.setNamePattern(getPatternValue(attrs, AdvisorNode.ATTR_NAME_PATTERN));
 		m_builder.setCategory(getOptionalStringValue(attrs, AdvisorNode.ATTR_CATEGORY));
 
 		String tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_OVERLAY_FOLDER);

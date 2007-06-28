@@ -23,7 +23,9 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -193,7 +195,11 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					try
 					{
 						IPath location = mi.getComponentLocation();
-						reader.materialize(location, MonitorUtils.subMonitor(matMon, 80));
+						IProgressMonitor matSubMon = MonitorUtils.subMonitor(matMon, 80);
+						if(reader instanceof IFileReader)
+							((IFileReader)reader).materialize(MaterializerEndPoint.create(location, cr, context), matSubMon);
+						else
+							((ICatalogReader)reader).materialize(location, matSubMon);
 
 						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
 							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());

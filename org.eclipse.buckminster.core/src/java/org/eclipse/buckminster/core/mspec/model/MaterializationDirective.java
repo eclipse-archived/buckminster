@@ -27,11 +27,13 @@ import org.xml.sax.helpers.AttributesImpl;
 public abstract class MaterializationDirective implements ISaxableElement
 {
 	public static final String ATTR_INSTALL_LOCATION = "installLocation";
+	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation";
 	public static final String ATTR_MATERIALIZER = "materializer";
 	public static final String ATTR_CONFLICT_RESOLUTION = "conflictResolution";
 
 	private final Map<String,String> m_properties;
 	private final IPath m_installLocation;
+	private final IPath m_workspaceLocation;
 	private final String m_materializer;
 	private final ConflictResolution m_conflictResolution;
 	private final Documentation m_documentation;
@@ -40,6 +42,7 @@ public abstract class MaterializationDirective implements ISaxableElement
 	{
 		m_documentation = builder.getDocumentation();
 		m_installLocation = builder.getInstallLocation();
+		m_workspaceLocation = builder.getWorkspaceLocation();
 		m_materializer = builder.getMaterializer();
 		m_conflictResolution = builder.getConflictResolution();
 		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());
@@ -58,6 +61,11 @@ public abstract class MaterializationDirective implements ISaxableElement
 	public String getMaterializerID()
 	{
 		return m_materializer;
+	}
+
+	public IPath getWorkspaceLocation()
+	{
+		return m_workspaceLocation;
 	}
 
 	public Map<String,String> getProperties()
@@ -84,6 +92,8 @@ public abstract class MaterializationDirective implements ISaxableElement
 	{
 		if(m_installLocation != null)
 			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, m_installLocation.toPortableString());
+		if(m_workspaceLocation != null)
+			Utils.addAttribute(attrs, ATTR_WORKSPACE_LOCATION, m_workspaceLocation.toPortableString());
 		if(m_materializer != null)
 			Utils.addAttribute(attrs, ATTR_MATERIALIZER, m_materializer);
 		if(m_conflictResolution != null)

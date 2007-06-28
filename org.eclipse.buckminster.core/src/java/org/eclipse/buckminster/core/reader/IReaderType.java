@@ -208,4 +208,12 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @throws CoreException
 	 */
 	long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Attempts to extract the closest resemblance to a path to the remote file from the repositoryLocation.
+	 * For some repository locations this is not possible (such as for cgi scripts taking a numeric id).
+	 * @param repositoryLocation
+	 * @return The path of the remote file or folder or <code>null</code> if that cannot be extracted
+	 */
+	String getRemotePath(String repositoryLocation) throws CoreException;
 }

@@ -24,6 +24,7 @@ public abstract class MaterializationDirectiveBuilder
 {
 	private Documentation m_documentation;
 	private IPath m_installLocation;
+	private IPath m_workspaceLocation;
 	private String m_materializer;
 	private final HashMap<String,String> m_properties = new HashMap<String,String>();
 	private ConflictResolution m_conflictResolution;
@@ -31,6 +32,7 @@ public abstract class MaterializationDirectiveBuilder
 	public void clear()
 	{
 		m_installLocation = null;
+		m_workspaceLocation = null;
 		m_materializer = null;
 		m_conflictResolution = null;
 		m_documentation = null;
@@ -62,11 +64,17 @@ public abstract class MaterializationDirectiveBuilder
 		return m_conflictResolution;
 	}
 
+	public IPath getWorkspaceLocation()
+	{
+		return m_workspaceLocation;
+	}
+
 	public void initFrom(MaterializationDirective md)
 	{
 		clear();
 		m_documentation = md.getDocumentation();
 		m_installLocation = md.getInstallLocation();
+		m_workspaceLocation = md.getWorkspaceLocation();
 		m_materializer = md.getMaterializerID();
 		m_conflictResolution = md.getConflictResolution();
 		m_properties.putAll(md.getProperties());
@@ -77,9 +85,9 @@ public abstract class MaterializationDirectiveBuilder
 		m_documentation = documentation;
 	}
 
-	public void setInstallLocation(IPath installDirective)
+	public void setInstallLocation(IPath installLocation)
 	{
-		m_installLocation = installDirective;
+		m_installLocation = installLocation;
 	}
 
 	public void setMaterializer(String materializer)
@@ -90,5 +98,10 @@ public abstract class MaterializationDirectiveBuilder
 	public void setConflictResolution(ConflictResolution whenPresent)
 	{
 		m_conflictResolution = whenPresent;
+	}
+
+	public void setWorkspaceLocation(IPath workspaceLocation)
+	{
+		m_workspaceLocation = workspaceLocation;
 	}
 }

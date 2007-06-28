@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core.reader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,13 +22,13 @@ import java.net.URL;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializerEndPoint;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -41,13 +40,11 @@ public class URLFileReader extends AbstractReader implements IFileReader
 {
 	private final URI m_uri;
 	private FileInfoBuilder m_fileInfo;
-	private ProviderMatch m_rInfo;
 
 	protected URLFileReader(URLReaderType readerType, ProviderMatch rInfo) throws CoreException
 	{
 		super(readerType, rInfo);
 		m_uri = readerType.getURI(rInfo);
-		m_rInfo = rInfo;
 		m_fileInfo = null;
 	}
 
@@ -75,10 +72,10 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		}
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
+	public void materialize(MaterializerEndPoint unpacker, IProgressMonitor monitor)
 	throws CoreException
 	{
-		File destFile = destination.toFile();
+		File destFile = unpacker.getFinalDestination().toFile();
 		URL url = this.getURL();
 
 		monitor.beginTask(null, 1000);
@@ -100,28 +97,6 @@ public class URLFileReader extends AbstractReader implements IFileReader
 			{
 				in = open(MonitorUtils.subMonitor(monitor, 500));
 
-				if (destFile.isDirectory())
-				{
-					String filename = getFileInfo() != null ? getFileInfo().getName() : null;
-					
-					if (filename == null || filename.trim().length() == 0)
-					{
-						//No filename is available, let's use a name built from componentname-version.ext
-						String componentName = m_rInfo.getComponentName();
-						StringBuilder version = new StringBuilder();
-						m_rInfo.getVersionMatch().getVersion().toString(version);
-						String extension = getFileInfo() != null ? getFileInfo().getExtension() : null;
-						
-						if (extension == null)
-							extension = "dat";
-						
-						filename = componentName + "-" + version.toString() + "." + extension;
-					}
-
-					destination = destination.append(filename);
-					destFile = destination.toFile();
-				}
-
 				File destDir = destFile.getParentFile();
 				if(destFile.exists())
 					throw new FileUtils.DestinationNotEmptyException(destFile);
@@ -134,8 +109,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 				else
 					MonitorUtils.worked(monitor, 100);
 
-				out = new FileOutputStream(new File(destDir, destination.lastSegment()));
-				FileUtils.copyFile(in, out, MonitorUtils.subMonitor(monitor, 400));
+				unpacker.unpack(in, MonitorUtils.subMonitor(monitor, 400));
 			}
 			catch(IOException e)
 			{

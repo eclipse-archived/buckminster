@@ -118,6 +118,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return false;
 	}
 
+	public String getRemotePath(String repositoryLocation) throws CoreException
+	{
+		return null;
+	}
+
 	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException
 	{

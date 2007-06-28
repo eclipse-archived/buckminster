@@ -18,13 +18,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.BuckminsterException;
-import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
@@ -35,9 +32,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 
 /**
  * @author thhal
@@ -86,28 +81,6 @@ public class URLReaderType extends AbstractReaderType
 	public IReaderType getLocalReaderType()
 	{
 		return this;
-	}
-
-	@Override
-	public IPath getMaterializationLocation(Resolution cr, MaterializationContext context, boolean[] optional) throws CoreException
-	{
-		try
-		{
-			optional[0] = true;
-			URI uri = new URI(cr.getRepository());
-			IPath path = Path.fromPortableString(uri.getPath());
-			if(!this.isFileReader() || path.hasTrailingSeparator())
-				//
-				// Returning null here suggests using the location of the workspace
-				//
-				return null;
-
-			return CorePlugin.getDefault().getBuckminsterProjectLocation().append("url-cache").append(path);
-		}
-		catch(Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
 	}
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
@@ -197,5 +170,11 @@ public class URLReaderType extends AbstractReaderType
 	public boolean isFileReader()
 	{
 		return true;
+	}
+
+	@Override
+	public String getRemotePath(String repositoryLocation) throws CoreException
+	{
+		return getURI(repositoryLocation).getPath();
 	}
 }

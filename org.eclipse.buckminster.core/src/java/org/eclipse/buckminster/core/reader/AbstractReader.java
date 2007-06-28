@@ -13,12 +13,9 @@ package org.eclipse.buckminster.core.reader;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.runtime.Logger;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -60,30 +57,6 @@ public abstract class AbstractReader implements IComponentReader
 	public IVersionConverter getVersionConverter() throws CoreException
 	{
 		return this.getProviderMatch().getVersionConverter();
-	}
-
-	public final void materialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
-		ProviderMatch pm = this.getProviderMatch();
-		Logger logger = CorePlugin.getLogger();
-		if(logger.isDebugEnabled())
-		{
-			logger.debug(String.format("Provider %s(%s): materializing to %s",
-				this.getReaderType().getId(),
-				pm.getRepositoryURI(),
-				destination));
-		}
-
-		monitor.beginTask(null, 100);
-		try
-		{
-			innerMaterialize(destination, MonitorUtils.subMonitor(monitor, 80));
-			copyOverlay(destination, MonitorUtils.subMonitor(monitor, 10));
-		}
-		finally
-		{
-			monitor.done();
-		}
 	}
 
 	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException

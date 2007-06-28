@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.rmap.parser;
 
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
@@ -40,9 +39,9 @@ public class BidirectionalTransformerHandler extends ExtensionAwareHandler
 		try
 		{
 			m_transformer = new BidirectionalTransformer(
-				Pattern.compile(getStringValue(attrs, BidirectionalTransformer.ATTR_TO_PATTERN)),
+				getPatternValue(attrs, BidirectionalTransformer.ATTR_TO_PATTERN),
 				getStringValue(attrs, BidirectionalTransformer.ATTR_TO_REPLACEMENT),
-				Pattern.compile(getStringValue(attrs, BidirectionalTransformer.ATTR_FROM_PATTERN)),
+				getPatternValue(attrs, BidirectionalTransformer.ATTR_FROM_PATTERN),
 				getStringValue(attrs, BidirectionalTransformer.ATTR_FROM_REPLACEMENT));
 		}
 		catch(PatternSyntaxException e)

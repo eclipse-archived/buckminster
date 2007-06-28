@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -42,6 +43,25 @@ public interface ICatalogReader extends IComponentReader
 	 * this file is a permanent file or if it is temporary and should be deleted by the caller.
 	 */
 	File getContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException;
+
+	/**
+	 * Same as {@link #materialize(IPath, IProgressMonitor)} but overlay folders are not considered.
+	 * @param destination The destination for the materialization
+	 * @param monitor The progress monitor.
+	 * @throws CoreException
+	 */
+	void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Materialize (copy, fetch, or checkout) the entire repository denoted by this reader into the
+	 * specified <code>destination</code>. The implementation must ensure that the
+	 * materialization is atomic. This method will take overlay folders specified in the component
+	 * query into account.
+	 * @param destination The destination for the materialization
+	 * @param monitor The progress monitor.
+	 * @throws CoreException
+	 */
+	void materialize(IPath destination, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Read a file and send the result to the <code>consumer</code>.
