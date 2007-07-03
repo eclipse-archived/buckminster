@@ -290,6 +290,13 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		ws.addResourceChangeListener(s_default, IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
 	}
 
+	public static void tearDown()
+	{
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		if(ws != null)
+			ws.removeResourceChangeListener(s_default);
+	}
+
 	public boolean refreshProject(IProject project, IProgressMonitor monitor) throws CoreException
 	{
 		if(project.getName().equals(CorePlugin.BUCKMINSTER_PROJECT) || !project.isOpen())

@@ -471,6 +471,7 @@ public class CorePlugin extends LogAwarePlugin
 	@Override
 	public void stop(BundleContext context) throws Exception
 	{
+		MetadataSynchronizer.tearDown();
 		stopAllJobs();
 		m_urlCache.clear();
 		m_singletonExtensionCache.clear();
