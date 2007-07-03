@@ -12,7 +12,7 @@
    <feature url="features/org.eclipse.buckminster.svn.headless.feature_0.1.0.v20070626.jar" id="org.eclipse.buckminster.svn.headless.feature" version="0.1.0.v20070626"/>
    <feature url="features/org.eclipse.buckminster.europatools.feature_0.1.0.v20070413.jar" id="org.eclipse.buckminster.europatools.feature" version="0.1.0.v20070413"/>
 
-    <!-- Eclipse 3.3RC3 dependencies -->
+    <!-- Eclipse 3.3 (Europa) dependencies -->
    <archive path="plugins/com.ibm.icu_3.6.1.v20070417.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.ibm.icu_3.6.1.v20070417.jar"/>
     <archive path="plugins/com.jcraft.jsch_0.1.31.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/com.jcraft.jsch_0.1.31.jar"/>
     <archive path="plugins/javax.servlet.jsp_2.0.0.v200706191603.jar" url="http://update.eclipse.org/updates/3.3milestones/plugins/javax.servlet.jsp_2.0.0.v200706191603.jar"/>
