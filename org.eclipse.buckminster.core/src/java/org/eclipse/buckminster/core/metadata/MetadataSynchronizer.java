@@ -51,7 +51,7 @@ import org.eclipse.core.runtime.jobs.Job;
 @SuppressWarnings("restriction")
 public class MetadataSynchronizer implements IResourceChangeListener
 {
-	private static final MetadataSynchronizer s_default = new MetadataSynchronizer();
+	private static MetadataSynchronizer s_default = new MetadataSynchronizer();
 
 	private final HashMap<IPath,String> m_cspecSources = new HashMap<IPath,String>();
 
@@ -173,7 +173,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			monitor.beginTask(null,ticks);
 			try
 			{
-				for(;;)
+				for(;s_default != null;)
 				{
 					IPath removedEntry;
 					while((removedEntry = getNextRemovedEntry()) != null)
@@ -215,6 +215,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						}	
 					}
 				}
+				return Status.OK_STATUS;
 			}
 			catch(CoreException e)
 			{
@@ -292,9 +293,32 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 	public static void tearDown()
 	{
+		MetadataSynchronizer mds = s_default;
+		if(mds == null)
+			return;
+
+		s_default = null;
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
 		if(ws != null)
-			ws.removeResourceChangeListener(s_default);
+			ws.removeResourceChangeListener(mds);
+
+		synchronized(mds)
+		{
+			if(mds.m_currentRefreshJob != null)
+			{
+				mds.m_currentRefreshJob.cancel();
+				mds.m_currentRefreshJob = null;
+				try
+				{
+					// Give the job some time to cancel
+					//
+					Thread.sleep(500);
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
+		}
 	}
 
 	public boolean refreshProject(IProject project, IProgressMonitor monitor) throws CoreException

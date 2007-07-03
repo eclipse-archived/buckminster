@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public abstract class WorkspaceCommand extends AbstractCommand
 {
-	@SuppressWarnings("restriction")
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception
 	{
