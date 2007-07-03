@@ -65,9 +65,10 @@ public class LocalReaderType extends URLCatalogReaderType
 	@Override
 	public IPath getFixedLocation(Resolution rc) throws CoreException
 	{
-		// Should be OK unless we encounter a workspace with old metadata
-		//
-		return new Path(rc.getRepository());
+		IPath path = new Path(rc.getRepository());
+		if(path.toFile().isDirectory())
+			path = path.addTrailingSeparator();
+		return path;
 	}
 
 	@Override
