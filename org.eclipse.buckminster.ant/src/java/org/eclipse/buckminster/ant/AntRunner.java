@@ -14,9 +14,11 @@ package org.eclipse.buckminster.ant;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ant.core.AntCorePlugin;
+import org.eclipse.ant.core.Property;
 import org.eclipse.ant.internal.core.IAntCoreConstants;
 import org.eclipse.ant.internal.core.InternalCoreAntMessages;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -98,6 +100,12 @@ public class AntRunner
 		{
 			throw new ExceptionInInitializerError(e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<Property> getGlobalAntProperties()
+	{
+		return AntCorePlugin.getPlugin().getPreferences().getProperties();
 	}
 
 	private String m_buildFileLocation = IAntCoreConstants.DEFAULT_BUILD_FILENAME;
@@ -224,7 +232,28 @@ public class AntRunner
 			s_addBuildLogger.invoke(runner, new Object[] { m_buildLoggerClassName });
 
 			if(m_userProperties != null)
-				s_addUserProperties.invoke(runner, new Object[] { m_userProperties });
+			{
+				Map<String,String> allProps = m_userProperties;
+
+				// The eclipse ant runner will not include the global properties
+				// if we add user properties so we need to include them here
+				//
+				List<Property> properties = getGlobalAntProperties();
+				if(properties != null)
+				{
+					allProps = new HashMap<String,String>(m_userProperties);
+					for(Property property : properties)
+					{
+						// We must do early expansion since the expansion is based
+						// on Eclipse variables and not on other properties.
+						//
+						String value= property.getValue(true);
+						if (value != null)
+							allProps.put(property.getName(), value);
+					}
+				}
+				s_addUserProperties.invoke(runner, new Object[] { allProps });
+			}
 
 			if(m_propertyFiles != null && m_propertyFiles.length > 0)
 				s_addPropertyFiles.invoke(runner, new Object[] { m_propertyFiles });
