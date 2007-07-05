@@ -45,7 +45,7 @@ public class CommandLineParser implements Iterator
 				continue;
 			}
 			
-			// Lines where first non-space charater is a '#' are considered
+			// Lines where first non-space character is a '#' are considered
 			// to be comments
 			//
 			if(c == '#')
@@ -177,7 +177,7 @@ public class CommandLineParser implements Iterator
 		while(m_pos < top)
 		{
 			char c = m_line.charAt(m_pos);
-			if(Character.isWhitespace(c) || c == '\'' || c == '"' || c == '#')
+			if(Character.isWhitespace(c) || c == '\'' || c == '"')
 				break;
 
 			++m_pos;
@@ -215,11 +215,6 @@ public class CommandLineParser implements Iterator
 			char c = m_line.charAt(m_pos);
 			switch(c)
 			{
-			case '#':
-				// The rest is a comment
-				//
-				m_pos = top;
-				break;
 			case '\'':
 				// Find matching end quote. No expansion is performed
 				//

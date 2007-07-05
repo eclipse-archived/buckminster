@@ -13,18 +13,16 @@ import java.io.LineNumberReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Stack;
 
 import org.eclipse.buckminster.cmdline.parser.CommandLineParser;
 import org.eclipse.buckminster.cmdline.parser.InvalidOptionValueException;
 import org.eclipse.buckminster.cmdline.parser.ParseResult;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobManager;
@@ -145,7 +143,7 @@ public class Headless implements IApplication, OptionValueType
 		}
 		catch(Throwable e)
 		{
-			deeplyPrint(e, System.err, new Stack());
+			BuckminsterException.deeplyPrint(e, System.err, m_displayStackTrace);
 		}
 		return new Integer(exitValue);
 	}
@@ -304,80 +302,7 @@ public class Headless implements IApplication, OptionValueType
 		}
 	}
 
-	private void deeplyPrint(IStatus status, PrintStream strm, Stack level)
-	{
-		strm.print(toLevelString(level));
-		String msg = status.getMessage();
-		strm.println(msg);
-		Throwable cause = status.getException();
-		if(cause != null)
-		{
-			strm.print("Caused by: ");
-			if(!m_displayStackTrace || (msg.equals(cause.getMessage()) || msg.equals(cause.toString())))
-				deeplyPrint(cause, strm, level);
-		}
-
-		if(status.isMultiStatus())
-		{
-
-			IStatus[] children = status.getChildren();
-			for(int i = 0; i < children.length; i++)
-			{
-				level.push(new Integer(i + 1));
-				deeplyPrint(children[i], strm, level);
-				level.pop();
-			}
-		}
-	}
-
-	private void deeplyPrint(CoreException ce, PrintStream strm, Stack level)
-	{
-		strm.print(toLevelString(level));
-		if(m_displayStackTrace)
-			ce.printStackTrace(strm);
-		deeplyPrint(ce.getStatus(), strm, level);
-	}
-
-	private void deeplyPrint(Throwable t, PrintStream strm, Stack level)
-	{
-		if(t instanceof CoreException)
-			deeplyPrint((CoreException)t, strm, level);
-		else
-		{
-			strm.print(toLevelString(level));
-			if(m_displayStackTrace)
-				t.printStackTrace(strm);
-			else
-			{
-				strm.println(t.toString());
-				Throwable cause = t.getCause();
-				if(cause != null)
-				{
-					strm.print("Caused by: ");
-					deeplyPrint(cause, strm, level);
-				}
-			}
-		}
-	}
-
-	private String toLevelString(Stack level)
-	{
-		if(level.isEmpty())
-			return "";
-		StringBuffer sb = new StringBuffer("[0");
-		int top = level.size();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			sb.append('.');
-			sb.append(level.get(idx));
-		}
-		sb.append("]");
-		return sb.toString();
-	}
-
 	public void stop()
 	{
-		// TODO Auto-generated method stub
-		
 	}
 }
