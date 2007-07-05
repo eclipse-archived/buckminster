@@ -34,9 +34,8 @@ import org.eclipse.buckminster.core.reader.URLReaderType;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -143,14 +142,12 @@ public class Handler extends AbstractURLStreamHandlerService
 					bld.append(modulePath.toPortableString());
 				}
 
-				Provider provider = new Provider("cvs", "unknown", null, null, new Format(bld.toString()),
+				Provider provider = new Provider("cvs", "unknown", null, null, new Format(bld.toString()), null,
 					false, false, null);
 				IReaderType cvsReaderType = provider.getReaderType();
 
 				String versionSelector = uri.getFragment();
-				VersionMatch vm = versionSelector == null ? null : new VersionMatch(
-					VersionFactory.defaultVersion(), VersionSelectorFactory.fromString(versionSelector));
-
+				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), null, -1, null, null);
 				ProviderMatch pm = URLReaderType.getCurrentProviderMatch();
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				if(pm == null)

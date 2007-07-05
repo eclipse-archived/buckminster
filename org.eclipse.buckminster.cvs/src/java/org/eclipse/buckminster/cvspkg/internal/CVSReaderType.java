@@ -16,7 +16,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
@@ -24,11 +23,10 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorType;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -100,10 +98,11 @@ public class CVSReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public URL convertToURL(String repositoryLocator, IVersionSelector versionSelector) throws CoreException
+	public URL convertToURL(String repositoryLocator, VersionMatch versionMatch) throws CoreException
 	{
 		try
 		{
+			VersionSelector versionSelector = versionMatch.getBranchOrTag();
 			CVSSession session = new CVSSession(repositoryLocator);
 			ICVSRepositoryLocation location = session.getLocation();
 			String fragment = versionSelector == null ? null : versionSelector.toString();
@@ -361,14 +360,14 @@ public class CVSReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor)
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
 	throws CoreException
 	{
 		CVSSession session = null;
 		try
 		{
 			session = new CVSSession(repositoryLocation);
-			RepositoryMetaData metaData = RepositoryMetaData.getMetaData(session, getCVSTag(versionSelector, null, null), monitor);
+			RepositoryMetaData metaData = RepositoryMetaData.getMetaData(session, getCVSTag(versionSelector), monitor);
 			return metaData.getLastModification();
 		}
 		finally
@@ -416,36 +415,24 @@ public class CVSReaderType extends AbstractReaderType
 				.getPlugin().isWatchEditEnabled());
 	}
 
-	static CVSTag getCVSTag(IVersionSelector versionSelector, IVersion version, IVersionConverter vc) throws CoreException
+	static CVSTag getCVSTag(VersionMatch match) throws CoreException
 	{
-		CVSTag tag = CVSTag.DEFAULT;
-		if(versionSelector == null)
-			return tag;
-	
-		switch(versionSelector.getType())
-		{
-		case TAG:
-			tag = new CVSTag(versionSelector.getQualifier(), CVSTag.VERSION);
-			break;
-	
-		case TIMESTAMP:
-			tag = new CVSTag(new Date(versionSelector.getNumericQualifier()));
-	
-			// Fall through to LATEST
-		case LATEST:
-			if(!(version == null || version.isDefault() || vc == null))
-				versionSelector = vc.createSelector(version);
+		CVSTag tag;
+		Date timestamp = match.getTimestamp();
+		if(timestamp != null)
+			tag = new CVSTag(timestamp);
+		else
+			tag = getCVSTag(match.getBranchOrTag());
+		return tag;
+	}
 
-			if(versionSelector.getType() == VersionSelectorType.LATEST && !versionSelector.isDefaultBranch())
-				//
-				// Pick branch from the version
-				//
-				tag = new CVSTag(versionSelector.getBranchName(), CVSTag.BRANCH);
-			break;
-
-		default:
-			throw new BuckminsterException("CVSReader cannot understand fixed version selector " + versionSelector);
-		}
+	static CVSTag getCVSTag(VersionSelector selector) throws CoreException
+	{
+		CVSTag tag;
+		if(selector == null)
+			tag = CVSTag.DEFAULT;
+		else
+			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG ? CVSTag.VERSION : CVSTag.BRANCH);
 		return tag;
 	}
 }

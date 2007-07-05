@@ -15,10 +15,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.IVersionFinder;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.cvspkg.internal.CVSSession;
 import org.eclipse.buckminster.cvspkg.internal.FileSystemCopier;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -47,8 +59,11 @@ import org.eclipse.team.internal.ccvs.core.resources.UpdateContentCachingService
 public class CVSTest extends TestCase
 {
 	private static String DEAD_FILE = "LICENSE.cvsclient.txt";
+
 	private static String EXISTING_FILE = "META-INF/MANIFEST.MF";
+
 	private static String NON_EXISTING_FILE = "foobar.txt";
+
 	private CVSSession m_session;
 
 	@Override
@@ -57,7 +72,7 @@ public class CVSTest extends TestCase
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 		m_session = new CVSSession(
-			":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster.cvs");
+				":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster.cvs");
 	}
 
 	public void testCheckOut() throws Exception
@@ -71,7 +86,8 @@ public class CVSTest extends TestCase
 		CVSTag tag = CVSTag.DEFAULT;
 		CVSRepositoryLocation location = (CVSRepositoryLocation)m_session.getLocation();
 		ICVSFolder root = new RemoteFolder(null, location, m_session.getModuleName(), tag);
-		ICVSFolder folder = UpdateContentCachingService.buildRemoteTree(location, root, tag, IResource.DEPTH_INFINITE, nullMonitor);
+		ICVSFolder folder = UpdateContentCachingService.buildRemoteTree(location, root, tag, IResource.DEPTH_INFINITE,
+				nullMonitor);
 		FileSystemCopier copier = new FileSystemCopier(folder, new Path(destDir.toString()), nullMonitor);
 		try
 		{
@@ -147,26 +163,35 @@ public class CVSTest extends TestCase
 		}
 	}
 
-	/*
-	 * public void testTags() throws Exception { CorePlugin plugin = CorePlugin.getDefault(); IReaderType rd =
-	 * plugin.getReaderType("cvs"); VersionConverterDesc vd = new VersionConverterDesc("tag", new
-	 * BidirectionalTransformer[] { new
-	 * BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"), "$1.$2.$3.$4",
-	 * Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3$4"), new
-	 * BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3", Pattern
-	 * .compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"), new
-	 * BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3", Pattern
-	 * .compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
-	 * 
-	 * IProvider provider = new Provider(rd.getId(), "unknown", null, vd, new Format(
-	 * ":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql"), false, false); IComponentQuery cq =
-	 * ComponentQuery.fromRequest(ComponentRequest.create("pgsql", null, "8.0", null));
-	 * cq.setResourceMapURL(this.getClass().getResource("test.rmap")); ResolveContext context = new ResolveContext(cq);
-	 * IVersionFinder versionFinder = rd.getVersionFinder(provider, context.getRootNodeQuery()); IVersionConverter tag =
-	 * provider.getVersionConverter(); try { IVersionQuery vq = VersionSelectorFactory.createQuery(tag,
-	 * VersionFactory.createDesignator("OSGi", "[8.0.0,8.0.4]")); System.out.println("[8.0.0,8.0.4] resulted in version: " +
-	 * versionFinder.getBestVersion(vq, new NullProgressMonitor())); vq = VersionSelectorFactory.createQuery(tag,
-	 * VersionFactory.createDesignator("OSGi", "0.0.0")); System.out.println("0.0.0 resulted version: " +
-	 * versionFinder.getBestVersion(vq, new NullProgressMonitor())); } finally { versionFinder.close(); } }
-	 */
+	public void testTags() throws Exception
+	{
+		CorePlugin plugin = CorePlugin.getDefault();
+		IReaderType rd = plugin.getReaderType("cvs");
+		VersionConverterDesc vd = new VersionConverterDesc("tag", VersionFactory.OSGiType, new BidirectionalTransformer[] {
+				new BidirectionalTransformer(
+						Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"), "$1.$2.$3.$4",
+						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3$4"),
+				new BidirectionalTransformer(
+						Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3",
+						Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
+				new BidirectionalTransformer(
+						Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3",
+						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
+
+		Provider provider = new Provider(rd.getId(), "unknown", null, vd, new Format(
+				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, false, false, null);
+		ComponentQueryBuilder cq = new ComponentQueryBuilder();
+		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));
+		cq.setResourceMapURL(this.getClass().getResource("test.rmap"));
+		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
+		IVersionFinder versionFinder = rd.getVersionFinder(provider, context.getRootNodeQuery(), new NullProgressMonitor());
+		try
+		{
+			System.out.println("[8.0.0,8.0.4] resulted in version: " + versionFinder.getBestVersion(new NullProgressMonitor()));
+		}
+		finally
+		{
+			versionFinder.close();
+		}
+	}
 }

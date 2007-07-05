@@ -13,7 +13,7 @@ package org.eclipse.buckminster.cvspkg.internal;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

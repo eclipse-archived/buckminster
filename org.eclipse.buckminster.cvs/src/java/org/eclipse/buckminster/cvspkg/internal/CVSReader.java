@@ -21,7 +21,6 @@ import java.io.Writer;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IResource;
@@ -54,8 +53,7 @@ public class CVSReader extends AbstractRemoteReader
 	{
 		super(readerType, rInfo);
 		m_session = new CVSSession(rInfo.getRepositoryURI());
-		VersionMatch match = rInfo.getVersionMatch();
-		m_fixed = CVSReaderType.getCVSTag(match.getFixedVersionSelector(), match.getVersion(), rInfo.getVersionConverter());
+		m_fixed = CVSReaderType.getCVSTag(rInfo.getVersionMatch());
 	}
 
 	@Override
