@@ -10,16 +10,15 @@
 
 package org.eclipse.buckminster.p4.internal;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
-import org.eclipse.buckminster.core.reader.IVersionFinder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionQuery;
-import org.eclipse.buckminster.core.version.IVersionSelector;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,181 +28,84 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * below the folder appointed by the component reader.
  * @author Thomas Hallgren
  */
-class VersionFinder implements IVersionFinder
+class VersionFinder extends AbstractSCCSVersionFinder
 {
 	private final DepotURI m_depotURI;
 	private final Connection m_connection;
 
-	VersionFinder(DepotURI depotURI)
+	VersionFinder(Provider provider, NodeQuery query) throws CoreException
 	{
-		m_depotURI = depotURI;
+		super(provider, query);
+		Map<String,String> props = query.getProperties();
+		m_depotURI = new DepotURI(DepotURI.createURI(provider.getURI(props)), null, props);
 		m_connection = new Connection(m_depotURI);
 	}
 
-	public void close()
+	@Override
+	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
 	{
+		String[] branchNameBin = new String[1];
+		FileSpec.Specifier specifier = P4RemoteReader.getSpecifier(versionMatch, m_connection, branchNameBin);
+		Map<String,String> props = getQuery().getProperties();
+		String uri = getProvider().getURI(props);
+		DepotURI depotURI = new DepotURI(uri, branchNameBin[0], props);
+		DepotFolder[] folders = m_connection.getFolders(depotURI.getDepotPath(), specifier);
+		return folders.length > 0;
 	}
 
-	public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
+	@Override
+	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
-		IPath branchPath = m_depotURI.getDepotPath();
-		String branch;
 		if(m_depotURI.hasBranchDesignator())
-		{
-			branch = m_depotURI.getDefaultBranch();
-			branchPath = branchPath.append(branch);
-		}
-		else
-			branch = VersionSelectorFactory.DEFAULT_BRANCH;
+			return null;
 
-		DepotFolder[] folders = m_connection.getFolders(branchPath);
+		IPath componentPath = m_depotURI.getDepotPath();
+		DepotFolder[] folders = m_connection.getFolders(componentPath, FileSpec.HEAD);
 		if(folders.length == 0)
 			return null;
 
-		return new VersionMatch(
-			VersionFactory.defaultVersion(),
-			VersionSelectorFactory.changeNumber(branch, m_connection.getLastChangeNumber(branchPath, null)));
+		return new RevisionEntry(null, null, m_connection.getLastChangeNumber(componentPath, null));
 	}
 
-	public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	@Override
+	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
-		if(query.matches(VersionFactory.defaultVersion()))
-			//
-			// The query allows us to use latest on default. So that's what
-			// we will be doing.
-			//
-			return this.getDefaultVersion(monitor);
+		return branches ? getBranches(monitor) : getTags(monitor);
+	}
+	
+	private List<RevisionEntry> getBranches(IProgressMonitor monitor) throws CoreException
+	{
+		if(!m_depotURI.hasBranchDesignator())
+			return null;
 
-		// The DepotURI appoints the component root, i.e. it points to
-		// the folder that in turn contains the branches.
-		//
-		IPath componentPath = m_depotURI.getDepotPath();
-		DepotFolder[] folders;
-		IVersionSelector exact;
-		switch(query.getType())
+		IPath depotPath = m_depotURI.getDepotPath();
+		DepotFolder[] folders = m_connection.getFolders(depotPath.append("*"), FileSpec.HEAD);
+		if(folders.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(folders.length);
+		for(DepotFolder folder : folders)
 		{
-		case CHANGE_NUMBER:
-		case TAG:
-		case TIMESTAMP:
-			String branch;
-			if(m_depotURI.hasBranchDesignator())
-			{
-				branch = query.getBranch();
-				componentPath = componentPath.append(branch);
-			}
-			else
-				branch = VersionSelectorFactory.DEFAULT_BRANCH;
-
-			folders = m_connection.getFolders(componentPath);
-			if(folders.length == 0)
-				return null;
-
-			exact = query.getExactMatch();
-			switch(query.getType())
-			{
-			case TAG:
-				if(exact != null)
-				{
-					Label label = m_connection.getLabel(exact.getQualifier());
-					if(label != null)
-					{
-						long changeNumber = m_connection.getLastChangeNumber(componentPath, label.getLabel());
-						if(changeNumber >= 0)
-						{
-							return new VersionMatch(
-								query.createVersion(exact),
-								VersionSelectorFactory.changeNumber(branch, changeNumber));
-						}
-					}
-					break;
-				}
-
-				VersionMatch best = null;
-				for(Label label : m_connection.getLabels(componentPath.append("...")))
-				{
-					String labelName = label.getLabel();
-					IVersionSelector selector = VersionSelectorFactory.tag(branch, labelName);
-					if(query.matches(selector))
-					{
-						IVersion version = query.createVersion(selector);
-						if(best == null || best.getVersion().compareTo(version) < 0)
-						{
-							long changeNumber = m_connection.getLastChangeNumber(componentPath, labelName);
-							if(changeNumber < 0)
-								continue;
-
-							best =  new VersionMatch(version, VersionSelectorFactory.changeNumber(branch, changeNumber));
-						}
-					}
-				}
-				return best;
-
-			case TIMESTAMP:
-				if(exact != null)
-				{
-					long changeNumber = m_connection.getLastChangeNumber(
-							componentPath, m_connection.formatDate(new Date(exact.getNumericQualifier())));
-
-					if(changeNumber >= 0)
-					{
-						return new VersionMatch(
-							query.createVersion(exact),
-							VersionSelectorFactory.changeNumber(branch, changeNumber));
-					}
-					break;
-				}
-				throw new BuckminsterException("An exlicit version designator is required in order to resolve a timestamp");
-
-			default:
-				if(exact != null)
-					return new VersionMatch(query.createVersion(exact), exact);
-				throw new BuckminsterException("An exlicit version designator is required in order to resolve a change number");
-			}
-			break;
-
-		case LATEST:
-			if(!m_depotURI.hasBranchDesignator())
-				return null;
-
-			exact = query.getExactMatch();
-			if(exact != null)
-			{
-				String branchName = exact.getBranchName();
-				componentPath = componentPath.append(branchName);
-				folders = m_connection.getFolders(componentPath);
-				if(folders.length == 0)
-					break;
-
-				long changeNumber = m_connection.getLastChangeNumber(componentPath, null);
-				if(changeNumber < 0)
-					break;
-
-				return new VersionMatch(query.createVersion(exact), VersionSelectorFactory.changeNumber(branchName, changeNumber));
-			}
-
-			VersionMatch best = null;
-			folders = m_connection.getFolders(componentPath.append("*"));
-			for(DepotFolder folder : folders)
-			{
-				IPath branchPath = folder.getDepotPath();
-				String branchName = branchPath.lastSegment();
-				IVersionSelector selector = VersionSelectorFactory.latest(branchName);
-				if(query.matches(selector))
-				{
-					long changeNumber = m_connection.getLastChangeNumber(branchPath, null);
-					if(changeNumber < 0)
-						continue;
-
-					IVersion version = query.createVersion(selector);
-					if(best == null || best.getVersion().compareTo(version) < 0)
-					{
-						best = new VersionMatch(version, VersionSelectorFactory.changeNumber(branchName, changeNumber));
-					}
-				}
-			}
-			return best;
-		default:
+			IPath branchPath = folder.getDepotPath();
+			String branchName = branchPath.lastSegment();
+			entries.add(new RevisionEntry(branchName, null, m_connection.getLastChangeNumber(branchPath, null)));
 		}
-		return null;
+		return entries;
+	}
+
+	private List<RevisionEntry> getTags(IProgressMonitor monitor) throws CoreException
+	{
+		IPath depotPath = m_depotURI.getDepotPath();
+		Label[] labels = m_connection.getLabels(depotPath.append("..."));
+		if(labels.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(labels.length);
+		for(Label label : labels)
+		{
+			String labelName = label.getLabel();
+			entries.add(new RevisionEntry(labelName, null, m_connection.getLastChangeNumber(depotPath, labelName)));
+		}
+		return entries;
 	}
 }

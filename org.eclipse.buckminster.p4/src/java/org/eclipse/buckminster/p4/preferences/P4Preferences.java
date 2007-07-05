@@ -19,9 +19,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.p4.P4Plugin;
 import org.eclipse.buckminster.p4.internal.Connection;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;

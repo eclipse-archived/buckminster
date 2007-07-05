@@ -17,12 +17,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
 import org.eclipse.buckminster.p4.preferences.Server;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -120,7 +120,7 @@ public class DepotURI extends PropertyScope
 		m_client = getClient(properties, server, clientName);
 		m_defaultBranch = defaultBranch;
 
-		if(VersionSelectorFactory.DEFAULT_BRANCH.equals(branch) && defaultBranch != null)
+		if(VersionSelector.DEFAULT_BRANCH.equals(branch) && defaultBranch != null)
 			branch = defaultBranch;
 
 		// Create the UNC path that points into the DEPOT

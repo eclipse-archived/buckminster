@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.p4.internal;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -57,11 +56,11 @@ public class P4ReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution ci, MaterializationContext context, boolean[] optional)
+	public IPath getMaterializationLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
-		Map<String,String> properties = context.getProperties(ci.getRequest());
-		DepotURI depotLocation = getDepotLocation(ci, properties);
+		Map<String,String> properties = context.getProperties(resolution.getRequest());
+		DepotURI depotLocation = getDepotLocation(resolution, properties);
 		String localRoot = depotLocation.getLocalRoot();
 		IPath root = null;
 		if(localRoot != null)
@@ -74,10 +73,9 @@ public class P4ReaderType extends AbstractReaderType
 
 		if(result == null)
 		{
-			IVersionSelector vs = ci.getVersionMatch().getFixedVersionSelector();
-			String branch = vs.isDefaultBranch() ? depotLocation.getDefaultBranch() : vs.getBranchName();
+			String branch = getNonDefaultBranchName(resolution);
 
-			result = new Path(ci.getName());
+			result = new Path(resolution.getName());
 			if(branch != null)
 				result = result.append(branch);
 		}
@@ -98,11 +96,7 @@ public class P4ReaderType extends AbstractReaderType
 	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		String urlString = provider.getURI(nodeQuery.getProperties());
-		URI uri = DepotURI.createURI(urlString);
-
-		DepotURI depotURI = new DepotURI(uri, null, nodeQuery.getProperties());
-		return new VersionFinder(depotURI);
+		return new VersionFinder(provider, nodeQuery);
 	}
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
@@ -139,10 +133,14 @@ public class P4ReaderType extends AbstractReaderType
 			P4WSADBridge.shareProject(project, getDepotLocation(cr, context.getProperties(cr.getRequest())));
 	}
 
-	public static DepotURI getDepotLocation(Resolution cr, Map<String,String> properties) throws CoreException
+	public static DepotURI getDepotLocation(Resolution resolution, Map<String,String> properties) throws CoreException
 	{
-		return new DepotURI(cr.getRepository(),
-			cr.getVersionMatch().getFixedVersionSelector().getBranchName(),
-			properties);
+		return new DepotURI(resolution.getRepository(), getNonDefaultBranchName(resolution), properties);
+	}
+
+	private static String getNonDefaultBranchName(Resolution resolution)
+	{
+		VersionSelector vs = resolution.getVersionMatch().getBranchOrTag();
+		return (vs != null && !vs.isDefault() && vs.getType() == VersionSelector.BRANCH) ? vs.getName() : null;
 	}
 }

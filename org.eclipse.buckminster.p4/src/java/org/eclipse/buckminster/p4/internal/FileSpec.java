@@ -23,15 +23,15 @@ import org.eclipse.core.runtime.IPath;
  */
 public class FileSpec
 {
-	public static final Revision NONE = new Revision("#none");
-	public static final Revision HEAD = new Revision("#head");
-	public static final Revision HAVE = new Revision("#have");
+	public static final Specifier NONE = new Specifier("#none");
+	public static final Specifier HEAD = new Specifier("#head");
+	public static final Specifier HAVE = new Specifier("#have");
 
-	public static class Revision
+	public static class Specifier
 	{
 		private final String m_revision;
 
-		Revision(String revision)
+		Specifier(String revision)
 		{
 			m_revision = revision;
 		}
@@ -48,9 +48,9 @@ public class FileSpec
 			if (o == this)
 				return true;
 
-			if (!(o instanceof Revision))
+			if (!(o instanceof Specifier))
 				return false;
-			Revision that = (Revision)o;
+			Specifier that = (Specifier)o;
 
 			if (!this.m_revision.equals(that.m_revision))
 				return false;
@@ -65,7 +65,7 @@ public class FileSpec
 		}
 	}
 
-	public static class ChangeNumber extends Revision
+	public static class ChangeNumber extends Specifier
 	{
 		public ChangeNumber(int number)
 		{
@@ -73,7 +73,7 @@ public class FileSpec
 		}
 	}
 
-	public static class Timestamp extends Revision
+	public static class Timestamp extends Specifier
 	{
 		// Somewhat weird format that uses ':' to separate the date from the time of day.
 		//
@@ -94,7 +94,7 @@ public class FileSpec
 		}
 	}
 
-	public static class FileRevision extends Revision
+	public static class FileRevision extends Specifier
 	{
 		public FileRevision(int number)
 		{
@@ -102,7 +102,7 @@ public class FileSpec
 		}
 	}
 
-	public static class Label extends Revision
+	public static class Label extends Specifier
 	{
 		public Label(String label)
 		{
@@ -111,15 +111,15 @@ public class FileSpec
 	}
 
 	private final IPath m_path;
-	private final Revision m_revision;
+	private final Specifier m_revision;
 
-	public FileSpec(IPath path, Revision revision)
+	public FileSpec(IPath path, Specifier revision)
 	{
 		m_path = path;
 		m_revision = (revision == null) ? HEAD : revision;
 	}
 
-	public Revision getRevision()
+	public Specifier getRevision()
 	{
 		return m_revision;
 	}

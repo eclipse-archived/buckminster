@@ -12,8 +12,8 @@ package org.eclipse.buckminster.p4.internal;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.p4.P4Plugin;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;

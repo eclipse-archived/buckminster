@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

@@ -85,7 +85,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				URI parentUri = new URI(uri.getScheme(), uri.getHost(), path.removeLastSegments(1).toPortableString(), uri.getFragment());
 				m_fileName = path.lastSegment();
 
-				Provider provider = new Provider("p4", "unknown", null, null, new Format(parentUri.toString()), false, false, null);
+				Provider provider = new Provider("p4", "unknown", null, null, new Format(parentUri.toString()), null, false, false, null);
 				IReaderType p4ReaderType = plugin.getReaderType("p4");
 				ProviderMatch ri = URLReaderType.getCurrentProviderMatch();
 				IProgressMonitor nullMon = new NullProgressMonitor();

@@ -21,6 +21,7 @@ import org.eclipse.buckminster.p4.internal.Connection;
 import org.eclipse.buckminster.p4.internal.ConnectionInfo;
 import org.eclipse.buckminster.p4.internal.DepotFile;
 import org.eclipse.buckminster.p4.internal.DepotFolder;
+import org.eclipse.buckminster.p4.internal.FileSpec;
 import org.eclipse.buckminster.p4.internal.Label;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
@@ -90,7 +91,7 @@ public class P4Test extends TestCase
 	public void testFolders()
 	throws Exception
 	{
-		DepotFolder[] folders  = m_connection.getFolders(new Path("//depot/jrockit/dev/tools/jra").append("*"));
+		DepotFolder[] folders  = m_connection.getFolders(new Path("//public").append("*"), FileSpec.HEAD);
 		for(DepotFolder folder : folders)
 			System.out.println(folder.toString());
 	}
@@ -98,21 +99,22 @@ public class P4Test extends TestCase
 	public void testLabels()
 	throws Exception
 	{
-		Label[] labels  = m_connection.getLabels(new Path("//depot/jrockit/dev/tools").append("..."));
+		Label[] labels  = m_connection.getLabels(new Path("//public/jam").append("..."));
 		for(Label label : labels)
 			System.out.println(label.getLabel());
 		
-		Label label = m_connection.getLabel("last_clean_nightly_rjmx");
+		Label label = m_connection.getLabel("jam2-2-4");
 		assertNotNull(label);
 		System.out.println(label.getLabel());
-		assertNull(m_connection.getLabel("last_clean_nightly_fubar"));
+		assertNull(m_connection.getLabel("jam-fubar"));
 	}
 
 	public void testDepotFile()
 	throws Exception
 	{
 		String client = m_connection.getClientSpec().getClient();
-		DepotFile file = m_connection.getFile("//" +  client + "/tools/jra/model/current/.project");
+		IPath filePath = new Path("//" +  client + "/public/index.html");
+		DepotFile file = m_connection.getFile(new FileSpec(filePath, FileSpec.HEAD));
 		assertNotNull(file);
 		System.out.println(file.getDepotPath());
 		System.out.println(file.getClientPath());
@@ -121,7 +123,7 @@ public class P4Test extends TestCase
 	public void testLastChange()
 	throws Exception
 	{
-		IPath path = new Path("//depot/jrockit/dev/tools/jra/model/current");
+		IPath path = new Path("//public/perforce/webkeeper");
 		long number = m_connection.getLastChangeNumber(path, null);
 		assertTrue(number > 0);
 	}

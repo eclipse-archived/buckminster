@@ -29,10 +29,10 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.p4.P4Plugin;
 import org.eclipse.buckminster.p4.internal.DepotObject.ViewEntry;
 import org.eclipse.buckminster.p4.preferences.Client;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -367,32 +367,49 @@ public class Connection extends PropertyScope
 
 	public DepotFolder[] getDepots() throws CoreException
 	{
-		List<Map<String, String>> data = this.exec("depots");
-		int numDepots = data.size();
-		DepotFolder depots[] = new DepotFolder[numDepots];
+		List<Map<String, String>> depotsData = this.exec("depots");
+		int numDepots = depotsData.size();
+		ArrayList<DepotFolder> depots = new ArrayList<DepotFolder>(numDepots);
 		for(int idx = 0; idx < numDepots; ++idx)
 		{
-			Matcher matcher = s_depotPattern.matcher(data.get(idx).get("data"));
-			if(matcher.matches())
+			Map<String,String> dataMap = depotsData.get(idx);
+			String name = dataMap.get("name");
+			if(name == null)
 			{
-				depots[idx] = new DepotFolder(this,
-					Collections.<String, String>singletonMap("dir", "//" + matcher.group(1)));
+				String data = dataMap.get("data");
+				if(data != null)
+				{
+					Matcher matcher = s_depotPattern.matcher(data);
+					if(matcher.matches())
+						name = matcher.group(1);
+				}
+			}
+			if(name != null)
+			{
+				depots.add(new DepotFolder(this,
+					Collections.<String, String>singletonMap("dir", "//" + name), FileSpec.HEAD));
 			}
 		}
-		return depots;
+		return depots.toArray(new DepotFolder[depots.size()]);
 	}
 
-	public DepotFile getFile(String path) throws CoreException
+	public DepotFile getFile(FileSpec path) throws CoreException
 	{
-		List<DepotFile> files = this.getFiles(new String[] { path }, false);
+		List<DepotFile> files = this.getFiles(new FileSpec[] { path }, false);
 		return (files.size() > 0) ? files.get(0) : null;
 	}
 
-	public List<DepotFile> getFiles(String paths[], boolean includeDeleted) throws CoreException
+	public List<DepotFile> getFiles(FileSpec paths[], boolean includeDeleted) throws CoreException
 	{
-		return (paths.length == 0)
-			? Collections.<DepotFile> emptyList()
-			: this.getFiles(this.exec("fstat", paths), includeDeleted);
+		int idx = paths.length;
+		if(idx == 0)
+			return Collections.<DepotFile> emptyList();
+		
+		String[] pathStrings = new String[idx];
+		while(--idx >= 0)
+			pathStrings[idx] = paths[idx].toString();
+
+		return this.getFiles(this.exec("fstat", pathStrings), includeDeleted);
 	}
 
 	/**
@@ -420,13 +437,13 @@ public class Connection extends PropertyScope
 		return -1;
 	}
 
-	public DepotFolder[] getFolders(IPath path) throws CoreException
+	public DepotFolder[] getFolders(IPath path, FileSpec.Specifier revision) throws CoreException
 	{
 		List<Map<String, String>> data = this.exec("dirs", new String[] { path.toString() });
 		int numDepots = data.size();
 		DepotFolder depots[] = new DepotFolder[numDepots];
 		for(int idx = 0; idx < numDepots; ++idx)
-			depots[idx] = new DepotFolder(this, data.get(idx));
+			depots[idx] = new DepotFolder(this, data.get(idx), revision);
 		return depots;
 	}
 

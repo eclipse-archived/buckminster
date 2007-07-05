@@ -14,14 +14,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.p4.internal.DepotObject.ViewEntry;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -36,28 +38,52 @@ public class P4RemoteReader extends AbstractRemoteReader
 {
 	private Connection m_connection;
 	private final DepotURI m_depotURI;
-	private FileSpec.Revision m_revision;
+	private FileSpec.Specifier m_revision;
+
+	public static FileSpec.Specifier getSpecifier(VersionMatch vm, Connection connection, String[] branchName) throws CoreException
+	{
+		FileSpec.Specifier rev = FileSpec.HEAD;
+		VersionSelector branchOrTag = vm.getBranchOrTag();
+		if(branchOrTag != null)
+		{
+			if(branchOrTag.getType() == VersionSelector.BRANCH)
+				branchName[0] = branchOrTag.getName();
+			else
+				rev = new FileSpec.Label(branchOrTag.getName());
+		}
+
+		boolean specifierConflict = false;
+		long changeNumber = vm.getRevision();
+		Date timestamp = vm.getTimestamp();
+		if(changeNumber != -1)
+		{
+			if(rev == null && timestamp == null)
+				rev = new FileSpec.ChangeNumber((int)changeNumber);
+			else
+				specifierConflict = true;
+		}
+		else if(timestamp != null)
+		{
+			if(rev == null)
+				rev = new FileSpec.Timestamp(timestamp.getTime(), connection.getConnectionInfo().getTimeZone());
+			else
+				specifierConflict = true;
+		}
+		
+		if(specifierConflict)
+			throw new IllegalArgumentException("Tag, Timestamp, and Change number are mutually exclusive");
+
+		return rev;
+	}
 
 	public P4RemoteReader(IReaderType readerType, ProviderMatch providerMatch) throws CoreException
 	{
 		super(readerType, providerMatch);
 
-		IVersionSelector vs = providerMatch.getVersionMatch().getFixedVersionSelector();
-		switch(vs.getType())
-		{
-		case TAG:
-			m_revision = new FileSpec.Label(vs.getQualifier());
-			break;
-		case CHANGE_NUMBER:
-			m_revision = new FileSpec.ChangeNumber(Integer.parseInt(vs.getQualifier()));
-			break;
-		case TIMESTAMP:
-			m_revision = new FileSpec.Timestamp(Long.parseLong(vs.getQualifier()), getConnection().getConnectionInfo().getTimeZone());
-			break;
-		default:
-			m_revision = FileSpec.HEAD;
-		}
-		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), vs.getBranchName(), providerMatch.getNodeQuery().getProperties());
+		VersionMatch vm = providerMatch.getVersionMatch();
+		String[] branchNameBin = new String[1];
+		m_revision = getSpecifier(vm, getConnection(), branchNameBin);
+		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), branchNameBin[0], providerMatch.getNodeQuery().getProperties());
 	}
 
 	public boolean canMaterialize() throws BuckminsterException
@@ -169,16 +195,14 @@ public class P4RemoteReader extends AbstractRemoteReader
 	@Override
 	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
 	{
-		// FIXME: Monitor stuff
-		//
-		
 		// Obtain the client spec before we do anything else. This will ensure that the
 		// spec is in sync with our preferences. The spec is cached in the reader type
 		// and later used in materialization so there shouldn't be too much overhead.
 		//
 		((P4ReaderType)getReaderType()).getClient(m_depotURI);
 
-		DepotFile file = getConnection().getFile(m_depotURI.getDepotPath().append(fileName).toPortableString());
+		FileSpec fileSpec = new FileSpec(m_depotURI.getDepotPath().append(fileName), m_revision);
+		DepotFile file = getConnection().getFile(fileSpec);
 		if(file == null)
 			throw new FileNotFoundException(fileName);
 

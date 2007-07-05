@@ -22,49 +22,51 @@ import org.eclipse.core.runtime.Path;
  */
 public class DepotFolder extends DepotObject
 {
-	DepotFolder(Connection conn, Map<String, String> info)
+	private final FileSpec.Specifier m_revision;
+	DepotFolder(Connection conn, Map<String, String> info, FileSpec.Specifier revision)
 	{
 		super(conn, info);
+		m_revision = revision;
 	}
 
 	public IPath getDepotPath()
 	{
-		return new Path(this.get("dir"));
+		return new Path(get("dir"));
 	}
 
 	public DepotFile[] getFiles(boolean includeDeleted) throws CoreException
 	{
-		List<DepotFile> files = this.getConnection().getFiles(new String[] { this.getListPath() }, includeDeleted);
+		List<DepotFile> files = getConnection().getFiles(new FileSpec[] { getListPath() }, includeDeleted);
 		return files.toArray(new DepotFile[files.size()]);
 	}
 
 	public DepotFolder[] getFolders(boolean includeDeleted) throws CoreException
 	{
-		String listPath = this.getListPath();
+		FileSpec listPath = getListPath();
 		String[] args = includeDeleted
-				? new String[] { "-D", listPath }
-				: new String[] { listPath };
-		Connection conn = this.getConnection();
+				? new String[] { "-D", listPath.toString() }
+				: new String[] { listPath.toString() };
+		Connection conn = getConnection();
 		List<Map<String, String>> data = conn.exec("dirs", args);
 
 		int top = data.size();
 		DepotFolder[] folders = new DepotFolder[top];
 		for(int idx = 0; idx < top; idx++)
-			folders[idx] = new DepotFolder(conn, data.get(idx));
+			folders[idx] = new DepotFolder(conn, data.get(idx), m_revision);
 
 		return folders;
 	}
 
 	public IPath getClientPath() throws CoreException
 	{
-		String path = this.getConnection().where(this.getDepotPath().append("..."))[2];
+		String path = getConnection().where(getDepotPath().append("..."))[2];
 		return new Path(path.substring(0, path.length() - 4));
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.getDepotPath().toString();
+		return getDepotPath().toString();
 	}
 
 	@Override
@@ -77,10 +79,10 @@ public class DepotFolder extends DepotObject
 			return false;
 		DepotFolder that = (DepotFolder)o;
 
-		if(!this.getDepotPath().equals(that.getDepotPath()))
+		if(!getDepotPath().equals(that.getDepotPath()))
 			return false;
 
-		if(!this.getConnection().equals(that.getConnection()))
+		if(!getConnection().equals(that.getConnection()))
 			return false;
 
 		return true;
@@ -91,14 +93,14 @@ public class DepotFolder extends DepotObject
 	{
 		int hc = 17;
 
-		hc = 37 * hc + this.getDepotPath().hashCode();
-		hc = 37 * hc + this.getConnection().hashCode();
+		hc = 37 * hc + getDepotPath().hashCode();
+		hc = 37 * hc + getConnection().hashCode();
 
 		return hc;
 	}
 
-	private String getListPath()
+	private FileSpec getListPath()
 	{
-		return this.getDepotPath().append("*").toString();
+		return new FileSpec(getDepotPath().append("*"), m_revision);
 	}
 }
