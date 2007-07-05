@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -39,6 +38,7 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.cspecgen.bundle.BundleBuilder;
 import org.eclipse.buckminster.pde.internal.imports.FeatureImportOperation;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -206,9 +206,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 	@SuppressWarnings("deprecation")
 	IPluginModelBase getPluginModel(IVersion version, IProgressMonitor monitor) throws CoreException
 	{
-		if(version.isDefault())
-			version = null;
-
 		monitor.beginTask(null, m_base.isLocal() ? 1000 : 2000);
 		monitor.subTask("Downloading " + m_base.getComponentName());
 		try
@@ -241,7 +238,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 						200));
 					try
 					{
-						return BundleBuilder.parsePluginModelBase(reader, MonitorUtils.subMonitor(monitor,
+						return BundleBuilder.parsePluginModelBase(reader, false, MonitorUtils.subMonitor(monitor,
 							800));
 					}
 					finally
@@ -290,7 +287,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 		ProviderMatch myRI = getProviderMatch();
 		Provider myP = myRI.getProvider();
 		ProviderMatch match = new ProviderMatch(new Provider(IReaderType.URL_ZIPPED, myP.getComponentTypeId(),
-			myP.getManagedCategories(), myP.getVersionConverterDesc(), new Format(remoteURL.toString()),
+			myP.getManagedCategories(), myP.getVersionConverterDesc(), new Format(remoteURL.toString()), myP.getSpace(),
 			myP.isMutable(), myP.hasSource(), null), myRI.getVersionMatch(), ProviderScore.PREFERRED,
 			myRI.getNodeQuery());
 
@@ -314,9 +311,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 	private IFeatureModel getFeatureModel(IVersion version, IProgressMonitor monitor) throws CoreException
 	{
 		IFeatureModel model = null;
-		if(version.isDefault())
-			version = null;
-
 		monitor.beginTask(null, m_base.isLocal() ? 1000 : 3000);
 		try
 		{

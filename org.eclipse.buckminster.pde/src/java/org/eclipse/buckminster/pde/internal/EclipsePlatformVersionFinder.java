@@ -10,15 +10,13 @@
 
 package org.eclipse.buckminster.pde.internal;
 
-import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionQuery;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,7 +30,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author thhal
  */
 @SuppressWarnings("restriction")
-public class EclipsePlatformVersionFinder implements IVersionFinder
+public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 {
 	enum InstalledType { FEATURE, PLUGIN }
 
@@ -42,6 +40,7 @@ public class EclipsePlatformVersionFinder implements IVersionFinder
 
 	public EclipsePlatformVersionFinder(EclipsePlatformReaderType readerType, Provider provider, NodeQuery query) throws CoreException
 	{
+		super(provider, query);
 		m_readerType = readerType;
 		String uri = provider.getURI(query.getProperties());
 		IPath path = new Path(uri);
@@ -57,26 +56,15 @@ public class EclipsePlatformVersionFinder implements IVersionFinder
 		throw new MalformedProviderURIException(readerType, uri);
 	}
 
-	public void close()
-	{
-	}
-
-	public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
-	{
-		VersionMatch dflt = this.getDefaultVersion(monitor);
-		return dflt != null && query.matches(dflt.getVersion()) ? dflt : null;
-	}
-
-	public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
 		if(m_type == InstalledType.PLUGIN)
 		{
 			IPluginModelBase plugin = m_readerType.getBestPlugin(m_componentName, null);
 			if(plugin != null)
 			{
-				String version = plugin.getBundleDescription().getVersion().toString();
-				IVersion v = VersionFactory.OSGiType.fromString(version);
-				return new VersionMatch(v, VersionSelectorFactory.tag(version));
+				IVersion v = VersionFactory.OSGiType.coerce(plugin.getBundleDescription().getVersion());
+				return new VersionMatch(v, null, getProvider().getSpace(), -1L, null, null);
 			}
 		}
 		else
@@ -86,7 +74,7 @@ public class EclipsePlatformVersionFinder implements IVersionFinder
 			{
 				String version = feature.getFeature().getVersion();
 				IVersion v = VersionFactory.OSGiType.fromString(version);
-				return new VersionMatch(v, VersionSelectorFactory.tag(version));
+				return new VersionMatch(v, null, getProvider().getSpace(), -1L, null, null);
 			}
 		}
 		return null;

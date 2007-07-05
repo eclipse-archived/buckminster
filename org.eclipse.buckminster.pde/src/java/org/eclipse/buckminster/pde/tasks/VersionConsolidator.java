@@ -13,10 +13,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
@@ -29,6 +29,8 @@ import org.osgi.framework.Version;
 @SuppressWarnings("restriction")
 abstract class VersionConsolidator implements IBuildPropertiesConstants
 {
+	public static final String GENERATOR_PREFIX = "generator:";
+
 	private static final SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
 
 	private final File m_outputFile;
@@ -41,9 +43,11 @@ abstract class VersionConsolidator implements IBuildPropertiesConstants
 	{
 		m_outputFile = outputFile;
 		m_qualifier = qualifier;
+		
+		Map<String,String> globalProps = AbstractActor.getActiveContext().getProperties();
 
 		if(propertiesFile == null)
-			m_properties = Collections.emptyMap();
+			m_properties = globalProps;
 		else
 		{
 			InputStream input = null;
@@ -51,6 +55,7 @@ abstract class VersionConsolidator implements IBuildPropertiesConstants
 			{
 				input = new BufferedInputStream(new FileInputStream(propertiesFile));
 				m_properties = new BMProperties(input);
+				m_properties.putAll(globalProps);
 			}
 			finally
 			{
@@ -74,20 +79,15 @@ abstract class VersionConsolidator implements IBuildPropertiesConstants
 		return m_properties;
 	}
 
-	String replaceQualifierInVersion(String version, String id)
+	String getQualifierReplacement(String version, String id)
 	{
-		if(!version.endsWith(PROPERTY_QUALIFIER))
-			return version;
-
 		String newQualifier = null;
 		if(m_qualifier == null || m_qualifier.equalsIgnoreCase(PROPERTY_CONTEXT))
 		{
 			if(m_properties.size() != 0)
-			{// First we
-				// check to see
-				// if there is a
-				// precise
-				// version
+			{
+				// First we check to see if there is a match for a precise version
+				//
 				newQualifier = m_properties.get(id + ','
 						+ version.substring(0, version.length() - PROPERTY_QUALIFIER.length() - 1));
 				if(newQualifier == null) // If not found, then lookup for the id,0.0.0
@@ -108,6 +108,13 @@ abstract class VersionConsolidator implements IBuildPropertiesConstants
 			newQualifier = ""; //$NON-NLS-1$
 		else
 			newQualifier = m_qualifier;
-		return version.replaceFirst(PROPERTY_QUALIFIER, newQualifier);
+		return newQualifier;
+	}
+
+	String replaceQualifierInVersion(String version, String id)
+	{
+		if(version.endsWith(PROPERTY_QUALIFIER))
+			version = version.replaceFirst(PROPERTY_QUALIFIER, getQualifierReplacement(version, id));
+		return version;
 	}
 }

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
@@ -24,6 +23,7 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.datatransfer.IImportStructureProvider;
 import org.eclipse.buckminster.pde.internal.datatransfer.ImportOperation;
 import org.eclipse.buckminster.pde.internal.dialogs.IOverwriteQuery;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;

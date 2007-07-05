@@ -19,7 +19,6 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
@@ -29,6 +28,7 @@ import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider;
 import org.eclipse.buckminster.pde.internal.datatransfer.ZipFileStructureProvider;
 import org.eclipse.buckminster.pde.internal.plugin.ClasspathComputer;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

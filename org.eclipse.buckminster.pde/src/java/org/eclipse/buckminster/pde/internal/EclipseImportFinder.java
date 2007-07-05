@@ -9,14 +9,12 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.reader.IVersionFinder;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionQuery;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,86 +25,77 @@ import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISiteFeatureReference;
 
 @SuppressWarnings("restriction")
-public class EclipseImportFinder implements IVersionFinder
+public class EclipseImportFinder extends AbstractVersionFinder
 {
 	private final EclipseImportReaderType m_readerType;
 	private final EclipseImportBase m_base;
 
-	public EclipseImportFinder(EclipseImportReaderType readerType, String repositoryURI, ComponentRequest request)
+	public EclipseImportFinder(EclipseImportReaderType readerType, Provider provider, NodeQuery query)
 	throws CoreException
 	{
-		m_base = EclipseImportBase.obtain(repositoryURI, request);
+		super(provider, query);
+		m_base = EclipseImportBase.obtain(provider.getURI(query.getProperties()), query.getComponentRequest());
 		m_readerType = readerType;
 	}
 
-	public void close()
-	{
-	}
-
-	public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor)
+	public VersionMatch getBestVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		return m_base.isFeature()
-			? getBestFeatureVersion(query, monitor)
-			: getBestPluginVersion(query, monitor);
+			? getBestFeatureVersion(monitor)
+			: getBestPluginVersion(monitor);
 	}
 
-	public VersionMatch getDefaultVersion(IProgressMonitor monitor)
-	throws CoreException
-	{
-		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "0.0.0");
-		IVersionQuery query = VersionSelectorFactory.createQuery(null, designator);
-		return getBestVersion(query, monitor);
-	}
-
-	private VersionMatch getBestFeatureVersion(IVersionQuery query, IProgressMonitor monitor)
+	private VersionMatch getBestFeatureVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		return m_base.isLocal()
-			? getBestLocalFeatureVersion(query, monitor)
-			: getBestRemoteFeatureVersion(query, monitor);
+			? getBestLocalFeatureVersion(monitor)
+			: getBestRemoteFeatureVersion(monitor);
 	}
 
-	private VersionMatch getBestLocalFeatureVersion(IVersionQuery query, IProgressMonitor monitor)
+	private VersionMatch getBestLocalFeatureVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		IVersion bestFit = null;
+		String space = getProvider().getSpace();
 		for(IFeatureModel model : m_base.getFeatureModels(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getFeature().getVersion());
-			if(query.matches(version) && (bestFit == null || version.compareTo(bestFit) > 0))
+			if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
 		if(bestFit == null)
 			return null;
-		return new VersionMatch(bestFit, VersionSelectorFactory.tag(bestFit.toString()));
+		return new VersionMatch(bestFit, null, space, -1, null, null);
 	}
 
-	private VersionMatch getBestLocalPluginVersion(IVersionQuery query, IProgressMonitor monitor)
+	private VersionMatch getBestLocalPluginVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		IVersion bestFit = null;
+		String space = getProvider().getSpace();
 		for(IPluginModelBase model : m_base.getPluginModels(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getBundleDescription().getVersion().toString());
-			if(query.matches(version) && (bestFit == null || version.compareTo(bestFit) > 0))
+			if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
 		if(bestFit == null)
 			return null;
-		return new VersionMatch(bestFit, VersionSelectorFactory.tag(bestFit.toString()));
+		return new VersionMatch(bestFit, null, space, -1, null, null);
 	}
 
-	private VersionMatch getBestPluginVersion(IVersionQuery query, IProgressMonitor monitor)
+	private VersionMatch getBestPluginVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		return m_base.isLocal()
-			? getBestLocalPluginVersion(query, monitor)
-			: getBestRemotePluginVersion(query, monitor);
+			? getBestLocalPluginVersion(monitor)
+			: getBestRemotePluginVersion(monitor);
 	}
 
 	@SuppressWarnings("deprecation")
-	private VersionMatch getBestRemoteFeatureVersion(IVersionQuery query, IProgressMonitor monitor)
+	private VersionMatch getBestRemoteFeatureVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		IVersion bestFit = null;
@@ -114,16 +103,17 @@ public class EclipseImportFinder implements IVersionFinder
 		monitor.subTask("Fetching remote feature references");
 		try
 		{
+			String space = getProvider().getSpace();
 			for(ISiteFeatureReference model : m_base.getFeatureReferences(m_readerType, MonitorUtils.subMonitor(monitor, 80)))
 			{
 				IFeature feature = model.getFeature(MonitorUtils.subMonitor(monitor, 5));
 				IVersion version = VersionFactory.OSGiType.fromString(feature.getVersionedIdentifier().getVersion().toString());
-				if(query.matches(version) && (bestFit == null || version.compareTo(bestFit) > 0))
+				if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
 					bestFit = version;
 			}
 			if(bestFit == null)
 				return null;
-			return new VersionMatch(bestFit, VersionSelectorFactory.tag(bestFit.toString()));
+			return new VersionMatch(bestFit, null, space, -1, null, null);
 		}
 		finally
 		{
@@ -132,17 +122,18 @@ public class EclipseImportFinder implements IVersionFinder
 	}
 
 	@SuppressWarnings("deprecation")
-	private VersionMatch getBestRemotePluginVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	private VersionMatch getBestRemotePluginVersion(IProgressMonitor monitor) throws CoreException
 	{
 		IVersion bestFit = null;
+		String space = getProvider().getSpace();
 		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion().toString());
-			if(query.matches(version) && (bestFit == null || version.compareTo(bestFit) > 0))
+			if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
 		if(bestFit == null)
 			return null;
-		return new VersionMatch(bestFit, VersionSelectorFactory.tag(bestFit.toString()));
+		return new VersionMatch(bestFit, null, space, -1, null, null);
 	}
 }

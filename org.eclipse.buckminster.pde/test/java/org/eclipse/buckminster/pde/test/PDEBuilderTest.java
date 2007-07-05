@@ -49,24 +49,24 @@ public class PDEBuilderTest extends PDETestCase
 		URL location = FileLocator.toFileURL(pdePlugin.getBundle().getEntry("/"));
 		Format vh = new Format(location.toString());
 		Provider provider = new Provider(IReaderType.URL_CATALOG, IComponentType.ECLIPSE_INSTALLED, categories, null,
-				vh, true, true, null);
+				vh, null, true, true, null);
 		IReaderType readerType = provider.getReaderType();
 		IComponentReader[] reader = new IComponentReader[] { readerType.getReader(provider, resolver.getContext()
 				.getRootNodeQuery(), null, nulMon) };
 
 		IResolutionBuilder builder = corePlugin.getResolutionBuilder("plugin2cspec");
-		Utils.serialize(builder.build(reader, nulMon), System.out);
+		Utils.serialize(builder.build(reader, false, nulMon), System.out);
 		if(reader[0] != null)
 			reader[0].close();
 
 		location = FileLocator.toFileURL(Platform.getBundle("org.junit").getEntry("/"));
 		resolver = this.createResolver("org.junit", null);
 		vh = new Format(location.toString());
-		provider = new Provider(IReaderType.URL_CATALOG, IComponentType.ECLIPSE_INSTALLED, categories, null, vh, true,
+		provider = new Provider(IReaderType.URL_CATALOG, IComponentType.ECLIPSE_INSTALLED, categories, null, vh, null, true,
 				true, null);
 
 		reader[0] = readerType.getReader(provider, resolver.getContext().getRootNodeQuery(), null, nulMon);
-		Utils.serialize(builder.build(reader, nulMon), System.out);
+		Utils.serialize(builder.build(reader, false, nulMon), System.out);
 		if(reader[0] != null)
 			reader[0].close();
 
@@ -87,10 +87,10 @@ public class PDEBuilderTest extends PDETestCase
 		resolver = this.createResolver("org.eclipse.pde", null);
 		builder = corePlugin.getResolutionBuilder("feature2cspec");
 		vh = new Format(location.toString());
-		provider = new Provider(IReaderType.URL_CATALOG, IComponentType.ECLIPSE_INSTALLED, categories, null, vh, true,
+		provider = new Provider(IReaderType.URL_CATALOG, IComponentType.ECLIPSE_INSTALLED, categories, null, vh, null, true,
 				true, null);
 		reader[0] = readerType.getReader(provider, resolver.getContext().getRootNodeQuery(), null, nulMon);
-		Utils.serialize(builder.build(reader, nulMon), System.out);
+		Utils.serialize(builder.build(reader, false, nulMon), System.out);
 		if(reader[0] != null)
 			reader[0].close();
 
@@ -99,11 +99,11 @@ public class PDEBuilderTest extends PDETestCase
 			resolver = this.createResolver("org.tigris.subversion.subclipse.core", null);
 			vh = new Format(
 					"http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core");
-			provider = new Provider("svn", IComponentType.ECLIPSE_PROJECT, null, null, vh, true, true, null);
+			provider = new Provider("svn", IComponentType.ECLIPSE_PROJECT, null, null, vh, null, true, true, null);
 			readerType = provider.getReaderType();
 			reader[0] = readerType.getReader(provider, resolver.getContext().getRootNodeQuery(), null, nulMon);
 			builder = corePlugin.getResolutionBuilder("plugin2cspec");
-			Utils.serialize(builder.build(reader, nulMon), System.out);
+			Utils.serialize(builder.build(reader, false, nulMon), System.out);
 			if(reader[0] != null)
 				reader[0].close();
 		}

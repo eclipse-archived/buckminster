@@ -44,7 +44,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 
 	private boolean m_usingInstalledReader;
 
-	public synchronized DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor) throws CoreException
+	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof ICatalogReader))
@@ -56,7 +56,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		{
 			m_usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
-			parseFile(cspecBuilder, (ICatalogReader)reader, MonitorUtils.subMonitor(monitor, 1000));
+			parseFile(cspecBuilder, forResolutionAidOnly, (ICatalogReader)reader, MonitorUtils.subMonitor(monitor, 1000));
 			CSpec cspec = applyExtensions(cspecBuilder.createCSpec(), reader, MonitorUtils.subMonitor(
 				monitor, 1000));
 			return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
@@ -72,5 +72,5 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		return m_usingInstalledReader;
 	}
 
-	protected abstract void parseFile(CSpecBuilder cspecBuilder, ICatalogReader reader, IProgressMonitor monitor) throws CoreException;
+	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException;
 }

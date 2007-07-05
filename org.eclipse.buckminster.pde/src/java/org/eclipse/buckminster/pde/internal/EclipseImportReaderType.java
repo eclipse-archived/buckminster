@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
@@ -40,10 +40,11 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
@@ -72,13 +73,83 @@ import org.eclipse.update.core.VersionedIdentifier;
 @SuppressWarnings("restriction")
 public class EclipseImportReaderType extends AbstractReaderType implements IPDEConstants
 {
-	private final HashMap<File, IPluginModelBase[]> m_pluginCache = new HashMap<File, IPluginModelBase[]>();
+	private static final UUID CACHE_KEY_IMPORT_CACHE = UUID.randomUUID();
 
-	private final HashMap<File, IFeatureModel[]> m_featureCache = new HashMap<File, IFeatureModel[]>();
+	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
+
+	public static File getTempSite(Map<UUID,Object> ucache) throws CoreException
+	{
+		Map<String,File> siteCache = getSiteCache(ucache);
+		synchronized(siteCache)
+		{
+			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite";
+			File tempSite = siteCache.get(key);
+			if(tempSite != null)
+				return tempSite;
+
+			tempSite = FileUtils.createTempFolder("bmsite", ".tmp");
+			new File(tempSite, PLUGINS_FOLDER).mkdir();
+			new File(tempSite, FEATURES_FOLDER).mkdir();
+			siteCache.put(key, tempSite);
+			return tempSite;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Map<EclipseImportBase,EclipseImportBase> getImportCache(Map<UUID,Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<EclipseImportBase, EclipseImportBase> importCache = (Map<EclipseImportBase, EclipseImportBase>)ctxUserCache.get(CACHE_KEY_IMPORT_CACHE);
+			if(importCache == null)
+			{
+				importCache = Collections.synchronizedMap(new HashMap<EclipseImportBase, EclipseImportBase>());
+				ctxUserCache.put(CACHE_KEY_IMPORT_CACHE, importCache);
+			}
+			return importCache;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Map<String,File> getSiteCache(Map<UUID,Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<String, File> siteCache = (Map<String, File>)ctxUserCache.get(CACHE_KEY_SITE_CACHE);
+			if(siteCache == null)
+			{
+				siteCache = Collections.synchronizedMap(new HashMap<String, File>());
+				ctxUserCache.put(CACHE_KEY_SITE_CACHE, siteCache);
+			}
+			return siteCache;
+		}
+	}
 
 	private final Map<IProject, IClasspathEntry[]> m_classpaths = new HashMap<IProject, IClasspathEntry[]>();
 
+	private final HashMap<File, IFeatureModel[]> m_featureCache = new HashMap<File, IFeatureModel[]>();
+
+	private final HashMap<File, IPluginModelBase[]> m_pluginCache = new HashMap<File, IPluginModelBase[]>();
+
 	private transient ArrayList<IFragmentModel> m_siteFragments;
+
+	@SuppressWarnings("deprecation")
+	public synchronized IPluginModelBase getPluginModelBase(URL location, String id, String version,
+		ProviderMatch templateInfo) throws CoreException
+	{
+		for(IPluginEntry candidate : getSitePluginEntries(location, new NullProgressMonitor()))
+		{
+			VersionedIdentifier vi = candidate.getVersionedIdentifier();
+			String name = vi.getIdentifier();
+			if(id.equals(name))
+			{
+				String versionStr = vi.getVersion().toString();
+				if(version == null || version.equals(versionStr))
+					return localize(vi.getIdentifier(), versionStr, templateInfo);
+			}
+		}
+		return null;
+	}
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor)
 	throws CoreException
@@ -92,8 +163,7 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 	throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return new EclipseImportFinder(this, provider.getURI(nodeQuery.getProperties()),
-			nodeQuery.getComponentRequest());
+		return new EclipseImportFinder(this, provider, nodeQuery);
 	}
 
 	@Override
@@ -132,6 +202,22 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 	Map<IProject, IClasspathEntry[]> getClasspathCollector()
 	{
 		return m_classpaths;
+	}
+
+	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	{
+		IFeatureModel model = null;
+		EclipseImportBase localBase = localizeContents(rInfo, false, MonitorUtils.subMonitor(monitor, 90));
+		String version = rInfo.getVersionMatch().getVersion().toString();
+		for(IFeatureModel candidate : localBase.getFeatureModels(this, monitor))
+		{
+			if(version.equals(candidate.getFeature().getVersion()))
+			{
+				model = candidate;
+				break;
+			}
+		}
+		return model;
 	}
 
 	List<IFeatureModel> getFeatureModels(File location, String featureName, IProgressMonitor monitor)
@@ -174,38 +260,16 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		return frags == null ? Collections.<IFragmentModel> emptyList() : frags;
 	}
 
-	@SuppressWarnings("deprecation")
-	public synchronized IPluginModelBase getPluginModelBase(URL location, String id, String version,
-		ProviderMatch templateInfo) throws CoreException
+	List<IPluginEntry> getPluginEntries(URL location, String componentName, IProgressMonitor monitor)
+	throws CoreException
 	{
-		for(IPluginEntry candidate : getSitePluginEntries(location, new NullProgressMonitor()))
+		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
+		for(IPluginEntry entry : getSitePluginEntries(location, monitor))
 		{
-			VersionedIdentifier vi = candidate.getVersionedIdentifier();
-			String name = vi.getIdentifier();
-			if(id.equals(name))
-			{
-				String versionStr = vi.getVersion().toString();
-				if(version == null || version.equals(versionStr))
-					return localize(vi.getIdentifier(), versionStr, templateInfo);
-			}
+			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
+				result.add(entry);
 		}
-		return null;
-	}
-
-	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
-	{
-		IFeatureModel model = null;
-		EclipseImportBase localBase = localizeContents(rInfo, false, MonitorUtils.subMonitor(monitor, 90));
-		String version = rInfo.getVersionMatch().getVersion().toString();
-		for(IFeatureModel candidate : localBase.getFeatureModels(this, monitor))
-		{
-			if(version.equals(candidate.getFeature().getVersion()))
-			{
-				model = candidate;
-				break;
-			}
-		}
-		return model;
+		return result;
 	}
 
 	IPluginModelBase getPluginModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
@@ -224,21 +288,16 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		return model;
 	}
 
-	public static File getTempSite(Map<Object, Object> ucache) throws CoreException
+	List<IPluginModelBase> getPluginModels(File location, String pluginName, IProgressMonitor monitor)
+	throws CoreException
 	{
-		synchronized(ucache)
+		ArrayList<IPluginModelBase> candidates = new ArrayList<IPluginModelBase>();
+		for(IPluginModelBase model : getSitePlugins(location, monitor))
 		{
-			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite";
-			File tempSite = (File)ucache.get(key);
-			if(tempSite != null)
-				return tempSite;
-
-			tempSite = FileUtils.createTempFolder("bmsite", ".tmp");
-			new File(tempSite, PLUGINS_FOLDER).mkdir();
-			new File(tempSite, FEATURES_FOLDER).mkdir();
-			ucache.put(key, tempSite);
-			return tempSite;
+			if(model.getPluginBase().getId().equals(pluginName))
+				candidates.add(model);
 		}
+		return candidates;
 	}
 
 	EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
@@ -254,8 +313,9 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		//
 		synchronized(base)
 		{
-			Map<Object, Object> userCache = rInfo.getNodeQuery().getContext().getUserCache();
-			EclipseImportBase localBase = (EclipseImportBase)userCache.get(base);
+			Map<UUID,Object> userCache = rInfo.getNodeQuery().getContext().getUserCache();
+			Map<EclipseImportBase,EclipseImportBase> importCache = getImportCache(userCache);
+			EclipseImportBase localBase = importCache.get(base);
 			if(localBase != null)
 				return localBase;
 
@@ -277,7 +337,7 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 				FileUtils.unzip(pluginURL, null, destDir, false, MonitorUtils.subMonitor(monitor, 800));
 				localBase = EclipseImportBase.obtain(new URI("file", null, tempSite.toURI().getPath(),
 					base.getQuery(), name).toString(), request);
-				userCache.put(base, localBase);
+				importCache.put(base, localBase);
 				return localBase;
 			}
 			catch(URISyntaxException e)
@@ -295,6 +355,18 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		}
 	}
 
+	private CoreException createException(ArrayList<IStatus> resultStatus)
+	{
+		int errCount = resultStatus.size();
+		if(errCount == 1)
+			return new CoreException(resultStatus.get(0));
+
+		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
+		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
+			"Problems loading features", null);
+		return new CoreException(multiStatus);
+	}
+
 	private URL createRemoteComponentURL(URL remoteLocation, ProviderMatch rInfo, String subDir)
 	throws MalformedURLException
 	{
@@ -304,20 +376,6 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 	private String createVersionedComponentName(ProviderMatch rInfo)
 	{
 		return rInfo.getComponentName() + '_' + rInfo.getVersionMatch().getVersion();
-	}
-
-	private IPluginModelBase localize(String pluginID, String versionStr, ProviderMatch templateInfo)
-	throws CoreException
-	{
-		IVersion version = VersionFactory.OSGiType.fromString(versionStr);
-		NodeQuery tplNq = templateInfo.getNodeQuery();
-		VersionMatch vm = new VersionMatch(version, VersionSelectorFactory.tag(versionStr));
-
-		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID,
-			KeyConstants.PLUGIN_CATEGORY,
-			VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
-		ProviderMatch pm = new ProviderMatch(templateInfo.getProvider(), vm, ProviderScore.GOOD, nq);
-		return getPluginModel(pm, new NullProgressMonitor());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -342,42 +400,6 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		}
 		m_siteFragments = frags;
 		return frags;
-	}
-
-	List<IPluginEntry> getPluginEntries(URL location, String componentName, IProgressMonitor monitor)
-	throws CoreException
-	{
-		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
-		for(IPluginEntry entry : getSitePluginEntries(location, monitor))
-		{
-			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
-				result.add(entry);
-		}
-		return result;
-	}
-
-	List<IPluginModelBase> getPluginModels(File location, String pluginName, IProgressMonitor monitor)
-	throws CoreException
-	{
-		ArrayList<IPluginModelBase> candidates = new ArrayList<IPluginModelBase>();
-		for(IPluginModelBase model : getSitePlugins(location, monitor))
-		{
-			if(model.getPluginBase().getId().equals(pluginName))
-				candidates.add(model);
-		}
-		return candidates;
-	}
-
-	private CoreException createException(ArrayList<IStatus> resultStatus)
-	{
-		int errCount = resultStatus.size();
-		if(errCount == 1)
-			return new CoreException(resultStatus.get(0));
-
-		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
-		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
-			"Problems loading features", null);
-		return new CoreException(multiStatus);
 	}
 
 	private IFeatureModel[] getPlatformFeatures()
@@ -544,5 +566,20 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		{
 			monitor.done();
 		}
+	}
+
+	private IPluginModelBase localize(String pluginID, String versionStr, ProviderMatch templateInfo)
+	throws CoreException
+	{
+		IVersion version = VersionFactory.OSGiType.fromString(versionStr);
+		NodeQuery tplNq = templateInfo.getNodeQuery();
+		Provider provider = templateInfo.getProvider();
+		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), provider.getSpace(), -1, null, null);
+
+		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID,
+			KeyConstants.PLUGIN_CATEGORY,
+			VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
+		ProviderMatch pm = new ProviderMatch(provider, vm, ProviderScore.GOOD, nq);
+		return getPluginModel(pm, new NullProgressMonitor());
 	}
 }

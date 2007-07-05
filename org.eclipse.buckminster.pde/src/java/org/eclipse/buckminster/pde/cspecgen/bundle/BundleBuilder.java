@@ -10,12 +10,12 @@
 
 package org.eclipse.buckminster.pde.cspecgen.bundle;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
@@ -26,6 +26,7 @@ import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.pde.internal.model.ExternalBuildModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalExtensionsModel;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,8 +40,6 @@ import org.eclipse.pde.internal.core.bundle.BundleModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModelBase;
 import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
-import org.eclipse.pde.internal.core.plugin.ExternalFragmentModel;
-import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 
 /**
  * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml
@@ -51,7 +50,7 @@ import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstants
 {
 	@SuppressWarnings("serial")
-	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, IProgressMonitor monitor)
+	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		if(reader instanceof EclipsePlatformReader)
@@ -63,64 +62,57 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		monitor.beginTask(null, 7000);
 		try
 		{
-			IPluginModelBase modelBase = null;
-
-			if(reader.exists(BUNDLE_FILE, MonitorUtils.subMonitor(monitor, 1000)))
+			// This is an OSGi style plugin. Most of the dependencies and
+			// other
+			// info that we're interested in is stored in the
+			// META-INF/MANIFEST.MF
+			// file.
+			//
+			BundleModel model = new ExternalBundleModel();
+			try
 			{
-				// This is an OSGi style plugin. Most of the dependencies and
-				// other
-				// info that we're interested in is stored in the
-				// META-INF/MANIFEST.MF
-				// file.
-				//
-				BundleModel model = new ExternalBundleModel();
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
-				final boolean fragment = model.isFragmentModel();
-				IBundlePluginModelBase bmodel = fragment ? new BundleFragmentModel()
-					: new BundlePluginModel();
+			}
+			catch(FileNotFoundException e)
+			{
+				throw new BuckminsterException(reader.getNodeQuery().getComponentRequest() + ": Could not find " + BUNDLE_FILE);
+			}
 
-				bmodel.setEnabled(true);
-				bmodel.setBundleModel(model);
+			boolean fragment = model.isFragmentModel();
+			IBundlePluginModelBase bmodel = fragment ? new BundleFragmentModel()
+				: new BundlePluginModel();
 
-				// Extensions etc. that are not part of the OSGi can still be
-				// found in the plugin.xml or fragment.xml
-				//
+			bmodel.setEnabled(true);
+			bmodel.setBundleModel(model);
+
+			// Extensions etc. that are not part of the OSGi can still be
+			// found in the plugin.xml or fragment.xml
+			//
+			if(!forResolutionAidOnly)
+			{
 				String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
-				if(reader.exists(extensionsFile, MonitorUtils.subMonitor(monitor, 1000)))
+				try
 				{
 					ExternalExtensionsModel extModel = new ExternalExtensionsModel();
 					loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
 					bmodel.setExtensionsModel(extModel);
 				}
-				else
-					MonitorUtils.worked(monitor, 1000);
-				modelBase = bmodel;
-			}
-			else if(reader.exists(PLUGIN_FILE, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				modelBase = new ExternalPluginModel();
-				loadModel(reader, PLUGIN_FILE, modelBase, MonitorUtils.subMonitor(monitor, 2000));
-			}
-			else if(reader.exists(FRAGMENT_FILE, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				modelBase = new ExternalFragmentModel();
-				loadModel(reader, FRAGMENT_FILE, modelBase, MonitorUtils.subMonitor(monitor, 1000));
-			}
+				catch(FileNotFoundException e)
+				{}
 
-			if(modelBase == null)
-				throw new BuckminsterException(reader.getNodeQuery().getComponentRequest() + ": Could not find " + BUNDLE_FILE + ", " + PLUGIN_FILE + " or "
-					+ FRAGMENT_FILE);
-
-			if(reader.exists(BUILD_PROPERTIES_FILE, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				IBuildModel buildModel = new ExternalBuildModel();
-				loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
-				if(modelBase instanceof BundlePluginModelBase)
-					((BundlePluginModelBase)modelBase).setBuildModel(buildModel);
+				if(bmodel instanceof BundlePluginModelBase)
+				{
+					IBuildModel buildModel = new ExternalBuildModel();
+					try
+					{
+						loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
+						((BundlePluginModelBase)bmodel).setBuildModel(buildModel);
+					}
+					catch(FileNotFoundException e)
+					{}
+				}
 			}
-			else
-				MonitorUtils.worked(monitor, 1000);
-			return modelBase;
+			return bmodel;
 		}
 		finally
 		{
@@ -129,7 +121,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	}
 
 	private static void loadModel(ICatalogReader reader, String file, final IModel model,
-		IProgressMonitor monitor) throws CoreException
+		IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		try
 		{
@@ -142,6 +134,10 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 					return null;
 				}
 			}, monitor);
+		}
+		catch(FileNotFoundException e)
+		{
+			throw e;
 		}
 		catch(IOException e)
 		{
@@ -156,15 +152,17 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, ICatalogReader reader, IProgressMonitor monitor) throws CoreException
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		try
 		{
-			IPluginBase pluginBase = parsePluginModelBase(reader, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
+			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
 			cspecBuilder.setCategory(KeyConstants.PLUGIN_CATEGORY);
 			cspecBuilder.setVersion(pluginBase.getVersion(), VersionFactory.OSGiType.getId());
+			if(forResolutionAidOnly)
+				return;
 
 			IBuildModel buildModel = pluginBase.getPluginModel().getBuildModel();
 			boolean fromProject = (buildModel != null);

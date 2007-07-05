@@ -14,8 +14,11 @@ import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +29,6 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -38,13 +40,12 @@ import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -64,9 +65,9 @@ public class PDEMapProvider extends Provider
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
 
 	public PDEMapProvider(String remoteReaderType, String componentType, String[] managedCategories,
-		VersionConverterDesc vcDesc, Format uri, boolean mutable, boolean source, Documentation documentation)
+		VersionConverterDesc vcDesc, Format uri, String space, boolean mutable, boolean source, Documentation documentation)
 	{
-		super(remoteReaderType, componentType, managedCategories, vcDesc, uri, mutable, source, documentation);
+		super(remoteReaderType, componentType, managedCategories, vcDesc, uri, space, mutable, source, documentation);
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class PDEMapProvider extends Provider
 		try
 		{
 			TypedValue tv = getTypedValue(query, problemCollector, 
-				this.getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
+				getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
 
 			if(tv == null)
 				//
@@ -86,28 +87,26 @@ public class PDEMapProvider extends Provider
 				return null;
 
 			IVersion v = null;
-			IVersionSelector vs = VersionSelectorFactory.tag(tv.getTag());
+			VersionSelector vs = VersionSelector.tag(tv.getTag());
 			ComponentRequest rq = query.getComponentRequest();
-			IVersionConverter vc = this.getVersionConverter();
+			IVersionConverter vc = getVersionConverter();
 			if(vc != null)
 			{
 				// Let's check that the given tag matches what we are asking
 				// for.
 				//
-				v = vc.createVersion(VersionFactory.OSGiType, vs);
+				v = vc.createVersion(vs);
 				IVersionDesignator vd = query.getVersionDesignator();
 				if(!(vd == null || vd.designates(v)))
 					return null;
 			}
-			else
-				v = VersionFactory.defaultVersion();
 
-			VersionMatch vm = new VersionMatch(v, vs);
+			VersionMatch vm = new VersionMatch(v, vs, getSpace(), -1, null, null);
 			CorePlugin plugin = CorePlugin.getDefault();
 			IReaderType rt = plugin.getReaderType(tv.getType().toLowerCase());
 
 			String repoLocator = rt.convertFetchFactoryLocator(tv.getValue(), rq.getName());
-			URL repoURL = rt.convertToURL(repoLocator, vs);
+			URL repoURL = rt.convertToURL(repoLocator, vm);
 			if(repoURL != null)
 			{
 				String path = repoURL.getPath();
@@ -119,9 +118,9 @@ public class PDEMapProvider extends Provider
 			}
 
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(rt.getId(), this.getComponentTypeId(),
-				this.getManagedCategories(), this.getVersionConverterDesc(), uri, this.isMutable(),
-				this.hasSource(), null)
+			Provider delegated = new Provider(rt.getId(), getComponentTypeId(),
+				getManagedCategories(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
+				hasSource(), null)
 			{
 				@Override
 				public Provider getMain()
@@ -184,8 +183,8 @@ public class PDEMapProvider extends Provider
 		}
 
 		String msg = String.format("PDEMapProvider %s(%s): Unable to find %s in map",
-			this.getReaderTypeId(),
-			this.getURI(query.getProperties()),
+			getReaderTypeId(),
+			getURI(query.getProperties()),
 			wanted);
 
 		problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
@@ -216,18 +215,18 @@ public class PDEMapProvider extends Provider
 		IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask("", 1000);
-		Map<Object, Object> userCache = query.getContext().getUserCache();
+		Map<UUID, Object> userCache = query.getContext().getUserCache();
 		synchronized(userCache)
 		{
-			Map<ComponentName, TypedValue> map = this.getCachedMap(userCache);
+			Map<ComponentName, TypedValue> map = getCachedMap(userCache);
 			if(map != null)
 				return map;
 
 			try
 			{
-				ProviderMatch match = new ProviderMatch(this, new VersionMatch(
-					VersionFactory.defaultVersion(),
-					VersionSelectorFactory.timestamp(System.currentTimeMillis())), ProviderScore.GOOD, query);
+				ProviderMatch match = new ProviderMatch(this,
+					new VersionMatch(null, null, getSpace(), -1, new Date(),null), 
+					ProviderScore.GOOD, query);
 
 				File tempFolder = FileUtils.createTempFolder("bucky", ".tmp");
 				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
@@ -249,10 +248,11 @@ public class PDEMapProvider extends Provider
 				for(String file : mapFiles)
 				{
 					if(file.endsWith(".map"))
-						this.collectEntries(new File(tempFolder, file), map);
+						collectEntries(new File(tempFolder, file), map);
 					MonitorUtils.worked(monitor, amountPerFile);
 				}
-				this.cacheMap(userCache, map);
+				map = Collections.unmodifiableMap(map);
+				cacheMap(userCache, map);
 				return map;
 			}
 			catch(CoreException e)
@@ -369,14 +369,14 @@ public class PDEMapProvider extends Provider
 		}
 	}
 
-	private void cacheMap(Map<Object, Object> userCache, Map<ComponentName, TypedValue> map)
+	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentName, TypedValue> map)
 	{
-		userCache.put(this.getId(), map);
+		userCache.put(getId(), map);
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<ComponentName, TypedValue> getCachedMap(Map<Object, Object> userCache)
+	private Map<ComponentName, TypedValue> getCachedMap(Map<UUID, Object> userCache)
 	{
-		return (Map<ComponentName, TypedValue>)userCache.get(this.getId());
+		return (Map<ComponentName, TypedValue>)userCache.get(getId());
 	}
 }

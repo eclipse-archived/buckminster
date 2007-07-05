@@ -18,12 +18,12 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.PropertiesParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,7 +44,7 @@ public class FeatureBuilder extends PDEBuilder
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, ICatalogReader reader, IProgressMonitor monitor) throws CoreException
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		IFeature feature;
@@ -68,16 +68,19 @@ public class FeatureBuilder extends PDEBuilder
 		}
 
 		Map<String, String> buildProperties = null;
-		try
+		if(!forResolutionAidOnly)
 		{
-			buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor(monitor, 40));
-		}
-		catch(FileNotFoundException e)
-		{
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
+			try
+			{
+				buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor(monitor, 40));
+			}
+			catch(FileNotFoundException e)
+			{
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
 		}
 		CSpecFromSource generator = new CSpecFromSource(cspecBuilder, reader, feature, buildProperties);
 		generator.generate(MonitorUtils.subMonitor(monitor, 20));

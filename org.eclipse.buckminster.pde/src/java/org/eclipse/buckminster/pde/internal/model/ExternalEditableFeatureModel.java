@@ -20,8 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.pde.core.IEditableModel;

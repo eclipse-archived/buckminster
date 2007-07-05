@@ -64,7 +64,7 @@ public class ImportBundle
 		//
 		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, IComponentType.ECLIPSE_PROJECT,
 			new String[] { KeyConstants.PLUGIN_CATEGORY }, null, new Format(m_siteURL.toExternalForm()),
-			false, false, null);
+			null, false, false, null);
 
 		// Next, we need a reader and a Resolution builder in order to create the real resolution
 		// from witch we can derive the origin of the component etc.
@@ -78,7 +78,7 @@ public class ImportBundle
 		{
 			IResolutionBuilder builder = CorePlugin.getDefault().getResolutionBuilder(
 				IResolutionBuilder.PLUGIN2CSPEC);
-			DepNode node = builder.build(reader, monitor);
+			DepNode node = builder.build(reader, false, monitor);
 
 			// Materialize the plugin, i.e. import it into the workspace
 			//

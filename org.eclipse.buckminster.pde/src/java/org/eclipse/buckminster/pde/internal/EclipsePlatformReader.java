@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -34,6 +33,7 @@ import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -275,7 +275,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		if(vsMatch != null)
 		{
 			IVersion version = vsMatch.getVersionMatch().getVersion();
-			if(!version.isDefault())
+			if(version != null)
 				desiredVersion = version.toString();
 		}
 		return desiredVersion;

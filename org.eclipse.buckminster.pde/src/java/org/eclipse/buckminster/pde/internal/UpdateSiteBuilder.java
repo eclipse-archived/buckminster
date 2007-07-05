@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class UpdateSiteBuilder extends AbstractResolutionBuilder
 {
-	public DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor) throws CoreException
+	public DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();

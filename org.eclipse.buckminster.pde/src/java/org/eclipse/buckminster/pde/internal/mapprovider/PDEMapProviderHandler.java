@@ -28,6 +28,7 @@ public class PDEMapProviderHandler extends ProviderHandler
 				getManagedCategories(),
 				getVersionConverter(),
 				getUriFormat(),
+				getSpace(),
 				isMutable(),
 				isSource(),
 				getDocumentation());

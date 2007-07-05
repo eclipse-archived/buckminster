@@ -21,9 +21,9 @@ import java.util.WeakHashMap;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.pde.core.plugin.IPluginModelBase;

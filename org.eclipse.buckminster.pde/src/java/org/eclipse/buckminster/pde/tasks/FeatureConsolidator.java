@@ -476,6 +476,9 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		while(--idx >= 0)
 		{
 			String qualifier = qualifiers[idx];
+			if(qualifier == null)
+				continue;
+
 			if(qualifier.length() > m_significantDigits)
 			{
 				qualifier = qualifier.substring(0, m_significantDigits);
@@ -496,13 +499,16 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		{
 			// Calculate the sum at each position of the qualifiers.
 			int[] qualifierSums = new int[longestQualifier];
-			for(int i = 0; i < numElements; ++i)
+			for(idx = 0; idx < numElements; ++idx)
 			{
-				for(int j = 0; j < qualifiers[i].length(); ++j)
-				{
-					qualifierSums[j] += charValue(qualifiers[i].charAt(j));
-				}
+				String qualifier = qualifiers[idx];
+				if(qualifier == null)
+					continue;
+
+				for(int j = 0; j < qualifier.length(); ++j)
+					qualifierSums[j] += charValue(qualifier.charAt(j));
 			}
+
 			// Normalize the sums to be base 65.
 			int carry = 0;
 			for(int k = longestQualifier - 1; k >= 1; --k)
