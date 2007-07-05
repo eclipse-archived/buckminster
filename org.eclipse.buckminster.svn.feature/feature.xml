@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.svn.feature"
       label="Buckminster - Subversion support (Incubation)"
-      version="0.1.0.v20070626"
+      version="0.2.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.svn">
 
