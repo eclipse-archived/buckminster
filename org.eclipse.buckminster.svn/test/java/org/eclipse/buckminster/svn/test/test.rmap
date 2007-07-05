@@ -1,18 +1,31 @@
-<rm:rmap
+<rmap
+	xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
-	xmlns:pv="http://www.eclipse.org/buckminster/Provider-1.0"
-	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
 
-	<rm:site name="default">
-	</rm:site>
+	<searchPath name="subclipse-core">
+		<provider readerType="svn" componentType="eclipse.project" mutable="false" source="true">
+			<uri format="http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag&amp;moduleAfterBranch#core"/>
+		</provider>
+	</searchPath>
 
-	<rm:searchPath name="subclipse-core">
-		<rm:provider readerType="svn" componentType="eclipse.project" mutable="false" source="true">
-			<pv:uri format="http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core"/>
-		</rm:provider>
-	</rm:searchPath>
+	<searchPath name="subclipse-others">
+		<provider readerType="svn" componentType="eclipse.project" mutable="false" source="true">
+			<uri format="http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag&amp;moduleAfterBranch#{0}">
+				<bc:propertyRef key="buckminster.component"/>
+			</uri>
+		</provider>
+	</searchPath>
 
-	<rm:locator searchPathRef="subclipse-core" pattern="^org\.tigris\.subversion\.subclipse\.core$" />
-</rm:rmap>
+	<searchPath name="buckminster">
+		<provider readerType="svn" componentType="eclipse.project" mutable="true" source="true">
+			<uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/{0}?moduleAfterTag&amp;moduleAfterBranch">
+				<bc:propertyRef key="buckminster.component" />
+			</uri>
+		</provider>
+	</searchPath>
+
+	<locator searchPathRef="subclipse-core" pattern="^org\.tigris\.subversion\.subclipse\.core$" />
+	<locator searchPathRef="subclipse-others" pattern="^org\.tigris\.subversion\..*$" />
+	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.buckminster(\..*)?$" />
+</rmap>

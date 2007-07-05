@@ -17,22 +17,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
+import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
@@ -60,41 +63,21 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  */
 public class SvnRemoteFileReader extends AbstractRemoteReader
 {
-	private final SVNRevision m_revision;
-
 	private final SvnSession m_session;
-
+	private final ISVNDirEntry[] m_topEntries;
 	/**
 	 * @param readerType
 	 * @param rInfo
 	 * @param withResolvedBranch
 	 * @throws CoreException
 	 */
-	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo) throws CoreException
+	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		super(readerType, rInfo);
-		String tag = null;
-		String branch = null;
 		VersionMatch vm = rInfo.getVersionMatch();
-		IVersionConverter vc = rInfo.getVersionConverter();
-		IVersionSelector vs = vm.getFixedVersionSelector();
-		if(vc != null)
-		{
-			switch(vc.getType())
-			{
-			case TAG:
-				tag = vm.getVersion().isDefault()
-						? null
-						: vc.createSelector(vm.getVersion()).getQualifier();
-				break;
-			default:
-				branch = vs.isDefaultBranch()
-						? null
-						: vs.getBranchName();
-			}
-		}
-		m_session = new SvnSession(rInfo.getRepositoryURI(), branch, tag);
-		m_revision = SvnReaderType.getSVNRevision(vs);
+		VersionSelector branchOrTag = vm.getBranchOrTag();
+		m_session = new SvnSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo.getNodeQuery().getContext());
+		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
 	}
 
 	public boolean canMaterialize()
@@ -126,7 +109,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			{
 				try
 				{
-					m_session.getClientAdapter().checkout(m_session.getSVNUrl(null), destDir, m_revision, true);
+					m_session.getClientAdapter().checkout(m_session.getSVNUrl(null), destDir, m_session.getRevision(), true);
 					resultSlot[0] = Boolean.TRUE;
 				}
 				catch(Throwable e)
@@ -190,6 +173,26 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException,
 			IOException
 	{
+		Logger logger = CorePlugin.getLogger();
+		IPath path = Path.fromPortableString(fileName);
+		String topEntry = path.segment(0);
+
+		boolean found = false;
+		for(ISVNDirEntry dirEntry : m_topEntries)
+		{
+			if(dirEntry.getPath().equals(topEntry))
+			{
+				found = true;
+				break;
+			}
+		}
+
+		SVNUrl url = m_session.getSVNUrl(fileName);
+		SVNRevision revision = m_session.getRevision();
+		String key = SvnSession.cacheKey(url, revision);
+		if(!found)
+			throw new FileNotFoundException(key);
+
 		ISVNClientAdapter clientAdapter = m_session.getClientAdapter();
 		File destFile = null;
 		OutputStream output = null;
@@ -198,19 +201,27 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		int ticksLeft = 3;
 		isTemporary[0] = false;
 		monitor.beginTask(fileName, ticksLeft);
+
 		try
 		{
 			byte[] buf = new byte[0x1000];
-			SVNUrl url = m_session.getSVNUrl(fileName);
-			input = clientAdapter.getContent(url, m_revision);
+
+			if(logger.isDebugEnabled())
+				logger.debug(String.format("Reading remote file %s", key));
+
+			input = clientAdapter.getContent(url, revision);
 			int bytesRead = input.read(buf);
 
 			if(bytesRead == 0)
 			{
 				// Suspect file not found
 				//
-				if(clientAdapter.getDirEntry(url, m_revision) == null)
+				if(clientAdapter.getDirEntry(url, revision) == null)
+				{
+					if(logger.isDebugEnabled())
+						logger.debug(String.format("Remote file not found %s", key));
 					throw new FileNotFoundException(url.toString());
+				}
 			}
 
 			destFile = this.createTempFile();
@@ -243,8 +254,13 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				msg = e.toString();
 			else
 			{
-				if(msg.toLowerCase().contains("file not found"))
-					throw new FileNotFoundException(msg);
+				String lcMsg = msg.toLowerCase();
+				if(lcMsg.contains("file not found") || lcMsg.contains("path not found"))
+				{
+					if(logger.isDebugEnabled())
+						logger.debug(String.format("Remote file not found %s", key));
+					throw new FileNotFoundException(key);
+				}
 			}
 			IOException ioe = new IOException(msg);
 			ioe.initCause(p);

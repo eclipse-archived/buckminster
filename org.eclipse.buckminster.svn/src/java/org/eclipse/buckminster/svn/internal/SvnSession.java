@@ -16,10 +16,18 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -33,66 +41,38 @@ import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.ISVNPromptUserPassword;
+import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 /**
- * The SVN repository reader assumes that any repository contains the three
- * recommended directories <code>trunk</code>, <code>tags</code>, and
- * <code>branches</code>. A missing <code>tags</code> directory is
- * interpreted as no <code>tags</code>. A missing <code>branches</code>
- * directory is interpreted as no branches. The URL used as the repository
- * identifier must contain the path element trunk. Anything that follows the
- * <code>trunk</code> element in the path will be considered a
- * <code>module</code> path. The repository URL may also contain a query part
- * that in turn may have four different flags:
+ * The SVN repository reader assumes that any repository contains the three recommended directories <code>trunk</code>,
+ * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is interpreted as no
+ * <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. The URL used as the
+ * repository identifier must contain the path element trunk. Anything that follows the <code>trunk</code> element in
+ * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in
+ * turn may have four different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
- * <dd>When resolving a tag, put the module name between the <code>tags</code>
- * directory and the actual tag</dd>
+ * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
  * <dt>moduleAfterTag</dt>
  * <dd>When resolving a tag, append the module name after the actual tag</dd>
  * <dt>moduleBeforeBranch</dt>
- * <dd>When resolving a branch, put the module name between the
- * <code>branches</code> directory and the actual branch</dd>
+ * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
  * </dl>
- * A fragment in the repository URL will be treated as a sub-module. It will be
- * appended at the end of the resolved URL.
+ * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
  */
 public class SvnSession
 {
-	private ISVNClientAdapter m_clientAdapter;
-
-	private final IPath m_module;
-
-	private final IPath m_subModule;
-
-	private final String m_urlLeadIn;
-
-	private final boolean m_moduleBeforeTag;
-
-	private final boolean m_moduleAfterTag;
-
-	private final boolean m_moduleBeforeBranch;
-
-	private final boolean m_moduleAfterBranch;
-
-	private final String m_branch;
-
-	private final String m_tag;
-
-	private final String m_username;
-
-	private final String m_password;
-
 	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword
 	{
-		private int m_promptUserLimit = 3;
 		private int m_promptPasswordLimit = 3;
+
+		private int m_promptUserLimit = 3;
 
 		public String askQuestion(String realm, String question, boolean showAnswer, boolean maySave)
 		{
@@ -103,7 +83,7 @@ public class SvnSession
 
 		public int askTrustSSLServer(String info, boolean allowPermanently)
 		{
-			return ISVNPromptUserPassword.AcceptTemporary;		
+			return ISVNPromptUserPassword.AcceptTemporary;
 		}
 
 		public boolean askYesNo(String realm, String question, boolean yesIsDefault)
@@ -158,9 +138,9 @@ public class SvnSession
 
 		public boolean prompt(String realm, String username, boolean maySave)
 		{
-			// We support the password prompt only if we actually know the password 
-			// and only a limited number of times 
- 			//
+			// We support the password prompt only if we actually know the password
+			// and only a limited number of times
+			//
 			return m_password != null && --m_promptPasswordLimit >= 0;
 		}
 
@@ -180,25 +160,28 @@ public class SvnSession
 
 		public boolean promptUser(String realm, String username, boolean maySave)
 		{
-			// We do support the user prompt but only a limited number of times 
- 			//
+			// We do support the user prompt but only a limited number of times
+			//
 			return --m_promptUserLimit >= 0;
 		}
 
 		public boolean userAllowedSave()
 		{
-			// No need to save anything 
+			// No need to save anything
 			//
 			return false;
 		}
 	}
 
+	private static ISVNDirEntry[] s_emptyFolder = new ISVNDirEntry[0];
+
 	/**
-	 * Different versions of subclipse have different signatures for this method. We
-	 * want to cover them all.
+	 * Different versions of subclipse have different signatures for this method. We want to cover them all.
+	 * 
 	 * @return
 	 */
 	private static Method s_getKnownRepositories;
+
 	private static Object[] s_getKnownRepositoriesArgs;
 
 	public static ISVNRepositoryLocation[] getKnownRepositories() throws CoreException
@@ -219,13 +202,15 @@ public class SvnSession
 					{
 						// Newer versions use the IProgressMonitor parameter
 						//
-						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories", new Class[] { IProgressMonitor.class });
+						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories",
+								new Class[] { IProgressMonitor.class });
 						s_getKnownRepositoriesArgs = new Object[] { new NullProgressMonitor() };
 					}
 					catch(NoSuchMethodException e)
 					{
 						// Older versions have no parameter.
-						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories", Trivial.EMPTY_CLASS_ARRAY);
+						s_getKnownRepositories = reposClass
+								.getMethod("getKnownRepositories", Trivial.EMPTY_CLASS_ARRAY);
 						s_getKnownRepositoriesArgs = Trivial.EMPTY_OBJECT_ARRAY;
 					}
 				}
@@ -240,16 +225,108 @@ public class SvnSession
 		}
 	}
 
+	private final VersionSelector m_branchOrTag;
+
+	private ISVNClientAdapter m_clientAdapter;
+
+	private final IPath m_module;
+
+	private final boolean m_moduleAfterBranch;
+
+	private final boolean m_moduleAfterTag;
+
+	private final boolean m_moduleBeforeBranch;
+
+	private final boolean m_moduleBeforeTag;
+
+	private final String m_password;
+
+	private final SVNRevision m_revision;
+
+	private final IPath m_subModule;
+
+	private final String m_urlLeadIn;
+
+	private final String m_username;
+
+	public static SVNRevision getSVNRevision(long revision, Date timestamp)
+	{
+		if(revision == -1)
+		{
+			if(timestamp == null)
+				return SVNRevision.HEAD;
+
+			return new SVNRevision.DateSpec(timestamp);
+		}
+		if(timestamp != null)
+			throw new IllegalArgumentException("SvnSession cannot use both timestamp and revision number");
+		return new SVNRevision.Number(revision);
+	}
+
+	private static final UUID CACHE_KEY_DIR_CACHE = UUID.randomUUID();
+
+	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
+
+	@SuppressWarnings("unchecked")
+	private static Map<String, ISVNDirEntry[]> getListCache(Map<UUID, Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<String, ISVNDirEntry[]> listCache = (Map<String, ISVNDirEntry[]>)ctxUserCache.get(CACHE_KEY_LIST_CACHE);
+			if(listCache == null)
+			{
+				listCache = Collections.synchronizedMap(new HashMap<String, ISVNDirEntry[]>());
+				ctxUserCache.put(CACHE_KEY_LIST_CACHE, listCache);
+			}
+			return listCache;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Map<String, ISVNDirEntry> getDirCache(Map<UUID, Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<String, ISVNDirEntry> dirCache = (Map<String, ISVNDirEntry>)ctxUserCache.get(CACHE_KEY_DIR_CACHE);
+			if(dirCache == null)
+			{
+				dirCache = Collections.synchronizedMap(new HashMap<String, ISVNDirEntry>());
+				ctxUserCache.put(CACHE_KEY_DIR_CACHE, dirCache);
+			}
+			return dirCache;
+		}
+	}
+
+	private final Map<String, ISVNDirEntry> m_dirCache;
+
+	private final Map<String, ISVNDirEntry[]> m_listCache;
+
 	/**
-	 * @param repositoryURI The string representation of the URI that appoints the
-	 * trunk of repository module. No branch or tag information must be included.
-	 * @param branch The desired branch or <code>null</code> if not applicable.
-	 * @param tag The desired tag or <code>null</code> if not applicable.
+	 * @param repositoryURI
+	 *            The string representation of the URI that appoints the trunk of repository module. No branch or tag
+	 *            information must be included.
+	 * @param branch
+	 *            The desired branch or <code>null</code> if not applicable.
+	 * @param tag
+	 *            The desired tag or <code>null</code> if not applicable.
+	 * @param revision
+	 *            The desired revision or <code>-1</code> of not applicable
+	 * @param timestamp
+	 *            The desired timestamp or <code>null</code> if not applicable
+	 * @param context
+	 *            The context used for the resolution/materialization operation
 	 * @throws CoreException
 	 */
-	public SvnSession(String repositoryURI, String branch, String tag)
-			throws CoreException
+	public SvnSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
+			RMContext context) throws CoreException
 	{
+		m_revision = getSVNRevision(revision, timestamp);
+		m_branchOrTag = branchOrTag;
+
+		Map<UUID, Object> userCache = context.getUserCache();
+		m_dirCache = getDirCache(userCache);
+		m_listCache = getListCache(userCache);
+
 		try
 		{
 			URI uri = new URI(repositoryURI);
@@ -275,7 +352,7 @@ public class SvnSession
 				bld.append(scheme);
 				bld.append(':');
 			}
-			
+
 			String username = null;
 			String password = null;
 			String authority = uri.getAuthority();
@@ -337,8 +414,6 @@ public class SvnSession
 			m_moduleAfterTag = moduleAfterTag;
 			m_moduleBeforeBranch = moduleBeforeBranch;
 			m_moduleAfterBranch = moduleAfterBranch;
-			m_branch = branch;
-			m_tag = tag;
 
 			// Let's see if our SVNRootUrl matches any of the known
 			// repositories.
@@ -367,7 +442,7 @@ public class SvnSession
 
 				String[] ourPath = ourRoot.getPathSegments();
 				String[] repoPath = repoRoot.getPathSegments();
-				
+
 				idx = repoPath.length;
 				final int top = ourPath.length;
 				if(idx > top)
@@ -375,7 +450,7 @@ public class SvnSession
 					// repoPath is too qualified for our needs
 					//
 					continue;
-				
+
 				while(--idx >= 0)
 					if(!ourPath[idx].equals(repoPath[idx]))
 						break;
@@ -390,7 +465,9 @@ public class SvnSession
 				int diff = top - repoPath.length;
 				if(diff > 0)
 				{
-					int myRank = (repoIsSSH ? 400 : 200) - diff;
+					int myRank = (repoIsSSH
+							? 400
+							: 200) - diff;
 					if(rank > myRank)
 						continue;
 
@@ -405,7 +482,9 @@ public class SvnSession
 					}
 					urlLeadIn = bld.toString();
 				}
-				rank = (repoIsSSH ? 400 : 200) - diff;
+				rank = (repoIsSSH
+						? 400
+						: 200) - diff;
 				bestMatch = location;
 				if(rank == 400)
 					break;
@@ -446,7 +525,7 @@ public class SvnSession
 		try
 		{
 			SVNUrl svnURL = getSVNUrl(null);
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, SVNRevision.HEAD);
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, m_revision);
 			if(root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedRevision().getNumber();
@@ -474,7 +553,7 @@ public class SvnSession
 		try
 		{
 			SVNUrl svnURL = getSVNUrl(null);
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, SVNRevision.HEAD);
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, m_revision);
 			if(root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedDate();
@@ -485,6 +564,11 @@ public class SvnSession
 		}
 	}
 
+	public SVNRevision getRevision()
+	{
+		return m_revision;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -492,7 +576,7 @@ public class SvnSession
 		{
 			return getSVNUrl(null).toString();
 		}
-		catch(MalformedURLException e)
+		catch(CoreException e)
 		{
 			return super.toString();
 		}
@@ -504,15 +588,14 @@ public class SvnSession
 	}
 
 	/**
-	 * Returns the directory where it's expected to find a list of branches or
-	 * tags.
+	 * Returns the directory where it's expected to find a list of branches or tags.
 	 * 
 	 * @param branches
 	 *            true if branches, false if tags.
 	 * @return The SVNUrl appointing the branches or tags directory.
 	 * @throws MalformedURLException
 	 */
-	SVNUrl getSVNRootUrl(boolean branches) throws MalformedURLException
+	SVNUrl getSVNRootUrl(boolean branches) throws CoreException
 	{
 		StringBuilder bld = new StringBuilder();
 		bld.append(m_urlLeadIn);
@@ -535,15 +618,31 @@ public class SvnSession
 				bld.append(m_module);
 			}
 		}
-		return new SVNUrl(bld.toString());
+		try
+		{
+			return new SVNUrl(bld.toString());
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
-	SVNUrl getSVNUrl(String fileName) throws MalformedURLException
+	SVNUrl getSVNUrl(String fileName) throws CoreException
 	{
 		StringBuilder bld = new StringBuilder();
 		bld.append(m_urlLeadIn);
 
-		if(m_branch != null)
+		if(m_branchOrTag == null)
+		{
+			bld.append("/trunk");
+			if(m_module != null)
+			{
+				bld.append('/');
+				bld.append(m_module);
+			}
+		}
+		else if(m_branchOrTag.getType() == VersionSelector.BRANCH)
 		{
 			bld.append("/branches");
 			if(m_moduleBeforeBranch && m_module != null)
@@ -552,14 +651,14 @@ public class SvnSession
 				bld.append(m_module);
 			}
 			bld.append('/');
-			bld.append(m_branch);
+			bld.append(m_branchOrTag.getName());
 			if(m_moduleAfterBranch && m_module != null)
 			{
 				bld.append('/');
 				bld.append(m_module);
 			}
 		}
-		else if(m_tag != null)
+		else
 		{
 			bld.append("/tags");
 			if(m_moduleBeforeTag && m_module != null)
@@ -568,17 +667,8 @@ public class SvnSession
 				bld.append(m_module);
 			}
 			bld.append('/');
-			bld.append(m_tag);
+			bld.append(m_branchOrTag.getName());
 			if(m_moduleAfterTag && m_module != null)
-			{
-				bld.append('/');
-				bld.append(m_module);
-			}
-		}
-		else
-		{
-			bld.append("/trunk");
-			if(m_module != null)
 			{
 				bld.append('/');
 				bld.append(m_module);
@@ -595,6 +685,149 @@ public class SvnSession
 			bld.append('/');
 			bld.append(fileName);
 		}
-		return new SVNUrl(bld.toString());
+		try
+		{
+			return new SVNUrl(bld.toString());
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	ISVNDirEntry getRootEntry(IProgressMonitor monitor) throws CoreException
+	{
+		// Synchronizing on an interned string should make it impossible for two
+		// sessions to request the same entry from the remote server
+		//
+		SVNUrl url = getSVNUrl(null);
+		SVNUrl parent = url.getParent();
+		if(parent != null)
+		{
+			// List the parent instead of fetching the folder explicitly. This
+			// will save us a lot of calls since the list is cached.
+			//
+			String lastEntry = url.getLastPathSegment();
+			for(ISVNDirEntry dirEntry : listFolder(url.getParent(), monitor))
+				if(dirEntry.getPath().equals(lastEntry))
+					return dirEntry;
+			return null;
+		}
+
+		SVNRevision revision = getRevision();
+		String key = cacheKey(url, revision).intern();
+		synchronized(key)
+		{
+			// Check the cache. We use containsKey since it might have
+			// valid null entries
+			//
+			if(m_dirCache.containsKey(key))
+				return m_dirCache.get(key);
+
+			Logger logger = CorePlugin.getLogger();
+			monitor.beginTask(null, 1);
+			try
+			{
+				if(logger.isDebugEnabled())
+					logger.debug(String.format("Obtaining remote folder %s[%s]", url, revision));
+				ISVNDirEntry entry = getClientAdapter().getDirEntry(url, revision);
+				m_dirCache.put(key, entry);
+				return entry;
+			}
+			catch(SVNClientException e)
+			{
+				String msg = e.getMessage();
+				if(msg != null && msg.toLowerCase().contains("non-existent"))
+				{
+					if(logger.isDebugEnabled())
+						logger.debug(String.format("Remote folder does not exist %s[%s]", url, revision));
+					m_dirCache.put(key, null);
+					return null;
+				}
+				throw BuckminsterException.wrap(e);
+			}
+		}
+	}
+
+	ISVNDirEntry[] listFolder(SVNUrl url, IProgressMonitor monitor) throws CoreException
+	{
+		// Synchronizing on an interned string should make it impossible for two
+		// sessions to request the same entry from the remote server
+		//
+		String key = cacheKey(url, m_revision).intern();
+		synchronized(key)
+		{
+			ISVNDirEntry[] list = m_listCache.get(key);
+			if(list != null)
+				return list;
+
+			Logger logger = CorePlugin.getLogger();
+			monitor.beginTask(null, 1);
+			try
+			{
+				if(logger.isDebugEnabled())
+					logger.debug(String.format("Listing remote folder %s", key));
+				list = m_clientAdapter.getList(url, m_revision, false);
+				monitor.worked(1);
+				if(list == null || list.length == 0)
+				{
+					if(logger.isDebugEnabled())
+						logger.debug(String.format("Remote folder had no entries %s", key));
+					list = s_emptyFolder;
+				}
+				m_listCache.put(key, list);
+				return list;
+			}
+			catch(SVNClientException e)
+			{
+				String msg = e.getMessage();
+				if(msg != null && msg.toLowerCase().contains("non-existent"))
+				{
+					if(logger.isDebugEnabled())
+						logger.debug(String.format("Remote folder does not exist %s", key));
+					return s_emptyFolder;
+				}
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				monitor.done();
+			}
+		}
+	}
+
+	/**
+	 * Create a string in the form &quot;url[revision]&quot;
+	 * 
+	 * @param url
+	 *            The url to append
+	 * @param revision
+	 *            The revision to append
+	 * @return A string representation denoting an explicit revision of the URL
+	 */
+	static String cacheKey(SVNUrl url, SVNRevision revision)
+	{
+		StringBuilder bld = new StringBuilder();
+
+		String protocol = url.getProtocol();
+		int port = url.getPort();
+		bld.append(protocol);
+		bld.append("://");
+		bld.append(url.getHost());
+		if(port != SVNUrl.getDefaultPort(protocol))
+		{
+			bld.append(":");
+			bld.append(port);
+		}
+
+		String[] segments = url.getPathSegments();
+		for(int i = 0; i < segments.length; i++)
+		{
+			bld.append('/');
+			bld.append(segments[i]);
+		}
+		bld.append('#');
+		bld.append(revision);
+		return bld.toString();
 	}
 }

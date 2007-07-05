@@ -9,199 +9,66 @@
  *******************************************************************************/
 package org.eclipse.buckminster.svn.internal;
 
-import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
-import org.eclipse.buckminster.core.reader.IVersionFinder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionQuery;
-import org.eclipse.buckminster.core.version.IVersionSelector;
-import org.eclipse.buckminster.core.version.VersionSelectorType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
-import org.tigris.subversion.svnclientadapter.SVNClientException;
-import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
-public class VersionFinder extends SvnSession implements IVersionFinder
+public class VersionFinder extends AbstractSCCSVersionFinder
 {
-	public VersionFinder(String repositoryURI) throws CoreException
+	private final SvnSession m_session;
+
+	public VersionFinder(Provider provider, NodeQuery query) throws CoreException
 	{
-		super(repositoryURI, null, null);
+		super(provider, query);
+		m_session = new SvnSession(provider.getURI(query.getProperties()), null, query.getRevision(), query.getTimestamp(), query.getContext());
 	}
 
-	public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
+	@Override
+	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
 	{
-		ISVNDirEntry entry = this.getTrunkModuleRoot();
-		if(entry != null)
-		{
-			return new VersionMatch(
-				VersionFactory.defaultVersion(),
-				VersionSelectorFactory.changeNumber(entry.getLastChangedRevision().getNumber()));
-		}
-		return null;
-	}
-
-	public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
-	{
-		if(query.matches(VersionFactory.defaultVersion()))
-			//
-			// The query allows us to use latest on default. So that's what
-			// we will be doing.
-			//
-			return this.getDefaultVersion(monitor);
-
-		VersionMatch best = null;
-		IVersionSelector exact = query.getExactMatch();
-		switch(query.getType())
-		{
-		case TAG:
-			ISVNDirEntry[] allTags = this.internalGetEntries(false, monitor);
-			if(exact != null)
-			{
-				for(ISVNDirEntry entry : allTags)
-				{
-					if(entry.getPath().equals(exact.getQualifier()))
-					{
-						best = new VersionMatch(
-							query.createVersion(exact),
-							VersionSelectorFactory.changeNumber(entry.getLastChangedRevision().getNumber()));
-						break;
-					}
-				}
-			}
-			else
-			{
-				for(ISVNDirEntry entry : allTags)
-				{
-					IVersionSelector selector = VersionSelectorFactory.tag(entry.getPath());
-					if(query.matches(selector))
-					{
-						IVersion version = query.createVersion(selector);
-						if(best == null || best.getVersion().compareTo(version) < 0)
-							best = new VersionMatch(
-									version,
-									VersionSelectorFactory.changeNumber(entry.getLastChangedRevision().getNumber()));
-					}
-				}
-			}
-			break;
-
-		case LATEST:
-			//
-			// trunk/latest is handled as default version already
-			//
-			ISVNDirEntry[] allBranches = this.internalGetEntries(true, monitor);
-			if(exact != null)
-			{
-				String branchName = exact.getBranchName();
-				for(ISVNDirEntry entry : allBranches)
-				{
-					if(entry.getPath().equals(branchName))
-					{
-						best = new VersionMatch(
-								query.createVersion(exact),
-								VersionSelectorFactory.changeNumber(branchName, entry.getLastChangedRevision().getNumber()));
-						break;
-					}
-				}
-			}
-			else
-			{
-				for(ISVNDirEntry entry : allBranches)
-				{
-					String branch = entry.getPath();
-					IVersionSelector branchSelector = VersionSelectorFactory.latest(branch);
-					if(query.matches(branchSelector))
-					{
-						IVersion version = query.createVersion(branchSelector);
-						if(best == null || best.getVersion().compareTo(version) < 0)
-							best = new VersionMatch(
-								version,
-								VersionSelectorFactory.changeNumber(branch, entry.getLastChangedRevision().getNumber()));
-					}
-				}
-			}
-			break;
-
-		case CHANGE_NUMBER:
-		case TIMESTAMP:
-			if(exact == null)
-				throw new BuckminsterException("An exlicit version designator is required in order to resolve a timestamp or change number");
-
-			long qual = exact.getNumericQualifier();
-			if(exact.isDefaultBranch())
-			{
-				ISVNDirEntry entry = this.getTrunkModuleRoot();
-				if(entry != null)
-				{
-					best = new VersionMatch(
-						VersionFactory.defaultVersion(),
-						query.getType() == VersionSelectorType.TIMESTAMP
-							? VersionSelectorFactory.timestamp(qual)
-							: VersionSelectorFactory.changeNumber(qual));
-				}
-			}
-			else
-			{
-				String branchName = exact.getBranchName();
-				for(ISVNDirEntry entry : this.internalGetEntries(true, monitor))
-				{
-					if(entry.getPath().equals(branchName))
-					{
-						best = new VersionMatch(
-								query.createVersion(exact),
-								query.getType() == VersionSelectorType.TIMESTAMP
-									? VersionSelectorFactory.timestamp(qual)
-									: VersionSelectorFactory.changeNumber(qual));
-						break;
-					}
-				}
-			}
-			break;
-		default:
-		}
-		return best;		
-	}
-
-	private ISVNDirEntry[] internalGetEntries(boolean branches, IProgressMonitor monitor) throws CoreException
-	{
+		NodeQuery query = getQuery();
+		String uri = getProvider().getURI(query.getProperties());
+		SvnSession checkerSession = new SvnSession(uri, versionMatch.getBranchOrTag(), versionMatch.getRevision(), versionMatch.getTimestamp(), query.getContext());
 		try
 		{
-			SVNUrl url = this.getSVNRootUrl(branches);
-			ISVNDirEntry[] entries = this.getClientAdapter().getList(url, SVNRevision.HEAD, false);
-			if(entries == null)
-				entries = new ISVNDirEntry[0];
-			return entries;
+			// We list the folder rather then just obtaining the entry since the listing
+			// is cached. It is very likely that we save a call later.
+			//
+			return checkerSession.listFolder(checkerSession.getSVNUrl(null), monitor).length > 0;
 		}
-		catch(SVNClientException e)
+		finally
 		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
+			checkerSession.close();
 		}
 	}
 
-	private ISVNDirEntry getTrunkModuleRoot() throws CoreException
+	@Override
+	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
-		try
-		{
-			SVNUrl url = this.getSVNUrl(null);
-			return this.getClientAdapter().getDirEntry(url, SVNRevision.HEAD);
-		}
-		catch(SVNClientException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		SVNUrl url = m_session.getSVNRootUrl(branches);
+		ISVNDirEntry[] list = m_session.listFolder(url, monitor);
+		if(list.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
+		for(ISVNDirEntry e : list)
+			entries.add(new RevisionEntry(e.getPath(), null, e.getLastChangedRevision().getNumber()));
+		return entries;
+	}
+
+	@Override
+	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
+	{
+		ISVNDirEntry entry = m_session.getRootEntry(monitor);
+		return entry == null ? null : new RevisionEntry(null, null, entry.getLastChangedRevision().getNumber());
 	}
 }

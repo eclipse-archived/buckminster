@@ -12,15 +12,15 @@ package org.eclipse.buckminster.svn.internal;
 import java.io.File;
 import java.util.Date;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorType;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,23 +36,13 @@ public class SvnReaderType extends AbstractReaderType
 {
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
-		MonitorUtils.complete(monitor);
-		return new SvnRemoteFileReader(this, providerMatch);
+		return new SvnRemoteFileReader(this, providerMatch, monitor);
 	}
 
 	@Override
-	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector,
-			IProgressMonitor monitor) throws CoreException
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
 	{
-		String branch = null;
-		String tag = null;
-		if(versionSelector != null)
-		{
-			branch = versionSelector.getBranchName();
-			if(versionSelector.getType() == VersionSelectorType.TAG)
-				tag = versionSelector.getQualifier();
-		}
-		SvnSession session = new SvnSession(repositoryLocation, branch, tag);
+		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
 		try
 		{
 			return session.getLastTimestamp();
@@ -64,18 +54,10 @@ public class SvnReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public long getLastRevision(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor)
+	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
 			throws CoreException
 	{
-		String branch = null;
-		String tag = null;
-		if(versionSelector != null)
-		{
-			branch = versionSelector.getBranchName();
-			if(versionSelector.getType() == VersionSelectorType.TAG)
-				tag = versionSelector.getQualifier();
-		}
-		SvnSession session = new SvnSession(repositoryLocation, branch, tag);
+		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
 		try
 		{
 			return session.getLastChangeNumber();
@@ -112,19 +94,6 @@ public class SvnReaderType extends AbstractReaderType
 			throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return new VersionFinder(provider.getURI(nodeQuery.getProperties()));
-	}
-
-	public static SVNRevision getSVNRevision(IVersionSelector vs)
-	{
-		switch(vs.getType())
-		{
-		case CHANGE_NUMBER:
-			return new SVNRevision.Number(Long.parseLong(vs.getQualifier()));
-		case TIMESTAMP:
-			return new SVNRevision.DateSpec(new Date(vs.getNumericQualifier()));
-		default:
-			return SVNRevision.HEAD;
-		}
+		return new VersionFinder(provider, nodeQuery);
 	}
 }
