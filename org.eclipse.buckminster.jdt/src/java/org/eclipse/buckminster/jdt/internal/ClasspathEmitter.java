@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.build.PropertiesEmitter;
 import org.eclipse.buckminster.core.helpers.ArrayUtils;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
