@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.materializer.AbstractMaterializer;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -33,7 +32,8 @@ import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionSelector;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiPlugin;
@@ -106,10 +106,10 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				lbl = request.getViewName();
 				break;
 			case 1:
-				IVersionSelector vs = resolution.getVersionMatch().getFixedVersionSelector();
-				lbl = vs == null
+				VersionMatch vm = resolution.getVersionMatch();
+				lbl = vm == null
 						? ""
-						: vs.toString();
+						: vm.toString();
 				break;
 			case 2:
 				try

@@ -84,7 +84,7 @@
         id="org.eclipse.buckminster.ui.editors.RMAPEditor"
         name="Buckminster Resource Map Editor"/>
 <editor
-        class="org.eclipse.buckminster.ui.editor.rmap.RMAPEditor"
+        class="org.eclipse.buckminster.ui.editor.cspec.CSpecEditor"
         contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
         default="true"
         extensions="cspec"

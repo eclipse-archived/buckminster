@@ -11,7 +11,7 @@ package org.eclipse.buckminster.ui.editor;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.dialogs.Property;

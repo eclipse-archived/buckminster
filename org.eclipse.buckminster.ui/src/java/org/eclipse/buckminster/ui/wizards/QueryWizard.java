@@ -11,12 +11,12 @@
 package org.eclipse.buckminster.ui.wizards;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.internal.MaterializeAndBindRunnable;
 import org.eclipse.core.runtime.CoreException;

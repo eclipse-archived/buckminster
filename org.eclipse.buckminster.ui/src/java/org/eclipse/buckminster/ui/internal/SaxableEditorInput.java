@@ -12,7 +12,7 @@ package org.eclipse.buckminster.ui.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
