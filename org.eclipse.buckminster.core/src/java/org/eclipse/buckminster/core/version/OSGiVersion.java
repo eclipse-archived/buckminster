@@ -70,6 +70,12 @@ public class OSGiVersion extends TripletVersion
 		return true;
 	}
 
+	@Override
+	public IVersion replaceQualifier(String qualifier)
+	{
+		return new OSGiVersion(getType(), getMajor(), getMinor(), getMicro(), qualifier);
+	}
+
 	/**
 	 * Appends the string representation of this version identifier. The format
 	 * of the version string will be <code>major.minor.micro</code> if

@@ -115,12 +115,20 @@ public class ComponentRequest extends ComponentName
 
 	public String getViewName()
 	{
-		String name = this.getName();
-		String category = this.getCategory();
-		if(category == null)
-			return name;
+		StringBuilder bld = new StringBuilder();
+		appendViewName(bld);
+		return bld.toString();
+	}
 
-		return name + ':' + category;
+	public void appendViewName(StringBuilder bld)
+	{
+		bld.append(this.getName());
+		String category = this.getCategory();
+		if(category != null)
+		{
+			bld.append(':');
+			bld.append(category);
+		}
 	}
 
 	/**

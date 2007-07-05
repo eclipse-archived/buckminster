@@ -362,12 +362,9 @@
 		<attribute
 			name="name"
 			type="string"
-			use="optional">
+			use="required">
 			<annotation>
-				<documentation>
-					The name should be required. It's optional now for backwards compatibility. Change before
-					release.
-				</documentation>
+				<documentation>The name of the attribute</documentation>
 			</annotation>
 		</attribute>
 		<attribute

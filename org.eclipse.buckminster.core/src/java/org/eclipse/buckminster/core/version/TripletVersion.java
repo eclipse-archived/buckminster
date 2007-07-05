@@ -132,8 +132,9 @@ public class TripletVersion extends AbstractVersion
 	 */
 	public int compareTo(IVersion o)
 	{
-		if(!(o instanceof TripletVersion))
-			return 1;
+		Class<?> c = getClass();
+		if(!c.isInstance(o))
+			throw new IllegalArgumentException("Not a " + c);
 
 		TripletVersion ov = (TripletVersion)o;
 		if(m_major > ov.m_major)
@@ -188,6 +189,7 @@ public class TripletVersion extends AbstractVersion
 		return m_minor;
 	}
 
+	@Override
 	public final String getQualifier()
 	{
 		return m_qualifier;
@@ -206,9 +208,10 @@ public class TripletVersion extends AbstractVersion
 		return hc;
 	}
 
-	public boolean isDefault()
+	@Override
+	public IVersion replaceQualifier(String qualifier)
 	{
-		return false;
+		return new TripletVersion(getType(), m_major, m_minor, m_micro, qualifier);
 	}
 
 	/**

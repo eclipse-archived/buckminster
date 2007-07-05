@@ -10,7 +10,6 @@
 package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
-import org.eclipse.buckminster.core.internal.version.DefaultVersion;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.core.runtime.CoreException;
 
@@ -21,10 +20,27 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 {
 	private static final BidirectionalTransformer[] s_noTransformers = new BidirectionalTransformer[0];
 	private BidirectionalTransformer[] m_transformers = s_noTransformers;
+	private IVersionType m_versionType = getDefaultVersionType();
 
+	/**
+	 * Assigns the transformer used when converting between plain versions and a
+	 * version component.
+	 * 
+	 * @param transformer
+	 */
 	public final void setTransformers(BidirectionalTransformer[] transformers)
 	{
 		m_transformers = transformers == null ? s_noTransformers : transformers;
+	}
+
+	/**
+	 * Assings the version type that is used when creating versions
+	 *
+	 * @param versionType
+	 */
+	public final void setVersionType(IVersionType versionType)
+	{
+		m_versionType = versionType == null ? getDefaultVersionType() : versionType;
 	}
 
 	/**
@@ -59,9 +75,8 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	}
 
 	/**
-	 * Converts a selector component, i.e. a branch or a branch qualifier such as
-	 * a tag, timestamp, or change number into a version.
-	 * 
+	 * Converts a selector component, i.e. a branch or tag into a version
+	 *
 	 * @param versionType
 	 *            The version type for the version to create.
 	 * @param source
@@ -70,7 +85,7 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	 * <code>to</code> pattern of any of the contained transformers.
 	 * @throws CoreException
 	 */
-	protected IVersion createVersionFromSelectorComponent(IVersionType versionType, String source) throws CoreException
+	protected IVersion createVersionFromSelectorComponent(String source) throws CoreException
 	{
 		if(m_transformers.length > 0)
 		{
@@ -87,19 +102,13 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 			if(!matchFound)
 				return null;
 		}
-		if(versionType == DefaultVersion.TYPE && !DefaultVersion.NAME.equals(source))
-		{
-			// Use default scheme, i.e. OSGi with fallback to String
-			//
-			try
-			{
-				return VersionFactory.OSGiType.fromString(source);
-			}
-			catch(VersionSyntaxException e)
-			{
-				return VersionFactory.StringType.fromString(source);
-			}
-		}
-		return versionType.fromString(source);
+		return m_versionType.fromString(source);
 	}
+
+	public IVersionType getVersionType()
+	{
+		return m_versionType;
+	}
+
+	protected abstract IVersionType getDefaultVersionType();
 }

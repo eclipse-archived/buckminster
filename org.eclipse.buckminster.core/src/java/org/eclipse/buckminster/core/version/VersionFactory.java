@@ -11,7 +11,6 @@
 package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.internal.version.DefaultVersion;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.internal.version.StringVersionType;
 import org.eclipse.buckminster.core.internal.version.TimestampVersionType;
@@ -85,10 +84,5 @@ public class VersionFactory
 	{
 		IVersionType vt = CorePlugin.getDefault().getVersionType(versionType);
 		return vt.fromString(versionString);
-	}
-
-	public static IVersion defaultVersion()
-	{
-		return DefaultVersion.getInstance();
 	}
 }

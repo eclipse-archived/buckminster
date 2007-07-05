@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.query.builder;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +19,18 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IPath;
-
 
 public class AdvisorNodeBuilder
 {
 	private boolean m_allowCircularDependency;
 
 	private final ArrayList<String> m_attributes = new ArrayList<String>();
+
+	private VersionSelector[] m_branchTagPath;
 
 	private String m_category;
 
@@ -38,13 +42,23 @@ public class AdvisorNodeBuilder
 
 	private URL m_overlayFolder;
 
-	private Map<String,String> m_properties;
+	private Map<String, String> m_properties;
 
 	private boolean m_prune;
+
+	private int[] m_resolutionPrio;
+
+	private long m_revision;
 
 	private boolean m_skipComponent;
 
 	private SourceLevel m_sourceLevel;
+
+	private String[] m_spacePath;
+
+	private boolean m_systemDiscovery;
+
+	private Date m_timestamp;
 
 	private boolean m_useInstalled;
 
@@ -52,15 +66,9 @@ public class AdvisorNodeBuilder
 
 	private boolean m_useProject;
 
-	private IVersionDesignator m_versionOverride;
-
 	private boolean m_useResolutionScheme;
 
-	private boolean m_systemDiscovery;
-	
-	private String[] m_branchPath;
-	
-	private String[] m_resolutionPath;
+	private IVersionDesignator m_versionOverride;
 
 	public AdvisorNodeBuilder()
 	{
@@ -101,18 +109,26 @@ public class AdvisorNodeBuilder
 		m_versionOverride = null;
 		m_useResolutionScheme = true;
 		m_systemDiscovery = true;
-		m_branchPath = null;
-		m_resolutionPath = null;
+		m_branchTagPath = VersionSelector.EMPTY_PATH;
+		m_spacePath = Trivial.EMPTY_STRING_ARRAY;
+		m_revision = -1;
+		m_timestamp = null;
+		m_resolutionPrio = AdvisorNode.DEFAULT_RESOLUTION_PRIO;
 	}
 
 	public AdvisorNode create()
 	{
 		return new AdvisorNode(this);
 	}
-	
+
 	public List<String> getAttributes()
 	{
 		return m_attributes;
+	}
+
+	public VersionSelector[] getBranchTagPath()
+	{
+		return m_branchTagPath;
 	}
 
 	public String getCategory()
@@ -146,16 +162,36 @@ public class AdvisorNodeBuilder
 		return m_overlayFolder;
 	}
 
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		if(m_properties == null)
-			m_properties = new HashMap<String,String>();
+			m_properties = new HashMap<String, String>();
 		return m_properties;
+	}
+
+	public long getRevision()
+	{
+		return m_revision;
+	}
+
+	public int[] getResolutionPrio()
+	{
+		return m_resolutionPrio;
 	}
 
 	public SourceLevel getSourceLevel()
 	{
 		return m_sourceLevel;
+	}
+
+	public String[] getSpacePath()
+	{
+		return m_spacePath;
+	}
+
+	public Date getTimestamp()
+	{
+		return m_timestamp;
 	}
 
 	public IVersionDesignator getVersionOverride()
@@ -173,9 +209,9 @@ public class AdvisorNodeBuilder
 		m_mutableLevel = node.getMutableLevel();
 		m_namePattern = node.getNamePattern();
 		m_overlayFolder = node.getOverlayFolder();
-		Map<String,String> props = node.getProperties();
+		Map<String, String> props = node.getProperties();
 		if(props.size() > 0)
-			m_properties = new HashMap<String,String>(props);
+			m_properties = new HashMap<String, String>(props);
 		m_prune = node.isPrune();
 		m_skipComponent = node.skipComponent();
 		m_sourceLevel = node.getSourceLevel();
@@ -185,13 +221,21 @@ public class AdvisorNodeBuilder
 		m_versionOverride = node.getVersionOverride();
 		m_useResolutionScheme = node.isUseResolutionScheme();
 		m_systemDiscovery = node.isSystemDiscovery();
-		m_branchPath = node.getBranchPath();
-		m_resolutionPath = node.getResolutionPath();
+		m_branchTagPath = node.getBranchTagPath();
+		m_spacePath = node.getResolutionPath();
+		m_revision = node.getRevision();
+		m_timestamp = node.getTimestamp();
+		m_resolutionPrio = node.getResolutionPrio();
 	}
 
 	public boolean isPrune()
 	{
 		return m_prune;
+	}
+
+	public boolean isSystemDiscovery()
+	{
+		return m_systemDiscovery;
 	}
 
 	public boolean isUseInstalled()
@@ -213,25 +257,15 @@ public class AdvisorNodeBuilder
 	{
 		return m_useResolutionScheme;
 	}
-	
-	public boolean isSystemDiscovery()
-	{
-		return m_systemDiscovery;
-	}
-	
-	public String[] getBranchPath()
-	{
-		return m_branchPath;
-	}
 
-	public String[] getResolutionPath()
-	{
-		return m_resolutionPath;
-	}
-	
 	public void setAllowCircularDependency(boolean allowCircularDependency)
 	{
 		m_allowCircularDependency = allowCircularDependency;
+	}
+
+	public void setBranchTagPath(VersionSelector[] branchTagPath)
+	{
+		m_branchTagPath = branchTagPath == null ? VersionSelector.EMPTY_PATH : branchTagPath;
 	}
 
 	public void setCategory(String category)
@@ -246,7 +280,9 @@ public class AdvisorNodeBuilder
 
 	public void setMutableLevel(MutableLevel mutableLevel)
 	{
-		m_mutableLevel = mutableLevel == null ? MutableLevel.INDIFFERENT : mutableLevel;
+		m_mutableLevel = mutableLevel == null
+				? MutableLevel.INDIFFERENT
+				: mutableLevel;
 	}
 
 	public void setNamePattern(Pattern namePattern)
@@ -264,6 +300,16 @@ public class AdvisorNodeBuilder
 		m_prune = prune;
 	}
 
+	public void setRevision(long revision)
+	{
+		m_revision = revision;
+	}
+
+	public void setResolutionPrio(int[] resolutionPrio)
+	{
+		m_resolutionPrio = resolutionPrio;
+	}
+
 	public void setSkipComponent(boolean skipComponent)
 	{
 		m_skipComponent = skipComponent;
@@ -271,13 +317,31 @@ public class AdvisorNodeBuilder
 
 	public void setSourceLevel(SourceLevel sourceLevel)
 	{
-		m_sourceLevel = sourceLevel == null ? SourceLevel.INDIFFERENT : sourceLevel;
+		m_sourceLevel = sourceLevel == null
+				? SourceLevel.INDIFFERENT
+				: sourceLevel;
+	}
+
+	public void setSpacePath(String[] spacePath)
+	{
+		m_spacePath = spacePath == null ? Trivial.EMPTY_STRING_ARRAY : spacePath;
+	}
+
+	public void setSystemDiscovery(boolean systemDiscovery)
+	{
+		m_systemDiscovery = systemDiscovery;
+	}
+
+	public void setTimestamp(Date timestamp)
+	{
+		m_timestamp = timestamp;
 	}
 
 	public void setUseInstalled(boolean useInstalled)
 	{
 		m_useInstalled = useInstalled;
 	}
+
 	public void setUseMaterialization(boolean useMaterialization)
 	{
 		m_useMaterialization = useMaterialization;
@@ -288,31 +352,16 @@ public class AdvisorNodeBuilder
 		m_useProject = useProject;
 	}
 
+	public void setUseResolutionScheme(boolean useResolutionScheme)
+	{
+		m_useResolutionScheme = useResolutionScheme;
+	}
+
 	public void setVersionOverride(IVersionDesignator versionOverride)
 	{
 		m_versionOverride = versionOverride;
 	}
 
-	public void setUseResolutionScheme(boolean useResolutionScheme)
-	{
-		m_useResolutionScheme = useResolutionScheme;
-	}
-	
-	public void setSystemDiscovery(boolean systemDiscovery)
-	{
-		m_systemDiscovery = systemDiscovery;
-	}
-	
-	public void setBranchPath(String[] branchPath)
-	{
-		m_branchPath = branchPath;
-	}
-	
-	public void setResolutionPath(String[] resolutionPath)
-	{
-		m_resolutionPath = resolutionPath;
-	}
-	
 	public boolean skipComponent()
 	{
 		return m_skipComponent;

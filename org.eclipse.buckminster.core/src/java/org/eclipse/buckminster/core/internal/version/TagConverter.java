@@ -9,15 +9,11 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.internal.version;
 
-import java.util.Date;
-
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionSelectorType;
 import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -25,30 +21,28 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class TagConverter extends AbstractConverter
 {
-	public IVersionSelector createSelector(IVersion version) throws CoreException
+	public VersionSelector createSelector(IVersion version) throws CoreException
 	{
-		if(version == null || version.equals(VersionFactory.defaultVersion()))
-			return VersionSelectorFactory.MAIN_LATEST;
+		if(version == null)
+			return null;
 
-		String selectorComponent = this.createSelectorComponent(version);
-		return selectorComponent == null
-			? VersionSelectorFactory.MAIN_LATEST
-			: VersionSelectorFactory.tag(selectorComponent);
+		String selectorComponent = createSelectorComponent(version);
+		return selectorComponent == null ? null : VersionSelector.tag(selectorComponent);
 	}
 
-	public IVersion createVersion(IVersionType versionType, IVersionSelector versionSelector) throws CoreException
+	public IVersion createVersion(VersionSelector versionSelector) throws CoreException
 	{
-		if(versionSelector == null || versionSelector.equals(VersionSelectorFactory.MAIN_LATEST))
-			return DefaultVersion.getInstance();
-
-		if(versionSelector instanceof TimestampSelector)
-			return VersionFactory.TimestampType.coerce(new Date(versionSelector.getNumericQualifier()));
-
-		return this.createVersionFromSelectorComponent(versionType, versionSelector.getQualifier());
+		return versionSelector == null ? null : createVersionFromSelectorComponent(versionSelector.getName());
 	}
 
-	public VersionSelectorType getType()
+	public int getSelectorType()
 	{
-		return VersionSelectorType.TAG;
+		return VersionSelector.TAG;
+	}
+
+	@Override
+	protected IVersionType getDefaultVersionType()
+	{
+		return VersionFactory.OSGiType;
 	}
 }

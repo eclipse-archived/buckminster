@@ -19,11 +19,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class DefaultResolutionBuilder extends AbstractResolutionBuilder
 {
-	public DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor)
+	public DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];

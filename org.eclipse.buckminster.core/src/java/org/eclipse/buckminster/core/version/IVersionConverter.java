@@ -11,7 +11,6 @@
 package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
-import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -22,49 +21,45 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IVersionConverter extends IBuckminsterExtension
 {
-	public static final String TAG = "tag";
-	public static final String BRANCH = "branch";
+	static final String TAG = "tag";
+	static final String BRANCH = "branch";
 
 	/**
-	 * Converts the <code>version</code> into a <code>IVersionSelector</code>
+	 * Converts the <code>version</code> into a <code>BranchOrTag</code>
 	 * that can be understood by a source code control system. An implementation
-	 * will typically use the <code>version</code> as a tag or change number
-	 * on the <code>defaultBranch</code> or disregard the
-	 * <code>defaultBranch</code> and use the <code>version</code> as a
-	 * branch name for a <code>IVersionSelector</code> of type
-	 * <code>LATEST</code>.
+	 * will typically use the <code>version</code> as a tag or branch name,
+	 * possibly modified using a substitution pattern
 	 * 
 	 * @param version
 	 *            The version to convert.
-	 * @return A version selector.
+	 * @return A branch or tag
 	 * @throws CoreException
 	 *             if the conversion cannot be performed.
 	 */
-	IVersionSelector createSelector(IVersion version) throws CoreException;
+	VersionSelector createSelector(IVersion version) throws CoreException;
 
 	/**
-	 * Converts the <code>versionSelector</code> into a <code>IVersion</code>.
+	 * Converts the <code>branchOrTag</code> into a <code>IVersion</code>.
 	 * This is the reverse of {@link #createSelector(IVersion) }.
 	 * 
-	 * @param versionType The type used when creating the version.
-	 * @param versionSelector
-	 *            The version selector to convert.
+	 * @param branchOrTag
+	 *            The branch or tag to convert.
 	 * @return A IVersion.
 	 * @throws CoreException
 	 *             if the conversion cannot be performed.
 	 */
-	IVersion createVersion(IVersionType versionType, IVersionSelector versionSelector) throws CoreException;
+	IVersion createVersion(VersionSelector branchOrTag) throws CoreException;
 
 	/**
-	 * Returns the type used when creating version selectors.
+	 * Returns the type of the selectors that this converter will produce. Can
+	 * be either {@link VersionSelector#TAG} or {@link VersionSelector#BRANCH}.
+	 * @return The type of the produced selectors 
 	 */
-	VersionSelectorType getType();
+	int getSelectorType();
 
 	/**
-	 * Assigns the transformer used when converting between plain versions and a
-	 * version component.
-	 * 
-	 * @param transformer
+	 * Returns the type of the versions that this converter will produce
+	 * @return The type of the produced versions
 	 */
-	void setTransformers(BidirectionalTransformer[] transformers);
+	IVersionType getVersionType();
 }

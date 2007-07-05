@@ -8,12 +8,12 @@
 package org.eclipse.buckminster.core.reader;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionQuery;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.ISite;
@@ -23,27 +23,22 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
-public class SiteFeatureFinder implements IVersionFinder
+public class SiteFeatureFinder extends AbstractVersionFinder
 {
 	private final ISite m_site;
 	private final ComponentRequest m_request;
 
-	SiteFeatureFinder(String repositoryURI, ComponentRequest request, IProgressMonitor monitor) throws CoreException
+	SiteFeatureFinder(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		m_site = SiteFeatureReaderType.getSite(repositoryURI, monitor);
-		m_request = request;
+		super(provider, query);
+		m_site = SiteFeatureReaderType.getSite(provider.getURI(query.getProperties()), monitor);
+		m_request = query.getComponentRequest();
 	}
 
-	public void close()
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
-	}
-
-	@SuppressWarnings("deprecation")
-	public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
-	{
+		String space = getProvider().getSpace();
 		String name = m_request.getName();
-		boolean defaultMatched = query.matches(VersionFactory.defaultVersion());
-
 		IVersion bestFit = null;
 		for(ISiteFeatureReference featureRef : m_site.getRawFeatureReferences())
 		{
@@ -55,7 +50,7 @@ public class SiteFeatureFinder implements IVersionFinder
 			IVersion version;
 			try
 			{
-				version = VersionFactory.OSGiType.fromString(versionAndId.getVersion().toString());
+				version = VersionFactory.OSGiType.coerce(versionAndId.getVersion());
 			}
 			catch(Exception e)
 			{
@@ -64,19 +59,10 @@ public class SiteFeatureFinder implements IVersionFinder
 				continue;
 			}
 
-			if(!(defaultMatched || query.matches(version)))
-				continue;
-
-			if(query.matches(version) && (bestFit == null || version.compareTo(bestFit) > 0))
+			boolean isMatch = getQuery().isMatch(version, null, space);
+			if(isMatch && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
-		return (bestFit == null) ? null : new VersionMatch(bestFit, VersionSelectorFactory.tag(bestFit.toString()));
-	}
-
-	public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
-	{
-		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "0.0.0");
-		IVersionQuery query = VersionSelectorFactory.createQuery(null, designator);
-		return getBestVersion(query, monitor);
+		return (bestFit == null) ? null : new VersionMatch(bestFit, null, space, -1, null, null);
 	}
 }

@@ -28,7 +28,6 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -39,6 +38,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -189,14 +189,13 @@ public class ResourceMap implements ISaxable, ISaxableElement
 					// Verify that all required attributes are in this cspec
 					//
 					cspec.getAttributes(query.getRequiredAttributes());
-
-					if(version != null && !version.isDefault())
+					if(version != null)
 					{
 						// Replace the resolution version if it is default and
 						// a non default version is present in the CSpec
 						//
 						VersionMatch vm = resolution.getVersionMatch();
-						if(vm.getVersion().isDefault())
+						if(vm.getVersion() == null)
 							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
 					}
 					return node;

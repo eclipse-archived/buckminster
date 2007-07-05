@@ -11,11 +11,9 @@ package org.eclipse.buckminster.core.internal.version;
 
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionSelectorType;
 import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -23,26 +21,35 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class BranchConverter extends AbstractConverter
 {
-	public IVersionSelector createSelector(IVersion version) throws CoreException
+	public VersionSelector createSelector(IVersion version) throws CoreException
 	{
-		if(version == null || version.equals(VersionFactory.defaultVersion()))
-			return VersionSelectorFactory.MAIN_LATEST;
+		if(version == null)
+			return null;
 
-		String selectorComponent = this.createSelectorComponent(version);
-		return selectorComponent == null
-			? VersionSelectorFactory.MAIN_LATEST
-			: VersionSelectorFactory.latest(selectorComponent);
+		String selectorComponent = createSelectorComponent(version);
+		return selectorComponent == null ? null : VersionSelector.branch(selectorComponent);
 	}
 
-	public IVersion createVersion(IVersionType versionType, IVersionSelector versionSelector) throws CoreException
+	public IVersion createVersion(VersionSelector versionSelector) throws CoreException
 	{
-		if(versionSelector == null || versionSelector.equals(VersionSelectorFactory.MAIN_LATEST))
-			return DefaultVersion.getInstance();
-		return this.createVersionFromSelectorComponent(versionType, versionSelector.getBranchName());
+		if(versionSelector == null)
+			return null;
+
+		String name = versionSelector.getName();
+		if(name.equals(VersionSelector.DEFAULT_BRANCH))
+			return null;
+
+		return createVersionFromSelectorComponent(name);
 	}
 
-	public VersionSelectorType getType()
+	public int getSelectorType()
 	{
-		return VersionSelectorType.LATEST;
+		return VersionSelector.BRANCH;
+	}
+
+	@Override
+	protected IVersionType getDefaultVersionType()
+	{
+		return VersionFactory.StringType;
 	}
 }

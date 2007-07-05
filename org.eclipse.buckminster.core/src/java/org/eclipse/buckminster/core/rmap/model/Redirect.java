@@ -14,8 +14,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.helpers.AttributesImpl;

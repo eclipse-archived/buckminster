@@ -212,6 +212,27 @@ public class TextUtils
 	}
 
 	/**
+	 * Returns the index of <code>element</code> in the array <code>array</code> or
+	 * <code>-1</code> if <code>element</code> is not equal to any of the
+	 * <code>array</code> elements. The method will return <code>-1</code> if any of the arguments
+	 * is <code>null</code>.
+	 * @param array The array to search in
+	 * @param element The element to find
+	 * @return The index of the found element or <code>-1</code>
+	 */
+	public static int indexOf(String[] array, String element)
+	{
+		if(array == null || element == null)
+			return -1;
+
+		int idx = array.length;
+		while(--idx >= 0)
+			if(element.equals(array[idx]))
+				break;
+		return idx;
+	}
+
+	/**
 	 * Helper method to turn a hex string into a byte array
 	 * 
 	 */

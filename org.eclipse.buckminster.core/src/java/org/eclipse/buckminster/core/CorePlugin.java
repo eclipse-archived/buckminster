@@ -26,7 +26,6 @@ import org.eclipse.buckminster.core.ctype.MissingBuilderException;
 import org.eclipse.buckminster.core.ctype.MissingComponentTypeException;
 import org.eclipse.buckminster.core.helpers.ShortDurationURLCache;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
-import org.eclipse.buckminster.core.internal.version.DefaultVersion;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
@@ -37,12 +36,14 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.MissingReaderTypeException;
 import org.eclipse.buckminster.core.reader.RemoteFile;
 import org.eclipse.buckminster.core.reader.RemoteFileCache;
+import org.eclipse.buckminster.core.version.IQualifierGenerator;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.MissingMaterializerException;
 import org.eclipse.buckminster.core.version.MissingVersionConverterException;
 import org.eclipse.buckminster.core.version.MissingVersionTypeException;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.LogAwarePlugin;
@@ -90,6 +91,8 @@ public class CorePlugin extends LogAwarePlugin
 	public static final String INCREMENTAL_BUILDERS_POINT = CORE_NAMESPACE + ".incrementalBuilders";
 
 	public static final String MATERIALIZATIONS_FILE = "buckminster.mtr";
+
+	public static final String QUALIFIER_GENERATOR_POINT = CORE_NAMESPACE + ".qualifierGenerators";
 
 	public static final String READER_TYPE_POINT = CORE_NAMESPACE + ".readerTypes";
 
@@ -347,6 +350,14 @@ public class CorePlugin extends LogAwarePlugin
 		throw new MissingReaderTypeException(readerType);
 	}
 
+	public IQualifierGenerator getQualifierGenerator(String qualifierGenerator) throws CoreException
+	{
+		IQualifierGenerator vm = getExecutableExtension(IQualifierGenerator.class, QUALIFIER_GENERATOR_POINT, qualifierGenerator, true);
+		if(vm != null)
+			return vm;
+		throw BuckminsterException.fromMessage("Missing qualifier generator for id " + qualifierGenerator);
+	}
+
 	/**
 	 * Locates the extension {@link #CSPEC_BUILDER_POINT} and creates a resolution builder.
 	 * @param id The id of the desired builder
@@ -396,8 +407,6 @@ public class CorePlugin extends LogAwarePlugin
 	{
 		if(versionType == null)
 			versionType = OSGiVersionType.ID;
-		else if(versionType.equals(DefaultVersion.TYPE_NAME))
-			return DefaultVersion.TYPE;
 
 		IVersionType vm = getExecutableExtension(IVersionType.class, VERSION_TYPES_POINT, versionType, true);
 		if(vm != null)

@@ -38,6 +38,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	private String	m_readerType;
 	private String	m_componentType;
 	private String[] m_managedCategories;
+	private String	m_space;
 	private boolean	m_source;
 	private boolean	m_mutable;
 
@@ -89,6 +90,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		m_managedCategories = tmp == null ? null : tmp.split(",");
 		m_mutable = getOptionalBooleanValue(attrs, Provider.ATTR_MUTABLE, true);
 		m_source = getOptionalBooleanValue(attrs, Provider.ATTR_SOURCE, true);
+		m_space = getOptionalStringValue(attrs, Provider.ATTR_SPACE);
 		m_uriFormat = null;
 		m_versionConverter = null;
 		m_documentation = null;
@@ -112,6 +114,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				m_managedCategories,
 				m_versionConverter,
 				m_uriFormat,
+				m_space,
 				m_mutable,
 				m_source,
 				m_documentation);
@@ -140,6 +143,11 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	protected final String getReaderType()
 	{
 		return m_readerType;
+	}
+
+	protected final String getSpace()
+	{
+		return m_space;
 	}
 
 	protected final boolean isSource()

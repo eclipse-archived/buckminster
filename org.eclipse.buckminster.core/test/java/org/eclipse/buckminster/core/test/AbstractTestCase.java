@@ -10,19 +10,24 @@
 
 package org.eclipse.buckminster.core.test;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.core.runtime.CoreException;
 
 
 /**
@@ -43,9 +48,39 @@ public abstract class AbstractTestCase extends TestCase
 		ComponentRequest request = new ComponentRequest(componentName, category, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
-		queryBld.setResourceMapURL(new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood.rmap"));
+		queryBld.setResourceMapURL(getRMAP());
+		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
+		node.setNamePattern(Pattern.compile("(subclipse)|(buckminster)"));
+		node.setUseInstalled(false);
+		queryBld.addAdvisorNode(node);
 		ComponentQuery query = queryBld.createComponentQuery();
 		return new MainResolver(new ResolutionContext(query));
+	}
+
+	@Override
+	protected void runTest() throws Throwable
+	{
+		try
+		{
+			super.runTest();
+		}
+		catch(CoreException e)
+		{
+			BuckminsterException.deeplyPrint(e, System.err, true);
+			throw e;
+		}
+	}
+
+	protected URL getRMAP()
+	{
+		try
+		{
+			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood.rmap");
+		}
+		catch(MalformedURLException e)
+		{
+			return null;
+		}
 	}
 
 	protected CorePlugin getPlugin()

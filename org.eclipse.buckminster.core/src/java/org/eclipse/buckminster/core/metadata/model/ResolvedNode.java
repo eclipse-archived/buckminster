@@ -28,7 +28,6 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -188,11 +187,11 @@ public class ResolvedNode extends DepNode
 	public String getViewName() throws CoreException
 	{
 		Resolution resolution = getResolution();
-		String name = resolution.getRequest().getViewName();
-		IVersionSelector version = resolution.getVersionMatch().getFixedVersionSelector();
-		if(version != null)
-			name = name + ':' + version;
-		return name;
+		StringBuilder bld = new StringBuilder();
+		resolution.getRequest().appendViewName(bld);
+		bld.append(':');
+		resolution.getVersionMatch().toString(bld);
+		return bld.toString();
 	}
 
 	/**

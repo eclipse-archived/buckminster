@@ -124,14 +124,19 @@ public class PerformManager implements IPerformManager
 					out = s_nullPrintStream;
 					err = s_nullPrintStream;
 				}
-				PerformContext ctx = new PerformContext(globalCtx, action, allProps, forced, out, err);
+
+				IProgressMonitor cancellationMonitor = MonitorUtils.subMonitor(monitor, 1);
+				cancellationMonitor.beginTask(null, IProgressMonitor.UNKNOWN);
+				PerformContext ctx = new PerformContext(globalCtx, action, allProps, forced, out, err, cancellationMonitor);
 				if(!forced && action.isUpToDate(ctx))
 				{
-					MonitorUtils.worked(monitor, 100);
+					cancellationMonitor.done();
+					MonitorUtils.worked(monitor, 99);
 					continue;
 				}
 
-				IStatus status = actor.perform(ctx, new SubProgressMonitor(monitor, 90, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+				IStatus status = actor.perform(ctx, new SubProgressMonitor(monitor, 1, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+				cancellationMonitor.done();
 				MonitorUtils.testCancelStatus(monitor);
 
 				switch(status.getSeverity())

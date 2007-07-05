@@ -30,8 +30,6 @@ public class ComponentIdentifier extends ComponentName
 	public ComponentIdentifier(String name, String categoryName, IVersion version)
 	{
 		super(name, categoryName);
-		if(version != null && version.isDefault())
-			version = null;
 		m_version = version;
 	}
 

@@ -47,6 +47,7 @@
 		schema="schema/componentCategories.exsd" />
  <extension-point id="queryResolvers" name="%QueryResolvers" schema="schema/queryResolvers.exsd"/>
  <extension-point id="materializers" name="%Materializers" schema="schema/materializers.exsd"/>
+ <extension-point id="qualifierGenerators" name="%QualifierGenerators" schema="schema/qualifierGenerators.exsd"/>
 	<!-- Declare known versionTypes -->
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType
@@ -319,5 +320,12 @@
     <materializer
           class="org.eclipse.buckminster.core.materializer.SiteMirrorMaterializer"
           id="site.mirror"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.qualifierGenerators">
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.RevisionQualifierGenerator"
+          id="lastRevision">
+    </qualifierGenerator>
  </extension>
 </plugin>

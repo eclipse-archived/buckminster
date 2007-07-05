@@ -27,7 +27,7 @@ public class JarComponentType extends AbstractComponentType
 {
 	private static final IResolutionBuilder s_builder = new AbstractResolutionBuilder()
 	{
-		public DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor) throws CoreException
+		public DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 		{
 			IComponentReader reader = readerHandle[0];
 			ProviderMatch ri = reader.getProviderMatch();

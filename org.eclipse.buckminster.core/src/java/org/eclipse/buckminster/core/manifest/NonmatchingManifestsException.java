@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.manifest;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 
 @SuppressWarnings("serial")
 public class NonmatchingManifestsException extends BuckminsterException

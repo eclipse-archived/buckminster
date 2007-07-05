@@ -15,11 +15,11 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.helpers.AbstractComponentType;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -99,7 +99,7 @@ public class EclipseComponentType extends AbstractComponentType
 
 					if(catalogReader.exists(path.toOSString(), MonitorUtils.subMonitor(monitor, 1000)))
 					{
-						IComponentType ctype =  plugin.getComponentType(ctypeId);
+						AbstractComponentType ctype =  (AbstractComponentType)plugin.getComponentType(ctypeId);
 						return ctype.getResolutionBuilder(reader, monitor);
 					}
 				}
@@ -164,15 +164,6 @@ public class EclipseComponentType extends AbstractComponentType
 			{
 				category = KeyConstants.FEATURE_CATEGORY;
 				MonitorUtils.worked(monitor, 2000);
-			}
-			else if(canManagePlugin && reader.exists(FRAGMENT_FILE, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				category = KeyConstants.PLUGIN_CATEGORY;
-				MonitorUtils.worked(monitor, 1000);
-			}
-			else if(canManagePlugin && reader.exists(PLUGIN_FILE, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				category = KeyConstants.PLUGIN_CATEGORY;
 			}
 			else
 			{

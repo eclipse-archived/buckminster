@@ -23,9 +23,11 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 
 /**
  * @author kolwing
@@ -91,6 +93,8 @@ public class PerformContext implements IActionContext
 		}
 	}
 
+	private final IProgressMonitor m_cancellationMonitor;
+
 	private final Action m_action;
 
 	private final PrintStream m_errorStream;
@@ -103,7 +107,7 @@ public class PerformContext implements IActionContext
 
 	private final Map<String, String> m_properties;
 
-	public PerformContext(GlobalContext globalCtx, Action action, Map<String, String> properties, boolean forced, PrintStream out, PrintStream err) throws CoreException
+	public PerformContext(GlobalContext globalCtx, Action action, Map<String, String> properties, boolean forced, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor) throws CoreException
 	{
 		m_globalCtx = globalCtx;
 		m_action = action;
@@ -111,6 +115,7 @@ public class PerformContext implements IActionContext
 		m_forced = forced;
 		m_outputStream = out;
 		m_errorStream = err;
+		m_cancellationMonitor = cancellationMonitor;
 	}
 
 	public void addPrerequisitePathGroups(Map<String, PathGroup[]> pgas) throws CoreException
@@ -286,5 +291,10 @@ public class PerformContext implements IActionContext
 	public void scheduleRemoval(IPath path) throws CoreException
 	{
 		m_globalCtx.scheduleRemoval(makeAbsolute(path));
+	}
+
+	public IProgressMonitor getCancellationMonitor()
+	{
+		return new SubProgressMonitor(m_cancellationMonitor, 1);
 	}
 }

@@ -10,15 +10,19 @@
 package org.eclipse.buckminster.core.query.model;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
+import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -29,6 +33,12 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class AdvisorNode implements ISaxableElement, Cloneable
 {
+	public static final int PRIO_VERSION_DESIGNATOR = 1;
+	public static final int PRIO_BRANCHTAG_PATH_INDEX = 2;
+	public static final int PRIO_SPACE_PATH_INDEX = 3;
+
+	public static final int[] DEFAULT_RESOLUTION_PRIO = { PRIO_VERSION_DESIGNATOR, PRIO_BRANCHTAG_PATH_INDEX, PRIO_SPACE_PATH_INDEX };
+
 	public static final String ATTR_ATTRIBUTES = "attributes";
 
 	public static final String ATTR_CATEGORY = "category";
@@ -58,14 +68,20 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public static final String ATTR_ALLOW_CIRCULAR_DEPENDENCY = "allowCircularDependency";
 
 	public static final String ATTR_WHEN_NOT_EMPTY = "whenNotEmpty";
-	
+
 	public static final String ATTR_USE_RESOLUTION_SCHEME = "useResolutionSchema";
 
 	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery";
 
-	public static final String ATTR_BRANCH_PATH = "branchPath";
+	public static final String ATTR_BRANCH_TAG_PATH = "branchTagPath";
 
-	public static final String ATTR_RESOLUTION_PATH = "resolutionPath";
+	public static final String ATTR_SPACE_PATH = "spacePath";
+
+	public static final String ATTR_REVISION = "revision";
+
+	public static final String ATTR_TIMESTAMP = "timestamp";
+
+	public static final String ATTR_RESOLUTION_PRIO = "resolutionPrio";
 
 	public static final String TAG = "advisorNode";
 
@@ -98,14 +114,20 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	private final boolean m_useProject;
 
 	private final IVersionDesignator m_versionOverride;
-	
+
 	private final boolean m_useResolutionScheme;
 
 	private final boolean m_systemDiscovery;
-	
-	private final String[] m_branchPath;
-	
-	private final String[] m_resolutionPath;
+
+	private final VersionSelector[] m_branchTagPath;
+
+	private final String[] m_spacePath;
+
+	private final long m_revision;
+
+	private final Date m_timestamp;
+
+	private final int[] m_resolutionPrio;
 
 	public AdvisorNode(AdvisorNodeBuilder bld)
 	{
@@ -124,8 +146,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		m_versionOverride = bld.getVersionOverride();
 		m_useResolutionScheme = bld.isUseResolutionScheme();
 		m_systemDiscovery = bld.isSystemDiscovery();
-		m_branchPath = bld.getBranchPath();
-		m_resolutionPath = bld.getResolutionPath();
+		m_branchTagPath = bld.getBranchTagPath();
+		m_spacePath = bld.getSpacePath();
+		m_revision = bld.getRevision();
+		m_timestamp = bld.getTimestamp();
+		m_resolutionPrio = bld.getResolutionPrio();
 		m_attributes = UUIDKeyed.createUnmodifiableList(bld.getAttributes());
 		m_properties = UUIDKeyed.createUnmodifiableProperties(bld.getProperties());
 	}
@@ -140,9 +165,9 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_attributes;
 	}
 
-	public final String[] getBranchPath()
+	public final VersionSelector[] getBranchTagPath()
 	{
-		return m_branchPath;
+		return m_branchTagPath;
 	}
 
 	public final String getCategory()
@@ -188,7 +213,12 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public final String[] getResolutionPath()
 	{
-		return m_resolutionPath;
+		return m_spacePath;
+	}
+
+	public int[] getResolutionPrio()
+	{
+		return m_resolutionPrio;
 	}
 
 	public final SourceLevel getSourceLevel()
@@ -259,6 +289,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false");
 		if(!m_useProject)
 			Utils.addAttribute(attrs, ATTR_USE_PROJECT, "false");
+
 		if(m_versionOverride != null)
 		{
 			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, m_versionOverride.toString());
@@ -274,13 +305,31 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		if(!m_systemDiscovery)
 			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
 
-		tmp = TextUtils.concat(m_branchPath, ",");
+		tmp = VersionSelector.toString(m_branchTagPath);
 		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_BRANCH_PATH, tmp);
+			Utils.addAttribute(attrs, ATTR_BRANCH_TAG_PATH, tmp);
 
-		tmp = TextUtils.concat(m_resolutionPath, ",");
+		tmp = TextUtils.concat(m_spacePath, ",");
 		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_RESOLUTION_PATH, tmp);
+			Utils.addAttribute(attrs, ATTR_SPACE_PATH, tmp);
+
+		if(!Arrays.equals(m_resolutionPrio, DEFAULT_RESOLUTION_PRIO))
+		{
+			StringBuilder bld = new StringBuilder();
+			bld.append(m_resolutionPrio[0]);
+			for(int idx = 1; idx < m_resolutionPrio.length; ++idx)
+			{
+				bld.append(',');
+				bld.append(m_resolutionPrio[idx]);
+			}
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_PRIO, bld.toString());
+		}
+
+		if(m_revision != -1)
+			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
+
+		if(m_timestamp != null)
+			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
 
 		handler.startElement(namespace, localName, qName, attrs);
 		if(m_documentation != null)
@@ -288,19 +337,34 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
 		handler.endElement(namespace, localName, qName);
 	}
-	
+
 	public final boolean useInstalled()
 	{
 		return m_useInstalled;
 	}
-	
+
 	public final boolean useMaterialization()
 	{
 		return m_useMaterialization;
 	}
-	
+
 	public final boolean useProject()
 	{
 		return m_useProject;
+	}
+
+	public String[] getSpacePath()
+	{
+		return m_spacePath;
+	}
+
+	public long getRevision()
+	{
+		return m_revision;
+	}
+
+	public Date getTimestamp()
+	{
+		return m_timestamp;
 	}
 }

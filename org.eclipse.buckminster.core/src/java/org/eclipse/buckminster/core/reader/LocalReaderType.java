@@ -17,7 +17,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionQuery;
+import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -31,23 +31,13 @@ import org.eclipse.core.runtime.Path;
  */
 public class LocalReaderType extends URLCatalogReaderType
 {
-	private static final IVersionFinder s_blindFinder = new IVersionFinder()
+	private static final IVersionFinder s_blindFinder = new AbstractVersionFinder(null, null)
 	{
-		public void close()
-		{
-		}
-
-		public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 		{
 			MonitorUtils.complete(monitor);
 			return null;
 		}
-
-		public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
-		{
-			MonitorUtils.complete(monitor);
-			return null;
-		}		
 	};
 
 	@Override
@@ -83,7 +73,7 @@ public class LocalReaderType extends URLCatalogReaderType
 	{
 		MonitorUtils.complete(monitor);
 		return nodeQuery.useExistingProject() || nodeQuery.useMaterialization()
-			? new DefaultVersionFinder()
+			? new DefaultVersionFinder(provider, nodeQuery)
 			: s_blindFinder;
 	}
 }

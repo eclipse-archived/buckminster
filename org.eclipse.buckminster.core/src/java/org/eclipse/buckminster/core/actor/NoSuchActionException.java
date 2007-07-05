@@ -9,7 +9,7 @@ package org.eclipse.buckminster.core.actor;
 
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 
 /**
  * @author kolwing

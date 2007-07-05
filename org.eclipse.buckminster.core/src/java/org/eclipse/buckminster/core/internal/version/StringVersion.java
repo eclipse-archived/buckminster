@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core.internal.version;
 
 import org.eclipse.buckminster.core.version.AbstractVersion;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
 
 /**
  * @author Thomas Hallgren
@@ -30,10 +29,8 @@ public class StringVersion extends AbstractVersion
 
 	public int compareTo(IVersion o)
 	{
-		if(o == VersionFactory.defaultVersion())
-			return 1;
 		if(!(o instanceof StringVersion))
-			return -1;
+			throw new IllegalArgumentException("Not a StringVersion");
 		return m_version.compareTo(((StringVersion)o).m_version);
 	}
 
@@ -57,11 +54,6 @@ public class StringVersion extends AbstractVersion
 	public int hashCode()
 	{
 		return m_version.hashCode();
-	}
-
-	public boolean isDefault()
-	{
-		return false;
 	}
 
 	@Override

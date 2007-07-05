@@ -12,14 +12,26 @@ package org.eclipse.buckminster.core.version;
 public interface IVersion extends Comparable<IVersion>
 {
 	/**
-	 * Returns true if this is the default version.
+	 * Returns the version qualifier or null if not applicable
 	 */
-	boolean isDefault();
+	String getQualifier();
 
 	/**
 	 * Returns the type for this version.
 	 */
 	IVersionType getType();
+
+	/**
+	 * Creates and returns a new version where the qualifier has been
+	 * replaced. If the old version did not have a qualifier, the new
+	 * qualifier will be added. If the version is of a kind that does
+	 * not support qualifiers, a call to this method will simply return
+	 * the called instance.
+	 *
+	 * @param string The new qualifier
+	 * @return A new version with the new qualifier
+	 */
+	IVersion replaceQualifier(String string);
 
 	/**
 	 * Returns this version as a long integer if possible. This method is intended

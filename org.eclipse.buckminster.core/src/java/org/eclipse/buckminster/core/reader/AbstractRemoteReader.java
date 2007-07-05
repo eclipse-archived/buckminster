@@ -10,11 +10,13 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -40,9 +42,13 @@ public abstract class AbstractRemoteReader extends AbstractCatalogReader
 			input = CorePlugin.getDefault().openCachedRemoteFile(this, fileName, monitor);
 			return true;
 		}
-		catch(IOException e)
+		catch(FileNotFoundException e)
 		{
 			return false;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{

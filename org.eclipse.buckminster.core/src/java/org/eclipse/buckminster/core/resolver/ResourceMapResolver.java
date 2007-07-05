@@ -69,8 +69,6 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		ResolverNodeWithJob.NodeResolutionJob job = (ResolverNodeWithJob.NodeResolutionJob)event.getJob();
 		job.removeJobChangeListener(this);
 		job.setScheduled(false);
-		--s_jobCounter;
-		scheduleNext();
 	}
 
 	@Override
@@ -163,6 +161,15 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 				return;
 
 		m_jobMonitors.add(monitor);
+	}
+
+	synchronized void resolutionPartDone()
+	{
+		// Allow another job to enter. The resolution part of the
+		// calling job is done.
+		//
+		--s_jobCounter;
+		scheduleNext();
 	}
 
 	synchronized void removeJobMonitor(IProgressMonitor monitor)
@@ -311,7 +318,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 					Job.getJobManager().join(this, MonitorUtils.subMonitor(monitor, 1));
 
 					// The waitQueue is ours but the job counter is share
-					// between instances so we migth run into situations
+					// between instances so we might run into situations
 					// where we're not yet allowed to schedule anything.
 					//
 					if(m_waitQueue.isEmpty())

@@ -14,7 +14,6 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.version.AbstractVersion;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
 
 /**
  * @author Thomas Hallgren
@@ -41,13 +40,13 @@ public class TimestampVersion extends AbstractVersion
 	 */
 	public int compareTo(IVersion o)
 	{
-		if(o == VersionFactory.defaultVersion())
-			return 1;
+		if(!(o instanceof TimestampVersion))
+			throw new IllegalArgumentException("Not a TimestampVersion");
 
 		// The following line throws a ClassCastException unless
 		// o is indeed a Version. That's OK and expected.
 		//
-		return this.getTimestamp().compareTo(((TimestampVersion)o).getTimestamp());
+		return getTimestamp().compareTo(((TimestampVersion)o).getTimestamp());
 	}
 
 	@Override
@@ -75,11 +74,6 @@ public class TimestampVersion extends AbstractVersion
 	public int hashCode()
 	{
 		return m_timestamp.hashCode();
-	}
-
-	public boolean isDefault()
-	{
-		return false;
 	}
 
 	@Override

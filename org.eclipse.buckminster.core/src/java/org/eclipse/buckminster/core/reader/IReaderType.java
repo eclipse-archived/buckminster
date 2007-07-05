@@ -22,9 +22,9 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -164,7 +164,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @return The URL or <code>null</code> if this reader type does not support URL retrieval.
 	 * @throws CoreException
 	 */
-	URL convertToURL(String repositoryLocator, IVersionSelector versionSelector) throws CoreException;
+	URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException;
 
 	/**
 	 * There might be minor difference in how repository locators are defined in a team
@@ -186,7 +186,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @return The last modification timestamp.
 	 * @throws CoreException
 	 */
-	Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
+	Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the last revision for the repository location or -1 if that cannot
@@ -197,7 +197,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @return The last revision
 	 * @throws CoreException
 	 */
-	long getLastRevision(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
+	long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the last revision for the working copy or -1 if that cannot

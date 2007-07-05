@@ -21,15 +21,14 @@ import java.util.Map;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -60,13 +59,13 @@ public class URLReaderType extends AbstractReaderType
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
-		Provider provider = new Provider(readerType, IComponentType.UNKNOWN, null, null, new Format(urlString), false, false, null);
+		Provider provider = new Provider(readerType, IComponentType.UNKNOWN, null, null, new Format(urlString), null, false, false, null);
 		ProviderMatch pm = new ProviderMatch(provider, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return provider.getReaderType().getReader(pm, monitor);
 	}
 
 	@Override
-	public URL convertToURL(String repositoryLocator, IVersionSelector versionSelector) throws CoreException
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
 	{
 		try
 		{

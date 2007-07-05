@@ -10,36 +10,37 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import org.eclipse.buckminster.core.version.IVersionQuery;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * A ITagFinder will find the component tags that matches a certain
- * query.
+ * A ITagFinder will find the component tags that matches a certain query.
+ * 
  * @author Thomas Hallgren
  */
 public interface IVersionFinder
 {
 	/**
-	 * Return the version to use when no specific version requirement exists.
+	 * Find the best match for the designated component
 	 * @param monitor
-	 * @return The default version.
+	 * @return The match that best matched the conditions or null if no match was found
 	 * @throws CoreException
 	 */
-	VersionMatch getDefaultVersion(IProgressMonitor monitor)
-	throws CoreException;
+	VersionMatch getBestVersion(IProgressMonitor monitor)
+			throws CoreException;
 
 	/**
-	 * Return the best match for the given version query.  
-	 * @param query The version query to match.
-	 * @param monitor A monitor where progress can be reported.
-	 * @return The best match or <code>null</code> if no match can be found.
-	 * @throws CoreException
+	 * Returns the provider associated with this version finder
 	 */
-	VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor)
-	throws CoreException;
+	Provider getProvider();
+
+	/**
+	 * Returns the query associated with this version finder
+	 */
+	NodeQuery getQuery();
 
 	/**
 	 * Closes all resources utilized by this instance.

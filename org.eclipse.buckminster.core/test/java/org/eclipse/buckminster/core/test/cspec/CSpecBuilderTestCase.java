@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.test.cspec;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -30,9 +31,8 @@ import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -64,11 +64,11 @@ public class CSpecBuilderTestCase extends TestCase
 
 		ComponentRequest request = new ComponentRequest("test", null, null);
 		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
-		IVersionSelector fixed = VersionSelectorFactory.timestamp(System.currentTimeMillis());
-		Provider provider = new Provider("svn", IComponentType.ECLIPSE_PROJECT, Trivial.EMPTY_STRING_ARRAY, null, new Format("svn://foo.bar.com/foobar"), true, true, null);
+		VersionMatch fixed = new VersionMatch(vs, null, null, -1, new Date(), null);
+		Provider provider = new Provider("svn", IComponentType.ECLIPSE_PROJECT, Trivial.EMPTY_STRING_ARRAY, null, new Format("svn://foo.bar.com/foobar"), "baz.org", true, true, null);
 		UUID providerId = provider.getId();
-		
-		Resolution resolution = new Resolution(c.getId(), vs, fixed, providerId, true, request,
+
+		Resolution resolution = new Resolution(c.getId(), fixed, providerId, true, request,
 			Collections.<String>emptySet(), provider.getURI(Collections.<String,String>emptyMap()), null, null, -1);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();

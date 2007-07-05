@@ -59,7 +59,7 @@
 		<attribute name="overlayFolder" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Appoints a folder that will act as an overlay to components found by this node. Overlays are ment to
+					Appoints a folder that will act as an overlay to components found by this node. Overlays are meant to
 					assist when prototyping so that Buckminster gets the notion of added files although they are not
 					really checked in. If the path is relative it will be treated as relative to the current workspace.
 				</documentation>
@@ -68,14 +68,14 @@
 		<attribute name="attributes" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Comma separated list of attribute names that will imply dependencies during resolvement
+					Comma separated list of attribute names that will imply dependencies during resolution
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="prune" type="boolean" use="optional">
 			<annotation>
 				<documentation>
-					If true, prune the extenral dependency list to include only those dependencies that have purposes
+					If true, prune the external dependency list to include only those dependencies that have purposes
 				</documentation>
 			</annotation>
 		</attribute>
@@ -102,8 +102,8 @@
 		<attribute name="useInstalled" type="boolean" default="true" use="optional">
 			<annotation>
 				<documentation>
-					Regulates how to treat components that are matched by installed features and plugins. Setting this
-					attribute to false will cause the resolver to omitt installed components.
+					Regulates how to treat components that are matched by installed features and plug-ins. Setting this
+					attribute to false will cause the resolver to omit installed components.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -119,7 +119,7 @@
 			<annotation>
 				<documentation>
 					Regulates how the resolver will treat workspace projects that fulfills the component request.
-					Setting this flag to false will cause the resolver to omitt existing projects (and thus overwrite
+					Setting this flag to false will cause the resolver to omit existing projects (and thus overwrite
 					them).
 				</documentation>
 			</annotation>
@@ -137,10 +137,13 @@
 				<documentation>The version type for the versionOverride.</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useResolutionScheme" type="boolean" use="optional"></attribute>
-		<attribute name="systemDiscovery" type="boolean" use="optional"></attribute>
-		<attribute name="branch" type="string" use="optional"></attribute>
-		<attribute name="resolutionPath" type="string" use="optional"></attribute>
+		<attribute name="useResolutionScheme" type="boolean" use="optional" />
+		<attribute name="systemDiscovery" type="boolean" use="optional" />
+		<attribute name="branchTagPath" type="string" use="optional" />
+		<attribute name="spacePath" type="string" use="optional" />
+		<attribute name="revision" type="long" use="optional" />
+		<attribute name="timestamp" type="string" use="optional" />
+		<attribute name="resolutionPrio" type="string" use="optional" />
 	</complexType>
 	<simpleType name="Feasibility">
 		<restriction base="string">

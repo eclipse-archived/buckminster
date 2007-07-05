@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.actor;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 
 /**
  * @author kolwing

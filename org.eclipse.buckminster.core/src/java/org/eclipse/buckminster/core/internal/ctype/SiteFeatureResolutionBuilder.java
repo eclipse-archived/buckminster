@@ -20,9 +20,9 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.SiteFeatureReader;
@@ -33,7 +33,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,7 +46,7 @@ import org.eclipse.update.core.VersionedIdentifier;
  */
 public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 {
-	public synchronized DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor)
+	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
@@ -57,6 +57,9 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		try
 		{
 			IFeature siteFeature = ((SiteFeatureReader)reader).getFeature(MonitorUtils.subMonitor(monitor, 50));
+			if(forResolutionAidOnly)
+				return new ResolvedNode(new Resolution(getCSpecBuilder(siteFeature).createCSpec(), reader), null);
+
 			NodeQuery query = reader.getNodeQuery();
 			QualifiedDependency qdep = new QualifiedDependency(query.getComponentRequest(), null);
 			ResolverNode rNode = buildCSpecFromSiteFeature(reader, new HashMap<ComponentName, ResolverNode>(), siteFeature, new UnresolvedNode(qdep), MonitorUtils.subMonitor(monitor, 50));
@@ -89,11 +92,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		int numChildren = refs.length;
 		monitor.beginTask(null, 10 + numChildren * 10);
 
-		CSpecBuilder cspecBld = new CSpecBuilder();
-		VersionedIdentifier vi = siteFeature.getVersionedIdentifier();
-		cspecBld.setName(vi.getIdentifier());
-		cspecBld.setCategory(getCategory());
-		cspecBld.setVersion(VersionFactory.OSGiType.coerce(vi.getVersion()));
+		CSpecBuilder cspecBld = getCSpecBuilder(siteFeature);
 		MonitorUtils.worked(monitor, 5);
 
 		node.startResolvingChildren(depNode);
@@ -111,7 +110,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				ComponentRequest request = new ComponentRequest(vid.getIdentifier(), getCategory(), vd);
 				cspecBld.addDependency(request);
 
-				VersionMatch match = new VersionMatch(version, VersionSelectorFactory.tag(version.toString()));
+				VersionMatch match = new VersionMatch(version, null, provider.getSpace(), -1, null, null);
 				QualifiedDependency qdep = new QualifiedDependency(request, null);
 				NodeQuery childQuery = new NodeQuery(context, qdep);
 				IComponentReader childReader = reader.getReaderType().getReader(provider, childQuery, match, MonitorUtils.subMonitor(monitor, 1));
@@ -156,5 +155,14 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		return nr;
 	}
 
+	private CSpecBuilder getCSpecBuilder(IFeature siteFeature)
+	{
+		CSpecBuilder cspecBld = new CSpecBuilder();
+		VersionedIdentifier vi = siteFeature.getVersionedIdentifier();
+		cspecBld.setName(vi.getIdentifier());
+		cspecBld.setCategory(getCategory());
+		cspecBld.setVersion(VersionFactory.OSGiType.coerce(vi.getVersion()));
+		return cspecBld;
+	}
 }
 

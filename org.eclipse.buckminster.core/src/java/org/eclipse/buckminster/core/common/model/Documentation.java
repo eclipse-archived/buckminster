@@ -16,8 +16,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.parser.DocumentationParser;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;

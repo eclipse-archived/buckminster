@@ -131,6 +131,10 @@
 			type="string"
 			use="required" />
 		<attribute
+			name="space"
+			type="string"
+			use="optional" />
+		<attribute
 			name="mutable"
 			type="boolean"
 			use="optional" />
@@ -151,6 +155,10 @@
 			name="type"
 			type="string"
 			use="required" />
+		<attribute
+			name="versionType"
+			type="string"
+			use="optional" />
 	</complexType>
 	<complexType name="Transform">
 		<attribute

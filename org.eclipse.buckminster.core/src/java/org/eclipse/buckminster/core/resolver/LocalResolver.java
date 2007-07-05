@@ -43,6 +43,7 @@ import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
@@ -73,14 +74,14 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public static final Provider INSTALLED_FEATURE_PROVIDER;
 	static
 	{
-		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", new BidirectionalTransformer[0]);
+		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType, new BidirectionalTransformer[0]);
 		INSTALLED_BUNDLE_PROVIDER = new Provider(IReaderType.ECLIPSE_PLATFORM,
 			IComponentType.ECLIPSE_INSTALLED, new String[] { KeyConstants.PLUGIN_CATEGORY }, pdeConverter,
-			new Format("plugin/${" + KeyConstants.COMPONENT_NAME + "}"), false, false, null);
+			new Format("plugin/${" + KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
 
 		INSTALLED_FEATURE_PROVIDER = new Provider(IReaderType.ECLIPSE_PLATFORM,
 			IComponentType.ECLIPSE_INSTALLED, new String[] { KeyConstants.FEATURE_CATEGORY }, pdeConverter,
-			new Format("feature/${" + KeyConstants.COMPONENT_NAME + "}"), false, false, null);
+			new Format("feature/${" + KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
 	}
 
 	private final ResolutionContext m_context;
@@ -243,7 +244,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(provider, query,
 				match.getVersionMatch(), nullMonitor) };
 			DepNode node = provider.getComponentType().getResolutionBuilder(reader[0], nullMonitor).build(
-				reader, nullMonitor);
+				reader, false, nullMonitor);
 			node.getResolution().store();
 			if(reader[0] != null)
 				reader[0].close();
@@ -447,7 +448,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		}
 
 		Provider provider = new Provider(IReaderType.LOCAL, IComponentType.ECLIPSE_PROJECT, null, null,
-			new Format(path.toOSString()), mutable, hasSource, null);
+			new Format(path.toOSString()), null, mutable, hasSource, null);
 
 		IReaderType readerType = provider.getReaderType();
 		IComponentType componentType = provider.getComponentType();
@@ -465,7 +466,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			String category = request.getCategory();
 			if(category != null && !category.equals(builder.getCategory()))
 				throw new CategoryMismatchException(request.getName(), category, builder.getCategory());
-			resolution = builder.build(reader, nullMonitor).getResolution();
+			resolution = builder.build(reader, false, nullMonitor).getResolution();
 		}
 		finally
 		{

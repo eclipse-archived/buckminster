@@ -10,6 +10,8 @@
 package org.eclipse.buckminster.core.resolver;
 
 import java.net.URL;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,9 +21,14 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -31,7 +38,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Thomas Hallgren
  */
-public class NodeQuery
+public class NodeQuery implements Comparator<VersionMatch>
 {
 	private final RMContext m_context;
 
@@ -75,6 +82,208 @@ public class NodeQuery
 		return getComponentQuery().allowCircularDependency(getComponentRequest());
 	}
 
+	public int compare(VersionMatch vm1, VersionMatch vm2)
+	{
+		if(vm1 == vm2)
+			return 0;
+
+		int cmp = 0;
+		
+		// Compare the revision. If it is present, all revisions higher
+		// than it are invalid
+		//
+		// If only one match matches the revision, it will take precedence
+		// regardless of everything else.
+		//
+		long revision = getRevision();
+		long vm1Rev = vm1.getRevision();
+		long vm2Rev = vm2.getRevision();
+		if(revision != -1)
+		{
+			if(vm1Rev != -1 && revision >= vm1Rev)
+			{
+				if(vm2Rev == -1 || revision < vm2Rev)
+					cmp = 1; // vm1 is greater since vm2 is invalid
+				
+				// Both revisions are valid so the revision doesn't
+				// rule anything out. We compare the revisions further
+				// down.
+			}
+			else
+			{
+				if(vm2Rev != -1 && revision >= vm2Rev)
+					cmp = -1; // vm2 is greater since vm1 is invalid
+
+				// Both revisions are invalid. No use continuing the
+				// comparison
+				//
+				return 0;
+			}
+		}
+		if(cmp != 0)
+			return cmp;
+
+		// Compare the timestamp. If it is present, all timestamps younger
+		// than it are invalid
+		//
+		// If only one match matches the timestamp, it will take precedence
+		// regardless of everything else.
+		//
+		Date timestamp = getTimestamp();
+		Date vm1Ts = vm1.getTimestamp();
+		Date vm2Ts = vm2.getTimestamp();
+		if(timestamp != null)
+		{
+			if(vm1Ts != null && timestamp.compareTo(vm1Ts) >= 0)
+			{
+				if(vm2Ts == null || timestamp.compareTo(vm2Ts) < 0)
+					cmp = 1; // vm1 is greater since vm2 is invalid
+
+				// Both revisions are valid so the revision doesn't
+				// rule anything out. We compare the revisions further
+				// down.
+			}
+			else
+			{
+				if(vm2Ts != null && timestamp.compareTo(vm2Ts) >= 0)
+					cmp = -1; // vm2 is greater since vm1 is invalid
+
+				// Both timestamps are invalid. No use continuing the
+				// comparison
+				//
+				return 0;
+			}
+		}
+		if(cmp != 0)
+			return cmp;
+
+		int[] prio = getResolutionPrio();
+		for(int idx = 0; idx < prio.length; ++idx)
+		{
+			switch(prio[idx])
+			{
+			case AdvisorNode.PRIO_BRANCHTAG_PATH_INDEX:
+				cmp = compareSelectors(vm1, vm2);
+				break;
+			case AdvisorNode.PRIO_SPACE_PATH_INDEX:
+				cmp = compareSpacePaths(vm1, vm2);
+				break;
+			default:
+				cmp = compareVersions(vm1, vm2);			
+			}
+			if(cmp != 0)
+				return cmp;
+		}
+
+		if(vm1Rev != -1 && vm2Rev != -1 && vm1Rev != vm2Rev)
+			//
+			// Not same revision. The higher revision wins
+			//
+			return vm1Rev < vm2Rev ? -1 : 1;
+
+		if(vm1Ts != null && vm2Ts != null)
+			cmp = vm1Ts.compareTo(vm2Ts);
+
+		return cmp;
+	}
+
+	private int compareVersions(VersionMatch vm1, VersionMatch vm2)
+	{
+		// Compare the versions.
+		//
+		IVersion v1 = vm1.getVersion();
+		IVersion v2 = vm2.getVersion();
+		IVersionDesignator vd = getVersionDesignator();
+
+		if(vd != null)
+		{
+			// Only consider designated versions
+			//
+			if(v1 != null && !vd.designates(v1))
+				v1 = null;
+			if(v2 != null && !vd.designates(v2))
+				v2 = null;
+		}
+
+		int cmp = 0;
+		if(v1 == null)
+		{
+			if(v2 != null)
+				cmp = -1; // Consider v1 to be less
+		}
+		else
+		{
+			if(v2 == null)
+				cmp = 1; // Consider v2 to be less
+			else
+			{
+				// When the versions are of different type (this
+				// can only happen when no versionDesignator was
+				// present to discriminate above) we will consider
+				// them equal so that they don't affect the
+				// outcome.
+				//
+				if(v1.getType().isComparableTo(v2.getType()))
+					cmp = v1.compareTo(v2);
+			}
+		}
+		return cmp;
+	}
+
+	private int compareSelectors(VersionMatch vm1, VersionMatch vm2)
+	{
+		int cmp = 0;
+		VersionSelector[] branchTagPath = getBranchTagPath();
+		if(branchTagPath.length > 0)
+		{
+			// The match with the lower index is considered greater. A match
+			// with no index (-1) will always loose
+			//
+			int v1idx = VersionSelector.indexOf(branchTagPath, vm1.getBranchOrTag());
+			int v2idx = VersionSelector.indexOf(branchTagPath, vm2.getBranchOrTag());
+			if(v1idx >= 0)
+			{
+				if(v2idx >= 0)
+					cmp = (v1idx < v2idx) ? 1 : ((v1idx == v2idx) ? 0 : -1);
+				else
+					cmp = 1;
+			}
+			else
+			{
+				if(v2idx >= 0)
+					cmp = -1;
+			}
+		}
+		return cmp;
+	}
+
+	private int compareSpacePaths(VersionMatch vm1, VersionMatch vm2)
+	{
+		int cmp = 0;
+		String[] spacePath = getSpacePath();
+		if(spacePath.length > 0)
+		{
+			// The match with the lower index is considered greater. A match
+			// with no index (-1) will always loose
+			//
+			int v1idx = TextUtils.indexOf(spacePath, vm1.getSpace());
+			int v2idx = TextUtils.indexOf(spacePath, vm2.getSpace());
+			if(v1idx >= 0)
+			{
+				if(v2idx >= 0)
+					cmp = (v1idx < v2idx) ? 1 : ((v1idx == v2idx) ? 0 : -1);
+				else
+					cmp = 1;
+			}
+			else
+			{
+				if(v2idx >= 0)
+					cmp = -1;
+			}
+		}
+		return cmp;
+	}
+
 	/**
 	 * Returns the attributes designated by this query.
 	 * @param cspec The cspec containing the needed attributes.
@@ -87,7 +296,17 @@ public class NodeQuery
 		return cspec.getAttributes(getRequiredAttributes());
 	}
 
-	public final ComponentQuery getComponentQuery() throws CoreException
+	/**
+	 * Returns the path consisting of branches and/or tags
+	 * 
+	 * @return A path that might be empty but never <code>null</code>.
+	 */
+	public VersionSelector[] getBranchTagPath()
+	{
+		return getComponentQuery().getBranchTagPath(getComponentRequest());
+	}
+
+	public final ComponentQuery getComponentQuery()
 	{
 		return m_context.getComponentQuery();
 	}
@@ -102,14 +321,7 @@ public class NodeQuery
 		return m_context;
 	}
 
-	public ResolutionContext getResolutionContext()
-	{
-		if(m_context instanceof ResolutionContext)
-			return (ResolutionContext)m_context;		
-		throw new IllegalStateException("ResolutionContext requested during Materialization");
-	}
-
-	public final URL getOverlayFolder() throws CoreException
+	public final URL getOverlayFolder()
 	{
 		return getComponentQuery().getOverlayFolder(getComponentRequest());
 	}
@@ -145,7 +357,7 @@ public class NodeQuery
 	 * @return A score that the resolver will use when it compares the provider
 	 *         to other providers.
 	 */
-	public ProviderScore getProviderScore(boolean mutable, boolean source) throws CoreException
+	public ProviderScore getProviderScore(boolean mutable, boolean source)
 	{
 		return getComponentQuery().getProviderScore(getComponentRequest(), mutable, source);
 	}
@@ -163,10 +375,53 @@ public class NodeQuery
 	 * Checks if there is a matching advice that declares specific actions
 	 * @return The names of the adviced actions or an empty array.
 	 */
-	public List<String> getRequiredAttributes() throws CoreException
+	public List<String> getRequiredAttributes()
 	{
 		return getComponentQuery().getAttributes(getComponentRequest());
 	}
+
+	public ResolutionContext getResolutionContext()
+	{
+		if(m_context instanceof ResolutionContext)
+			return (ResolutionContext)m_context;		
+		throw new IllegalStateException("ResolutionContext requested during Materialization");
+	}
+
+	public int[] getResolutionPrio()
+	{
+		return getComponentQuery().getResolutionPrio(getComponentRequest());
+	}
+
+	/**
+	 * Returns the revision number or -1 if not applicable
+	 * 
+	 * @return The revision number to search for
+	 */
+	public long getRevision()
+	{
+		return getComponentQuery().getRevision(getComponentRequest());
+	}
+
+	/**
+	 * Returns the space path
+	 * 
+	 * @return A path that might be empty but never <code>null</code>.
+	 */
+	public String[] getSpacePath()
+	{
+		return getComponentQuery().getSpacePath(getComponentRequest());
+	}
+
+	/**
+	 * Returns the timestamp to search for or <code>null</code> if not applicable
+	 * 
+	 * @return The timestamp to search for
+	 */
+	public Date getTimestamp()
+	{
+		return getComponentQuery().getTimestamp(getComponentRequest());
+	}
+
 
 	/**
 	 * Returns the, possibly overriden, version designator of the component
@@ -174,13 +429,53 @@ public class NodeQuery
 	 * 
 	 * @return A version selector or <code>null</code>.
 	 */
-	public IVersionDesignator getVersionDesignator() throws CoreException
+	public IVersionDesignator getVersionDesignator()
 	{
 		ComponentRequest request = getComponentRequest();
 		IVersionDesignator vds = getComponentQuery().getVersionOverride(request);
 		if(vds == null)
 			vds = request.getVersionDesignator();
 		return vds;
+	}
+
+	/**
+	 * Returns true if the given <code>versionMatch</code> will match this query with respect to
+	 * the current version designator, branchTag path, and space path.
+	 *
+	 * @param versionMatch The version match to match
+	 * @return true if the given values matches this query
+	 */
+	public boolean isMatch(VersionMatch versionMatch)
+	{
+		if(versionMatch == null)
+			versionMatch = VersionMatch.DEFAULT;
+		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag(), versionMatch.getSpace());
+	}
+
+	/**
+	 * Returns true if the given version will match this query with respect to
+	 * the current version designator, branchTag path, and space path.
+	 *
+	 * @param version The version to match or <code>null</code> if not applicable
+	 * @param branchOrTag The branch or tag to match or <code>null</code> if not applicable
+	 * @param space The space to match or <code>null</code> if not applicable
+	 * @return true if the given values matches this query
+	 */
+	public boolean isMatch(IVersion version, VersionSelector branchOrTag, String space)
+	{
+		VersionSelector[] branchTagPath = getBranchTagPath();
+		if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
+			return false;
+
+		String[] spacePath = getSpacePath();
+		if(spacePath.length > 0 && TextUtils.indexOf(spacePath, space) < 0)
+			return false;
+
+		IVersionDesignator designator = getVersionDesignator();
+		if(designator != null && !designator.designates(version))
+			return false;
+
+		return true;
 	}
 
 	/**
@@ -192,7 +487,7 @@ public class NodeQuery
 	 * @return <code>true</code> if the external dependencies of the requested
 	 *         component should be pruned.
 	 */
-	public boolean isPrune() throws CoreException
+	public boolean isPrune()
 	{
 		return getComponentQuery().isPrune(getComponentRequest());
 	}
@@ -203,7 +498,7 @@ public class NodeQuery
 	 * 
 	 * @return <code>true</code> if the requested component should be skipped.
 	 */
-	public boolean skipComponent() throws CoreException
+	public boolean skipComponent()
 	{
 		return getComponentQuery().skipComponent(getComponentRequest());
 	}
@@ -216,7 +511,7 @@ public class NodeQuery
 	 *            The properties that contains the component request.
 	 * @return <code>true</code> if an existing project can be used.
 	 */
-	public boolean useExistingProject() throws CoreException
+	public boolean useExistingProject()
 	{
 		return getComponentQuery().useExistingProject(getComponentRequest());
 	}
@@ -228,7 +523,7 @@ public class NodeQuery
 	 * 
 	 * @return <code>true</code> if installed feature or plugin can be used.
 	 */
-	public boolean useInstalledComponent() throws CoreException
+	public boolean useInstalledComponent()
 	{
 		return getComponentQuery().useInstalledComponent(getComponentRequest());
 	}
@@ -240,7 +535,7 @@ public class NodeQuery
 	 * 
 	 * @return <code>true</code> if an existing materialization can be used.
 	 */
-	public boolean useMaterialization() throws CoreException
+	public boolean useMaterialization()
 	{
 		return getComponentQuery().useMaterialization(getComponentRequest());
 	}

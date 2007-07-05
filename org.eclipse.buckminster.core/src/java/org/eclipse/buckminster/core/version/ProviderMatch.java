@@ -34,6 +34,11 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	private final VersionMatch m_versionMatch;
 	private final NodeQuery m_query;
 
+	public ProviderMatch(Provider provider, VersionMatch versionMatch, NodeQuery query)
+	{
+		this(provider, versionMatch, ProviderScore.PREFERRED, query);
+	}
+
 	public ProviderMatch(Provider provider, VersionMatch versionMatch, ProviderScore providerScore, NodeQuery query)
 	{
 		m_provider = provider;
@@ -51,7 +56,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 */
 	public int compareTo(ProviderMatch o)
 	{
-		int versionCompare = m_versionMatch.getVersion().compareTo(o.getVersionMatch().getVersion());
+		int versionCompare = m_query.compare(m_versionMatch, o.getVersionMatch());
 		return versionCompare == 0 ? m_providerScore.compareTo(o.getProviderScore()) : versionCompare;
 	}
 
@@ -66,11 +71,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		ComponentRequest request = m_query.getComponentRequest();
 		bld.setName(request.getName());
 		bld.setCategory(request.getCategory());
-
-		IVersion version = m_versionMatch.getVersion();
-		if(version != null && !version.isDefault())
-			bld.setVersion(version);
-
+		bld.setVersion(m_versionMatch.getVersion());
 		return bld;
 	}
 
@@ -134,6 +135,24 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return m_provider.getURI(m_query.getProperties());
 	}
 
+	public String getUniqueKey()
+	{
+		StringBuilder bld = new StringBuilder();
+		bld.append(m_provider.getId());
+		bld.append('[');
+		ComponentRequest rq = m_query.getComponentRequest();
+		bld.append(rq.getName());
+		String type = rq.getCategory();
+		if(type != null)
+		{
+			bld.append(':');
+			bld.append(type);
+		}
+		m_versionMatch.toString(bld);
+		bld.append(']');
+		return bld.toString();
+	}
+
 	public IVersionConverter getVersionConverter()
 	throws CoreException
 	{
@@ -147,5 +166,16 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	public VersionMatch getVersionMatch()
 	{
 		return m_versionMatch;
+	}
+
+	/**
+	 * Returns a string representation of the match. Only intended
+	 * for debug purposes
+	 * @return A string representation of the match
+	 */
+	@Override
+	public String toString()
+	{
+		return getUniqueKey();
 	}
 }

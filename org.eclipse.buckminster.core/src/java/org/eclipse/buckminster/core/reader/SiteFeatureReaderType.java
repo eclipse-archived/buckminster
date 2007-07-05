@@ -12,11 +12,12 @@ import java.net.URL;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -44,7 +45,7 @@ public class SiteFeatureReaderType extends AbstractReaderType
 	throws CoreException
 	{
 		checkComponentType(provider);
-		return new SiteFeatureFinder(provider.getURI(nodeQuery.getProperties()), nodeQuery.getComponentRequest(), monitor);
+		return new SiteFeatureFinder(provider, nodeQuery, monitor);
 	}
 
 	/**
@@ -97,13 +98,12 @@ public class SiteFeatureReaderType extends AbstractReaderType
 		}		
 	}
 
-	@SuppressWarnings("deprecation")
 	private static boolean isEqual(ComponentIdentifier ci, VersionedIdentifier vi)
 	{
 		if(ci.getName().equals(vi.getIdentifier()))
 		{
 			IVersion version = ci.getVersion();
-			return (version == null || version.toString().equals(vi.getVersion().toString()));
+			return (version == null || version.equals(VersionFactory.OSGiType.coerce(vi.getVersion())));
 		}
 		return false;
 	}

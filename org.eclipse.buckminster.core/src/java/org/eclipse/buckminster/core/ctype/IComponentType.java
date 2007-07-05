@@ -11,17 +11,18 @@
 package org.eclipse.buckminster.core.ctype;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A IComponentType knows how to find dependency information in the components that it represents,
  * often in combination with a {@link IResolutionBuilder}. A good example is the
- * <code>eclipse-project</code> type that will choose a <code>CSPecBuilder</code> depending on
+ * <code>eclipse.project</code> type that will choose a <code>IResolutionBuilder</code> depending on
  * the natures it finds in the .project file.
  * @see org.eclipse.buckminster.core.CorePlugin#getComponentType(String)
  * @author Thomas Hallgren
@@ -36,20 +37,20 @@ public interface IComponentType extends IBuckminsterExtension
 
 	public static final String BUCKMINSTER = "buckminster";
 
-	public static final String CVS = "cvs";
-
-	public static final String JAR = "jar";
-
 	public static final String UNKNOWN = "unknown";
 
 	public static final String ECLIPSE_SITE_FEATURE = "site.feature";
 
 	/**
-	 * Returns true if components of this type has a ProjectDescription (i.e. a .project file).
-	 * @return true if components has a ProjectDescription.
-	 * @throws BuckminsterException
+	 * Extracts the component version from artifacts found inside of the component. Component
+	 * types where this is not applicable will return <code>null</code>.
+	 * @param providerMatch The information needed to find the source.
+	 * @param monitor monitor for cancellation and progress reporting
+	 * @return the component version or <code>null</code> if not applicable
+	 * @throws CoreException
 	 */
-	boolean hasProjectDescription() throws BuckminsterException;
+	IVersion getComponentVersion(ProviderMatch providerMatch, IProgressMonitor monitor)
+	throws CoreException;
 
 	/**
 	 * Creates a {@link DepNode} based on the dependency information in
@@ -58,6 +59,7 @@ public interface IComponentType extends IBuckminsterExtension
 	 * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}. When it
 	 * does that instance will be returned.
 	 * @param providerMatch The information needed to find the source.
+	 * @param monitor monitor for cancellation and progress reporting
 	 * @return The resolved node. This entry is never <code>null</code>.
 	 * @throws CoreException If the node could not be resolved.
 	 */
@@ -68,4 +70,11 @@ public interface IComponentType extends IBuckminsterExtension
 	 */
 	IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
 	throws CoreException;
+
+	/**
+	 * Returns true if components of this type has a ProjectDescription (i.e. a .project file).
+	 * @return true if components has a ProjectDescription.
+	 * @throws BuckminsterException
+	 */
+	boolean hasProjectDescription() throws BuckminsterException;
 }

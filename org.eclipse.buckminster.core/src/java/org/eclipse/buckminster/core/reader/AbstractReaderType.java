@@ -25,42 +25,41 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.core.version.IVersionQuery;
-import org.eclipse.buckminster.core.version.IVersionSelector;
+import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public abstract class AbstractReaderType extends AbstractExtension implements IReaderType
 {
-	protected class DefaultVersionFinder implements IVersionFinder
+	protected class DefaultVersionFinder extends AbstractVersionFinder
 	{
-		public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor)
+		private final VersionMatch m_versionMatch;
+
+		DefaultVersionFinder(Provider provider, NodeQuery query)
+		{
+			super(provider, query);
+			VersionMatch vm = new VersionMatch(null, null, provider.getSpace(), -1, null, null);
+			m_versionMatch = query.isMatch(vm) ? vm : null;
+		}
+
+		public VersionMatch getBestVersion(IProgressMonitor monitor)
 		throws CoreException
 		{
-			return query.matches(VersionSelectorFactory.MAIN_LATEST)
-				? AbstractReaderType.this.getDefaultVersion() : null;
-		}
-
-		public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
-		{
-			return AbstractReaderType.this.getDefaultVersion();
-		}
-
-		public void close()
-		{
-			// Nothing.
+			MonitorUtils.complete(monitor);
+			return m_versionMatch;
 		}
 	}
 
-	public URL convertToURL(String repositoryLocator, IVersionSelector versionSelector) throws CoreException
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
 	{
 		return null;
 	}
@@ -71,12 +70,12 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return fetchFactoryLocator + '/' + componentName;
 	}
 
-	public Date getLastModification(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
 	{
 		return null;
 	}
 
-	public long getLastRevision(String repositoryLocation, IVersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
+	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
 	{
 		return -1;
 	}
@@ -140,9 +139,9 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return this.getReader(new ProviderMatch(provider, versionMatch, ProviderScore.FAIR, query), monitor);
 	}
 
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		return new DefaultVersionFinder();
+		return new DefaultVersionFinder(provider, query);
 	}
 
 	public void postMaterialization(MaterializationContext contextIProgress, IProgressMonitor monitor) throws CoreException

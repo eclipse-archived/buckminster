@@ -12,14 +12,18 @@ package org.eclipse.buckminster.core.rmap.parser;
 
 import java.util.ArrayList;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -29,6 +33,7 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 {
 	static final String TAG = VersionConverterDesc.TAG;
 	private String m_type;
+	private IVersionType m_versionType;
 	private final BidirectionalTransformerHandler m_transformerHandler = new BidirectionalTransformerHandler(this);
 	private final ArrayList<BidirectionalTransformer> m_transformers = new ArrayList<BidirectionalTransformer>();
 
@@ -42,6 +47,23 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 	throws SAXException
 	{
 		m_type = this.getStringValue(attrs, VersionConverterDesc.ATTR_TYPE);
+		String tmp = getOptionalStringValue(attrs, VersionConverterDesc.ATTR_VERSION_TYPE);
+		if(tmp == null)
+			//
+			// Let the converter choose a default type
+			//
+			m_versionType = null;
+		else
+		{
+			try
+			{
+				m_versionType = CorePlugin.getDefault().getVersionType(tmp);
+			}
+			catch(CoreException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
 		m_transformers.clear();
 	}
 
@@ -59,7 +81,7 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 
 	public VersionConverterDesc getVersionConverter()
 	{
-		return new VersionConverterDesc(m_type, m_transformers.toArray(new BidirectionalTransformer[m_transformers.size()]));
+		return new VersionConverterDesc(m_type, m_versionType, m_transformers.toArray(new BidirectionalTransformer[m_transformers.size()]));
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

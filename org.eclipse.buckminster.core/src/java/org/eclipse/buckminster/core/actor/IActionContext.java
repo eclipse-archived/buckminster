@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IActionContext extends IModelCache
 {
@@ -99,4 +100,10 @@ public interface IActionContext extends IModelCache
 	 * @param path The file or directory to remove
 	 */
 	void scheduleRemoval(IPath path) throws CoreException;
+
+	/**
+	 * Returns a progress monitor that can be used for cancellation purposes.
+	 * @return A progress monitor
+	 */
+	IProgressMonitor getCancellationMonitor();
 }

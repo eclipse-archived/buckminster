@@ -10,7 +10,9 @@
 package org.eclipse.buckminster.core.rmap.model;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.IVersionConverter;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -23,14 +25,17 @@ public class VersionConverterDesc implements ISaxableElement
 {
 	public static final String TAG = "versionConverter";
 	public static final String ATTR_TYPE = "type";
+	public static final String ATTR_VERSION_TYPE = "versionType";
 
 	private final String m_type;
 	private final BidirectionalTransformer[] m_transformers;
+	private final IVersionType m_versionType;
 
-	public VersionConverterDesc(String type, BidirectionalTransformer[] transformers)
+	public VersionConverterDesc(String type, IVersionType versionType, BidirectionalTransformer[] transformers)
 	{
 		m_type = type;
 		m_transformers = transformers;
+		m_versionType = versionType;
 	}
 
 	public String getDefaultTag()
@@ -41,8 +46,9 @@ public class VersionConverterDesc implements ISaxableElement
 	public IVersionConverter getVersionConverter()
 	throws CoreException
 	{
-		IVersionConverter vct = CorePlugin.getDefault().getVersionConverter(m_type);
+		AbstractConverter vct = (AbstractConverter)CorePlugin.getDefault().getVersionConverter(m_type);
 		vct.setTransformers(m_transformers);
+		vct.setVersionType(m_versionType);
 		return vct;
 	}
 
@@ -51,6 +57,8 @@ public class VersionConverterDesc implements ISaxableElement
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_TYPE, m_type);
+		if(m_versionType != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
 		handler.startElement(namespace, localName, qName, attrs);
 		for(BidirectionalTransformer transformer : m_transformers)
 			transformer.toSax(handler, namespace, prefix, transformer.getDefaultTag());

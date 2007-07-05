@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,6 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
@@ -45,7 +45,9 @@ import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -362,6 +364,36 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	public ComponentRequest getRootRequest()
 	{
 		return m_rootRequest;
+	}
+
+	public VersionSelector[] getBranchTagPath(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? VersionSelector.EMPTY_PATH : node.getBranchTagPath();
+	}
+
+	public String[] getSpacePath(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? Trivial.EMPTY_STRING_ARRAY : node.getSpacePath();
+	}
+
+	public int[] getResolutionPrio(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? AdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
+	}
+
+	public long getRevision(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? -1 : node.getRevision();
+	}
+
+	public Date getTimestamp(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? null : node.getTimestamp();
 	}
 
 	public String getShortDesc()

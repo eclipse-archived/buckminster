@@ -8,12 +8,13 @@
 package org.eclipse.buckminster.core.actor;
 
 import java.util.Map;
+import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.Action;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -28,6 +29,8 @@ import org.eclipse.core.runtime.Path;
  */
 public abstract class AbstractActor implements IActor, IExecutableExtension
 {
+	private static InheritableThreadLocal<Stack<IActionContext>> s_actionContext = new InheritableThreadLocal<Stack<IActionContext>>();
+
 	private String m_name;
 
 	private String m_id;
@@ -39,6 +42,14 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 	public AbstractActor()
 	{
 		m_logger = CorePlugin.getLogger();
+	}
+
+	public static IActionContext getActiveContext()
+	{
+		Stack<IActionContext> ctxStack = s_actionContext.get();
+		if(ctxStack == null || ctxStack.isEmpty())
+			throw new IllegalStateException("No active IActionContext");
+		return ctxStack.peek();
 	}
 
 	public static boolean getBooleanProperty(Map<String,String> properties, String key, boolean dflt)
@@ -86,6 +97,13 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		// null is received, triggering a NPE
 		//
 		Map<String,String> props = ctx.getProperties();
+		Stack<IActionContext> ctxStack = s_actionContext.get();
+		if(ctxStack == null)
+		{
+			ctxStack = new Stack<IActionContext>();
+			s_actionContext.set(ctxStack);
+		}
+		ctxStack.push(ctx);
 		try
 		{
 			Action action = ctx.getAction();
@@ -100,7 +118,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 			}
 			m_logger.info(bld.toString());
 			ctx.scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP)));
-			IStatus status = this.internalPerform(ctx, monitor);
+			IStatus status = internalPerform(ctx, monitor);
 			bld.setLength(0);
 			bld.append("[end ");
 			action.toString(bld);
@@ -111,6 +129,12 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		catch(Throwable t)
 		{
 			throw BuckminsterException.wrap(t);
+		}
+		finally
+		{
+			ctxStack.pop();
+			if(ctxStack.isEmpty())
+				s_actionContext.set(null);
 		}
 	}
 

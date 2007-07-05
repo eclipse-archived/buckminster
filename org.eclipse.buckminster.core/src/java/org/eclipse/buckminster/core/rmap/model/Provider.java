@@ -32,7 +32,6 @@ import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -62,6 +61,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 
 	public static final String ATTR_SOURCE = "source";
 
+	public static final String ATTR_SPACE = "space";
+
 	public static final String ATTR_VERSION_CONVERTER = "versionConverter";
 
 	public static final String TAG = "provider";
@@ -80,6 +81,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 
 	private final String m_readerTypeId;
 
+	private final String m_space;
+
 	private final boolean m_source;
 
 	private final ValueHolder m_uri;
@@ -92,12 +95,13 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	 * @param managedCategories Categories managed by the provider.
 	 * @param versionConverterType The id of a version converter type.
 	 * @param uri The holder that will produce the type specific string.
+	 * @param space The space that provides the components
 	 * @param mutable Set to <code>true</code> if this provider should provide content that can be
 	 *            modified and commited back.
 	 * @param source Set to <code>true</code> if this provider will provide source.
 	 */
 	public Provider(String remoteReaderType, String componentType, String[] managedCategories,
-		VersionConverterDesc versionConverterDesc, Format uri, boolean mutable, boolean source,
+		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
 		Documentation documentation)
 	{
 		m_readerTypeId = remoteReaderType;
@@ -105,6 +109,7 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		m_managedCategories = managedCategories == null ? Trivial.EMPTY_STRING_ARRAY : managedCategories;
 		m_versionConverter = versionConverterDesc;
 		m_uri = uri;
+		m_space = space;
 		m_mutable = mutable;
 		m_source = source;
 		m_documentation = documentation;
@@ -118,108 +123,103 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
 	throws CoreException
 	{
-		Logger logger = CorePlugin.getLogger();
-		ComponentRequest request = query.getComponentRequest();
-		String componentName = request.getName();
-		String category = request.getCategory();
-		String providerURI = getURI(query.getProperties());
-		IVersionDesignator desiredVersion = query.getVersionDesignator();
-		String readerType = getReaderTypeId();
-
-		// The component request is equipped with a category. If the provider
-		// is limited to certain categories, one of them must match.
-		//
-		String[] managedCategories = getManagedCategories();
-		if(managedCategories.length > 0)
-		{
-			boolean managed = false;
-			if(category != null)
-			{
-				for(String c : managedCategories)
-				{
-					if(category.equals(c))
-					{
-						managed = true;
-						break;
-					}
-				}
-			}
-			if(!managed)
-			{
-				if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-				{
-					String msg = String.format("Provider %s(%s): Unable to manage %s", readerType, providerURI,
-						category == null ? "requests without category" : "category " + category);
-					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-					logger.debug(msg);
-				}
-				return null;
-			}
-		}
-
-		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
-		if(score == ProviderScore.REJECTED)
-		{
-			String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
-			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-			logger.debug(msg);
-			return null;
-		}
-
-		VersionMatch candidate;
-		CoreException problem;
 		IVersionFinder versionFinder = null;
 		monitor.beginTask(null, 100);
 		try
 		{
-			versionFinder = getReaderType().getVersionFinder(this, query, MonitorUtils.subMonitor(monitor, 20));
-			IVersionConverter versionConverter = getVersionConverter();
+			Logger logger = CorePlugin.getLogger();
+			ComponentRequest request = query.getComponentRequest();
+			String category = request.getCategory();
+			String providerURI = getURI(query.getProperties());
+			String readerType = getReaderTypeId();
+	
+			// The component request is equipped with a category. If the provider
+			// is limited to certain categories, one of them must match.
+			//
+			String[] managedCategories = getManagedCategories();
+			if(managedCategories.length > 0)
+			{
+				boolean managed = false;
+				if(category != null)
+				{
+					for(String c : managedCategories)
+					{
+						if(category.equals(c))
+						{
+							managed = true;
+							break;
+						}
+					}
+				}
+				if(!managed)
+				{
+					if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					{
+						String msg = String.format("Provider %s(%s): Unable to manage %s", readerType, providerURI,
+							category == null ? "requests without category" : "category " + category);
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+						logger.debug(msg);
+					}
+					return null;
+				}
+			}
+	
+			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
+			if(score == ProviderScore.REJECTED)
+			{
+				String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+				logger.debug(msg);
+				return null;
+			}
+	
+			VersionMatch candidate = null;
+			CoreException problem = null;
+			try
+			{
+				versionFinder = getReaderType().getVersionFinder(this, query, MonitorUtils.subMonitor(monitor, 20));
+				candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
+			}
+			catch(CoreException e)
+			{
+				problem = e;
+			}
+	
+			String componentName = request.getName();
+			IVersionDesignator desiredVersion = query.getVersionDesignator();
+			if(candidate == null)
+			{
+				String msg;
+				if(desiredVersion == null)
+					msg = String.format("Provider %s(%s): No match found for component %s", readerType,
+						providerURI, componentName);
+				else
+					msg = String.format(
+						"Provider %s(%s): No match found for component %s using version designator %s",
+						readerType, providerURI, componentName, desiredVersion);
+				logger.debug(msg);
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, problem));
+				return null;
+			}
 
-			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 80);
-			candidate = (desiredVersion == null || versionConverter == null)
-				? versionFinder.getDefaultVersion(subMon) : versionFinder.getBestVersion(
-					VersionSelectorFactory.createQuery(versionConverter, desiredVersion), subMon);
-			problem = null;
-		}
-		catch(CoreException e)
-		{
-			candidate = null;
-			problem = e;
+			if(logger.isDebugEnabled())
+			{
+				if(desiredVersion == null)
+					logger.debug(String.format("Provider %s(%s): Found a match for component %s, %s",
+						readerType, providerURI, componentName, candidate));
+				else
+					logger.debug(String.format(
+						"Provider %s(%s): Found a match for %s using version designator %s, %s",
+						readerType, providerURI, componentName, desiredVersion, candidate));
+			}
+			return new ProviderMatch(this, candidate, score, query);
 		}
 		finally
 		{
 			if(versionFinder != null)
 				versionFinder.close();
 			monitor.done();
-		}
-
-		if(candidate == null)
-		{
-			String msg;
-			if(desiredVersion == null)
-				msg = String.format("Provider %s(%s): No match found for component %s", readerType,
-					providerURI, componentName);
-			else
-				msg = String.format(
-					"Provider %s(%s): No match found for component %s using version designator %s",
-					readerType, providerURI, componentName, desiredVersion);
-			logger.debug(msg);
-			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, problem));
-			return null;
-		}
-
-		if(logger.isDebugEnabled())
-		{
-			if(desiredVersion == null)
-				logger.debug(String.format("Provider %s(%s): Found a match for component %s fixed on %s",
-					readerType, providerURI, componentName, candidate.getFixedVersionSelector()));
-			else
-				logger.debug(String.format(
-					"Provider %s(%s): Found a match for %s using version designator %s, found version is %s fixed on %s",
-					readerType, providerURI, componentName, desiredVersion, candidate.getVersion(),
-					candidate.getFixedVersionSelector()));
-		}
-		return new ProviderMatch(this, candidate, score, query);
+		}			
 	}
 
 	public final IComponentType getComponentType() throws CoreException
@@ -266,6 +266,11 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	public final String getReaderTypeId()
 	{
 		return m_readerTypeId;
+	}
+
+	public final String getSpace()
+	{
+		return m_space;
 	}
 
 	/**
@@ -365,6 +370,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 			}
 			Utils.addAttribute(attrs, ATTR_MANAGED_CATEGORIES, bld.toString());
 		}
+		if(m_space != null)
+			Utils.addAttribute(attrs, ATTR_SPACE, m_space);
 		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
 		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
 	}

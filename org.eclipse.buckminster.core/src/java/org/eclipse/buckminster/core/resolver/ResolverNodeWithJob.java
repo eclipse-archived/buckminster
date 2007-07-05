@@ -13,11 +13,11 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -83,11 +83,15 @@ class ResolverNodeWithJob extends ResolverNode
 	{
 		clearInvalidationFlag();
 		m_resolver.addJobMonitor(monitor);
+		DepNode node = null;
 		try
 		{
-			DepNode node = resolve(monitor);
+			node = resolve(monitor);
 			if(node != null)
+			{
+				m_resolver.resolutionPartDone();
 				buildTree(node);
+			}
 		}
 		catch(CoreException e)
 		{
@@ -105,6 +109,8 @@ class ResolverNodeWithJob extends ResolverNode
 		finally
 		{
 			m_resolver.removeJobMonitor(monitor);
+			if(node == null)
+				m_resolver.resolutionPartDone();
 		}
 		return Status.OK_STATUS;
 	}

@@ -11,6 +11,7 @@ package org.eclipse.buckminster.core.resolver;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -95,7 +96,7 @@ public class ResolutionContext extends RMContext
 	}
 
 	@Override
-	public synchronized Map<Object,Object> getUserCache()
+	public synchronized Map<UUID,Object> getUserCache()
 	{
 		return (m_parentContext != null)
 			? m_parentContext.getUserCache()

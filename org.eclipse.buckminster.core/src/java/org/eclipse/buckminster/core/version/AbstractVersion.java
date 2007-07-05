@@ -24,9 +24,19 @@ public abstract class AbstractVersion implements IVersion
 		m_type = type;
 	}
 
+	public String getQualifier()
+	{
+		return null;
+	}
+
 	public IVersionType getType()
 	{
 		return m_type;
+	}
+
+	public IVersion replaceQualifier(String string)
+	{
+		return this;
 	}
 
 	public long toLong()

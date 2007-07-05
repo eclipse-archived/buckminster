@@ -27,9 +27,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -51,12 +49,6 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	public static final String ATTR_ATTRIBUTES = "attributes";
 
 	public static final String ATTR_CSPEC_ID = "cspecId";
-
-	public static final String ATTR_VERSION = "version";
-
-	public static final String ATTR_VERSION_TYPE = "versionType";
-
-	public static final String ATTR_FIXED_VERSION_SELECTOR = "fixedVersionSelector";
 
 	public static final String ATTR_MATERIALIZABLE = "materializable";
 
@@ -157,7 +149,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_attributes = old.getAttributes();
 		m_provider = old.getProvider();
 		m_providerId = old.getProviderId();
-		m_versionMatch = new VersionMatch(version, old.getVersionMatch().getFixedVersionSelector());
+		VersionMatch ov = old.getVersionMatch();
+		m_versionMatch = new VersionMatch(version, ov.getBranchOrTag(), ov.getSpace(), ov.getRevision(), ov.getTimestamp(), ov.getArtifactType());
 		m_materializable = old.isMaterializable();
 		m_repository = old.getRepository();
 		m_remoteName = old.getRemoteName();
@@ -165,14 +158,13 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_size = old.getSize();
 	}
 
-	public Resolution(UUID cspecId, IVersion version, IVersionSelector fixedVersionSelector, UUID providerId,
+	public Resolution(UUID cspecId, VersionMatch versionMatch, UUID providerId,
 		boolean materializeable, ComponentRequest request, Set<String> attributes,
 		String repository, String remoteName, String contentType, long size)
 	{
 		m_cspecId = cspecId;
 		m_providerId = providerId;
-		m_versionMatch = new VersionMatch(version == null ? VersionFactory.defaultVersion() : version,
-			fixedVersionSelector);
+		m_versionMatch = versionMatch;
 		m_materializable = materializeable;
 		m_request = request;
 		m_attributes = UUIDKeyed.createUnmodifiableSet(attributes);
@@ -423,15 +415,6 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		String tmp = TextUtils.concat(m_attributes, ",");
 		if(tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
-
-		IVersion version = m_versionMatch.getVersion();
-		if(!version.isDefault())
-		{
-			Utils.addAttribute(attrs, ATTR_VERSION, version.toString());
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, version.getType().getId());
-		}
-		Utils.addAttribute(attrs, ATTR_FIXED_VERSION_SELECTOR,
-			m_versionMatch.getFixedVersionSelector().toString());
 		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable ? "true" : "false");
 		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_providerId.toString());
 		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
@@ -446,6 +429,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		handler.startElement(namespace, localName, qName, attrs);
 		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
+		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch.getDefaultTag());
 		handler.endElement(namespace, localName, qName);
 		handler.endPrefixMapping(XMLConstants.BM_METADATA_PREFIX);
 	}
@@ -456,14 +440,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		StringBuilder result = new StringBuilder();
 		result.append("Name: ");
 		result.append(m_request.getName());
-		IVersion version = m_versionMatch.getVersion();
-		if(!version.isDefault())
-		{
-			result.append(", Version: ");
-			result.append(version);
-		}
-		result.append(", Fixed at: ");
-		result.append(m_versionMatch.getFixedVersionSelector());
+		result.append(", ");
+		m_versionMatch.toString(result);
 		return result.toString();
 	}
 

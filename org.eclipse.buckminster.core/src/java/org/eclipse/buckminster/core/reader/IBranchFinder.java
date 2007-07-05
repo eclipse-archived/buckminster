@@ -10,7 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import org.eclipse.buckminster.core.version.IVersionQuery;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -21,6 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IBranchFinder
 {
-	String[] getBranches(IVersionQuery query, IProgressMonitor monitor)
+	String[] getBranches(NodeQuery query, IProgressMonitor monitor)
 	throws CoreException;
 }

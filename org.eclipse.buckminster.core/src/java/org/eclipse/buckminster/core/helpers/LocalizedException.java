@@ -15,6 +15,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 
 
 public abstract class LocalizedException extends BuckminsterException

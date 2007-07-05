@@ -8,8 +8,10 @@
 
 package org.eclipse.buckminster.core;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.IProperties;
@@ -32,11 +34,11 @@ import org.eclipse.core.runtime.Status;
  * 
  * @author Thomas Hallgren
  */
-public abstract class RMContext extends ExpandingProperties
+public class RMContext extends ExpandingProperties
 {
 	private boolean m_continueOnError;
 	private MultiStatus m_status;
-	private HashMap<Object,Object> m_userCache;
+	private Map<UUID,Object> m_userCache;
 
 	public RMContext(Map<String,String> properties)
 	{
@@ -93,9 +95,12 @@ public abstract class RMContext extends ExpandingProperties
 		return name;
 	}
 
-	public abstract ComponentQuery getComponentQuery() throws CoreException;
+	public ComponentQuery getComponentQuery()
+	{
+		return null;
+	}
 
-	public NodeQuery getNodeQuery(ComponentRequest request) throws CoreException
+	public NodeQuery getNodeQuery(ComponentRequest request)
 	{
 		return getNodeQuery(new QualifiedDependency(request, getComponentQuery().getAttributes(request)));
 	}
@@ -114,7 +119,7 @@ public abstract class RMContext extends ExpandingProperties
 		return p;
 	}
 
-	public NodeQuery getRootNodeQuery() throws CoreException
+	public NodeQuery getRootNodeQuery()
 	{
 		return getNodeQuery(getComponentQuery().getRootRequest());
 	}
@@ -132,10 +137,16 @@ public abstract class RMContext extends ExpandingProperties
 		return m_status == null ? Status.OK_STATUS : m_status;
 	}
 
-	public synchronized Map<Object,Object> getUserCache()
+	/**
+	 * Returns a map intended for caching purposes during resolution and
+	 * materialization. The map is synchronized. Users of the map must
+	 * create UUID's to use as keys in the map.
+	 * @return A map to be used for caching purposes
+	 */
+	public synchronized Map<UUID,Object> getUserCache()
 	{
 		if(m_userCache == null)
-			m_userCache = new HashMap<Object, Object>();
+			m_userCache = Collections.synchronizedMap(new HashMap<UUID, Object>());
 		return m_userCache;
 	}
 

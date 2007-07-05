@@ -379,11 +379,20 @@ public class WorkspaceInfo
 			{
 				// Compare versions
 				//
-				int cmp = Trivial.compareAllowNull(id.getVersion(), candidate.getComponentIdentifier().getVersion());
-				if(cmp == 0)
-					throw new AmbigousComponentException(id.toString());
-				if(cmp < 0)
+				try
+				{
+					int cmp = Trivial.compareAllowNull(id.getVersion(), candidate.getComponentIdentifier().getVersion());
+					if(cmp == 0)
+						throw new AmbigousComponentException(id.toString());
+					if(cmp < 0)
+						continue;
+				}
+				catch(IllegalArgumentException e)
+				{
+					// Versions were not of the same type
+					//
 					continue;
+				}
 			}
 			candidate = res;
 		}

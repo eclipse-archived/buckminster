@@ -14,10 +14,14 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.OSGiVersion;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.eclipse.update.core.VersionedIdentifier;
+import org.osgi.framework.Version;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("deprecation")
 public class OSGiVersionType extends TripletVersionType
 {
 	@SuppressWarnings("hiding")
@@ -29,6 +33,24 @@ public class OSGiVersionType extends TripletVersionType
 	//
 	private static final Pattern s_OSGiVersionPattern = Pattern.compile(
 			"^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.([^\\(\\)\\[\\],]+))?)?)?([\\)\\],]|$)");
+
+	@Override
+	public IVersion coerce(Object object)
+	{
+		if(object instanceof Version)
+		{
+			Version v = (Version)object;
+			return new OSGiVersion(this, v.getMajor(), v.getMinor(), v.getMicro(), v.getQualifier());
+		}
+		if(object instanceof PluginVersionIdentifier)
+		{
+			PluginVersionIdentifier pvi = (PluginVersionIdentifier)object;
+			return new OSGiVersion(this, pvi.getMajorComponent(), pvi.getMinorComponent(), pvi.getServiceComponent(), pvi.getQualifierComponent());
+		}
+		if(object instanceof VersionedIdentifier)
+			return coerce(((VersionedIdentifier)object).getVersion());
+		return super.coerce(object);
+	}
 
 	@Override
 	IVersion createVersion(int major, int minor, int micro, String qual)

@@ -21,7 +21,9 @@ import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.resolver.CategoryMismatchException;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,19 +38,30 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return false;
 	}
 
+	public final IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	{
+		DepNode node = getResolution(rInfo, true, monitor);
+		return node.getResolution().getComponentIdentifier().getVersion();
+	}
+
 	public final DepNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	{
+		return getResolution(rInfo, false, monitor);
+	}
+
+	protected DepNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
 		IComponentReader[] reader = new IComponentReader[1];
 		try
 		{
 			reader[0] = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
-			IResolutionBuilder builder = this.getResolutionBuilder(reader[0],MonitorUtils.subMonitor(monitor, 800));
+			IResolutionBuilder builder = getResolutionBuilder(reader[0],MonitorUtils.subMonitor(monitor, 800));
 			ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
 			String category = request.getCategory();
 			if(category != null && !category.equals(builder.getCategory()))
 				throw new CategoryMismatchException(request.getName(), category, builder.getCategory());
-			return builder.build(reader, MonitorUtils.subMonitor(monitor, 1000));
+			return builder.build(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));
 		}
 		finally
 		{
