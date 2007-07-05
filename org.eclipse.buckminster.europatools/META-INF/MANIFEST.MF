@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster - Europa assembly tools (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.europatools;singleton:=true
-Bundle-Version: 0.1.0.v20070413
+Bundle-Version: 0.2.0.qualifier
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.buckminster.runtime,

@@ -13,9 +13,9 @@ import java.net.MalformedURLException;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
 

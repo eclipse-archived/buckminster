@@ -22,7 +22,6 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
@@ -33,7 +32,9 @@ import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.IVersionConverter;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
@@ -58,7 +59,7 @@ public class RMapGenerator extends AbstractGenerator
 				IComponentType.BUCKMINSTER,
 				null, null,
 				new Format(GENERATED_FOLDER_URL_REF + "/${" + KeyConstants.COMPONENT_NAME + "}.cspec"),
-				true, true, null));
+				null, true, true, null));
 		return dflt;
 	}
 
@@ -68,9 +69,9 @@ public class RMapGenerator extends AbstractGenerator
 		searchPath.addProvider(new Provider(
 				IReaderType.ECLIPSE_SITE_FEATURE,
 				IComponentType.ECLIPSE_SITE_FEATURE,
-				null, new VersionConverterDesc(IVersionConverter.TAG, new BidirectionalTransformer[0]),
+				null, new VersionConverterDesc(IVersionConverter.TAG, VersionFactory.OSGiType, new BidirectionalTransformer[0]),
 				new Format(sc.getRmapProviderURL()),
-				true, true, null));
+				null, true, true, null));
 		return searchPath;
 	}
 
