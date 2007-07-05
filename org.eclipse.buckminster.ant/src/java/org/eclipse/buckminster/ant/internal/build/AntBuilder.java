@@ -17,7 +17,7 @@ import org.eclipse.buckminster.ant.AntBuilderConstants;
 import org.eclipse.buckminster.ant.AntRunner;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.build.AbstractBuckminsterBuilder;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

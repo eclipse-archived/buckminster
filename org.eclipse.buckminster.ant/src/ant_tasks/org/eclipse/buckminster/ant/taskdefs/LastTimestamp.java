@@ -14,11 +14,10 @@ import java.util.TimeZone;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
-import org.eclipse.buckminster.core.version.IVersionSelector;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -50,18 +49,9 @@ public class LastTimestamp extends Task
 		if(m_readerType == null)
 			throw new BuildException("\"readerType\" must be set", this.getLocation());
 
-		IVersionSelector versionSelector = null;
+		VersionSelector versionSelector = null;
 		if(m_versionSelector != null)
-		{
-			try
-			{
-				versionSelector = VersionSelectorFactory.fromString(m_versionSelector);
-			}
-			catch(CoreException e)
-			{
-				throw new BuildException(e.getMessage(), getLocation());
-			}
-		}
+			versionSelector = VersionSelector.fromString(m_versionSelector);
 		IVersionFinder versionFinder = null;
 		try
 		{
@@ -70,7 +60,7 @@ public class LastTimestamp extends Task
 
 			IProgressMonitor nm = new NullProgressMonitor();
 			IReaderType readerType = CorePlugin.getDefault().getReaderType(m_readerType);
-			this.getProject().setProperty(m_property, fmt.format(readerType.getLastModification(m_repositoryLocation, versionSelector, nm)));
+			getProject().setProperty(m_property, fmt.format(readerType.getLastModification(m_repositoryLocation, versionSelector, nm)));
 		}
 		catch(Exception e)
 		{

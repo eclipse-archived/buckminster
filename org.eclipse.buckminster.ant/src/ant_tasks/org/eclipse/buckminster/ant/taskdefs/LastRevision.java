@@ -15,11 +15,10 @@ import java.util.TimeZone;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
-import org.eclipse.buckminster.core.version.IVersionSelector;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -68,13 +67,12 @@ public class LastRevision extends Task
 				if(m_workingCopy != null)
 					throw new BuildException("\"repositoryLocation\" or \"workingCopy\" are mutually exclusive", this.getLocation());
 
-				IVersionSelector versionSelector = null;
+				VersionSelector versionSelector = null;
 				if(m_versionSelector != null)
-					versionSelector = VersionSelectorFactory.fromString(m_versionSelector);
-
+					versionSelector = VersionSelector.fromString(m_versionSelector);
 				revNo = readerType.getLastRevision(m_repositoryLocation, versionSelector, nm);
 			}
-			this.getProject().setProperty(m_property, Long.toString(revNo));
+			getProject().setProperty(m_property, Long.toString(revNo));
 		}
 		catch(Exception e)
 		{
