@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.cvs.headless.feature"
       label="Buckminster - CVS support for headless operation (Incubation)"
-      version="0.1.0.v20070615"
+      version="0.2.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.cvs">
 
