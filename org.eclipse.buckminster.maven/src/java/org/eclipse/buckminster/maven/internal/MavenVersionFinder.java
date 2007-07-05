@@ -14,17 +14,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionQuery;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,7 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @author Thomas Hallgren
  */
-public class MavenVersionFinder implements IVersionFinder
+public class MavenVersionFinder extends AbstractVersionFinder
 {
 	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" };
 	private static final String s_defaultExtension = ".jar";
@@ -54,54 +52,27 @@ public class MavenVersionFinder implements IVersionFinder
 
 	public MavenVersionFinder(MavenReaderType readerType, Provider provider, NodeQuery query) throws CoreException
 	{
+		super(provider, query);
 		m_readerType = readerType;
 		m_uri = readerType.getURI(provider, query.getProperties());
 		m_mapEntry = MavenReaderType.getGroupAndArtifact(provider, query.getComponentRequest());
 	}
 
-	/**
-	 * Maven always uses plugin style versioning.
-	 * 
-	 * @return the version selector that is highest in magnitude.
-	 */
-	public VersionMatch getDefaultVersion(IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 2000);
-		try
-		{
-			IVersionDesignator designator = VersionFactory.createExplicitDesignator(VersionFactory.defaultVersion());
-			IVersionQuery query = VersionSelectorFactory.createQuery(null, designator);
-			VersionMatch best = getBestVersion(query, MonitorUtils.subMonitor(monitor, 1000));
-			if(best != null)
-			{
-				MonitorUtils.worked(monitor, 1000);
-				return best;
-			}
-
-			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0");
-			query = VersionSelectorFactory.createQuery(null, designator);
-			return getBestVersion(query, MonitorUtils.subMonitor(monitor, 1000));
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
-	public VersionMatch getBestVersion(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
 		VersionMatch best = null;
-		for(VersionMatch candidate : getComponentVersions(query, monitor))
+		for(VersionMatch candidate : getComponentVersions(monitor))
 			best = getBestVersion(candidate, best);
 		return best;
 	}
 
+	@Override
 	public void close()
 	{
 		m_fileList = null;
 	}
 
-	IPath[] createFileList(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	IPath[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		m_readerType.appendFolder(pbld, m_uri.getPath());
@@ -111,7 +82,7 @@ public class MavenVersionFinder implements IVersionFinder
 		return URLCatalogReaderType.list(jarsURL, monitor);
 	}
 
-	static VersionMatch getBestVersion(VersionMatch a, VersionMatch b)
+	VersionMatch getBestVersion(VersionMatch a, VersionMatch b)
 	{
 		if(a == null)
 			return b;
@@ -121,14 +92,19 @@ public class MavenVersionFinder implements IVersionFinder
 
 		IVersion av = a.getVersion();
 		IVersion bv = b.getVersion();
+		if(av == null)
+			return b;
+		
+		if(bv == null)
+			return a;
+
 		IVersionType at = av.getType();
 		IVersionType bt = bv.getType();
 		if(at.isComparableTo(bt))
-			return (av.compareTo(bv) < 0) ? b : a;
+			return getQuery().compare(a, b) > 0 ? a : b;
 
 		// We only deal with triplets, timestamps, and snapshots here. The
 		// order of precedence is triplet, timestamp, snapshot
-		// 
 		//
 		if(at.equals(VersionFactory.TripletType))
 			return a;
@@ -151,21 +127,26 @@ public class MavenVersionFinder implements IVersionFinder
 	 * @return known versions or <code>null</code> if not applicable.
 	 * @throws CoreException
 	 */
-	List<VersionMatch> getComponentVersions(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	List<VersionMatch> getComponentVersions(IProgressMonitor monitor) throws CoreException
 	{
-		IVersionDesignator designator = query.getDesignator();
-		if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
+		NodeQuery query = getQuery();
+		IVersionDesignator designator = query.getVersionDesignator();
+		if(designator == null)
+			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0");
+		else
 		{
-			// Convert the OSGi version to a Triplet version instead.
-			//
-			designator = VersionFactory.createDesignator(VersionFactory.TripletType, designator.toString());
-			query = VersionSelectorFactory.createQuery(query.getConverter(), designator);
+			if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
+				//
+				// Convert the OSGi version to a Triplet version instead.
+				//
+				designator = VersionFactory.createDesignator(VersionFactory.TripletType, designator.toString());
 		}
 
+		String space = getProvider().getSpace();
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
 		String artifact = m_mapEntry.getArtifactId() + '-';
 		int artifactLen = artifact.length();
-		for(IPath path : getFileList(query, monitor))
+		for(IPath path : getFileList(designator, monitor))
 		{
 			if(path.segmentCount() != 1)
 				continue;
@@ -188,8 +169,8 @@ public class MavenVersionFinder implements IVersionFinder
 
 			fileName = fileName.substring(artifactLen, fileName.length() - extension.length());
 			String typeInfo = s_defaultExtension.equals(extension) ? null : extension.substring(1);
-			VersionMatch versionMatch = MavenComponentType.createVersionMatch(fileName, typeInfo);
-			if(versionMatch != null && query.matches(versionMatch.getVersion()))
+			VersionMatch versionMatch = MavenComponentType.createVersionMatch(fileName, space, typeInfo);
+			if(versionMatch != null && query.isMatch(versionMatch))
 				versions.add(versionMatch);
 		}
 		return versions;
@@ -210,10 +191,12 @@ public class MavenVersionFinder implements IVersionFinder
 		return m_uri;
 	}
 
-	private IPath[] getFileList(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	private IPath[] getFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		if(m_fileList == null)
-			m_fileList = createFileList(query, monitor);
+			m_fileList = createFileList(designator, monitor);
+		else
+			MonitorUtils.complete(monitor);
 		return m_fileList;
 	}
 }

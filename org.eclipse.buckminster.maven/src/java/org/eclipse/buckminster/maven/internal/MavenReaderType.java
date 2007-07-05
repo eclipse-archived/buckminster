@@ -17,7 +17,6 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -25,9 +24,12 @@ import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionSelector;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,7 +41,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class MavenReaderType extends URLCatalogReaderType
 {
-	static StringBuilder appendFileName(StringBuilder bld, String artifactID, IVersionSelector vs, String extension) throws CoreException
+	static StringBuilder appendFileName(StringBuilder bld, String artifactID, VersionMatch vs, String extension) throws CoreException
 	{
 		bld.append(artifactID);
 		bld.append('-');
@@ -48,27 +50,25 @@ public class MavenReaderType extends URLCatalogReaderType
 		return bld;
 	}
 
-	static void appendMavenVersionName(StringBuilder bld, IVersionSelector vs) throws CoreException
+	static void appendMavenVersionName(StringBuilder bld, VersionMatch vm) throws CoreException
 	{
-		if(!vs.isDefaultBranch())
+		VersionSelector vs = vm.getBranchOrTag();
+		if(vs != null && vs.getType() == VersionSelector.BRANCH)
 		{
-			bld.append(vs.getBranchName());
+			bld.append(vs.getName());
 			bld.append('-');
 		}
 
-		switch(vs.getType())
+		IVersion version = vm.getVersion();
+		if(version != null)
+			bld.append(version);
+
+		Date timestamp = vm.getTimestamp();
+		if(timestamp != null)
 		{
-		case TAG:
-			bld.append(vs.getQualifier());
-			break;
-		case LATEST:
-			bld.append("SNAPSHOT");
-			break;
-		case TIMESTAMP:
-			bld.append(VersionFactory.TimestampType.coerce(new Date(vs.getNumericQualifier())));
-			break;
-		default:
-			throw new BuckminsterException("A Maven reader cannot handle plain version selector " + vs);
+			if(version != null)
+				bld.append('-');
+			bld.append(VersionFactory.TimestampType.coerce(timestamp));
 		}
 	}
 
@@ -100,7 +100,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	throws CoreException
 	{
 		MapEntry ga = getGroupAndArtifact(cr.getProvider(), cr.getRequest());
-		IVersionSelector vs = cr.getVersionMatch().getFixedVersionSelector();
+		VersionMatch vs = cr.getVersionMatch();
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, getMaterializationFolder());
 		appendPathToArtifact(pbld, ga, vs);
@@ -122,7 +122,7 @@ public class MavenReaderType extends URLCatalogReaderType
 		return new MavenVersionFinder(this, provider, nodeQuery);
 	}
 
-	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendFolder(pbld, mapEntry.getGroupId());
 		appendFolder(pbld, "jars");
@@ -135,24 +135,24 @@ public class MavenReaderType extends URLCatalogReaderType
 			pbld.append('/');
 	}
 
-	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendArtifactFolder(pbld, mapEntry, vs);
 		String extension;
-		if(vs == null || vs.getTypeInfo() == null)
+		if(vs == null || vs.getArtifactType() == null)
 			extension = ".jar";
 		else
-			extension = '.' + vs.getTypeInfo();
+			extension = '.' + vs.getArtifactType();
 		appendFileName(pbld, mapEntry.getArtifactId(), vs, extension);
 	}
 
-	void appendPathToPom(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendPathToPom(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendPomFolder(pbld, mapEntry, vs);
 		appendFileName(pbld, mapEntry.getArtifactId(), vs, ".pom");
 	}
 
-	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendFolder(pbld, mapEntry.getGroupId());
 		appendFolder(pbld, "poms");
@@ -174,14 +174,14 @@ public class MavenReaderType extends URLCatalogReaderType
 		}
 	}
 
-	IPath getArtifactPath(MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	IPath getArtifactPath(MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		appendPathToArtifact(pbld, mapEntry, vs);
 		return new Path(pbld.toString());
 	}
 
-	URL getArtifactURL(URI repoURI, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	URL getArtifactURL(URI repoURI, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, repoURI.getPath());
@@ -204,14 +204,14 @@ public class MavenReaderType extends URLCatalogReaderType
 		return "maven";
 	}
 
-	IPath getPomPath(MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	IPath getPomPath(MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		appendPathToPom(pbld, mapEntry, vs);
 		return new Path(pbld.toString());
 	}
 
-	URL getPomURL(URI repoURI, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	URL getPomURL(URI repoURI, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, repoURI.getPath());

@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,13 +29,12 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.TripletVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelectorFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.maven.MavenPlugin;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -63,6 +65,9 @@ public class MavenComponentType extends AbstractComponentType
 	private static final String s_timestampExpr = "((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?";
 
 	private static final Pattern s_timestampPattern = Pattern.compile('^' + MavenComponentType.s_timestampExpr + '$');
+
+	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss");
+	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	static void addDependencies(IComponentReader reader, Document pomDoc, IPath pomPath, CSpecBuilder cspec,
 			GroupBuilder archives, ExpandingProperties properties) throws CoreException
@@ -132,16 +137,18 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	static IVersion createTimestamp(String date, String time) throws CoreException
+	static Date createTimestamp(String date, String time) throws CoreException
 	{
-		StringBuilder timeBld = new StringBuilder();
-		timeBld.append(date);
-		if(time != null)
+		try
 		{
-			timeBld.append('.');
-			timeBld.append(time);
+			return (time != null)
+				? s_timestampFormat.parse(date + '.' + time)
+				: s_dateFormat.parse(date);
 		}
-		return VersionFactory.TimestampType.fromString(timeBld.toString());
+		catch(ParseException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	static IVersion createVersion(String versionStr) throws CoreException
@@ -150,7 +157,7 @@ public class MavenComponentType extends AbstractComponentType
 			return null;
 
 		if(MavenComponentType.s_snapshotExpr.equals(versionStr))
-			return VersionFactory.defaultVersion();
+			return null;
 
 		// Try Triplet. If it fails, default to String.
 		// TODO: Awaits more elaborated solution involving a table of
@@ -158,7 +165,7 @@ public class MavenComponentType extends AbstractComponentType
 		//
 		Matcher m = s_timestampPattern.matcher(versionStr);
 		if(m.matches())
-			return createTimestamp(m.group(1), m.group(2));
+			return VersionFactory.TimestampType.coerce(createTimestamp(m.group(1), m.group(2)));
 
 		try
 		{
@@ -203,7 +210,7 @@ public class MavenComponentType extends AbstractComponentType
 		return VersionFactory.createGTEqualDesignator(version);
 	}
 
-	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
+	static VersionMatch createVersionMatch(String versionStr, String space, String typeInfo) throws CoreException
 	{
 		if(versionStr == null || versionStr.length() == 0)
 			//
@@ -213,33 +220,23 @@ public class MavenComponentType extends AbstractComponentType
 
 		Matcher m = MavenComponentType.s_timestampDesignatorPattern.matcher(versionStr);
 		if(m.matches())
-		{
-			IVersion branch = createVersion(m.group(1));
-			IVersion ts = createTimestamp(m.group(2), m.group(3));
-			return new VersionMatch(branch, VersionSelectorFactory.timestamp(null, ts.toLong(), typeInfo));
-		}
+			return new VersionMatch(createVersion(m.group(1)), null, space, -1, createTimestamp(m.group(2), m.group(3)), typeInfo);
 
 		m = MavenComponentType.s_snapshotDesignatorPattern.matcher(versionStr);
 		if(m.matches())
 		{
 			versionStr = m.group(1);
-			return new VersionMatch(createVersion(versionStr), VersionSelectorFactory.latest(versionStr, typeInfo));
+			return new VersionMatch(createVersion(versionStr), null, space, -1, null, typeInfo);
 		}
 
 		IVersion version = createVersion(versionStr);
-		if(version.isDefault())
-			//
-			// Unversioned SNAPSHOT
-			//
-			return new VersionMatch(version, VersionSelectorFactory.latest(null, typeInfo));
-
 		if(version.getType().equals(VersionFactory.TimestampType))
 			//
 			// Unversioned timestamp
 			//
-			return new VersionMatch(version, VersionSelectorFactory.timestamp(null, version.toLong(), typeInfo));
+			return new VersionMatch(null, null, space, -1, new Date(version.toLong()), typeInfo);
 
-		return new VersionMatch(version, VersionSelectorFactory.tag(null, versionStr, typeInfo));
+		return new VersionMatch(version, null, space, -1, null, typeInfo);
 	}
 
 	private static void addDependency(ComponentQuery query, Provider provider, CSpecBuilder cspec,
@@ -347,16 +344,17 @@ public class MavenComponentType extends AbstractComponentType
 				: MavenProvider.getDefaultName(groupId, artifactId);
 
 		MapEntry entry = new MapEntry(componentName, groupId, artifactId, null);
-		IVersionSelector vs = (versionStr == null)
-				? reader.getVersionSelector()
-				: VersionSelectorFactory.tag(versionStr);
+		VersionMatch vm = (versionStr == null)
+				? reader.getVersionMatch()
+				: createVersionMatch(versionStr, provider.getSpace(), null);
+
 		IPath parentPath;
 		MavenReaderType mrt = (MavenReaderType)reader.getReaderType();
-		parentPath = mrt.getPomPath(entry, vs);
+		parentPath = mrt.getPomPath(entry, vm);
 
 		MavenPlugin.getLogger().debug(
 				"Getting POM information for parent: " + groupId + " - " + artifactId + " at path " + parentPath);
-		Document parentDoc = reader.getPOMDocument(entry, vs, parentPath, new NullProgressMonitor());
+		Document parentDoc = reader.getPOMDocument(entry, vm, parentPath, new NullProgressMonitor());
 		if(parentDoc == null)
 			return;
 

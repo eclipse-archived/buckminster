@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionQuery;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -39,7 +38,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	}
 
 	@Override
-	IPath[] createFileList(IVersionQuery query, IProgressMonitor monitor) throws CoreException
+	IPath[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		Maven2ReaderType readerType = (Maven2ReaderType)getReaderType();
 		URI uri = getURI();
@@ -49,13 +48,15 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		ArrayList<IPath> fileList = new ArrayList<IPath>();
 		String rootPath = pbld.toString();
 		int rootLen = rootPath.length();
+		String space = getProvider().getSpace();
 
 		monitor.beginTask(null, 2000);
 		try
 		{
 			// Add entries from all matching folders
 			//
-			boolean defaultIsMatched = query.matches(VersionFactory.defaultVersion());
+			NodeQuery query = getQuery();
+			boolean defaultIsMatched = query.isMatch(null, null, getProvider().getSpace());
 			for(IPath versionPath : URLCatalogReaderType.list(readerType.createURL(uri, rootPath), MonitorUtils.subMonitor(monitor, 1000)))
 			{
 				if(versionPath.segmentCount() != 1)
@@ -68,8 +69,8 @@ public class Maven2VersionFinder extends MavenVersionFinder
 					// No use scanning this folder if the version is incompatible with
 					// the query
 					//
-					VersionMatch versionMatch = MavenComponentType.createVersionMatch(folderName, null);
-					if(versionMatch == null || !query.matches(versionMatch.getVersion()))
+					VersionMatch versionMatch = MavenComponentType.createVersionMatch(folderName, space, null);
+					if(versionMatch == null || !query.isMatch(versionMatch))
 						continue;
 				}
 

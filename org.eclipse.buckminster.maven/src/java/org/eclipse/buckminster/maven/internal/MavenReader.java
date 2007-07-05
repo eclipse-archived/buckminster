@@ -18,10 +18,10 @@ import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.reader.URLFileReader;
-import org.eclipse.buckminster.core.version.IVersionSelector;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -49,34 +49,34 @@ public class MavenReader extends URLFileReader
 		m_mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(), rInfo.getNodeQuery().getComponentRequest());
 	}
 
-	IVersionSelector getVersionSelector() throws CoreException
+	VersionMatch getVersionMatch() throws CoreException
 	{
-		return getProviderMatch().getVersionMatch().getFixedVersionSelector();
+		return getProviderMatch().getVersionMatch();
 	}
 
 	@Override
 	public URL getURL() throws CoreException
 	{
-		return ((MavenReaderType)getReaderType()).getArtifactURL(getURI(), m_mapEntry, getVersionSelector());
+		return ((MavenReaderType)getReaderType()).getArtifactURL(getURI(), m_mapEntry, getVersionMatch());
 	}
 
 	@Override
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
 	{
-		IPath artifactPath = ((MavenReaderType)getReaderType()).getArtifactPath(m_mapEntry, getVersionSelector());
+		IPath artifactPath = ((MavenReaderType)getReaderType()).getArtifactPath(m_mapEntry, getVersionMatch());
 		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor);
 	}
 
 	Document getPOMDocument(IPath[] pomPathRet, IProgressMonitor monitor) throws CoreException
 	{
 		MavenReaderType rt = (MavenReaderType)getReaderType();
-		IVersionSelector vs = getVersionSelector();
+		VersionMatch vs = getVersionMatch();
 		IPath pomPath = rt.getPomPath(m_mapEntry, vs);
 		pomPathRet[0] = pomPath;
 		return getPOMDocument(m_mapEntry, vs, pomPath, monitor);
 	}
 
-	Document getPOMDocument(MapEntry entry, IVersionSelector vs, IPath pomPath, IProgressMonitor monitor) throws CoreException
+	Document getPOMDocument(MapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor) throws CoreException
 	{
 		MavenReaderType rt = (MavenReaderType)getReaderType();
 		URI repoURI = getURI();

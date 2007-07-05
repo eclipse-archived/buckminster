@@ -75,6 +75,7 @@ public class MavenProviderHandler extends ProviderHandler
 				getManagedCategories(),
 				getVersionConverter(),
 				getUriFormat(),
+				getSpace(),
 				isMutable(),
 				isSource(),
 				getDocumentation(),

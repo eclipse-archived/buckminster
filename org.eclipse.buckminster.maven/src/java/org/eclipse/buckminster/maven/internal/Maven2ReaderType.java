@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersionSelector;
+import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -33,13 +33,13 @@ public class Maven2ReaderType extends MavenReaderType
 	}
 
 	@Override
-	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendVersionedEntryFolder(pbld, mapEntry, vs);
 	}
 
 	@Override
-	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendVersionedEntryFolder(pbld, mapEntry, vs);
 	}
@@ -52,7 +52,7 @@ public class Maven2ReaderType extends MavenReaderType
 		appendFolder(pbld, mapEntry.getArtifactId());
 	}
 
-	void appendVersionedEntryFolder(StringBuilder pbld, MapEntry mapEntry, IVersionSelector vs) throws CoreException
+	void appendVersionedEntryFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendEntryFolder(pbld, mapEntry);
 		appendMavenVersionName(pbld, vs);

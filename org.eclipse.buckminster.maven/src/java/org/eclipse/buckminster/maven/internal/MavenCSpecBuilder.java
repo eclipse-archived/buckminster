@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.AbstractComponentType;
-import org.eclipse.buckminster.core.helpers.BuckminsterException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -30,6 +29,7 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  */
 class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<Document>
 {
-	public DepNode build(IComponentReader[] readerHandle, IProgressMonitor monitor)
+	public DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
