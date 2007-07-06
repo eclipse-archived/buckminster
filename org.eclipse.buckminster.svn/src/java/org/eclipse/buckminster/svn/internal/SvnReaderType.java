@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005
+ * Copyright (c) 2004 - 2007
  * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
  * Pontus Rydin, Nils Unden, Peer Torngren
  * The code, documentation and other materials contained herein have been
@@ -30,7 +30,7 @@ import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class SvnReaderType extends AbstractReaderType
 {
@@ -42,6 +42,7 @@ public class SvnReaderType extends AbstractReaderType
 	@Override
 	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
 	{
+		monitor.beginTask(null, 1);
 		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
 		try
 		{
@@ -50,6 +51,31 @@ public class SvnReaderType extends AbstractReaderType
 		finally
 		{
 			session.close();
+			MonitorUtils.worked(monitor, 1);
+			monitor.done();
+		}
+	}
+
+	@Override
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 1);
+		try
+		{
+			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
+					.getInfoFromWorkingCopy(workingCopy);
+			if(info != null)
+				return info.getLastChangedDate();
+			return null;
+		}
+		catch(SVNClientException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			MonitorUtils.worked(monitor, 1);
+			monitor.done();
 		}
 	}
 
@@ -57,6 +83,7 @@ public class SvnReaderType extends AbstractReaderType
 	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
 			throws CoreException
 	{
+		monitor.beginTask(null, 1);
 		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
 		try
 		{
@@ -65,12 +92,15 @@ public class SvnReaderType extends AbstractReaderType
 		finally
 		{
 			session.close();
+			MonitorUtils.worked(monitor, 1);
+			monitor.done();
 		}
 	}
 
 	@Override
 	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
+		monitor.beginTask(null, 1);
 		try
 		{
 			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
@@ -86,6 +116,11 @@ public class SvnReaderType extends AbstractReaderType
 		catch(SVNClientException e)
 		{
 			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			MonitorUtils.worked(monitor, 1);
+			monitor.done();
 		}
 	}
 
