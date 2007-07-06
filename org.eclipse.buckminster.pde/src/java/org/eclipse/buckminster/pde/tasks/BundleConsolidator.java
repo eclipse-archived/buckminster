@@ -16,18 +16,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.version.IQualifierGenerator;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -83,25 +78,11 @@ public class BundleConsolidator extends VersionConsolidator
 				String newQualifier = getQualifierReplacement(version, id);
 				String newVersion = version;
 				if(newQualifier.startsWith(GENERATOR_PREFIX))
-				{
-					String generatorId = newQualifier.substring(GENERATOR_PREFIX.length());
-					try
-					{
-						ComponentIdentifier cid = new ComponentIdentifier(symbolicName, KeyConstants.PLUGIN_CATEGORY, VersionFactory.OSGiType.fromString(version));
-						IQualifierGenerator generator = CorePlugin.getDefault().getQualifierGenerator(generatorId);
-						IVersion qualifiedVersion = generator.generateQualifier(AbstractActor.getActiveContext(), cid, new ComponentIdentifier[0]);
-						if(qualifiedVersion != null)
-							newVersion = qualifiedVersion.toString();
-					}
-					catch(CoreException e)
-					{
-						CorePlugin.getLogger().warning("Unable to qualify version", e);
-					}
-				}
+					newVersion = generateQualifier(id, version, newQualifier, KeyConstants.PLUGIN_CATEGORY, Collections.<ComponentIdentifier>emptyList());
 				else
 					newVersion = version.replaceFirst(PROPERTY_QUALIFIER, newQualifier);
 
-				if(!version.equals(newVersion))
+				if(!(newVersion == null || version.equals(newVersion)))
 				{
 					a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion);
 					changed = true;

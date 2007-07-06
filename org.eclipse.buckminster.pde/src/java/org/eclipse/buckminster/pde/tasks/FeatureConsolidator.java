@@ -14,12 +14,15 @@ import java.io.FileNotFoundException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
@@ -353,21 +356,43 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		String id = feature.getId();
 		String version = feature.getVersion();
 
-		String newVersion = replaceQualifierInVersion(version, id);
-		if(!version.equals(newVersion))
-			feature.setVersion(newVersion);
+		ArrayList<ComponentIdentifier> deps = new ArrayList<ComponentIdentifier>();
+		for(IFeatureChild ref : feature.getIncludedFeatures())
+		{
+			ComponentIdentifier cid = replaceFeatureReferenceVersion(id, ref);
+			if(cid != null)
+				deps.add(cid);
+		}
+
+		for(IFeaturePlugin ref : feature.getPlugins())
+		{
+			ComponentIdentifier cid = replacePluginReferenceVersion(id, ref);
+			if(cid != null)
+				deps.add(cid);
+		}
+
+		String newVersion = version;
+		if(version.endsWith(PROPERTY_QUALIFIER))
+		{
+			String newQualifier = getQualifierReplacement(version, id);
+			if(newQualifier.startsWith(GENERATOR_PREFIX))
+			{
+				newVersion = generateQualifier(id, version, newQualifier, KeyConstants.FEATURE_CATEGORY, deps);
+				if(newVersion != null)
+					feature.setVersion(newVersion);
+				m_featureModel.save(getOutputFile());
+				return;
+			}
+			newVersion = version.replaceFirst(PROPERTY_QUALIFIER, newQualifier);
+			if(!version.equals(newVersion))
+				feature.setVersion(newVersion);
+		}
 
 		if(version.endsWith(PROPERTY_QUALIFIER) && (getQualifier() == null || getQualifier().equalsIgnoreCase(PROPERTY_CONTEXT)))
 		{
 			int lastDot = version.lastIndexOf(".");
 			m_featureModel.setContextQualifierLength(newVersion.length() - lastDot - 1);
 		}
-
-		for(IFeatureChild ref : feature.getIncludedFeatures())
-			replaceFeatureReferenceVersion(id, ref);
-
-		for(IFeaturePlugin ref : feature.getPlugins())
-			replacePluginReferenceVersion(id, ref);
 
 		String suffix = generateFeatureVersionSuffix();
 		if(suffix != null)
@@ -565,7 +590,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		return result;
 	}
 
-	private void replaceFeatureReferenceVersion(String id, IFeatureChild ref) throws CoreException
+	private ComponentIdentifier replaceFeatureReferenceVersion(String id, IFeatureChild ref) throws CoreException
 	{
 		IVersion version = findBestVersion(m_featureVersions, id, "feature", ref.getId(), ref.getVersion());
 		if(version != null)
@@ -573,10 +598,12 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			String newVer = version.toString();
 			if(!newVer.equals(ref.getVersion()))
 				ref.setVersion(newVer);
+			return new ComponentIdentifier(ref.getId(), KeyConstants.FEATURE_CATEGORY, version);
 		}
+		return null;
 	}
 
-	private void replacePluginReferenceVersion(String id, IFeaturePlugin ref) throws CoreException
+	private ComponentIdentifier replacePluginReferenceVersion(String id, IFeaturePlugin ref) throws CoreException
 	{
 		IVersion version = findBestVersion(m_pluginVersions, id, "plugin", ref.getId(), ref.getVersion());
 		if(version != null)
@@ -584,6 +611,8 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			String newVer = version.toString();
 			if(!newVer.equals(ref.getVersion()))
 				ref.setVersion(newVer);
+			return new ComponentIdentifier(ref.getId(), KeyConstants.PLUGIN_CATEGORY, version);
 		}
+		return null;
 	}
 }
