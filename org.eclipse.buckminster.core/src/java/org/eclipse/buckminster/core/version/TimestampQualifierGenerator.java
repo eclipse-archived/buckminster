@@ -8,13 +8,16 @@
 
 package org.eclipse.buckminster.core.version;
 
-import java.text.MessageFormat;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -22,15 +25,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * This class will generate qualifiers based on component revisions. The revision is obtained using the same {@ IReaderType}
- * that was used when the component was first materialized
- *
+ * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the same
+ * {@ IReaderType} that was used when the component was first materialized
+ * 
  * @author Thomas Hallgren
  */
-public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator
+public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
-	public static String FORMAT_PROPERTY = "generator.lastRevision.format";
-	public static String DEFAULT_FORMAT = "r{0,number,##################}";
+	public static String FORMAT_PROPERTY = "generator.lastModified.format";
+	public static String DEFAULT_FORMAT = "yyyyMMddHHmm";
 
 	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
 			List<ComponentIdentifier> dependencies) throws CoreException
@@ -43,16 +46,18 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 		{
 			IPath location = WorkspaceInfo.getComponentLocation(cid);
 			IReaderType readerType = WorkspaceInfo.getResolution(cid).getProvider().getReaderType();
-			long revision = readerType.getLastRevision(location.toFile(), context.getCancellationMonitor());
-			if(revision == -1)
+			Date lastMod = readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
+			if(lastMod == null)
 				return null;
 
 			Map<String,String> props = context.getProperties();
 			String format = props.get(FORMAT_PROPERTY);
 			if(format == null)
 				format = DEFAULT_FORMAT;
+	
+			DateFormat mf = new SimpleDateFormat(format);
+			mf.setTimeZone(DateAndTimeUtils.UTC);
 
-			MessageFormat mf = new MessageFormat(format);
 			for(ComponentIdentifier dependency : dependencies)
 			{
 				IVersion depVer = dependency.getVersion();
@@ -65,15 +70,15 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 
 				try
 				{
-					long depRev = ((Number)(mf.parse(qualifier)[0])).longValue();
-					if(depRev > revision)
-						revision = depRev;
+					Date depLastMod = mf.parse(qualifier);
+					if(depLastMod.compareTo(lastMod) > 0)
+						lastMod = depLastMod;
 				}
 				catch(Exception e)
 				{
 				}
 			}
-			return currentVersion.replaceQualifier(mf.format(new Object[] { new Long(revision) }));
+			return currentVersion.replaceQualifier(mf.format(lastMod));
 		}
 		catch(MissingComponentException e)
 		{

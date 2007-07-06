@@ -189,6 +189,16 @@ public interface IReaderType extends IBuckminsterExtension
 	Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Returns the last modification date for the working copy or -1 if that cannot
+	 * be determined.
+	 * @param workingCopy
+	 * @param monitor The monitor used for progress reporting
+	 * @return The last revision
+	 * @throws CoreException
+	 */
+	Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * Returns the last revision for the repository location or -1 if that cannot
 	 * be determined.
 	 * @param repositoryLocation

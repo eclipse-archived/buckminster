@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.eclipse.buckminster.core.version;
 
+import java.util.List;
+
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.core.runtime.CoreException;
@@ -16,5 +18,5 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IQualifierGenerator
 {
-	IVersion generateQualifier(IActionContext context, ComponentIdentifier cid, ComponentIdentifier[] dependencies) throws CoreException;
+	IVersion generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException;
 }

@@ -327,5 +327,9 @@
           class="org.eclipse.buckminster.core.version.RevisionQualifierGenerator"
           id="lastRevision">
     </qualifierGenerator>
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.TimestampQualifierGenerator"
+          id="lastModified">
+    </qualifierGenerator>
  </extension>
 </plugin>

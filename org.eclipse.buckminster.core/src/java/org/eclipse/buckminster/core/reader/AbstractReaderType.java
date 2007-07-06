@@ -75,6 +75,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		return null;
+	}
+
 	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
 	{
 		return -1;

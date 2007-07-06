@@ -21,12 +21,15 @@ import java.util.TimeZone;
  */
 public abstract class DateAndTimeUtils
 {
-	private static final DateFormat ISO_8601Format;
+	public static final String ISO_8601Pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	public static final DateFormat ISO_8601Format;
+	public static final TimeZone UTC;
 
 	static
 	{
-		ISO_8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-		ISO_8601Format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone("UTC")));
+		ISO_8601Format = new SimpleDateFormat(ISO_8601Pattern);
+		UTC = TimeZone.getTimeZone("UTC");
+		ISO_8601Format.setCalendar(Calendar.getInstance(UTC));
 	}
 
 	/**
