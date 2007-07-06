@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -32,6 +31,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -56,9 +56,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	
 	private Text m_prereqNameText;
 	private Button m_prereqPublicCheck;
-	private List<Property> m_prereqInstallerHints = new ArrayList<Property>();
-	private SimpleTableEditor<Property> m_prereqInstallerHintsEditor;
-	private Text m_prereqDocumentationText;
 	private Text m_prereqRebasePathText;
 	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
@@ -78,15 +75,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Actor Properties", createActorPropertiesStackLayer(stackComposite));
-		addStackMapping("Product Paths", createProductPathsStackLayer(stackComposite));
 		addStackMapping("Properties", createPropertiesStackLayer(stackComposite));
-		addStackMapping("Hints", createInstallerHintsStackLayer(stackComposite));
+		addStackMapping("Prerequisites", createPrereqStackLayer(stackComposite));
+		addStackMapping("Products", createProductsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
-		addStackMapping("Prerequisites - Main", createPrereqGeneralStackLayer(stackComposite));
-		addStackMapping("Prerequisites - List", createPrereqListStackLayer(stackComposite));
-		addStackMapping("Prerequisites - Hints", createPrereqInstallerHintsStackLayer(stackComposite));
-		addStackMapping("Prerequisites - Doc", createPrereqDocumentationStackLayer(stackComposite));
 	}
 
 	private Control createGeneralStackLayer(Composite stackComposite)
@@ -116,49 +108,39 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createGridLabel(geComposite, "Enabled:", 1, 0, SWT.NONE);
 		m_enabledCheck = UiUtils.createCheckButton(geComposite, null, null);
 
-		UiUtils.createGridLabel(geComposite, "Product Alias:", 1, 0, SWT.NONE);
-		m_prodAliasText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
-
-		UiUtils.createGridLabel(geComposite, "Product Base Path:", 1, 0, SWT.NONE);
-		m_prodBaseText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		UiUtils.createEmptyLabel(geComposite);
+		UiUtils.createEmptyLabel(geComposite);
+		
+		Label label = UiUtils.createGridLabel(geComposite, "Installer Hints:", 1, 0, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		Control ihEditor = createInstallerHintsEditor(geComposite);
+		ihEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		geComposite.setData("focusControl", getNameText());
-		
+
 		return geComposite;
 	}
 
-	private Control createActorPropertiesStackLayer(Composite stackComposite)
+	private Control createProductsStackLayer(Composite stackComposite)
 	{
 		Composite composite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
+		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
 		composite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(composite, "Actor Properties", 1);
+		EditorUtils.createHeaderLabel(composite, "Products", 2);
 
-		PropertiesTable table = new PropertiesTable(m_actorProperties);
+		UiUtils.createGridLabel(composite, "Product Alias:", 1, 0, SWT.NONE);
+		m_prodAliasText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
+
+		UiUtils.createGridLabel(composite, "Product Base Path:", 1, 0, SWT.NONE);
+		m_prodBaseText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
 		
-		m_actorPropertiesEditor = new SimpleTableEditor<Property>(
-				composite,
-				table,
-				null,
-				"Action - Actor Properties",
-				null,
-				null,
-				SWT.NONE);
-
-		return composite;
-	}
-	
-	private Control createProductPathsStackLayer(Composite stackComposite)
-	{
-		Composite composite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		composite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(composite, "Product Paths", 1);
-
+		UiUtils.createEmptyLabel(composite);
+		UiUtils.createEmptyLabel(composite);
+		
+		Label label = UiUtils.createGridLabel(composite, "Product Paths:", 1, 0, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		PathsTable table = new PathsTable(m_productPaths);
 		
 		m_productPathsEditor = new SimpleTableEditor<IPath>(
@@ -169,6 +151,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				null,
 				null,
 				SWT.NONE);
+		m_productPathsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		return composite;
 	}
@@ -180,7 +163,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		layout.marginHeight = layout.marginWidth = 0;
 		composite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(composite, "Properties", 1);
+		EditorUtils.createHeaderLabel(composite, "General Properties", 1);
 
 		PropertiesTable table = new PropertiesTable(m_properties);
 		
@@ -193,17 +176,32 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				null,
 				SWT.NONE);
 
+		UiUtils.createEmptyLabel(composite);
+		
+		EditorUtils.createHeaderLabel(composite, "Actor Properties", 1);
+
+		table = new PropertiesTable(m_actorProperties);
+		
+		m_actorPropertiesEditor = new SimpleTableEditor<Property>(
+				composite,
+				table,
+				null,
+				"Action - Actor Properties",
+				null,
+				null,
+				SWT.NONE);
+	
 		return composite;
 	}
 	
-	private Control createPrereqGeneralStackLayer(Composite stackComposite)
+	private Control createPrereqStackLayer(Composite stackComposite)
 	{
 		Composite geComposite = new Composite(stackComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
 		geComposite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(geComposite, "Prerequisites - Main", 2);
+		EditorUtils.createHeaderLabel(geComposite, "Prerequisites", 2);
 
 		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
 
@@ -217,19 +215,11 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
-		geComposite.setData("focusControl", m_prereqNameText);
+		UiUtils.createEmptyLabel(geComposite);
+		UiUtils.createEmptyLabel(geComposite);
 		
-		return geComposite;
-	}
-
-	private Control createPrereqListStackLayer(Composite stackComposite)
-	{
-		Composite preComposite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		preComposite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(preComposite, "Prerequisites - List", 1);
+		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
 		// Uses an empty GroupBuilder (createNewRow())
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
@@ -238,57 +228,22 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		PrerequisitesTable preTable = new PrerequisitesTable(m_prerequisites, createNewRow().getPrerequisitesBuilder());
 		 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
-				preComposite,
+				geComposite,
 				preTable,
 				null,
 				"Action - Prerequisite",
 				null,
 				null,
 				SWT.NONE);
-
-		return preComposite;
-	}
-
-	protected Control createPrereqInstallerHintsStackLayer(Composite stackComposite)
-	{
-		Composite ihComposite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		ihComposite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(ihComposite, "Prerequisites - Installer Hints", 1);
-
-		PropertiesTable ihTable = new PropertiesTable(m_prereqInstallerHints);
 		
-		m_prereqInstallerHintsEditor = new SimpleTableEditor<Property>(
-				ihComposite,
-				ihTable,
-				null,
-				"Prerequisite - Installer Hint",
-				null,
-				null,
-				SWT.NONE);
+		GridData layoutData = new GridData(GridData.FILL_BOTH);
+		m_prerequisitesEditor.setLayoutData(layoutData);
 
-		return ihComposite;
+		geComposite.setData("focusControl", m_prereqNameText);
+
+		return geComposite;
 	}
-	
-	protected Control createPrereqDocumentationStackLayer(Composite stackComposite)
-	{
-		Composite docComposite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		docComposite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(docComposite, "Prerequisites - Documentation", 1);
-
-		m_prereqDocumentationText = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
-		m_prereqDocumentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		docComposite.setData("focusControl", m_prereqDocumentationText);
-		
-		return docComposite;
-	}
-	
 	@Override
 	protected void setRowValues(ActionBuilder builder) throws ValidatorException
 	{
@@ -345,28 +300,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		
 		prereqBuilder.setName(UiUtils.trimmedValue(m_prereqNameText));	
 		prereqBuilder.setPublic(m_prereqPublicCheck.getSelection());
-		
-		ExpandingProperties hints = prereqBuilder.getInstallerHints();
-		
-		if(hints != null)
-		{
-			hints.clear();
-		}
-		for(Property property : m_prereqInstallerHints)
-		{
-			prereqBuilder.addInstallerHint(property.getKey(), property.getValue());
-		}
-			
-		String doc = UiUtils.trimmedValue(m_prereqDocumentationText);
-		
-		try
-		{
-			prereqBuilder.setDocumentation(doc == null ? null : Documentation.parse(doc));
-		}
-		catch(Exception e)
-		{
-			throw new ValidatorException(e.getMessage());
-		}
 		
 		String rebasePathString = UiUtils.trimmedValue(m_prereqRebasePathText);
 		IPath rebasePath = null;
@@ -431,12 +364,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_prereqNameText.setText(TextUtils.notNullString(prereqBuilder.getName()));
 		m_prereqPublicCheck.setSelection(prereqBuilder.isPublic());
 		
-		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getInstallerHints(), m_prereqInstallerHints);
-		m_prereqInstallerHintsEditor.refresh();
-			
-		Documentation doc = prereqBuilder.getDocumentation();
-		m_prereqDocumentationText.setText(TextUtils.notNullString(doc == null ? null : doc.toString()));
-
 		IPath rebasePath = prereqBuilder.getRebase();
 		m_prereqRebasePathText.setText(TextUtils.notNullString(rebasePath == null
 				? null
@@ -462,8 +389,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_propertiesEditor.setEnabled(enabled);		
 		m_prereqNameText.setEnabled(enabled);
 		m_prereqPublicCheck.setEnabled(enabled);
-		m_prereqInstallerHintsEditor.setEnabled(enabled);
-		m_prereqDocumentationText.setEnabled(enabled);
 		m_prereqRebasePathText.setEnabled(enabled);
 		m_prerequisitesEditor.setEnabled(enabled);
 	}

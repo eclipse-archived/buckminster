@@ -15,9 +15,11 @@ import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class GroupsTable extends AttributesTable<GroupBuilder>
@@ -81,8 +83,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Hints", createInstallerHintsStackLayer(stackComposite));
-		addStackMapping("Prerequisite", createPrerequisitesStackLayer(stackComposite));
+		addStackMapping("Prerequisites", createPrerequisitesStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
@@ -106,6 +107,15 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		UiUtils.createGridLabel(geComposite, "Rebase Path:", 1, 0, SWT.NONE);
 
 		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+
+		UiUtils.createEmptyLabel(geComposite);
+		UiUtils.createEmptyLabel(geComposite);
+		
+		Label label = UiUtils.createGridLabel(geComposite, "Installer Hints:", 1, 0, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		Control ihEditor = createInstallerHintsEditor(geComposite);
+		GridData layoutData = new GridData(GridData.FILL_BOTH);
+		ihEditor.setLayoutData(layoutData);
 
 		geComposite.setData("focusControl", getNameText());
 		
