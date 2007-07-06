@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
@@ -64,6 +65,7 @@ public class CVSTest extends TestCase
 
 	private static String NON_EXISTING_FILE = "foobar.txt";
 
+	private static String REPO_LOCATION = ":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster.cvs";
 	private CVSSession m_session;
 
 	@Override
@@ -71,8 +73,7 @@ public class CVSTest extends TestCase
 	{
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
-		m_session = new CVSSession(
-				":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.buckminster/org.eclipse.buckminster.cvs");
+		m_session = new CVSSession(REPO_LOCATION);
 	}
 
 	public void testCheckOut() throws Exception
@@ -98,6 +99,13 @@ public class CVSTest extends TestCase
 			copier.done();
 		}
 		assertTrue(new File(destDir, EXISTING_FILE).isFile());
+		
+		CorePlugin plugin = CorePlugin.getDefault();
+		IReaderType rd = plugin.getReaderType("cvs");
+		Date lastRemote = rd.getLastModification(REPO_LOCATION, null, nullMonitor);
+		System.out.println("Last modified date " + lastRemote);
+		Date lastLocal = rd.getLastModification(destDir, nullMonitor);
+		assertEquals(lastRemote, lastLocal);
 	}
 
 	public void testRepositories()

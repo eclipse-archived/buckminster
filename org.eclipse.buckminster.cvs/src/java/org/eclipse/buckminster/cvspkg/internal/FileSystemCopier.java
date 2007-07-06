@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ ******************************************************************************/
 
 package org.eclipse.buckminster.cvspkg.internal;
 
@@ -34,6 +32,9 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 import org.eclipse.team.internal.ccvs.core.syncinfo.MutableResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 
+/**
+ * @author Thomas Hallgren
+ */
 @SuppressWarnings("restriction")
 public class FileSystemCopier implements ICVSResourceVisitor
 {
@@ -148,7 +149,7 @@ public class FileSystemCopier implements ICVSResourceVisitor
 			if(info.getIsStatic())
 				//
 				// write CVS/Entries.Static
-				// the existance of the file is all that matters
+				// the existence of the file is all that matters
 				//
 				writeLines(cvsFolder, STATIC, "");
 		}

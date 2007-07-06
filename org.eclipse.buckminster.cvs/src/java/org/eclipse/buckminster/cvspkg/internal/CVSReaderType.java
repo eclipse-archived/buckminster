@@ -10,6 +10,10 @@
 
 package org.eclipse.buckminster.cvspkg.internal;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
@@ -27,6 +31,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -55,6 +60,7 @@ import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
+import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
 
 /**
@@ -375,6 +381,73 @@ public class CVSReaderType extends AbstractReaderType
 			if(session != null)
 				session.close();
 		}
+	}
+
+	@Override
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 30);
+		File[] folders = workingCopy.listFiles();
+		MonitorUtils.worked(monitor, 10);
+		if(folders == null)
+		{
+			// Folder was not a folder after all
+			//
+			monitor.done();
+			return null;
+		}
+
+		Date youngest = null;
+		if(folders.length > 0)
+		{
+			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 10);
+			subMon.beginTask(null, folders.length * 10);
+			for(File subFolder : folders)
+			{
+				Date ts = getLastModification(subFolder, MonitorUtils.subMonitor(subMon, 10));
+				if(ts != null && (youngest == null || ts.compareTo(youngest) > 0))
+					youngest = ts;
+			}
+			subMon.done();
+		}
+		else
+			MonitorUtils.worked(monitor, 10);		
+
+		File entries = new File(new File(workingCopy, FileSystemCopier.CVS_DIRNAME), FileSystemCopier.ENTRIES);
+		BufferedReader input = null;
+		try
+		{
+			input = new BufferedReader(new FileReader(entries));
+			String line;
+			while((line = input.readLine()) != null)
+			{
+				try
+				{
+					ResourceSyncInfo info = new ResourceSyncInfo(line, null);
+					Date ts = info.getTimeStamp();
+					if(ts != null && (youngest == null || ts.compareTo(youngest) > 0))
+						youngest = ts;
+				}
+				catch(CVSException e)
+				{
+				}
+			}				
+			MonitorUtils.worked(monitor, 10);		
+		}
+		catch(FileNotFoundException e)
+		{
+			// No Entries file present in this folder
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
+			monitor.done();
+		}
+		return youngest;
 	}
 
 	@Override
