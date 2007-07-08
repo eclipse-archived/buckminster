@@ -16,7 +16,6 @@ package org.eclipse.buckminster.core;
 public interface KeyConstants
 {
 	public static final String COMPONENT_NAME     = "buckminster.component";
-	public static final String CATEGORY_NAME      = "buckminster.category";
 	public static final String VERSION_DESIGNATOR = "buckminster.version.designator";
 	public static final String VERSION_TYPE       = "buckminster.version.type";
 	public static final String COMPONENT_VERSION  = "buckminster.version";

@@ -40,7 +40,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_ATTRIBUTES = "attributes";
 
-	public static final String ATTR_COMPONENT_TYPE = "category";
+	public static final String ATTR_COMPONENT_TYPE = "componentType";
 
 	public static final String ATTR_MUTABLE_LEVEL = "mutableLevel";
 

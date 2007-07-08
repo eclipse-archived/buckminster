@@ -263,8 +263,8 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 			Pattern pattern = aNode.getNamePattern();
 			if(pattern.matcher(name).find())
 			{
-				String matchingCategory = aNode.getComponentTypeID();
-				if(matchingCategory == null || matchingCategory.equals(cName.getComponentTypeID()))
+				String matchingType = aNode.getComponentTypeID();
+				if(matchingType == null || matchingType.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
 		}
@@ -277,11 +277,11 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	 * @param pattern
 	 * @return
 	 */
-	public AdvisorNode getNodeByPattern(String pattern, String category)
+	public AdvisorNode getNodeByPattern(String pattern, String componentTypeID)
 	{
 		for(AdvisorNode node : m_advisorNodes)
 			if(node.getNamePattern().toString().equals(pattern)
-			&& Trivial.equalsAllowNull(node.getComponentTypeID(), category))
+			&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentTypeID))
 				return node;
 		return null;
 	}
