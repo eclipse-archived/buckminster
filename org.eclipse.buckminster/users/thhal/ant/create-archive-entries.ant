@@ -2,7 +2,7 @@
 	<property name="plugins.folder" location="${eclipse.home}/plugins"/>
 	
 	<property name="site.xml" location="site.xml"/>
-	<property name="eclipse.update.site" value="http://update.eclipse.org/updates/3.3milestones"/>
+	<property name="eclipse.update.site" value="http://update.eclipse.org/updates/3.3"/>
 	<property name="subclipse.update.site" value="http://subclipse.tigris.org/update_1.2.x/"/>
 	<property name="eclipse.archive.line" value="    &lt;archive path=&quot;plugins/\1.jar&quot; url=&quot;${eclipse.update.site}/plugins/\1.jar&quot;/&gt;"/>
 	<property name="subclipse.archive.line" value="    &lt;archive path=&quot;plugins/\1.jar&quot; url=&quot;${subclipse.update.site}/plugins/\1.jar&quot;/&gt;"/>
