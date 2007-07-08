@@ -89,6 +89,20 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 	private Pattern m_substituteNamePattern;
 
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
+	{
+		super.setInitializationData(config, propertyName, data);
+
+		String tmp = config.getAttribute("relativeLocation");
+		m_relativeLocation = tmp == null ? null : Path.fromPortableString(tmp);
+		tmp = config.getAttribute("desiredNamePattern");
+		m_desiredNamePattern = tmp == null ? null : Pattern.compile(tmp);
+		tmp = config.getAttribute("substituteNamePattern");
+		m_substituteNamePattern = tmp == null ? null : Pattern.compile(tmp);
+		m_nameSubstitution = config.getAttribute("nameSubstitution");
+	}
+
 	public final IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		DepNode node = getResolution(rInfo, true, monitor);

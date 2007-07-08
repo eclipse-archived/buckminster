@@ -23,7 +23,7 @@
 		<componentType
 			class="org.eclipse.buckminster.pde.internal.EclipseFeatureType"
 			id="eclipse.feature"
-			desiredNamePattern="feature"
+			desiredNamePattern="(feature)|(product)"
 			nameSubstitution="$1-feature"
 			relativeLocation="features"
 			substituteNamePattern="^(.*)$">
