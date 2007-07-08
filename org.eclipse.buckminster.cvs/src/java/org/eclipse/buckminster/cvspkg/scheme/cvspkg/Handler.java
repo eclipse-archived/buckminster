@@ -20,8 +20,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -142,28 +144,31 @@ public class Handler extends AbstractURLStreamHandlerService
 					bld.append(modulePath.toPortableString());
 				}
 
-				Provider provider = new Provider("cvs", "unknown", null, null, new Format(bld.toString()), null,
-					false, false, null);
-				IReaderType cvsReaderType = provider.getReaderType();
 
+				CorePlugin plugin = CorePlugin.getDefault();
 				String versionSelector = uri.getFragment();
+				IReaderType cvsReaderType = plugin.getReaderType("cvs");
 				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), null, -1, null, null);
 				ProviderMatch pm = URLReaderType.getCurrentProviderMatch();
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				if(pm == null)
 				{
+					Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, null, new Format(bld.toString()), null,
+							false, false, null);
 					ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 					cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
 					if(vm == null)
 						vm = VersionMatch.DEFAULT;
-					m_reader = (ICatalogReader)cvsReaderType.getReader(provider, new ResolutionContext(
+					m_reader = (ICatalogReader)cvsReaderType.getReader(provider, plugin.getComponentType(IComponentType.UNKNOWN), new ResolutionContext(
 						cqBld.createComponentQuery()).getRootNodeQuery(), vm, nullMon);
 				}
 				else
 				{
+					Provider provider = new Provider("cvs", new String[] { pm.getComponentType().getId() }, null, new Format(bld.toString()), null,
+							false, false, null);
 					if(vm == null)
 						vm = pm.getVersionMatch();
-					m_reader = (ICatalogReader)cvsReaderType.getReader(provider, pm.getNodeQuery(), vm, nullMon);
+					m_reader = (ICatalogReader)cvsReaderType.getReader(provider, pm.getComponentType(), pm.getNodeQuery(), vm, nullMon);
 				}
 			}
 			catch(URISyntaxException e)

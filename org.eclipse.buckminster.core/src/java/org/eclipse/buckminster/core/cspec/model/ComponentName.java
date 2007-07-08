@@ -12,7 +12,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
@@ -27,20 +29,20 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ComponentName extends NamedElement implements Comparable<ComponentName>
 {
 	public static final String TAG = "componentName";
-	public static final String ATTR_CATEGORY = "category";
+	public static final String ATTR_COMPONENT_TYPE = "componentType";
 
-	private final String m_categoryName;
+	private final String m_componentType;
 
 	ComponentName(ComponentName other)
 	{
 		super(other.getName());
-		m_categoryName = other.getCategory();
+		m_componentType = other.getComponentTypeID();
 	}
 
-	public ComponentName(String name, String categoryName)
+	public ComponentName(String name, String componentType)
 	{
 		super(name);
-		m_categoryName = categoryName;
+		m_componentType = componentType;
 	}
 
 	@Override
@@ -53,37 +55,42 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 
 		ComponentName that = (ComponentName)o;
 		return this.getName().equals(that.getName())
-			&& Trivial.equalsAllowNull(m_categoryName, that.m_categoryName);
+			&& Trivial.equalsAllowNull(m_componentType, that.m_componentType);
 	}
 
-	public final String getCategory()
+	public IComponentType getComponentType() throws CoreException
 	{
-		return m_categoryName;
+		return m_componentType == null ? null : CorePlugin.getDefault().getComponentType(m_componentType);
+	}
+
+	public String getComponentTypeID()
+	{
+		return m_componentType;
 	}
 
 	public String getProjectName() throws CoreException
 	{
 		String name = getName();
 
-		ComponentCategory cc = ComponentCategory.getCategory(m_categoryName);
-		if(cc == null)
+		IComponentType ctype = getComponentType();
+		if(ctype == null)
 			//
-			// No category.
+			// No component type.
 			//
 			return name;
 
-		Pattern desiredMatch = cc.getDesiredNamePattern();
+		Pattern desiredMatch = ctype.getDesiredNamePattern();
 		if(desiredMatch == null || desiredMatch.matcher(name).find())
 			//
-			// We have a category but no desire to change the name
+			// We have a component type but no desire to change the name
 			//
 			return name;
 
-		Pattern repFrom = cc.getSubstituteNamePattern();
-		String repTo = cc.getNameSubstitution();
+		Pattern repFrom = ctype.getSubstituteNamePattern();
+		String repTo = ctype.getNameSubstitution();
 
 		if(repFrom == null || repTo == null)
-			throw new BuckminsterException("Category: " + m_categoryName + " defines desiredNamePattern but no substitution");
+			throw new BuckminsterException("Component type: " + m_componentType + " defines desiredNamePattern but no substitution");
 
 		Matcher matcher = repFrom.matcher(name);
 		if(matcher.matches())
@@ -99,9 +106,8 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	{
 		HashMap<String,String> p = new HashMap<String,String>();
 		p.put(KeyConstants.COMPONENT_NAME, this.getName());
-		String category = this.getCategory();
-		if(category != null)
-			p.put(KeyConstants.CATEGORY_NAME, category);
+		if(m_componentType != null)
+			p.put(KeyConstants.COMPONENT_TYPE, m_componentType);
 		return p;
 	}
 
@@ -114,10 +120,10 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	public int hashCode()
 	{
 		int hc = this.getName().hashCode();
-		if(m_categoryName != null)
+		if(m_componentType != null)
 		{
 			hc *= 37;
-			hc += m_categoryName.hashCode();
+			hc += m_componentType.hashCode();
 		}
 		return hc;
 	}
@@ -127,15 +133,15 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	 * follows</p>
 	 * <ul>
 	 * <li>If names are not equal, the match is always false</li>
-	 * <li>If both instances have a category, it must be equal</li>
-	 * <li>If one instance lacks a category, the categories are not considered part of the match</p>
+	 * <li>If both instances have a component type, it must be equal</li>
+	 * <li>If one instance lacks a component type, the types are not considered part of the match</p>
 	 * @param o The name to match with this one
 	 * @return <code>true</code> if the name match
 	 */
 	public boolean matches(ComponentName o)
 	{
 		return this.getName().equals(o.getName())
-			&& (m_categoryName == null || o.m_categoryName == null || m_categoryName.equals(o.m_categoryName));
+			&& (m_componentType == null || o.m_componentType == null || m_componentType.equals(o.m_componentType));
 	}
 
 	/**
@@ -160,10 +166,10 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	public void toString(StringBuilder bld)
 	{
 		bld.append(this.getName());
-		if(m_categoryName != null)
+		if(m_componentType != null)
 		{
 			bld.append(':');
-			bld.append(m_categoryName);
+			bld.append(m_componentType);
 		}
 	}
 
@@ -171,7 +177,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	{
 		int cmp = this.getName().compareTo(o.getName());
 		if(cmp == 0)
-			cmp = Trivial.compareAllowNull(m_categoryName, o.m_categoryName);
+			cmp = Trivial.compareAllowNull(m_componentType, o.m_componentType);
 		return cmp;
 	}
 
@@ -179,7 +185,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	protected void addAttributes(AttributesImpl attrs)
 	{
 		super.addAttributes(attrs);
-		if(m_categoryName != null)
-			Utils.addAttribute(attrs, ATTR_CATEGORY, m_categoryName);
+		if(m_componentType != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
 	}
 }

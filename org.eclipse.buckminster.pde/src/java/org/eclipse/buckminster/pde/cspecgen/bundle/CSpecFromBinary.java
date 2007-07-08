@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.StringTokenizer;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -61,11 +61,6 @@ public class CSpecFromBinary extends CSpecGenerator
 		m_plugin = plugin;
 	}
 
-	public String getCategory()
-	{
-		return KeyConstants.PLUGIN_CATEGORY;
-	}
-
 	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
 	throws CoreException
 	{
@@ -92,7 +87,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			//
 			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName())))
 			{
-				ComponentRequest sysDep = new ComponentRequest(SYSTEM_BUNDLE, KeyConstants.PLUGIN_CATEGORY, null);
+				ComponentRequest sysDep = new ComponentRequest(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null);
 				if(!query.skipComponent(sysDep))
 					cspec.addDependency(sysDep);
 			}
@@ -113,7 +108,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			if(pluginId.equals("system.bundle"))
 				continue;
 
-			ComponentRequest dependency = createComponentRequest(pluginImport, KeyConstants.PLUGIN_CATEGORY);
+			ComponentRequest dependency = createComponentRequest(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(query.skipComponent(dependency) || !addDependency(dependency))
 				continue;
 

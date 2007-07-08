@@ -31,20 +31,20 @@ import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
+import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
-import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
-import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
-import org.eclipse.buckminster.ui.general.editor.structured.OnePageTableEditor;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.editor.SaveRunnable;
+import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
+import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
+import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
+import org.eclipse.buckminster.ui.general.editor.structured.OnePageTableEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -122,7 +122,7 @@ public class CSpecEditor extends EditorPart
 	
 	private CTabFolder m_tabFolder;
 	private Text m_componentName;
-	private Combo m_componentCategory;
+	private Combo m_componentType;
 	private Text m_versionString;
 	private Combo m_versionType;
 	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
@@ -252,10 +252,10 @@ public class CSpecEditor extends EditorPart
 		}
 		m_cspec.setName(name);
 
-		String category = m_componentCategory.getItem(m_componentCategory.getSelectionIndex());
-		if(category.length() == 0)
-			category = null;
-		m_cspec.setCategory(category);
+		String componentType = m_componentType.getItem(m_componentType.getSelectionIndex());
+		if(componentType.length() == 0)
+			componentType = null;
+		m_cspec.setComponentTypeID(componentType);
 		
 		try
 		{
@@ -420,7 +420,7 @@ public class CSpecEditor extends EditorPart
 		try
 		{
 			m_componentName.setText(TextUtils.notNullString(m_cspec.getName()));
-			m_componentCategory.select(m_componentCategory.indexOf(TextUtils.notNullString(m_cspec.getCategory())));
+			m_componentType.select(m_componentType.indexOf(TextUtils.notNullString(m_cspec.getComponentTypeID())));
 			m_versionString.setText(TextUtils.notNullString(m_cspec.getVersion().toString()));
 			m_versionType.select(m_versionType.indexOf(m_cspec.getVersion().getType().getId()));
 
@@ -600,12 +600,12 @@ public class CSpecEditor extends EditorPart
 
 		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 
-		UiUtils.createGridLabel(nameComposite, "Category:", 1, 0, SWT.NONE);
-		m_componentCategory = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
+		UiUtils.createGridLabel(nameComposite, "Component Type:", 1, 0, SWT.NONE);
+		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
-		m_componentCategory.setItems(ComponentCategory.getCategoryNames(true));
-		m_componentCategory.addModifyListener(m_compoundModifyListener);
+		m_componentType.setItems(AbstractComponentType.getComponentTypeIDs(true));
+		m_componentType.addModifyListener(m_compoundModifyListener);
 
 /*
 		// not nice but I had to make equal 2 columns form different Composites

@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -30,18 +31,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public final class ProviderMatch implements Comparable<ProviderMatch>
 {
 	private final Provider m_provider;
+	private final IComponentType m_componentType;
 	private final ProviderScore m_providerScore;
 	private final VersionMatch m_versionMatch;
 	private final NodeQuery m_query;
 
-	public ProviderMatch(Provider provider, VersionMatch versionMatch, NodeQuery query)
+	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, NodeQuery query)
 	{
-		this(provider, versionMatch, ProviderScore.PREFERRED, query);
+		this(provider, componentType, versionMatch, ProviderScore.PREFERRED, query);
 	}
 
-	public ProviderMatch(Provider provider, VersionMatch versionMatch, ProviderScore providerScore, NodeQuery query)
+	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, ProviderScore providerScore, NodeQuery query)
 	{
 		m_provider = provider;
+		m_componentType = componentType;
 		m_versionMatch = versionMatch == null ? VersionMatch.DEFAULT : versionMatch;
 		m_providerScore = providerScore;
 		m_query = query;
@@ -61,16 +64,16 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	}
 
 	/**
-	 * Create a cspec builder that is initialized with the name, category, and
+	 * Create a CSPEC builder that is initialized with the name, type, and
 	 * version from this match.
-	 * @return
+	 * @return The initialized builder
 	 */
 	public CSpecBuilder createCSpec()
 	{
 		CSpecBuilder bld = new CSpecBuilder();
 		ComponentRequest request = m_query.getComponentRequest();
 		bld.setName(request.getName());
-		bld.setCategory(request.getCategory());
+		bld.setComponentTypeID(request.getComponentTypeID());
 		bld.setVersion(m_versionMatch.getVersion());
 		return bld;
 	}
@@ -80,13 +83,18 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return m_query.getComponentRequest().getName();
 	}
 
+	public IComponentType getComponentType()
+	{
+		return m_componentType;
+	}
+
 	public NodeQuery getNodeQuery()
 	{
 		return m_query;
 	}
 
 	/**
-	 * Returns the provider that matched the requirement.
+	 * Returns the provider that matched the request.
 	 * @return the provider that matched
 	 */
 	public Provider getProvider()
@@ -142,7 +150,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		bld.append('[');
 		ComponentRequest rq = m_query.getComponentRequest();
 		bld.append(rq.getName());
-		String type = rq.getCategory();
+		String type = rq.getComponentTypeID();
 		if(type != null)
 		{
 			bld.append(':');

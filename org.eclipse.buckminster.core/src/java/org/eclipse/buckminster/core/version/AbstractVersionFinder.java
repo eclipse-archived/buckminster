@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -20,15 +21,22 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 {
 	private final Provider m_provider;
 	private final NodeQuery m_query;
+	private final IComponentType m_componentType;
 
-	public AbstractVersionFinder(Provider provider, NodeQuery query)
+	public AbstractVersionFinder(Provider provider, IComponentType componentType, NodeQuery query)
 	{
 		m_provider = provider;
 		m_query = query;
+		m_componentType = componentType;
 	}
 
 	public void close()
 	{
+	}
+
+	public IComponentType getComponentType()
+	{
+		return m_componentType;
 	}
 
 	public Provider getProvider()
@@ -44,7 +52,7 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 	protected IVersion getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor) throws CoreException
 	{
 		VersionMatch match = new VersionMatch(null, branchOrTag, m_provider.getSpace(), m_query.getRevision(), m_query.getTimestamp(), null);
-		ProviderMatch rInfo = new ProviderMatch(m_provider, match, m_query);
-		return m_provider.getComponentType().getComponentVersion(rInfo, monitor);
+		ProviderMatch rInfo = new ProviderMatch(m_provider, m_componentType, match, m_query);
+		return m_componentType.getComponentVersion(rInfo, monitor);
 	}
 }

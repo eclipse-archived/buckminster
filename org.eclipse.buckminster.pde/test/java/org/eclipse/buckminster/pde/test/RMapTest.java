@@ -12,8 +12,8 @@ package org.eclipse.buckminster.pde.test;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -32,7 +32,7 @@ public class RMapTest extends PDETestCase
 	public void testEclipseInstalled() throws Exception
 	{
 		this.getPlugin();
-		ComponentRequest request = new ComponentRequest("org.eclipse.pde", KeyConstants.PLUGIN_CATEGORY, null);
+		ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null);
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);

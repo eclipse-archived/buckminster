@@ -24,8 +24,7 @@ public class PDEMapProviderHandler extends ProviderHandler
 	{
 		return new PDEMapProvider(
 				getReaderType(),
-				getComponentType(),
-				getManagedCategories(),
+				getComponentTypes(),
 				getVersionConverter(),
 				getUriFormat(),
 				getSpace(),

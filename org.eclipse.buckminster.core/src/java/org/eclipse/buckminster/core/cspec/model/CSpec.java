@@ -72,7 +72,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public static final String TAG = "cspec";
 
-	public static final int SEQUENCE_NUMBER = 3;
+	public static final int SEQUENCE_NUMBER = 4;
 
 	private static final Comparator<Attribute> s_attributeSorter = new Comparator<Attribute>()
 	{
@@ -100,11 +100,11 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	private final Attribute m_selfAttribute;
 
-	public CSpec(String name, String category, IVersion version, Documentation documentation, String shortDesc,
+	public CSpec(String name, String componentType, IVersion version, Documentation documentation, String shortDesc,
 			Map<String, DependencyBuilder> dependencies, Map<String, GeneratorBuilder> generators,
 			Map<String, AttributeBuilder> attributes)
 	{
-		m_componentIdentifier = new ComponentIdentifier(name, category, version);
+		m_componentIdentifier = new ComponentIdentifier(name, componentType, version);
 		m_documentation = documentation;
 		m_shortDesc = shortDesc;
 		m_selfAttribute = new Attribute(SELF_ARTIFACT, true, null, null)
@@ -251,9 +251,9 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		return getAttribute(WellknownActions.BUCKMINSTER.BIND_ENTRYPOINT.toString());
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return m_componentIdentifier.getCategory();
+		return m_componentIdentifier.getComponentTypeID();
 	}
 
 	public IPath getComponentLocation() throws CoreException
@@ -465,9 +465,9 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 	protected void addAttributes(AttributesImpl attrs)
 	{
 		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
-		String category = m_componentIdentifier.getCategory();
-		if(category != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_CATEGORY, category);
+		String ctypeID = m_componentIdentifier.getComponentTypeID();
+		if(ctypeID != null)
+			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, ctypeID);
 
 		IVersion version = m_componentIdentifier.getVersion();
 		if(version != null)

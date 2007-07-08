@@ -10,6 +10,7 @@ package org.eclipse.buckminster.maven.internal;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -25,10 +26,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class Maven2VersionFinder extends MavenVersionFinder
 {
-	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, NodeQuery query)
+	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
 	throws CoreException
 	{
-		super(readerType, provider, query);
+		super(readerType, provider, ctype, query);
 	}
 
 	private void appendFilesInFolder(StringBuilder pbld, ArrayList<IPath> fileList, IProgressMonitor monitor) throws CoreException

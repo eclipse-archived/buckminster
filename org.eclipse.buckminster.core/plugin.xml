@@ -41,10 +41,6 @@
 		id="internalActors"
 		name="%InternalActors"
 		schema="schema/internalActors.exsd" />
-	<extension-point
-		id="componentCategories"
-		name="%ComponentCategories"
-		schema="schema/componentCategories.exsd" />
  <extension-point id="queryResolvers" name="%QueryResolvers" schema="schema/queryResolvers.exsd"/>
  <extension-point id="materializers" name="%Materializers" schema="schema/materializers.exsd"/>
  <extension-point id="qualifierGenerators" name="%QualifierGenerators" schema="schema/qualifierGenerators.exsd"/>
@@ -87,17 +83,6 @@
 		<componentType
 			id="jar"
 			class="org.eclipse.buckminster.core.ctype.JarComponentType" />
-		<componentType
-			class="org.eclipse.buckminster.core.ctype.EclipseComponentType"
-			id="eclipse.project">
-			<metaFile path=".project" />
-			<metaFile path=".classpath" />
-			<metaFile path="META-INF/MANIFEST.MF" />
-			<metaFile path="plugin.xml" />
-			<metaFile path="feature.xml" />
-			<metaFile path="fragment.xml" />
-			<metaFile path="build.properties" />
-		</componentType>
 		<componentType
 			class="org.eclipse.buckminster.core.internal.ctype.BuckminsterComponentType"
 			id="buckminster">

@@ -147,7 +147,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		monitor.beginTask(fileName, 2);
 		try
 		{
-			URL fileUrl = new URL(this.getURL(), fileName);
+			URL fileUrl = new URL(getURL(), fileName);
 			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(fileUrl, MonitorUtils.subMonitor(monitor, 1)));
 			return consumer.consumeStream(this, fileUrl.toString(), input, MonitorUtils.subMonitor(monitor, 1));
 		}

@@ -37,7 +37,7 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 	public static final String ATTR_LOCATION = "location";
 	public static final String ATTR_RESOLUTION_ID = "resolutionId";
 
-	public static final int SEQUENCE_NUMBER = 2;
+	public static final int SEQUENCE_NUMBER = 3;
 
 	private final IPath m_componentLocation;
 	private final ComponentIdentifier m_componentIdentifier;
@@ -132,9 +132,9 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
 		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
-		String category = m_componentIdentifier.getCategory();
-		if(category != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_CATEGORY, category);
+		String tmp = m_componentIdentifier.getComponentTypeID();
+		if(tmp != null)
+			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
 
 		IVersion version = m_componentIdentifier.getVersion();
 		if(version != null)

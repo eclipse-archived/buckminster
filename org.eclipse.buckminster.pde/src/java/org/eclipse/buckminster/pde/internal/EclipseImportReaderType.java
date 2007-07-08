@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
@@ -159,11 +159,11 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor)
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
 	throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return new EclipseImportFinder(this, provider, nodeQuery);
+		return new EclipseImportFinder(this, provider, ctype, nodeQuery);
 	}
 
 	@Override
@@ -577,9 +577,9 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), provider.getSpace(), -1, null, null);
 
 		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID,
-			KeyConstants.PLUGIN_CATEGORY,
+			IComponentType.OSGI_BUNDLE,
 			VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
-		ProviderMatch pm = new ProviderMatch(provider, vm, ProviderScore.GOOD, nq);
+		ProviderMatch pm = new ProviderMatch(provider, templateInfo.getComponentType(), vm, ProviderScore.GOOD, nq);
 		return getPluginModel(pm, new NullProgressMonitor());
 	}
 }

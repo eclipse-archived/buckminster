@@ -43,9 +43,9 @@ public abstract class AbstractTestCase extends TestCase
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 	}
 
-	protected IResolver createResolver(String componentName, String category) throws Exception
+	protected IResolver createResolver(String componentName, String componentType) throws Exception
 	{
-		ComponentRequest request = new ComponentRequest(componentName, category, null);
+		ComponentRequest request = new ComponentRequest(componentName, componentType, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(getRMAP());

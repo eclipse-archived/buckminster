@@ -25,8 +25,8 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -132,7 +132,7 @@ public class QueryEditor extends EditorPart
 				lbl = node.getNamePattern().toString(); 
 				break;
 			case 1:
-				lbl = node.getCategory();
+				lbl = node.getComponentTypeID();
 				break;
 			default:
 				lbl = null;
@@ -188,7 +188,7 @@ public class QueryEditor extends EditorPart
 
 	private Text m_componentName;
 
-	private Combo m_componentCategory;
+	private Combo m_componentType;
 
 	private VersionDesignator m_versionDesignator;
 
@@ -287,10 +287,10 @@ public class QueryEditor extends EditorPart
 			return "The component must have a name";
 
 		String category = null;
-		int idx = m_componentCategory.getSelectionIndex();
+		int idx = m_componentType.getSelectionIndex();
 		if(idx >= 0)
 		{
-			category = m_componentCategory.getItem(idx);
+			category = m_componentType.getItem(idx);
 			if(category.length() == 0)
 				category = null;
 		}
@@ -724,11 +724,11 @@ public class QueryEditor extends EditorPart
 
 		m_namePattern = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 
-		UiUtils.createGridLabel(geComposite, "Matched category:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, "Matched Component Type:", 1, 0, SWT.NONE);
 
 		m_category = UiUtils.createGridCombo(geComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
-		m_category.setItems(ComponentCategory.getCategoryNames(true));
+		m_category.setItems(AbstractComponentType.getComponentTypeIDs(true));
 
 		UiUtils.createGridLabel(geComposite, "Skip Component:", 1, 0, SWT.NONE);
 		m_skipComponent = UiUtils.createCheckButton(geComposite, null, new SelectionAdapter()
@@ -1118,22 +1118,22 @@ public class QueryEditor extends EditorPart
 
 		m_componentName = UiUtils.createGridText(nameComposite, 2, 0, SWT.NONE, m_compoundModifyListener);
 
-		UiUtils.createGridLabel(nameComposite, "Category:", 1, 0, SWT.NONE);
-		m_componentCategory = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
+		UiUtils.createGridLabel(nameComposite, "Component Type:", 1, 0, SWT.NONE);
+		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
-		m_componentCategory.setItems(ComponentCategory.getCategoryNames(true));
-		m_componentCategory.addModifyListener(m_compoundModifyListener);
+		m_componentType.setItems(AbstractComponentType.getComponentTypeIDs(true));
+		m_componentType.addModifyListener(m_compoundModifyListener);
 
 		// not nice but I had to make equal 2 columns form different Composites
 		// the purpose of hlpComposite is to create empty space, the same size
 		// as m_componentCategory
 		UiUtils.createEmptyPanel(nameComposite);
 
-		int textWidth = m_componentCategory.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-		gridData = (GridData)m_componentCategory.getLayoutData();
+		int textWidth = m_componentType.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+		gridData = (GridData)m_componentType.getLayoutData();
 		gridData.widthHint = textWidth;
-		m_componentCategory.setLayoutData(gridData);
+		m_componentType.setLayoutData(gridData);
 
 		Group versionGroup = new Group(tabComposite, SWT.NONE);
 		versionGroup.setText("Version");
@@ -1370,7 +1370,7 @@ public class QueryEditor extends EditorPart
 
 		m_allowCircular.setSelection(node.allowCircularDependency());
 		m_namePattern.setText(TextUtils.notNullString(node.getNamePattern()));
-		m_category.select(m_category.indexOf(TextUtils.notNullString(node.getCategory())));
+		m_category.select(m_category.indexOf(TextUtils.notNullString(node.getComponentTypeID())));
 		m_overlayFolder.setText(TextUtils.notNullString(node.getOverlayFolder()));
 		m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.concat(node.getAttributes(), ",")));
 		m_prune.setSelection(node.isPrune());
@@ -1404,7 +1404,7 @@ public class QueryEditor extends EditorPart
 		{
 			ComponentRequest request = m_componentQuery.getRootRequest();
 			m_componentName.setText(TextUtils.notNullString(request.getName()));
-			m_componentCategory.select(m_componentCategory.indexOf(TextUtils.notNullString(request.getCategory())));
+			m_componentType.select(m_componentType.indexOf(TextUtils.notNullString(request.getComponentTypeID())));
 			m_versionDesignator.refreshValues(request.getVersionDesignator());
 
 			String string = TextUtils.notNullString(m_componentQuery.getPropertiesURL());
@@ -1476,7 +1476,7 @@ public class QueryEditor extends EditorPart
 			return false;
 		}
 
-		String currentCategory = node.getCategory();
+		String currentCategory = node.getComponentTypeID();
 		Pattern currentPattern = node.getNamePattern();
 		if(currentPattern == null || !currentPattern.toString().equals(patternStr)
 				|| !Trivial.equalsAllowNull(currentCategory, category))
@@ -1493,7 +1493,7 @@ public class QueryEditor extends EditorPart
 			refreshListNeeded = true;
 		}
 		node.setNamePattern(pattern);
-		node.setCategory(category);
+		node.setComponentTypeID(category);
 		node.setAllowCircularDependency(m_allowCircular.getSelection());
 
 		boolean override = m_enableOverride.getSelection();

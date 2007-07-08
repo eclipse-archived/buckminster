@@ -11,7 +11,6 @@ import java.util.Collections;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.Utils;
@@ -36,9 +35,9 @@ public class ObtainedDependency extends ComponentRequest
 	private final String m_component;
 	private final String m_attribute;
 
-	public ObtainedDependency(String name, String category, IVersionDesignator versionDesignator, String component, String attribute)
+	public ObtainedDependency(String name, String componentType, IVersionDesignator versionDesignator, String component, String attribute)
 	{
-		super(name, category, versionDesignator);
+		super(name, componentType, versionDesignator);
 		m_component = component;
 		m_attribute = attribute;
 	}
@@ -68,17 +67,17 @@ public class ObtainedDependency extends ComponentRequest
 	{
 		Attribute componentProducer = ownerCSpec.getReferencedAttribute(m_component, m_attribute, modelCache);
 		IPath uniquePath = componentProducer.getUniquePath(null, modelCache);
-		Resolution resolution;
+		CSpec cspec;
 		try
 		{
-			resolution = LocalResolver.fromPath(uniquePath, m_component);
+			cspec = LocalResolver.fromPath(uniquePath, m_component);
 		}
 		catch(CoreException e)
 		{
 			CorePlugin.getPerformManager().perform(
 				Collections.singletonList(componentProducer), modelCache.getProperties(), false, new NullProgressMonitor());
-			resolution = LocalResolver.fromPath(uniquePath, m_component);
+			cspec = LocalResolver.fromPath(uniquePath, m_component);
 		}
-		return resolution.getCSpec();
+		return cspec;
 	}
 }

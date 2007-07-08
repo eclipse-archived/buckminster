@@ -24,7 +24,7 @@ public class ComponentVersion extends Task
 {
 	private String m_property;
 	private String m_name;
-	private String m_category;
+	private String m_componentType;
 	private String m_versionDesignator;
 	private String m_designatorType;
 
@@ -39,7 +39,7 @@ public class ComponentVersion extends Task
 
 		try
 		{
-			ComponentRequest rq = new ComponentRequest(m_name, m_category, m_versionDesignator, m_designatorType);
+			ComponentRequest rq = new ComponentRequest(m_name, m_componentType, m_versionDesignator, m_designatorType);
 			IVersion version = WorkspaceInfo.getResolution(rq, false).getComponentIdentifier().getVersion();
 			if(version != null)
 				getProject().setNewProperty(m_property, version.toString());
@@ -69,12 +69,12 @@ public class ComponentVersion extends Task
 	}
 
 	/**
-	 * Sets the category of the component.
-	 * @param category The component category
+	 * Sets the type of the component.
+	 * @param componentType The component type
 	 */
-	public void setCategory(String category)
+	public void setComponentType(String componentType)
 	{
-		m_category = category;
+		m_componentType = componentType;
 	}
 
 	/**

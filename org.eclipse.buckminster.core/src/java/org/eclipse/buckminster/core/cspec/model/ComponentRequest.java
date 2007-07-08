@@ -48,21 +48,21 @@ public class ComponentRequest extends ComponentName
 			vd = VersionFactory.createDesignator(vdType, vdStr);
 		}
 		return new ComponentRequest(properties.get(KeyConstants.COMPONENT_NAME),
-			properties.get(KeyConstants.CATEGORY_NAME), vd);
+			properties.get(KeyConstants.COMPONENT_TYPE), vd);
 	}
 
 	private final IVersionDesignator m_versionDesignator;
 
-	public ComponentRequest(String name, String category, IVersionDesignator versionDesignator)
+	public ComponentRequest(String name, String componentType, IVersionDesignator versionDesignator)
 	{
-		super(name, category);
+		super(name, componentType);
 		m_versionDesignator = versionDesignator;
 	}
 
-	public ComponentRequest(String name, String category, String versionDesignatorStr, String versionTypeId)
+	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId)
 	throws CoreException
 	{
-		super(name, category);
+		super(name, componentType);
 		IVersionDesignator versionDesignator = null;
 		if(versionDesignatorStr != null)
 			versionDesignator = VersionFactory.createDesignator(versionTypeId, versionDesignatorStr);
@@ -71,8 +71,8 @@ public class ComponentRequest extends ComponentName
 
 	public boolean designates(ComponentIdentifier id)
 	{
-		return this.getName().equals(id.getName())
-			&& (this.getCategory() == null || this.getCategory().equals(id.getCategory()))
+		return getName().equals(id.getName())
+			&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))
 			&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
 	}
 
@@ -87,7 +87,7 @@ public class ComponentRequest extends ComponentName
 			return true;
 
 		return super.equals(o)
-			&& Trivial.equalsAllowNull(this.m_versionDesignator, ((ComponentRequest)o).m_versionDesignator);
+			&& Trivial.equalsAllowNull(m_versionDesignator, ((ComponentRequest)o).m_versionDesignator);
 	}
 
 	@Override
@@ -122,12 +122,12 @@ public class ComponentRequest extends ComponentName
 
 	public void appendViewName(StringBuilder bld)
 	{
-		bld.append(this.getName());
-		String category = this.getCategory();
-		if(category != null)
+		bld.append(getName());
+		String componentType = getComponentTypeID();
+		if(componentType != null)
 		{
 			bld.append(':');
-			bld.append(category);
+			bld.append(componentType);
 		}
 	}
 
@@ -143,17 +143,17 @@ public class ComponentRequest extends ComponentName
 
 	public ComponentRequest mergeDesignator(ComponentRequest that) throws ComponentRequestConflictException
 	{
-		if(!this.getName().equals(that.getName()))
+		if(!getName().equals(that.getName()))
 			throw new ComponentRequestConflictException(this, that);
 
-		String thisCat = this.getCategory();
-		String thatCat = that.getCategory();
-		if(thisCat == null)
-			thisCat = thatCat;
-		else if(thatCat != null && !thisCat.equals(thatCat))
+		String thisCType = getComponentTypeID();
+		String thatCType = that.getComponentTypeID();
+		if(thisCType == null)
+			thisCType = thatCType;
+		else if(thatCType != null && !thisCType.equals(thatCType))
 			throw new ComponentRequestConflictException(this, that);
 
-		IVersionDesignator thisVD = this.getVersionDesignator();
+		IVersionDesignator thisVD = getVersionDesignator();
 		IVersionDesignator thatVD = that.getVersionDesignator();
 		if(thisVD == null)
 			return thatVD == null ? this : that;
@@ -168,7 +168,7 @@ public class ComponentRequest extends ComponentName
 		if(mergedVD == null)
 			throw new ComponentRequestConflictException(this, that);
 
-		return new ComponentRequest(this.getName(), thisCat, mergedVD);
+		return new ComponentRequest(getName(), thisCType, mergedVD);
 	}
 	
 	@Override

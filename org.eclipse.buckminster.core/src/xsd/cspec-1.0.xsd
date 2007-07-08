@@ -78,14 +78,22 @@
 			</annotation>
 		</attribute>
 		<attribute
+			name="componentType"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					The component type, if any, of the required component.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute
 			name="category"
 			type="string"
 			use="optional">
 			<annotation>
 				<documentation>
-					The component category, if any, of the required component. A category is typically
-					something like plugin or feature. It must be matched by the component reader that resolves
-					the component request.
+					Deprecated. Category concept is merged into the component type.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -182,6 +190,11 @@
 				</element>
 			</choice>
 		</sequence>
+		<attribute
+			name="componentType"
+			type="string"
+			use="optional" />
+		<!-- Deprecated -->
 		<attribute
 			name="category"
 			type="string"

@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -125,10 +126,10 @@ public class SvnReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor)
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
 			throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return new VersionFinder(provider, nodeQuery);
+		return new VersionFinder(provider, ctype, nodeQuery);
 	}
 }

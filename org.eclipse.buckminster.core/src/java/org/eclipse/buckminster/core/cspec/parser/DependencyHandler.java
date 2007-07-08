@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.NamedElementBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -36,7 +35,7 @@ public class DependencyHandler extends CSpecElementHandler
 	{
 		super.handleAttributes(attrs);
 		DependencyBuilder builder = (DependencyBuilder)getBuilder();
-		builder.setCategory(getOptionalStringValue(attrs, ComponentName.ATTR_CATEGORY));
+		builder.setComponentTypeID(CSpecHandler.getComponentType(attrs));
 		try
 		{
 			builder.setVersionDesignator(

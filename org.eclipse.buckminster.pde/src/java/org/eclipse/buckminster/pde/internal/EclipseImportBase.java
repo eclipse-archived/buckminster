@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -160,7 +160,7 @@ final class EclipseImportBase
 
 		m_query = uri.getQuery();
 		m_key = key;
-		m_feature = KeyConstants.FEATURE_CATEGORY.equals(key.getRequest().getCategory());
+		m_feature = IComponentType.ECLIPSE_FEATURE.equals(key.getRequest().getComponentTypeID());
 
 		Map<String, String> params = TextUtils.queryAsParameters(uri.getQuery());
 		String importType = params.get(PARAM_IMPORT_TYPE);

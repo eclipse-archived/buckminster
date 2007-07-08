@@ -344,7 +344,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 			performManager.perform(cspec, bindEntryPoint.getName(), props, false, monitor);
 
-			cspec = LocalResolver.fromPath(productPath, resolution.getName()).getCSpec();
+			cspec = LocalResolver.fromPath(productPath, resolution.getName());
 			resolution = new Resolution(cspec, resolution);
 			resolution.store();
 			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), cspec

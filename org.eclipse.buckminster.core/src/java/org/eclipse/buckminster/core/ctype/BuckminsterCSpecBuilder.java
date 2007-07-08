@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.ctype;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -52,16 +53,20 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 	throws CoreException
 	{
 		monitor.beginTask(null, 2000);
+		IComponentReader reader = readerHandle[0];
 		try
 		{
 			CSpec cspec;
-			IComponentReader reader = readerHandle[0];
 			if(reader instanceof ICatalogReader)
 				cspec = ((ICatalogReader)reader).readFile(CorePlugin.CSPEC_FILE, this, MonitorUtils.subMonitor(monitor, 1000));
 			else
 				cspec = ((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000));
 			cspec = this.applyExtensions(cspec, reader, MonitorUtils.subMonitor(monitor, 1000));
 			return this.createResolution(reader, cspec);
+		}
+		catch(FileNotFoundException e)
+		{
+			throw new MissingCSpecSourceException(reader.getProviderMatch());
 		}
 		catch(IOException e)
 		{

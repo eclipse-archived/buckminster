@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -28,6 +27,7 @@ import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.OSGiVersion;
@@ -383,11 +383,6 @@ public class CSpecFromSource extends CSpecGenerator
 		monitor.done();
 	}
 
-	public String getCategory()
-	{
-		return KeyConstants.PLUGIN_CATEGORY;
-	}
-
 	protected void addImports() throws CoreException
 	{
 		IPluginImport[] imports = m_plugin.getImports();
@@ -406,7 +401,7 @@ public class CSpecFromSource extends CSpecGenerator
 			if(pluginId.equals("system.bundle"))
 				continue;
 
-			ComponentRequest dependency = createComponentRequest(pluginImport, KeyConstants.PLUGIN_CATEGORY);
+			ComponentRequest dependency = createComponentRequest(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(query.skipComponent(dependency) || !addDependency(dependency))
 				continue;
 

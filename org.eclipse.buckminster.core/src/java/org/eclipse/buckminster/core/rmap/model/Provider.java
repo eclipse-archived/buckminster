@@ -21,6 +21,8 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -51,9 +53,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Provider extends UUIDKeyed implements ISaxableElement
 {
-	public static final String ATTR_COMPONENT_TYPE = "componentType";
-
-	public static final String ATTR_MANAGED_CATEGORIES = "managedCategories";
+	public static final String ATTR_COMPONENT_TYPES = "componentTypes";
 
 	public static final String ATTR_MUTABLE = "mutable";
 
@@ -69,13 +69,11 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 
 	public static final String TAG_URI = "uri";
 
-	public static final int SEQUENCE_NUMBER = 1;
+	public static final int SEQUENCE_NUMBER = 2;
 
 	private final Documentation m_documentation;
 
-	private final String m_componentTypeId;
-
-	private final String[] m_managedCategories;
+	private final String[] m_componentTypeIDs;
 
 	private final boolean m_mutable;
 
@@ -100,13 +98,12 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	 *            modified and commited back.
 	 * @param source Set to <code>true</code> if this provider will provide source.
 	 */
-	public Provider(String remoteReaderType, String componentType, String[] managedCategories,
+	public Provider(String remoteReaderType, String[] componentTypeIDs,
 		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
 		Documentation documentation)
 	{
 		m_readerTypeId = remoteReaderType;
-		m_componentTypeId = componentType;
-		m_managedCategories = managedCategories == null ? Trivial.EMPTY_STRING_ARRAY : managedCategories;
+		m_componentTypeIDs = componentTypeIDs == null ? Trivial.EMPTY_STRING_ARRAY : componentTypeIDs;
 		m_versionConverter = versionConverterDesc;
 		m_uri = uri;
 		m_space = space;
@@ -129,41 +126,46 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		{
 			Logger logger = CorePlugin.getLogger();
 			ComponentRequest request = query.getComponentRequest();
-			String category = request.getCategory();
+			String componentTypeID = request.getComponentTypeID();
 			String providerURI = getURI(query.getProperties());
 			String readerType = getReaderTypeId();
 	
-			// The component request is equipped with a category. If the provider
-			// is limited to certain categories, one of them must match.
+			// The component request is equipped with a component type. It must
+			// match the types that this provider provides.
 			//
-			String[] managedCategories = getManagedCategories();
-			if(managedCategories.length > 0)
+			IComponentType[] componentTypes = getComponentTypes();
+			if(componentTypeID != null)
 			{
-				boolean managed = false;
-				if(category != null)
+				boolean found = false;
+				int idx = componentTypes.length;
+				while(--idx >= 0)
 				{
-					for(String c : managedCategories)
+					IComponentType ctype = componentTypes[idx];
+					if(ctype.getId().equals(componentTypeID))
 					{
-						if(category.equals(c))
-						{
-							managed = true;
-							break;
-						}
+						// Limit the component types to this one type
+						//
+						componentTypes = new IComponentType[] { ctype };
+						found = true;
+						break;
 					}
 				}
-				if(!managed)
+
+				if(!found)
 				{
+					// The ECLIPSE_PLATFORM reader is silent here since it is always consulted
+					//
 					if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 					{
-						String msg = String.format("Provider %s(%s): Unable to manage %s", readerType, providerURI,
-							category == null ? "requests without category" : "category " + category);
+						String msg = String.format("Provider %s(%s): does not provide components of type %s",
+								readerType, providerURI, componentTypeID);
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 						logger.debug(msg);
 					}
 					return null;
 				}
 			}
-	
+
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 			if(score == ProviderScore.REJECTED)
 			{
@@ -172,13 +174,26 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 				logger.debug(msg);
 				return null;
 			}
-	
+
 			VersionMatch candidate = null;
+			IComponentType ctypeUsed = null;
 			CoreException problem = null;
 			try
 			{
-				versionFinder = getReaderType().getVersionFinder(this, query, MonitorUtils.subMonitor(monitor, 20));
-				candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
+				for(IComponentType ctype : componentTypes)
+				{
+					try
+					{
+						versionFinder = getReaderType().getVersionFinder(this, ctype, query, MonitorUtils.subMonitor(monitor, 20));
+						candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
+						ctypeUsed = ctype;
+					}
+					catch(MissingCSpecSourceException e)
+					{
+						continue;
+					}
+					break;
+				}
 			}
 			catch(CoreException e)
 			{
@@ -212,7 +227,7 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 						"Provider %s(%s): Found a match for %s using version designator %s, %s",
 						readerType, providerURI, componentName, desiredVersion, candidate));
 			}
-			return new ProviderMatch(this, candidate, score, query);
+			return new ProviderMatch(this, ctypeUsed, candidate, score, query);
 		}
 		finally
 		{
@@ -222,14 +237,19 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		}			
 	}
 
-	public final IComponentType getComponentType() throws CoreException
+	public final IComponentType[] getComponentTypes() throws CoreException
 	{
-		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
+		CorePlugin plugin = CorePlugin.getDefault();
+		int idx = m_componentTypeIDs.length;
+		IComponentType[] ctypes = new IComponentType[idx];
+		while(--idx >= 0)
+			ctypes[idx] = plugin.getComponentType(m_componentTypeIDs[idx]);
+		return ctypes;
 	}
 
-	public final String getComponentTypeId()
+	public final String[] getComponentTypeIDs()
 	{
-		return m_componentTypeId;
+		return m_componentTypeIDs;
 	}
 
 	public String getDefaultTag()
@@ -251,11 +271,6 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	public Provider getMain()
 	{
 		return this;
-	}
-
-	public String[] getManagedCategories()
-	{
-		return m_managedCategories;
 	}
 
 	public final IReaderType getReaderType() throws CoreException
@@ -358,18 +373,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	protected void addAttributes(AttributesImpl attrs)
 	{
 		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
-		Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
-		int numCategories = m_managedCategories.length;
-		if(numCategories > 0)
-		{
-			StringBuilder bld = new StringBuilder(m_managedCategories[0]);
-			for(int idx = 1; idx < numCategories; ++idx)
-			{
-				bld.append(',');
-				bld.append(m_managedCategories[1]);
-			}
-			Utils.addAttribute(attrs, ATTR_MANAGED_CATEGORIES, bld.toString());
-		}
+		if(m_componentTypeIDs.length > 0)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ","));
 		if(m_space != null)
 			Utils.addAttribute(attrs, ATTR_SPACE, m_space);
 		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));

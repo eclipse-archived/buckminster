@@ -40,7 +40,7 @@ public class QualifiedDependency
 		if(dsg != null)
 		{
 			change = true;
-			request = new ComponentRequest(request.getName(), request.getCategory(), dsg);
+			request = new ComponentRequest(request.getName(), request.getComponentTypeID(), dsg);
 		}
 
 		Collection<String> attrs = advice.getAttributes();

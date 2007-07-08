@@ -10,9 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.io.File;
-import java.net.URI;
-
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -31,7 +29,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class LocalReaderType extends URLCatalogReaderType
 {
-	private static final IVersionFinder s_blindFinder = new AbstractVersionFinder(null, null)
+	private static final IVersionFinder s_blindFinder = new AbstractVersionFinder(null, null, null)
 	{
 		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 		{
@@ -39,12 +37,6 @@ public class LocalReaderType extends URLCatalogReaderType
 			return null;
 		}
 	};
-
-	@Override
-	public URI getURI(String repository) throws CoreException
-	{
-		return new File(repository).toURI();
-	}
 
 	@Override
 	public IPath getMaterializationLocation(Resolution rc, MaterializationContext context, boolean[] optional) throws CoreException
@@ -69,11 +61,11 @@ public class LocalReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return nodeQuery.useExistingProject() || nodeQuery.useMaterialization()
-			? new DefaultVersionFinder(provider, nodeQuery)
+			? new DefaultVersionFinder(provider, ctype, nodeQuery)
 			: s_blindFinder;
 	}
 }

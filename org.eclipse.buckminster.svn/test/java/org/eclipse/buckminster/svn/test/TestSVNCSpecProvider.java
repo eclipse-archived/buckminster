@@ -14,9 +14,9 @@ import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -56,7 +56,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 	public void testResolutionPriority() throws Exception
 	{
 		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "[0.1.0,0.2.0)") ;
-		ComponentRequest request = new ComponentRequest("org.eclipse.buckminster.cmdline", KeyConstants.PLUGIN_CATEGORY, designator);
+		ComponentRequest request = new ComponentRequest("org.eclipse.buckminster.cmdline", IComponentType.OSGI_BUNDLE, designator);
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
@@ -82,7 +82,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 	public void testBestVersionOnPath() throws Exception
 	{
 		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "[0.1.0,0.2.0)") ;
-		ComponentRequest request = new ComponentRequest("org.eclipse.buckminster.cmdline", KeyConstants.PLUGIN_CATEGORY, designator);
+		ComponentRequest request = new ComponentRequest("org.eclipse.buckminster.cmdline", IComponentType.OSGI_BUNDLE, designator);
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
@@ -107,7 +107,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 	public void testRevisionOnBranchProvider() throws Exception
 	{
 		IVersionDesignator designator = VersionFactory.createExplicitDesignator(VersionFactory.OSGiType, "1.2.2") ;
-		ComponentRequest request = new ComponentRequest("org.tigris.subversion.subclipse.core", KeyConstants.PLUGIN_CATEGORY, designator);
+		ComponentRequest request = new ComponentRequest("org.tigris.subversion.subclipse.core", IComponentType.OSGI_BUNDLE, designator);
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
@@ -138,16 +138,16 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("org.eclipse.buckminster.svn", KeyConstants.PLUGIN_CATEGORY, null));
+		queryBld.setRootRequest(new ComponentRequest("org.eclipse.buckminster.svn", IComponentType.OSGI_BUNDLE, null));
 		queryBld.setResourceMapURL(TestSVNCSpecProvider.class.getResource("test.rmap"));
 		ComponentQuery query = queryBld.createComponentQuery();
 		IResolver resolver = new MainResolver(new ResolutionContext(query));
 
 		Format vh = new Format("http://subclipse.tigris.org/svn/subclipse/trunk/subclipse/core");
-		Provider provider = new Provider("svn", "eclipse.project", null, null, vh, null, true, true, null);
+		Provider provider = new Provider("svn", new String[] { IComponentType.OSGI_BUNDLE }, null, vh, null, true, true, null);
 		IReaderType readerType = provider.getReaderType();
 		IProgressMonitor nullMon = new NullProgressMonitor();
-		IComponentReader reader = readerType.getReader(provider, resolver.getContext().getRootNodeQuery(), VersionMatch.DEFAULT, nullMon);
+		IComponentReader reader = readerType.getReader(provider, plugin.getComponentType(IComponentType.OSGI_BUNDLE), resolver.getContext().getRootNodeQuery(), VersionMatch.DEFAULT, nullMon);
 
 		IProjectDescription projDesc = ProjectDescReader.getProjectDescription(reader, nullMon);
 

@@ -111,23 +111,18 @@
 				maxOccurs="1" />
 		</sequence>
 		<attribute
-			name="managedCategories"
+			name="componentTypes"
 			type="string"
 			use="optional">
 			<annotation>
 				<documentation>
-					The provider will only handle requests that have no category defined or a category that
-					matches one of the categories listed here. If no managed categories are specified, the
-					provider is considered a handler for all categories.
+					The provider will only handle requests that have no component type defined or a component
+					type that matches one of the types listed here. At least one type must be listed.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute
 			name="readerType"
-			type="string"
-			use="required" />
-		<attribute
-			name="componentType"
 			type="string"
 			use="required" />
 		<attribute
@@ -141,6 +136,17 @@
 		<attribute
 			name="source"
 			type="boolean"
+			use="optional" />
+
+		<!-- Deprecated -->
+		<attribute
+			name="componentType"
+			type="string"
+			use="optional" />
+		<!-- Deprecated -->
+		<attribute
+			name="managedCategories"
+			type="string"
 			use="optional" />
 	</complexType>
 	<complexType name="VersionConverter">

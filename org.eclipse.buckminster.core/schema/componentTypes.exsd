@@ -57,11 +57,39 @@
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  
+                  The interface that the component type must implement
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.buckminster.core.IComponentType"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="relativeLocation" type="string">
+            <annotation>
+               <documentation>
+                  Relative location to use when downloading, i.e. suggest &amp;lt;workspace&amp;gt;/&amp;lt;relativeLocation&amp;gt;/&amp;lt;component name&amp;gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="desiredNamePattern" type="string">
+            <annotation>
+               <documentation>
+                  A regular expression that should match the name of the component
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="substituteNamePattern" type="string">
+            <annotation>
+               <documentation>
+                  A regular expression used for substitution when the &lt;tt&gt;desiredName&lt;/tt&gt; does not match
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="nameSubstitution" type="string">
+            <annotation>
+               <documentation>
+                  The substitution string for the &lt;tt&gt;substituteNamePattern&lt;/tt&gt;
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

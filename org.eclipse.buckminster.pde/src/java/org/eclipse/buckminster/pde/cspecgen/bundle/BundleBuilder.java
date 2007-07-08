@@ -14,8 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
@@ -56,7 +57,14 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		if(reader instanceof EclipsePlatformReader)
 		{
 			MonitorUtils.complete(monitor);
-			return ((EclipsePlatformReader)reader).getPluginModelBase();
+			try
+			{
+				return ((EclipsePlatformReader)reader).getPluginModelBase();
+			}
+			catch(IllegalStateException e)
+			{
+				throw new MissingCSpecSourceException(reader.getProviderMatch());
+			}
 		}
 
 		monitor.beginTask(null, 7000);
@@ -75,7 +83,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			}
 			catch(FileNotFoundException e)
 			{
-				throw new BuckminsterException(reader.getNodeQuery().getComponentRequest() + ": Could not find " + BUNDLE_FILE);
+				throw new MissingCSpecSourceException(reader.getProviderMatch());
 			}
 
 			boolean fragment = model.isFragmentModel();
@@ -146,9 +154,9 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	}
 
 	@Override
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return KeyConstants.PLUGIN_CATEGORY;
+		return IComponentType.OSGI_BUNDLE;
 	}
 
 	@Override
@@ -159,7 +167,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		{
 			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
-			cspecBuilder.setCategory(KeyConstants.PLUGIN_CATEGORY);
+			cspecBuilder.setComponentTypeID(getComponentTypeID());
 			cspecBuilder.setVersion(pluginBase.getVersion(), VersionFactory.OSGiType.getId());
 			if(forResolutionAidOnly)
 				return;

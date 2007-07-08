@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IPath;
 public class CSpecBuilder
 {
 	private HashMap<String,AttributeBuilder> m_attributes;
-	private String m_category;
+	private String m_componentType;
 	private HashMap<String,DependencyBuilder> m_dependencies;
 	private Documentation m_documentation;
 	private HashMap<String,GeneratorBuilder> m_generators;
@@ -121,7 +121,7 @@ public class CSpecBuilder
 	public void clear()
 	{
 		m_name = null;
-		m_category = null;
+		m_componentType = null;
 		m_version = null;
 		m_documentation = null;
 		m_shortDesc = null;
@@ -147,7 +147,7 @@ public class CSpecBuilder
 
 	public CSpec createCSpec() throws CoreException
 	{
-		return new CSpec(m_name, m_category, m_version, m_documentation, m_shortDesc, m_dependencies, m_generators, m_attributes);
+		return new CSpec(m_name, m_componentType, m_version, m_documentation, m_shortDesc, m_dependencies, m_generators, m_attributes);
 	}
 
 	public DependencyBuilder createDependencyBuilder()
@@ -187,9 +187,9 @@ public class CSpecBuilder
 		return m_attributes == null ? null : m_attributes.get(name);
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return m_category;
+		return m_componentType;
 	}
 
 	public Map<String,DependencyBuilder> getDependencies()
@@ -281,7 +281,7 @@ public class CSpecBuilder
 	public void initFrom(CSpec cspec)
 	{
 		m_name = cspec.getName();
-		m_category = cspec.getCategory();
+		m_componentType = cspec.getComponentTypeID();
 		m_version = cspec.getVersion();
 		m_documentation = cspec.getDocumentation();
 		m_shortDesc = cspec.getShortDesc();
@@ -355,9 +355,9 @@ public class CSpecBuilder
 			m_generators.remove(name);
 	}
 
-	public void setCategory(String category)
+	public void setComponentTypeID(String componentType)
 	{
-		m_category = category;
+		m_componentType = componentType;
 	}
 
 	public void setDocumentation(Documentation documentation)

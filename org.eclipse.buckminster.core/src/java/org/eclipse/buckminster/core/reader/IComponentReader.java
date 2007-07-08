@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -34,6 +35,11 @@ public interface IComponentReader
 	 * @throws BuckminsterException
 	 */
 	void close();
+
+	/**
+	 * Returns the component type
+	 */
+	IComponentType getComponentType();
 
 	/**
 	 * Returns the current node query.

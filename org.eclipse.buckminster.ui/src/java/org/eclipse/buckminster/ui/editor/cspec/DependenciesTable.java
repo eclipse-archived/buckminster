@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
+import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -49,7 +49,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[]{"Name", "Category", "Version Designator"};
+		return new String[]{"Name", "Component Type", "Version Designator"};
 	}
 
 	public int[] getColumnWeights()
@@ -62,7 +62,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		Object[] array = new Object[getColumns()];
 		
 		array[0] = t.getName();
-		array[1] = t.getCategory();
+		array[1] = t.getComponentTypeID();
 		array[2] = t.getVersionDesignator();
 		
 		return array;
@@ -73,7 +73,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		DependencyBuilder builder = m_cspecBuilder.createDependencyBuilder();
 		
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
-		builder.setCategory(TextUtils.notEmptyString((String) args[1]));
+		builder.setComponentTypeID(TextUtils.notEmptyString((String) args[1]));
 		builder.setVersionDesignator((IVersionDesignator) args[2]);
 		
 		return builder;
@@ -88,7 +88,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 			case 0:
 				return getName(parent, idx, value);
 			case 1:
-				return getCategory(parent, idx, value);
+				return getComponentType(parent, idx, value);
 			case 2:
 				return getVersionDesignator(parent, idx, value);
 			default:
@@ -120,13 +120,13 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		return widgetin;
 	}
 
-	private IWidgetin getCategory(Composite parent, final int idx, Object value)
+	private IWidgetin getComponentType(Composite parent, final int idx, Object value)
 	{
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, SWT.READ_ONLY);
 
 		final IWidgetin widgetin = new WidgetinWrapper(combo);
 		
-		combo.setItems(ComponentCategory.getCategoryNames(true));
+		combo.setItems(AbstractComponentType.getComponentTypeIDs(true));
 		
 		int selectionIdx = 0;
 		if(value != null)

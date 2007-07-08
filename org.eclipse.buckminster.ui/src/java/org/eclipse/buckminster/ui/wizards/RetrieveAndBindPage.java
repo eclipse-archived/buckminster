@@ -729,7 +729,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		{
 			node = new MaterializationNodeBuilder();
 			node.setNamePattern(Pattern.compile("^\\Q" + cname.getName() + "\\E$"));
-			node.setCategory(cname.getCategory());
+			node.setComponentTypeID(cname.getComponentTypeID());
 			mspec.getNodes().add(node);
 		}
 		wizard.invalidateMaterializationContext();

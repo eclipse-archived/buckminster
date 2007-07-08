@@ -32,7 +32,7 @@ public class AdvisorNodeBuilder
 
 	private VersionSelector[] m_branchTagPath;
 
-	private String m_category;
+	private String m_componentType;
 
 	private Documentation m_documentation;
 
@@ -95,7 +95,7 @@ public class AdvisorNodeBuilder
 		m_attributes.clear();
 		m_properties = null;
 		m_documentation = null;
-		m_category = null;
+		m_componentType = null;
 		m_mutableLevel = MutableLevel.INDIFFERENT;
 		m_namePattern = null;
 		m_overlayFolder = null;
@@ -131,9 +131,9 @@ public class AdvisorNodeBuilder
 		return m_branchTagPath;
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return m_category;
+		return m_componentType;
 	}
 
 	public Documentation getDocumentation()
@@ -204,7 +204,7 @@ public class AdvisorNodeBuilder
 		this.clear();
 		m_allowCircularDependency = node.allowCircularDependency();
 		m_attributes.addAll(node.getAttributes());
-		m_category = node.getCategory();
+		m_componentType = node.getComponentTypeID();
 		m_documentation = node.getDocumentation();
 		m_mutableLevel = node.getMutableLevel();
 		m_namePattern = node.getNamePattern();
@@ -268,9 +268,9 @@ public class AdvisorNodeBuilder
 		m_branchTagPath = branchTagPath == null ? VersionSelector.EMPTY_PATH : branchTagPath;
 	}
 
-	public void setCategory(String category)
+	public void setComponentTypeID(String componentType)
 	{
-		m_category = category;
+		m_componentType = componentType;
 	}
 
 	public void setDocumentation(Documentation documentation)

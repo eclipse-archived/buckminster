@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.pde.internal;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -38,9 +39,9 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 	private final String m_componentName;
 	private final InstalledType m_type;
 
-	public EclipsePlatformVersionFinder(EclipsePlatformReaderType readerType, Provider provider, NodeQuery query) throws CoreException
+	public EclipsePlatformVersionFinder(EclipsePlatformReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
-		super(provider, query);
+		super(provider, ctype, query);
 		m_readerType = readerType;
 		String uri = provider.getURI(query.getProperties());
 		IPath path = new Path(uri);

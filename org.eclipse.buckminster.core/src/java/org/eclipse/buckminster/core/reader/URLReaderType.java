@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -59,8 +60,9 @@ public class URLReaderType extends AbstractReaderType
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
-		Provider provider = new Provider(readerType, IComponentType.UNKNOWN, null, null, new Format(urlString), null, false, false, null);
-		ProviderMatch pm = new ProviderMatch(provider, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
+		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
+		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, null, new Format(urlString), null, false, false, null);
+		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return provider.getReaderType().getReader(pm, monitor);
 	}
 

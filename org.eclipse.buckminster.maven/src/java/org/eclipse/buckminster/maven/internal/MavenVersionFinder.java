@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -50,9 +51,9 @@ public class MavenVersionFinder extends AbstractVersionFinder
 
 	private IPath[] m_fileList;
 
-	public MavenVersionFinder(MavenReaderType readerType, Provider provider, NodeQuery query) throws CoreException
+	public MavenVersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
-		super(provider, query);
+		super(provider, ctype, query);
 		m_readerType = readerType;
 		m_uri = readerType.getURI(provider, query.getProperties());
 		m_mapEntry = MavenReaderType.getGroupAndArtifact(provider, query.getComponentRequest());

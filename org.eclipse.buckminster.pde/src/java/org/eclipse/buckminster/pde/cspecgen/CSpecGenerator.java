@@ -10,13 +10,13 @@ package org.eclipse.buckminster.pde.cspecgen;
 
 import org.eclipse.buckminster.ant.AntBuilderConstants;
 import org.eclipse.buckminster.ant.actor.AntActor;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
@@ -108,18 +108,18 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return rmDir;
 	}
 
-	protected ComponentRequest createComponentRequest(String name, String category, String version)
+	protected ComponentRequest createComponentRequest(String name, String componentType, String version)
 	throws CoreException
 	{
 		if(version.equals("0.0.0"))
 			version = null;
-		return new ComponentRequest(name, category, version, VersionFactory.OSGiType.getId());
+		return new ComponentRequest(name, componentType, version, VersionFactory.OSGiType.getId());
 	}
 
-	protected ComponentRequest createComponentRequest(String name, String category, String version, int pdeMatchRule)
+	protected ComponentRequest createComponentRequest(String name, String componentType, String version, int pdeMatchRule)
 	throws CoreException
 	{
-		return new ComponentRequest(name, category, convertMatchRule(pdeMatchRule, version),
+		return new ComponentRequest(name, componentType, convertMatchRule(pdeMatchRule, version),
 			VersionFactory.OSGiType.getId());
 	}
 
@@ -199,7 +199,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected ComponentRequest createComponentRequest(IPluginModelBase pluginModelBase) throws CoreException
 	{
 		IPluginBase base = pluginModelBase.getPluginBase();
-		return createComponentRequest(base.getId(), KeyConstants.PLUGIN_CATEGORY, base.getVersion());
+		return createComponentRequest(base.getId(), IComponentType.OSGI_BUNDLE, base.getVersion());
 	}
 
 	protected ComponentRequest createComponentRequest(IPluginReference pluginReference, String category)

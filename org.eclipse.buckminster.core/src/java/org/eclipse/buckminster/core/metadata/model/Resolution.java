@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
@@ -54,6 +55,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public static final String ATTR_PROVIDER_ID = "providerId";
 
+	public static final String ATTR_COMPONENT_TYPE = "componentType";
+
 	public static final String ATTR_QUERY_ID = "queryId";
 
 	public static final String ATTR_REPOSITORY = "repository";
@@ -66,7 +69,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public static final String ELEM_REQUEST = "request";
 
-	public static final int SEQUENCE_NUMBER = 1;
+	public static final int SEQUENCE_NUMBER = 2;
 
 	private final VersionMatch m_versionMatch;
 
@@ -79,6 +82,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	private final Set<String> m_attributes;
 
 	private final String m_repository;
+
+	private final String m_componentTypeId;
 
 	private final UUID m_cspecId;
 
@@ -99,6 +104,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		NodeQuery nq = providerMatch.getNodeQuery();
 		m_cspec = cspec;
 		m_cspecId = cspec.getId();
+		m_componentTypeId = providerMatch.getComponentType().getId();
 		m_request = nq.getComponentRequest();
 		m_attributes = UUIDKeyed.createUnmodifiableSet(nq.getRequiredAttributes());
 		m_provider = provider;
@@ -132,8 +138,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_provider = old.getProvider();
+		m_componentTypeId = old.getComponentTypeId();
 		m_providerId = old.getProviderId();
-		m_versionMatch = old.getVersionMatch();
+		m_versionMatch = old.getVersionMatch().copyWithVersion(cspec.getVersion());
 		m_materializable = old.isMaterializable();
 		m_repository = old.getRepository();
 		m_remoteName = old.getRemoteName();
@@ -148,9 +155,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_provider = old.getProvider();
+		m_componentTypeId = old.getComponentTypeId();
 		m_providerId = old.getProviderId();
-		VersionMatch ov = old.getVersionMatch();
-		m_versionMatch = new VersionMatch(version, ov.getBranchOrTag(), ov.getSpace(), ov.getRevision(), ov.getTimestamp(), ov.getArtifactType());
+		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
 		m_materializable = old.isMaterializable();
 		m_repository = old.getRepository();
 		m_remoteName = old.getRemoteName();
@@ -158,12 +165,13 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_size = old.getSize();
 	}
 
-	public Resolution(UUID cspecId, VersionMatch versionMatch, UUID providerId,
+	public Resolution(UUID cspecId, String componentTypeId, VersionMatch versionMatch, UUID providerId,
 		boolean materializeable, ComponentRequest request, Set<String> attributes,
 		String repository, String remoteName, String contentType, long size)
 	{
 		m_cspecId = cspecId;
 		m_providerId = providerId;
+		m_componentTypeId = componentTypeId;
 		m_versionMatch = versionMatch;
 		m_materializable = materializeable;
 		m_request = request;
@@ -199,6 +207,11 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		if(m_cspec == null)
 			m_cspec = StorageManager.getDefault().getCSpecs().getElement(m_cspecId);
 		return m_cspec;
+	}
+
+	public String getComponentTypeId()
+	{
+		return m_componentTypeId;
 	}
 
 	public String getContentType()
@@ -312,24 +325,14 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		if(!request.getName().equals(m_request.getName()))
 			return false;
 
-		// If the request has a category then it must match
+		// If the request has a component type then it must match
 		//
-		String category = request.getCategory();
-		if(category != null && !category.equals(m_request.getCategory()))
+		String componentType = request.getComponentTypeID();
+		if(componentType != null && !componentType.equals(m_request.getComponentTypeID()))
 			return false;
 
 		IVersionDesignator vd = request.getVersionDesignator();
 		return vd == null ? true : vd.designates(getVersion());
-	}
-
-	/**
-	 * Returns <code>true</code> if the component is an Eclipse project which in essence means it
-	 * contains a valid ProjectDescription (a .project file).
-	 * @return <code>true</code> if the component is an Eclipse project
-	 */
-	public boolean isEclipseProject() throws CoreException
-	{
-		return getProvider().getComponentType().hasProjectDescription();
 	}
 
 	/**
@@ -419,6 +422,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_providerId.toString());
 		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
 
+		if(m_componentTypeId != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
 		if(m_remoteName != null)
 			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
 		if(m_contentType != null)
@@ -448,5 +453,11 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	private ISaxableStorage<Resolution> getStorage() throws CoreException
 	{
 		return StorageManager.getDefault().getResolutions();
+	}
+
+	public IComponentType getComponentType()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

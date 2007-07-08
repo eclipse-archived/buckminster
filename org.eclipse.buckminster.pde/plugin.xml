@@ -10,13 +10,28 @@
 	</extension>
  <extension
        point="org.eclipse.buckminster.core.componentTypes">
-    <componentType
-          class="org.eclipse.buckminster.pde.internal.EclipseInstalledType"
-          id="eclipse-installed"/>
-    <componentType
-          class="org.eclipse.buckminster.pde.internal.EclipseInstalledType"
-          id="eclipse.installed"/>
- </extension>
+		<componentType
+			class="org.eclipse.buckminster.pde.internal.EclipseBundleType"
+			id="osgi.bundle"
+			relativeLocation="plugins">
+			<metaFile path=".project" />
+			<metaFile path=".classpath" />
+			<metaFile path="META-INF/MANIFEST.MF" />
+			<metaFile path="plugin.xml" />
+			<metaFile path="build.properties" />
+		</componentType>
+		<componentType
+			class="org.eclipse.buckminster.pde.internal.EclipseFeatureType"
+			id="eclipse.feature"
+			desiredNamePattern="feature"
+			nameSubstitution="$1-feature"
+			relativeLocation="features"
+			substituteNamePattern="^(.*)$">
+			<metaFile path=".project" />
+			<metaFile path="feature.xml" />
+			<metaFile path="build.properties" />
+		</componentType>
+	</extension>
  <extension
        point="org.eclipse.buckminster.core.readerTypes">
     <readerType
@@ -31,18 +46,6 @@
     <buildScript
           id="buckminster.pdetasks"
           resource="/org/eclipse/buckminster/pde/antscripts/build.xml"/>
- </extension>
- <extension
-       point="org.eclipse.buckminster.core.componentCategories">
-    <componentCategory
-          name="plugin"
-          relativeLocation="plugins"/>
-    <componentCategory
-          desiredNamePattern="feature"
-          name="feature"
-          nameSubstitution="$1-feature"
-          relativeLocation="features"
-          substituteNamePattern="^(.*)$"/>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.parserExtensions">

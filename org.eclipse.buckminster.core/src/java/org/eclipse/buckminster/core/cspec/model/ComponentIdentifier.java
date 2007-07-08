@@ -27,9 +27,9 @@ public class ComponentIdentifier extends ComponentName
 	public static final String ATTR_VERSION_TYPE = "versionType";
 	public static final String ATTR_VERSION = "version";
 
-	public ComponentIdentifier(String name, String categoryName, IVersion version)
+	public ComponentIdentifier(String name, String componentTypeID, IVersion version)
 	{
-		super(name, categoryName);
+		super(name, componentTypeID);
 		m_version = version;
 	}
 
@@ -52,15 +52,15 @@ public class ComponentIdentifier extends ComponentName
 			version = VersionFactory.createVersion(versionType, versionStr);
 		}
 
-		String category = null;
+		String componentType = null;
 		int catIdx = componentIdentifierStr.indexOf(':');
 		if(catIdx >= 0)
 		{
-			category = componentIdentifierStr.substring(catIdx + 1);
+			componentType = componentIdentifierStr.substring(catIdx + 1);
 			componentIdentifierStr = componentIdentifierStr.substring(0, catIdx);
 		}
 
-		return new ComponentIdentifier(componentIdentifierStr, category, version);
+		return new ComponentIdentifier(componentIdentifierStr, componentType, version);
 	}
 
 	@Override
@@ -107,8 +107,8 @@ public class ComponentIdentifier extends ComponentName
 	 * follows</p>
 	 * <ul>
 	 * <li>If names are not equal, the match is always false</li>
-	 * <li>If both instances have a category, it must be equal</li>
-	 * <li>If one instance lacks a category, the categories are not considered part of the match</p>
+	 * <li>If both instances have a componentType, it must be equal</li>
+	 * <li>If one instance lacks a componentType, the types are not considered part of the match</p>
 	 * <li>If both instances have a version, it must be equal</li>
 	 * <li>If one instance lacks a version, the versions are not considered part of the match</p>
 	 * @param o The identifier to match with this one

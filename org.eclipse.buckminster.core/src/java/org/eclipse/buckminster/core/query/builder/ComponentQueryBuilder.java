@@ -79,11 +79,11 @@ public class ComponentQueryBuilder
 		return m_documentation;
 	}
 
-	public AdvisorNodeBuilder getNodeByPattern(String pattern, String category)
+	public AdvisorNodeBuilder getNodeByPattern(String pattern, String componentType)
 	{
 		for(AdvisorNodeBuilder node : m_advisorNodes)
 			if(node.getNamePattern().toString().equals(pattern)
-					&& Trivial.equalsAllowNull(node.getCategory(), category))
+					&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentType))
 				return node;
 		return null;
 	}

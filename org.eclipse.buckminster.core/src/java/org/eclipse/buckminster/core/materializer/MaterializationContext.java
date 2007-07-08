@@ -15,9 +15,9 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentCategory;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -96,7 +96,7 @@ public class MaterializationContext extends RMContext
 		if(location != null)
 			return location;
 
-		// Consult the component category to get a relative location
+		// Consult the component type to get a relative location
 		//
 		return getDefaultRootInstallLocation(resolution).append(getDefaultRelativeInstallLocation(resolution));
 	}
@@ -222,12 +222,12 @@ public class MaterializationContext extends RMContext
 	}
 
 	/**
-	 * Obtains the default relative install location for a given resolution. The method
-	 * consults the component category if present and then appends the name of the
-	 * component. A trailing separator will be appended if the expected artifact is
-	 * a directory.
-	 *
-	 * @param resolution The resolution for which we want a relative install location
+	 * Obtains the default relative install location for a given resolution. The method consults the component type and
+	 * then appends the name of the component. A trailing separator will be appended if the expected artifact is a
+	 * directory.
+	 * 
+	 * @param resolution
+	 *            The resolution for which we want a relative install location
 	 * @return A relative path.
 	 * @throws CoreException
 	 */
@@ -235,9 +235,9 @@ public class MaterializationContext extends RMContext
 	{
 		IPath relativeLocation = null;
 		ComponentName cName = resolution.getRequest();
-		ComponentCategory cc = ComponentCategory.getCategory(cName.getCategory());
-		if(cc != null)
-			relativeLocation = cc.getRelativeLocation();
+		IComponentType cType = cName.getComponentType();
+		if(cType != null)
+			relativeLocation = cType.getRelativeLocation();
 
 		if(resolution.getProvider().getReaderType().isFileReader())
 		{

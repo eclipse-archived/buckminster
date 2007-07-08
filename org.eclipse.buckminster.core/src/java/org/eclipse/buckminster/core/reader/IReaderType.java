@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -114,7 +115,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @param monitor The monitor used for progress reporting
 	 * @return A reader configured accordring to the provider and properties.
 	 */
-	IComponentReader getReader(Provider provider, NodeQuery query, VersionMatch version, IProgressMonitor monitor) throws CoreException;
+	IComponentReader getReader(Provider provider, IComponentType componentType, NodeQuery query, VersionMatch version, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns a reader that is maps to the corresponding providerMatch
@@ -127,12 +128,13 @@ public interface IReaderType extends IBuckminsterExtension
 	/**
 	 * Returns a version finder that can obtain known versions for the readerType/provider
 	 * combination.
-	 * @param provider The provider that the reader should use
+	 * @param provider The provider that the finder should use
+	 * @param componentType The component type
 	 * @param nodeQuery The node query.
 	 * @param monitor The monitor used for progress reporting
 	 * @return A version finder for the readerType/provider combination.
 	 */
-	IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException;
+	IVersionFinder getVersionFinder(Provider provider, IComponentType componentType, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns a reader type that can read a local component materialized by this

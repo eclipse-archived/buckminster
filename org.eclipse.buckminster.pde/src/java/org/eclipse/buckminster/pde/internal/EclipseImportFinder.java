@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
@@ -30,10 +31,10 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	private final EclipseImportReaderType m_readerType;
 	private final EclipseImportBase m_base;
 
-	public EclipseImportFinder(EclipseImportReaderType readerType, Provider provider, NodeQuery query)
+	public EclipseImportFinder(EclipseImportReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
 	throws CoreException
 	{
-		super(provider, query);
+		super(provider, ctype, query);
 		m_base = EclipseImportBase.obtain(provider.getURI(query.getProperties()), query.getComponentRequest());
 		m_readerType = readerType;
 	}

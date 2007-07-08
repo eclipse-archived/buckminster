@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -49,7 +49,7 @@ public class EclipsePlatformReaderType extends AbstractReaderType
 		String versionString = version == null ? null : version.toString();
 		String location;
 		ComponentRequest rq = cr.getRequest();
-		if(KeyConstants.FEATURE_CATEGORY.equals(rq.getCategory()))
+		if(IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID()))
 		{
 			IFeatureModel model = this.getBestFeature(rq.getName(), versionString);
 			if(model == null)
@@ -81,10 +81,10 @@ public class EclipsePlatformReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return new EclipsePlatformVersionFinder(this, provider, nodeQuery);
+		return new EclipsePlatformVersionFinder(this, provider, ctype, nodeQuery);
 	}
 
 	public IFeatureModel getBestFeature(String componentName, String desiredVersion)

@@ -24,6 +24,7 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -285,10 +286,11 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 	{
 		URL remoteURL = createRemoteComponentURL(subDir);
 		ProviderMatch myRI = getProviderMatch();
+		IComponentType ctype = myRI.getComponentType();
 		Provider myP = myRI.getProvider();
-		ProviderMatch match = new ProviderMatch(new Provider(IReaderType.URL_ZIPPED, myP.getComponentTypeId(),
-			myP.getManagedCategories(), myP.getVersionConverterDesc(), new Format(remoteURL.toString()), myP.getSpace(),
-			myP.isMutable(), myP.hasSource(), null), myRI.getVersionMatch(), ProviderScore.PREFERRED,
+		ProviderMatch match = new ProviderMatch(new Provider(IReaderType.URL_ZIPPED, new String[] { ctype.getId() },
+			myP.getVersionConverterDesc(), new Format(remoteURL.toString()), myP.getSpace(),
+			myP.isMutable(), myP.hasSource(), null), ctype, myRI.getVersionMatch(), ProviderScore.PREFERRED,
 			myRI.getNodeQuery());
 
 		IReaderType rd = CorePlugin.getDefault().getReaderType(IReaderType.URL_ZIPPED);

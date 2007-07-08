@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.reader;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -48,6 +49,11 @@ public abstract class AbstractReader implements IComponentReader
 	public IReaderType getReaderType()
 	{
 		return m_readerType;
+	}
+
+	public IComponentType getComponentType()
+	{
+		return m_providerMatch.getComponentType();
 	}
 
 	public void close()

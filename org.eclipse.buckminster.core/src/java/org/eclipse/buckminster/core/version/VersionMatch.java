@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.version;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
@@ -59,6 +60,14 @@ public class VersionMatch implements ISaxableElement
 		m_revision = revision;
 		m_timestamp = timestamp;
 		m_artifactType = artifactType;
+	}
+
+	public VersionMatch copyWithVersion(IVersion version)
+	{
+		if(Trivial.equalsAllowNull(version, m_version))
+			return this;
+		
+		return new VersionMatch(version, m_branchOrTag, m_space, -1, null, m_artifactType);
 	}
 
 	public String getArtifactType()

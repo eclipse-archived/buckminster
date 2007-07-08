@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -158,9 +158,17 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		String installLocation;
 		if(m_type == InstalledType.PLUGIN)
 		{
-			IPluginModelBase model = getPluginModelBase();
+			IPluginModelBase model;
+			try
+			{
+				model = getPluginModelBase();
+			}
+			catch(IllegalStateException e)
+			{
+				model = null;
+			}
 			if(model == null)
-				return null;
+				throw new FileNotFoundException(relativeFile);
 			installLocation = model.getInstallLocation();
 		}
 		else
@@ -173,17 +181,23 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 
 		File modelRoot = new File(installLocation);
 		String fileName;
-		String componentName = m_componentName;
-		if(!modelRoot.exists())
+		if(modelRoot.isDirectory())
 		{
-			componentName += ".jar";
-			File jarFile = new File(modelRoot, componentName);
-			if(!jarFile.exists())
+			File wantedFile = new File(modelRoot, relativeFile);
+			fileName = wantedFile.toString();
+			if(!wantedFile.exists())
+				throw new FileNotFoundException(fileName);
+			if(isReturn != null)
+				isReturn[0] = new FileInputStream(wantedFile);
+		}
+		else
+		{
+			if(!installLocation.endsWith(".jar"))
 				throw new FileNotFoundException(modelRoot.toString());
 
-			fileName = jarFile.toString() + '!' + relativeFile;
+			fileName = installLocation + '!' + relativeFile;
 
-			JarFile jf = new JarFile(jarFile);
+			final JarFile jf = new JarFile(modelRoot);
 			JarEntry entry = jf.getJarEntry(relativeFile);
 			if(entry == null)
 			{
@@ -193,16 +207,25 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 			if(isReturn == null)
 				jf.close();
 			else
-				isReturn[0] = jf.getInputStream(entry);
-		}
-		else
-		{
-			File wantedFile = new File(modelRoot, relativeFile);
-			fileName = wantedFile.toString();
-			if(!wantedFile.exists())
-				throw new FileNotFoundException(fileName);
-			if(isReturn != null)
-				isReturn[0] = new FileInputStream(wantedFile);
+			{
+				// Return a special InputStream that makes sure that the
+				// entry and the JarFile that it stems from are both closed
+				//
+				isReturn[0] = new FilterInputStream(jf.getInputStream(entry))
+				{
+					@Override
+					public void close() throws IOException
+					{
+						try
+						{
+							super.close();
+						}
+						catch(IOException e)
+						{}
+						jf.close();
+					}
+				};
+			}
 		}
 		return fileName;
 	}
@@ -212,7 +235,8 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 	{
 		try
 		{
-			return getResolvedFile(fileName, null) != null;
+			getResolvedFile(fileName, null);
+			return true;
 		}
 		catch(FileNotFoundException e)
 		{
@@ -249,13 +273,6 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		if(m_model == null)
 			m_model = getBestFeature(getDesiredVersion());
 		return (IFeatureModel)m_model;
-	}
-
-	String getCategory()
-	{
-		return m_type == InstalledType.PLUGIN
-			? KeyConstants.PLUGIN_CATEGORY
-			: KeyConstants.FEATURE_CATEGORY;
 	}
 
 	private IFeatureModel getBestFeature(String desiredVersion)

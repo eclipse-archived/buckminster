@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
@@ -33,9 +34,9 @@ class VersionFinder extends AbstractSCCSVersionFinder
 	private final DepotURI m_depotURI;
 	private final Connection m_connection;
 
-	VersionFinder(Provider provider, NodeQuery query) throws CoreException
+	VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
-		super(provider, query);
+		super(provider, ctype, query);
 		Map<String,String> props = query.getProperties();
 		m_depotURI = new DepotURI(DepotURI.createURI(provider.getURI(props)), null, props);
 		m_connection = new Connection(m_depotURI);

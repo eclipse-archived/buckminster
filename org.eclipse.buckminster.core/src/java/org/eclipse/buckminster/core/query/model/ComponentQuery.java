@@ -114,7 +114,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	public static final String TAG = "componentQuery";
 
-	public static final int SEQUENCE_NUMBER = 3;
+	public static final int SEQUENCE_NUMBER = 4;
 
 	public static ComponentQuery fromStream(String systemId, InputStream stream) throws CoreException
 	{
@@ -263,8 +263,8 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 			Pattern pattern = aNode.getNamePattern();
 			if(pattern.matcher(name).find())
 			{
-				String matchingCategory = aNode.getCategory();
-				if(matchingCategory == null || matchingCategory.equals(cName.getCategory()))
+				String matchingCategory = aNode.getComponentTypeID();
+				if(matchingCategory == null || matchingCategory.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
 		}
@@ -281,7 +281,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		for(AdvisorNode node : m_advisorNodes)
 			if(node.getNamePattern().toString().equals(pattern)
-			&& Trivial.equalsAllowNull(node.getCategory(), category))
+			&& Trivial.equalsAllowNull(node.getComponentTypeID(), category))
 				return node;
 		return null;
 	}

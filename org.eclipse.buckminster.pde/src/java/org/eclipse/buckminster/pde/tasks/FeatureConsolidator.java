@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
@@ -107,7 +107,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		return index + 1;
 	}
 
-	private static OSGiVersion findBestVersion(Map<String, OSGiVersion[]> versionMap, String id, String category,
+	private static OSGiVersion findBestVersion(Map<String, OSGiVersion[]> versionMap, String id, String componentType,
 			String refId, String versionStr) throws CoreException
 	{
 		OSGiVersion version;
@@ -377,7 +377,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			String newQualifier = getQualifierReplacement(version, id);
 			if(newQualifier.startsWith(GENERATOR_PREFIX))
 			{
-				newVersion = generateQualifier(id, version, newQualifier, KeyConstants.FEATURE_CATEGORY, deps);
+				newVersion = generateQualifier(id, version, newQualifier, IComponentType.ECLIPSE_FEATURE, deps);
 				if(newVersion != null)
 					feature.setVersion(newVersion);
 				m_featureModel.save(getOutputFile());
@@ -598,7 +598,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			String newVer = version.toString();
 			if(!newVer.equals(ref.getVersion()))
 				ref.setVersion(newVer);
-			return new ComponentIdentifier(ref.getId(), KeyConstants.FEATURE_CATEGORY, version);
+			return new ComponentIdentifier(ref.getId(), IComponentType.ECLIPSE_FEATURE, version);
 		}
 		return null;
 	}
@@ -611,7 +611,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			String newVer = version.toString();
 			if(!newVer.equals(ref.getVersion()))
 				ref.setVersion(newVer);
-			return new ComponentIdentifier(ref.getId(), KeyConstants.PLUGIN_CATEGORY, version);
+			return new ComponentIdentifier(ref.getId(), IComponentType.OSGI_BUNDLE, version);
 		}
 		return null;
 	}

@@ -146,9 +146,9 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 			Pattern pattern = aNode.getNamePattern();
 			if(pattern.matcher(name).find())
 			{
-				String matchingCategory = aNode.getCategory();
+				String matchingCType = aNode.getComponentTypeID();
 				
-				if(matchingCategory == null || matchingCategory.equals(cName.getCategory()))
+				if(matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
 		}

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 {
 	private Pattern m_namePattern;
-	private String m_category;
+	private String m_componentTypeID;
 	private boolean m_exclude;
 	private Pattern m_bindingNamePattern;
 	private String m_bindingNameReplacement;
@@ -37,7 +37,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	{
 		super.clear();
 		m_namePattern = null;
-		m_category = null;
+		m_componentTypeID = null;
 		m_resourcePath = null;
 		m_exclude = false;
 		m_bindingNamePattern = null;
@@ -62,14 +62,14 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 		return m_bindingNameReplacement;
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return m_category;
+		return m_componentTypeID;
 	}
 
-	public void setCategory(String category)
+	public void setComponentTypeID(String componentTypeID)
 	{
-		m_category = category;
+		m_componentTypeID = componentTypeID;
 	}
 
 	public Pattern getNamePattern()
@@ -116,7 +116,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	{
 		super.initFrom(mn);
 		m_namePattern = mn.getNamePattern();
-		m_category = mn.getCategory();
+		m_componentTypeID = mn.getComponentTypeID();
 		m_resourcePath = mn.getResourcePath();
 		m_exclude = mn.isExclude();
 		m_bindingNamePattern = mn.getBindingNamePattern();

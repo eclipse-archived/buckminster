@@ -16,14 +16,18 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.query.parser.ComponentRequestHandler;
-import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -45,6 +49,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	private UUID m_cspecId;
 	private UUID m_providerId;
 	private ComponentRequest m_request;
+	private String m_componentType;
 	private VersionMatch m_versionMatch;
 	private boolean m_materializable;
 	private String m_repository;
@@ -70,6 +75,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		m_cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
 		m_materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
 		m_providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
+		m_componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
 		m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
 		m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
 		m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
@@ -120,9 +126,12 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 						XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG + '>',
 						this.getDocumentLocator());
 		}
+		if(m_componentType == null)
+			m_componentType = legacyComponentType();
 
 		return new Resolution(
 				m_cspecId,
+				m_componentType,
 				m_versionMatch,
 				m_providerId,
 				m_materializable,
@@ -148,6 +157,34 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 	private static final Pattern s_tagExp = Pattern.compile("^/(.*)$");
 
+	private String legacyComponentType() throws SAXException
+	{
+		try
+		{
+			StorageManager sm = StorageManager.getDefault();
+			Provider provider = sm.getProviders().getElement(m_providerId);
+			String[] ctypeIDs = provider.getComponentTypeIDs();
+			if(ctypeIDs.length == 1)
+				return ctypeIDs[0];
+
+			CSpec cspec = sm.getCSpecs().getElement(m_cspecId);
+			String ctype = cspec.getComponentIdentifier().getComponentTypeID();
+			if(ctype != null)
+				return ctype;
+
+			if(ctypeIDs.length == 3
+			&& ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE)
+			&& ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE)
+			&& ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
+				return IComponentType.BUCKMINSTER;
+
+			return IComponentType.UNKNOWN;
+		}
+		catch(CoreException e)
+		{
+			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+		}
+	}
 	private VersionMatch legacyVersionMatch() throws SAXException
 	{
 		IVersion version;

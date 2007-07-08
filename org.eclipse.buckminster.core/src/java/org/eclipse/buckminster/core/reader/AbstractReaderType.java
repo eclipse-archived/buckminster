@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -44,9 +45,9 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 	{
 		private final VersionMatch m_versionMatch;
 
-		DefaultVersionFinder(Provider provider, NodeQuery query)
+		DefaultVersionFinder(Provider provider, IComponentType ctype, NodeQuery query)
 		{
-			super(provider, query);
+			super(provider, ctype, query);
 			VersionMatch vm = new VersionMatch(null, null, provider.getSpace(), -1, null, null);
 			m_versionMatch = query.isMatch(vm) ? vm : null;
 		}
@@ -134,19 +135,19 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 
 	public IComponentReader getReader(Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException
 	{
-		return this.getReader(cr.getProvider(), new NodeQuery(context, new QualifiedDependency(
+		return this.getReader(cr.getProvider(), cr.getComponentType(), new NodeQuery(context, new QualifiedDependency(
 			cr.getRequest(), cr.getAttributes())), cr.getVersionMatch(), monitor);
 	}
 
-	public IComponentReader getReader(Provider provider, NodeQuery query, VersionMatch versionMatch, IProgressMonitor monitor)
+	public IComponentReader getReader(Provider provider, IComponentType ctype, NodeQuery query, VersionMatch versionMatch, IProgressMonitor monitor)
 	throws CoreException
 	{
-		return this.getReader(new ProviderMatch(provider, versionMatch, ProviderScore.FAIR, query), monitor);
+		return this.getReader(new ProviderMatch(provider, ctype, versionMatch, ProviderScore.FAIR, query), monitor);
 	}
 
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		return new DefaultVersionFinder(provider, query);
+		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
 	public void postMaterialization(MaterializationContext contextIProgress, IProgressMonitor monitor) throws CoreException

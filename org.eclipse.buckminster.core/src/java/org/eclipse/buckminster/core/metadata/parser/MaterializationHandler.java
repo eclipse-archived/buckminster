@@ -10,8 +10,8 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
+import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -63,7 +63,7 @@ public class MaterializationHandler extends ExtensionAwareHandler
 		}
 		else
 		{
-			String category = getOptionalStringValue(attrs, ComponentName.ATTR_CATEGORY);
+			String ctype = CSpecHandler.getComponentType(attrs);
 			IVersion version = null;
 	
 			String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
@@ -81,7 +81,7 @@ public class MaterializationHandler extends ExtensionAwareHandler
 					throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 				}
 			}
-			cid = new ComponentIdentifier(name, category, version);
+			cid = new ComponentIdentifier(name, ctype, version);
 		}
 		m_materialization = new Materialization(
 				Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION)), cid);

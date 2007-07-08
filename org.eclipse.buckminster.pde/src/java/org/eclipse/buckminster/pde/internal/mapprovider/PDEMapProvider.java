@@ -23,12 +23,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -48,6 +48,7 @@ import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,7 +56,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.pde.build.IFetchFactory;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PDEMapProvider extends Provider
@@ -64,10 +64,10 @@ public class PDEMapProvider extends Provider
 
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
 
-	public PDEMapProvider(String remoteReaderType, String componentType, String[] managedCategories,
-		VersionConverterDesc vcDesc, Format uri, String space, boolean mutable, boolean source, Documentation documentation)
+	public PDEMapProvider(String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
+		Format uri, String space, boolean mutable, boolean source, Documentation documentation)
 	{
-		super(remoteReaderType, componentType, managedCategories, vcDesc, uri, space, mutable, source, documentation);
+		super(remoteReaderType, componentTypes, vcDesc, uri, space, mutable, source, documentation);
 	}
 
 	@Override
@@ -118,8 +118,7 @@ public class PDEMapProvider extends Provider
 			}
 
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(rt.getId(), getComponentTypeId(),
-				getManagedCategories(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
+			Provider delegated = new Provider(rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
 				hasSource(), null)
 			{
 				@Override
@@ -129,7 +128,10 @@ public class PDEMapProvider extends Provider
 				}
 			};
 
-			return new ProviderMatch(delegated, vm, ProviderScore.GOOD, query);
+			String ctypeID = rq.getComponentTypeID();
+			if(ctypeID == null)
+				return delegated.findMatch(query, problemCollector, monitor);
+			return new ProviderMatch(delegated, plugin.getComponentType(ctypeID), vm, ProviderScore.GOOD, query);
 		}
 		finally
 		{
@@ -146,7 +148,7 @@ public class PDEMapProvider extends Provider
 		{
 			ComponentRequest rq = query.getComponentRequest();
 			File tempSite = EclipseImportReaderType.getTempSite(query.getContext().getUserCache());	
-			File destDir = new File(tempSite, rq.getCategory() + 's');
+			File destDir = new File(tempSite, rq.getComponentTypeID() + 's');
 
 			input = URLUtils.openStream(repoURL, MonitorUtils.subMonitor(monitor, 45));
 			FileUtils.copyFile(input, destDir, new Path(repoURL.toURI().getPath()).lastSegment(), MonitorUtils.subMonitor(monitor, 5));
@@ -173,12 +175,12 @@ public class PDEMapProvider extends Provider
 
 		ComponentName wanted = query.getComponentRequest();
 		String name = wanted.getName();
-		String category = wanted.getCategory();
+		String ctype = wanted.getComponentTypeID();
 
 		for(Map.Entry<ComponentName, TypedValue> entry : map.entrySet())
 		{
 			ComponentName cn = entry.getKey();
-			if(cn.getName().equals(name) && category.equals(getCategory(cn)))
+			if(cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID()))
 				return entry.getValue();
 		}
 
@@ -190,16 +192,6 @@ public class PDEMapProvider extends Provider
 		problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 		PDEPlugin.getLogger().debug(msg);
 		return null;
-	}
-
-	private static String getCategory(ComponentName name)
-	{
-		String cnCat = name.getCategory();
-		return cnCat.equals(IFetchFactory.ELEMENT_TYPE_BUNDLE)
-			|| cnCat.equals(IFetchFactory.ELEMENT_TYPE_FRAGMENT)
-			|| cnCat.equals(IFetchFactory.ELEMENT_TYPE_PLUGIN)
-			|| cnCat.equals("base." + IFetchFactory.ELEMENT_TYPE_PLUGIN) ? KeyConstants.PLUGIN_CATEGORY
-			: KeyConstants.FEATURE_CATEGORY;
 	}
 
 	/**
@@ -224,7 +216,7 @@ public class PDEMapProvider extends Provider
 
 			try
 			{
-				ProviderMatch match = new ProviderMatch(this,
+				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
 					new VersionMatch(null, null, getSpace(), -1, new Date(),null), 
 					ProviderScore.GOOD, query);
 

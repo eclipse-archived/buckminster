@@ -22,11 +22,10 @@ import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
-import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.runtime.IPath;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -41,7 +40,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_ATTRIBUTES = "attributes";
 
-	public static final String ATTR_CATEGORY = "category";
+	public static final String ATTR_COMPONENT_TYPE = "category";
 
 	public static final String ATTR_MUTABLE_LEVEL = "mutableLevel";
 
@@ -91,7 +90,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	private final List<String> m_attributes;
 
-	private final String m_category;
+	private final String m_componentTypeID;
 
 	private final MutableLevel m_mutableLevel;
 
@@ -134,7 +133,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		m_documentation = bld.getDocumentation();
 		m_allowCircularDependency = bld.allowCircularDependency();
 		m_namePattern = bld.getNamePattern();
-		m_category = bld.getCategory();
+		m_componentTypeID = bld.getComponentTypeID();
 		m_overlayFolder = bld.getOverlayFolder();
 		m_prune = bld.isPrune();
 		m_mutableLevel = bld.getMutableLevel();
@@ -170,9 +169,9 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_branchTagPath;
 	}
 
-	public final String getCategory()
+	public final String getComponentTypeID()
 	{
-		return m_category;
+		return m_componentTypeID;
 	}
 
 	public String getDefaultTag()
@@ -183,12 +182,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
-	}
-
-	public final IPath getMaterializationLocation(String projectName)
-	{
-		// TODO: Implement this
-		return null;
 	}
 
 	public final MutableLevel getMutableLevel()
@@ -273,8 +266,8 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
 		if(m_overlayFolder != null)
 			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, m_overlayFolder.toString());
-		if(m_category != null)
-			Utils.addAttribute(attrs, ATTR_CATEGORY, m_category);
+		if(m_componentTypeID != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
 		if(m_mutableLevel != MutableLevel.INDIFFERENT)
 			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, m_mutableLevel.name());
 		if(m_sourceLevel != SourceLevel.INDIFFERENT)

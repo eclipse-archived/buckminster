@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.version;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -50,9 +51,9 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		}
 	}
 
-	protected AbstractSCCSVersionFinder(Provider provider, NodeQuery query)
+	protected AbstractSCCSVersionFinder(Provider provider, IComponentType componentType, NodeQuery query)
 	{
-		super(provider, query);
+		super(provider, componentType, query);
 	}
 
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException

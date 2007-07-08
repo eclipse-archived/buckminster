@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -186,13 +187,14 @@ public class CVSTest extends TestCase
 						Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3",
 						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
 
-		Provider provider = new Provider(rd.getId(), "unknown", null, vd, new Format(
+		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
+		Provider provider = new Provider(rd.getId(), new String[] { unknown.getId() }, vd, new Format(
 				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, false, false, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));
 		cq.setResourceMapURL(this.getClass().getResource("test.rmap"));
 		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
-		IVersionFinder versionFinder = rd.getVersionFinder(provider, context.getRootNodeQuery(), new NullProgressMonitor());
+		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(), new NullProgressMonitor());
 		try
 		{
 			System.out.println("[8.0.0,8.0.4] resulted in version: " + versionFinder.getBestVersion(new NullProgressMonitor()));

@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.reader;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
@@ -28,9 +29,9 @@ public class SiteFeatureFinder extends AbstractVersionFinder
 	private final ISite m_site;
 	private final ComponentRequest m_request;
 
-	SiteFeatureFinder(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	SiteFeatureFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		super(provider, query);
+		super(provider, ctype, query);
 		m_site = SiteFeatureReaderType.getSite(provider.getURI(query.getProperties()), monitor);
 		m_request = query.getComponentRequest();
 	}

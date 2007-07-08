@@ -10,13 +10,15 @@
 
 package org.eclipse.buckminster.core.ctype;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -29,6 +31,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IComponentType extends IBuckminsterExtension
 {
+	public static final String OSGI_BUNDLE = "osgi.bundle";
+
+	public static final String ECLIPSE_FEATURE = "eclipse.feature";
+
 	// Some well known component types included in the core distro
 	//
 	public static final String ECLIPSE_INSTALLED = "eclipse.installed";
@@ -72,9 +78,30 @@ public interface IComponentType extends IBuckminsterExtension
 	throws CoreException;
 
 	/**
-	 * Returns true if components of this type has a ProjectDescription (i.e. a .project file).
-	 * @return true if components has a ProjectDescription.
-	 * @throws BuckminsterException
+	 * A regular expression that should match the name of the component. The project name
+	 * will be subject to name substitution using the {@link #getSubstituteNamePattern()}
+	 * and {@link #getNameSubstitution()} when the name does not match.
+	 * @return The regular expression that controls if name substitution is needed or not.
 	 */
-	boolean hasProjectDescription() throws BuckminsterException;
+	Pattern getDesiredNamePattern();
+
+	/**
+	 * The substitution string for the pattern returned by {@link #getSubstituteNamePattern()}
+	 * @return The substitution string
+	 */
+	String getNameSubstitution();
+
+	/**
+	 * Suggested Workspace relative location to use when materializing, i.e. suggest
+	 * &amp;lt;workspace&amp;gt;/&amp;lt;relativeLocation&amp;gt;/&amp;lt;component name&amp;gt;
+	 * @return The suggested workspace relative location
+	 */
+	IPath getRelativeLocation();
+
+	/**
+	 * A regular expression used for substitution when the pattern returned by {@link #getDesiredNamePattern()}
+	 * does not match.
+	 * @return The expression to use for the name substitution
+	 */
+	Pattern getSubstituteNamePattern();
 }

@@ -10,8 +10,13 @@
 
 package org.eclipse.buckminster.core.resolver;
 
+import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -19,13 +24,14 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
-import org.eclipse.buckminster.core.ctype.EclipseComponentType;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -41,10 +47,12 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -57,13 +65,13 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * The LocalResolver will attempt to resolve the query using locally available resources. This
- * includes:
+ * The LocalResolver will attempt to resolve the query using locally available resources. This includes:
  * <ul>
  * <li>Projects in the Eclipse Workspace</li>
  * <li>Materializations previously done by Buckminster using this workspace</li>
  * <li>Features and bundles in the target platform</li>
  * </ul>
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("serial")
@@ -74,14 +82,15 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public static final Provider INSTALLED_FEATURE_PROVIDER;
 	static
 	{
-		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType, new BidirectionalTransformer[0]);
+		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType,
+				new BidirectionalTransformer[0]);
 		INSTALLED_BUNDLE_PROVIDER = new Provider(IReaderType.ECLIPSE_PLATFORM,
-			IComponentType.ECLIPSE_INSTALLED, new String[] { KeyConstants.PLUGIN_CATEGORY }, pdeConverter,
-			new Format("plugin/${" + KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
+				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${"
+						+ KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
 
 		INSTALLED_FEATURE_PROVIDER = new Provider(IReaderType.ECLIPSE_PLATFORM,
-			IComponentType.ECLIPSE_INSTALLED, new String[] { KeyConstants.FEATURE_CATEGORY }, pdeConverter,
-			new Format("feature/${" + KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
+				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${"
+						+ KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
 	}
 
 	private final ResolutionContext m_context;
@@ -120,8 +129,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return resolve(m_context.getComponentQuery().getRootRequest(), monitor);
 	}
 
-	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor)
-	throws CoreException
+	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
 		if(bom.isFullyResolved())
 		{
@@ -129,7 +137,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			return bom;
 		}
 		ComponentQuery cquery = bom.getQuery();
-		ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery())) ? m_context : new ResolutionContext(cquery, m_context);
+		ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery()))
+				? m_context
+				: new ResolutionContext(cquery, m_context);
 		BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom));
 		if(!newBom.contentEqual(bom))
 			bom = newBom;
@@ -214,8 +224,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				{
 					// Make sure we have a materialization for the project.
 					//
-					Materialization mat = new Materialization(
-						existingProject.getLocation().addTrailingSeparator(), ci);
+					Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(), ci);
 					mat.store();
 					resolution.store();
 					return new ResolvedNode(query, resolution);
@@ -228,9 +237,10 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			// Generate the resolution from the target platform
 			//
 			Provider provider;
-			if(KeyConstants.PLUGIN_CATEGORY.equals(request.getCategory()))
+			String ctypeID = request.getComponentTypeID();
+			if(IComponentType.OSGI_BUNDLE.equals(ctypeID))
 				provider = INSTALLED_BUNDLE_PROVIDER;
-			else if(KeyConstants.FEATURE_CATEGORY.equals(request.getCategory()))
+			else if(IComponentType.ECLIPSE_FEATURE.equals(ctypeID))
 				provider = INSTALLED_FEATURE_PROVIDER;
 			else
 				return null;
@@ -241,10 +251,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				return null;
 
 			IProgressMonitor nullMonitor = new NullProgressMonitor();
-			IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(provider, query,
-				match.getVersionMatch(), nullMonitor) };
-			DepNode node = provider.getComponentType().getResolutionBuilder(reader[0], nullMonitor).build(
-				reader, false, nullMonitor);
+			IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(match, nullMonitor) };
+			DepNode node = match.getComponentType().getResolutionBuilder(reader[0], nullMonitor).build(reader,
+					false, nullMonitor);
 			node.getResolution().store();
 			if(reader[0] != null)
 				reader[0].close();
@@ -303,7 +312,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			if(nrs.length == top)
 			{
 				nr = createResolverNode(context, qDep);
-				ResolverNode[] newNrs = new ResolverNode[top+1];
+				ResolverNode[] newNrs = new ResolverNode[top + 1];
 				System.arraycopy(nrs, 0, newNrs, 0, top);
 				newNrs[top] = nr;
 				put(key, newNrs);
@@ -330,8 +339,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	{
 		HashMap<UUID, DepNode> nodeMap = new HashMap<UUID, DepNode>();
 		Stack<Resolution> circularDepTrap = new Stack<Resolution>();
-		BillOfMaterials bom = BillOfMaterials.create(topNode.collectNodes(nodeMap, circularDepTrap, true),
-			getContext().getComponentQuery());
+		BillOfMaterials bom = BillOfMaterials.create(topNode.collectNodes(nodeMap, circularDepTrap, true), getContext()
+				.getComponentQuery());
 		bom.store();
 		return bom;
 	}
@@ -398,81 +407,100 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		{
 			DepNode child = children.get(idx);
 			ComponentQuery cquery = child.getQuery();
-			ResolutionContext childContext = (cquery == null) ? context : new ResolutionContext(cquery, context);
+			ResolutionContext childContext = (cquery == null)
+					? context
+					: new ResolutionContext(cquery, context);
 			resolvedChildren[idx] = m_recursiveResolve
-				? deepResolve(childContext, child)
-				: getResolverNode(childContext, child.getQualifiedDependency());
+					? deepResolve(childContext, child)
+					: getResolverNode(childContext, child.getQualifiedDependency());
 		}
 		node.setResolution(depNode.getResolution(), resolvedChildren);
 		return node;
 	}
 
-	public static Resolution fromPath(IPath productPath, String name) throws CoreException
+	public static CSpec fromPath(IPath productPath, String name) throws CoreException
 	{
-		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest(name, EclipseComponentType.guessCategory(productPath),
-			null));
-		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
-		return fromPath(context.getRootNodeQuery(), productPath, null);
+		Resolution resolution = fromPath(productPath, name, null, new NullProgressMonitor());
+		return resolution == null
+				? null
+				: resolution.getCSpec();
 	}
 
-	public static BillOfMaterials fromProject(IProject project, IProgressMonitor monitor)
-	throws CoreException
+	private static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor)
+			throws CoreException
 	{
+		Set<String> possibleTypes;
+		if(givenCtypeId != null)
+			possibleTypes = Collections.singleton(givenCtypeId);
+		else
+		{
+			possibleTypes = new HashSet<String>();
+			Map<IPath, String> cspecSources = MetadataSynchronizer.getDefault().getCSpecSources();
+			for(Map.Entry<IPath, String> entry : cspecSources.entrySet())
+			{
+				IPath path = entry.getKey();
+				if(productPath.append(path).toFile().exists())
+					possibleTypes.add(entry.getValue());
+			}
+			if(possibleTypes.isEmpty())
+				possibleTypes.add(IComponentType.UNKNOWN);
+		}
+
+		Format repoURI;
+		try
+		{
+			repoURI = new Format(productPath.toFile().toURI().toURL().toString());
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+
+		// We might have more then one possible type. Select the one that produces the
+		// largest CSPEC (should be fast considering the IPath is local
+		//
+		ComponentRequest rq = new ComponentRequest(name, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest(project.getName(),
-			EclipseComponentType.guessCategory(project), null));
-		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
-		context.setContinueOnError(true);
-		IResolver local = new LocalResolver(context);
-		return local.resolve(monitor);
+		queryBld.setRootRequest(rq);
+		ComponentQuery cquery = queryBld.createComponentQuery();
+		ResolutionContext context = new ResolutionContext(cquery);
+		NodeQuery nq = new NodeQuery(context, rq, null);
+		Provider provider = new Provider(IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, false, false, null);
+
+		monitor.beginTask(null, possibleTypes.size() * 100);
+		int largestCSpecSize = -1;
+		Resolution bestMatch = null;
+		for(String ctypeId : possibleTypes)
+		{
+			IComponentType ctype = CorePlugin.getDefault().getComponentType(ctypeId);
+			ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
+
+			try
+			{
+				DepNode node = ctype.getResolution(pm, MonitorUtils.subMonitor(monitor, 100));
+				Resolution resolution = node.getResolution();
+				if(resolution == null)
+					continue;
+
+				int imageSize = resolution.getCSpec().getImage().length;
+				if(bestMatch == null || largestCSpecSize < imageSize)
+				{
+					largestCSpecSize = imageSize;
+					bestMatch = resolution;
+				}
+			}
+			catch(MissingCSpecSourceException e)
+			{
+				continue;
+			}
+		}
+		return bestMatch;
 	}
 
 	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
-		IProgressMonitor nullMonitor = new NullProgressMonitor();
-
-		boolean mutable;
-		boolean hasSource;
-		if(oldInfo != null)
-		{
-			Provider oldProvider = oldInfo.getProvider();
-			mutable = oldProvider.isMutable();
-			hasSource = oldProvider.hasSource();
-		}
-		else
-		{
-			mutable = true;
-			hasSource = true;
-		}
-
-		Provider provider = new Provider(IReaderType.LOCAL, IComponentType.ECLIPSE_PROJECT, null, null,
-			new Format(path.toOSString()), null, mutable, hasSource, null);
-
-		IReaderType readerType = provider.getReaderType();
-		IComponentType componentType = provider.getComponentType();
-
-		// The url.catalog reader doesn't care much about versions anyway so
-		// it's save to
-		// use default here.
-		//
-		Resolution resolution;
-		IComponentReader reader[] = new IComponentReader[] { readerType.getReader(provider, query, VersionMatch.DEFAULT, nullMonitor) };
-		try
-		{
-			IResolutionBuilder builder = componentType.getResolutionBuilder(reader[0], nullMonitor);
-	
-			String category = request.getCategory();
-			if(category != null && !category.equals(builder.getCategory()))
-				throw new CategoryMismatchException(request.getName(), category, builder.getCategory());
-			resolution = builder.build(reader, false, nullMonitor).getResolution();
-		}
-		finally
-		{
-			if(reader[0] != null)
-				reader[0].close();
-		}
+		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(), new NullProgressMonitor());
 
 		// Retain old component info if present. We only wanted the cspec
 		// changes

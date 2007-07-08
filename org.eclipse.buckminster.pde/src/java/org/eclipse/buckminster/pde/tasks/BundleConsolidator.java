@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleException;
@@ -78,7 +78,7 @@ public class BundleConsolidator extends VersionConsolidator
 				String newQualifier = getQualifierReplacement(version, id);
 				String newVersion = version;
 				if(newQualifier.startsWith(GENERATOR_PREFIX))
-					newVersion = generateQualifier(id, version, newQualifier, KeyConstants.PLUGIN_CATEGORY, Collections.<ComponentIdentifier>emptyList());
+					newVersion = generateQualifier(id, version, newQualifier, IComponentType.OSGI_BUNDLE, Collections.<ComponentIdentifier>emptyList());
 				else
 					newVersion = version.replaceFirst(PROPERTY_QUALIFIER, newQualifier);
 

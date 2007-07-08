@@ -56,8 +56,8 @@ public class RMapGenerator extends AbstractGenerator
 		SearchPath dflt = new SearchPath(DEFAULT_SEARCH_PATH);
 		dflt.addProvider(new Provider(
 				IReaderType.URL,
-				IComponentType.BUCKMINSTER,
-				null, null,
+				new String[] { IComponentType.BUCKMINSTER },
+				null,
 				new Format(GENERATED_FOLDER_URL_REF + "/${" + KeyConstants.COMPONENT_NAME + "}.cspec"),
 				null, true, true, null));
 		return dflt;
@@ -68,8 +68,8 @@ public class RMapGenerator extends AbstractGenerator
 		SearchPath searchPath = new SearchPath(sc.getCSpec().getName());
 		searchPath.addProvider(new Provider(
 				IReaderType.ECLIPSE_SITE_FEATURE,
-				IComponentType.ECLIPSE_SITE_FEATURE,
-				null, new VersionConverterDesc(IVersionConverter.TAG, VersionFactory.OSGiType, new BidirectionalTransformer[0]),
+				new String[] { IComponentType.ECLIPSE_SITE_FEATURE },
+				new VersionConverterDesc(IVersionConverter.TAG, VersionFactory.OSGiType, new BidirectionalTransformer[0]),
 				new Format(sc.getRmapProviderURL()),
 				null, true, true, null));
 		return searchPath;

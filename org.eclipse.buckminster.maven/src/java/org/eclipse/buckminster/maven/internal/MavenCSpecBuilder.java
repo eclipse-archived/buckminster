@@ -20,7 +20,8 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.helpers.AbstractComponentType;
+import org.eclipse.buckminster.core.ctype.AbstractComponentType;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -57,23 +58,40 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 2000);
 			if(reader instanceof MavenReader)
 			{
+				// We are reading from a maven repository. In that case, we will
+				// allow a missing pom file.
+				//
 				IPath[] pomPathRet = new IPath[1];
 				pomDoc = ((MavenReader)reader).getPOMDocument(pomPathRet, subMon);
 				pomPath = pomPathRet[0];
 			}
-			else if(reader instanceof ICatalogReader)
+			else
 			{
+				// Some other reader is used. This reader is either reading a source
+				// directory (catalog reader) or a pom/project file directly. In any
+				// case, we consider a missing file an exceptional condition.
+				//
 				try
 				{
-					pomDoc = ((ICatalogReader)reader).readFile("pom.xml", this, subMon);
+					if(reader instanceof ICatalogReader)
+					{
+						try
+						{
+							pomDoc = ((ICatalogReader)reader).readFile("pom.xml", this, subMon);
+						}
+						catch(FileNotFoundException e)
+						{
+							pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon);
+						}
+					}
+					else
+						pomDoc = ((IFileReader)reader).readFile(this, subMon);
 				}
-				catch(FileNotFoundException e)
+				catch(FileNotFoundException e2)
 				{
-					pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon);
+					throw new MissingCSpecSourceException(reader.getProviderMatch());
 				}
 			}
-			else
-				pomDoc = ((IFileReader)reader).readFile(this, subMon);
 
 			CSpecBuilder cspecBld = ri.createCSpec();
 			GroupBuilder archives = AbstractComponentType.addSelfAsJarArtifactGroups(cspecBld);

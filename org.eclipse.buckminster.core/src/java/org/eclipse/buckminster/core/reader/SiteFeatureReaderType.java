@@ -41,11 +41,11 @@ public class SiteFeatureReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor)
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
 	throws CoreException
 	{
 		checkComponentType(provider);
-		return new SiteFeatureFinder(provider, nodeQuery, monitor);
+		return new SiteFeatureFinder(provider, ctype, nodeQuery, monitor);
 	}
 
 	/**
@@ -57,7 +57,8 @@ public class SiteFeatureReaderType extends AbstractReaderType
 	 */
 	public static void checkComponentType(Provider provider) throws CoreException
 	{
-		if(!IComponentType.ECLIPSE_SITE_FEATURE.equals(provider.getComponentTypeId()))
+		String[] ctypeIDs = provider.getComponentTypeIDs();
+		if(!(ctypeIDs.length == 1 && IComponentType.ECLIPSE_SITE_FEATURE.equals(ctypeIDs[0])))
 			throw BuckminsterException.fromMessage("Site reader can only be used with site.feature component type");
 	}
 

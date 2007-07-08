@@ -54,9 +54,9 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	DepNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Returns the category of the cspec built by this builder or <code>null</code> if not applicable.
+	 * Returns the component type of the cspec built by this builder.
 	 */
-	String getCategory();
+	String getComponentTypeID();
 
 	/**
 	 * Returns the component information that reflects this builder in association with the given <code>reader</code>.

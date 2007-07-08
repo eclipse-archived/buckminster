@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -12,6 +11,7 @@ import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -97,7 +97,7 @@ public class CSpecFromSource extends CSpecGenerator
 		CSpecBuilder cspec = getCSpec();
 		cspec.setName(m_feature.getId());
 		cspec.setVersion(m_feature.getVersion(), VersionFactory.OSGiType.getId());
-		cspec.setCategory(KeyConstants.FEATURE_CATEGORY);
+		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
 
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
@@ -248,13 +248,13 @@ public class CSpecFromSource extends CSpecGenerator
 
 	ComponentRequest createComponentRequest(IFeatureChild feature) throws CoreException
 	{
-		return createComponentRequest(feature.getId(), KeyConstants.FEATURE_CATEGORY, feature.getVersion(),
+		return createComponentRequest(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(),
 			feature.getMatch());
 	}
 
 	ComponentRequest createComponentRequest(IFeaturePlugin pluginReference) throws CoreException
 	{
-		return createComponentRequest(pluginReference.getId(), KeyConstants.PLUGIN_CATEGORY,
+		return createComponentRequest(pluginReference.getId(), IComponentType.OSGI_BUNDLE,
 			pluginReference.getVersion());
 	}
 

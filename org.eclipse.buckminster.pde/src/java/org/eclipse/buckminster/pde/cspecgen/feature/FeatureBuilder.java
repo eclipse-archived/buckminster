@@ -15,9 +15,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.PropertiesParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
@@ -38,9 +39,9 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 public class FeatureBuilder extends PDEBuilder
 {
 	@Override
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return KeyConstants.FEATURE_CATEGORY;
+		return IComponentType.ECLIPSE_FEATURE;
 	}
 
 	@Override
@@ -58,8 +59,17 @@ public class FeatureBuilder extends PDEBuilder
 			}
 			else
 			{
-				model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor, 40));
+				try
+				{
+					model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor, 40));
+				}
+				catch(FileNotFoundException e)
+				{
+					model = null;
+				}
 			}
+			if(model == null)
+				throw new MissingCSpecSourceException(reader.getProviderMatch());
 			feature = model.getFeature();
 		}
 		catch(IOException e)

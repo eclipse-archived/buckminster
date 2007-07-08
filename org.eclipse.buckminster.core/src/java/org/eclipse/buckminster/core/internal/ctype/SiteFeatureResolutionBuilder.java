@@ -13,13 +13,15 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -57,6 +59,9 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		try
 		{
 			IFeature siteFeature = ((SiteFeatureReader)reader).getFeature(MonitorUtils.subMonitor(monitor, 50));
+			if(siteFeature == null)
+				throw new MissingCSpecSourceException(reader.getProviderMatch());
+
 			if(forResolutionAidOnly)
 				return new ResolvedNode(new Resolution(getCSpecBuilder(siteFeature).createCSpec(), reader), null);
 
@@ -72,9 +77,9 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 	}
 
 	@Override
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return KeyConstants.SITE_FEATURE_CATEGORY;
+		return IComponentType.ECLIPSE_SITE_FEATURE;
 	}
 
 	private ResolverNode buildCSpecFromSiteFeature(IComponentReader reader, Map<ComponentName, ResolverNode> nodes, IFeature siteFeature, DepNode depNode, IProgressMonitor monitor) throws CoreException
@@ -99,6 +104,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		ResolverNode[] children = null;
 		if(numChildren > 0)
 		{
+			IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_FEATURE);
 			ArrayList<ResolverNode> childArr = new ArrayList<ResolverNode>(numChildren);
 			Provider provider = reader.getProviderMatch().getProvider();
 			for(IIncludedFeatureReference ref : refs)
@@ -107,13 +113,13 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				VersionedIdentifier vid = ref.getVersionedIdentifier();
 				IVersion version = VersionFactory.OSGiType.coerce(vid.getVersion());
 				IVersionDesignator vd = (version == null) ? null : VersionFactory.createExplicitDesignator(version);
-				ComponentRequest request = new ComponentRequest(vid.getIdentifier(), getCategory(), vd);
+				ComponentRequest request = new ComponentRequest(vid.getIdentifier(), getComponentTypeID(), vd);
 				cspecBld.addDependency(request);
 
 				VersionMatch match = new VersionMatch(version, null, provider.getSpace(), -1, null, null);
 				QualifiedDependency qdep = new QualifiedDependency(request, null);
 				NodeQuery childQuery = new NodeQuery(context, qdep);
-				IComponentReader childReader = reader.getReaderType().getReader(provider, childQuery, match, MonitorUtils.subMonitor(monitor, 1));
+				IComponentReader childReader = reader.getReaderType().getReader(provider, ctype, childQuery, match, MonitorUtils.subMonitor(monitor, 1));
 				try
 				{
 					childArr.add(buildCSpecFromSiteFeature(childReader, nodes, refFeature, new UnresolvedNode(qdep), MonitorUtils.subMonitor(monitor, 5)));
@@ -160,7 +166,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		VersionedIdentifier vi = siteFeature.getVersionedIdentifier();
 		cspecBld.setName(vi.getIdentifier());
-		cspecBld.setCategory(getCategory());
+		cspecBld.setComponentTypeID(getComponentTypeID());
 		cspecBld.setVersion(VersionFactory.OSGiType.coerce(vi.getVersion()));
 		return cspecBld;
 	}

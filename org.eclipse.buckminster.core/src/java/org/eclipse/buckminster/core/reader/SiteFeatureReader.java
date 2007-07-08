@@ -39,7 +39,7 @@ public class SiteFeatureReader extends AbstractRemoteReader
 		ProviderMatch match = getProviderMatch();
 		String remoteSite = match.getProvider().getURI(query.getProperties());
 		ComponentRequest request = query.getComponentRequest();
-		ComponentIdentifier ci = new ComponentIdentifier(request.getName(), request.getCategory(), match.getVersionMatch().getVersion());
+		ComponentIdentifier ci = new ComponentIdentifier(request.getName(), request.getComponentTypeID(), match.getVersionMatch().getVersion());
 		return SiteFeatureReaderType.getSiteFeature(remoteSite, ci, monitor);
 	}
 

@@ -21,6 +21,7 @@ import java.net.URLConnection;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -85,7 +86,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				URI parentUri = new URI(uri.getScheme(), uri.getHost(), path.removeLastSegments(1).toPortableString(), uri.getFragment());
 				m_fileName = path.lastSegment();
 
-				Provider provider = new Provider("p4", "unknown", null, null, new Format(parentUri.toString()), null, false, false, null);
+				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, null, new Format(parentUri.toString()), null, false, false, null);
 				IReaderType p4ReaderType = plugin.getReaderType("p4");
 				ProviderMatch ri = URLReaderType.getCurrentProviderMatch();
 				IProgressMonitor nullMon = new NullProgressMonitor();
@@ -94,13 +95,13 @@ public class Handler extends AbstractURLStreamHandlerService
 					ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 					cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
 					m_reader = (ICatalogReader)p4ReaderType.getReader(
-						provider,
+						provider, plugin.getComponentType(IComponentType.UNKNOWN),
 						new ResolutionContext(cqBld.createComponentQuery()).getRootNodeQuery(),
 						VersionMatch.DEFAULT, nullMon);
 				}
 				else
 				{
-					m_reader = (ICatalogReader)p4ReaderType.getReader(provider, ri.getNodeQuery(), ri.getVersionMatch(), nullMon);
+					m_reader = (ICatalogReader)p4ReaderType.getReader(provider, ri.getComponentType(), ri.getNodeQuery(), ri.getVersionMatch(), nullMon);
 				}
 			}
 			catch(URISyntaxException e)

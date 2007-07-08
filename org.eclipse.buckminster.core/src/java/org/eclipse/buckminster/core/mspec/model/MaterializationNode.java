@@ -24,7 +24,7 @@ public class MaterializationNode extends MaterializationDirective
 {
 	public static final String TAG = "mspecNode";
 	public static final String ATTR_NAME_PATTERN = "namePattern";
-	public static final String ATTR_CATEGORY = "category";
+	public static final String ATTR_COMPONENT_TYPE = "componentType";
 	public static final String ATTR_EXCLUDE = "exclude";
 	public static final String ATTR_RESOURCE_PATH = "resourcePath";
 	public static final String ATTR_BINDING_NAME_PATTERN = "bindingNamePattern";
@@ -34,7 +34,7 @@ public class MaterializationNode extends MaterializationDirective
 	public static final String ATTR_EXPAND = "expand";
 
 	private final Pattern m_namePattern;
-	private final String m_category;
+	private final String m_componentTypeID;
 	private final boolean m_exclude;
 	private final IPath m_resourcePath;
 	private final Pattern m_bindingNamePattern;
@@ -47,7 +47,7 @@ public class MaterializationNode extends MaterializationDirective
 	{
 		super(builder);
 		m_namePattern = builder.getNamePattern();
-		m_category = builder.getCategory();
+		m_componentTypeID = builder.getComponentTypeID();
 		m_exclude = builder.isExclude();
 		m_resourcePath = builder.getResourcePath();
 		m_bindingNamePattern = builder.getBindingNamePattern();
@@ -62,9 +62,9 @@ public class MaterializationNode extends MaterializationDirective
 		return TAG;
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return m_category;
+		return m_componentTypeID;
 	}
 
 	public Pattern getNamePattern()
@@ -112,8 +112,8 @@ public class MaterializationNode extends MaterializationDirective
 	{
 		super.appendAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
-		if(m_category != null)
-			Utils.addAttribute(attrs, ATTR_CATEGORY, m_category);
+		if(m_componentTypeID != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
 		if(m_resourcePath != null)
 			Utils.addAttribute(attrs, ATTR_RESOURCE_PATH, m_resourcePath.toPortableString());
 		if(m_exclude)

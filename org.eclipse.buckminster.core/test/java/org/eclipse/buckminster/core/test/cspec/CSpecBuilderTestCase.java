@@ -19,7 +19,6 @@ import java.util.UUID;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -33,7 +32,6 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 
@@ -54,10 +52,10 @@ public class CSpecBuilderTestCase extends TestCase
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		cspecBld.setName("my.test.project");
 		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3"));
-		ComponentRequest c1 = new ComponentRequest("org.apache.ant", KeyConstants.PLUGIN_CATEGORY, createOSGI("[1.6.2,2.0.0)"));
+		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, createOSGI("[1.6.2,2.0.0)"));
 		cspecBld.addDependency(c1);
 		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null));
-		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", KeyConstants.PLUGIN_CATEGORY, createOSGI("3.1.0")));
+		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, createOSGI("3.1.0")));
 		cspecBld.addDependency(new ComponentRequest("org.junit", null, createOSGI("3.1.8")));
 
 		CSpec c = cspecBld.createCSpec();
@@ -65,10 +63,10 @@ public class CSpecBuilderTestCase extends TestCase
 		ComponentRequest request = new ComponentRequest("test", null, null);
 		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
 		VersionMatch fixed = new VersionMatch(vs, null, null, -1, new Date(), null);
-		Provider provider = new Provider("svn", IComponentType.ECLIPSE_PROJECT, Trivial.EMPTY_STRING_ARRAY, null, new Format("svn://foo.bar.com/foobar"), "baz.org", true, true, null);
+		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, null, new Format("svn://foo.bar.com/foobar"), "baz.org", true, true, null);
 		UUID providerId = provider.getId();
 
-		Resolution resolution = new Resolution(c.getId(), fixed, providerId, true, request,
+		Resolution resolution = new Resolution(c.getId(), IComponentType.BUCKMINSTER, fixed, providerId, true, request,
 			Collections.<String>emptySet(), provider.getURI(Collections.<String,String>emptyMap()), null, null, -1);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();

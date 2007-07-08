@@ -116,7 +116,7 @@ public class CSpecExtension
 		// On the top element, we never override a value with NULL unless it is
 		// explicitly set to the string "null"
 		//
-		cspecBuilder.setCategory(overrideCheckNull(original.getCategory(), m_base.getCategory()));
+		cspecBuilder.setComponentTypeID(overrideCheckNull(original.getComponentTypeID(), m_base.getComponentTypeID()));
 		cspecBuilder.setVersion(overrideCheckNull(original.getVersion(), m_base.getVersion()));
 
 		Documentation origDoc = original.getDocumentation();

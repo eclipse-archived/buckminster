@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
+import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -86,7 +87,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 	{
 		m_builder = new AdvisorNodeBuilder();
 		m_builder.setNamePattern(getPatternValue(attrs, AdvisorNode.ATTR_NAME_PATTERN));
-		m_builder.setCategory(getOptionalStringValue(attrs, AdvisorNode.ATTR_CATEGORY));
+		m_builder.setComponentTypeID(CSpecHandler.getComponentType(attrs));
 
 		String tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_OVERLAY_FOLDER);
 		if(tmp != null)

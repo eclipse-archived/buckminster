@@ -12,7 +12,6 @@ package org.eclipse.buckminster.pde.internal;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -57,13 +56,14 @@ public class ImportBundle
 		// to resolve, but we have to make it look that way for now.
 		//
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest(m_bundleName, KeyConstants.PLUGIN_CATEGORY, null));
+		queryBld.setRootRequest(new ComponentRequest(m_bundleName, IComponentType.OSGI_BUNDLE, null));
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 
 		// Create the provider that will perform the import.
 		//
-		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, IComponentType.ECLIPSE_PROJECT,
-			new String[] { KeyConstants.PLUGIN_CATEGORY }, null, new Format(m_siteURL.toExternalForm()),
+		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
+		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() },
+			null, new Format(m_siteURL.toExternalForm()),
 			null, false, false, null);
 
 		// Next, we need a reader and a Resolution builder in order to create the real resolution
@@ -72,7 +72,7 @@ public class ImportBundle
 		IProgressMonitor monitor = new NullProgressMonitor();
 		IReaderType rt = provider.getReaderType();
 		IComponentReader[] reader = new IComponentReader[1];
-		reader[0] = rt.getReader(provider, context.getRootNodeQuery(), VersionMatch.DEFAULT,
+		reader[0] = rt.getReader(provider, ctype, context.getRootNodeQuery(), VersionMatch.DEFAULT,
 			monitor);
 		try
 		{
@@ -86,7 +86,7 @@ public class ImportBundle
 
 			// Fetch the cspec from the materialized component (it's changed)
 			//
-			CSpec cspec = LocalResolver.fromPath(m_outputDir, m_bundleName).getCSpec();
+			CSpec cspec = LocalResolver.fromPath(m_outputDir, m_bundleName);
 			Resolution newRes = new Resolution(cspec, node.getResolution());
 			newRes.store();
 			Materialization mat = new Materialization(m_outputDir, cspec.getComponentIdentifier());

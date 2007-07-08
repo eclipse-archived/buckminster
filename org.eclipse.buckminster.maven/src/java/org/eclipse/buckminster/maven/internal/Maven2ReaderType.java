@@ -9,6 +9,7 @@ package org.eclipse.buckminster.maven.internal;
 
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -26,10 +27,10 @@ import org.eclipse.core.runtime.Path;
 public class Maven2ReaderType extends MavenReaderType
 {
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return new Maven2VersionFinder(this, provider, nodeQuery);
+		return new Maven2VersionFinder(this, provider, ctype, nodeQuery);
 	}
 
 	@Override

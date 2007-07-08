@@ -27,9 +27,6 @@ public interface KeyConstants
 	public static final String SNAPSHOT           = "buckminster.snapshot";
 	public static final String OVERRIDE_ECLIPSE_INSTALLED = "buckminster.override.eclipse.installed";
 	public static final String COMPONENT_TYPE     = "buckminster.component.type";
-	public static final String FEATURE_CATEGORY   = "feature";
-	public static final String PLUGIN_CATEGORY    = "plugin";
-	public static final String SITE_FEATURE_CATEGORY = "site.feature";
 	public static final String ACTION_OUTPUT_ROOT = "buckminster.output.root";
 	public static final String ACTION_OUTPUT      = "buckminster.output";
 	public static final String ACTION_HOME        = "buckminster.home";

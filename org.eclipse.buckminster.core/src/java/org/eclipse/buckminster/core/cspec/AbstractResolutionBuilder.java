@@ -55,7 +55,7 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		super.setInitializationData(config, propertyName, data);
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
 		return null;
 	}

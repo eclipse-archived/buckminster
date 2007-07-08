@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class DependencyBuilder extends CSpecElementBuilder
 {
-	private String m_category;
+	private String m_componentType;
 	private IVersionDesignator m_versionDesignator;
 
 	DependencyBuilder(CSpecBuilder cspecBuilder)
@@ -30,18 +30,18 @@ public class DependencyBuilder extends CSpecElementBuilder
 	public void clear()
 	{
 		super.clear();
-		m_category = null;
+		m_componentType = null;
 		m_versionDesignator = null;
 	}
 
 	public ComponentRequest createDependency()
 	{
-		return new ComponentRequest(this.getName(), m_category, m_versionDesignator);
+		return new ComponentRequest(this.getName(), m_componentType, m_versionDesignator);
 	}
 
-	public String getCategory()
+	public String getComponentTypeID()
 	{
-		return m_category;
+		return m_componentType;
 	}
 
 	public IVersionDesignator getVersionDesignator()
@@ -62,13 +62,13 @@ public class DependencyBuilder extends CSpecElementBuilder
 	public void initFrom(ComponentRequest dependency)
 	{
 		super.initFrom(dependency);
-		m_category = dependency.getCategory();
+		m_componentType = dependency.getComponentTypeID();
 		m_versionDesignator = dependency.getVersionDesignator();
 	}
 
-	public void setCategory(String category)
+	public void setComponentTypeID(String componentType)
 	{
-		m_category = category;
+		m_componentType = componentType;
 	}
 
 	public void setVersionDesignator(String designatorStr, String versionType) throws CoreException

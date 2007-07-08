@@ -49,10 +49,17 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="componentType" type="string" use="optional">
+			<annotation>
+				<documentation>
+					If set, this advisor node will only match requests that has this component type.
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="category" type="string" use="optional">
 			<annotation>
 				<documentation>
-					If set, this advisor node will only match requests that has this category.
+					Deprecated. Category concept is merged into the component type.
 				</documentation>
 			</annotation>
 		</attribute>

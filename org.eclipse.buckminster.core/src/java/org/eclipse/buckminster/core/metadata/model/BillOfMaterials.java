@@ -46,7 +46,7 @@ public class BillOfMaterials extends DepNode
 	public static final String ATTR_TOP_NODE_ID = "topNodeId";
 
 	@SuppressWarnings("hiding")
-	public static final int SEQUENCE_NUMBER = 2;
+	public static final int SEQUENCE_NUMBER = 3;
 
 	@SuppressWarnings("hiding")
 	public static final String TAG = "billOfMaterials";

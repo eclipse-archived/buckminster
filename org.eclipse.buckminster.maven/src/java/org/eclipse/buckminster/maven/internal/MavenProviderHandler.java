@@ -71,8 +71,7 @@ public class MavenProviderHandler extends ProviderHandler
 	{
 		return new MavenProvider(
 				getReaderType(),
-				getComponentType(),
-				getManagedCategories(),
+				getComponentTypes(),
 				getVersionConverter(),
 				getUriFormat(),
 				getSpace(),

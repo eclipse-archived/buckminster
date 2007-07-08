@@ -345,7 +345,7 @@ public class WorkspaceInfo
 				: VersionDesignator.explicit(v);
 		try
 		{
-			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getCategory(), vd));
+			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd));
 		}
 		catch(CoreException e)
 		{
@@ -480,7 +480,7 @@ public class WorkspaceInfo
 		//
 		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
 		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$"));
-		nodeBld.setCategory(request.getCategory());
+		nodeBld.setComponentTypeID(request.getComponentTypeID());
 		nodeBld.setUseInstalled(true);
 		nodeBld.setUseProject(true);
 		nodeBld.setUseMaterialization(false);

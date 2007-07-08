@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006
+ * Copyright (c) 2004 - 2007
  * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
  * Pontus Rydin, Nils Unden, Peer Torngren
  * The code, documentation and other materials contained herein have been
@@ -10,17 +10,16 @@
 
 package org.eclipse.buckminster.core.internal.ctype;
 
+import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.BuckminsterCSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
-import org.eclipse.buckminster.core.helpers.AbstractComponentType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class BuckminsterComponentType extends AbstractComponentType
 {

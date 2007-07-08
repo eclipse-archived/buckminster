@@ -10,9 +10,9 @@
 
 package org.eclipse.buckminster.core.query.parser;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
+import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -42,7 +42,7 @@ public class ComponentRequestHandler extends ExtensionAwareHandler
 		{
 			m_componentRequest = new ComponentRequest(
 				this.getStringValue(attrs, NamedElement.ATTR_NAME),
-				getOptionalStringValue(attrs, ComponentName.ATTR_CATEGORY),
+				CSpecHandler.getComponentType(attrs),
 				getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR),
 				getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_TYPE));
 		}

@@ -157,7 +157,7 @@ public class ResourceMap implements ISaxable, ISaxableElement
 				MonitorUtils.testCancelStatus(monitor);
 
 				Provider provider = providerMatch.getProvider();
-				IComponentType cType = provider.getComponentType();
+				IComponentType cType = providerMatch.getComponentType();
 				try
 				{
 					DepNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));

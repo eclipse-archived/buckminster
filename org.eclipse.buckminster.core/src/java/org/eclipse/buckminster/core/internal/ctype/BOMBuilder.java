@@ -7,11 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.internal.ctype;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
+import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNodeException;
@@ -48,10 +50,10 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
+		IComponentReader reader = readerHandle[0];
 		try
 		{
 			BillOfMaterials bom;
-			IComponentReader reader = readerHandle[0];
 			if(reader instanceof ICatalogReader)
 				bom = ((ICatalogReader)reader).readFile(CorePlugin.BOM_FILE, this, monitor);
 			else
@@ -61,6 +63,10 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 				throw new UnresolvedNodeException(reader.getNodeQuery().getComponentRequest());
 
 			return bom;
+		}
+		catch(FileNotFoundException e)
+		{
+			throw new MissingCSpecSourceException(reader.getProviderMatch());
 		}
 		catch(IOException e)
 		{

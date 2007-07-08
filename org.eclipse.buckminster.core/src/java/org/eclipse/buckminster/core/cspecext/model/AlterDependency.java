@@ -29,7 +29,7 @@ public class AlterDependency
 
 	public void alterDependency(DependencyBuilder dep)
 	{
-		dep.setCategory(CSpecExtension.overrideCheckNull(m_base.getCategory(), dep.getCategory()));
+		dep.setComponentTypeID(CSpecExtension.overrideCheckNull(m_base.getComponentTypeID(), dep.getComponentTypeID()));
 		dep.setVersionDesignator(CSpecExtension.overrideCheckNull(m_base.getVersionDesignator(), dep.getVersionDesignator()));
 	}
 }

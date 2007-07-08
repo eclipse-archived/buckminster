@@ -62,14 +62,14 @@ public class MSpecTestCase extends TestCase
 
 		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
 		node.setNamePattern(Pattern.compile(".*"));
-		node.setCategory("plugin");
+		node.setComponentTypeID("plugin");
 		node.setConflictResolution(ConflictResolution.KEEP);
 		node.setInstallLocation(Path.fromPortableString("plugins"));
 		builder.getNodes().add(node);
 
 		node = new MaterializationNodeBuilder();
 		node.setNamePattern(Pattern.compile(".*"));
-		node.setCategory("feature");
+		node.setComponentTypeID("feature");
 		node.setConflictResolution(ConflictResolution.REPLACE);
 		node.setInstallLocation(Path.fromPortableString("features"));
 
@@ -77,7 +77,7 @@ public class MSpecTestCase extends TestCase
 
 		node = new MaterializationNodeBuilder();
 		node.setNamePattern(Pattern.compile("i.don.not.want.this.one"));
-		node.setCategory("plugin");
+		node.setComponentTypeID("plugin");
 		node.setExclude(true);
 		
 		builder.getNodes().add(node);

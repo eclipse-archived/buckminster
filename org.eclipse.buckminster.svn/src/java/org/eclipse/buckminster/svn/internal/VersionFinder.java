@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
@@ -26,9 +27,9 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 {
 	private final SvnSession m_session;
 
-	public VersionFinder(Provider provider, NodeQuery query) throws CoreException
+	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
-		super(provider, query);
+		super(provider, ctype, query);
 		m_session = new SvnSession(provider.getURI(query.getProperties()), null, query.getRevision(), query.getTimestamp(), query.getContext());
 	}
 

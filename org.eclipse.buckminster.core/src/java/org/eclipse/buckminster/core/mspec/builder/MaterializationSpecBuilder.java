@@ -51,8 +51,8 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 			Pattern pattern = aNode.getNamePattern();
 			if(pattern != null && pattern.matcher(name).find())
 			{
-				String matchingCategory = aNode.getCategory();
-				if(matchingCategory == null || matchingCategory.equals(cName.getCategory()))
+				String matchingCType = aNode.getComponentTypeID();
+				if(matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
 		}

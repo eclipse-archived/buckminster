@@ -97,7 +97,7 @@ public class ResolverNodePage extends AbstractQueryPage
 				lbl = vd == null ? "" : vd.toString();
 				break;
 			default:
-				lbl = rq.getCategory();
+				lbl = rq.getComponentTypeID();
 			}
 			return lbl;
 		}
