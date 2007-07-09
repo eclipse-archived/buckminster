@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.metadata.model;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -212,6 +213,11 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	public String getComponentTypeId()
 	{
 		return m_componentTypeId;
+	}
+
+	public IComponentType getComponentType() throws CoreException
+	{
+		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
 	}
 
 	public String getContentType()
@@ -453,11 +459,5 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	private ISaxableStorage<Resolution> getStorage() throws CoreException
 	{
 		return StorageManager.getDefault().getResolutions();
-	}
-
-	public IComponentType getComponentType()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
