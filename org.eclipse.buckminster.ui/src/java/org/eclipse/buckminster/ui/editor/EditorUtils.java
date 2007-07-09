@@ -8,10 +8,22 @@
 
 package org.eclipse.buckminster.ui.editor;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.Comparator;
 
+import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.editor.cspec.ArtifactType;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -19,6 +31,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IURIEditorInput;
 
 /**
  * @author Karel Brezina
@@ -71,5 +84,40 @@ public class EditorUtils
 	public static Comparator<IPath> getPathComparator()
 	{
 		return s_pathComparator;
+	}
+
+	public static ExternalFileEditorInput getExternalFileEditorInput(IURIEditorInput input, ArtifactType artifactType) throws IOException
+	{
+		URI uri = input.getURI();
+		URL url = uri.toURL();
+		String protocol = url.getProtocol();
+		
+		File cspecFile = null;
+		
+		if(protocol == null || "file".equals(protocol))
+		{
+			cspecFile = new File(uri);
+		}
+		
+		if(cspecFile == null || !cspecFile.canWrite())
+		{
+			cspecFile = File.createTempFile(artifactType.getTempPrefix(), artifactType.getTempExtension());
+			cspecFile.deleteOnExit();
+			InputStream is = null;
+			OutputStream os = null;
+			try
+			{
+				is = URLUtils.openStream(url, null);
+				os = new FileOutputStream(cspecFile);
+				IOUtils.copy(is, os);
+			}
+			finally
+			{
+				IOUtils.close(is);
+				IOUtils.close(os);
+			}
+		}
+		
+		return new ExternalFileEditorInput(cspecFile, new Path(uri.getPath()).lastSegment(), uri.toString());
 	}
 }
