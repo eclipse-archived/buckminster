@@ -32,7 +32,7 @@ public class JarComponentType extends AbstractComponentType
 			ProviderMatch ri = reader.getProviderMatch();
 			CSpecBuilder dflt = ri.createCSpec();
 			addSelfAsJarArtifactGroups(dflt);
-			return createResolution(reader, applyExtensions(dflt.createCSpec(), reader, monitor));
+			return createResolution(reader, applyExtensions(dflt.createCSpec(), forResolutionAidOnly, reader, monitor));
 		}
 	};
 

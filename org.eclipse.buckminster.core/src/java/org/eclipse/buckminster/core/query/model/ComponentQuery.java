@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.common.model.IProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -45,8 +44,8 @@ import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -290,19 +289,6 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getOverlayFolder();
-	}
-
-	public Map<String, String> getProperties(ComponentName cName)
-	{
-		// fill this up as you go..
-		//
-		IProperties p = new ExpandingProperties(getGlobalProperties());
-		p.putAll(cName.getProperties());
-
-		AdvisorNode node = getMatchingNode(cName);
-		if(node != null)
-			p.putAll(node.getProperties());
-		return p;
 	}
 
 	public URL getPropertiesURL()

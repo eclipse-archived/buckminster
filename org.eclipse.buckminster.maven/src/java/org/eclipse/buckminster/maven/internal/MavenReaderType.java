@@ -42,17 +42,46 @@ import org.eclipse.core.runtime.Path;
  */
 public class MavenReaderType extends URLCatalogReaderType
 {
-	static StringBuilder appendFileName(StringBuilder bld, String artifactID, VersionMatch vs, String extension) throws CoreException
+	static void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension) throws CoreException
 	{
+		String artifactInfo = vm.getArtifactInfo();
+		if(extension == null && artifactInfo != null)
+		{
+			int vnSplit = artifactInfo.indexOf('/');
+			if(vnSplit >= 0)
+			{
+				// Artifact info stores <filename>/<version>
+				//
+				bld.append(artifactInfo, 0, vnSplit);
+				return;
+			}
+
+			// Old style. Artifact info just stores extension
+			//
+			extension = artifactInfo;
+		}
+
 		bld.append(artifactID);
 		bld.append('-');
-		appendMavenVersionName(bld, vs);
+		appendMavenVersionName(bld, vm);
 		bld.append(extension);
-		return bld;
 	}
 
 	static void appendMavenVersionName(StringBuilder bld, VersionMatch vm) throws CoreException
 	{
+		String artifactInfo = vm.getArtifactInfo();
+		if(artifactInfo != null)
+		{
+			int vnSplit = artifactInfo.indexOf('/');
+			if(vnSplit >= 0)
+			{
+				// Artifact info stores <filename>/<version>
+				//
+				bld.append(artifactInfo, vnSplit + 1, artifactInfo.length());
+				return;
+			}
+		}
+
 		VersionSelector vs = vm.getBranchOrTag();
 		if(vs != null && vs.getType() == VersionSelector.BRANCH)
 		{
@@ -139,12 +168,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendArtifactFolder(pbld, mapEntry, vs);
-		String extension;
-		if(vs == null || vs.getArtifactType() == null)
-			extension = ".jar";
-		else
-			extension = '.' + vs.getArtifactType();
-		appendFileName(pbld, mapEntry.getArtifactId(), vs, extension);
+		appendFileName(pbld, mapEntry.getArtifactId(), vs, null);
 	}
 
 	void appendPathToPom(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException

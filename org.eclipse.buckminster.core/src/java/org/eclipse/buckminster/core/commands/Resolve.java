@@ -79,7 +79,7 @@ public class Resolve extends WorkspaceInitCommand
 				ComponentQuery query = ComponentQuery.fromURL(m_url, MonitorUtils.subMonitor(monitor, 5));
 				ResolutionContext context = new ResolutionContext(query);
 				MainResolver resolver = new MainResolver(context);
-				resolver.getContext().setContinueOnError(continueOnError);
+				context.setContinueOnError(continueOnError);
 				BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 35));
 				IStatus status = context.getStatus();
 				switch(status.getSeverity())
@@ -104,7 +104,7 @@ public class Resolve extends WorkspaceInitCommand
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
-					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
+					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
 					MaterializerJob.run(matCtx);
 				}
 				logger.info("Query complete.");

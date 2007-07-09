@@ -12,7 +12,8 @@ package org.eclipse.buckminster.core.parser;
 
 import javax.xml.XMLConstants;
 
-import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
@@ -37,7 +38,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	protected void logAttributeValueDeprecation(String elementName, String attrName, String oldValue, String useInstead)
 	{
 		Locator locator = this.getDocumentLocator();
-		CorePlugin.getLogger().warning(String.format(
+		warningOnce(String.format(
 			"Use of deprecated value for attribute <%s %s>. Was '%s', should be '%s' : %s, line %s. ",
 				elementName, attrName, oldValue, useInstead,
 				locator.getSystemId(), new Integer(locator.getLineNumber())));
@@ -46,7 +47,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	protected void logAttributeDeprecation(String elementName, String attrName, String useInstead)
 	{
 		Locator locator = this.getDocumentLocator();
-		CorePlugin.getLogger().warning(String.format(
+		warningOnce(String.format(
 			"Use of deprecated attribute <%s %s> Use attribute '%s' instead : %s, line %s. ",
 				elementName, attrName, useInstead,
 				locator.getSystemId(), new Integer(locator.getLineNumber())));
@@ -55,7 +56,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	protected void logAttributeIgnored(String elementName, String attrName, String useInstead)
 	{
 		Locator locator = this.getDocumentLocator();
-		CorePlugin.getLogger().warning(String.format(
+		warningOnce(String.format(
 			"Use of deprecated attribute <%s %s> was ignored. Use attribute '%s' instead : %s, line %s. ",
 				elementName, attrName, useInstead,
 				locator.getSystemId(), new Integer(locator.getLineNumber())));
@@ -64,7 +65,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	protected void logElementDeprecated(String elementName, String useInstead)
 	{
 		Locator locator = this.getDocumentLocator();
-		CorePlugin.getLogger().warning(String.format(
+		warningOnce(String.format(
 			"Use of deprecated element <%s>. Use element <%s> instead : %s, line %s. ",
 			elementName, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber())));
 	}
@@ -72,7 +73,32 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	protected void logElementIgnored(String elementName)
 	{
 		Locator locator = this.getDocumentLocator();
-		CorePlugin.getLogger().warning(String.format("Use of deprecated element %s was ignored : %s, line %s. ",
-			elementName, locator.getSystemId(), new Integer(locator.getLineNumber())));
+		warningOnce(String.format("Use of deprecated element %s was ignored : %s, line %s. ",
+				elementName, locator.getSystemId(), new Integer(locator.getLineNumber())));
+	}
+
+	protected void warningOnce(String warning)
+	{
+		((AbstractParser<?>)getTopHandler()).warningOnce(warning);
+	}
+
+	protected String getComponentType(Attributes attrs) throws SAXException
+	{
+		String tmp = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
+		if(tmp == null)
+		{
+			// Legacy. 0.1.0 had component category "plugin" and "feature"
+			//
+			tmp = getOptionalStringValue(attrs, "category");
+			if(tmp != null)
+			{
+				logAttributeDeprecation(getTAG(), "category", ComponentName.ATTR_COMPONENT_TYPE);
+				if(tmp.equals("plugin"))
+					tmp = IComponentType.OSGI_BUNDLE;
+				else if(tmp.equals("feature"))
+					tmp = IComponentType.ECLIPSE_FEATURE;
+			}
+		}
+		return tmp;
 	}
 }

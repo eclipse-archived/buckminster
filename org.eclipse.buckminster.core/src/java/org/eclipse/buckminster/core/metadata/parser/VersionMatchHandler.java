@@ -60,8 +60,8 @@ class VersionMatchHandler extends ExtensionAwareHandler
 			if(tmp != null)
 				timestamp = DateAndTimeUtils.fromISOFormat(tmp);
 
-			String artifactType = getOptionalStringValue(attrs, VersionMatch.ATTR_ARTIFACT_TYPE);
-			m_versionMatch = new VersionMatch(version, branchOrTag, space, revision, timestamp, artifactType);
+			String artifactInfo = getOptionalStringValue(attrs, VersionMatch.ATTR_ARTIFACT_INFO);
+			m_versionMatch = new VersionMatch(version, branchOrTag, space, revision, timestamp, artifactInfo);
 		}
 		catch(Exception e)
 		{

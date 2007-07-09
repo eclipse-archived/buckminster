@@ -61,7 +61,7 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 				cspec = ((ICatalogReader)reader).readFile(CorePlugin.CSPEC_FILE, this, MonitorUtils.subMonitor(monitor, 1000));
 			else
 				cspec = ((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000));
-			cspec = this.applyExtensions(cspec, reader, MonitorUtils.subMonitor(monitor, 1000));
+			cspec = this.applyExtensions(cspec, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
 			return this.createResolution(reader, cspec);
 		}
 		catch(FileNotFoundException e)

@@ -132,9 +132,8 @@ public class TripletVersion extends AbstractVersion
 	 */
 	public int compareTo(IVersion o)
 	{
-		Class<?> c = getClass();
-		if(!c.isInstance(o))
-			throw new IllegalArgumentException("Not a " + c);
+		if(!(o instanceof TripletVersion))
+			throw new IllegalArgumentException("Not a Triplet");
 
 		TripletVersion ov = (TripletVersion)o;
 		if(m_major > ov.m_major)

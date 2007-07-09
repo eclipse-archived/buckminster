@@ -101,7 +101,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 				MavenComponentType.addDependencies(reader, pomDoc, pomPath, cspecBld, archives, properties);
 			}
 
-			CSpec cspec = applyExtensions(cspecBld.createCSpec(), reader, MonitorUtils.subMonitor(monitor, 1000));
+			CSpec cspec = applyExtensions(cspecBld.createCSpec(), forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
 			return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
 		}
 		catch(IOException e)

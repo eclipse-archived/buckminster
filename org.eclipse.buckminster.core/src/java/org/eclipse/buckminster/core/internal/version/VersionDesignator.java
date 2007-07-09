@@ -13,7 +13,9 @@ package org.eclipse.buckminster.core.internal.version;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Thomas Hallgren
@@ -41,7 +43,7 @@ public abstract class VersionDesignator implements IVersionDesignator
 
 	public final ComparisonResult compare(IVersionDesignator designator)
 	{
-		return designator.getVersion().getType().equals(m_version.getType())
+		return designator.getVersion().getType().isComparableTo(m_version.getType())
 			? internalCompare(designator) : ComparisonResult.Disparate;
 	}
 
@@ -82,21 +84,40 @@ public abstract class VersionDesignator implements IVersionDesignator
 		return false;
 	}
 
-	public IVersionDesignator merge(IVersionDesignator that)
+	public IVersionDesignator merge(IVersionDesignator that) throws CoreException
 	{
-		switch(compare(that))
+		// In case an OSGiVersion is merged with something else like
+		// the TripletVersion, we must first make sure that the merged
+		// version can express itself as an OSGiVersion and convert it.
+		//
+		IVersionDesignator self = this;
+		IVersionType thisType = getVersion().getType();
+		IVersionType thatType = that.getVersion().getType();
+
+		if(thisType instanceof OSGiVersionType)
+		{
+			if(!(thatType instanceof OSGiVersionType))
+				that = VersionFactory.createDesignator(thisType, that.toString());
+		}
+		else
+		{
+			if(thatType instanceof OSGiVersionType)
+				self = VersionFactory.createDesignator(thatType, toString());
+		}
+
+		switch(self.compare(that))
 		{
 		case Equal:
 		case ContainedBy:
-			return this;
+			return self;
 		case Contains:
 			return that;
 		case IntersectHigh:
-			return create(getVersion(), includesLowerBound(), that.getToVersion(),
+			return create(self.getVersion(), self.includesLowerBound(), that.getToVersion(),
 				that.includesUpperBound());
 		case IntersectLow:
-			return create(that.getVersion(), that.includesLowerBound(), getToVersion(),
-				includesUpperBound());
+			return create(that.getVersion(), that.includesLowerBound(), self.getToVersion(),
+				self.includesUpperBound());
 		default:
 			return null;
 		}

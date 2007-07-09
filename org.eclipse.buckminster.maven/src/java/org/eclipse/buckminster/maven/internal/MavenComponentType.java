@@ -230,7 +230,7 @@ public class MavenComponentType extends AbstractComponentType
 		}
 
 		IVersion version = createVersion(versionStr);
-		if(version.getType().equals(VersionFactory.TimestampType))
+		if(version != null && version.getType().equals(VersionFactory.TimestampType))
 			//
 			// Unversioned timestamp
 			//

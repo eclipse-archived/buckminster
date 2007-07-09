@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class MavenVersionFinder extends AbstractVersionFinder
 {
 	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" };
-	private static final String s_defaultExtension = ".jar";
 
 	private final MavenReaderType m_readerType;
 
@@ -168,9 +167,8 @@ public class MavenVersionFinder extends AbstractVersionFinder
 			if(extension == null)
 				continue;
 
-			fileName = fileName.substring(artifactLen, fileName.length() - extension.length());
-			String typeInfo = s_defaultExtension.equals(extension) ? null : extension.substring(1);
-			VersionMatch versionMatch = MavenComponentType.createVersionMatch(fileName, space, typeInfo);
+			String versionStr = fileName.substring(artifactLen, fileName.length() - extension.length());
+			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, space, fileName + '/' + versionStr);
 			if(versionMatch != null && query.isMatch(versionMatch))
 				versions.add(versionMatch);
 		}

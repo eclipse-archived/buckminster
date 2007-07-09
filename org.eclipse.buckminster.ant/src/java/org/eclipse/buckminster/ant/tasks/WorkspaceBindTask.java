@@ -93,6 +93,6 @@ public class WorkspaceBindTask
 		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 		MaterializationSpec mspec = mspecBuilder.createMaterializationSpec();
 		IMaterializer wsMat = CorePlugin.getDefault().getMaterializer(IMaterializer.WORKSPACE);
-		wsMat.performInstallAction(mat.getResolution(), new MaterializationContext(bom, mspec), new NullProgressMonitor());
+		wsMat.performInstallAction(mat.getResolution(), new MaterializationContext(bom, mspec, context), new NullProgressMonitor());
 	}
 }

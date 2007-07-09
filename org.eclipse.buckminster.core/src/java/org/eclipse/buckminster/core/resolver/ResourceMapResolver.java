@@ -194,7 +194,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 					: null;
 			if(node == null)
 			{
-				ResourceMap rmap = m_factory.getResourceMap(query.getComponentQuery().getResourceMapURL());
+				ResourceMap rmap = m_factory.getResourceMap(getContext(), query.getComponentQuery().getResourceMapURL());
 				node = rmap.resolve(query, monitor);
 			}
 			return node;

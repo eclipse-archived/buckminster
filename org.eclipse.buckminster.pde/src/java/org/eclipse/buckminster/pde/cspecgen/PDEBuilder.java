@@ -57,7 +57,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			m_usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
 			parseFile(cspecBuilder, forResolutionAidOnly, (ICatalogReader)reader, MonitorUtils.subMonitor(monitor, 1000));
-			CSpec cspec = applyExtensions(cspecBuilder.createCSpec(), reader, MonitorUtils.subMonitor(
+			CSpec cspec = applyExtensions(cspecBuilder.createCSpec(), forResolutionAidOnly, reader, MonitorUtils.subMonitor(
 				monitor, 1000));
 			return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
 		}

@@ -9,6 +9,10 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.IllegalParameterException;
@@ -108,12 +112,40 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		return pds;
 	}
 
-	public ResourceMap getResourceMap(URL url) throws CoreException
+	private static final UUID CACHE_KEY_RESOURCE_MAP = UUID.randomUUID();
+
+	@SuppressWarnings("unchecked")
+	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>)ctxUserCache.get(CACHE_KEY_RESOURCE_MAP);
+			if(resourceMapCache == null)
+			{
+				resourceMapCache = Collections.synchronizedMap(new HashMap<String, ResourceMap>());
+				ctxUserCache.put(CACHE_KEY_RESOURCE_MAP, resourceMapCache);
+			}
+			return resourceMapCache;
+		}
+	}
+
+	public ResourceMap getResourceMap(ResolutionContext context, URL url) throws CoreException
 	{
 		if(isOverrideQueryURL())
 			url = getResourceMapURL();
 
-		return ResourceMap.fromURL(url);
+		Map<String, ResourceMap> rmapCache = getResourceMapCache(context.getUserCache());
+		String key = url.toString().intern();
+		synchronized(key)
+		{
+			ResourceMap rmap = rmapCache.get(key);
+			if(rmap == null)
+			{
+				rmap = ResourceMap.fromURL(url);
+				rmapCache.put(key, rmap);
+			}
+			return rmap;
+		}
 	}
 
 	public int getResolverThreadsMax()

@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.Generator;
+import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -37,7 +38,7 @@ public class ResolutionContext extends RMContext
 
 	public ResolutionContext(ComponentQuery componentQuery, ResolutionContext parentContext)
 	{
-		super(componentQuery.getGlobalProperties());
+		super(parentContext == null ? componentQuery.getGlobalProperties() : new MapUnion<String, String>(componentQuery.getGlobalProperties(), parentContext));
 		m_componentQuery = componentQuery;
 		m_parentContext = parentContext;
 	}
@@ -80,8 +81,15 @@ public class ResolutionContext extends RMContext
 	@Override
 	public Map<String, String> getProperties(ComponentName cName)
 	{
+		AdvisorNode node;
 		Map<String,String> p = super.getProperties(cName);
-		AdvisorNode node = getComponentQuery().getMatchingNode(cName);
+		if(m_parentContext != null)
+		{
+			node = m_parentContext.getComponentQuery().getMatchingNode(cName);
+			if(node != null)
+				p.putAll(node.getProperties());
+		}
+		node = getComponentQuery().getMatchingNode(cName);
 		if(node != null)
 			p.putAll(node.getProperties());
 		return p;

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IResourceMapResolverFactory extends IResolverFactory
 {
-	public ResourceMap getResourceMap(URL url) throws CoreException;
+	public ResourceMap getResourceMap(ResolutionContext context, URL url) throws CoreException;
 
 	public int getResolverThreadsMax();
 

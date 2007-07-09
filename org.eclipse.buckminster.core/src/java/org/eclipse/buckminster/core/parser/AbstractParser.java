@@ -18,10 +18,12 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -49,6 +51,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 	private final boolean m_validating;
 	private final String m_namespaceLocations;
 	private final List<ParserFactory.ParserExtension> m_parserExtensions;
+	private HashSet<String> m_printedWarnings;
 
 	protected AbstractParser(List<ParserFactory.ParserExtension> parserExtensions, String[] namespaces, String[] schemaLocations, boolean validating)
 	throws SAXException
@@ -110,6 +113,17 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
     {
 		throw e;
     }
+
+	public void warningOnce(String warning)
+	{
+		if(m_printedWarnings == null)
+			m_printedWarnings = new HashSet<String>();
+		else if(m_printedWarnings.contains(warning))
+			return;
+
+		m_printedWarnings.add(warning);
+		CorePlugin.getLogger().warning(warning);
+	}
 
 	private static Pattern s_saxParseCleaner = Pattern.compile("^cvc-[^:]+:(.*)$");
 

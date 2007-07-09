@@ -38,7 +38,7 @@ public class UpdateSiteBuilder extends AbstractResolutionBuilder
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
 		CSpecBuilder cspecBld = ri.createCSpec();
-		CSpec cspec = this.applyExtensions(cspecBld.createCSpec(), reader, monitor);
+		CSpec cspec = this.applyExtensions(cspecBld.createCSpec(), forResolutionAidOnly, reader, monitor);
 		return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
 	}
 }

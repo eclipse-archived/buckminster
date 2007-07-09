@@ -11,9 +11,7 @@ import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -61,25 +59,6 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 	public final CSpecBuilder getCSpecBuilder()
 	{
 		return m_builder;
-	}
-
-	public static String getComponentType(Attributes attrs) throws SAXException
-	{
-		String tmp = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
-		if(tmp == null)
-		{
-			// Legacy. 0.1.0 had component category "plugin" and "feature"
-			//
-			tmp = getOptionalStringValue(attrs, "category");
-			if(tmp != null)
-			{
-				if(tmp.equals("plugin"))
-					tmp = IComponentType.OSGI_BUNDLE;
-				else if(tmp.equals("feature"))
-					tmp = IComponentType.ECLIPSE_FEATURE;
-			}
-		}
-		return tmp;
 	}
 
 	@Override

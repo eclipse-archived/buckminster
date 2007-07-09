@@ -59,7 +59,7 @@ public class GetConfiguration extends WorkspaceCommand
 			MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 			mspecBuilder.setName(bom.getViewName());
 			mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
-			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
+			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
 			MaterializerJob.run(matCtx);
 			MonitorUtils.worked(monitor, 1);
 			System.out.println("Query complete.");

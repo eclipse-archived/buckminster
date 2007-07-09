@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -96,12 +97,18 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 			//
 			// Limit component types using managed categories
 			//
-			tmp = getStringValue(attrs, "componentType");
+			tmp = getOptionalStringValue(attrs, "componentType");
+			if(tmp == null)
+				throw new MissingRequiredAttributeException(getTAG(), Provider.ATTR_COMPONENT_TYPES, getDocumentLocator());
+			logAttributeDeprecation(getTAG(), "componentType", Provider.ATTR_COMPONENT_TYPES);
+
 			boolean canManageBundle = true;
 			boolean canManageFeature = true;
 			String[] managedCategories = TextUtils.split(getOptionalStringValue(attrs, "managedCategories"), ",");
 			if(managedCategories.length > 0)
 			{
+				logAttributeDeprecation(getTAG(), "managedCategories", Provider.ATTR_COMPONENT_TYPES);
+
 				canManageBundle = false;
 				canManageFeature = false;
 				for(String category : managedCategories)

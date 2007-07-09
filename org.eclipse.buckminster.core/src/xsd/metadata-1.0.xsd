@@ -80,7 +80,7 @@
 		<attribute name="space" type="string" use="optional" />
 		<attribute name="revision" type="long" use="optional" />
 		<attribute name="timestamp" type="string" use="optional" />
-		<attribute name="artifactType" type="string" use="optional" />
+		<attribute name="artifactInfo" type="string" use="optional" />
 	</complexType>
 	<complexType name="ResolvedNode">
 		<complexContent>

@@ -35,7 +35,7 @@ public class DependencyHandler extends CSpecElementHandler
 	{
 		super.handleAttributes(attrs);
 		DependencyBuilder builder = (DependencyBuilder)getBuilder();
-		builder.setComponentTypeID(CSpecHandler.getComponentType(attrs));
+		builder.setComponentTypeID(getComponentType(attrs));
 		try
 		{
 			builder.setVersionDesignator(

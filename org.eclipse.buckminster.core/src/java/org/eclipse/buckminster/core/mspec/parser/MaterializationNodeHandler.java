@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.core.mspec.parser;
 
-import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
@@ -43,7 +42,7 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		super.handleAttributes(attrs);
 		MaterializationNodeBuilder builder = getMaterializationNodeBuilder();
 		builder.setNamePattern(getPatternValue(attrs, MaterializationNode.ATTR_NAME_PATTERN));
-		builder.setComponentTypeID(CSpecHandler.getComponentType(attrs));
+		builder.setComponentTypeID(getComponentType(attrs));
 		builder.setExclude(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXCLUDE, false));
 		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_RESOURCE_PATH);
 		if(tmp != null)

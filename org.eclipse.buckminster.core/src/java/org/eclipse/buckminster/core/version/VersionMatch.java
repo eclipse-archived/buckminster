@@ -28,7 +28,7 @@ public class VersionMatch implements ISaxableElement
 
 	public static final String TAG = "versionMatch";
 
-	public static final String ATTR_ARTIFACT_TYPE = "artifactType";
+	public static final String ATTR_ARTIFACT_INFO = "artifactInfo";
 	public static final String ATTR_BRANCH_OR_TAG = "branchOrTag";
 	public static final String ATTR_REVISION = "revision";
 	public static final String ATTR_SPACE = "space";
@@ -36,7 +36,7 @@ public class VersionMatch implements ISaxableElement
 	public static final String ATTR_VERSION = "version";
 	public static final String ATTR_VERSION_TYPE = "versionType";
 
-	private final String m_artifactType;
+	private final String m_artifactInfo;
 
 	private final VersionSelector m_branchOrTag;
 
@@ -48,7 +48,7 @@ public class VersionMatch implements ISaxableElement
 
 	private final IVersion m_version;
 
-	public VersionMatch(IVersion version, VersionSelector branchOrTag, String space, long revision, Date timestamp, String artifactType)
+	public VersionMatch(IVersion version, VersionSelector branchOrTag, String space, long revision, Date timestamp, String artifactInfo)
 	{
 		m_version = version;
 		
@@ -59,7 +59,7 @@ public class VersionMatch implements ISaxableElement
 		m_space = space;
 		m_revision = revision;
 		m_timestamp = timestamp;
-		m_artifactType = artifactType;
+		m_artifactInfo = artifactInfo;
 	}
 
 	public VersionMatch copyWithVersion(IVersion version)
@@ -67,12 +67,12 @@ public class VersionMatch implements ISaxableElement
 		if(Trivial.equalsAllowNull(version, m_version))
 			return this;
 		
-		return new VersionMatch(version, m_branchOrTag, m_space, -1, null, m_artifactType);
+		return new VersionMatch(version, m_branchOrTag, m_space, -1, null, m_artifactInfo);
 	}
 
-	public String getArtifactType()
+	public String getArtifactInfo()
 	{
-		return m_artifactType;
+		return m_artifactInfo;
 	}
 
 	public VersionSelector getBranchOrTag()
@@ -152,8 +152,8 @@ public class VersionMatch implements ISaxableElement
 	{
 		AttributesImpl attrs = new AttributesImpl();
 
-		if(m_artifactType != null)
-			Utils.addAttribute(attrs, ATTR_ARTIFACT_TYPE, m_artifactType);
+		if(m_artifactInfo != null)
+			Utils.addAttribute(attrs, ATTR_ARTIFACT_INFO, m_artifactInfo);
 
 		if(m_branchOrTag != null)
 			Utils.addAttribute(attrs, ATTR_BRANCH_OR_TAG, m_branchOrTag.toString());

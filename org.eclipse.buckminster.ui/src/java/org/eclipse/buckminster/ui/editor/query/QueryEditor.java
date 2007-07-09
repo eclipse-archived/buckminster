@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +28,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
-import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -287,6 +287,8 @@ public class QueryEditor extends EditorPart
 	private Text m_documentation;
 
 	private CompoundModifyListener m_compoundModifyListener;
+
+	private final DateFormat m_timestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
 	public String commitChanges(ComponentRequest[] requestRet)
 	{
@@ -1387,7 +1389,7 @@ public class QueryEditor extends EditorPart
 		long revision = node.getRevision();
 		m_revision.setText(revision == -1 ? "" : Long.toString(revision));
 		Date timestamp = node.getTimestamp();
-		m_timestamp.setText(timestamp == null ? "" : DateAndTimeUtils.toISOFormat(timestamp));
+		m_timestamp.setText(timestamp == null ? "" : m_timestampFormat.format(timestamp));
 
 		IVersionDesignator vs = node.getVersionOverride();
 		boolean enableOverride = (vs != null);
@@ -1560,20 +1562,24 @@ public class QueryEditor extends EditorPart
 				return false;
 			}
 		}
+		else
+			node.setRevision(-1);
 
 		tmp = UiUtils.trimmedValue(m_timestamp);
 		if(tmp != null)
 		{
 			try
 			{
-				node.setTimestamp(DateAndTimeUtils.fromISOFormat(tmp));
+				node.setTimestamp(m_timestampFormat.parse(tmp));
 			}
 			catch(ParseException e)
 			{
-				MessageDialog.openError(getSite().getShell(), null, "Timestamp must conform to the ISO-8601 format");
+				MessageDialog.openError(getSite().getShell(), null, "Timestamp must conform to format: " + m_timestampFormat.toString());
 				return false;
 			}
 		}
+		else
+			node.setTimestamp(null);
 
 		node.setVersionOverride(versionOverride);
 

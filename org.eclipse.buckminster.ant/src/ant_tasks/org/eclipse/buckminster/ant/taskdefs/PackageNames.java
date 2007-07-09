@@ -65,8 +65,9 @@ public class PackageNames extends Task
 						JarEntry jarEntry = entries.nextElement();
 						if(jarEntry.isDirectory())
 							continue;
+
 						IPath entryPath = new Path(jarEntry.getName());
-						if(entryPath.segmentCount() < 2)
+						if(entryPath.segmentCount() < 2 || "META-INF".equals(entryPath.segment(0)))
 							continue;
 
 						packages.add(entryPath.removeLastSegments(1));

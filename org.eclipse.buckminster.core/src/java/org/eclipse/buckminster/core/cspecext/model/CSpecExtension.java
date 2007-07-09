@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -58,6 +59,44 @@ public class CSpecExtension
 		m_removedAttributes = UUIDKeyed.createUnmodifiableSet(removedAttributes);
 		m_alteredAttributes = UUIDKeyed.createUnmodifiableMap(alteredAttributes);
 		m_alteredDependencies = UUIDKeyed.createUnmodifiableMap(alteredDependencies);
+	}
+
+	/**
+	 * Returns the CSPEC base that contains the top element attribute overrides and
+	 * all pure additions
+	 * @return A Cspec that acts as the base for the extension
+	 */
+	public CSpec alterTopElement(CSpec original) throws CoreException
+	{
+		IVersion extVersion = m_base.getVersion();
+		CSpecBuilder bld = null;
+		if(extVersion != null && !extVersion.equals(original.getVersion()))
+		{
+			bld = new CSpecBuilder();
+			bld.initFrom(original);
+			bld.setVersion(extVersion);
+		}
+
+		String ctype = m_base.getComponentTypeID();
+		if(ctype != null && !ctype.equals(original.getComponentTypeID()))
+		{
+			if(bld == null)
+			{
+				bld = new CSpecBuilder();
+				bld.initFrom(original);
+			}
+			bld.setComponentTypeID(ctype);
+		}
+
+		CSpec cspec;
+		if(bld == null)
+			cspec = original;
+		else
+		{
+			cspec = bld.createCSpec();
+			cspec.verifyConsistency();
+		}
+		return cspec;
 	}
 
 	public CSpec alterCSpec(CSpec original) throws CoreException

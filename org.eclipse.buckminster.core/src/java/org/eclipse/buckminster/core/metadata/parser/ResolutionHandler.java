@@ -119,12 +119,12 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 		if(m_versionMatch == null)
 		{
-			if(m_version != null)
-				m_versionMatch = legacyVersionMatch();
-			else
+			if(m_version == null && m_fixedVersionSelector == null)
 				throw new SAXParseException("Missing required element <" +
 						XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG + '>',
 						this.getDocumentLocator());
+
+			m_versionMatch = legacyVersionMatch();
 		}
 		if(m_componentType == null)
 			m_componentType = legacyComponentType();
@@ -187,14 +187,17 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	}
 	private VersionMatch legacyVersionMatch() throws SAXException
 	{
-		IVersion version;
-		try
+		IVersion version = null;
+		if(m_version != null)
 		{
-			version = CorePlugin.getDefault().getVersionType(m_versionType).fromString(m_version);
-		}
-		catch(CoreException e)
-		{
-			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			try
+			{
+				version = CorePlugin.getDefault().getVersionType(m_versionType).fromString(m_version);
+			}
+			catch(CoreException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
 		}
 
 		if(m_fixedVersionSelector == null || m_fixedVersionSelector.length() == 0)

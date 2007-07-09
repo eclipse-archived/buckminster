@@ -92,7 +92,7 @@ public class ResolveJob extends Job
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
-					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec());
+					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), ctx);
 
 					MaterializerJob.run(matCtx);
 					status = ctx.getStatus();

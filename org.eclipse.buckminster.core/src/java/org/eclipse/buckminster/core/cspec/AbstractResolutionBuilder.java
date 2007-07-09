@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -75,7 +76,7 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
 	}
 
-	protected CSpec applyExtensions(CSpec cspec, IComponentReader reader, IProgressMonitor monitor)
+	protected CSpec applyExtensions(CSpec cspec, boolean forResolutionAidOnly, IComponentReader reader, IProgressMonitor monitor)
 		throws CoreException
 	{
 		if(!(reader instanceof ICatalogReader))
@@ -85,52 +86,50 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		}
 
 		ICatalogReader catReader = (ICatalogReader)reader;
-		monitor.beginTask(null, 3000);
 		try
 		{
-			if (catReader.exists(CorePlugin.CSPECEXT_FILE, MonitorUtils.subMonitor(monitor, 1000)))
+			CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE, new IStreamConsumer<CSpecExtension>()
 			{
-				CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE, new IStreamConsumer<CSpecExtension>()
+				public CSpecExtension consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor mon)
+					throws CoreException
 				{
-					public CSpecExtension consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor mon)
-						throws CoreException
+					try
 					{
+						mon.beginTask(null, 1);
+						mon.subTask(streamName);
 						try
 						{
-							mon.beginTask(null, 1);
-							mon.subTask(streamName);
-							try
-							{
-								IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(true);
-								CSpecExtension ce = cspecExtParser.parse(streamName, stream);
-								MonitorUtils.worked(mon, 1);
-								return ce;
-							}
-							finally
-							{
-								mon.done();
-							}
+							IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(true);
+							CSpecExtension ce = cspecExtParser.parse(streamName, stream);
+							MonitorUtils.worked(mon, 1);
+							return ce;
 						}
-						catch(SAXException e)
+						finally
 						{
-							throw BuckminsterException.wrap(e);
+							mon.done();
 						}
 					}
-				}, MonitorUtils.subMonitor(monitor, 2000));
-				cspec = cspecExt.alterCSpec(cspec);
-			}
-			else
-				MonitorUtils.worked(monitor, 2000);
+					catch(SAXException e)
+					{
+						throw BuckminsterException.wrap(e);
+					}
+				}
+			}, monitor);
 
+			// The cspec might be incomplete when the forResolutionOnly flag is set so
+			// we only patch the top element when that is the case.
+			//
+			return forResolutionAidOnly
+				? cspecExt.alterTopElement(cspec)
+				: cspecExt.alterCSpec(cspec);
+		}
+		catch(FileNotFoundException e)
+		{
 			return cspec;
 		}
 		catch(IOException e)
 		{
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			monitor.done();
 		}
 	}
 }

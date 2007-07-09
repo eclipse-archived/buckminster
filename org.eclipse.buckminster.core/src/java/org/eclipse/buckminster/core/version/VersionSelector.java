@@ -222,7 +222,9 @@ public abstract class VersionSelector
 	@Override
 	public String toString()
 	{
-		return m_name;
+		StringBuilder bld = new StringBuilder();
+		toString(bld);
+		return bld.toString();
 	}
 
 	/**
@@ -276,6 +278,12 @@ class Branch extends VersionSelector
 	public boolean isDefault()
 	{
 		return getName().equals(DEFAULT_BRANCH);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
 	}
 
 	@Override

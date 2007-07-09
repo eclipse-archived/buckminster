@@ -141,7 +141,7 @@ public class ComponentRequest extends ComponentName
 		return 31 * hash + (m_versionDesignator == null ? 0 : m_versionDesignator.hashCode());
 	}
 
-	public ComponentRequest mergeDesignator(ComponentRequest that) throws ComponentRequestConflictException
+	public ComponentRequest mergeDesignator(ComponentRequest that) throws CoreException
 	{
 		if(!getName().equals(that.getName()))
 			throw new ComponentRequestConflictException(this, that);

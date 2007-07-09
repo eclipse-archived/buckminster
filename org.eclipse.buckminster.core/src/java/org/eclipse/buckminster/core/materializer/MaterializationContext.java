@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -45,11 +46,13 @@ public class MaterializationContext extends RMContext
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
 
-	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec)
+	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec, RMContext context)
 	{
-		super(mspec.getProperties());
+		super(context == null ? mspec.getProperties() : new MapUnion<String, String>(mspec.getProperties(), context));
 		m_bom = bom;
 		m_materializationSpec = mspec;
+		if(context != null)
+			getUserCache().putAll(context.getUserCache());
 	}
 
 	public BillOfMaterials getBillOfMaterials()
