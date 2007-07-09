@@ -11,12 +11,10 @@ package org.eclipse.buckminster.ui.editor.query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
@@ -44,7 +42,6 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -55,6 +52,7 @@ import org.eclipse.buckminster.ui.editor.SaveRunnable;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorListener;
+import org.eclipse.buckminster.ui.editor.cspec.ArtifactType;
 import org.eclipse.buckminster.ui.internal.ResolveJob;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -186,8 +184,6 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
-	private static final String TEMP_FILE_PREFIX = "bmqtmp-";
-	
 	private CTabFolder m_tabFolder;
 
 	private Text m_componentName;
@@ -338,7 +334,6 @@ public class QueryEditor extends EditorPart
 		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
 
 		createActionButtons(topComposite);
-
 	}
 
 	public void doExternalSaveAs()
@@ -411,39 +406,9 @@ public class QueryEditor extends EditorPart
 		{
 			try
 			{
-				URI uri = ((IURIEditorInput) input).getURI();
-				URL url = uri.toURL();
-				String protocol = url.getProtocol();
-				
-				File queryFile = null;
-				
-				if(protocol == null || "file".equals(protocol))
-				{
-					queryFile = new File(uri);
-				}
-				
-				if(queryFile == null || !queryFile.canWrite())
-				{
-					queryFile = File.createTempFile(TEMP_FILE_PREFIX, ".cquery");
-					queryFile.deleteOnExit();
-					InputStream is = null;
-					OutputStream os = null;
-					try
-					{
-						is = URLUtils.openStream(url, null);
-						os = new FileOutputStream(queryFile);
-						IOUtils.copy(is, os);
-					}
-					finally
-					{
-						IOUtils.close(is);
-						IOUtils.close(os);
-					}
-				}
-				
-				input = new ExternalFileEditorInput(queryFile, new Path(uri.getPath()).lastSegment(), uri.toString());
+				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CQUERY);
 			}
-			catch(Exception e)
+			catch(IOException e)
 			{
 				UiUtils.openError(null, "Unable to open editor", e);
 			}
@@ -635,6 +600,7 @@ public class QueryEditor extends EditorPart
 			}
 		});
 		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		m_externalSaveAsButton.setEnabled(false);
 	}
 
 	private void createButtonBox(Composite parent)
