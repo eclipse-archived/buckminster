@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -27,6 +29,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
+import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -35,6 +38,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -263,6 +267,14 @@ public class QueryEditor extends EditorPart
 	private Button m_useMaterialization;
 
 	private Button m_useResolutionService;
+
+	private Text m_branchTagPath;
+
+	private Text m_spacePath;
+
+	private Text m_timestamp;
+
+	private Text m_revision;
 
 	private VersionDesignator m_versionOverride;
 
@@ -788,6 +800,24 @@ public class QueryEditor extends EditorPart
 		UiUtils.createGridLabel(kuComposite, "Resolution Service:", 1, 0, SWT.NONE);
 		m_useResolutionService = UiUtils.createCheckButton(kuComposite, null, null);
 
+		Composite scComposite = new Composite(m_nodesStackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		scComposite.setLayout(layout);
+
+		m_nodesHash.put("Selection Criteria", scComposite);
+		EditorUtils.createHeaderLabel(scComposite, "Selection Criteria", 2);
+
+		UiUtils.createGridLabel(scComposite, "Branch/Tag path:", 1, 0, SWT.NONE);
+		m_branchTagPath = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(scComposite, "Space path:", 1, 0, SWT.NONE);
+		m_spacePath = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+
+		UiUtils.createGridLabel(scComposite, "Timestamp:", 1, 0, SWT.NONE);
+		m_timestamp = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(scComposite, "Revision:", 1, 0, SWT.NONE);
+		m_revision = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+
 		Composite ovComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(3, false);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -967,13 +997,13 @@ public class QueryEditor extends EditorPart
 		item.setText("Attribute Qualification");
 
 		item = new TreeItem(m_nodeTree, SWT.NONE);
-		item.setText("Project Name Mapping");
-
-		item = new TreeItem(m_nodeTree, SWT.NONE);
 		item.setText("Special Requirements");
 
 		item = new TreeItem(m_nodeTree, SWT.NONE);
 		item.setText("Resolution Scope");
+
+		item = new TreeItem(m_nodeTree, SWT.NONE);
+		item.setText("Selection Criteria");
 
 		item = new TreeItem(m_nodeTree, SWT.NONE);
 		item.setText("Override");
@@ -1052,6 +1082,11 @@ public class QueryEditor extends EditorPart
 		m_useInstalled.setEnabled(enableRest);
 		m_useMaterialization.setEnabled(enableRest);
 		m_useResolutionService.setEnabled(enableRest);
+
+		m_branchTagPath.setEnabled(enableRest);
+		m_spacePath.setEnabled(enableRest);
+		m_timestamp.setEnabled(enableRest);
+		m_revision.setEnabled(enableRest);
 
 		m_enableOverride.setEnabled(enableRest);
 		m_versionOverride.setEnabled(enableRest && m_enableOverride.getSelection());
@@ -1381,6 +1416,13 @@ public class QueryEditor extends EditorPart
 		m_useMaterialization.setSelection(node.useMaterialization());
 		m_useResolutionService.setSelection(node.isUseResolutionScheme());
 
+		m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
+		m_spacePath.setText(TextUtils.notNullString(TextUtils.concat(node.getSpacePath(), ",")));
+		long revision = node.getRevision();
+		m_revision.setText(revision == -1 ? "" : Long.toString(revision));
+		Date timestamp = node.getTimestamp();
+		m_timestamp.setText(timestamp == null ? "" : DateAndTimeUtils.toISOFormat(timestamp));
+
 		IVersionDesignator vs = node.getVersionOverride();
 		boolean enableOverride = (vs != null);
 		m_enableOverride.setSelection(enableOverride);
@@ -1535,6 +1577,37 @@ public class QueryEditor extends EditorPart
 		node.setUseInstalled(m_useInstalled.getSelection());
 		node.setUseMaterialization(m_useMaterialization.getSelection());
 		node.setUseResolutionScheme(m_useResolutionService.getSelection());
+
+		node.setBranchTagPath(VersionSelector.fromPath(UiUtils.trimmedValue(m_branchTagPath)));
+		node.setSpacePath(TextUtils.split(UiUtils.trimmedValue(m_spacePath), ","));
+		
+		tmp = UiUtils.trimmedValue(m_revision);
+		if(tmp != null)
+		{
+			try
+			{
+				node.setRevision(Long.parseLong(tmp));
+			}
+			catch(NumberFormatException e)
+			{
+				MessageDialog.openError(getSite().getShell(), null, "Revision must be a valid integer number");
+				return false;
+			}
+		}
+
+		tmp = UiUtils.trimmedValue(m_timestamp);
+		if(tmp != null)
+		{
+			try
+			{
+				node.setTimestamp(DateAndTimeUtils.fromISOFormat(tmp));
+			}
+			catch(ParseException e)
+			{
+				MessageDialog.openError(getSite().getShell(), null, "Timestamp must conform to the ISO-8601 format");
+				return false;
+			}
+		}
 
 		node.setVersionOverride(versionOverride);
 
