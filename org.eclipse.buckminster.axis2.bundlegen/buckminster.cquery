@@ -2,7 +2,6 @@
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="http://www.eclipse.org/buckminster/samples/rmaps/dogfood.rmap">
     <cq:rootRequest name="org.eclipse.buckminster.axis2.bundlegen"/>
     <cq:advisorNode namePattern="buckminster" sourceLevel="REQUIRE" useInstalled="false" useMaterialization="false"/>
-    <cq:advisorNode namePattern="\Qorg.tigris.subversion\E" whenNotEmpty="REUSE"/>
     <cq:advisorNode namePattern="ant$" skipComponent="true"/>
     <cq:advisorNode namePattern="ant-launcher$" skipComponent="true"/>
     <cq:advisorNode namePattern="avalon-framework" skipComponent="true"/>
