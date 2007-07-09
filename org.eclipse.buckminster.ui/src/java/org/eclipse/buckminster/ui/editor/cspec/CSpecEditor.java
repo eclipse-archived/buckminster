@@ -11,6 +11,7 @@ package org.eclipse.buckminster.ui.editor.cspec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
@@ -104,6 +106,8 @@ public class CSpecEditor extends EditorPart
 		}
 	}
 	
+	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec";
+	
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = CSpecEditorUtils.getCSpecElementComparator();
 
 	private CSpecBuilder m_cspec;
@@ -119,6 +123,7 @@ public class CSpecEditor extends EditorPart
 	private boolean m_hasChanges = false;	
 	private boolean m_mute = false;	
 	private boolean m_needsRefresh = false;
+	private boolean m_readOnly = true;
 	
 	private CTabFolder m_tabFolder;
 	private Text m_componentName;
@@ -367,9 +372,21 @@ public class CSpecEditor extends EditorPart
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException
 	{
-		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput))
+		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput))
 			throw new PartInitException("Invalid Input");
 		setSite(site);
+
+		if(input instanceof IURIEditorInput)
+		{
+			try
+			{
+				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CSPEC);
+			}
+			catch(IOException e)
+			{
+				UiUtils.openError(null, "Unable to open editor", e);
+			}
+		}
 
 		InputStream stream = null;
 		try
@@ -378,6 +395,8 @@ public class CSpecEditor extends EditorPart
 					? ((ILocationProvider)input).getPath(input)
 					: ((IPathEditorInput)input).getPath();
 
+			m_readOnly = (! SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
+					
 			File file = path.toFile();
 			m_cspec = new CSpecBuilder();
 			if(file.length() != 0)
@@ -395,7 +414,7 @@ public class CSpecEditor extends EditorPart
 			}
 			
 			setInputWithNotify(input);
-			setPartName(input.getName());
+			setPartName(input.getName() + (m_readOnly ? " (read only)" : ""));
 		}
 		catch(SAXException e)
 		{
@@ -500,7 +519,7 @@ public class CSpecEditor extends EditorPart
 	@Override
 	public boolean isSaveAsAllowed()
 	{
-		return true;
+		return ! m_readOnly;
 	}
 
 	@Override
@@ -568,6 +587,7 @@ public class CSpecEditor extends EditorPart
 			}
 		});
 		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		m_externalSaveAsButton.setEnabled(false);
 	}
 
 	@Override
@@ -767,8 +787,9 @@ public class CSpecEditor extends EditorPart
 
 	private void setDirty(boolean flag)
 	{
-		if(m_mute || m_hasChanges == flag)
+		if(m_readOnly || m_mute || m_hasChanges == flag)
 			return;
+		
 		m_hasChanges = flag;
 		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
