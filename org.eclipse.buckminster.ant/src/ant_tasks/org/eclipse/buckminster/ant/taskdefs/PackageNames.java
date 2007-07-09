@@ -67,7 +67,7 @@ public class PackageNames extends Task
 							continue;
 
 						IPath entryPath = new Path(jarEntry.getName());
-						if(entryPath.segmentCount() < 2 || "META-INF".equals(entryPath.segment(0)))
+						if(entryPath.segmentCount() < 2 || "META-INF".equalsIgnoreCase(entryPath.segment(0)))
 							continue;
 
 						packages.add(entryPath.removeLastSegments(1));
