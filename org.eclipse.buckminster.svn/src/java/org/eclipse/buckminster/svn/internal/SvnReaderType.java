@@ -14,6 +14,8 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -23,8 +25,10 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.team.core.RepositoryProvider;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.svnclientadapter.ISVNInfo;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
@@ -41,7 +45,8 @@ public class SvnReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
+			throws CoreException
 	{
 		monitor.beginTask(null, 1);
 		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
@@ -126,10 +131,17 @@ public class SvnReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
-			throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider, ctype, nodeQuery);
+	}
+
+	@Override
+	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
+			throws CoreException
+	{
+		RepositoryProvider.map(project, SVNProviderPlugin.PROVIDER_ID);
 	}
 }
