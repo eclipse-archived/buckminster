@@ -46,6 +46,7 @@ import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
 import org.eclipse.buckminster.ui.general.editor.structured.OnePageTableEditor;
+import org.eclipse.buckminster.ui.internal.CSpecEditorInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -372,7 +373,7 @@ public class CSpecEditor extends EditorPart
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException
 	{
-		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput))
+		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput || input instanceof CSpecEditorInput))
 			throw new PartInitException("Invalid Input");
 		setSite(site);
 
@@ -391,22 +392,30 @@ public class CSpecEditor extends EditorPart
 		InputStream stream = null;
 		try
 		{
-			IPath path = (input instanceof ILocationProvider)
-					? ((ILocationProvider)input).getPath(input)
-					: ((IPathEditorInput)input).getPath();
-
-			m_readOnly = (! SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
-					
-			File file = path.toFile();
 			m_cspec = new CSpecBuilder();
-			if(file.length() != 0)
+			if(input instanceof CSpecEditorInput)
 			{
-				String systemId = file.toString();
-				stream = new FileInputStream(file);
-				IParser<CSpec> parser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
-				m_cspec.initFrom(parser.parse(systemId, stream));
+				m_readOnly = true;
+				m_cspec.initFrom(((CSpecEditorInput)input).getCSpec());
 			}
-			
+			else
+			{
+				IPath path = (input instanceof ILocationProvider)
+						? ((ILocationProvider)input).getPath(input)
+						: ((IPathEditorInput)input).getPath();
+	
+				m_readOnly = (! SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
+						
+				File file = path.toFile();
+				if(file.length() != 0)
+				{
+					String systemId = file.toString();
+					stream = new FileInputStream(file);
+					IParser<CSpec> parser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
+					m_cspec.initFrom(parser.parse(systemId, stream));
+				}
+			}
+
 			m_needsRefresh = true;
 			if(m_componentName != null)
 			{

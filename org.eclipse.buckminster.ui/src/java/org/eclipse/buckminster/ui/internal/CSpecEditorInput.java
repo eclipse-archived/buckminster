@@ -34,6 +34,11 @@ public class CSpecEditorInput extends SaxableEditorInput
 		return true;
 	}
 
+	public CSpec getCSpec()
+	{
+		return m_cspec;
+	}
+
 	public String getName()
 	{
 		StringBuilder bld = new StringBuilder();
