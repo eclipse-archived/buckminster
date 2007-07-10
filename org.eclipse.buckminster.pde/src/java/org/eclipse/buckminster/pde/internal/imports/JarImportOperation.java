@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.pde.internal.core.util.CoreUtility;
 
-@SuppressWarnings({"unchecked", "restriction"})
+@SuppressWarnings( { "unchecked", "restriction" })
 public abstract class JarImportOperation implements IWorkspaceRunnable
 {
 	protected void collectJavaFiles(ZipFileStructureProvider provider, Object element, ArrayList collected)
@@ -78,8 +78,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	protected void collectNonJavaResources(ZipFileStructureProvider provider, Object element,
-		ArrayList collected)
+	protected void collectNonJavaResources(ZipFileStructureProvider provider, Object element, ArrayList collected)
 	{
 		List children = provider.getChildren(element);
 		if(children != null && !children.isEmpty())
@@ -146,8 +145,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		return false;
 	}
 
-	protected void extractJavaResources(File file, IResource dest, IProgressMonitor monitor)
-	throws CoreException
+	protected void extractJavaResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException
 	{
 		ZipFile zipFile = null;
 		try
@@ -160,8 +158,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 		catch(IOException e)
 		{
-			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR,
-				e.getMessage(), e);
+			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
 		}
 		finally
@@ -192,8 +189,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 		catch(IOException e)
 		{
-			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR,
-				e.getMessage(), e);
+			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
 		}
 		finally
@@ -222,8 +218,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 		catch(IOException e)
 		{
-			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR,
-				e.getMessage(), e);
+			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
 		}
 		finally
@@ -328,8 +323,8 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	protected void importContent(Object source, IPath destPath, IImportStructureProvider provider,
-		List filesToImport, IProgressMonitor monitor) throws CoreException
+	protected void importContent(Object source, IPath destPath, IImportStructureProvider provider, List filesToImport,
+			IProgressMonitor monitor) throws CoreException
 	{
 		IOverwriteQuery query = new IOverwriteQuery()
 		{
@@ -352,7 +347,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	}
 
 	private void collectResources(ZipFileStructureProvider provider, Object element, boolean excludeMeta,
-		ArrayList collected)
+			ArrayList collected)
 	{
 		List children = provider.getChildren(element);
 		if(children != null && !children.isEmpty())

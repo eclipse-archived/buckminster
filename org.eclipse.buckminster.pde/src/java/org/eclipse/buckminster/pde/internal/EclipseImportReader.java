@@ -216,8 +216,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 			{
 				// Create a local base.
 				//
-				InputStream input = null;
-				OutputStream output = null;
 				try
 				{
 					IPluginEntry entry = null;
@@ -250,11 +248,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 				catch(IOException e)
 				{
 					throw BuckminsterException.wrap(e);
-				}
-				finally
-				{
-					IOUtils.close(input);
-					IOUtils.close(output);
 				}
 			}
 			IPluginModelBase model = null;

@@ -10,7 +10,11 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.File;
+import java.net.MalformedURLException;
+
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -18,7 +22,9 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,10 +53,20 @@ public class LocalReaderType extends URLCatalogReaderType
 	@Override
 	public IPath getFixedLocation(Resolution rc) throws CoreException
 	{
-		IPath path = new Path(rc.getRepository());
-		if(path.toFile().isDirectory())
-			path = path.addTrailingSeparator();
-		return path;
+		try
+		{
+			File file = FileUtils.getFile(URLUtils.normalizeToURL(rc.getRepository()));
+			if(file == null)
+				throw new IllegalArgumentException("Resolution not created using LocalReader");
+			IPath path = Path.fromOSString(file.toString());
+			if(path.toFile().isDirectory())
+				path = path.addTrailingSeparator();
+			return path;
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	@Override

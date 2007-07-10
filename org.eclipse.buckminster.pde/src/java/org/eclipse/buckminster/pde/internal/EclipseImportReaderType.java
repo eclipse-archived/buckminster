@@ -25,10 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -69,6 +72,7 @@ import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
 public class EclipseImportReaderType extends AbstractReaderType implements IPDEConstants
@@ -330,13 +334,52 @@ public class EclipseImportReaderType extends AbstractReaderType implements IPDEC
 
 				// Use a temporary local site
 				//
+				String vcName = createVersionedComponentName(rInfo);
+				String jarName = vcName + ".jar";
 				File tempSite = getTempSite(userCache);
 				File subDir = new File(tempSite, typeDir);
-				File destDir = new File(subDir, createVersionedComponentName(rInfo));
+				File jarFile = new File(subDir, jarName);
+				FileUtils.copyFile(pluginURL, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
 
-				FileUtils.unzip(pluginURL, null, destDir, false, MonitorUtils.subMonitor(monitor, 800));
 				localBase = EclipseImportBase.obtain(new URI("file", null, tempSite.toURI().getPath(),
 					base.getQuery(), name).toString(), request);
+
+				boolean unpack = true;
+				if(!localBase.isFeature())
+				{
+					// Guess unpack based on classpath
+					//
+					JarFile jf = new JarFile(jarFile);
+					Manifest mf = jf.getManifest();
+					String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(Constants.BUNDLE_CLASSPATH), ",");
+					jf.close();
+
+					int top = classPath.length;
+					unpack = (top > 0);
+					for(int idx = 0; idx < top; ++idx)
+					{
+						if(classPath[idx].equals("."))
+						{
+							unpack = false;
+							break;
+						}
+					}
+				}
+
+				if(unpack)
+				{
+					InputStream input = new FileInputStream(jarFile);
+					File destDir = new File(subDir, vcName);
+					try
+					{
+						FileUtils.unzip(input, null, destDir, true, MonitorUtils.subMonitor(monitor, 100));
+					}
+					finally
+					{
+						IOUtils.close(input);
+					}
+					jarFile.delete();
+				}
 				importCache.put(base, localBase);
 				return localBase;
 			}

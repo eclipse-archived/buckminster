@@ -194,12 +194,12 @@ final class EclipseImportBase
 
 	List<IFeatureModel> getFeatureModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
 	{
-		return readerType.getFeatureModels(this.getLocation(), this.getComponentName(), monitor);
+		return readerType.getFeatureModels(getLocation(), getComponentName(), monitor);
 	}
 
 	List<ISiteFeatureReference> getFeatureReferences(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
 	{
-		return readerType.getFeatureReferences(this.getRemoteLocation(),  this.getComponentName(), monitor);
+		return readerType.getFeatureReferences(getRemoteLocation(),  getComponentName(), monitor);
 	}
 
 	final File getLocation() throws CoreException
@@ -211,12 +211,12 @@ final class EclipseImportBase
 
 	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
 	{
-		return readerType.getPluginEntries(this.getRemoteLocation(),  this.getComponentName(), monitor);
+		return readerType.getPluginEntries(getRemoteLocation(),  getComponentName(), monitor);
 	}
 
 	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
 	{
-		return readerType.getPluginModels(this.getLocation(),  this.getComponentName(), monitor);
+		return readerType.getPluginModels(getLocation(),  getComponentName(), monitor);
 	}
 
 	String getQuery()
