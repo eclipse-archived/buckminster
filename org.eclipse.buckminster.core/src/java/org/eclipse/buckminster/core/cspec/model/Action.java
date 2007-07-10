@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -29,6 +30,7 @@ import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -304,14 +306,13 @@ public class Action extends Attribute
 			//
 			IPath root;
 			IPath cspecLoc = getCSpec().getComponentLocation();
-			if(m_productBase != null)
-			{
-				root = PerformManager.expandPath(local, m_productBase);
-				if(!root.isAbsolute())
-					root = cspecLoc.append(root);
-			}
-			else
-				root = cspecLoc;
+			IPath productBase = m_productBase;
+			if(productBase == null)
+				productBase = Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF);
+
+			root = PerformManager.expandPath(local, productBase);
+			if(!root.isAbsolute())
+				root = cspecLoc.append(root);
 
 			IPath[] pathArr = m_products.toArray(new IPath[numProducts]);
 			while(--numProducts >= 0)
