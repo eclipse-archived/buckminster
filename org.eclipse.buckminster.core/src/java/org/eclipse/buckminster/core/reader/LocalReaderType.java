@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -43,12 +42,6 @@ public class LocalReaderType extends URLCatalogReaderType
 			return null;
 		}
 	};
-
-	@Override
-	public IPath getMaterializationLocation(Resolution rc, MaterializationContext context, boolean[] optional) throws CoreException
-	{
-		return null;
-	}
 
 	@Override
 	public IPath getFixedLocation(Resolution rc) throws CoreException

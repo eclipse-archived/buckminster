@@ -14,13 +14,11 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
@@ -78,20 +76,6 @@ public class MaterializationContext extends RMContext
 
 	public IPath getDefaultInstallLocation(Resolution resolution, boolean[] optional) throws CoreException
 	{		
-		// Use existing materialization if the component is materialized already
-		//
-		CSpec cspec = resolution.getCSpec();
-		optional[0] = true;
-		try
-		{
-			return cspec.getComponentLocation();
-		}
-		catch(MissingComponentException e)
-		{
-			// expected but if we get here there's no
-			// previous materialization entry
-		}
-
 		// Consult the reader type.
 		//
 		IReaderType rd = resolution.getProvider().getReaderType();

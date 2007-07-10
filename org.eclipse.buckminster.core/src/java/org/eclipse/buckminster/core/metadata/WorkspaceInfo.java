@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.internal.version.VersionDesignator;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -26,6 +28,7 @@ import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
@@ -143,30 +146,124 @@ public class WorkspaceInfo
 		CorePlugin.logWarningsAndErrors(status);
 	}
 
+	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res)
+			throws CoreException
+	{
+		IPath location;
+		ComponentIdentifier ci = res.getComponentIdentifier();
+		synchronized(s_locationCache)
+		{
+			location = s_locationCache.get(ci);
+			if(location == null)
+			{
+				for(Materialization mat : mats.getElements())
+				{
+					if(mat.getComponentIdentifier().equals(ci))
+					{
+						location = mat.getComponentLocation();
+						break;
+					}
+				}
+				if(location == null)
+					location = res.getProvider().getReaderType().getFixedLocation(res);
+				if(location != null)
+					s_locationCache.put(ci, location);
+			}
+		}
+		return location;
+	}
+
 	public static Resolution[] getActiveResolutions() throws CoreException
 	{
-		// Add the newest version of each known resoluton
+		// Add the newest version of each known resolution
 		//
-		HashMap<ComponentIdentifier, TimestampedKey> resolutionKeys = new HashMap<ComponentIdentifier, TimestampedKey>();
-		ISaxableStorage<Resolution> ress = StorageManager.getDefault().getResolutions();
+		StorageManager sm = StorageManager.getDefault();
+		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
+		ArrayList<TimestampedKey> duplicates = null;
+		ISaxableStorage<Resolution> ress = sm.getResolutions();
+		ISaxableStorage<Materialization> mats = sm.getMaterializations();
 		for(Resolution res : ress.getElements())
 		{
 			UUID resId = res.getId();
 			ComponentIdentifier ci = res.getComponentIdentifier();
+
+			IPath location = getResolutionLocation(mats, res);
+			if(location == null)
+				continue;
+
+			ComponentName cn = ci.toPureComponentName();
 			TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
-			TimestampedKey prevTsKey = resolutionKeys.put(ci, tsKey);
-			if(prevTsKey != null && prevTsKey.getCreationTime() > tsKey.getCreationTime())
+			TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
+			if(prevTsKey == null)
+				continue;
+
+			// Check real existence of locations. For performance reasons we only do
+			// this when ambiguities arise.
+			//
+			IPath prevLocation = getResolutionLocation(mats, ress.getElement(prevTsKey.getKey()));
+			if(prevLocation == null)
+				continue;
+
+			if(location.toFile().exists())
+			{
+				if(location.equals(prevLocation))
+				{
+					// Discriminate using timestamp
+					//
+					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+					{
+						// We just replaced a newer entry. Put it back!
+						//
+						resolutionKeys.put(cn, prevTsKey);
+					}
+					continue;
+				}
+
+				if(!prevLocation.toFile().exists())
+					continue;
+
+				// Apparently we have both locations present so we cannot
+				// discriminate one of them
 				//
-				// We just replaced a newer entry. Put it back!
+				if(duplicates == null)
+					duplicates = new ArrayList<TimestampedKey>();
+				duplicates.add(prevTsKey);
+
+				Logger logger = CorePlugin.getLogger();
+				if(logger.isDebugEnabled())
+				{
+					logger.debug(
+						String.format("Found two entries for component %s located at %s and %s", location, prevLocation));
+				}
+				continue;
+			}
+
+			if(prevLocation.toFile().exists())
+			{
+				// New entry is bogus and old entry is valid
 				//
-				resolutionKeys.put(ci, prevTsKey);
+				resolutionKeys.put(cn, prevTsKey);
+			}
+			else
+			{
+				// None of the entries were valid. Simply remove the entry
+				//
+				resolutionKeys.remove(cn);
+			}
 		}
 
 		int top = resolutionKeys.size();
+		if(duplicates != null)
+			top += duplicates.size();
+
 		Resolution[] result = new Resolution[top];
 		int idx = 0;
 		for(TimestampedKey tsKey : resolutionKeys.values())
 			result[idx++] = ress.getElement(tsKey.getKey());
+
+		if(duplicates != null)
+			for(TimestampedKey tsKey : duplicates)
+				result[idx++] = ress.getElement(tsKey.getKey());
 		return result;
 	}
 
@@ -381,7 +478,8 @@ public class WorkspaceInfo
 				//
 				try
 				{
-					int cmp = Trivial.compareAllowNull(id.getVersion(), candidate.getComponentIdentifier().getVersion());
+					int cmp = Trivial
+							.compareAllowNull(id.getVersion(), candidate.getComponentIdentifier().getVersion());
 					if(cmp == 0)
 						throw new AmbigousComponentException(id.toString());
 					if(cmp < 0)

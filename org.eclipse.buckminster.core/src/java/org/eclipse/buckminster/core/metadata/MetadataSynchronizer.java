@@ -173,16 +173,34 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			monitor.beginTask(null,ticks);
 			try
 			{
+				StorageManager sm = StorageManager.getDefault();
 				for(;s_default != null;)
 				{
 					IPath removedEntry;
 					while((removedEntry = getNextRemovedEntry()) != null)
 					{
-						for(Materialization mat : StorageManager.getDefault().getMaterializations().getElements())
+						for(Materialization mat : sm.getMaterializations().getElements())
 						{
 							if(mat.getComponentLocation().equals(removedEntry))
 							{
-								mat.remove();
+								// The project has been removed. This does't mean that
+								// we have to remove the materialization. For that to
+								// happen, the actual content must have been removed
+								// too.
+								//
+								if(!removedEntry.toFile().exists())
+								{
+									// Try and remove the resolution. It might not work
+									//
+									Resolution res = WorkspaceInfo.getResolution(mat.getComponentIdentifier());
+									try
+									{
+										res.remove();
+									}
+									catch(ReferentialIntegrityException e)
+									{}
+									mat.remove();
+								}
 								break;
 							}
 						}

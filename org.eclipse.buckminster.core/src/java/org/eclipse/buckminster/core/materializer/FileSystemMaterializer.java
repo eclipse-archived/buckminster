@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -76,6 +77,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		ArrayList<Materialization> adjustedMinfos = new ArrayList<Materialization>(resolutions.size());
+		HashMap<ComponentIdentifier,Resolution> resolutionPerID = new HashMap<ComponentIdentifier, Resolution>();
 
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 1000);
@@ -108,6 +110,8 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
 					IPath installLocation = context.getInstallLocation(cr);
 					mat = new Materialization(installLocation, ci);
+					resolutionPerID.put(ci, cr);
+					
 	
 					File file = installLocation.toFile();
 					boolean fileExists = file.exists();
@@ -123,7 +127,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						//
 						logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
 										+ installLocation);
-	
+
 						mat.store();
 						adjustedMinfos.add(mat);
 						MonitorUtils.worked(prepMon, 10);
@@ -188,7 +192,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				readerType.prepareMaterialization(rg, context, MonitorUtils.subMonitor(matMon, 8));
 				for(Materialization mi : rg)
 				{
-					Resolution cr = mi.getResolution();
+					Resolution cr = resolutionPerID.get(mi.getComponentIdentifier());
 					matMon.subTask(cr.getName());
 					IComponentReader reader = readerType
 							.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));
