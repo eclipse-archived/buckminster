@@ -65,6 +65,6 @@ public class SimpleLoaderTestCase extends TestCase
 		mspecBuilder.setName(bom.getViewName());
 		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), resolver.getContext());
-		MaterializerJob.run(matCtx);
+		MaterializerJob.run(matCtx, true);
 	}
 }

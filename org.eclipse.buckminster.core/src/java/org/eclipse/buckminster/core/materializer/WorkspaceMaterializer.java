@@ -61,20 +61,27 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		monitor.beginTask(null, 200);
 		try
 		{
-			monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
-			wb = this.performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 100));
-
-			Materialization mat = wb.getMaterialization();
-			IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
-			IPath wsRelativePath = wb.getWorkspaceRelativePath();
-			if(wsRelativePath.segmentCount() == 1)
-				this.createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
-			else
-				this.createExternalBinding(wsRelativePath, mat, subMonitor);
+			try
+			{
+				monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
+				wb = this.performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 100));
+	
+				Materialization mat = wb.getMaterialization();
+				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
+				IPath wsRelativePath = wb.getWorkspaceRelativePath();
+				if(wsRelativePath.segmentCount() == 1)
+					this.createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
+				else
+					this.createExternalBinding(wsRelativePath, mat, subMonitor);
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
 		}
-		catch(IOException e)
+		catch(CoreException e)
 		{
-			throw BuckminsterException.wrap(e);
+			context.addException(e.getStatus());
 		}
 		finally
 		{
@@ -354,8 +361,6 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 		catch(CoreException e)
 		{
-			if(!context.isContinueOnError())
-				throw e;
 			context.addException(e.getStatus());
 			return wb;
 		}

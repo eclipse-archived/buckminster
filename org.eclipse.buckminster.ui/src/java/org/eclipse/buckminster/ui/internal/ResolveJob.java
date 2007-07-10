@@ -93,8 +93,7 @@ public class ResolveJob extends Job
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), ctx);
-
-					MaterializerJob.run(matCtx);
+					MaterializerJob.run(matCtx, false);
 					status = ctx.getStatus();
 					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
 						return status;
@@ -113,4 +112,3 @@ public class ResolveJob extends Job
 		}
 	}
 }
-

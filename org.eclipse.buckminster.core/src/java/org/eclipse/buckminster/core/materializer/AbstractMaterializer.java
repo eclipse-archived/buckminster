@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -42,6 +43,9 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		{
 			IMaterializer materializer = context.getMaterializationSpec().getMaterializer(bom.getRequest());
 			materializer.installRecursive(bom, context, new HashSet<String>(), new HashSet<Resolution>(), monitor);
+			IStatus status = context.getStatus();
+			if(status.getSeverity() == IStatus.ERROR)
+				throw new CoreException(status);
 		}
 		finally
 		{

@@ -34,6 +34,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
@@ -93,6 +94,10 @@ public class WorkspaceBindTask
 		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 		MaterializationSpec mspec = mspecBuilder.createMaterializationSpec();
 		IMaterializer wsMat = CorePlugin.getDefault().getMaterializer(IMaterializer.WORKSPACE);
-		wsMat.performInstallAction(mat.getResolution(), new MaterializationContext(bom, mspec, context), new NullProgressMonitor());
+		MaterializationContext matCtx = new MaterializationContext(bom, mspec, context);
+		wsMat.performInstallAction(mat.getResolution(), matCtx, new NullProgressMonitor());
+		IStatus status = matCtx.getStatus();
+		if(status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
 	}
 }

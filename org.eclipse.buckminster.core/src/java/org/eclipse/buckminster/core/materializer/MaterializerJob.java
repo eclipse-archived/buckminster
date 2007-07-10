@@ -16,34 +16,33 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * A job that will materialize and bind according to specifications.
+ * A job that will materialize according to specifications.
  * @author Thomas Hallgren
  */
-public class MaterializerJob extends WorkspaceJob
+public class MaterializerJob extends Job
 {
 	private final MaterializationContext m_context;
 
-	public static void run(MaterializationContext context)
+	private final boolean m_waitForInstall;
+
+	public static void run(MaterializationContext context, boolean waitForInstall)
 	throws CoreException
 	{
-		JobBlocker blocker = blockJobs();
 		try
 		{
-			MaterializerJob mbJob = new MaterializerJob(context);
+			MaterializerJob mbJob = new MaterializerJob(context, waitForInstall);
 			mbJob.schedule();
 			mbJob.join(); // longrunning
 			IStatus status = mbJob.getResult();
@@ -67,45 +66,36 @@ public class MaterializerJob extends WorkspaceJob
 		{
 			throw new RuntimeException("Unexpected error", t);
 		}
-		finally
-		{
-			blocker.release();
-		}
 	}
 
+	/**
+	 * Runs this job immediately without scheduling. This method is intended to be called
+	 * when the materialization is done from the GUI and uses a <code>IRunnableWithProgress</code>
+	 *
+	 * @param context
+	 * @param monitor
+	 * @throws CoreException
+	 */
 	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
-		MaterializerJob mbJob = new MaterializerJob(context);
-		IStatus status = mbJob.runInWorkspace(monitor);
-		if(status.getSeverity() == IStatus.CANCEL)
-			throw new OperationCanceledException();
-		if(!status.isOK())
-			throw new CoreException(status);
+		MaterializerJob mbJob = new MaterializerJob(context, false);
+		mbJob.internalRun(monitor);
 	}
 
-	private MaterializerJob(MaterializationContext ctx) throws CoreException
+	private MaterializerJob(MaterializationContext ctx, boolean waitForInstall)
 	{
-		super("Materializing and binding");
+		super("Materializing");
 		m_context = ctx;
+		m_waitForInstall = waitForInstall;
 
 		// Report using the standard job reporter.
 		//
 		this.setSystem(false);
 		this.setUser(true);
 		this.setPriority(LONG);
-		this.setRule(ResourcesPlugin.getWorkspace().getRoot());
 	}
 
-	public static JobBlocker blockJobs()
-	{
-		JobBlocker jobBlocker = new JobBlocker();
-		jobBlocker.addNameBlock("Building workspace");
-		jobBlocker.addNameBlock("Periodic workspace save.");
-		return jobBlocker;
-	}
-
-	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
+	private void internalRun(IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1000);
 		try
@@ -125,7 +115,7 @@ public class MaterializerJob extends WorkspaceJob
 				}
 				crs.add(cr);
 			}
-
+	
 			if (resPerMat.size() > 0)
 			{
 				int ticksPerM = 800 / resPerMat.size();
@@ -136,17 +126,42 @@ public class MaterializerJob extends WorkspaceJob
 				}
 			}
 			bom.store();
-			AbstractMaterializer.performInstallActions(bom, m_context, MonitorUtils.subMonitor(monitor, 100));
+			InstallerJob installerJob = new InstallerJob(m_context);
+			installerJob.schedule();
+			if(m_waitForInstall)
+			{
+				try
+				{
+					installerJob.join();
+				}
+				catch(InterruptedException e)
+				{
+					throw new OperationCanceledException();
+				}
+			}
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	@Override
+	public IStatus run(IProgressMonitor monitor)
+	{
+		try
+		{
+			internalRun(monitor);
+			return Status.OK_STATUS;
 		}
 		catch(CoreException e)
 		{
 			CorePlugin.getLogger().error(e.getMessage(), e);
 			return e.getStatus();
 		}
-		finally
+		catch(OperationCanceledException e)
 		{
-			monitor.done();
+			return Status.CANCEL_STATUS;
 		}
-		return Status.OK_STATUS;
 	}
 }
