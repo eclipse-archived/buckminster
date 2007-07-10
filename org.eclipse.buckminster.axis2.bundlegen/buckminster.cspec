@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.axis2.bundlegen" version="1.0.0">
-<cs:dependencies>
-	<cs:dependency name="org.apache.axis2/axis2-kernel"/>
-	<cs:dependency name="org.apache.axis2/axis2-adb-codegen"/>
-	<cs:dependency name="org.apache.axis2/axis2-tools"/>
-	<cs:dependency name="org.apache.axis2/addressing"/>
-</cs:dependencies>
-<cs:actions>
-	<cs:public name="generate.bundle" actor="ant">
-		<cs:actorProperties>
-			<cs:property key="buildFile" value="make/build.xml" />
-		</cs:actorProperties>
-		<cs:properties>
-			<cs:property key="generated.name" value="org.eclipse.buckminster.axis2" />
-			<cs:property key="generated.version" value="${buckminster.version}" />
-		</cs:properties>
-		<cs:prerequisites alias="required.jars">
-			<cs:attribute component="org.apache.axis2/axis2-kernel" name="java.binaries"/>
-			<cs:attribute component="org.apache.axis2/axis2-adb-codegen" name="java.binaries"/>
-			<cs:attribute component="org.apache.axis2/axis2-tools" name="java.binaries"/>
-			<cs:attribute component="org.apache.axis2/addressing" name="java.binaries"/>
-		</cs:prerequisites>
-		<cs:products alias="output" base="../plugins">
-			<cs:path path="org.eclipse.buckminster.axis2"/>
-		</cs:products>
-	</cs:public>
-</cs:actions>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.axis2.bundlegen" componentType="buckminster" version="1.0.0" versionType="OSGi">
+    <cs:dependencies>
+        <cs:dependency name="org.apache.axis2/addressing"/>
+        <cs:dependency name="org.apache.axis2/axis2-adb-codegen"/>
+        <cs:dependency name="org.apache.axis2/axis2-kernel"/>
+        <cs:dependency name="org.apache.axis2/axis2-tools"/>
+    </cs:dependencies>
+    <cs:actions>
+        <cs:public name="generate.bundle" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+            </cs:actorProperties>
+            <cs:properties>
+                <cs:property key="generated.name" value="org.eclipse.buckminster.axis2"/>
+                <cs:property key="generated.version" value="${buckminster.version}"/>
+            </cs:properties>
+            <cs:prerequisites alias="required.jars">
+                <cs:attribute name="java.binaries" component="org.apache.axis2/axis2-kernel"/>
+                <cs:attribute name="java.binaries" component="org.apache.axis2/axis2-adb-codegen"/>
+                <cs:attribute name="java.binaries" component="org.apache.axis2/axis2-tools"/>
+                <cs:attribute name="java.binaries" component="org.apache.axis2/addressing"/>
+            </cs:prerequisites>
+            <cs:products alias="output" base="../plugins/">
+                <cs:path path="org.eclipse.buckminster.axis2"/>
+            </cs:products>
+        </cs:public>
+    </cs:actions>
 </cs:cspec>
