@@ -35,7 +35,6 @@ public abstract class Attribute extends NamedElement implements Cloneable
 {
 	public final static String PROPERTY_PREFIX = "buckminster.";
 	public final static String INSTALLER_HINT_PREFIX = PROPERTY_PREFIX + "install.";
-	public final static String COMPONENT_HOME = PROPERTY_PREFIX + "home";
 
 	public static final String ELEM_INSTALLER_HINTS = "installerHints";
 
@@ -88,7 +87,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 		properties.put(KeyConstants.ACTION_OUTPUT, actionOutput);
 		properties.put(KeyConstants.ACTION_TEMP, buckminsterTempRoot.append("temp").toPortableString());
-		properties.put(COMPONENT_HOME, cspec.getComponentLocation().toOSString());
+		properties.put(KeyConstants.ACTION_HOME, cspec.getComponentLocation().toOSString());
 		properties.putAll(cspec.getComponentIdentifier().getProperties());
 	}
 

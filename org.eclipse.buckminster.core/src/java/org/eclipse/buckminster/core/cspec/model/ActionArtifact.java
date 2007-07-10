@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -54,5 +55,11 @@ public class ActionArtifact extends Artifact
 	public boolean isProducedByActions(IModelCache ctx)
 	{
 		return true;
+	}
+
+	@Override
+	protected IPath getExpandedBase(Map<String, String> local) throws CoreException
+	{
+		return getAction().getExpandedBase(getBase(), local);
 	}
 }

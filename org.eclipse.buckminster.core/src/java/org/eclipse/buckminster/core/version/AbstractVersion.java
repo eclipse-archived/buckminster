@@ -34,6 +34,11 @@ public abstract class AbstractVersion implements IVersion
 		return m_type;
 	}
 
+	public boolean equalsUnqualified(IVersion version)
+	{
+		return equals(version);
+	}
+
 	public IVersion replaceQualifier(String string)
 	{
 		return this;

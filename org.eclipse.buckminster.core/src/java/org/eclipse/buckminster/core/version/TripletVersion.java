@@ -173,6 +173,19 @@ public class TripletVersion extends AbstractVersion
 		return true;
 	}
 
+	@Override
+	public boolean equalsUnqualified(IVersion version)
+	{
+		if(version == this)
+			return true;
+
+		if(!(version instanceof TripletVersion))
+			return false;
+
+		TripletVersion that = (TripletVersion)version;
+		return getMajor() == that.getMajor() && getMinor() == that.getMinor() && getMicro() == that.getMicro();
+	}
+
 	public final int getMajor()
 	{
 		return m_major;

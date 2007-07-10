@@ -96,9 +96,7 @@ public class Artifact extends Attribute
 			}
 	}
 
-	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local)
-			throws CoreException
+	protected IPath getExpandedBase(Map<String, String> local) throws CoreException
 	{
 		IPath root = getCSpec().getComponentLocation();
 		if(m_base != null)
@@ -108,7 +106,13 @@ public class Artifact extends Attribute
 				throw new BuckminsterException("Artifact base can not be absolute");
 			root = root.append(base);
 		}
+		return root;
+	}
 
+	@Override
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local)
+			throws CoreException
+	{
 		int idx = m_paths.size();
 		IPath[] pathArr;
 		if(idx > 0)
@@ -119,6 +123,6 @@ public class Artifact extends Attribute
 		}
 		else
 			pathArr = Trivial.EMPTY_PATH_ARRAY;
-		return new PathGroup[] { new PathGroup(root, pathArr) };
+		return new PathGroup[] { new PathGroup(getExpandedBase(local), pathArr) };
 	}
 }

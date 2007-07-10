@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -153,6 +154,7 @@ public class CSpecFromSource extends CSpecGenerator
 		ActionBuilder eclipseBuild = getAttributeEclipseBuild();
 
 		HashMap<IPath,ArtifactBuilder> eclipseBuildProducts = new HashMap<IPath, ArtifactBuilder>();
+		IPath componentHome = Path.fromPortableString(KeyConstants.ACTION_HOME_REF);
 		IPath defaultOutputLocation = null;
 		for(IClasspathEntry cpe : classPath)
 		{
@@ -181,8 +183,13 @@ public class CSpecFromSource extends CSpecGenerator
 				if(eclipseBuildProducts.containsKey(output))
 					continue;
 
+				// Products use ${buckminster.output} as the default base so we need
+				// to prefix the project relative output here
+				//
+				IPath absOutput = componentHome.append(output);
 				eclipseBuildProducts.put(output,
-					eclipseBuild.addProductArtifact(getArtifactName(output), false, WellKnownExports.JAVA_BINARIES, output));
+					eclipseBuild.addProductArtifact(
+							getArtifactName(output), false, WellKnownExports.JAVA_BINARIES, absOutput));
 			}
 			getAttributeEclipseBuildSource(true).addPath(asProjectRelativeFolder(cpe.getPath()));
 		}

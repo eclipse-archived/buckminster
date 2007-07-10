@@ -293,6 +293,22 @@ public class Action extends Attribute
 		Utils.emitCollection(namespace, prefix, ELEM_PRODUCTS, null, attrs, allProds, handler);
 	}
 
+	public IPath getExpandedDefaultBase(Map<String, String> local)
+	{
+		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
+	}
+
+	public IPath getExpandedBase(IPath productBase, Map<String, String> local)
+	{
+		if(productBase == null)
+			return getExpandedDefaultBase(local);
+
+		productBase = PerformManager.expandPath(local, productBase);
+		if(!productBase.isAbsolute())
+			productBase = getExpandedDefaultBase(local).append(productBase);
+		return productBase;
+	}
+
 	@Override
 	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local) throws CoreException
 	{
@@ -304,20 +320,11 @@ public class Action extends Attribute
 		{
 			// Add the anonymous group
 			//
-			IPath root;
-			IPath cspecLoc = getCSpec().getComponentLocation();
-			IPath productBase = m_productBase;
-			if(productBase == null)
-				productBase = Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF);
-
-			root = PerformManager.expandPath(local, productBase);
-			if(!root.isAbsolute())
-				root = cspecLoc.append(root);
-
+			IPath productBase = getExpandedBase(m_productBase, local);
 			IPath[] pathArr = m_products.toArray(new IPath[numProducts]);
 			while(--numProducts >= 0)
 				pathArr[numProducts] = PerformManager.expandPath(local, pathArr[numProducts]);
-			pathGroups.add(new PathGroup(root, pathArr));
+			pathGroups.add(new PathGroup(productBase, pathArr));
 		}
 
 		// Add produced artifacts

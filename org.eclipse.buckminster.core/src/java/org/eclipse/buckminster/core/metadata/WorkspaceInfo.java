@@ -200,7 +200,8 @@ public class WorkspaceInfo
 			// Check real existence of locations. For performance reasons we only do
 			// this when ambiguities arise.
 			//
-			IPath prevLocation = getResolutionLocation(mats, ress.getElement(prevTsKey.getKey()));
+			Resolution prevRes = ress.getElement(prevTsKey.getKey());
+			IPath prevLocation = getResolutionLocation(mats, prevRes);
 			if(prevLocation == null)
 				continue;
 
@@ -222,6 +223,40 @@ public class WorkspaceInfo
 				if(!prevLocation.toFile().exists())
 					continue;
 
+				// A resolution towards the target platform will always have a lower
+				// precedence.
+				//
+				if(prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+				{
+					if(!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+						continue;
+				}
+				else
+				{
+					if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					{
+						resolutionKeys.put(cn, prevTsKey);
+						continue;
+					}
+				}
+
+				boolean versionEqual = false;
+				IVersion currVersion = ci.getVersion();
+				IVersion prevVersion = prevRes.getComponentIdentifier().getVersion();
+				if(currVersion == null)
+					versionEqual = (prevVersion == null);
+				else if(prevVersion != null)
+					versionEqual = currVersion.equalsUnqualified(prevVersion);
+
+				if(versionEqual)
+				{
+					// Discriminate using timestamp
+					//
+					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+						resolutionKeys.put(cn, prevTsKey);
+					continue;
+				}
+
 				// Apparently we have both locations present so we cannot
 				// discriminate one of them
 				//
@@ -233,7 +268,7 @@ public class WorkspaceInfo
 				if(logger.isDebugEnabled())
 				{
 					logger.debug(
-						String.format("Found two entries for component %s located at %s and %s", location, prevLocation));
+						String.format("Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation));
 				}
 				continue;
 			}

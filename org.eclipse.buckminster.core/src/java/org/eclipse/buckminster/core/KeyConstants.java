@@ -30,6 +30,7 @@ public interface KeyConstants
 	public static final String ACTION_OUTPUT      = "buckminster.output";
 	public static final String ACTION_HOME        = "buckminster.home";
 	public static final String ACTION_TEMP        = "buckminster.temp";
+	public static final String ACTION_HOME_REF  = "${" + ACTION_HOME + "}";
 	public static final String ACTION_OUTPUT_REF  = "${" + ACTION_OUTPUT + "}";
 	public static final String ACTION_TEMPDIR_REF  = "${" + ACTION_TEMP + "}";
 }
