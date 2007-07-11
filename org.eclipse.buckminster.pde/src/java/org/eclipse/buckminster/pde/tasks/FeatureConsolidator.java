@@ -24,7 +24,6 @@ import java.util.jar.JarFile;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
@@ -37,6 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.pde.core.IModelChangedEvent;
 import org.eclipse.pde.core.IModelChangedListener;
 import org.eclipse.pde.core.plugin.IPluginBase;
+import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.bundle.BundleFragmentModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
 import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
@@ -48,7 +48,7 @@ import org.eclipse.pde.internal.core.plugin.ExternalFragmentModel;
 import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 
 @SuppressWarnings("restriction")
-public class FeatureConsolidator extends VersionConsolidator implements IModelChangedListener, IPDEConstants
+public class FeatureConsolidator extends VersionConsolidator implements IModelChangedListener, IPDEConstants, IBuildPropertiesConstants
 {
 	// The 64 characters that are legal in a version qualifier, in lexicographical order.
 	private static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -354,7 +354,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 	{
 		IFeature feature = m_featureModel.getFeature();
 		String id = feature.getId();
-		String version = feature.getVersion();
+		String versionStr = feature.getVersion();
 
 		ArrayList<ComponentIdentifier> deps = new ArrayList<ComponentIdentifier>();
 		for(IFeatureChild ref : feature.getIncludedFeatures())
@@ -371,38 +371,48 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				deps.add(cid);
 		}
 
-		String newVersion = version;
-		if(version.endsWith(PROPERTY_QUALIFIER))
+		IVersion newVersion = null;
+		String newVersionStr = versionStr;
+		if(versionStr != null && versionStr.endsWith(PROPERTY_QUALIFIER))
 		{
-			String newQualifier = getQualifierReplacement(version, id);
-			if(newQualifier.startsWith(GENERATOR_PREFIX))
+			try
 			{
-				newVersion = generateQualifier(id, version, newQualifier, IComponentType.ECLIPSE_FEATURE, deps);
-				if(newVersion != null)
-					feature.setVersion(newVersion);
-				m_featureModel.save(getOutputFile());
-				return;
+				IVersion version = VersionFactory.OSGiType.fromString(versionStr);
+				ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
+				newVersion = replaceQualifier(ci, deps);
+				if(newVersion == null)
+					newVersion = version;
+				else if(!version.equals(newVersion))
+				{
+					newVersionStr = newVersion.toString();
+					feature.setVersion(newVersionStr);
+					if(isContextReplacement())
+					{
+						int lastDot = versionStr.lastIndexOf(".");
+						m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
+					}
+				}
 			}
-			newVersion = version.replaceFirst(PROPERTY_QUALIFIER, newQualifier);
-			if(!version.equals(newVersion))
-				feature.setVersion(newVersion);
-		}
-
-		if(version.endsWith(PROPERTY_QUALIFIER) && (getQualifier() == null || getQualifier().equalsIgnoreCase(PROPERTY_CONTEXT)))
-		{
-			int lastDot = version.lastIndexOf(".");
-			m_featureModel.setContextQualifierLength(newVersion.length() - lastDot - 1);
+			catch(VersionSyntaxException e)
+			{
+			}
 		}
 
 		String suffix = generateFeatureVersionSuffix();
 		if(suffix != null)
 		{
-			IVersionType vt = VersionFactory.OSGiType;
-			OSGiVersion v = (OSGiVersion)vt.fromString(newVersion);
-			String qualifier = v.getQualifier();
-			qualifier = qualifier.substring(0, m_featureModel.getContextQualifierLength());
-			qualifier = qualifier + '-' + suffix;
-			feature.setVersion(new OSGiVersion(vt, v.getMajor(), v.getMinor(), v.getMicro(), qualifier).toString());
+			String qualifier = newVersion.getQualifier();
+			if(qualifier == null)
+				qualifier = suffix;
+			else
+			{
+				StringBuilder bld = new StringBuilder();
+				bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
+				bld.append('-');
+				bld.append(suffix);
+				qualifier = bld.toString();
+			}
+			feature.setVersion(newVersion.replaceQualifier(qualifier).toString());
 		}
 		m_featureModel.save(getOutputFile());
 	}

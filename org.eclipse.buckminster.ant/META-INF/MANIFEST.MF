@@ -18,5 +18,6 @@ Eclipse-LazyStart: true
 Bundle-ClassPath: bmant.jar
 Export-Package: org.eclipse.buckminster.ant,
  org.eclipse.buckminster.ant.actor,
+ org.eclipse.buckminster.ant.tasks,
  org.eclipse.buckminster.ant.internal.build;x-friends:="org.eclipse.buckminster.tests"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

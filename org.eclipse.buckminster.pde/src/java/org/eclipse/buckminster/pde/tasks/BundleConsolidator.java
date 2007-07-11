@@ -22,6 +22,9 @@ import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleException;
@@ -72,20 +75,23 @@ public class BundleConsolidator extends VersionConsolidator
 				throw new IOException(be.getMessage());
 			}
 
-			String version = a.getValue(Constants.BUNDLE_VERSION);
-			if(version != null && version.endsWith(PROPERTY_QUALIFIER))
+			String versionStr = a.getValue(Constants.BUNDLE_VERSION);
+			if(versionStr != null)
 			{
-				String newQualifier = getQualifierReplacement(version, id);
-				String newVersion = version;
-				if(newQualifier.startsWith(GENERATOR_PREFIX))
-					newVersion = generateQualifier(id, version, newQualifier, IComponentType.OSGI_BUNDLE, Collections.<ComponentIdentifier>emptyList());
-				else
-					newVersion = version.replaceFirst(PROPERTY_QUALIFIER, newQualifier);
-
-				if(!(newVersion == null || version.equals(newVersion)))
+				try
 				{
-					a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion);
-					changed = true;
+					IVersion version = VersionFactory.OSGiType.fromString(versionStr);
+					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
+					IVersion newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier>emptyList());
+	
+					if(!(newVersion == null || version.equals(newVersion)))
+					{
+						a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion.toString());
+						changed = true;
+					}
+				}
+				catch(VersionSyntaxException e)
+				{
 				}
 			}
 		}
