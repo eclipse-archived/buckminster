@@ -1,33 +1,80 @@
 package org.eclipse.buckminster.pde.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.eclipse.buckminster.pde.tasks.JNLPSiteGenerator;
+import org.apache.tools.ant.types.FileSet;
+import org.eclipse.buckminster.ant.types.FileSetGroup;
 import org.eclipse.buckminster.pde.tasks.UpdateSiteGenerator;
 
 public class UpdateSiteGeneratorTask extends Task
 {
-	private File m_siteDir;
-	private File m_templateSite;
-	private File m_siteFile;
+	private File m_template;
+	private File m_outputFile;
+
+	private ArrayList<FileSet> m_fileSets;
+
+	private ArrayList<FileSetGroup> m_fileSetGroups;
+
+	/**
+	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
+	 */
+	public void add(FileSetGroup fsGroup) throws BuildException
+	{
+		if(m_fileSetGroups == null)
+			m_fileSetGroups = new ArrayList<FileSetGroup>();
+		m_fileSetGroups.add(fsGroup);
+	}
+
+	/**
+	 * Adds a nested <code>&lt;fileset&gt;</code> element.
+	 */
+	public void addFileset(FileSet fs) throws BuildException
+	{
+		if(m_fileSets == null)
+			m_fileSets = new ArrayList<FileSet>();
+		m_fileSets.add(fs);
+	}
 
 	@Override
 	public void execute() throws BuildException
 	{
 		try
 		{
-			if(m_siteDir == null)
-				throw new BuildException("Missing attribute siteDir", this.getLocation());
-			if(!m_siteDir.isAbsolute())
-				m_siteDir = new File(getProject().getBaseDir(), m_siteDir.toString());
-			if(m_siteFile == null)
-				m_siteFile = new File(m_siteDir, "site.xml");
-			else if(!m_siteFile.isAbsolute())
-				m_siteFile = new File(getProject().getBaseDir(), m_siteFile.toString());
+			if(m_outputFile == null)
+				throw new BuildException("Missing attribute outputFile", getLocation());
 
-			UpdateSiteGenerator generator = new UpdateSiteGenerator(m_siteDir, m_templateSite, m_siteFile);
+	    	if(m_fileSetGroups != null)
+	    	{
+	    		for(FileSetGroup fsg : m_fileSetGroups)
+		    		for(FileSet fs : fsg.getFileSets())
+		    			addFileset(fs);
+	    		m_fileSetGroups = null;
+	    	}
+
+			Project proj = getProject();
+			List<File> features;
+			if(m_fileSets == null)
+				features = Collections.emptyList();
+			else
+			{
+				features = new ArrayList<File>();
+				for(FileSet fs : m_fileSets)
+				{
+		            DirectoryScanner ds = fs.getDirectoryScanner(proj);
+		            File dir = fs.getDir(proj);
+		            for(String file : ds.getIncludedFiles())
+		            	features.add(new File(dir, file));
+				}
+			}
+
+			UpdateSiteGenerator generator = new UpdateSiteGenerator(features, m_template, m_outputFile);
 			generator.run();
 		}
 		catch(Exception e)
@@ -36,20 +83,15 @@ public class UpdateSiteGeneratorTask extends Task
 		}
 	}
 
-	public void setTemplateSite(String templateSite)
+	public void setTemplate(String template)
 	{
-		if(templateSite != null && templateSite.length() == 0)
-			templateSite = null;
-		m_templateSite = templateSite == null ? null : new File(templateSite);
+		if(template != null && template.length() == 0)
+			template = null;
+		m_template = template == null ? null : new File(template);
 	}
 
-	public void setSiteFile(File siteFile)
+	public void setOutputFile(File outputFile)
 	{
-		m_siteFile = siteFile;
-	}
-
-	public void setSitedir(File siteDir)
-	{
-		m_siteDir = siteDir;
+		m_outputFile = outputFile;
 	}
 }

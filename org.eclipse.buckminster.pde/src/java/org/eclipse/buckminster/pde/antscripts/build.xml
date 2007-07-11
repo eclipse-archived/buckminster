@@ -140,6 +140,12 @@
 		<buckminster.jnlpSiteGenerator sitedir="${sp:action.output}"/>
 	</target>
 
+	<target name="create.site.xml">
+		<buckminster.updateSiteGenerator outputfile="${sp:action.output}" template="${sp:template}">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.updateSiteGenerator>
+	</target>
+
 	<target name="copy.group">
 		<mkdir dir="${sp:action.output}"/>
 		<buckminster.copy todir="${sp:action.output}" overwrite="true">

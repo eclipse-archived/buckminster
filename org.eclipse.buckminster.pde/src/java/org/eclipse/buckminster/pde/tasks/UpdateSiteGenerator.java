@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -53,18 +54,18 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("restriction")
 public class UpdateSiteGenerator
 {
-	private final File m_siteDir;
-	private final File m_siteFile;
+	private final List<File> m_features;
+	private final File m_outputFile;
 	private final IActionContext m_actionContext;
 	private final Site m_site;
 
-	public UpdateSiteGenerator(File siteDir, File siteTemplate, File siteFile) throws CoreException
+	public UpdateSiteGenerator(List<File> features, File template, File outputFile) throws CoreException
 	{
-		m_siteFile = siteFile;
-		m_siteDir = siteDir;
+		m_outputFile = outputFile;
+		m_features = features;
 		m_actionContext = AbstractActor.getActiveContext();
-		if(siteTemplate != null)
-			m_site = SiteReader.getSite(siteTemplate, null);
+		if(template != null)
+			m_site = SiteReader.getSite(template, null);
 		else
 			m_site = new ExtendedSite();
 	}
@@ -74,13 +75,8 @@ public class UpdateSiteGenerator
 		OutputStream output = null;
 		try
 		{
-			output = new BufferedOutputStream(new FileOutputStream(m_siteFile));
-			File featuresFolder = new File(m_siteDir, IPDEConstants.FEATURES_FOLDER);
-			File[] files = featuresFolder.listFiles();
-			if(files == null)
-				throw BuckminsterException.fromMessage("Unable to open " + featuresFolder + " as a folder");
-
-			for(File file : files)
+			output = new BufferedOutputStream(new FileOutputStream(m_outputFile));
+			for(File file : m_features)
 			{
 				String leafName = file.getName();
 				if(!leafName.endsWith(".jar"))
@@ -144,14 +140,17 @@ public class UpdateSiteGenerator
 		// First we check if an entry that matches the feature by name and unqualified version
 		// exists in the template. If it does, we use that entry
 		//
+		String verStr = feature.getVersion();
+		if(verStr == null || verStr.length() == 0)
+			verStr = "0.0.0";
 		SiteFeatureReferenceModel model = null;
 		for(SiteFeatureReferenceModel oldModel : m_site.getFeatureReferenceModels())
 		{
 			if(featureName.equals(oldModel.getFeatureIdentifier()))
 			{
 				IVersion oldVer = osgiType.fromString(oldModel.getFeatureVersion());
-				IVersion ver = osgiType.fromString(feature.getVersion());
-				if((ver == null && oldVer == null) || (ver != null && ver.equalsUnqualified(oldVer)))
+				IVersion ver = osgiType.fromString(verStr);
+				if(ver.equalsUnqualified(oldVer))
 				{
 					model = oldModel;
 					break;
@@ -170,7 +169,6 @@ public class UpdateSiteGenerator
 	
 			model = new UpdateSiteFeatureReference();
 			model.setFeatureIdentifier(featureName);
-			model.setFeatureVersion(feature.getVersion());
 
 			for(Attribute attr : attributes)
 			{
@@ -190,9 +188,10 @@ public class UpdateSiteGenerator
 					break;
 				}
 			}
+			m_site.addFeatureReferenceModel(model);
 		}
 		model.setURLString(urlBuilder.toString());
+		model.setFeatureVersion(verStr);
 		model.setSiteModel(m_site);
-		m_site.addFeatureReferenceModel(model);
 	}
 }
