@@ -371,6 +371,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				deps.add(cid);
 		}
 
+		boolean usingGenerator = false;
 		IVersion newVersion = null;
 		String newVersionStr = versionStr;
 		if(versionStr != null && versionStr.endsWith(PROPERTY_QUALIFIER))
@@ -380,6 +381,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				IVersion version = VersionFactory.OSGiType.fromString(versionStr);
 				ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
 				newVersion = replaceQualifier(ci, deps);
+				usingGenerator = isUsingGenerator(ci);
 				if(newVersion == null)
 					newVersion = version;
 				else if(!version.equals(newVersion))
@@ -398,21 +400,24 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			}
 		}
 
-		String suffix = generateFeatureVersionSuffix();
-		if(suffix != null)
+		if(!usingGenerator)
 		{
-			String qualifier = newVersion.getQualifier();
-			if(qualifier == null)
-				qualifier = suffix;
-			else
+			String suffix = generateFeatureVersionSuffix();
+			if(suffix != null)
 			{
-				StringBuilder bld = new StringBuilder();
-				bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
-				bld.append('-');
-				bld.append(suffix);
-				qualifier = bld.toString();
+				String qualifier = newVersion.getQualifier();
+				if(qualifier == null)
+					qualifier = suffix;
+				else
+				{
+					StringBuilder bld = new StringBuilder();
+					bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
+					bld.append('-');
+					bld.append(suffix);
+					qualifier = bld.toString();
+				}
+				feature.setVersion(newVersion.replaceQualifier(qualifier).toString());
 			}
-			feature.setVersion(newVersion.replaceQualifier(qualifier).toString());
 		}
 		m_featureModel.save(getOutputFile());
 	}
