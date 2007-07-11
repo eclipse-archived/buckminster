@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.core.version;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +33,23 @@ import org.eclipse.core.runtime.IPath;
  */
 public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
-	public static String FORMAT_PROPERTY = "generator.lastModified.format";
-	public static String DEFAULT_FORMAT = "yyyyMMddHHmm";
+	public static final String FORMAT_PROPERTY = "generator.lastModified.format";
+	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm";
+	public static final String[] commonFormats = new String[] { DEFAULT_FORMAT, "'v'yyyyMMdd-HHmm", "'v'yyyyMMdd", "'I'yyyyMMddHHmm", "'I'yyyyMMdd-HHmm", "'I'yyyyMMdd" };
+	public static final DateFormat[] commonFormatters;
+
+	static
+	{
+		int idx = commonFormats.length;
+		commonFormatters = new DateFormat[idx];
+		while(--idx >= 0)
+		{
+			DateFormat dm = new SimpleDateFormat(commonFormats[idx]);
+			dm.setTimeZone(DateAndTimeUtils.UTC);
+			dm.setLenient(false);
+			commonFormatters[idx] = dm;
+		}
+	}
 
 	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
 			List<ComponentIdentifier> dependencies) throws CoreException
@@ -54,9 +70,10 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			String format = props.get(FORMAT_PROPERTY);
 			if(format == null)
 				format = DEFAULT_FORMAT;
-	
+
 			DateFormat mf = new SimpleDateFormat(format);
 			mf.setTimeZone(DateAndTimeUtils.UTC);
+			mf.setLenient(false);
 
 			for(ComponentIdentifier dependency : dependencies)
 			{
@@ -68,15 +85,32 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				if(qualifier == null)
 					continue;
 
+				Date depLastMod = null;
 				try
 				{
-					Date depLastMod = mf.parse(qualifier);
-					if(depLastMod.compareTo(lastMod) > 0)
-						lastMod = depLastMod;
+					depLastMod = parseSaneDate(mf, qualifier);
 				}
-				catch(Exception e)
+				catch(ParseException e)
 				{
+					// Try the common formats. Use the first one that succeeds
+					//
+					synchronized(commonFormatters)
+					{
+						for(int idx = 0; idx < commonFormatters.length; ++idx)
+						{
+							try
+							{
+								depLastMod = parseSaneDate(commonFormatters[idx], qualifier);
+								break;
+							}
+							catch(ParseException e1)
+							{
+							}
+						}
+					}
 				}
+				if(depLastMod != null && depLastMod.compareTo(lastMod) > 0)
+					lastMod = depLastMod;
 			}
 			return currentVersion.replaceQualifier(mf.format(lastMod));
 		}
@@ -84,5 +118,19 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		{
 			return currentVersion;
 		}
+	}
+
+	// Milliseconds corresponding to approximately 10 years
+	//
+	private static final long SANITY_THRESHOLD = (10 * 365 + 5) * 24 * 60 * 60 * 1000;
+
+	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
+	{
+		long now = System.currentTimeMillis();
+		Date dt = mf.parse(str);
+		long tm = dt.getTime();
+		if(tm > now || tm < now - SANITY_THRESHOLD)
+			throw new ParseException("Bogus", 0);
+		return dt;
 	}
 }
