@@ -33,6 +33,7 @@ Export-Package: .,
  org.eclipse.buckminster.core.resolver,
  org.eclipse.buckminster.core.rmap.model,
  org.eclipse.buckminster.core.rmap.parser,
+ org.eclipse.buckminster.core.site,
  org.eclipse.buckminster.core.test,
  org.eclipse.buckminster.core.version
 Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="0.2.0",
