@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.ui.wizards.QueryWizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -60,9 +61,18 @@ public class ResolveJob extends Job
 
 		try
 		{
+			IProgressMonitor resolutionMonitor;
+			if(m_materialize)
+			{
+				monitor.beginTask(null, 1000);
+				resolutionMonitor = MonitorUtils.subMonitor(monitor, 500);
+			}
+			else
+				resolutionMonitor = monitor;
+
 			Display display = m_site.getShell().getDisplay();
 			ComponentRequest rootRequest = query.getRootRequest();
-			final BillOfMaterials bom = m_resolver.resolve(rootRequest, monitor);
+			final BillOfMaterials bom = m_resolver.resolve(rootRequest, resolutionMonitor);
 			IStatus status = ctx.getStatus();
 			if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
 				return status;
@@ -84,8 +94,6 @@ public class ResolveJob extends Job
 			{
 				if(bom.isFullyResolved() || ctx.isContinueOnError())
 				{
-					setName("Materializing");
-					
 					// Just create a default mspec that materializes to the current
 					// workspace
 					//
@@ -93,7 +101,7 @@ public class ResolveJob extends Job
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), ctx);
-					MaterializerJob.run(matCtx, false);
+					MaterializerJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
 					status = ctx.getStatus();
 					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
 						return status;
