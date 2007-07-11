@@ -21,7 +21,7 @@
                 <cs:attribute name="java.binaries" component="org.apache.axis2/axis2-tools"/>
                 <cs:attribute name="java.binaries" component="org.apache.axis2/addressing"/>
             </cs:prerequisites>
-            <cs:products alias="output" base="../plugins/">
+            <cs:products alias="output" base="${buckminster.home}/../plugins/">
                 <cs:path path="org.eclipse.buckminster.axis2"/>
             </cs:products>
         </cs:public>
