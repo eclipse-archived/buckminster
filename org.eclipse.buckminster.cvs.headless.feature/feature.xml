@@ -116,14 +116,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </url>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.team.core" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
-      <import plugin="com.jcraft.jsch" version="0.1.27"/>
+      <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.buckminster.core"/>
       <import plugin="org.eclipse.buckminster.runtime"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -156,6 +155,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.eclipse.buckminster.cvs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jsch.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
