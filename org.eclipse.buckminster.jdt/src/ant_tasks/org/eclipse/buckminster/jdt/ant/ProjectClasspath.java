@@ -95,14 +95,14 @@ public class ProjectClasspath extends Task
 			return m_sourceAttachmentRootPath;
 		}
 
-		public void setSourceAttachmentPath(String sourceAttachmentPath)
+		public void setSourceAttachmentPath(File sourceAttachmentPath)
 		{
-			m_sourceAttachmentPath = new Path(sourceAttachmentPath);
+			m_sourceAttachmentPath = fileToPath(sourceAttachmentPath);
 		}
 
-		public void setSourceAttachmentRootPath(String sourceAttachmentRootPath)
+		public void setSourceAttachmentRootPath(File sourceAttachmentRootPath)
 		{
-			m_sourceAttachmentRootPath = new Path(sourceAttachmentRootPath);
+			m_sourceAttachmentRootPath = fileToPath(sourceAttachmentRootPath);
 		}
 	}
 
@@ -184,7 +184,7 @@ public class ProjectClasspath extends Task
 			for(FileSet fileSet : m_librarySets)
 			{
 				DirectoryScanner ds = fileSet.getDirectoryScanner(getProject());
-				IPath base = Path.fromOSString(ds.getBasedir().toString());
+				IPath base = fileToPath(ds.getBasedir());
 				for(String fileName : ds.getIncludedFiles())
 				{
 					LibraryEntry le = createLibraryEntry();
@@ -226,13 +226,25 @@ public class ProjectClasspath extends Task
 		}
 	}
 
-	public void setProjectDir(String projectDir)
+	public void setProjectDir(File projectDir)
 	{
-		m_projectDir = new Path(projectDir);
+		m_projectDir = fileToPath(projectDir);
 	}
 
 	BuildException missingRequiredAttribute(String attributeName)
 	{
 		return new BuildException("Missing required attribute " + attributeName, getLocation());
+	}
+
+	static IPath fileToPath(File file) throws BuildException
+	{
+		try
+		{
+			return (file == null ? null : Path.fromOSString(file.getCanonicalPath().toString()));
+		}
+		catch(IOException e)
+		{
+			throw new BuildException(e);
+		}
 	}
 }

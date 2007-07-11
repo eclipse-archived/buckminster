@@ -96,13 +96,20 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
 	}
 
-	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor)
 	{
-		IPerformManager performManager = CorePlugin.getPerformManager();
-		CSpec cspec = generatorNode.getDeclaringCSpec();
-		Attribute generatorAttribute = cspec.getReferencedAttribute(
-				generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
-		performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
+		try
+		{
+			IPerformManager performManager = CorePlugin.getPerformManager();
+			CSpec cspec = generatorNode.getDeclaringCSpec();
+			Attribute generatorAttribute = cspec.getReferencedAttribute(
+					generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
+			performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
+		}
+		catch(CoreException e)
+		{
+			context.addException(e.getStatus());
+		}
 	}
 
 	public static String[] getMaterializerIDs(boolean includeEmptyEntry)

@@ -49,18 +49,17 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 	@Override
 	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
-			throws CoreException
 	{
-		WorkspaceBinding wb = createBindSpec(resolution, context);
-		if(wb == null)
-		{
-			MonitorUtils.complete(monitor);
-			return;
-		}
-
-		monitor.beginTask(null, 200);
 		try
 		{
+			WorkspaceBinding wb = createBindSpec(resolution, context);
+			if(wb == null)
+			{
+				MonitorUtils.complete(monitor);
+				return;
+			}
+	
+			monitor.beginTask(null, 200);
 			try
 			{
 				monitor.subTask("Binding " + wb.getWorkspaceRelativePath());

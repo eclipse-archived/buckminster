@@ -12,7 +12,7 @@
 	<target name="ant-tasks">
 		<mkdir dir="../ant_tasks" />
 		<mkdir dir="../bin/ant_tasks" />
-		<javac classpath="${bm.classpath}" srcdir="../src/ant_tasks" destdir="../bin/ant_tasks" />
+		<javac debug="true" classpath="${bm.classpath}" srcdir="../src/ant_tasks" destdir="../bin/ant_tasks" />
 		<jar basedir="../bin/ant_tasks" destfile="../ant_tasks/ant_tasks.jar" />
 	</target>
 

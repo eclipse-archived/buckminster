@@ -347,6 +347,10 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			return false;
 		}
 
+		IPath location = project.getLocation();
+		if(location == null)
+			return false;
+
 		CSpec oldCSpec = WorkspaceInfo.getCSpec(project);
 		Resolution oldInfo = null;
 		if(oldCSpec != null)
@@ -381,7 +385,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			res.store();
 
 			ComponentIdentifier ci = res.getComponentIdentifier();
-			Materialization mat = new Materialization(project.getLocation().addTrailingSeparator(), ci);
+			Materialization mat = new Materialization(location.addTrailingSeparator(), ci);
 			mat.store();
 			WorkspaceInfo.setComponentIdentifier(project, ci);
 	
