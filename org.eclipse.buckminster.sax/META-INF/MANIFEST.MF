@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster SAX Parser utilities (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.sax
-Bundle-Version: 0.1.0.v20070626
+Bundle-Version: 0.2.0.qualifier
 Export-Package: org.eclipse.buckminster.sax
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Eclipse.org
