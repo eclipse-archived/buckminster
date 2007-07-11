@@ -58,12 +58,13 @@
 	</target>
 
 	<target name="create.manifest.mf" depends="create.lib.folder">
+		<buckminster.versionQualifier componentname="${buckminster.component}" componenttype="buckminster" version="${generated.version}" property="mangled.version"/>
 		<mkdir dir="${projroot}/META-INF"/>
 		<manifest file="${projroot}/META-INF/MANIFEST.MF">
 			<attribute name="Bundle-ManifestVersion" value="2"/>
 			<attribute name="Bundle-Name" value="Axis2 Client Plug-in"/>
 			<attribute name="Bundle-SymbolicName" value="${generated.name};singleton:=true"/>
-			<attribute name="Bundle-Version" value="${generated.version}"/>
+			<attribute name="Bundle-Version" value="${mangled.version}"/>
 			<attribute name="Bundle-Vendor" value="Cloudsmith Inc."/>
 			<attribute name="Bundle-Localization" value="plugin"/>
 			<attribute name="Bundle-ClassPath" value="${bundle.classpath}"/>
