@@ -94,6 +94,8 @@ public class ResolveJob extends Job
 			{
 				if(bom.isFullyResolved() || ctx.isContinueOnError())
 				{
+					setName("Materializing");
+					
 					// Just create a default mspec that materializes to the current
 					// workspace
 					//
