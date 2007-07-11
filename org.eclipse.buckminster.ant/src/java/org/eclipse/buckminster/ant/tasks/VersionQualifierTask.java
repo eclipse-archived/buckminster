@@ -88,6 +88,9 @@ public class VersionQualifierTask
 			return version;
 
 		String newQualifier = getQualifierReplacement(ci);
+		if(newQualifier == null)
+			return version.replaceQualifier(null);
+
 		if(newQualifier.startsWith(GENERATOR_PREFIX))
 		{
 			String generatorId = newQualifier.substring(GENERATOR_PREFIX.length());
@@ -104,7 +107,7 @@ public class VersionQualifierTask
 		else
 		{
 			newQualifier = qualifier.replaceFirst(QUALIFIER_SUFFIX, newQualifier);
-			if(qualifier.equals(newQualifier))
+			if(!qualifier.equals(newQualifier))
 				version = version.replaceQualifier(qualifier);
 		}
 		return version;
@@ -113,6 +116,20 @@ public class VersionQualifierTask
 	public Map<String, String> getProperties()
 	{
 		return m_properties;
+	}
+
+	public boolean isUsingGenerator(ComponentIdentifier ci)
+	{
+		IVersion version = ci.getVersion();
+		if(version == null)
+			return false;
+		
+		String qualifier = version.getQualifier();
+		if(qualifier == null || !qualifier.endsWith(QUALIFIER_SUFFIX))
+			return false;
+
+		String newQualifier = getQualifierReplacement(ci);
+		return newQualifier != null && newQualifier.startsWith(GENERATOR_PREFIX);
 	}
 
 	public boolean isContextReplacement()
