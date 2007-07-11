@@ -18,15 +18,13 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
-import org.eclipse.buckminster.core.reader.SiteReader;
-import org.eclipse.buckminster.core.reader.URLReaderType;
+import org.eclipse.buckminster.core.site.SaxableSite;
+import org.eclipse.buckminster.core.site.SiteReader;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.europatools.model.SiteContribution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.update.core.Site;
 import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.core.model.CategoryModel;
@@ -161,7 +159,6 @@ public class SiteGenerator extends AbstractGenerator
 
 	private static Site parseSite(URL siteURL) throws CoreException
 	{
-		IProgressMonitor nullMonitor = new NullProgressMonitor();
-		return SiteReader.getSite(URLReaderType.getReader(siteURL, nullMonitor), nullMonitor);
+		return SiteReader.getSite(siteURL, null);
 	}
 }
