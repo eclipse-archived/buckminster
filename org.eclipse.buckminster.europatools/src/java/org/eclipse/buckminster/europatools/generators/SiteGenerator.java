@@ -10,6 +10,7 @@ package org.eclipse.buckminster.europatools.generators;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -157,7 +158,7 @@ public class SiteGenerator extends AbstractGenerator
 		return m_site;
 	}
 
-	private static Site parseSite(URL siteURL) throws CoreException
+	private static Site parseSite(URL siteURL) throws CoreException, IOException
 	{
 		return SiteReader.getSite(siteURL, null);
 	}
