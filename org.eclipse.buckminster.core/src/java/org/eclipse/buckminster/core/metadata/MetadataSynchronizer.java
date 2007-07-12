@@ -163,7 +163,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		@Override
 		protected IStatus run(IProgressMonitor monitor)
 		{
-
 			int ticks;
 			synchronized(MetadataSynchronizer.this)
 			{
@@ -178,11 +177,14 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			try
 			{
 				StorageManager sm = StorageManager.getDefault();
-				for(;s_default != null;)
+				boolean didSomething = true;
+				for(;didSomething && s_default != null;)
 				{
+					didSomething = false;
 					IPath removedEntry;
 					while((removedEntry = getNextRemovedEntry()) != null)
 					{
+						didSomething = true;
 						for(Materialization mat : sm.getMaterializations().getElements())
 						{
 							if(mat.getComponentLocation().equals(removedEntry))
@@ -213,6 +215,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					IProject project;
 					while((project = getNextProjectNeedingUpdate()) != null)
 					{
+						didSomething = true;
 						monitor.subTask("Refreshing " + project.getName());
 						try
 						{
