@@ -9,24 +9,13 @@
 	</dependencies>
 
 	<actions>
-		<public name="build.site" actor="ant">
-			<actorProperties>
-				<property key="buildFile" value="make/build.xml" />
-			</actorProperties>
-			<prerequisites>
-				<attribute name="site.source" alias="site"/>
-				<attribute component="org.eclipse.buckminster.update" name="manifest" alias="site.feature.xml"/>
-			</prerequisites>
-            <products base="${buckminster.output}/site" upToDatePolicy="COUNT" fileCount="1"/>
-		</public>
-
 		<private name="normalize.site" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/eclipse-signing.ant" />
 				<property key="targets" value="normalize.jars" />
 			</actorProperties>
 			<prerequisites>
-				<attribute name="build.site" alias="requirement"/>
+				<attribute component="org.eclipse.buckminster.update" name="build.site" alias="requirement"/>
 			</prerequisites>
             <products base="${buckminster.output}/site.n" alias="product.output" upToDatePolicy="MAPPER"/>
 		</private>
@@ -198,7 +187,7 @@
 
 	<groups>
 		<public name="build.all">
-			<attribute name="build.site"/>
+			<attribute component="org.eclipse.buckminster.update" name="build.site"/>
 			<attribute name="build.product"/>
 			<attribute name="build.jnlp"/>
 		</public>

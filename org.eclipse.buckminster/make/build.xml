@@ -7,7 +7,7 @@
 * such license is available at www.eclipse.org.
 ****************************************************************-->
 
-<project name="org.eclipse.buckminster" default="build.site" basedir="..">
+<project name="org.eclipse.buckminster" default="build.product" basedir="..">
 	<!-- Extract the version of a feature from the feature element found in a
 	     feature.xml file.
 	     Parameters:
@@ -246,23 +246,5 @@
 		<dirname file="${sp:product.output}" property="output.dir"/>
 		<mkdir dir="${output.dir}"/>
 		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
-	</target>
-
-	<target name="build.site">
-		<extractFeatureVersion property="site.version" file="${sp:site.feature.xml}"/>
-		<property name="deployed.site" location="${sp:site.output}/buckminster.site-${site.version}"/>
-		<property name="archived.site" location="${sp:site.output}/buckminster.archivedsite-${site.version}_incubation.zip"/>
-
-		<mkdir dir="${deployed.site}"/>
-		<buckminster.copy todir="${deployed.site}">
-			<buckminster.filesetgroup value="${fs:site}"/>
-		</buckminster.copy>
-		<delete>
-			<fileset dir="${deployed.site}/plugins" excludes="org.eclipse.buckminster.*"/>
-		</delete>
-		<zip destfile="${archived.site}">
-			<fileset dir="${deployed.site}"/>
-		</zip>
-		<delete dir="${deployed.site}"/>
 	</target>
 </project>
