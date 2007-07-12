@@ -11,12 +11,12 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.pde.tasks.UpdateSiteGenerator;
 
-public class UpdateSiteGeneratorTask extends Task
+public class UpdateSiteGeneratorTask extends VersionConsolidatorTask
 {
-	private File m_template;
-	private File m_outputFile;
+	private String m_versionProperty;
 
 	private ArrayList<FileSet> m_fileSets;
 
@@ -47,9 +47,6 @@ public class UpdateSiteGeneratorTask extends Task
 	{
 		try
 		{
-			if(m_outputFile == null)
-				throw new BuildException("Missing attribute outputFile", getLocation());
-
 	    	if(m_fileSetGroups != null)
 	    	{
 	    		for(FileSetGroup fsg : m_fileSetGroups)
@@ -74,8 +71,15 @@ public class UpdateSiteGeneratorTask extends Task
 				}
 			}
 
-			UpdateSiteGenerator generator = new UpdateSiteGenerator(features, m_template, m_outputFile);
-			generator.run();
+			UpdateSiteGenerator generator = new UpdateSiteGenerator(features, getInput(), getOutput(), getPropertiesFile(), getQualifier());
+			if(m_versionProperty != null)
+			{
+				IVersion version = generator.run(true);
+				if(version != null)
+					getProject().setUserProperty(m_versionProperty, version.toString());
+			}
+			else
+				generator.run(false);
 		}
 		catch(Exception e)
 		{
@@ -87,11 +91,11 @@ public class UpdateSiteGeneratorTask extends Task
 	{
 		if(template != null && template.length() == 0)
 			template = null;
-		m_template = template == null ? null : new File(template);
+		setInputFile(new File(template));
 	}
 
-	public void setOutputFile(File outputFile)
+	public void setVersionProperty(String versionProperty)
 	{
-		m_outputFile = outputFile;
+		m_versionProperty = versionProperty;
 	}
 }

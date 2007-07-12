@@ -20,29 +20,22 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
+import org.eclipse.buckminster.pde.ant.VersionConsolidatorTask;
 import org.eclipse.buckminster.pde.tasks.FeatureConsolidator;
 
 /**
- * Ant task that updates the version of plugins and included features found in a feature.xml file to reflect the actual
+ * Ant task that updates the version of plugin- and feature references found in a feature.xml file to reflect the actual
  * plugin/feature that they appoint within a certain scope given by a set of paths that are used when resolving the
  * appointed components. The elements of the paths should be either a plugin folder, a feature folder, or a zipped
  * folder containing a plugin or feature.
  * 
  * @author Thomas Hallgren
  */
-public class FeatureConsolidatorTask extends Task
+public class FeatureConsolidatorTask extends VersionConsolidatorTask
 {
-	private File m_input;
-
-	private File m_output;
-
 	private boolean m_generateVersionSuffix;
 
-	private File m_propertiesFile;
-
 	private int m_maxVersionSuffixLength = -1;
-	
-	private String m_qualifier;
 
 	private int m_significantDigits = -1;
 
@@ -83,9 +76,9 @@ public class FeatureConsolidatorTask extends Task
 	    		m_fileSetGroups = null;
 	    	}
 
-	    	if(m_input == null)
+	    	if(getInput() == null)
 				throw new BuildException("Missing attribute input", getLocation());
-			if(m_output == null)
+			if(getOutput() == null)
 				throw new BuildException("Missing attribute output", getLocation());
 
 			Project proj = getProject();
@@ -103,7 +96,7 @@ public class FeatureConsolidatorTask extends Task
 		            	featuresAndPlugins.add(new File(dir, file));
 				}
 			}
-			FeatureConsolidator fc = new FeatureConsolidator(m_input, m_output, m_propertiesFile, featuresAndPlugins, m_qualifier, m_generateVersionSuffix, m_maxVersionSuffixLength, m_significantDigits);
+			FeatureConsolidator fc = new FeatureConsolidator(getInput(), getOutput(), getPropertiesFile(), featuresAndPlugins, getQualifier(), m_generateVersionSuffix, m_maxVersionSuffixLength, m_significantDigits);
 			fc.run();
 		}
 		catch(Exception e)
@@ -125,28 +118,5 @@ public class FeatureConsolidatorTask extends Task
 	public void setSignificantDigits(int count)
 	{
 		m_significantDigits = count;
-	}
-
-	public void setQualifier(String qualifier)
-	{
-		m_qualifier = qualifier;
-	}
-
-	public void setInputFile(File input)
-	{
-		m_input = input;
-	}
-
-	public void setOutputFile(File output)
-	{
-		m_output = output;
-	}
-
-	public void setPropertiesFile(String propertiesFile)
-	{
-		if(propertiesFile == null || propertiesFile.length() == 0)
-			m_propertiesFile = null;
-		else
-			m_propertiesFile = new File(propertiesFile);
 	}
 }

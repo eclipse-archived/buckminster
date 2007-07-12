@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -22,8 +23,10 @@ import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.site.SaxableSite;
 import org.eclipse.buckminster.core.site.SiteReader;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -45,23 +48,28 @@ import org.eclipse.update.internal.core.UpdateSiteFeatureReference;
 import org.xml.sax.SAXException;
 
 /**
- * Scans a folder for jar files containing an OSGi manifest or an Eclipse feature.xml and
- * generates a JNLP version.xml file based on the information in them. The version.xml
- * file is output in the same folder.
+ * <p>This class can perform two tasks.</p>
+ * <ul>
+ * <li>Create a site.xml style file based on the list of features, a template,
+ * and the {@link CSpec} of the current {@link IActionContext}.</li>
+ * <li>Calculate the version qualifier of the feature and assign it to a
+ * property. The version is fetched from the {@link CSpec} of the current
+ * {@link IActionContext} and if it ends with &quot;qualifier&quot; normal
+ * qualifier replacement algorithms take place.</li>
+ * </ul>
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class UpdateSiteGenerator
+public class UpdateSiteGenerator extends VersionConsolidator
 {
 	private final List<File> m_features;
-	private final File m_outputFile;
 	private final IActionContext m_actionContext;
 	private final Site m_site;
 
-	public UpdateSiteGenerator(List<File> features, File template, File outputFile) throws CoreException
+	public UpdateSiteGenerator(List<File> features, File template, File outputFile, File propertiesFile, String qualifier) throws CoreException, IOException
 	{
-		m_outputFile = outputFile;
+		super(outputFile, propertiesFile, qualifier);
 		m_features = features;
 		m_actionContext = AbstractActor.getActiveContext();
 		if(template != null)
@@ -70,12 +78,27 @@ public class UpdateSiteGenerator
 			m_site = new ExtendedSite();
 	}
 
-	public void run() throws CoreException
+	public IVersion run(boolean generateQualifier) throws CoreException
 	{
 		OutputStream output = null;
 		try
 		{
-			output = new BufferedOutputStream(new FileOutputStream(m_outputFile));
+			CSpec cspec = m_actionContext.getCSpec();
+			IVersionType osgiType = VersionFactory.OSGiType;
+
+			ArrayList<ComponentIdentifier> deps = null;
+			if(generateQualifier)
+				deps = new ArrayList<ComponentIdentifier>();
+
+			File outputFile = getOutputFile();
+			if(outputFile != null)
+				output = new BufferedOutputStream(new FileOutputStream(outputFile));
+			else if(!generateQualifier)
+				//
+				// Nothing left to do
+				//
+				return null;
+
 			for(File file : m_features)
 			{
 				String leafName = file.getName();
@@ -92,17 +115,30 @@ public class UpdateSiteGenerator
 						continue;
 
 					IFeatureModel model = FeatureModelReader.readFeatureModel(jarFile.getInputStream(entry));
-					generateFromFeature(file, model.getFeature());
+					IFeature feature = model.getFeature();
+					if(outputFile != null)
+						generateFromFeature(cspec, file, feature);
+
+					if(generateQualifier)
+						deps.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, osgiType.fromString(feature.getVersion())));
 				}
 				finally
 				{
 					if(jarFile != null)
 						jarFile.close();
 				}
-
 			}
-			SaxableSite saxableSite = new SaxableSite(m_site);
-			Utils.serialize(saxableSite, output);
+
+			if(outputFile != null)
+			{
+				SaxableSite saxableSite = new SaxableSite(m_site);
+				Utils.serialize(saxableSite, output);
+			}
+
+			IVersion version = null;
+			if(generateQualifier)
+				version = this.replaceQualifier(cspec.getComponentIdentifier(), deps);
+			return version;
 		}
 		catch(IOException e)
 		{
@@ -127,7 +163,7 @@ public class UpdateSiteGenerator
 		return false;
 	}
 
-	private void generateFromFeature(File file, IFeature feature) throws CoreException
+	private void generateFromFeature(CSpec cspec, File file, IFeature feature) throws CoreException
 	{
 		IVersionType osgiType = VersionFactory.OSGiType;
 		String featureName = feature.getId();
@@ -164,7 +200,6 @@ public class UpdateSiteGenerator
 		if(model == null)
 		{
 			CategoryModel[] categories = m_site.getCategoryModels();
-			CSpec cspec = m_actionContext.getCSpec();
 			Collection<Attribute> attributes = cspec.getAttributes().values();
 	
 			model = new UpdateSiteFeatureReference();

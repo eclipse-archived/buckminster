@@ -140,10 +140,50 @@
 		<buckminster.jnlpSiteGenerator sitedir="${sp:action.output}"/>
 	</target>
 
-	<target name="create.site.xml">
+	<!--Create a site.xml file from a template and a filesetgroup that appoints feature
+		jar files
+	-->
+	<target name="create.site.xml" depends="create.output.dir">
 		<buckminster.updateSiteGenerator outputfile="${sp:action.output}" template="${sp:template}">
 			<buckminster.filesetgroup value="${fs:features}"/>
 		</buckminster.updateSiteGenerator>
+	</target>
+
+	<!--Create a complete site. The site.xml file is created from a template and 
+		filesetgroup that appoints feature jar files
+	-->
+	<target name="create.site">
+		<mkdir dir="${sp:action.output}"/>
+		<property name="site.xml" location="${buckminster.temp}/site.xml"/>
+		<buckminster.updateSiteGenerator versionProperty="site.version" outputfile="${site.xml}" template="${sp:template}">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.updateSiteGenerator>
+		<property name="site.extra.suffix" value=""/> <!-- for things like _incubation -->
+		<property name="site.file" location="${sp:action.output}/${site.name}_${site.version}${site.extra.suffix}.zip"/>
+		<buckminster.zip zipfile="${site.file}">
+			<buckminster.filesetgroup value="${fs:features}"/>
+			<buckminster.filesetgroup value="${fs:plugins}"/>
+			<buckminster.filesetgroup value="${fs:rootFiles}"/>
+			<fileset file="${site.xml}"/>
+		</buckminster.zip>
+	</target>
+
+	<!--Create a site without generating the site.xml. It is assumed that any site.xml files
+		are included in the fs:rootFiles filesetgroup. Use this target in conjunction with
+		the create.site.xml target when several site.xml files exists.
+	-->
+	<target name="create.complex.site">
+		<mkdir dir="${sp:action.output}"/>
+		<buckminster.updateSiteGenerator versionProperty="site.version">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.updateSiteGenerator>
+		<property name="site.extra.suffix" value=""/> <!-- for things like _incubation -->
+		<property name="site.file" location="${sp:action.output}/${site.name}_${site.version}${site.extra.suffix}.zip"/>
+		<buckminster.zip zipfile="${site.file}">
+			<buckminster.filesetgroup value="${fs:features}"/>
+			<buckminster.filesetgroup value="${fs:plugins}"/>
+			<buckminster.filesetgroup value="${fs:rootFiles}"/>
+		</buckminster.zip>
 	</target>
 
 	<target name="copy.group">

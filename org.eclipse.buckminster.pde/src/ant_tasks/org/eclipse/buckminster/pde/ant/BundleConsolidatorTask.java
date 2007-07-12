@@ -9,17 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.ant;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
-import org.eclipse.buckminster.ant.types.FileSetGroup;
 import org.eclipse.buckminster.pde.tasks.BundleConsolidator;
 
 /**
@@ -27,55 +17,24 @@ import org.eclipse.buckminster.pde.tasks.BundleConsolidator;
  * 
  * @author Thomas Hallgren
  */
-public class BundleConsolidatorTask extends Task
+public class BundleConsolidatorTask extends VersionConsolidatorTask
 {
-	private File m_input;
-
-	private File m_output;
-
-	private File m_propertiesFile;
-	
-	private String m_qualifier;
-
 	@Override
 	public void execute() throws BuildException
 	{
 		try
 		{
-	    	if(m_input == null)
+	    	if(getInput() == null)
 				throw new BuildException("Missing attribute input", getLocation());
-			if(m_output == null)
+			if(getOutput() == null)
 				throw new BuildException("Missing attribute output", getLocation());
 
-			BundleConsolidator bc = new BundleConsolidator(m_input, m_output, m_propertiesFile, m_qualifier);
+			BundleConsolidator bc = new BundleConsolidator(getInput(), getOutput(), getPropertiesFile(), getQualifier());
 			bc.run();
 		}
 		catch(Exception e)
 		{
 			throw new BuildException(e.toString(), this.getLocation());
 		}
-	}
-
-	public void setQualifier(String qualifier)
-	{
-		m_qualifier = qualifier;
-	}
-
-	public void setInputFile(File input)
-	{
-		m_input = input;
-	}
-
-	public void setOutputFile(File output)
-	{
-		m_output = output;
-	}
-
-	public void setPropertiesFile(String propertiesFile)
-	{
-		if(propertiesFile == null || propertiesFile.length() == 0)
-			m_propertiesFile = null;
-		else
-			m_propertiesFile = new File(propertiesFile);
 	}
 }
