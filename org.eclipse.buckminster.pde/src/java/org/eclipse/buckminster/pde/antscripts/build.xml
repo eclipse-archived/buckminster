@@ -149,22 +149,40 @@
 		</buckminster.updateSiteGenerator>
 	</target>
 
+	<!--Performs the initial site copy operations. The ${buckminster.temp} is used as output location -->
+	<target name="create.site.common">
+		<property name="site.xml" location="${buckminster.temp}/site.xml"/>
+		<property name="site.extra.suffix" value=""/> <!-- for things like _incubation -->
+
+		<mkdir dir="${buckminster.temp}/features"/>
+		<mkdir dir="${buckminster.temp}/plugins"/>
+
+		<buckminster.copy todir="${buckminster.temp}/features" overwrite="true">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.copy>
+
+		<buckminster.copy todir="${buckminster.temp}/plugins" overwrite="true">
+			<buckminster.filesetgroup value="${fs:plugins}"/>
+		</buckminster.copy>
+
+		<buckminster.copy todir="${buckminster.temp}" overwrite="true">
+			<buckminster.filesetgroup value="${fs:rootFiles}"/>
+		</buckminster.copy>
+
+		<mkdir dir="${sp:action.output}"/>
+	</target>
+
 	<!--Create a complete site. The site.xml file is created from a template and 
 		filesetgroup that appoints feature jar files
 	-->
-	<target name="create.site">
-		<mkdir dir="${sp:action.output}"/>
-		<property name="site.xml" location="${buckminster.temp}/site.xml"/>
+	<target name="create.site" depends="create.site.common">
 		<buckminster.updateSiteGenerator versionProperty="site.version" outputfile="${site.xml}" template="${sp:template}">
 			<buckminster.filesetgroup value="${fs:features}"/>
 		</buckminster.updateSiteGenerator>
-		<property name="site.extra.suffix" value=""/> <!-- for things like _incubation -->
+
 		<property name="site.file" location="${sp:action.output}/${site.name}_${site.version}${site.extra.suffix}.zip"/>
 		<buckminster.zip zipfile="${site.file}">
-			<buckminster.filesetgroup value="${fs:features}"/>
-			<buckminster.filesetgroup value="${fs:plugins}"/>
-			<buckminster.filesetgroup value="${fs:rootFiles}"/>
-			<fileset file="${site.xml}"/>
+			<fileset dir="${buckminster.temp}"/>
 		</buckminster.zip>
 	</target>
 
@@ -172,17 +190,14 @@
 		are included in the fs:rootFiles filesetgroup. Use this target in conjunction with
 		the create.site.xml target when several site.xml files exists.
 	-->
-	<target name="create.complex.site">
-		<mkdir dir="${sp:action.output}"/>
+	<target name="create.complex.site" depends="create.site.common">
 		<buckminster.updateSiteGenerator versionProperty="site.version">
 			<buckminster.filesetgroup value="${fs:features}"/>
 		</buckminster.updateSiteGenerator>
-		<property name="site.extra.suffix" value=""/> <!-- for things like _incubation -->
+
 		<property name="site.file" location="${sp:action.output}/${site.name}_${site.version}${site.extra.suffix}.zip"/>
 		<buckminster.zip zipfile="${site.file}">
-			<buckminster.filesetgroup value="${fs:features}"/>
-			<buckminster.filesetgroup value="${fs:plugins}"/>
-			<buckminster.filesetgroup value="${fs:rootFiles}"/>
+			<fileset dir="${buckminster.temp}"/>
 		</buckminster.zip>
 	</target>
 
