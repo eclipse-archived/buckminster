@@ -134,7 +134,7 @@ public class SaxableSite implements ISaxable, ISaxableElement
 			String name = Trivial.trim(cm.getName());
 			if(name != null)
 				Utils.addAttribute(attrs, "name", name);
-			String label = Trivial.trim(cm.getLabel());
+			String label = Trivial.trim(cm.getLabelNonLocalized());
 			if(label != null)
 				Utils.addAttribute(attrs, "label", label);
 			handler.startElement("", "", "category-def", attrs);
@@ -173,13 +173,11 @@ public class SaxableSite implements ISaxable, ISaxableElement
 		{
 			SiteFeatureReferenceModel sm = featureReferenceModels[idx];
 			AttributesImpl attrs = new AttributesImpl();
-			Utils.addAttribute(attrs, "url", "features/"
-					+ sm.getFeatureIdentifier() + "_"
-					+ sm.getFeatureVersion() + ".jar");
+			Utils.addAttribute(attrs, "url", sm.getURLString());
 			Utils.addAttribute(attrs, "id", sm.getFeatureIdentifier());
 			Utils.addAttribute(attrs, "version", sm.getFeatureVersion());
 
-			addOptionalAttribute(attrs, "label", sm.getLabel());
+			addOptionalAttribute(attrs, "label", sm.getLabelNonLocalized());
 			addOptionalAttribute(attrs, "type", sm.getType());
 			addOptionalAttribute(attrs, "os", sm.getOS());
 			addOptionalAttribute(attrs, "ws", sm.getWS());

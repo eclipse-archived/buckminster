@@ -421,9 +421,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public static CSpec fromPath(IPath productPath, String name) throws CoreException
 	{
 		Resolution resolution = fromPath(productPath, name, null, new NullProgressMonitor());
-		return resolution == null
-				? null
-				: resolution.getCSpec();
+		return resolution.getCSpec();
 	}
 
 	private static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor)
@@ -459,7 +457,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		// We might have more then one possible type. Select the one that produces the
 		// largest CSPEC (should be fast considering the IPath is local
 		//
-		ComponentRequest rq = new ComponentRequest(name, null, null);
+		ComponentRequest rq = new ComponentRequest(name, givenCtypeId, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
 		ComponentQuery cquery = queryBld.createComponentQuery();
@@ -494,6 +492,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				continue;
 			}
 		}
+		if(bestMatch == null)
+			throw new MissingComponentException(rq.toString());
 		return bestMatch;
 	}
 

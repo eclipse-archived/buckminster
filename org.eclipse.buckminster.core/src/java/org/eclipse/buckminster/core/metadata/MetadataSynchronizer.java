@@ -363,7 +363,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(oldInfo == null)
 				request = new ComponentRequest(project.getName(), null, null);
 			else
-				request = oldInfo.getRequest();
+				request = new ComponentRequest(oldInfo.getRequest().getName(), null, null);
 
 			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 			queryBld.setRootRequest(request);
