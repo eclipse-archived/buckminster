@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -29,9 +28,9 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
+import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
-import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -252,8 +251,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 			IProgressMonitor nullMonitor = new NullProgressMonitor();
 			IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(match, nullMonitor) };
-			DepNode node = match.getComponentType().getResolutionBuilder(reader[0], nullMonitor).build(reader,
-					false, nullMonitor);
+			DepNode node = match.getComponentType().getResolutionBuilder(reader[0], nullMonitor).build(reader, false,
+					nullMonitor);
 			node.getResolution().store();
 			if(reader[0] != null)
 				reader[0].close();
@@ -433,12 +432,10 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		else
 		{
 			possibleTypes = new HashSet<String>();
-			Map<IPath, String> cspecSources = MetadataSynchronizer.getDefault().getCSpecSources();
-			for(Map.Entry<IPath, String> entry : cspecSources.entrySet())
+			for(IComponentType ctype : AbstractComponentType.getComponentTypes())
 			{
-				IPath path = entry.getKey();
-				if(productPath.append(path).toFile().exists())
-					possibleTypes.add(entry.getValue());
+				if(ctype.isMetaFileBased() && ctype.hasAllRequiredMetaFiles(productPath))
+					possibleTypes.add(ctype.getId());
 			}
 			if(possibleTypes.isEmpty())
 				possibleTypes.add(IComponentType.UNKNOWN);
@@ -463,7 +460,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, false, false, null);
+		Provider provider = new Provider(IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]),
+				null, repoURI, null, false, false, null);
 
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
@@ -500,7 +498,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
-		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(), new NullProgressMonitor());
+		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(),
+				new NullProgressMonitor());
 
 		// Retain old component info if present. We only wanted the cspec
 		// changes

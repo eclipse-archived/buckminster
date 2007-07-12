@@ -15,10 +15,10 @@
       <componentType
             class="org.eclipse.buckminster.maven.internal.MavenComponentType"
             id="maven">
-         <metaFile path="project.xml"/>
          <metaFile
-               path="pom.xml">
-         </metaFile>
+               aliases="project.xml"
+               optional="false"
+               path="pom.xml"/>
       </componentType>
    </extension>
    <extension

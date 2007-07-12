@@ -14,11 +14,21 @@
 			class="org.eclipse.buckminster.pde.internal.EclipseBundleType"
 			id="osgi.bundle"
 			relativeLocation="plugins">
-			<metaFile path=".project" />
-			<metaFile path=".classpath" />
-			<metaFile path="META-INF/MANIFEST.MF" />
-			<metaFile path="plugin.xml" />
-			<metaFile path="build.properties" />
+			<metaFile
+         optional="true"
+         path=".project"/>
+			<metaFile
+         optional="true"
+         path=".classpath"/>
+			<metaFile
+         optional="false"
+         path="META-INF/MANIFEST.MF"/>
+			<metaFile
+         optional="true"
+         path="plugin.xml"/>
+			<metaFile
+         optional="true"
+         path="build.properties"/>
 		</componentType>
 		<componentType
 			class="org.eclipse.buckminster.pde.internal.EclipseFeatureType"
@@ -27,9 +37,15 @@
 			nameSubstitution="$1-feature"
 			relativeLocation="features"
 			substituteNamePattern="^(.*)$">
-			<metaFile path=".project" />
-			<metaFile path="feature.xml" />
-			<metaFile path="build.properties" />
+			<metaFile
+         optional="true"
+         path=".project"/>
+			<metaFile
+         optional="false"
+         path="feature.xml"/>
+			<metaFile
+         optional="true"
+         path="build.properties"/>
 		</componentType>
 	</extension>
  <extension

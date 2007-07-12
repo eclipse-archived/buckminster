@@ -180,7 +180,7 @@
 			<buckminster.filesetgroup value="${fs:features}"/>
 		</buckminster.updateSiteGenerator>
 
-		<property name="site.file" location="${sp:action.output}/${site.name}_${site.version}${site.extra.suffix}.zip"/>
+		<property name="site.file" location="${sp:action.output}/${site.name}-${site.version}${site.extra.suffix}.zip"/>
 		<buckminster.zip zipfile="${site.file}">
 			<fileset dir="${buckminster.temp}"/>
 		</buckminster.zip>
@@ -195,7 +195,7 @@
 			<buckminster.filesetgroup value="${fs:features}"/>
 		</buckminster.updateSiteGenerator>
 
-		<property name="site.file" location="${sp:action.output}/${site.name}_${site.version}${site.extra.suffix}.zip"/>
+		<property name="site.file" location="${sp:action.output}/${site.name}-${site.version}${site.extra.suffix}.zip"/>
 		<buckminster.zip zipfile="${site.file}">
 			<fileset dir="${buckminster.temp}"/>
 		</buckminster.zip>

@@ -86,6 +86,12 @@ public interface IComponentType extends IBuckminsterExtension
 	Pattern getDesiredNamePattern();
 
 	/**
+	 * Returns the meta files that this component make use of when creating the resolution
+	 * @return An array of meta files
+	 */
+	IMetaFile[] getMetaFiles();
+
+	/**
 	 * The substitution string for the pattern returned by {@link #getSubstituteNamePattern()}
 	 * @return The substitution string
 	 */
@@ -104,4 +110,19 @@ public interface IComponentType extends IBuckminsterExtension
 	 * @return The expression to use for the name substitution
 	 */
 	Pattern getSubstituteNamePattern();
+
+	/**
+	 * Returns true if the component type can find all required meta files under
+	 * the given <code>path</code>.
+	 * @param productPath The folder to scan for meta files
+	 * @return <code>true</code> if all required meta files are found.
+	 */
+	boolean hasAllRequiredMetaFiles(IPath path);
+
+	/**
+	 * Returns true if this component type is producing a cspec based on other
+	 * meta-data files found in the component.
+	 * @return true if a cspec is produced based on meta-files.
+	 */
+	boolean isMetaFileBased();
 }

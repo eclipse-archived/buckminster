@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.ctype;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -22,11 +23,13 @@ import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -40,6 +43,39 @@ import org.eclipse.core.runtime.Platform;
  */
 public abstract class AbstractComponentType extends AbstractExtension implements IComponentType
 {
+	static class MetaFile implements IMetaFile
+	{
+		private final IPath[] m_aliases;
+		
+		private final boolean m_optional;
+		
+		private final IPath m_path;
+
+		public MetaFile(IPath path, boolean optional, IPath[] aliases)
+		{
+			m_path = path;
+			m_optional = optional;
+			m_aliases = aliases;
+		}
+
+		public IPath[] getAliases()
+		{
+			return m_aliases;
+		}
+
+		public IPath getPath()
+		{
+			return m_path;
+		}
+
+		public boolean isOptional()
+		{
+			return m_optional;
+		}
+
+	}
+	private static final IMetaFile[] s_noMetaFiles = new IMetaFile[0];
+
 	/**
 	 * Helper methods used by component types that manifest themselfs as one single jar file.
 	 * 
@@ -60,6 +96,17 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		generic.addLocalPrerequisite(archives);
 		cspec.addAttribute(generic);
 		return generic;
+	}
+
+	public static IComponentType[] getComponentTypes() throws CoreException
+	{
+		CorePlugin plugin = CorePlugin.getDefault();
+		String[] cids = getComponentTypeIDs(false);
+		int idx = cids.length;
+		IComponentType[] ctypes = new IComponentType[idx];
+		while(--idx >= 0)
+			ctypes[idx] = plugin.getComponentType(cids[idx]);
+		return ctypes;
 	}
 
 	public static String[] getComponentTypeIDs(boolean includeEmptyEntry)
@@ -83,25 +130,13 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 	private Pattern m_desiredNamePattern;
 
+	private IMetaFile[] m_metaFiles = s_noMetaFiles;
+
 	private String m_nameSubstitution;
 
 	private IPath m_relativeLocation;
 
 	private Pattern m_substituteNamePattern;
-
-	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
-	{
-		super.setInitializationData(config, propertyName, data);
-
-		String tmp = config.getAttribute("relativeLocation");
-		m_relativeLocation = tmp == null ? null : Path.fromPortableString(tmp);
-		tmp = config.getAttribute("desiredNamePattern");
-		m_desiredNamePattern = tmp == null ? null : Pattern.compile(tmp);
-		tmp = config.getAttribute("substituteNamePattern");
-		m_substituteNamePattern = tmp == null ? null : Pattern.compile(tmp);
-		m_nameSubstitution = config.getAttribute("nameSubstitution");
-	}
 
 	public final IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
@@ -112,6 +147,11 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 	public Pattern getDesiredNamePattern()
 	{
 		return m_desiredNamePattern;
+	}
+
+	public IMetaFile[] getMetaFiles()
+	{
+		return m_metaFiles;
 	}
 
 	public String getNameSubstitution()
@@ -134,6 +174,36 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return m_substituteNamePattern;
 	}
 
+	public boolean hasAllRequiredMetaFiles(IPath path)
+	{
+		for(IMetaFile metaFile : getMetaFiles())
+		{
+			if(metaFile.isOptional() || path.append(metaFile.getPath()).toFile().exists())
+				continue;
+
+			boolean found = false;
+			for(IPath alias : metaFile.getAliases())
+			{
+				if(path.append(alias).toFile().exists())
+				{
+					found = true;
+					break;
+				}
+			}
+			if(!found)
+				return false;
+		}
+		return true;
+	}
+
+	public boolean isMetaFileBased()
+	{
+		for(IMetaFile metaFile : getMetaFiles())
+			if(!metaFile.isOptional())
+				return true;
+		return false;
+	}
+
 	@Override
 	public void setExtensionParameter(String key, String value) throws CoreException
 	{
@@ -146,6 +216,53 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		else if("nameSubstitution".equals(key))
 			m_nameSubstitution = value;
 		else super.setExtensionParameter(key, value);
+	}
+
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
+	{
+		super.setInitializationData(config, propertyName, data);
+
+		String tmp = config.getAttribute("relativeLocation");
+		m_relativeLocation = tmp == null ? null : Path.fromPortableString(tmp);
+		tmp = config.getAttribute("desiredNamePattern");
+		m_desiredNamePattern = tmp == null ? null : Pattern.compile(tmp);
+		tmp = config.getAttribute("substituteNamePattern");
+		m_substituteNamePattern = tmp == null ? null : Pattern.compile(tmp);
+		m_nameSubstitution = config.getAttribute("nameSubstitution");
+
+		ArrayList<IMetaFile> metaFiles = null;
+		for(IConfigurationElement metaFile : config.getChildren("metaFile"))
+		{
+			tmp = metaFile.getAttribute("path");
+			if(tmp != null)
+			{
+				tmp = tmp.trim();
+				if(tmp.length() == 0)
+					tmp = null;
+			}
+			if(tmp == null)
+				continue;
+
+			IPath path = Path.fromPortableString(tmp);
+			boolean optional = "true".equalsIgnoreCase(metaFile.getAttribute("optional"));
+			List<IPath> aliasesBld = null;
+			for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
+			{
+				alias = alias.trim();
+				if(alias.length() > 0)
+				{
+					if(aliasesBld == null)
+						aliasesBld = new ArrayList<IPath>();
+					aliasesBld.add(new Path(alias));
+				}
+			}
+			IPath[] aliases = (aliasesBld == null) ? Trivial.EMPTY_PATH_ARRAY : aliasesBld.toArray(new IPath[aliasesBld.size()]);
+			if(metaFiles == null)
+				metaFiles = new ArrayList<IMetaFile>();
+			metaFiles.add(new MetaFile(path, optional, aliases));
+		}
+		m_metaFiles = (metaFiles == null) ? s_noMetaFiles : metaFiles.toArray(new IMetaFile[metaFiles.size()]);
 	}
 
 	protected DepNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException

@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -46,7 +47,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 @SuppressWarnings("restriction")
 public class MetadataSynchronizer implements IResourceChangeListener
@@ -154,6 +157,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		{
 			super("Metadata refresh");
 			setPriority(SHORT);
+			setSystem(true);
 		}
 
 		@Override
@@ -219,19 +223,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 							CorePlugin.getLogger().error("Project refresh on " + project.getName() + " failed: " + e.getMessage(), e);
 						}
 					}
-
-					// I'm about to terminate. First make absolutely sure that there's nothing
-					// left todo
-					//
-					synchronized(MetadataSynchronizer.this)
-					{
-						if(m_removedEntries.isEmpty() && m_projectsNeedingUpdate.isEmpty())
-						{
-							// We're done here
-							//
-							return Status.OK_STATUS;
-						}	
-					}
 				}
 				return Status.OK_STATUS;
 			}
@@ -239,14 +230,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			{
 				CorePlugin.getLogger().error(e.toString(), e);
 				return e.getStatus();
-			}
-			finally
-			{
-				synchronized(MetadataSynchronizer.this)
-				{
-					if(m_currentRefreshJob == this)
-						m_currentRefreshJob = null;
-				}
 			}
 		}
 	}
@@ -277,6 +260,27 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				// Start a refresh job.
 				//
 				m_currentRefreshJob = new MetadataRefreshJob();
+				m_currentRefreshJob.addJobChangeListener(new JobChangeAdapter()
+				{
+					@Override
+	                public void done(IJobChangeEvent ev)
+	                {
+						// I'm about to terminate. First make absolutely sure that there's nothing
+						// left todo
+						//
+						synchronized(MetadataSynchronizer.this)
+						{
+							if(m_removedEntries.isEmpty() && m_projectsNeedingUpdate.isEmpty())
+							{
+								// We're done
+								//
+								m_currentRefreshJob = null;
+							}
+							else
+								m_currentRefreshJob.schedule();
+						}
+	                }
+	            });		 
 				m_currentRefreshJob.schedule();
 			}
 		}
@@ -303,6 +307,13 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				metaPath = metaPath.trim();
 				if(metaPath.length() > 0)
 					s_default.registerCSpecSource(new Path(metaPath), componentType);
+
+				for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
+				{
+					alias = alias.trim();
+					if(alias.length() > 0)
+						s_default.registerCSpecSource(new Path(alias), componentType);
+				}
 			}
 		}
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
@@ -325,7 +336,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(mds.m_currentRefreshJob != null)
 			{
 				mds.m_currentRefreshJob.cancel();
-				mds.m_currentRefreshJob = null;
 				try
 				{
 					// Give the job some time to cancel
