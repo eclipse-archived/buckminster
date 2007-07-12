@@ -135,7 +135,7 @@ public class PerformManager implements IPerformManager
 					continue;
 				}
 
-				IStatus status = actor.perform(ctx, new SubProgressMonitor(monitor, 1, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+				IStatus status = actor.perform(ctx, new SubProgressMonitor(monitor, 89, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
 				cancellationMonitor.done();
 				MonitorUtils.testCancelStatus(monitor);
 
