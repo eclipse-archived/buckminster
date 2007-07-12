@@ -77,13 +77,14 @@ public class CSpecFromSource extends CSpecGenerator
 		return false;
 	}
 
-	private final Map<String,String> m_buildProperties;
+	private final Map<String, String> m_buildProperties;
 
 	private final IFeature m_feature;
 
 	private final ICatalogReader m_reader;
 
-	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, Map<String,String> buildProperties)
+	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature,
+			Map<String, String> buildProperties)
 	{
 		super(cspecBuilder);
 		m_reader = reader;
@@ -102,7 +103,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
 		//
-		GroupBuilder featureRefs = cspec.addGroup(ATTRIBUTE_FEATURE_REFS, true);		// without self
+		GroupBuilder featureRefs = cspec.addGroup(ATTRIBUTE_FEATURE_REFS, true); // without self
 
 		// All bundles imported by this feature and all included features. Does
 		// not imply copying since the group will reference the bundles where they
@@ -156,8 +157,7 @@ public class CSpecFromSource extends CSpecGenerator
 				else
 					continue;
 
-				addRootsPermissions(featureRefs.getInstallerHintsForAdd(), key.substring(permIndex),
-					entry.getValue());
+				addRootsPermissions(featureRefs.getInstallerHintsForAdd(), key.substring(permIndex), entry.getValue());
 			}
 
 			GroupBuilder productRoots = cspec.getGroup(ATTRIBUTE_INTERNAL_PRODUCT_ROOT);
@@ -239,7 +239,7 @@ public class CSpecFromSource extends CSpecGenerator
 			ComponentRequest dep = createComponentRequest(plugin);
 			if(query.skipComponent(dep))
 				continue;
-	
+
 			cspec.addDependency(dep);
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JAR);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
@@ -248,14 +248,13 @@ public class CSpecFromSource extends CSpecGenerator
 
 	ComponentRequest createComponentRequest(IFeatureChild feature) throws CoreException
 	{
-		return createComponentRequest(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(),
-			feature.getMatch());
+		return createComponentRequest(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), feature
+				.getMatch());
 	}
 
 	ComponentRequest createComponentRequest(IFeaturePlugin pluginReference) throws CoreException
 	{
-		return createComponentRequest(pluginReference.getId(), IComponentType.OSGI_BUNDLE,
-			pluginReference.getVersion());
+		return createComponentRequest(pluginReference.getId(), IComponentType.OSGI_BUNDLE, pluginReference.getVersion());
 	}
 
 	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException
@@ -311,7 +310,7 @@ public class CSpecFromSource extends CSpecGenerator
 		ArtifactBuilder rawManifest = getCSpec().addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null, null);
 		rawManifest.addPath(featureFile);
 
-		// Create the action that creates the version expanded feature.xml 
+		// Create the action that creates the version expanded feature.xml
 		//
 		ActionBuilder manifest = addAntAction(ATTRIBUTE_MANIFEST, TASK_EXPAND_FEATURE_VERSION, true);
 		manifest.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
@@ -343,7 +342,7 @@ public class CSpecFromSource extends CSpecGenerator
 		featureJarBuilder.setUpToDatePolicy(UpToDatePolicy.COUNT);
 		featureJarBuilder.setProductFileCount(1);
 
-		GroupBuilder featureJars = cspec.addGroup(ATTRIBUTE_FEATURE_JARS, true);	// including self
+		GroupBuilder featureJars = cspec.addGroup(ATTRIBUTE_FEATURE_JARS, true); // including self
 		featureJars.addLocalPrerequisite(featureJarBuilder);
 		featureJars.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
 	}
@@ -368,12 +367,19 @@ public class CSpecFromSource extends CSpecGenerator
 				// it here.
 				//
 				throw new BuckminsterException("Component " + getCSpec().getName()
-					+ " contains absolute paths in build.properties");
+						+ " contains absolute paths in build.properties");
 
 			IPath path;
 			boolean isFile = token.startsWith("file:");
 			if(isFile)
+			{
+				if("file:bin/win32/win32/x86/eclipse.exe".equals(token))
+					token = "file:bin/win32/win32/x86/launcher.exe";
+				else if("file:bin/wpf/win32/x86/eclipse.exe".equals(token))
+					token = "file:bin/wpf/win32/x86/launcher.exe";
+
 				path = new Path(token.substring(5));
+			}
 			else
 				path = new Path(token);
 
