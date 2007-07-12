@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("restriction")
 public class SiteReader implements IStreamConsumer<Site>
 {
-	public static Site getSite(URL siteURL, IProgressMonitor monitor) throws CoreException
+	public static Site getSite(URL siteURL, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1);
@@ -53,10 +53,6 @@ public class SiteReader implements IStreamConsumer<Site>
 			MonitorUtils.worked(monitor, 1);
 			return site;
 		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
 		finally
 		{
 			IOUtils.close(input);
@@ -64,7 +60,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		}
 	}
 
-	public static Site getSite(File siteFile, IProgressMonitor monitor) throws CoreException
+	public static Site getSite(File siteFile, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1);
@@ -75,10 +71,6 @@ public class SiteReader implements IStreamConsumer<Site>
 			Site site = parseSite(input, siteFile.toURI().toURL());
 			MonitorUtils.worked(monitor, 1);
 			return site;
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{
@@ -109,7 +101,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		}
 	}
 
-	private static Site parseSite(InputStream input, URL url) throws CoreException
+	private static Site parseSite(InputStream input, URL url) throws CoreException, IOException
 	{
 		try
 		{
@@ -125,10 +117,6 @@ public class SiteReader implements IStreamConsumer<Site>
 			contentProvider.setSite(site);
 			site.resolve(url, url);
 			return site;
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
 		}
 		catch(SAXException e)
 		{
