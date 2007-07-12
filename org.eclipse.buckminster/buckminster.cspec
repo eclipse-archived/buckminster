@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cspec xmlns="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" version="0.2.0" versionType="OSGi">
+<cspec xmlns="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" componentType="buckminster" version="0.2.0" versionType="OSGi">
 	<dependencies>
- 		<dependency name="org.eclipse.buckminster.update" category="feature"/>
-		<dependency name="org.eclipse.buckminster.product" category="feature"/>
-		<dependency name="org.eclipse.buckminster.jnlp.product" category="feature"/>
-		<dependency name="org.eclipse.buckminster.jnlp.bootstrap"/>
+ 		<dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
+		<dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
+		<dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
+		<dependency name="org.eclipse.buckminster.jnlp.bootstrap" componentType="buckminster"/>
 		<dependency name="commons-net"/>
 	</dependencies>
 
