@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.Path;
  */
 public class CreateProductBaseTask extends TargetPlatformTask
 {
+	private boolean m_copyJavaLauncher = true;
+
 	private String m_arch;
 
 	private String m_os;
@@ -40,7 +42,7 @@ public class CreateProductBaseTask extends TargetPlatformTask
 		try
 		{
 			CreateProductBase createProduct = new CreateProductBase(
-					m_os, m_ws, m_arch, m_productFile, new Path(m_outputDir.toString()), this.getTargetLocation());
+					m_os, m_ws, m_arch, m_productFile, new Path(m_outputDir.toString()), this.getTargetLocation(), m_copyJavaLauncher);
 			Project p = this.getProject();
 			createProduct.execute();
 			for(Map.Entry<String,String> hint : createProduct.getHints().entrySet())
@@ -55,6 +57,11 @@ public class CreateProductBaseTask extends TargetPlatformTask
 	public void setArch(String arch)
 	{
 		m_arch = arch;
+	}
+
+	public void setCopyJavaLauncher(boolean flag)
+	{
+		m_copyJavaLauncher = flag;
 	}
 
 	public void setOs(String os)

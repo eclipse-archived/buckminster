@@ -17,17 +17,13 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.cspecgen.feature.FeatureBuilder;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -59,13 +55,11 @@ import org.eclipse.pde.internal.core.product.ProductModel;
 @SuppressWarnings("restriction")
 public class CreateProductBase
 {
-	private static final String LAUNCHER_FEATURE_NAME = "org.eclipse.platform.launchers";
-
-	private static final String ROOT = "root";
-
 	private final String m_arch;
 
 	private Map<String,String> m_hints;
+
+	private final boolean m_copyJavaLauncher;
 
 	private final String m_os;
 
@@ -83,7 +77,7 @@ public class CreateProductBase
 
 	private final String m_ws;
 
-	public CreateProductBase(String os, String ws, String arch, File productFile, IPath outputDir, IPath targetLocation)
+	public CreateProductBase(String os, String ws, String arch, File productFile, IPath outputDir, IPath targetLocation, boolean copyJavaLauncher)
 	throws CoreException
 	{
 		if(outputDir == null)
@@ -115,13 +109,13 @@ public class CreateProductBase
 			IOUtils.close(pfInput);
 		}
 
-
 		m_os = os == null ? TargetPlatform.getOS() : os;
 		m_ws = ws == null ? TargetPlatform.getWS() : ws;
 		m_arch = arch == null ? TargetPlatform.getOSArch() : arch;
 
 		m_productRootFiles = m_outputDir.append("productRootFiles").addTrailingSeparator();
 		m_generatedDir = m_productRootFiles.append(m_os + '.' + m_ws + '.' + m_arch).addTrailingSeparator();
+		m_copyJavaLauncher = copyJavaLauncher;
 	}
 
 	public void execute() throws Exception
@@ -132,32 +126,10 @@ public class CreateProductBase
 		if(!outputDir.isDirectory())
 			throw new BuckminsterException(outputDir + "is not a directory");
 
-		// Check for a launchers feature (included in the delta-pack)
-		//
-		File launcherFeatureDir = null;
-		File features = m_targetLocation.append(IPDEConstants.FEATURES_FOLDER).toFile();
-		String[] featureFolders = features.list();
-		if(featureFolders != null)
-		{
-			for(String featureFolder : featureFolders)
-			{
-				if(featureFolder.startsWith(LAUNCHER_FEATURE_NAME + '_'))
-				{
-					File featureDir = new File(features, featureFolder);
-					File buildScript = new File(featureDir, IPDEConstants.BUILD_PROPERTIES_FILE);
-					if(buildScript.exists())
-						launcherFeatureDir = featureDir;
-					break;
-				}
-			}
-		}
+		if(m_copyJavaLauncher)
+			copyJavaLauncherToRoot();
 
 		AbstractScriptGenerator.setConfigInfo(m_os + ',' + m_ws + ',' + m_arch);
-
-		if(launcherFeatureDir == null)
-			this.getInstalledRootFiles();
-		else
-			this.processFeatureBuildProperties(launcherFeatureDir);
 
 		// What this has to do with UI I don't know...
 		//
@@ -192,7 +164,7 @@ public class CreateProductBase
 		String launcherName = info.getLauncherName();
 
 		// We have special filename used by headless launchers that doesn't need
-		// a binary launcher with spashscreen and all.
+		// a binary launcher with splash screen and all.
 		//
 		if(!"_removethisfile".equals(launcherName))
 			this.createLauncher(info);
@@ -201,7 +173,7 @@ public class CreateProductBase
 			//
 			// Remove the default launcher
 			//
-			m_outputDir.append(getPlatformLaucherName("eclipse")).toFile().delete();
+			m_outputDir.append(getPlatformLauncherName("eclipse")).toFile().delete();
 	}
 
 	private void createLauncher(ILauncherInfo info) throws Exception
@@ -232,10 +204,10 @@ public class CreateProductBase
 			bi.setIcons(images);
 		bi.brand();
 
-		addChmodHint("755", getPlatformLaucherName(info.getLauncherName()));
+		addChmodHint("755", getPlatformLauncherName(info.getLauncherName()));
 	}
 
-	private String getPlatformLaucherName(String launcherName)
+	private String getPlatformLauncherName(String launcherName)
 	{
 		if("win32".equals(m_os))
 			launcherName += ".exe";
@@ -331,68 +303,14 @@ public class CreateProductBase
 		FeatureBuilder.addRootsPermissions(m_hints, perm, filesAndFolders);
 	}
 
-	private void copyFileOrFolderToRoot(String propVal, File featureDir) throws CoreException
-	{
-		boolean folder = false;
-		File src;
-		if(propVal.startsWith("absolute:file:"))
-		{
-			src = new File(propVal.substring(14)).getAbsoluteFile();
-		}
-		else if(propVal.startsWith("file:"))
-		{
-			src = new File(featureDir, propVal.substring(5));
-		}
-		else if(propVal.startsWith("absolute:"))
-		{
-			src = new File(propVal.substring(9)).getAbsoluteFile();
-			folder = true;
-		}
-		else
-		{
-			src = new File(featureDir, propVal);
-			folder = true;
-		}
-		if(folder)
-			FileUtils.deepCopyUnchecked(src, m_outputDir.toFile(), new NullProgressMonitor());
-		else
-		{
-			FileUtils.copyFile(src, m_outputDir.toFile(), src.getName(), new NullProgressMonitor());
-		}
-	}
-
-	private void copyFilesAndFoldersToRoot(String propVal, File featureDir) throws CoreException
-	{
-		StringTokenizer tokenizer = new StringTokenizer(propVal, ",");
-		while(tokenizer.hasMoreTokens())
-			this.copyFileOrFolderToRoot(tokenizer.nextToken().trim(), featureDir);
-	}
-
 	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
 
-	private void getInstalledRootFiles() throws CoreException
+	private void copyJavaLauncherToRoot() throws CoreException
 	{
-		File targetRoot = m_targetLocation.toFile();
-		String originalLauncher = "win32".equals(m_os)
-				? "eclipse.exe"
-				: "eclipse";
-		File launcherFile = new File(targetRoot, originalLauncher);
-		if(!launcherFile.exists())
-		{
-			originalLauncher = "win32".equals(m_os)
-					? "launcher.exe"
-					: "launcher";
-			launcherFile = new File(targetRoot, originalLauncher);
-		}
-
-		File outputDirFile = m_outputDir.toFile();
-		IProgressMonitor nullMonitor = new NullProgressMonitor();
-		FileUtils.copyFile(launcherFile, outputDirFile, originalLauncher, nullMonitor);
-		
 		// Eclipse 3.3 no longer have a startup.jar in the root. Instead, they have a
-		// org.eclipse.equinox.launcher_xxxx.jar file under plugins. Let's find
-		// it.
+		// org.eclipse.equinox.launcher_xxxx.jar file under plugins. Let's find it.
 		//
+		File targetRoot = m_targetLocation.toFile();
 		File pluginsDir = new File(targetRoot, "plugins");
 		String[] names = pluginsDir.list();
 		if(names == null)
@@ -426,7 +344,7 @@ public class CreateProductBase
 		}
 		else
 			startupJar = new File(pluginsDir, found);
-		FileUtils.copyFile(startupJar, outputDirFile, "startup.jar", nullMonitor);
+		FileUtils.copyFile(startupJar, m_outputDir.toFile(), "startup.jar", new NullProgressMonitor());
 	}
 
 	private State getState()
@@ -447,55 +365,5 @@ public class CreateProductBase
 		}
 		stateCopy.resolve(false);
 		return stateCopy;
-	}
-
-	private void processFeatureBuildProperties(File featureDir) throws CoreException, IOException
-	{
-		String targetKey = ROOT + '.' + m_os + '.' + m_ws + '.' + m_arch;
-
-		BMProperties props = null;
-		InputStream propInput = null;
-		try
-		{
-			propInput = new BufferedInputStream(new FileInputStream(new File(featureDir, "build.properties")));
-			props = new BMProperties(propInput);
-		}
-		finally
-		{
-			IOUtils.close(propInput);
-		}
-
-		ExpandingProperties exProps = new ExpandingProperties(props);
-		exProps.put("launcherName", "win32".equals(m_os)
-				? "launcher.exe"
-				: "launcher");
-		for(Map.Entry<String, String> prop : exProps.entrySet())
-		{
-			String keyName = prop.getKey();
-			if(keyName.equals(ROOT) || keyName.equals(targetKey))
-				copyFilesAndFoldersToRoot(prop.getValue(), featureDir);
-		}
-
-		if("win32".equals(m_os))
-			//
-			// Skip the chmod in case of windows
-			//
-			return;
-
-		String rootPermissions = ROOT + ".permissions.";
-		String targetPermissions = targetKey + ".permissions.";
-		for(Map.Entry<String, String> prop : exProps.entrySet())
-		{
-			String key = prop.getKey();
-			int permIndex;
-			if(key.startsWith(rootPermissions))
-				permIndex = rootPermissions.length();
-			else if(key.startsWith(targetPermissions))
-				permIndex = targetPermissions.length();
-			else
-				continue;
-
-			addChmodHint(key.substring(permIndex), prop.getValue());
-		}
 	}
 }
