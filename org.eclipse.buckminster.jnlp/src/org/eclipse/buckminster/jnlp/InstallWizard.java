@@ -61,6 +61,8 @@ public class InstallWizard extends Wizard
 	
 	private String m_brandingString;
 	
+	private URL m_mspecURL = null;
+	
 	private String m_artifactName;
 	
 	private String m_windowTitle;
@@ -258,17 +260,7 @@ public class InstallWizard extends Wizard
 		{
 			getContainer().showPage(getPage("OperationStep"));
 			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
-			
-			// ProgressMonitorDialog dialog = new DownloadProgressMonitorDialog(getShell(), m_windowImage, m_windowTitle);
-			// dialog.run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
-
-			//getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
-			
-			//HelpLinkMessageDialog.openInformation(getShell(), "Done", m_windowImage, "Materialization completed", "How to create your own virtual distributions", m_learnMoreURL);
-			
 			getContainer().showPage(getPage("DoneStep"));
-
-			//return true;
 		}
 		catch(InterruptedException e)
 		{
@@ -421,6 +413,31 @@ public class InstallWizard extends Wizard
 		return m_problemInProperties;
 	}
 	
+	void initMSPEC() throws JNLPException
+	{
+		if(m_mspecURL == null)
+			return;
+		
+		try
+		{
+			InputStream stream = m_mspecURL.openStream();
+			IParser<MaterializationSpec> parser =
+				CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
+			
+			m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+		}
+		catch(SAXException e)
+		{
+			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+		}
+		
+		m_mspecURL = null;
+	}
+	
 	private void readProperties(Map<String, String> properties)
 	{
 		class ErrorEntry
@@ -480,31 +497,16 @@ public class InstallWizard extends Wizard
 			{
 				if(ARTIFACT_TYPE_MSPEC.equals(artifactType))
 				{
-					URL url = new URL(tmp);
-					InputStream stream = url.openStream();
-					IParser<MaterializationSpec> parser =
-						CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
-					
-					m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
+					m_mspecURL = new URL(tmp);
+					// initURL() is called in LoginPage
 				} else
 				{
 					m_builder.setURL(new URL(tmp));
 				}
 			}
-			catch(Exception e)
+			catch(MalformedURLException e)
 			{
-				String errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
-				if(e instanceof MalformedURLException)
-				{
-					errorCode = ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-				} else if(e instanceof IOException)
-				{
-					errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
-				} else if(e instanceof SAXException)
-				{
-					errorCode = ERROR_CODE_ARTIFACT_SAX_EXCEPTION;
-				}
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), errorCode));
+				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
 			}
 		}
 		
