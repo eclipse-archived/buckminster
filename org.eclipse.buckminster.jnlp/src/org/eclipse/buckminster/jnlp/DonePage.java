@@ -140,6 +140,7 @@ public class DonePage extends InstallWizardPage
 			public void widgetSelected(SelectionEvent e)
 			{
 				SafeSaveDialog dlg = new SafeSaveDialog(getInstallWizard().getShell());
+				dlg.setFileName(getMaterializationSpecBuilder().getName());
 				dlg.setFilterNames(BOM_FILTER_NAMES);
 				dlg.setFilterExtensions(BOM_FILTER_EXTS);
 				String fn = dlg.open();
@@ -210,6 +211,7 @@ public class DonePage extends InstallWizardPage
 			public void widgetSelected(SelectionEvent e)
 			{
 				SafeSaveDialog dlg = new SafeSaveDialog(getInstallWizard().getShell());
+				dlg.setFileName(getMaterializationSpecBuilder().getName());
 				dlg.setFilterNames(MSPEC_FILTER_NAMES);
 				dlg.setFilterExtensions(MSPEC_FILTER_EXTS);
 				String fn = dlg.open();
