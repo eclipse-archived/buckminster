@@ -133,30 +133,40 @@ public class SimpleDownloadPage extends InstallWizardPage
 				getContainer().updateButtons();
 			}
 		});
-
-		// TODO remove
-		/*
-		 * m_advancedSettingsButton.addFocusListener(new FocusAdapter(){
-		 * 
-		 * @Override public void focusGained(FocusEvent e) { m_infoLabel.setText("Advanced settings");
-		 * m_infoLabel.pack(); }});
-		 * 
-		 * Composite infoComposite = new Composite(pageComposite, SWT.NONE); GridData data = new
-		 * GridData(GridData.FILL_BOTH); data.horizontalSpan = 2; infoComposite.setLayoutData(data);
-		 * infoComposite.setLayout(new GridLayout());
-		 * 
-		 * Group infoGroup = new Group(pageComposite, SWT.BOTTOM); infoGroup.setText("Field Info");
-		 * infoGroup.setLayout(new GridLayout()); data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		 * data.horizontalSpan = 2; infoGroup.setLayoutData(data);
-		 * 
-		 * 
-		 * m_infoLabel = new Label(infoGroup, SWT.WRAP); //m_infoLabel.setText("This is a very important piece of
-		 * information!! This is a very important piece of information!! This is a very important piece of
-		 * information!!");
-		 */
 		setControl(pageComposite);
 	}
 
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		// read MSPEC after login 
+		try
+		{
+			getInstallWizard().initMSPEC();
+			setPageComplete(true);
+			getContainer().updateButtons();
+		}
+		catch(JNLPException e)
+		{
+			setPageComplete(false);
+			getContainer().updateButtons();
+			throw e;
+/*			
+			IStatus status = BuckminsterException.wrap(e.getCause() != null ? e.getCause() : e).getStatus();
+			CorePlugin.logWarningsAndErrors(status);
+			HelpLinkErrorDialog.openError(
+					null,
+					getInstallWizard().getWindowImage(),
+					MaterializationConstants.ERROR_WINDOW_TITLE,
+					e.getMessage(),
+					MaterializationConstants.ERROR_HELP_TITLE,
+					getInstallWizard().getErrorURL(),
+					e.getErrorCode(),
+					status);
+*/
+		}
+	}
+	
 	@Override
 	public IWizardPage getNextPage()
 	{
