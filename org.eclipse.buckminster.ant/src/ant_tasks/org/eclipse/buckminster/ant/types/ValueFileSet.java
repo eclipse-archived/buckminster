@@ -20,10 +20,7 @@ public class ValueFileSet extends FileSet
 {
 	public void setValue(String value)
 	{
-		if(value == null)
-			return;
-
-		if(value == null)
+		if(value == null || value.length() < 1)
 			return;
 
 		// We might have several fileset declarations but we are only

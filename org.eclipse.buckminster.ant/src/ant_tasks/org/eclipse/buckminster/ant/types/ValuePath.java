@@ -31,10 +31,7 @@ public class ValuePath extends Path
 
 	public void setValue(String value)
 	{
-		if(value == null)
-			return;
-
-		if(value == null)
+		if(value == null || value.length() < 1)
 			return;
 
 		StringTokenizer fileSetDecls = new StringTokenizer(value.substring(1), "?");
