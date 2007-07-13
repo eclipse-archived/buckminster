@@ -68,7 +68,7 @@ abstract class InstallWizardPage extends WizardPage
 	 * It's used for setting up page before it's shown
 	 *
 	 */
-	protected void beforeShowSetup()
+	protected void beforeDisplaySetup()
 	{
 	}
 
