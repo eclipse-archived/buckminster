@@ -8,13 +8,7 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import java.io.ByteArrayOutputStream;
-
-import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
-import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
-import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 public class LoginPage extends InstallWizardPage
 {
 	private Button m_userButton;
-	
+
 	private Label m_login1Label;
 
 	private Text m_login1Text;
@@ -57,11 +51,11 @@ public class LoginPage extends InstallWizardPage
 	private Label m_retypePasswordLabel;
 
 	private Text m_retypePasswordText;
-	
+
 	private Label m_emailLabel;
 
 	private Text m_emailText;
-	
+
 	protected LoginPage(String provider)
 	{
 		super("LoginStep", "Login", "Materialization requires login to " + provider + ".", null);
@@ -75,7 +69,7 @@ public class LoginPage extends InstallWizardPage
 		}
 		return m_login2Text.getText();
 	}
-	
+
 	public String getPassword()
 	{
 		if(m_userButton.getSelection())
@@ -84,7 +78,7 @@ public class LoginPage extends InstallWizardPage
 		}
 		return m_password2Text.getText();
 	}
-	
+
 	public void createControl(Composite parent)
 	{
 		Composite pageComposite = new Composite(parent, SWT.NONE);
@@ -108,11 +102,11 @@ public class LoginPage extends InstallWizardPage
 				setPageComplete(getCompleteLogin1Fields());
 			}
 		});
-		
+
 		Group userGroup = new Group(pageComposite, SWT.NONE);
 		userGroup.setLayout(new GridLayout(2, false));
 		userGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		m_login1Label = new Label(userGroup, SWT.NONE);
 		m_login1Label.setText("Login:");
 		m_login1Text = new Text(userGroup, SWT.BORDER);
@@ -142,11 +136,11 @@ public class LoginPage extends InstallWizardPage
 				setPageComplete(getCompleteLogin2Fields());
 			}
 		});
-		
+
 		Group registerGroup = new Group(pageComposite, SWT.NONE);
 		registerGroup.setLayout(new GridLayout(2, false));
 		registerGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		m_login2Label = new Label(registerGroup, SWT.NONE);
 		m_login2Label.setText("Login:");
 		m_login2Text = new Text(registerGroup, SWT.BORDER);
@@ -164,7 +158,7 @@ public class LoginPage extends InstallWizardPage
 		m_retypePasswordText = new Text(registerGroup, SWT.BORDER | SWT.PASSWORD);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		m_retypePasswordText.setLayoutData(gridData);
-		
+
 		m_emailLabel = new Label(registerGroup, SWT.NONE);
 		m_emailLabel.setText("Email Address:");
 		m_emailText = new Text(registerGroup, SWT.BORDER);
@@ -175,9 +169,9 @@ public class LoginPage extends InstallWizardPage
 		gridData = new GridData();
 		gridData.widthHint = m_retypePasswordLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 		m_login1Label.setLayoutData(gridData);
-		
+
 		enableLogin2Fields(false);
-		
+
 		ModifyListener complete1Listener = new ModifyListener()
 		{
 			public void modifyText(ModifyEvent e)
@@ -206,103 +200,107 @@ public class LoginPage extends InstallWizardPage
 	}
 
 	@Override
-	public void setPageComplete(boolean complete) {
-    	super.setPageComplete(! getInstallWizard().isLoginRequired() || complete);
-    }
+	public void setPageComplete(boolean complete)
+	{
+		super.setPageComplete(!getInstallWizard().isLoginRequired() || complete);
+	}
 
-    @Override
+	@Override
 	public boolean performPageCommit()
 	{
-    	if(! getInstallWizard().isLoginRequired())
-    	{
-    		return true;
-    	}
-    	
-    	IAuthenticator authenticator;
-    	
-    	try
+		if(getInstallWizard().isLoginRequired())
 		{
-			authenticator = getInstallWizard().getAuthenticator();
-			
-			if(authenticator == null)
+
+			IAuthenticator authenticator;
+
+			try
 			{
-				throw new JNLPException("Authenticator is not available", null);
-			}
-			
-			if(authenticator.isLoggedIn())
-			{
-				authenticator.logout();
-			}
-			
-			String userName = m_login1Text.getText();
-			String password = m_password1Text.getText();
-			
-			if(m_registerButton.getSelection())
-			{
-				userName = m_login2Text.getText();
-				password = m_password2Text.getText();
-				
-				int result = authenticator.register(userName, password, m_emailText.getText());
-				
-				if(result == IAuthenticator.REGISTER_LOGIN_EXISTS)
+				authenticator = getInstallWizard().getAuthenticator();
+
+				if(authenticator == null)
 				{
-					// try to login using this login and password
-					if(authenticator.login(userName, password) == IAuthenticator.LOGIN_OK)
+					throw new JNLPException("Authenticator is not available", null);
+				}
+
+				if(authenticator.isLoggedIn())
+				{
+					authenticator.logout();
+				}
+
+				String userName = m_login1Text.getText();
+				String password = m_password1Text.getText();
+
+				if(m_registerButton.getSelection())
+				{
+					userName = m_login2Text.getText();
+					password = m_password2Text.getText();
+
+					int result = authenticator.register(userName, password, m_emailText.getText());
+
+					if(result == IAuthenticator.REGISTER_LOGIN_EXISTS)
 					{
-						return true;
+						// try to login using this login and password
+						if(authenticator.login(userName, password) == IAuthenticator.LOGIN_OK)
+						{
+							return true;
+						}
+					}
+
+					switch(result)
+					{
+					case IAuthenticator.REGISTER_FAIL:
+						throw new JNLPException("Registration was not successful", null);
+					case IAuthenticator.REGISTER_LOGIN_EXISTS:
+						throw new JNLPException("Login name already exists - choose a different one", null);
+					case IAuthenticator.REGISTER_LOGIN_TOO_SHORT:
+						throw new JNLPException("Login is too short - length must be between 3 and 25", null);
+					case IAuthenticator.REGISTER_PASSWORD_TOO_SHORT:
+						throw new JNLPException("Password is too short - length must be between 4 and 25", null);
+					case IAuthenticator.REGISTER_EMAIL_FORMAT_ERROR:
+						throw new JNLPException("Email does not have standard format", null);
 					}
 				}
-				
-				switch(result)
+
+				if(authenticator.login(userName, password) != IAuthenticator.LOGIN_OK)
 				{
-				case IAuthenticator.REGISTER_FAIL:
-					throw new JNLPException("Registration was not successful", null);
-				case IAuthenticator.REGISTER_LOGIN_EXISTS:
-					throw new JNLPException("Login name already exists - choose a different one", null);
-				case IAuthenticator.REGISTER_LOGIN_TOO_SHORT:
-					throw new JNLPException("Login is too short - length must be between 3 and 25", null);
-				case IAuthenticator.REGISTER_PASSWORD_TOO_SHORT:
-					throw new JNLPException("Password is too short - length must be between 4 and 25", null);
-				case IAuthenticator.REGISTER_EMAIL_FORMAT_ERROR:
-					throw new JNLPException("Email does not have standard format", null);					
+					// TODO uncomment
+					//throw new JNLPException("Cannot login - check username and password and try again", null);
+				}
+
+				// TODO remove - publish test
+/*				
+				System.out.println("LOGGED IN: " + getInstallWizard().getAuthenticator().isLoggedIn());
+
+				if(authenticator.isLoggedIn())
+				{
+					MaterializationSpecBuilder builder = getMaterializationSpecBuilder();
+					builder.setName("bertilsXalan");
+					MaterializationSpec mspec = builder.createMaterializationSpec();
+
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					Utils.serialize(mspec, out);
+					String xmlData = out.toString();
+					((IPublisher)authenticator).publish("private.bertil", "bertilsXalan", xmlData, true);
+				}
+*/				
+				// end of remove
+
+				if(!authenticator.isLoggedIn())
+				{
+					throw new JNLPException("Cannot login - leave the wizard and try again", null);
 				}
 			}
-
-			if(authenticator.login(userName, password) != IAuthenticator.LOGIN_OK)
+			catch(Throwable e)
 			{
-				throw new JNLPException("Cannot login - check username and password and try again", null);
+				e.printStackTrace();
+				setErrorMessage(e.getMessage());
+				return false;
 			}
-	    	
-			// TODO remove
-			System.out.println("LOGGED IN: " + getInstallWizard().getAuthenticator().isLoggedIn());
-			
-			if(authenticator.isLoggedIn())
-			{
-				MaterializationSpecBuilder builder = getMaterializationSpecBuilder();
-				builder.setName("bertilsXalan");
-				MaterializationSpec mspec = builder.createMaterializationSpec();
-				
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				Utils.serialize(mspec, out);			
-				String xmlData = out.toString();
-				((IPublisher) authenticator).publish("private.bertil", "bertilsXalan", xmlData, true);
-			}
-			// end of remove
-			
-			if(!authenticator.isLoggedIn())
-			{
-				throw new JNLPException("Cannot login - leave the wizard and try again", null);
-			}			
-			return true;
 		}
-		catch(Throwable e)
-		{		
-			e.printStackTrace();
-			setErrorMessage(e.getMessage());
-			return false;
-		}
+		
+		return true;
 	}
-	
+
 	private void enableLogin1Fields(boolean enabled)
 	{
 		m_login1Label.setEnabled(enabled);
@@ -335,7 +333,7 @@ public class LoginPage extends InstallWizardPage
 			setErrorMessage("Password cannot be empty");
 			return false;
 		}
-		
+
 		setErrorMessage(null);
 		return true;
 	}
@@ -367,7 +365,7 @@ public class LoginPage extends InstallWizardPage
 			setErrorMessage("Email cannot be empty");
 			return false;
 		}
-		
+
 		setErrorMessage(null);
 		return true;
 	}
