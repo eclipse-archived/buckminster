@@ -18,7 +18,7 @@ import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -43,7 +43,7 @@ public class MaterializerRunnable implements IRunnableWithProgress
 	{
 		try
 		{
-			MaterializerJob.runDelegated(createContext(), monitor);
+			MaterializationJob.runDelegated(createContext(), monitor);
 		}
 		catch(OperationCanceledException e)
 		{

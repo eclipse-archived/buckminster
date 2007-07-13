@@ -15,7 +15,7 @@ import java.net.URL;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -60,7 +60,7 @@ public class GetConfiguration extends WorkspaceCommand
 			mspecBuilder.setName(bom.getViewName());
 			mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
-			MaterializerJob.run(matCtx, true);
+			MaterializationJob.run(matCtx, true);
 			MonitorUtils.worked(monitor, 1);
 			System.out.println("Query complete.");
 		}

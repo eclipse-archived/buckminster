@@ -13,7 +13,7 @@ package org.eclipse.buckminster.ui.internal;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -32,7 +32,7 @@ public class MaterializeAndBindRunnable implements IRunnableWithProgress
 	{
 		try
 		{
-			MaterializerJob.runDelegated(m_context, monitor);
+			MaterializationJob.runDelegated(m_context, monitor);
 		}
 		catch(OperationCanceledException e)
 		{

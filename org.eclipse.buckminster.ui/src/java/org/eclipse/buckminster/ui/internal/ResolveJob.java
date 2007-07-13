@@ -12,7 +12,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -103,7 +103,7 @@ public class ResolveJob extends Job
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), ctx);
-					MaterializerJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
+					MaterializationJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
 					status = ctx.getStatus();
 					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
 						return status;

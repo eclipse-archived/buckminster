@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -65,6 +65,6 @@ public class SimpleLoaderTestCase extends TestCase
 		mspecBuilder.setName(bom.getViewName());
 		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), resolver.getContext());
-		MaterializerJob.run(matCtx, true);
+		MaterializationJob.run(matCtx, true);
 	}
 }

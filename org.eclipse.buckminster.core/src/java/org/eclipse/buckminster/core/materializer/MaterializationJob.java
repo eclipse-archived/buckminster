@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * A job that will materialize according to specifications.
  * @author Thomas Hallgren
  */
-public class MaterializerJob extends Job
+public class MaterializationJob extends Job
 {
 	private final MaterializationContext m_context;
 
@@ -42,7 +42,7 @@ public class MaterializerJob extends Job
 	{
 		try
 		{
-			MaterializerJob mbJob = new MaterializerJob(context, waitForInstall);
+			MaterializationJob mbJob = new MaterializationJob(context, waitForInstall);
 			mbJob.schedule();
 			mbJob.join(); // longrunning
 			IStatus status = mbJob.getResult();
@@ -78,11 +78,11 @@ public class MaterializerJob extends Job
 	 */
 	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
-		MaterializerJob mbJob = new MaterializerJob(context, false);
+		MaterializationJob mbJob = new MaterializationJob(context, false);
 		mbJob.internalRun(monitor);
 	}
 
-	private MaterializerJob(MaterializationContext ctx, boolean waitForInstall)
+	private MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
 	{
 		super("Materializing");
 		m_context = ctx;

@@ -17,7 +17,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.materializer.MaterializerJob;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
@@ -78,7 +78,7 @@ public class Import extends WorkspaceInitCommand
 				}
 				MaterializationContext matCtx = new MaterializationContext(bom, mspec, null);
 				matCtx.setContinueOnError(continueOnError);
-				MaterializerJob.run(matCtx, true);
+				MaterializationJob.run(matCtx, true);
 				logger.info("Import complete.");
 			}
 			finally
