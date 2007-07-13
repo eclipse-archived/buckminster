@@ -5,11 +5,12 @@ package org.eclipse.buckminster.jnlp.bootstrap;
 
 import java.net.URL;
 
-import javax.jnlp.DownloadServiceListener;
+import org.eclipse.buckminster.jnlp.cache.IDownloadMonitor;
 
-public class ProgressFacade implements DownloadServiceListener
+public class ProgressFacade implements IDownloadMonitor // DownloadServiceListener
 {
 	private static long s_numberOfUnits;
+
 	private static long s_unitsProduced;
 
 	// From DownloadServiceListener
@@ -30,7 +31,9 @@ public class ProgressFacade implements DownloadServiceListener
 	public void progress(URL url, String version, long readSoFar, long total, int overallPercent)
 	{
 		SplashWindow.setTaskName("Progress");
-		int progress = (int)((total <= 0) ? 0 : (readSoFar * 100) / total);
+		int progress = (int)((total <= 0)
+				? 0
+				: (readSoFar * 100) / total);
 		SplashWindow.setProgress(progress);
 	}
 
@@ -51,13 +54,16 @@ public class ProgressFacade implements DownloadServiceListener
 	public void validating(URL url, String version, long entry, long total, int overallPercent)
 	{
 		SplashWindow.setTaskName("Validating");
-		int progress = (int)((total <= 0) ? 0 : (entry * 100) / total);
+		int progress = (int)((total <= 0)
+				? 0
+				: (entry * 100) / total);
 		SplashWindow.setProgress(progress);
 	}
-	
+
 	/**
-	 * Starts a progress sequence. Sets a numberOfUntis to reach. Progress is reported via
-	 * taskProgress, taskIncrementalProgress, or taskDone. Sets progress to 0%. 
+	 * Starts a progress sequence. Sets a numberOfUntis to reach. Progress is reported via taskProgress,
+	 * taskIncrementalProgress, or taskDone. Sets progress to 0%.
+	 * 
 	 * @param s
 	 * @param numberOfUnits
 	 */
@@ -68,15 +74,18 @@ public class ProgressFacade implements DownloadServiceListener
 		s_unitsProduced = 0L;
 		SplashWindow.setProgress(0);
 	}
+
 	/**
-	 * Report progress - how much of the task is done measured in same unit as set int
-	 * setTask. 
+	 * Report progress - how much of the task is done measured in same unit as set int setTask.
+	 * 
 	 * @param unitsProduced
 	 */
 	public void taskProgress(long unitsProduced)
 	{
 		s_unitsProduced = unitsProduced;
-		int progress = (int)((s_numberOfUnits <= 0) ? 0 : (unitsProduced * 100) / s_numberOfUnits);
+		int progress = (int)((s_numberOfUnits <= 0)
+				? 0
+				: (unitsProduced * 100) / s_numberOfUnits);
 		SplashWindow.setProgress(progress);
 	}
 

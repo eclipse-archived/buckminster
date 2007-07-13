@@ -33,9 +33,9 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import javax.jnlp.DownloadService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
+import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheSecurityManager;
+import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCache;
+import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheAdapter;
 
 /**
  * This class is supposed to be called as a JNLP application. It pops up a splash and the in will access a resource. The
@@ -51,7 +51,7 @@ public class Main
 	//
 	private static final String PRODUCT_INSTALLER_CLASS = "org.eclipse.buckminster.jnlp.product.ProductInstaller";
 
-	private static final String PRODUCT = "product";
+	// private static final String PRODUCT = "product";
 
 	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot";
 
@@ -97,13 +97,70 @@ public class Main
 
 	private Image m_windowIconImage = null;
 
+	/**
+	 * Standard entry point for launching the application from command line or with java web start
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
-		Main main = new Main();
+		launch(args, false);
+	}
+	
+	public static void launch(final String[] args, boolean fromApplet)
+	{
+		final Main main = new Main();
 		try
 		{
-			main.run(args);
-			Runtime.getRuntime().exit(0);
+			ThreadGroup trustedGroup = new ThreadGroup("buckminster.bootstrap.threadgroup");
+			
+			class BootstrapThread extends Thread
+			{
+				Throwable m_t = null; 
+
+				public BootstrapThread(ThreadGroup group, String name)
+				{
+					super(group, name);
+				}
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						main.run(args);
+					}
+					catch(Throwable t)
+					{
+						m_t = t;
+					}
+				}
+				
+				public Throwable getError()
+				{
+					return m_t;
+				}
+			}
+
+			BootstrapThread bootstrap = null;
+			SimpleJNLPCacheSecurityManager cacheSecurityManager = SimpleJNLPCacheSecurityManager.getInstance();
+
+			try
+			{
+				cacheSecurityManager.addTrustedThreadGroup(trustedGroup);
+				bootstrap = new BootstrapThread(trustedGroup, "buckminster.bootstrap.thread");
+				bootstrap.start();
+				bootstrap.join();
+			}
+			finally
+			{
+				cacheSecurityManager.removeTrustedThreadGroup(trustedGroup);
+			}
+			
+			if (bootstrap != null && bootstrap.getError() != null)
+				throw bootstrap.getError();
+			
+			if (!fromApplet)
+				Runtime.getRuntime().exit(0);
 		}
 		catch(Throwable t)
 		{
@@ -151,7 +208,8 @@ public class Main
 			{
 			}
 
-			Runtime.getRuntime().exit(-1);
+			if (!fromApplet)
+				Runtime.getRuntime().exit(-1);
 		}
 	}
 
@@ -249,8 +307,31 @@ public class Main
 		return getInstallLocation().getAbsolutePath();
 	}
 
-	void installProduct() throws IOException, UnavailableServiceException
+	public File getCacheLocation() throws JNLPException
 	{
+		return new File(getInstallLocation(), "cache");
+	}
+
+	private String getJnlpRef(String[] args) throws JNLPException
+	{
+		for(int idx = 0; idx < args.length; ++idx)
+		{
+			if("-productJNLP".equals(args[idx]))
+			{
+				if(++idx < args.length)
+				{
+					String arg = args[idx];
+					if(arg != null && arg.trim().length() > 0)
+					{
+						return arg;
+					}
+				}
+				break;
+			}
+		}
+
+		throw new JNLPException("Missing required argument -productJNLP <URL to product JNLP descriptor>",
+				"Report the error and try later", ERROR_CODE_MISSING_ARGUMENT_EXCEPTION);
 	}
 
 	private Properties parseArguments(String[] args) throws JNLPException
@@ -442,10 +523,19 @@ public class Main
 					: null;
 
 			File siteRoot = getSiteRoot();
-			ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
-			boolean productUpdated = false;
+			final ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
+			SimpleJNLPCache cache = new SimpleJNLPCache(getCacheLocation());
 			if(siteRoot == null && splashImageBootData != null || splashImageData != null)
-				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
+			{
+				cache.addListener(new SimpleJNLPCacheAdapter()
+				{
+					@Override
+					public void updateStarted(URL jnlp)
+					{
+						SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
+					}
+				});
+			}
 
 			/*
 			 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to test
@@ -456,35 +546,38 @@ public class Main
 			 * splash and put them in user's clipboard // SplashWindow.disposeSplash();
 			 * System.err.print(SplashWindow.getDebugString());
 			 */
+			/*
+			 * try { // Assume we don't have an installed product // DownloadService ds =
+			 * (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService"); // DownloadServiceListener dsl =
+			 * ds.getDefaultProgressWindow(); if(!ds.isPartCached(PRODUCT)) { if(!SplashWindow.splashIsUp() &&
+			 * (splashImageBootData != null || splashImageData != null)) SplashWindow.splash(m_splashImageBoot,
+			 * m_splashImage, m_windowIconImage); // SplashWindow.disposeSplash(); ds.loadPart(PRODUCT, monitor); //
+			 * SplashWindow.splash(splashData); productUpdated = true; } } catch(Exception e) { throw new
+			 * JNLPException("Can not download materialization wizard", "Check disk space, system permissions, internet
+			 * connection and try again", ERROR_CODE_DOWNLOAD_EXCEPTION, e); }
+			 */
+			String jnlpString = getJnlpRef(args);
+			URL url;
 			try
 			{
-				// Assume we don't have an installed product
-				//
-				DownloadService ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService");
-				// DownloadServiceListener dsl = ds.getDefaultProgressWindow();
-				if(!ds.isPartCached(PRODUCT))
-				{
-					if(!SplashWindow.splashIsUp() && (splashImageBootData != null || splashImageData != null))
-						SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
-					// SplashWindow.disposeSplash();
-					ds.loadPart(PRODUCT, monitor);
-					// SplashWindow.splash(splashData);
-					productUpdated = true;
-				}
+				url = new URL(jnlpString);
 			}
-			catch(Exception e)
+			catch(MalformedURLException e)
 			{
-				throw new JNLPException("Can not download materialization wizard",
-						"Check disk space, system permissions, internet connection and try again",
-						ERROR_CODE_DOWNLOAD_EXCEPTION, e);
+				throw new JNLPException("Unable to create a URL from " + jnlpString + ": " + e.getMessage(),
+						"Report to vendor", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 			}
+
+			boolean productUpdated = cache.registerJNLP(url, monitor);
 
 			if(siteRoot == null || productUpdated)
 			{
 				IProductInstaller installer;
+
 				try
 				{
-					Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
+					// Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
+					Class<?> installerClass = cache.getClassLoader().loadClass(PRODUCT_INSTALLER_CLASS);
 					installer = (IProductInstaller)installerClass.newInstance();
 				}
 				catch(Exception e)

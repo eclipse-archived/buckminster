@@ -1,3 +1,10 @@
+/*****************************************************************************
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.jnlp.product;
 
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
@@ -9,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -32,8 +38,6 @@ public class ProductInstaller implements IProductInstaller
 	private static final int PACK_SUFFIX_LEN = PACK_SUFFIX.length();
 
 	private static final char s_fileSep;
-
-	private static HashSet<File> s_foldersToRemove = null;
 
 	static
 	{
@@ -89,9 +93,6 @@ public class ProductInstaller implements IProductInstaller
 					: list.length;
 			if(count > 0)
 			{
-				if(s_foldersToRemove != null)
-					s_foldersToRemove.remove(file);
-
 				while(--count >= 0)
 					deleteRecursive(list[count]);
 			}

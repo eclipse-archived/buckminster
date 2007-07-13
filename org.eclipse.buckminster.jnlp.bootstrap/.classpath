@@ -4,6 +4,5 @@
 	<classpathentry excluding="icons/|resources/" kind="src" path="src/bootstrap"/>
 	<classpathentry kind="src" path="src/bootstrap/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="JWS_LIB"/>
 	<classpathentry kind="output" path="bin/bootstrap"/>
 </classpath>
