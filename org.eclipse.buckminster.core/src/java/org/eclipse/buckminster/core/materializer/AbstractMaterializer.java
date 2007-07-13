@@ -53,6 +53,13 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
+	public boolean canWorkInParallel()
+	{
+		// Most materializers should be able to do this.
+		//
+		return true;
+	}
+
 	public void installRecursive(DepNode node, MaterializationContext context,
 			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{

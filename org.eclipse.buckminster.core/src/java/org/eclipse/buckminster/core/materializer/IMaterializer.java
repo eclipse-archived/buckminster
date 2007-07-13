@@ -33,11 +33,18 @@ public interface IMaterializer
 	static final Object MATERIALIZER_PROPERTY = "buckminster.materializer.name";
 
 	/**
+	 * Returns true if this materializer can work in parallel with other materializers
+	 * of the same type.
+	 * @return true if materializers of this type can be parallelized.
+	 */
+	boolean canWorkInParallel();
+
+	/**
 	 * Returns the default root for the installation.
 	 *
 	 * @return
 	 */
-	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException;
+	IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException;
 
 	/**
 	 * Materialize all resolutions from the bill of materials <code>bom</code> except the ones listed
@@ -57,7 +64,7 @@ public interface IMaterializer
 	 * @param monitor provides feedback to the user.
 	 * @throws CoreException
 	 */
-	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
+	void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
 	throws CoreException;
 
 	/**
@@ -73,6 +80,6 @@ public interface IMaterializer
 	 * @param monitor provides feedback to the user.
 	 * @throws CoreException
 	 */
-	public void installRecursive(DepNode node, MaterializationContext context,
+	void installRecursive(DepNode node, MaterializationContext context,
 			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException;
 }

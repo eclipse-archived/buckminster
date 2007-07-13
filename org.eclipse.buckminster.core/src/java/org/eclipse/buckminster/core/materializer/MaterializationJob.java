@@ -11,21 +11,27 @@
 package org.eclipse.buckminster.core.materializer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
  * A job that will materialize according to specifications.
@@ -37,6 +43,8 @@ public class MaterializationJob extends Job
 
 	private final boolean m_waitForInstall;
 
+	private final int m_maxParallelJobs = 4;
+
 	public static void run(MaterializationContext context, boolean waitForInstall)
 	throws CoreException
 	{
@@ -44,7 +52,7 @@ public class MaterializationJob extends Job
 		{
 			MaterializationJob mbJob = new MaterializationJob(context, waitForInstall);
 			mbJob.schedule();
-			mbJob.join(); // longrunning
+			mbJob.join(); // long running
 			IStatus status = mbJob.getResult();
 
 			if(status.getSeverity() == IStatus.CANCEL)
@@ -91,58 +99,108 @@ public class MaterializationJob extends Job
 		// Report using the standard job reporter.
 		//
 		this.setSystem(false);
-		this.setUser(true);
+		this.setUser(false);
 		this.setPriority(LONG);
 	}
 
 	private void internalRun(IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask(null, 1000);
+		CorePlugin corePlugin = CorePlugin.getDefault();
+		Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
+		MaterializationSpec mspec = m_context.getMaterializationSpec();
+		BillOfMaterials bom = m_context.getBillOfMaterials();
+		for(Resolution cr : bom.findMaterializationCandidates(mspec))
+		{
+			String materializer = mspec.getMaterializerID(cr.getComponentIdentifier());
+			List<Resolution> crs = resPerMat.get(materializer);
+			if(crs == null)
+			{
+				crs = new ArrayList<Resolution>();
+				resPerMat.put(materializer, crs);
+			}
+			crs.add(cr);
+		}
+
+		if(resPerMat.size() == 0)
+		{
+			bom.store();
+			return;
+		}
+
+		final Queue<MaterializerJob> allJobs = new LinkedList<MaterializerJob>();
+		for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
+		{
+			IMaterializer materializer = corePlugin.getMaterializer(entry.getKey());
+			List<Resolution> resolutions = entry.getValue();
+			if(materializer.canWorkInParallel())
+			{
+				// Start one job for each resolution
+				//
+				for(Resolution res : resolutions)
+					allJobs.offer(new MaterializerJob(entry.getKey(), materializer, Collections.singletonList(res), m_context));
+			}
+			else
+				allJobs.offer(new MaterializerJob(entry.getKey(), materializer, resolutions, m_context));
+		}
+
+		// -- Schedule at most m_maxParallelJobs. After that, let the termination of
+		// a job schedule a new one until the queue is empty.
+		//
+		// This is the listener that schedule a new job on termination of another
+		//
+		IJobChangeListener listener = new JobChangeAdapter()
+		{
+			@Override
+			public void done(IJobChangeEvent event)
+			{
+				MaterializerJob mjob = allJobs.poll();
+				if(mjob != null)
+				{
+					mjob.addJobChangeListener(this);
+					mjob.schedule();
+				}
+			}
+		};
+
+		for(int idx = 0; idx < m_maxParallelJobs; ++idx)
+		{
+			MaterializerJob job = allJobs.poll();
+			if(job == null)
+				break;
+
+			job.addJobChangeListener(listener);
+			job.schedule();
+		}
+
+		// Wait until all jobs have completed
+		//
+		IJobManager jobManager = Job.getJobManager();
 		try
 		{
-			CorePlugin corePlugin = CorePlugin.getDefault();
-			Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
-			MaterializationSpec mspec = m_context.getMaterializationSpec();
-			BillOfMaterials bom = m_context.getBillOfMaterials();
-			for(Resolution cr : bom.findMaterializationCandidates(mspec))
-			{
-				String materializer = mspec.getMaterializerID(cr.getComponentIdentifier());
-				List<Resolution> crs = resPerMat.get(materializer);
-				if(crs == null)
-				{
-					crs = new ArrayList<Resolution>();
-					resPerMat.put(materializer, crs);
-				}
-				crs.add(cr);
-			}
-	
-			if (resPerMat.size() > 0)
-			{
-				int ticksPerM = 800 / resPerMat.size();
-				for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
-				{
-					IMaterializer materializer = corePlugin.getMaterializer(entry.getKey());
-					materializer.materialize(entry.getValue(), m_context, MonitorUtils.subMonitor(monitor, ticksPerM));
-				}
-			}
-			bom.store();
-			InstallerJob installerJob = new InstallerJob(m_context);
-			installerJob.schedule();
-			if(m_waitForInstall)
-			{
-				try
-				{
-					installerJob.join();
-				}
-				catch(InterruptedException e)
-				{
-					throw new OperationCanceledException();
-				}
-			}
+			jobManager.join(m_context, monitor);
 		}
-		finally
+		catch(OperationCanceledException e)
 		{
-			monitor.done();
+			return;
+		}
+		catch(InterruptedException e)
+		{
+			return;
+		}
+
+		bom.store();
+		InstallerJob installerJob = new InstallerJob(m_context);
+		installerJob.schedule();
+		if(m_waitForInstall)
+		{
+			try
+			{
+				installerJob.join();
+			}
+			catch(InterruptedException e)
+			{
+				throw new OperationCanceledException();
+			}
 		}
 	}
 
