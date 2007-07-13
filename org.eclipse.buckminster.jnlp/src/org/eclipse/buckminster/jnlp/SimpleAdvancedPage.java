@@ -282,7 +282,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 	}
 
 	@Override
-	protected void beforeShowSetup()
+	protected void beforeDisplaySetup()
 	{
 		if(!m_treeInitialized)
 		{
@@ -298,15 +298,15 @@ public class SimpleAdvancedPage extends InstallWizardPage
 						monitor.done();
 					}});
 			}
-			catch(InvocationTargetException e)
+			catch(Exception e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch(InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				if(e.getCause() != null && e.getCause() instanceof JNLPException)
+				{
+					throw ((JNLPException)e.getCause());
+				}
+				
+				throw new JNLPException(
+						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
 			}
 
 			for(TreeItem item : m_tree.getItems())
