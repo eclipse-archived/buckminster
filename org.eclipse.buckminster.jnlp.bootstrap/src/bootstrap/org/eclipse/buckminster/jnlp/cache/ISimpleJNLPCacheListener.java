@@ -15,7 +15,7 @@ import java.net.URL;
  *
  * Listener for SimpleJNLPCache actions
  */
-public interface SimpleJNLPCacheListener
+public interface ISimpleJNLPCacheListener
 {
 	/**
 	 * This method is called when the cache is initializing. It typically starts downloading

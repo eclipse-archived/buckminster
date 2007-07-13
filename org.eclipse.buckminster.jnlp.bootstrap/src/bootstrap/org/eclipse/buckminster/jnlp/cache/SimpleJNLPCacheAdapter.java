@@ -15,7 +15,7 @@ import java.net.URL;
  *
  * A trivial implementation of SipleJNLPCacheListener for convenient use.
  */
-public class SimpleJNLPCacheAdapter implements SimpleJNLPCacheListener
+public class SimpleJNLPCacheAdapter implements ISimpleJNLPCacheListener
 {
 
 	public void initializing(URL jnlp)

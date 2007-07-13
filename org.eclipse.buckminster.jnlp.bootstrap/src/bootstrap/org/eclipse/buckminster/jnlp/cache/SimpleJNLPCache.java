@@ -84,20 +84,20 @@ public class SimpleJNLPCache
 
 	private final File m_location;
 	
-	private List<SimpleJNLPCacheListener> m_listeners;
+	private List<ISimpleJNLPCacheListener> m_listeners;
 
 	public SimpleJNLPCache(File location)
 	{
 		m_location = location;
 		m_classLoader = new SimpleJNLPCacheClassLoader(new URL[0], getClass().getClassLoader());
-		m_listeners = new ArrayList<SimpleJNLPCacheListener>();
+		m_listeners = new ArrayList<ISimpleJNLPCacheListener>();
 	}
 
 	public boolean registerJNLP(URL jnlp, IDownloadMonitor progress) throws JNLPException
 	{
 		boolean updated = false;
 		
-		for (SimpleJNLPCacheListener listener : m_listeners)
+		for (ISimpleJNLPCacheListener listener : m_listeners)
 			listener.initializing(jnlp);
 
 		JNLPResource resource = new JNLPResource(jnlp);
@@ -149,7 +149,7 @@ public class SimpleJNLPCache
 
 		if(latestTimestamp != resource.getLastModified().getTime())
 		{
-			for (SimpleJNLPCacheListener listener : m_listeners)
+			for (ISimpleJNLPCacheListener listener : m_listeners)
 				listener.updateStarted(jnlp);
 
 			updated = true;
@@ -226,18 +226,18 @@ public class SimpleJNLPCache
 			}
 		}
 
-		for (SimpleJNLPCacheListener listener : m_listeners)
+		for (ISimpleJNLPCacheListener listener : m_listeners)
 			listener.finished(jnlp);
 
 		return updated;
 	}
 
-	public void addListener(SimpleJNLPCacheListener listener)
+	public void addListener(ISimpleJNLPCacheListener listener)
 	{
 		m_listeners.add(listener);
 	}
 
-	public void removeListener(SimpleJNLPCacheListener listener)
+	public void removeListener(ISimpleJNLPCacheListener listener)
 	{
 		m_listeners.remove(listener);
 	}
