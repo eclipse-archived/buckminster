@@ -79,6 +79,7 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 			m_builder.setWorkspaceLocation(Path.fromPortableString(tmp));
 
 		m_builder.setMaterializer(getOptionalStringValue(attrs, MaterializationDirective.ATTR_MATERIALIZER));
+		m_builder.setMaxParallelJobs(getOptionalIntValue(attrs, MaterializationDirective.ATTR_MAX_PARALLEL_JOBS, -1));
 
 		tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_CONFLICT_RESOLUTION);
 		if(tmp != null)

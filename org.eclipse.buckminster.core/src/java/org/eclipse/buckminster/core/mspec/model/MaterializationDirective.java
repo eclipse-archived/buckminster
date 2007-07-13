@@ -30,7 +30,9 @@ public abstract class MaterializationDirective implements ISaxableElement
 	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation";
 	public static final String ATTR_MATERIALIZER = "materializer";
 	public static final String ATTR_CONFLICT_RESOLUTION = "conflictResolution";
+	public static final String ATTR_MAX_PARALLEL_JOBS = "maxParallelJobs";
 
+	private final int m_maxParallelJobs;
 	private final Map<String,String> m_properties;
 	private final IPath m_installLocation;
 	private final IPath m_workspaceLocation;
@@ -46,6 +48,7 @@ public abstract class MaterializationDirective implements ISaxableElement
 		m_materializer = builder.getMaterializer();
 		m_conflictResolution = builder.getConflictResolution();
 		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());
+		m_maxParallelJobs = builder.getMaxParallelJobs();
 	}
 
 	public Documentation getDocumentation()
@@ -61,6 +64,11 @@ public abstract class MaterializationDirective implements ISaxableElement
 	public String getMaterializerID()
 	{
 		return m_materializer;
+	}
+
+	public int getMaxParallelJobs()
+	{
+		return m_maxParallelJobs;
 	}
 
 	public IPath getWorkspaceLocation()
@@ -98,6 +106,8 @@ public abstract class MaterializationDirective implements ISaxableElement
 			Utils.addAttribute(attrs, ATTR_MATERIALIZER, m_materializer);
 		if(m_conflictResolution != null)
 			Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, m_conflictResolution.name());
+		if(m_maxParallelJobs != -1)
+			Utils.addAttribute(attrs, ATTR_MAX_PARALLEL_JOBS, Integer.toString(m_maxParallelJobs));
 	}
 
 	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException

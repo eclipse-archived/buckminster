@@ -11,6 +11,7 @@ package org.eclipse.buckminster.ui.prefs;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.prefs.IPreferenceDescriptor;
 import org.eclipse.buckminster.core.prefs.IPreferenceValidator;
@@ -240,6 +241,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, "Eclipse logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, "Ant logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, "Copy Eclipse log events to Console", getFieldEditorParent()));
+		addField(new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, "Max number of parallel materializations", getFieldEditorParent()));
 		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, "Resolver order", getFieldEditorParent()));
 
 		IResolverFactory[] factories = ResolverFactoryMaintainer.getInstance().getResolverFactories();

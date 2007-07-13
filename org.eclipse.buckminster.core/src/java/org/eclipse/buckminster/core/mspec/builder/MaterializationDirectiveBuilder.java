@@ -28,9 +28,11 @@ public abstract class MaterializationDirectiveBuilder
 	private String m_materializer;
 	private final HashMap<String,String> m_properties = new HashMap<String,String>();
 	private ConflictResolution m_conflictResolution;
+	private int m_maxParallelJobs = -1;
 
 	public void clear()
 	{
+		m_maxParallelJobs = -1;
 		m_installLocation = null;
 		m_workspaceLocation = null;
 		m_materializer = null;
@@ -52,6 +54,11 @@ public abstract class MaterializationDirectiveBuilder
 	public String getMaterializer()
 	{
 		return m_materializer;
+	}
+
+	public int getMaxParallelJobs()
+	{
+		return m_maxParallelJobs;
 	}
 
 	public Map<String,String> getProperties()
@@ -76,6 +83,7 @@ public abstract class MaterializationDirectiveBuilder
 		m_installLocation = md.getInstallLocation();
 		m_workspaceLocation = md.getWorkspaceLocation();
 		m_materializer = md.getMaterializerID();
+		m_maxParallelJobs = md.getMaxParallelJobs();
 		m_conflictResolution = md.getConflictResolution();
 		m_properties.putAll(md.getProperties());
 	}
@@ -93,6 +101,11 @@ public abstract class MaterializationDirectiveBuilder
 	public void setMaterializer(String materializer)
 	{
 		m_materializer = materializer;
+	}
+
+	public void setMaxParallelJobs(int maxParallelJobs)
+	{
+		m_maxParallelJobs = maxParallelJobs;
 	}
 
 	public void setConflictResolution(ConflictResolution whenPresent)

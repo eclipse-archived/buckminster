@@ -138,6 +138,7 @@
 						</documentation>
 					</annotation>
 				</attribute>
+				<attribute name="maxParallelJobs" type="int" use="optional"/>
 			</extension>
 		</complexContent>
 	</complexType>

@@ -88,6 +88,14 @@ public class MaterializationContext extends RMContext
 		return getDefaultRootInstallLocation(resolution).append(getDefaultRelativeInstallLocation(resolution));
 	}
 
+	public int getMaxParallelJobs()
+	{
+		int maxParallelJobs = m_materializationSpec.getMaxParallelJobs();
+		if(maxParallelJobs == -1)
+			maxParallelJobs = MaterializationJob.getMaxParallelJobs();
+		return maxParallelJobs;
+	}
+
 	IPath processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
 	throws CoreException
 	{

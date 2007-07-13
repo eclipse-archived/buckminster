@@ -22,6 +22,8 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -32,6 +34,8 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * A job that will materialize according to specifications.
@@ -39,11 +43,32 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  */
 public class MaterializationJob extends Job
 {
+	public static final String MAX_PARALLEL_JOBS = "maxParallelMaterializationJobs";
+
+	public static final int MAX_PARALLEL_JOBS_DEFAULT = 4;
+
+	static
+	{
+		IEclipsePreferences defaultNode = BuckminsterPreferences.getDefaultNode();
+		defaultNode.putInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
+		try
+		{
+			defaultNode.flush();
+		}
+		catch(BackingStoreException e)
+		{
+			Buckminster.getLogger().error(e.toString(), e);
+		}		
+	}
+
+	public static int getMaxParallelJobs()
+	{
+		return BuckminsterPreferences.getNode().getInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
+	}
+
 	private final MaterializationContext m_context;
 
 	private final boolean m_waitForInstall;
-
-	private final int m_maxParallelJobs = 4;
 
 	public static void run(MaterializationContext context, boolean waitForInstall)
 	throws CoreException
@@ -162,7 +187,8 @@ public class MaterializationJob extends Job
 			}
 		};
 
-		for(int idx = 0; idx < m_maxParallelJobs; ++idx)
+		int maxJobs = m_context.getMaxParallelJobs();
+		for(int idx = 0; idx < maxJobs; ++idx)
 		{
 			MaterializerJob job = allJobs.poll();
 			if(job == null)
