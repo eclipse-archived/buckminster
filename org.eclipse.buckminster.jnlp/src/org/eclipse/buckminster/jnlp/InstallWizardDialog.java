@@ -42,7 +42,7 @@ public class InstallWizardDialog extends WizardDialog
             return;
         }
         
-        ((InstallWizardPage)page).beforeShowSetup();
+        ((InstallWizardPage)page).beforeDisplaySetup();
         
         super.showPage(page);
     }
