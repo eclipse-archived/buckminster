@@ -11,7 +11,7 @@
             <cs:prerequisites alias="input">
                 <cs:attribute name="eclipse.build"/>
             </cs:prerequisites>
-            <cs:products alias="output" base="bin/jars/">
+            <cs:products alias="output" base="${buckminster.home}/bin/jars/">
                 <cs:path path="worlds.jar"/>
             </cs:products>
         </cs:public>
@@ -19,7 +19,7 @@
             <cs:prerequisites>
                 <cs:attribute name="source"/>
             </cs:prerequisites>
-            <cs:products base="bin/classes/">
+            <cs:products base="${buckminster.home}/bin/classes/">
                 <cs:path path="."/>
             </cs:products>
         </cs:private>

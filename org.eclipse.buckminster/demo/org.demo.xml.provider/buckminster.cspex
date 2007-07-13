@@ -20,7 +20,7 @@
 				<cs:attribute component="org.demo.worlds" alias="worlds.jar" name="java.binary.archives"/>
 			</cs:prerequisites>
 
-			<cs:products alias="output">
+			<cs:products alias="output" base="${buckminster.home}">
 				<cs:path path="jars/" />
 			</cs:products>
 
