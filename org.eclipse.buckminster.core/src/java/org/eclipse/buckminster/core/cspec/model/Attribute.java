@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.cspec.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -116,7 +117,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		return m_cspec;
 	}
 
-	public void getDeepInstallerHints(IModelCache ctx, Map<String, String> hints) throws CoreException
+	public void getDeepInstallerHints(IModelCache ctx, Map<String, String> hints, Stack<IAttributeFilter> filters) throws CoreException
 	{
 		Map<String, String> myHints = getInstallerHints();
 		if(myHints.size() > 0)
@@ -135,8 +136,20 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		}
 
 		CSpec cspec = getCSpec();
-		for(Prerequisite child : getPrerequisites())
-			child.getReferencedAttribute(cspec, ctx).getDeepInstallerHints(ctx, hints);
+		for(Prerequisite child : getPrerequisites(filters))
+		{
+			Attribute refAttr = child.getReferencedAttribute(cspec, ctx);
+			if(child.isFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(child);
+				refAttr.getDeepInstallerHints(ctx, hints, filters);
+				filters.pop();
+			}
+			else
+				refAttr.getDeepInstallerHints(ctx, hints, filters);
+		}
 	}
 
 	public String getDefaultTag()
@@ -151,7 +164,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public long getFirstModified(IModelCache ctx, int expectedFileCount, int[] fileCount) throws CoreException
 	{
-		PathGroup[] pqs = getPathGroups(ctx);
+		PathGroup[] pqs = getPathGroups(ctx, null);
 		int idx = pqs.length;
 		if(idx == 0)
 			return 0L;
@@ -183,7 +196,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public void appendRelativeFiles(IModelCache ctx, Map<String,Long> fileNames) throws CoreException
 	{
-		PathGroup[] pqs = getPathGroups(ctx);
+		PathGroup[] pqs = getPathGroups(ctx, null);
 		int idx = pqs.length;
 		while(--idx >= 0)
 			pqs[idx].appendRelativeFiles(fileNames);
@@ -191,7 +204,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public long getLastModified(IModelCache ctx, long threshold, int[] fileCount) throws CoreException
 	{
-		PathGroup[] pqs = getPathGroups(ctx);
+		PathGroup[] pqs = getPathGroups(ctx, null);
 		int count = 0;
 		int idx = pqs.length;
 		int[] countBin = new int[1];
@@ -212,22 +225,39 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		return newest;
 	}
 
-	public final PathGroup[] getPathGroups(IModelCache ctx) throws CoreException
+	public final PathGroup[] getPathGroups(IModelCache ctx, Stack<IAttributeFilter> filters) throws CoreException
 	{
-		Map<String,PathGroup[]> cache = ctx.getPathGroupsCache();
-		String qName = getQualifiedName();
-		PathGroup[] pga = cache.get(qName);
-		if(pga == null)
+		PathGroup[] pga;
+		if(filters == null || filters.isEmpty())
 		{
+			Map<String,PathGroup[]> cache = ctx.getPathGroupsCache();
+			String qName = getQualifiedName();
+			pga = cache.get(qName);
+			if(pga == null)
+			{
+				ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
+				addDynamicProperties(local);
+				pga = internalGetPathGroups(ctx, local, filters);
+				cache.put(qName, pga);
+			}
+		}
+		else
+		{
+			// Can't use the cache
+			//
 			ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
 			addDynamicProperties(local);
-			pga = internalGetPathGroups(ctx, local);
-			cache.put(qName, pga);
+			pga = internalGetPathGroups(ctx, local, filters);
 		}
 		return pga;
 	}
 
 	public List<Prerequisite> getPrerequisites()
+	{
+		return getPrerequisites(null);
+	}
+
+	public List<Prerequisite> getPrerequisites(Stack<IAttributeFilter> filters)
 	{
 		// Only targets have artifact group prerequisites
 		//
@@ -242,7 +272,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	public IPath getUniquePath(IPath root, IModelCache modelCtx) throws CoreException
 	{
 		IPath uniquePath = null;
-		PathGroup[] groups = getPathGroups(modelCtx);
+		PathGroup[] groups = getPathGroups(modelCtx, null);
 		if(groups.length == 1)
 		{
 			PathGroup group = groups[0];
@@ -312,7 +342,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		}
 	}
 
-	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local) throws CoreException;
+	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException;
 
 	/**
 	 * It would be wonderful if we could have everything final. Double referernces does however

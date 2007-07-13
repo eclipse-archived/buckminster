@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
@@ -132,10 +133,20 @@ public class Action extends Attribute
 	public void addInstallerHints(IModelCache ctx, Map<String, String> installerHints) throws CoreException
 	{
 		CSpec cspec = getCSpec();
-		for(Prerequisite prereq : getPrerequisites())
+		Stack<IAttributeFilter> filters = null;
+		for(Prerequisite prereq : getPrerequisites(null))
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, ctx);
-			ag.getDeepInstallerHints(ctx, installerHints);
+			if(prereq.isFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(prereq);
+				ag.getDeepInstallerHints(ctx, installerHints, filters);
+				filters.pop();
+			}
+			else
+				ag.getDeepInstallerHints(ctx, installerHints, filters);
 		}
 	}
 
@@ -150,9 +161,9 @@ public class Action extends Attribute
 	}
 
 	@Override
-	public List<Prerequisite> getPrerequisites()
+	public List<Prerequisite> getPrerequisites(Stack<IAttributeFilter> filters)
 	{
-		return m_prerequisites.getPrerequisites();
+		return m_prerequisites.getPrerequisites(filters);
 	}
 
 	public String getPrerequisitesAlias()
@@ -310,7 +321,7 @@ public class Action extends Attribute
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local) throws CoreException
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException
 	{
 		CSpec cspec = getCSpec();
 		ArrayList<PathGroup> pathGroups = new ArrayList<PathGroup>();
@@ -330,7 +341,7 @@ public class Action extends Attribute
 		// Add produced artifacts
 		//
 		for(Artifact a : cspec.getActionArtifacts(this))
-			for(PathGroup pathGroup : a.getPathGroups(ctx))
+			for(PathGroup pathGroup : a.getPathGroups(ctx, filters))
 				pathGroups.add(pathGroup);
 
 		return pathGroups.toArray(new PathGroup[pathGroups.size()]);
@@ -465,7 +476,7 @@ public class Action extends Attribute
 	{
 		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
 		CSpec cspec = getCSpec();
-		for(Prerequisite pq : getPrerequisites())
+		for(Prerequisite pq : getPrerequisites(null))
 		{
 			if(!pq.isContributor())
 				continue;

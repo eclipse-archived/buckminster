@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
@@ -22,6 +23,7 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Group;
+import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
@@ -139,10 +141,22 @@ public class PerformContext implements IActionContext
 		String mainRQ = REQUIREMENT_PREFIX + action.getName();
 		String prefix = mainRQ + '.';
 		ArrayList<PathGroup> allRequiredPaths = new ArrayList<PathGroup>();
+		Stack<IAttributeFilter> filters = null;
 		for(Prerequisite prereq : prereqs)
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, this);
-			PathGroup[] paths = ag.getPathGroups(this);
+			PathGroup[] paths;
+			if(prereq.isFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(prereq);
+				paths = ag.getPathGroups(this, filters);
+				filters.pop();
+			}
+			else
+				paths = ag.getPathGroups(this, filters);
+
 			paths = normalizePathGroups(paths);
 			if(!prereq.isExternal())
 			{
@@ -174,7 +188,7 @@ public class PerformContext implements IActionContext
 	public void addProductPathGroup(Map<String, PathGroup[]> pgas) throws CoreException
 	{
 		Action action = getAction();
-		PathGroup[] product = action.getPathGroups(this);
+		PathGroup[] product = action.getPathGroups(this, null);
 		if(product.length > 0)
 		{
 			PathGroup[] pathGroups = normalizePathGroups(product);

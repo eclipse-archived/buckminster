@@ -110,7 +110,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_selfAttribute = new Attribute(SELF_ARTIFACT, true, null, null)
 		{
 			@Override
-			protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local)
+			protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
 					throws CoreException
 			{
 				IPath me = getComponentLocation();
@@ -437,7 +437,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		//
 		for(Attribute attr : m_attributes.values())
 			if(!(attr instanceof ActionArtifact))
-				this.verifyPrerequisites(attr);
+				this.verifyPrerequisites(attr, null);
 
 		// Verify validity of generators
 		//
@@ -557,7 +557,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		}
 	}
 
-	private void verifyNonCircularDependency(Stack<String> seenAttributes, Collection<Prerequisite> prereqs)
+	private void verifyNonCircularDependency(Stack<String> seenAttributes, Collection<Prerequisite> prereqs, Stack<IAttributeFilter> filters)
 			throws MissingAttributeException, CircularReferenceException
 	{
 		for(Prerequisite prereq : prereqs)
@@ -579,21 +579,32 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			// Verify that this action dependency doesn't somehow
 			// stem from the action itself
 			//
-			List<Prerequisite> agPreqs = ag.getPrerequisites();
+			List<Prerequisite> agPreqs;
+			if(prereq.isFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(prereq);
+				agPreqs = ag.getPrerequisites(filters);
+				filters.pop();
+			}
+			else
+				agPreqs = ag.getPrerequisites(filters);
+
 			if(agPreqs.size() > 0)
 			{
 				seenAttributes.push(ag.getName());
-				this.verifyNonCircularDependency(seenAttributes, agPreqs);
+				this.verifyNonCircularDependency(seenAttributes, agPreqs, filters);
 				seenAttributes.pop();
 			}
 		}
 	}
 
-	private void verifyPrerequisites(Attribute attr) throws MissingDependencyException, MissingAttributeException,
+	private void verifyPrerequisites(Attribute attr, Stack<IAttributeFilter> filters) throws MissingDependencyException, MissingAttributeException,
 			CircularReferenceException
 	{
 		Stack<String> seenActions = new Stack<String>();
-		for(Prerequisite prereq : attr.getPrerequisites())
+		for(Prerequisite prereq : attr.getPrerequisites(filters))
 		{
 			if(prereq.isExternal())
 			{
@@ -610,16 +621,25 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 				//
 				((ActionArtifact)ag).getAction();
 
+			if(prereq.isFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(prereq);
+			}
+
 			// Verify that this action dependency doesn't somehow
 			// stem from the action itself
 			//
-			Collection<Prerequisite> agPreqs = ag.getPrerequisites();
+			Collection<Prerequisite> agPreqs = ag.getPrerequisites(filters);
 			if(agPreqs.size() > 0)
 			{
 				seenActions.clear();
 				seenActions.push(ag.getName());
-				this.verifyNonCircularDependency(seenActions, agPreqs);
+				this.verifyNonCircularDependency(seenActions, agPreqs, filters);
 			}
+			if(prereq.isFilter())
+				filters.pop();
 		}
 	}
 

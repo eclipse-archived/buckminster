@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IActor;
@@ -24,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
@@ -192,7 +194,7 @@ public class PerformManager implements IPerformManager
 		if(globalCtx.isWorkspaceRefreshPending())
 			return;
 
-		PathGroup[] pathGroups = action.getPathGroups(ctx);
+		PathGroup[] pathGroups = action.getPathGroups(ctx, null);
 		if(pathGroups.length == 0)
 		{
 			globalCtx.setWorkspaceRefreshPending(true);
@@ -301,7 +303,7 @@ public class PerformManager implements IPerformManager
 		Set<Attribute> seen = new HashSet<Attribute>();
 		List<Action> ordered = new ArrayList<Action>();
 		for(Attribute attribute : attributes)
-			addAttributeChildren(ctx, attribute, seen, ordered);
+			addAttributeChildren(ctx, attribute, seen, ordered, null);
 
 		for(Attribute attribute : attributes)
 		{
@@ -318,7 +320,7 @@ public class PerformManager implements IPerformManager
 		return ordered;
 	}
 
-	private static void addAttributeChildren(IModelCache ctx, Attribute attribute, Set<Attribute> seen, List<Action> ordered)
+	private static void addAttributeChildren(IModelCache ctx, Attribute attribute, Set<Attribute> seen, List<Action> ordered, Stack<IAttributeFilter> filters)
 	throws CoreException
 	{
 		if(attribute instanceof ActionArtifact)
@@ -328,8 +330,20 @@ public class PerformManager implements IPerformManager
 		{
 			seen.add(attribute);
 			CSpec cspec = attribute.getCSpec();
-			for(Prerequisite preq : attribute.getPrerequisites())
-				addAttributeChildren(ctx, preq.getReferencedAttribute(cspec, ctx), seen, ordered);
+			for(Prerequisite preq : attribute.getPrerequisites(filters))
+			{
+				Attribute refAttr = preq.getReferencedAttribute(cspec, ctx);
+				if(preq.isFilter())
+				{
+					if(filters == null)
+						filters = new Stack<IAttributeFilter>();
+					filters.push(preq);
+					addAttributeChildren(ctx, refAttr, seen, ordered, filters);
+					filters.pop();
+				}
+				else
+					addAttributeChildren(ctx, refAttr, seen, ordered, filters);
+			}
 			if(attribute instanceof Action)
 				ordered.add((Action)attribute);
 		}

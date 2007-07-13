@@ -504,6 +504,22 @@
 			</annotation>
 		</attribute>
 		<attribute
+			name="excludePattern"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>A regular expression controlling exclusion of component attributes</documentation>
+			</annotation>
+		</attribute>
+		<attribute
+			name="includePattern"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>A regular expression controlling inclusion of component attributes</documentation>
+			</annotation>
+		</attribute>
+		<attribute
 			name="contributor"
 			type="boolean"
 			use="optional">

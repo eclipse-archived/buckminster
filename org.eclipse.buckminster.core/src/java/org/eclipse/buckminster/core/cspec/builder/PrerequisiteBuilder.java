@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 
 /**
@@ -14,11 +16,13 @@ import org.eclipse.buckminster.core.cspec.model.Prerequisite;
  */
 public class PrerequisiteBuilder extends CSpecElementBuilder
 {
-	private final AttributeBuilder m_attributeBuilder;
-
 	private String m_alias;
+
+	private final AttributeBuilder m_attributeBuilder;
 	private String m_component;
 	private boolean m_contributor = true;
+	private Pattern m_excludePattern;
+	private Pattern m_includePattern;
 	private boolean m_optional = false;
 
 	PrerequisiteBuilder(AttributeBuilder attributeBuilder)
@@ -35,6 +39,13 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		m_component = null;
 		m_contributor = true;
 		m_optional = false;
+		m_excludePattern = null;
+		m_includePattern = null;
+	}
+
+	public Prerequisite createPrerequisite()
+	{
+		return new Prerequisite(this);
 	}
 
 	public String getAlias()
@@ -52,19 +63,14 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		return m_component;
 	}
 
-	public boolean isOptional()
+	public Pattern getExcludePattern()
 	{
-		return m_optional;
+		return m_excludePattern;
 	}
 
-	public boolean isContributor()
+	public Pattern getIncludePattern()
 	{
-		return m_contributor;
-	}
-
-	public Prerequisite createPrerequisite()
-	{
-		return new Prerequisite(m_component, this.getName(), m_alias, m_optional, m_contributor);
+		return m_includePattern;
 	}
 
 	public void initFrom(Prerequisite prerequisite)
@@ -74,6 +80,18 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		m_component = prerequisite.getComponentName();
 		m_optional = prerequisite.isOptional();
 		m_contributor = prerequisite.isContributor();
+		m_excludePattern = prerequisite.getExcludePattern();
+		m_includePattern = prerequisite.getIncludePattern();
+	}
+
+	public boolean isContributor()
+	{
+		return m_contributor;
+	}
+
+	public boolean isOptional()
+	{
+		return m_optional;
 	}
 
 	public void setAlias(String alias)
@@ -89,6 +107,16 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 	public void setContributor(boolean contributor)
 	{
 		m_contributor = contributor;
+	}
+
+	public void setExcludePattern(Pattern excludePattern)
+	{
+		m_excludePattern = excludePattern;
+	}
+
+	public void setIncludePattern(Pattern includePattern)
+	{
+		m_includePattern = includePattern;
 	}
 
 	public void setOptional(boolean optional)

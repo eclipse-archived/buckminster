@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
@@ -114,9 +115,32 @@ public class Group extends Attribute
 	}
 
 	@Override
-	public List<Prerequisite> getPrerequisites()
+	public List<Prerequisite> getPrerequisites(Stack<IAttributeFilter> filters)
 	{
-		return m_prerequisites;
+		if(filters == null || filters.size() == 0 || m_prerequisites.size() == 0)
+			return m_prerequisites;
+
+		ArrayList<Prerequisite> matched = new ArrayList<Prerequisite>(m_prerequisites.size());
+		for(Prerequisite pq : m_prerequisites)
+		{
+			String cname = pq.getComponentName();
+			if(cname == null)
+				cname = getCSpec().getName();
+			String attr = pq.getAttribute();
+
+			boolean isMatch = false;
+			for(IAttributeFilter filter : filters)
+			{
+				if(filter.isMatch(cname, attr))
+				{
+					isMatch = true;
+					break;
+				}
+			}
+			if(isMatch)
+				matched.add(pq);
+		}
+		return matched.size() == m_prerequisites.size() ? m_prerequisites : matched;
 	}
 
 	@Override
@@ -166,7 +190,7 @@ public class Group extends Attribute
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local)
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
 			throws CoreException
 	{
 		IPath prereqRebase = getPrerequisiteRebase();
@@ -179,12 +203,23 @@ public class Group extends Attribute
 
 		CSpec cspec = getCSpec();
 		ArrayList<PathGroup> bld = new ArrayList<PathGroup>();
-		for(Prerequisite pr : getPrerequisites())
+		for(Prerequisite pr : getPrerequisites(filters))
 		{
 			if(!pr.isContributor())
 				continue;
 
-			PathGroup[] pathGroups = pr.getReferencedAttribute(cspec, ctx).getPathGroups(ctx);
+			PathGroup[] pathGroups;
+			if(pr.isFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(pr);
+				pathGroups = pr.getReferencedAttribute(cspec, ctx).getPathGroups(ctx, filters);
+				filters.pop();
+			}
+			else
+				pathGroups = pr.getReferencedAttribute(cspec, ctx).getPathGroups(ctx, filters);
+
 			if(!pr.isExternal() && prereqRebase != null)
 				pathGroups = rebase(prereqRebase, pathGroups);
 

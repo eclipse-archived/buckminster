@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -110,7 +111,7 @@ public class Artifact extends Attribute
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local)
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
 			throws CoreException
 	{
 		int idx = m_paths.size();
