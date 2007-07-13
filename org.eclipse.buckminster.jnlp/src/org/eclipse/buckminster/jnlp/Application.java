@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.window.Window.IExceptionHandler;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Display;
@@ -173,6 +175,37 @@ public class Application implements IApplication
 				//
 				InstallWizardDialog dialog = new InstallWizardDialog(new InstallWizard(properties));
 				dialog.create();
+				
+				// General exception handler
+				Window.setExceptionHandler(new IExceptionHandler(){
+
+					public void handleException(Throwable t)
+					{
+						if (t instanceof ThreadDeath) {
+							// Don't catch ThreadDeath as this is a normal occurrence when
+							// the thread dies
+							throw (ThreadDeath) t;
+						}
+
+						IStatus status = BuckminsterException.wrap(t.getCause() != null ? t.getCause() : t).getStatus();
+						CorePlugin.logWarningsAndErrors(status);
+
+						if(t instanceof JNLPException)
+						{
+							JNLPException je = (JNLPException)t;
+							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
+									je.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
+									MaterializationConstants.ERROR_HELP_URL, je.getErrorCode(), status);
+						} else
+						{
+							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
+									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
+									MaterializationConstants.ERROR_HELP_URL, ERROR_CODE_RUNTIME_EXCEPTION, status);
+						}
+
+						// Try to keep running.
+					}});
+				
 				final Shell shell = dialog.getShell();
 				shell.setSize(WIZARD_WIDTH, WIZARD_HEIGHT);
 
