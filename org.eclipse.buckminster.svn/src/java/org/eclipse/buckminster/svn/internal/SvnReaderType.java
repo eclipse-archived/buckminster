@@ -16,7 +16,7 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.AbstractReaderType;
+import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -37,7 +37,7 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
 /**
  * @author Thomas Hallgren
  */
-public class SvnReaderType extends AbstractReaderType
+public class SvnReaderType extends CatalogReaderType
 {
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{

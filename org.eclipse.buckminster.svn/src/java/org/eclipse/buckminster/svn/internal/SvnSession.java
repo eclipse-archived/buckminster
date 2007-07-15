@@ -490,14 +490,18 @@ public class SvnSession
 					break;
 			}
 			m_urlLeadIn = urlLeadIn;
-
-			if(bestMatch == null)
-				m_clientAdapter = svnPlugin.createSVNClient();
-			else
+			synchronized(svnPlugin)
 			{
-				m_clientAdapter = bestMatch.getSVNClient();
-				m_clientAdapter.removeNotifyListener(NotificationListener.getInstance());
+				if(bestMatch == null)
+					m_clientAdapter = svnPlugin.createSVNClient();
+				else
+				{
+					m_clientAdapter = bestMatch.getSVNClient();
+					m_clientAdapter.removeNotifyListener(NotificationListener.getInstance());
+				}
 			}
+			if(m_clientAdapter == null)
+				throw BuckminsterException.fromMessage("Unable to obtain SVN client");
 
 			// Add the UnattendedPromptUserPassword callback only in case
 			// the authentication data (at least the username) is actually
