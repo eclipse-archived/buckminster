@@ -57,7 +57,7 @@
             </cs:actorProperties>
             <cs:properties>
             	<cs:property key="site.name" value="buckminster.archivedsite"/>
-            	<cs:property key="site.extra.suffix" value="-incubation"/>
+            	<cs:property key="site.extra.suffix" value="_incubation"/>
             </cs:properties>
             <cs:prerequisites>
             	<cs:attribute name="site.rootFiles" alias="rootFiles"/>
