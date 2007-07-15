@@ -42,9 +42,9 @@ import org.eclipse.core.runtime.Path;
 public class WorkspaceMaterializer extends FileSystemMaterializer
 {
 	@Override
-	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
+	public IPath getDefaultInstallRoot(MaterializationContext context, boolean forFile) throws CoreException
 	{
-		return ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		return forFile ? CorePlugin.getDefault().getBuckminsterProjectLocation() : ResourcesPlugin.getWorkspace().getRoot().getLocation();
 	}
 
 	@Override
@@ -77,14 +77,14 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			{
 				throw BuckminsterException.wrap(e);
 			}
+			finally
+			{
+				monitor.done();
+			}
 		}
 		catch(CoreException e)
 		{
 			context.addException(e.getStatus());
-		}
-		finally
-		{
-			monitor.done();
 		}
 	}
 

@@ -11,7 +11,7 @@ package org.eclipse.buckminster.core.materializer;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -52,11 +52,11 @@ public class MaterializerJob extends Job
 		try
 		{
 			m_materializer.materialize(m_resolutions, m_context, monitor);
-			return Status.OK_STATUS;
 		}
-		catch(CoreException e)
+		catch(Exception e)
 		{
-			return e.getStatus();
+			m_context.addException(BuckminsterException.wrap(e).getStatus());
 		}
+		return Status.OK_STATUS;
 	}
 }

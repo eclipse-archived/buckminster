@@ -111,16 +111,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return CorePlugin.getDefault().getReaderType(destIsFile ? URL : URL_CATALOG);
 	}
 
-	public IPath getMaterializationLocation(Resolution cr, MaterializationContext context, boolean[] optional)
+	public IPath getRootInstallLocation(Resolution cr, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
 		optional[0] = true;
 		return null;
-	}
-
-	public boolean isFileReader()
-	{
-		return false;
 	}
 
 	public String getRemotePath(String repositoryLocation) throws CoreException

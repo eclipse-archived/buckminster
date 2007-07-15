@@ -33,7 +33,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
-import org.eclipse.buckminster.core.reader.AbstractReaderType;
+import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -75,7 +75,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
-public class EclipseImportReaderType extends AbstractReaderType implements IPDEConstants
+public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	private static final UUID CACHE_KEY_IMPORT_CACHE = UUID.randomUUID();
 

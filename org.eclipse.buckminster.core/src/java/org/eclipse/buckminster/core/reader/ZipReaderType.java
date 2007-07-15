@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author thhal
  */
-public class ZipReaderType extends AbstractReaderType
+public class ZipReaderType extends CatalogReaderType
 {
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{

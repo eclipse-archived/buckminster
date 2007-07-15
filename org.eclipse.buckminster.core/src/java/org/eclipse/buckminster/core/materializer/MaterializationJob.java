@@ -176,6 +176,13 @@ public class MaterializationJob extends Job
 		IJobChangeListener listener = new JobChangeAdapter()
 		{
 			@Override
+			public void aboutToRun(IJobChangeEvent event)
+			{
+				if(!m_context.isContinueOnError() && m_context.getStatus().getSeverity() == IStatus.ERROR)
+					cancel();
+			}
+
+			@Override
 			public void done(IJobChangeEvent event)
 			{
 				MaterializerJob mjob = allJobs.poll();
@@ -213,6 +220,10 @@ public class MaterializationJob extends Job
 		{
 			return;
 		}
+
+		IStatus status = m_context.getStatus();
+		if(!m_context.isContinueOnError() && status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
 
 		bom.store();
 		InstallerJob installerJob = new InstallerJob(m_context);

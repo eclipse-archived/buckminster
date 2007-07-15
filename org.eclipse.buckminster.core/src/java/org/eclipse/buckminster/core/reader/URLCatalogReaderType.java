@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005
+ * Copyright (c) 2004 - 2007
  * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
  * Pontus Rydin, Nils Unden, Peer Torngren
  * The code, documentation and other materials contained herein have been
@@ -14,27 +14,41 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
-public class URLCatalogReaderType extends URLReaderType
+public class URLCatalogReaderType extends CatalogReaderType
 {
 	/**
 	 * Pattern that scans for href's that are relative and don't start with ?
@@ -50,23 +64,76 @@ public class URLCatalogReaderType extends URLReaderType
 	private static final Pattern s_ftpPattern = Pattern.compile(
 			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))",
 			Pattern.CASE_INSENSITIVE);
+	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
+
+	public static ProviderMatch getCurrentProviderMatch()
+	{
+		return s_currentProviderMatch.get();
+	}
+
+	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
+	{
+		String urlString = url.toString();
+		ComponentRequest rq = new ComponentRequest(urlString, null, null);
+		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+		queryBld.setRootRequest(rq);
+		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
+		NodeQuery nq = new NodeQuery(context, rq, null);
+
+		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
+		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, null, new Format(urlString), null, false, false, null);
+		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
+		return provider.getReaderType().getReader(pm, monitor);
+	}
+
+	@Override
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
+	{
+		try
+		{
+			return URLUtils.normalizeToURL(repositoryLocator);
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public IReaderType getLocalReaderType()
+	{
+		return this;
+	}
+
+	public URI getURI(Provider provider, Map<String,String> properties) throws CoreException
+	{
+		return getURI(provider.getURI(properties));
+	}
+
+	public URI getURI(ProviderMatch providerMatch) throws CoreException
+	{
+		return getURI(providerMatch.getRepositoryURI());
+	}
+
+	public URI getURI(String repository) throws CoreException
+	{
+		return URLUtils.normalizeToURI(repository, true);
+	}
+
+	@Override
+	public String getRemotePath(String repositoryLocation) throws CoreException
+	{
+		return getURI(repositoryLocation).getPath();
+	}
 
 	public static IComponentReader getReader(URL catalog, IProgressMonitor monitor) throws CoreException
 	{
 		return getDirectReader(catalog, URL_CATALOG, monitor);
 	}
 
-	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new URLCatalogReader(this, providerMatch);
-	}
-
-	@Override
-	public boolean isFileReader()
-	{
-		return false;
 	}
 
 	public static IPath[] list(final URL url, IProgressMonitor monitor)

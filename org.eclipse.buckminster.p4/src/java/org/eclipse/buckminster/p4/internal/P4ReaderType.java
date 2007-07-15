@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
-import org.eclipse.buckminster.core.reader.AbstractReaderType;
+import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -39,7 +39,7 @@ import org.eclipse.core.runtime.Path;
 /**
  * @author thhal
  */
-public class P4ReaderType extends AbstractReaderType
+public class P4ReaderType extends CatalogReaderType
 {
 	private final Map<String, ClientSpec> m_clients = new TimedHashMap<String, ClientSpec>(20000, null);
 
@@ -57,7 +57,7 @@ public class P4ReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
+	public IPath getRootInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
 		Map<String,String> properties = context.getProperties(resolution.getRequest());
@@ -68,29 +68,12 @@ public class P4ReaderType extends AbstractReaderType
 		{
 			localRoot = ExpandingProperties.expand(properties, localRoot, 0);
 			root = new Path(localRoot);
+			if(!root.isAbsolute())
+				root = null;
+			else
+				optional[0] = false;
 		}
-		IPath depotPath = depotLocation.getDepotPath();
-		IPath result = depotLocation.getMappingForDepot(depotPath);
-
-		if(result == null)
-		{
-			String branch = getNonDefaultBranchName(resolution);
-
-			result = new Path(resolution.getName());
-			if(branch != null)
-				result = result.append(branch);
-		}
-
-		if(root != null)
-			result = root.append(result);
-
-		if(!result.isAbsolute())
-			result = null;
-		else
-		{
-			optional[0] = false;
-		}
-		return result;
+		return root;
 	}
 
 	@Override

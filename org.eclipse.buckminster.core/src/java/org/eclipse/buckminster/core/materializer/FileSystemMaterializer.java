@@ -27,16 +27,12 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.osgi.service.datalocation.Location;
 
 /**
  * Materializes each component to the local filesystem.
@@ -45,33 +41,10 @@ import org.eclipse.osgi.service.datalocation.Location;
  */
 public class FileSystemMaterializer extends AbstractMaterializer
 {
-	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
+	@Override
+	public String getMaterializerRootDir()
 	{
-		if(Platform.OS_WIN32.equals(Platform.getOS()))
-		{
-			File userDir = null;
-			String appDataEnv = System.getenv("APPDATA");
-			if(appDataEnv != null)
-			{
-				userDir = new File(appDataEnv + "\\buckminster");
-				return Path.fromOSString(new File(userDir, "downloads").toString());
-			}
-		}
-
-		Location userLocation = Platform.getUserLocation();
-		if(userLocation != null)
-		{
-			File userDir = FileUtils.getFile(userLocation.getURL());
-			if(userDir != null)
-			{
-				if(Platform.OS_WIN32.equals(Platform.getOS()))
-					userDir = new File(userDir, "Application Data\\buckminster");
-				else
-					userDir = new File(userDir, "buckminster");
-				return Path.fromOSString(new File(userDir, "downloads").toString());
-			}
-		}
-		throw BuckminsterException.fromMessage("Unable to determine users home directory");
+		return "downloads";
 	}
 
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor) throws CoreException

@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
@@ -22,6 +21,8 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
@@ -32,23 +33,17 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class URLReaderType extends AbstractReaderType
 {
-	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
-
 	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
 	{
 		return getDirectReader(externalFile, IReaderType.URL, monitor);
-	}
-
-	public static ProviderMatch getCurrentProviderMatch()
-	{
-		return s_currentProviderMatch.get();
 	}
 
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
@@ -86,11 +81,9 @@ public class URLReaderType extends AbstractReaderType
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
-		ProviderMatch oldMatch = s_currentProviderMatch.get();
-		s_currentProviderMatch.set(providerMatch);
 		try
 		{
-			URLFileReader reader = new URLFileReader(this, providerMatch);
+			URLFileReader reader = new URLFileReader(this, providerMatch, getURI(providerMatch));
 			if(!reader.exists(monitor))
 				throw new FileNotFoundException(reader.getURL().toString());
 			return reader;
@@ -99,10 +92,16 @@ public class URLReaderType extends AbstractReaderType
 		{
 			throw BuckminsterException.wrap(e);
 		}
-		finally
-		{
-			s_currentProviderMatch.set(oldMatch);
-		}
+	}
+
+	public IPath getRelativeInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
+	throws CoreException
+	{
+		IPath relativeLocation = context.processUnpack(resolution, null, null);
+		int segCount = relativeLocation.segmentCount();
+		if(segCount > 1)
+			relativeLocation = relativeLocation.removeFirstSegments(segCount - 1);
+		return relativeLocation;
 	}
 
 	public URI getURI(Provider provider, Map<String,String> properties) throws CoreException
@@ -117,57 +116,9 @@ public class URLReaderType extends AbstractReaderType
 
 	public URI getURI(String repository) throws CoreException
 	{
-		URI uri;
-		try
-		{
-			uri = new URI(repository);
-		}
-		catch(URISyntaxException e)
-		{
-			if(repository.indexOf(' ') < 0)
-				throw BuckminsterException.wrap(e);
-
-			try
-			{
-				uri = new URI(repository.replaceAll("\\s", "%20"));
-			}
-			catch(URISyntaxException e2)
-			{
-				throw BuckminsterException.wrap(e2);
-			}
-		}
-
-		String scheme = uri.getScheme();
-		String auth = uri.getAuthority();
-		String path = uri.getPath();
-		String query = uri.getQuery();
-		String fragment = uri.getFragment();
-		boolean change = false;
-		if(!(isFileReader() || path.endsWith("/")))
-		{
-			path += "/";
-			change = true;
-		}
-
-		if(scheme == null)
-		{
-			scheme = "file";
-			change = true;
-		}
-
-		try
-		{
-			if(change)
-				uri = new URI(scheme, auth, path, query, fragment);
-			return uri;
-		}
-		catch(URISyntaxException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		return URLUtils.normalizeToURI(repository, false);
 	}
 
-	@Override
 	public boolean isFileReader()
 	{
 		return true;

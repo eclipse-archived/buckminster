@@ -41,10 +41,10 @@ public class URLFileReader extends AbstractReader implements IFileReader
 	private final URI m_uri;
 	private FileInfoBuilder m_fileInfo;
 
-	protected URLFileReader(URLReaderType readerType, ProviderMatch rInfo) throws CoreException
+	protected URLFileReader(IReaderType readerType, ProviderMatch rInfo, URI uri) throws CoreException
 	{
 		super(readerType, rInfo);
-		m_uri = readerType.getURI(rInfo);
+		m_uri = uri;
 		m_fileInfo = null;
 	}
 

@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.AbstractReaderType;
+import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -40,7 +40,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author thhal
  */
 @SuppressWarnings("restriction")
-public class EclipsePlatformReaderType extends AbstractReaderType
+public class EclipsePlatformReaderType extends CatalogReaderType
 {
 	@Override
 	public IPath getFixedLocation(Resolution cr)

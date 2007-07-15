@@ -45,7 +45,7 @@ public class MavenReader extends URLFileReader
 
 	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException
 	{
-		super(readerType, rInfo);
+		super(readerType, rInfo, readerType.getURI(rInfo));
 		m_mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(), rInfo.getNodeQuery().getComponentRequest());
 	}
 

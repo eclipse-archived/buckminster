@@ -31,7 +31,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
-public class SiteFeatureReaderType extends AbstractReaderType
+public class SiteFeatureReaderType extends CatalogReaderType
 {
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{

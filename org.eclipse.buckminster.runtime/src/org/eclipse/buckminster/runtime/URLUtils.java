@@ -11,9 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.buckminster.runtime.internal.DefaultCertificateTrustInquiry;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -131,6 +134,55 @@ public abstract class URLUtils
 				//
 				throw e;
 			}
+		}
+	}
+
+	public static URI normalizeToURI(String repository, boolean asFolder) throws CoreException
+	{
+		URI uri;
+		try
+		{
+			uri = new URI(repository);
+		}
+		catch(URISyntaxException e)
+		{
+			if(repository.indexOf(' ') < 0)
+				throw BuckminsterException.wrap(e);
+
+			try
+			{
+				uri = new URI(repository.replaceAll("\\s", "%20"));
+			}
+			catch(URISyntaxException e2)
+			{
+				throw BuckminsterException.wrap(e2);
+			}
+		}
+
+		boolean change = false;
+		String path = uri.getPath();
+		if(asFolder && !path.endsWith("/"))
+		{
+			path += "/";
+			change = true;
+		}
+
+		String scheme = uri.getScheme();
+		if(scheme == null)
+		{
+			scheme = "file";
+			change = true;
+		}
+
+		try
+		{
+			if(change)
+				uri = new URI(scheme, uri.getAuthority(), path, uri.getQuery(), uri.getFragment());
+			return uri;
+		}
+		catch(URISyntaxException e)
+		{
+			throw BuckminsterException.wrap(e);
 		}
 	}
 

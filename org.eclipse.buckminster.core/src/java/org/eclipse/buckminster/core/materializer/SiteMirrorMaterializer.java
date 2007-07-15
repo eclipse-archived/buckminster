@@ -40,9 +40,10 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
 @SuppressWarnings("restriction")
 public class SiteMirrorMaterializer extends AbstractMaterializer
 {
-	public IPath getDefaultInstallRoot(MaterializationContext context) throws CoreException
+	@Override
+	public String getMaterializerRootDir()
 	{
-		return context.getMaterializationSpec().getInstallLocation();
+		return "siteMirrors";
 	}
 
 	@SuppressWarnings("serial")

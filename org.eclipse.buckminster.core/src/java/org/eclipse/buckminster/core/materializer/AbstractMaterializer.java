@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.materializer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,18 +18,23 @@ import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.service.datalocation.Location;
 
 /**
  * @author Thomas Hallgren
@@ -59,6 +65,37 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		//
 		return true;
 	}
+
+	public IPath getDefaultInstallRoot(MaterializationContext context, boolean forFile) throws CoreException
+	{
+		if(Platform.OS_WIN32.equals(Platform.getOS()))
+		{
+			File userDir = null;
+			String appDataEnv = System.getenv("APPDATA");
+			if(appDataEnv != null)
+			{
+				userDir = new File(appDataEnv + "\\buckminster");
+				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
+			}
+		}
+
+		Location userLocation = Platform.getUserLocation();
+		if(userLocation != null)
+		{
+			File userDir = FileUtils.getFile(userLocation.getURL());
+			if(userDir != null)
+			{
+				if(Platform.OS_WIN32.equals(Platform.getOS()))
+					userDir = new File(userDir, "Application Data\\buckminster");
+				else
+					userDir = new File(userDir, "buckminster");
+				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
+			}
+		}
+		throw BuckminsterException.fromMessage("Unable to determine users home directory");
+	}
+
+	public abstract String getMaterializerRootDir();
 
 	public void installRecursive(DepNode node, MaterializationContext context,
 			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException

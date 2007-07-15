@@ -836,6 +836,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 					materializer = null;
 				wizard.getMaterializationSpec().setMaterializer(materializer);
 				wizard.invalidateMaterializationContext();
+				getComponentTable().setInput(wizard.getBOM().findAll(null));
 				setSelectedComponentValues(getSelectedComponent());
 			}
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006
+ * Copyright (c) 2004 - 2007
  * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
  * Pontus Rydin, Nils Unden, Peer Torngren
  * The code, documentation and other materials contained herein have been
@@ -29,10 +29,8 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.core.reader.URLReaderType;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -42,7 +40,7 @@ import org.eclipse.core.runtime.Path;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class Handler extends AbstractURLStreamHandlerService 
 {
@@ -88,21 +86,13 @@ public class Handler extends AbstractURLStreamHandlerService
 
 				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, null, new Format(parentUri.toString()), null, false, false, null);
 				IReaderType p4ReaderType = plugin.getReaderType("p4");
-				ProviderMatch ri = URLReaderType.getCurrentProviderMatch();
 				IProgressMonitor nullMon = new NullProgressMonitor();
-				if(ri == null)
-				{
-					ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
-					cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
-					m_reader = (ICatalogReader)p4ReaderType.getReader(
-						provider, plugin.getComponentType(IComponentType.UNKNOWN),
-						new ResolutionContext(cqBld.createComponentQuery()).getRootNodeQuery(),
-						VersionMatch.DEFAULT, nullMon);
-				}
-				else
-				{
-					m_reader = (ICatalogReader)p4ReaderType.getReader(provider, ri.getComponentType(), ri.getNodeQuery(), ri.getVersionMatch(), nullMon);
-				}
+				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
+				cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
+				m_reader = (ICatalogReader)p4ReaderType.getReader(
+					provider, plugin.getComponentType(IComponentType.UNKNOWN),
+					new ResolutionContext(cqBld.createComponentQuery()).getRootNodeQuery(),
+					VersionMatch.DEFAULT, nullMon);
 			}
 			catch(URISyntaxException e)
 			{

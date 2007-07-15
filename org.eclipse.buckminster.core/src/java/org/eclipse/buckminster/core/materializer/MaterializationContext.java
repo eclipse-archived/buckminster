@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -74,18 +75,35 @@ public class MaterializationContext extends RMContext
 		}
 	}
 
-	public IPath getDefaultInstallLocation(Resolution resolution, boolean[] optional) throws CoreException
-	{		
-		// Consult the reader type.
-		//
-		IReaderType rd = resolution.getProvider().getReaderType();
-		IPath location = rd.getMaterializationLocation(resolution, this, optional);
-		if(location != null)
-			return location;
+	/**
+	 * Returns the install location for the resolution as specified in the {@link MaterializationSpec}
+	 * or the default location if it is not specified.
+	 * @param resolution The resolution for which we want the install location
+	 * @return An absolute path in the local file system.
+	 * @throws CoreException
+	 */
+	public IPath getInstallLocation(Resolution resolution) throws CoreException
+	{
+		boolean[] optional = new boolean[] { true };
+		IPath relativeLocation = getRelativeInstallLocation(resolution, optional);
+		if(relativeLocation.isAbsolute())
+		{
+			if(!optional[0])
+				return relativeLocation;
 
-		// Consult the component type to get a relative location
-		//
-		return getDefaultRootInstallLocation(resolution).append(getDefaultRelativeInstallLocation(resolution));
+			IPath rootLocation = getRootInstallLocation(resolution, !relativeLocation.hasTrailingSeparator(), optional);
+			if(optional[0] || rootLocation.isPrefixOf(relativeLocation))
+				return relativeLocation;
+
+			throw BuckminsterException.fromMessage(String.format(
+				"Required root install %s conflicts with absolute path %s", rootLocation, relativeLocation));
+		}
+		return getRootInstallLocation(resolution, !relativeLocation.hasTrailingSeparator(), optional).append(relativeLocation);
+	}
+
+	public MaterializationSpec getMaterializationSpec()
+	{
+		return m_materializationSpec;
 	}
 
 	public int getMaxParallelJobs()
@@ -96,7 +114,52 @@ public class MaterializationContext extends RMContext
 		return maxParallelJobs;
 	}
 
-	IPath processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
+	@Override
+	public Map<String, String> getProperties(ComponentName cName)
+	{
+		Map<String,String> p = super.getProperties(cName);
+		MaterializationNode node = m_materializationSpec.getMatchingNode(cName);
+		if(node != null)
+			p.putAll(node.getProperties());
+		return p;
+	}
+
+	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
+	{
+		IPath nodeLocation = null;
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		if(node != null)
+		{
+			nodeLocation = node.getWorkspaceLocation();
+			if(nodeLocation != null)
+			{
+				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation.toOSString(), 0));
+				if(nodeLocation.isAbsolute())
+					return nodeLocation;
+			}
+		}
+
+		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
+		if(rootLocation == null)
+		{
+			if(nodeLocation == null)
+				return getInstallLocation(resolution);
+
+			rootLocation = m_materializationSpec.getInstallLocation();
+			if(rootLocation == null)
+				rootLocation = getRootInstallLocation(resolution, false, new boolean[1]);
+		}
+
+		rootLocation = Path.fromOSString(ExpandingProperties.expand(this, rootLocation.toOSString(), 0));	
+		rootLocation = rootLocation.makeAbsolute();
+
+		if(nodeLocation != null)
+			rootLocation = rootLocation.append(nodeLocation);
+		return rootLocation;
+	}
+
+	public IPath processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
 	throws CoreException
 	{
 		ComponentName cName = resolution.getComponentIdentifier();
@@ -211,147 +274,51 @@ public class MaterializationContext extends RMContext
 		return new Path(name).addTrailingSeparator();
 	}
 
-	public IPath getDefaultRootInstallLocation(Resolution resolution) throws CoreException
-	{		
-		return getMaterializationSpec().getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this);
-	}
-
-	/**
-	 * Obtains the default relative install location for a given resolution. The method consults the component type and
-	 * then appends the name of the component. A trailing separator will be appended if the expected artifact is a
-	 * directory.
-	 * 
-	 * @param resolution
-	 *            The resolution for which we want a relative install location
-	 * @return A relative path.
-	 * @throws CoreException
-	 */
-	public IPath getDefaultRelativeInstallLocation(Resolution resolution) throws CoreException
+	private IPath getRelativeInstallLocation(Resolution resolution, boolean[] optional) throws CoreException
 	{
-		IPath relativeLocation = null;
-		ComponentName cName = resolution.getRequest();
-		IComponentType cType = cName.getComponentType();
-		if(cType != null)
-			relativeLocation = cType.getRelativeLocation();
-
-		if(resolution.getProvider().getReaderType().isFileReader())
+		optional[0] = true;
+		IReaderType rd = resolution.getProvider().getReaderType();
+		IPath location = rd.getRelativeInstallLocation(resolution, this, optional);
+		if(optional[0])
 		{
-			if(relativeLocation == null)
-				relativeLocation = Path.EMPTY;
+			ComponentIdentifier ci = resolution.getComponentIdentifier();
+			MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+			IPath specRelative = null;
+			if(node != null)
+				specRelative = node.getInstallLocation();
 
-			IPath remotePath = processUnpack(resolution, null, null);
-			relativeLocation = relativeLocation.append(remotePath.lastSegment());
-			if(remotePath.hasTrailingSeparator())
-				//
-				// Will expand into a folder
-				//
-				relativeLocation = relativeLocation.addTrailingSeparator();
+			if(!location.isAbsolute() && specRelative == null)
+			{
+				ComponentName cName = resolution.getRequest();
+				IComponentType cType = cName.getComponentType();
+				if(cType != null)
+				{
+					specRelative = cType.getRelativeLocation();
+					if(specRelative != null)
+						specRelative = specRelative.append(location);
+				}
+			}
+			if(specRelative != null)
+				location = specRelative;
 		}
-		else
-		{
-			IPath leaf = Path.fromPortableString(cName.getName());
-			if(relativeLocation == null)
-				relativeLocation = leaf;
-			else
-				relativeLocation = relativeLocation.append(leaf);
-			relativeLocation = relativeLocation.addTrailingSeparator();
-		}
-		return relativeLocation;
-	}
-
-	/**
-	 * Returns the install location for the resolution as specified in the {@link MaterializationSpec}
-	 * or the default location if it is not specified.
-	 * @param resolution The resolution for which we want the install location
-	 * @return An absolute path in the local file system.
-	 * @throws CoreException
-	 */
-	public IPath getInstallLocation(Resolution resolution) throws CoreException
-	{
-		boolean[] optional = new boolean[] { true };
-		IPath location = getDefaultInstallLocation(resolution, optional);
-		if(!optional[0])
-			return location;
-
-		IPath rootLocation = m_materializationSpec.getInstallLocation();
-		IPath nodeLocation = null;
-
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-		if(node != null)
-			nodeLocation = node.getInstallLocation();
-
-		if(nodeLocation == null)
-		{
-			if(rootLocation == null)
-				return location;
-			nodeLocation = getDefaultRelativeInstallLocation(resolution);
-		}
-
-		nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation.toOSString(), 0));
-		if(nodeLocation.isAbsolute())
-			return nodeLocation;
-
-		if(rootLocation == null)
-			rootLocation = getDefaultRootInstallLocation(resolution);
-
-		rootLocation = Path.fromOSString(ExpandingProperties.expand(this, rootLocation.toOSString(), 0));	
-		rootLocation = rootLocation.makeAbsolute();
-		location = rootLocation.append(nodeLocation);
-
-		if(!resolution.getProvider().getReaderType().isFileReader())
-			location = location.addTrailingSeparator();
-
 		return location;
 	}
 
-	public MaterializationSpec getMaterializationSpec()
-	{
-		return m_materializationSpec;
-	}
-
-	@Override
-	public Map<String, String> getProperties(ComponentName cName)
-	{
-		Map<String,String> p = super.getProperties(cName);
-		MaterializationNode node = m_materializationSpec.getMatchingNode(cName);
-		if(node != null)
-			p.putAll(node.getProperties());
-		return p;
-	}
-
-	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
-	{
-		IPath nodeLocation = null;
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-		if(node != null)
+	private IPath getRootInstallLocation(Resolution resolution, boolean forFiles, boolean[] optional) throws CoreException
+	{		
+		// Consult the reader type.
+		//
+		optional[0] = true;
+		IReaderType rd = resolution.getProvider().getReaderType();
+		IPath location = rd.getRootInstallLocation(resolution, this, optional);
+		if(optional[0])
 		{
-			nodeLocation = node.getWorkspaceLocation();
-			if(nodeLocation != null)
-			{
-				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation.toOSString(), 0));
-				if(nodeLocation.isAbsolute())
-					return nodeLocation;
-			}
+			IPath specRoot = m_materializationSpec.getInstallLocation();
+			if(specRoot != null)
+				location = specRoot;
+			else
+				location = m_materializationSpec.getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this, forFiles);
 		}
-
-		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
-		if(rootLocation == null)
-		{
-			if(nodeLocation == null)
-				return getInstallLocation(resolution);
-
-			rootLocation = m_materializationSpec.getInstallLocation();
-			if(rootLocation == null)
-				rootLocation = getDefaultRootInstallLocation(resolution);
-		}
-
-		rootLocation = Path.fromOSString(ExpandingProperties.expand(this, rootLocation.toOSString(), 0));	
-		rootLocation = rootLocation.makeAbsolute();
-
-		if(nodeLocation != null)
-			rootLocation = rootLocation.append(nodeLocation);
-		return rootLocation;
+		return location;
 	}
 }

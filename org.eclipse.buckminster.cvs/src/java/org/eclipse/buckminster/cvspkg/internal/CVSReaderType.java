@@ -23,7 +23,7 @@ import java.util.Date;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.AbstractReaderType;
+import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -65,10 +65,10 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSReaderType extends AbstractReaderType
+public class CVSReaderType extends CatalogReaderType
 {
 	public static final String LOCAL_LINE_END = System.getProperty("line.separator");
 

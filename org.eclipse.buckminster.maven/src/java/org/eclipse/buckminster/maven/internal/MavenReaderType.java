@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -126,7 +125,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IPath getMaterializationLocation(Resolution cr, MaterializationContext context, boolean[] optional)
+	public IPath getRelativeInstallLocation(Resolution cr, MaterializationContext context, boolean[] optional)
 	throws CoreException
 	{
 		MapEntry ga = getGroupAndArtifact(cr.getProvider(), cr.getRequest());
@@ -135,7 +134,7 @@ public class MavenReaderType extends URLCatalogReaderType
 		appendFolder(pbld, getMaterializationFolder());
 		appendPathToArtifact(pbld, ga, vs);
 		optional[0] = true;
-		return CorePlugin.getDefault().getBuckminsterProjectLocation().append(pbld.toString());
+		return Path.fromPortableString(pbld.toString());
 	}
 
 	@Override
