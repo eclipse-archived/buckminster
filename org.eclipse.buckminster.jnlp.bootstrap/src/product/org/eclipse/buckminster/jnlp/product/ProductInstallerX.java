@@ -31,7 +31,7 @@ import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
 import org.eclipse.buckminster.jnlp.bootstrap.ProgressFacade;
 
-public class ProductInstaller implements IProductInstaller
+public class ProductInstallerX implements IProductInstaller
 {
 	private static final String PACK_SUFFIX = ".pack.gz";
 

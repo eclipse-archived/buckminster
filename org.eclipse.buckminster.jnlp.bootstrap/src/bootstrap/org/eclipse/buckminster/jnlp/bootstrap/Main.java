@@ -865,10 +865,8 @@ public class Main
 				if (address instanceof InetSocketAddress)
 				{
 					InetSocketAddress iaddr = (InetSocketAddress) address;
-					args.add("-Dhttp.proxyHost");
-					args.add(iaddr.getHostName());
-					args.add("-Dhttp.proxyPort");
-					args.add("" + iaddr.getPort());
+					args.add("-Dhttp.proxyHost=\"" + iaddr.getHostName() + "\"");
+					args.add("-Dhttp.proxyPort=" + iaddr.getPort());
 				}
 			}
 		}
