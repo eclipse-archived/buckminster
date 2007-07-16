@@ -91,6 +91,8 @@ public class InstallWizard extends Wizard
 	
 	private final List<MaterializationNodeBuilder> m_newNodeBuilders = new ArrayList<MaterializationNodeBuilder>();
 	
+	private final List<MSpecChangeListener> m_mspecListeners = new ArrayList<MSpecChangeListener>();
+	
 	private final Map<String,String> m_properties;
 	
 	private final IAuthenticator m_authenticator;
@@ -425,6 +427,12 @@ public class InstallWizard extends Wizard
 				CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
 			
 			m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
+			
+			MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
+			for(MSpecChangeListener listener : m_mspecListeners)
+			{
+				listener.handleMSpecChangeEvent(event);
+			}
 		}
 		catch(IOException e)
 		{
@@ -718,6 +726,16 @@ public class InstallWizard extends Wizard
 	{
 		return new MultiStatus(
 				status.getPlugin(), status.getCode(), status.getMessage(), status.getException());
+	}
+	
+	public void addMSpecChangeListener(MSpecChangeListener listener)
+	{
+		m_mspecListeners.add(listener);
+	}
+	
+	public void removeMSpecChangeListener(MSpecChangeListener listener)
+	{
+		m_mspecListeners.remove(listener);
 	}
 }
 

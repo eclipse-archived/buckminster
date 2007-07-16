@@ -41,9 +41,6 @@ public class SimpleDownloadPage extends InstallWizardPage
 
 	private Button m_advancedSettingsButton;
 
-	// TODO remove
-	// private Label m_infoLabel;
-
 	protected SimpleDownloadPage()
 	{
 		super("SimpleDownloadLocationStep", "Select a Destination", "Select a target location for materialization.",
@@ -90,13 +87,6 @@ public class SimpleDownloadPage extends InstallWizardPage
 			}
 		});
 
-		// TODO remove
-		/*
-		 * m_locationText.addFocusListener(new FocusAdapter(){
-		 * 
-		 * @Override public void focusGained(FocusEvent e) { m_infoLabel.setText("Location"); m_infoLabel.pack(); }});
-		 */
-
 		Button browseButton = new Button(locationComposite, SWT.PUSH);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		browseButton.setText("Browse");
@@ -134,6 +124,16 @@ public class SimpleDownloadPage extends InstallWizardPage
 			}
 		});
 		setControl(pageComposite);
+		
+		getInstallWizard().addMSpecChangeListener(new MSpecChangeListener()
+		{
+			public void handleMSpecChangeEvent(MSpecChangeEvent event)
+			{
+				m_locationText.setText(event.getMSpec().getInstallLocation() == null
+						? ""
+						: event.getMSpec().getInstallLocation().removeTrailingSeparator().toOSString());
+			}
+		});
 	}
 
 	@Override

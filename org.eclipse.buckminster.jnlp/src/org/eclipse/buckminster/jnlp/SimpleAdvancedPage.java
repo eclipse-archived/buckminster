@@ -279,6 +279,16 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		});
 		
 		setControl(pageComposite);
+		
+		getInstallWizard().addMSpecChangeListener(new MSpecChangeListener()
+		{
+			public void handleMSpecChangeEvent(MSpecChangeEvent event)
+			{
+				m_conflictCombo.select(event.getMSpec().getConflictResolution() == null
+						? ConflictResolution.getDefault().ordinal()
+						: event.getMSpec().getConflictResolution().ordinal());
+			}
+		});
 	}
 
 	@Override

@@ -17,7 +17,7 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Thomas Hallgren
  */
-abstract class InstallWizardPage extends WizardPage
+abstract class InstallWizardPage extends WizardPage implements MSpecChangeListener
 {
 	private boolean m_pageCommitted = false;
 	
@@ -109,5 +109,10 @@ abstract class InstallWizardPage extends WizardPage
 	public int getOverrideDefaultButtonId()
 	{
 		return -1;
+	}
+	
+	public void handleMSpecChangeEvent (MSpecChangeEvent event)
+	{
+		// can be overriden
 	}
 }
