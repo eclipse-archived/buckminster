@@ -26,10 +26,16 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -97,6 +103,7 @@ public class Main
 
 	private Image m_windowIconImage = null;
 
+	private URL m_propertiesURL = null;
 	/**
 	 * Standard entry point for launching the application from command line or with java web start
 	 * @param args
@@ -364,17 +371,16 @@ public class Main
 		OutputStream localStream = null;
 		try
 		{
-			URL propertiesURL;
 			try
 			{
-				propertiesURL = new URL(args[urlIdx].trim());
+				m_propertiesURL = new URL(args[urlIdx].trim());
 			}
 			catch(MalformedURLException e)
 			{
 				throw new JNLPException("Can not read URL to config properties", "Report the error and try later",
 						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
-			if(!"file".equals(propertiesURL))
+			if(!"file".equals(m_propertiesURL))
 			{
 				// Copy to local file. The installer that we bootstrap will need
 				// this too and we don't want an extra http GET just to get it.
@@ -384,7 +390,7 @@ public class Main
 				ByteArrayOutputStream bld = new ByteArrayOutputStream();
 				try
 				{
-					propStream = propertiesURL.openStream();
+					propStream = m_propertiesURL.openStream();
 					while((count = propStream.read(bytes, 0, bytes.length)) > 0)
 						bld.write(bytes, 0, count);
 
@@ -443,7 +449,7 @@ public class Main
 			else
 				try
 				{
-					propStream = new BufferedInputStream(propertiesURL.openStream());
+					propStream = new BufferedInputStream(m_propertiesURL.openStream());
 				}
 				catch(IOException e)
 				{
@@ -728,6 +734,15 @@ public class Main
 
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(javaExe.toString());
+		try
+		{
+			allArgs.addAll(getProxySettings(m_propertiesURL));
+		}
+		catch(URISyntaxException e)
+		{
+			throw new JNLPException("Unable to detect proxy settings", "Report the problem",
+					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
+		}
 		allArgs.add("-jar");
 		allArgs.add(launcherFile.toString());
 
@@ -832,6 +847,33 @@ public class Main
 			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again",
 					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
 		}
+	}
+
+	private List<String> getProxySettings(URL url) throws URISyntaxException
+	{
+		List<String> args = new ArrayList<String>();
+		
+		if ("http".equalsIgnoreCase(url.getProtocol()) || "https".equalsIgnoreCase(url.getProtocol()))
+		{
+			ProxySelector proxySelector = ProxySelector.getDefault();
+	
+			List<Proxy> proxies = proxySelector.select(url.toURI());
+			
+			for (Proxy proxy : proxies)
+			{
+				SocketAddress address = proxy.address();
+				if (address instanceof InetSocketAddress)
+				{
+					InetSocketAddress iaddr = (InetSocketAddress) address;
+					args.add("-Dhttp.proxyHost");
+					args.add(iaddr.getHostName());
+					args.add("-Dhttp.proxyPort");
+					args.add("" + iaddr.getPort());
+				}
+			}
+		}
+		
+		return args;
 	}
 
 	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
