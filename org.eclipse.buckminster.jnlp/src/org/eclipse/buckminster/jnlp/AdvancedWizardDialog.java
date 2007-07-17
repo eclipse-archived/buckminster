@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Link;
  * 
  * @author Karel Brezina
  */
-public class InstallWizardDialog extends WizardDialog
+public class AdvancedWizardDialog extends WizardDialog
 {
 	private static final String HELP_LABEL = "More Info";
 
-	public InstallWizardDialog(IWizard newWizard)
+	public AdvancedWizardDialog(IWizard newWizard)
 	{
 		super(null, newWizard);
 		setShellStyle(getShellStyle() & ~SWT.APPLICATION_MODAL);
@@ -122,9 +122,6 @@ public class InstallWizardDialog extends WizardDialog
 		return createHelpLink(parent);
 	}
 
-	/*
-	 * Creates a help link. This is used when there is no help image available.
-	 */
 	private Link createHelpLink(Composite parent)
 	{
 		Link link = new Link(parent, SWT.WRAP | SWT.NO_FOCUS);
