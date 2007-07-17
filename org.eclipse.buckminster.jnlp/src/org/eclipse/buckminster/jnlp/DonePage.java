@@ -27,12 +27,10 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
@@ -92,7 +90,7 @@ public class DonePage extends InstallWizardPage
 		List<LearnMoreItem> learnMores = getInstallWizard().getLearnMores();
 		
 		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(getImage(ICON_LEARN));
+		label.setImage(getInstallWizard().getImage(ICON_LEARN));
 		GridData learnMoreIconlayoutData = new GridData();
 		learnMoreIconlayoutData.horizontalIndent = HORIZONTAL_INDENT;
 		
@@ -121,7 +119,7 @@ public class DonePage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(getImage(ICON_LOCAL_FOLDER));
+		label.setImage(getInstallWizard().getImage(ICON_LOCAL_FOLDER));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.verticalSpan = 2;
@@ -251,7 +249,7 @@ public class DonePage extends InstallWizardPage
 		});
 
 		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(getImage(ICON_PUBLISH));
+		label.setImage(getInstallWizard().getImage(ICON_PUBLISH));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.verticalAlignment = GridData.CENTER;
@@ -293,14 +291,6 @@ public class DonePage extends InstallWizardPage
 
 	}
 
-	private Image getImage(String imageName)
-	{
-		Class<?> myClass = this.getClass();
-		String imageResource = "/icons/" + imageName;
-		URL imageUrl = myClass.getResource(imageResource);
-		return ImageDescriptor.createFromURL(imageUrl).createImage();
-	}
-	
 	// Last page after materialization - only cancel is enabled
 	@Override
 	public boolean isPageComplete()
