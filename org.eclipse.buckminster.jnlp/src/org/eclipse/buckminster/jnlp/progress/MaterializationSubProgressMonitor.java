@@ -15,15 +15,17 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * @author Karel Brezina
@@ -38,7 +40,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 	private Composite m_composite;
 	private Label m_subTaskLabel;
 	private ProgressBar m_progressBar;
-	private Button m_cancelButton;
+	private ToolItem m_cancelButton;
 	
 	private boolean m_canceled = false;
 	
@@ -62,8 +64,14 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 		layoutData = new GridData(GridData.FILL_HORIZONTAL);
 		m_progressBar.setLayoutData(layoutData);
 		
-		m_cancelButton = new Button(m_composite, SWT.TOGGLE);
+		ToolBar cancelToolBar = new ToolBar (m_composite, SWT.FLAT);
+		m_cancelButton = new ToolItem (cancelToolBar, SWT.PUSH);
+		//cancelToolBar.pack ();
+	
+		//m_cancelButton = new Button(m_composite, SWT.TOGGLE);
 		m_cancelButton.setImage(getImage(PROGRESS_STOP));
+		cancelToolBar.setCursor(new Cursor(Display.getCurrent(), SWT.CURSOR_ARROW));
+
 		m_cancelButton.addSelectionListener(new SelectionAdapter(){
 
 			@Override
@@ -88,7 +96,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void beginTask(final String name, final int totalWork)
 	{
-		Display.getDefault().syncExec(new Runnable()
+		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
 			{
@@ -102,7 +110,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void done()
 	{
-		Display.getDefault().syncExec(new Runnable()
+		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
 			{
@@ -114,7 +122,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void internalWorked(final double work)
 	{
-		Display.getDefault().syncExec(new Runnable()
+		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
 			{
@@ -141,7 +149,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void subTask(final String name)
 	{
-		Display.getDefault().syncExec(new Runnable()
+		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
 			{
