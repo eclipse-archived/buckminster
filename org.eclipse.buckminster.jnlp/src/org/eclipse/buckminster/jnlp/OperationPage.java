@@ -52,6 +52,25 @@ public class OperationPage extends InstallWizardPage
 		setControl(pageComposite);
 	}
 
+	// Disable finish
+	@Override
+	public boolean isPageComplete()
+	{
+		if(getContainer().getCurrentPage() == this)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// Disable previous
+    @Override
+	public IWizardPage getPreviousPage()
+    {
+    	return null;
+    }
+
 	@Override
 	public IWizardPage getNextPage()
 	{
