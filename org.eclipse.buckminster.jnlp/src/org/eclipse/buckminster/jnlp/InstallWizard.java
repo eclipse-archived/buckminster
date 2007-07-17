@@ -30,6 +30,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -260,8 +262,12 @@ public class InstallWizard extends Wizard
 		originalPage.setErrorMessage(null);
 		try
 		{
-			getContainer().showPage(getPage("OperationStep"));
+			OperationPage operationPage = (OperationPage)getPage("OperationStep");
+			getContainer().showPage(operationPage);
+			IJobManager jobManager = Job.getJobManager();
+			jobManager.setProgressProvider(operationPage.getProgressProvider());
 			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
+			jobManager.setProgressProvider(null);
 			getContainer().showPage(getPage("DoneStep"));
 		}
 		catch(InterruptedException e)
@@ -286,6 +292,14 @@ public class InstallWizard extends Wizard
 					status);
 		}
 		return false;
+	}
+	
+	Image getImage(String imageName)
+	{
+		Class<?> myClass = this.getClass();
+		String imageResource = "/icons/" + imageName;
+		URL imageUrl = myClass.getResource(imageResource);
+		return ImageDescriptor.createFromURL(imageUrl).createImage();
 	}
 	
 	private void showOriginalPage(IWizardPage originalPage)
@@ -422,6 +436,24 @@ public class InstallWizard extends Wizard
 		
 		try
 		{
+// TODO http idea
+/*			
+			HttpClient client = new HttpClient();
+			HttpMethod method = null;
+			try
+			{
+				method = new GetMethod(m_mspecURL.toURI().toString());
+			}
+			catch(URISyntaxException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			int status = client.executeMethod(method);
+
+			InputStream stream = method.getResponseBodyAsStream();
+*/
+			
 			InputStream stream = m_mspecURL.openStream();
 			IParser<MaterializationSpec> parser =
 				CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);

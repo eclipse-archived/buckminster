@@ -8,13 +8,13 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
+import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -23,7 +23,8 @@ import org.eclipse.swt.widgets.Label;
  */
 public class OperationPage extends InstallWizardPage
 {
-
+	private ProgressProvider m_progressProvider;
+	
 	protected OperationPage()
 	{
 		super("OperationStep", "Materialization in Progress", "Please wait until materialization finishes.", null);
@@ -34,7 +35,9 @@ public class OperationPage extends InstallWizardPage
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+		
+		m_progressProvider = new MaterializationProgressProvider(pageComposite);
+/*
 		Label imageLabel = new AlwaysEnabledLabel(pageComposite, SWT.NONE);
 		
 		Image image = getInstallWizard().getMaterializationImage();
@@ -45,7 +48,7 @@ public class OperationPage extends InstallWizardPage
 			imageLabel.setImage(image);
 			imageLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 		}
-		
+*/
 		setControl(pageComposite);
 	}
 
@@ -53,6 +56,11 @@ public class OperationPage extends InstallWizardPage
 	public IWizardPage getNextPage()
 	{
 		return getWizard().getPage("DoneStep");
+	}
+	
+	public ProgressProvider getProgressProvider()
+	{
+		return m_progressProvider;
 	}
 }
 
