@@ -8,9 +8,14 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,6 +34,8 @@ import org.eclipse.swt.widgets.Link;
 public class AdvancedWizardDialog extends WizardDialog
 {
 	private static final String HELP_LABEL = "More Info";
+	
+	private boolean m_runningOperation = false;
 
 	public AdvancedWizardDialog(IWizard newWizard)
 	{
@@ -139,4 +146,46 @@ public class AdvancedWizardDialog extends WizardDialog
 		});
 		return link;
 	}
+	
+	@Override
+	public void run(boolean fork, boolean cancelable,
+			IRunnableWithProgress runnable) throws InvocationTargetException,
+			InterruptedException {
+
+		m_runningOperation = true;
+		
+		if (getWizard().needsProgressMonitor())
+		{
+			ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
+			progressMonitorPart.setVisible(true);
+		}
+
+		try
+		{
+			ModalContext.run(runnable, fork, getProgressMonitor(), getShell()
+					.getDisplay());
+		} finally
+		{
+			m_runningOperation = false;
+			
+			if (getWizard().needsProgressMonitor())
+			{
+				ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
+				progressMonitorPart.setVisible(false);
+			}
+		}
+	}
+	
+	@Override
+	protected void cancelPressed()
+	{
+		if(m_runningOperation)
+		{
+			//TODO implement - cancel the whole stuff
+		} else
+		{
+			super.cancelPressed();
+		}
+	}
+	
 }
