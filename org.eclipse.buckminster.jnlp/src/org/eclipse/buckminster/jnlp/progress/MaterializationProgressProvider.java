@@ -22,24 +22,18 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class MaterializationProgressProvider extends ProgressProvider
 {
-
 	private Composite m_composite;
-	
+
 	public MaterializationProgressProvider(Composite parent)
 	{
 		m_composite = new Composite(parent, SWT.NONE);
 		m_composite.setLayout(new GridLayout());
 		m_composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 	}
-	
+
 	@Override
 	public IProgressMonitor createMonitor(Job job)
 	{
-		return new MaterializationSubProgressMonitor(m_composite);
-	}
-
-	@Override
-	public IProgressMonitor createMonitor(Job job, IProgressMonitor group, int ticks) {
 		return new MaterializationSubProgressMonitor(m_composite);
 	}
 }
