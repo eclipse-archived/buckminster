@@ -4,12 +4,10 @@ Bundle-Name: Java Web Start bundle
 Bundle-SymbolicName: org.eclipse.buckminster.jnlp; singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface,
  org.eclipse.buckminster.core,
  org.eclipse.buckminster.runtime,
- org.eclipse.buckminster.sax,
- org.eclipse.core.net
+ org.eclipse.buckminster.sax
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.buckminster.jnlp.accountservice
