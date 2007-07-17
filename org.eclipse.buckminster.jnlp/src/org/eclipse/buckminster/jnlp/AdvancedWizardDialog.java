@@ -146,7 +146,7 @@ public class AdvancedWizardDialog extends WizardDialog
 		});
 		return link;
 	}
-	
+
 	@Override
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable) throws InvocationTargetException,
@@ -173,6 +173,7 @@ public class AdvancedWizardDialog extends WizardDialog
 				ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
 				progressMonitorPart.setVisible(false);
 			}
+			getProgressMonitor().setCanceled(false);
 		}
 	}
 	
@@ -181,11 +182,10 @@ public class AdvancedWizardDialog extends WizardDialog
 	{
 		if(m_runningOperation)
 		{
-			//TODO implement - cancel the whole stuff
+			getProgressMonitor().setCanceled(true);
 		} else
 		{
 			super.cancelPressed();
 		}
 	}
-	
 }
