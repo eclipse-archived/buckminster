@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -103,26 +104,26 @@ public class Main
 
 	private Image m_windowIconImage = null;
 
-	private URL m_propertiesURL = null;
 	/**
 	 * Standard entry point for launching the application from command line or with java web start
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
 		launch(args, false);
 	}
-	
+
 	public static void launch(final String[] args, boolean fromApplet)
 	{
 		final Main main = new Main();
 		try
 		{
 			ThreadGroup trustedGroup = new ThreadGroup("buckminster.bootstrap.threadgroup");
-			
+
 			class BootstrapThread extends Thread
 			{
-				Throwable m_t = null; 
+				Throwable m_t = null;
 
 				public BootstrapThread(ThreadGroup group, String name)
 				{
@@ -141,7 +142,7 @@ public class Main
 						m_t = t;
 					}
 				}
-				
+
 				public Throwable getError()
 				{
 					return m_t;
@@ -162,11 +163,11 @@ public class Main
 			{
 				cacheSecurityManager.removeTrustedThreadGroup(trustedGroup);
 			}
-			
-			if (bootstrap != null && bootstrap.getError() != null)
+
+			if(bootstrap != null && bootstrap.getError() != null)
 				throw bootstrap.getError();
-			
-			if (!fromApplet)
+
+			if(!fromApplet)
 				Runtime.getRuntime().exit(0);
 		}
 		catch(Throwable t)
@@ -215,7 +216,7 @@ public class Main
 			{
 			}
 
-			if (!fromApplet)
+			if(!fromApplet)
 				Runtime.getRuntime().exit(-1);
 		}
 	}
@@ -371,16 +372,18 @@ public class Main
 		OutputStream localStream = null;
 		try
 		{
+			URL propertiesURL = null;
+
 			try
 			{
-				m_propertiesURL = new URL(args[urlIdx].trim());
+				propertiesURL = new URL(args[urlIdx].trim());
 			}
 			catch(MalformedURLException e)
 			{
 				throw new JNLPException("Can not read URL to config properties", "Report the error and try later",
 						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
-			if(!"file".equals(m_propertiesURL))
+			if(!"file".equals(propertiesURL))
 			{
 				// Copy to local file. The installer that we bootstrap will need
 				// this too and we don't want an extra http GET just to get it.
@@ -390,7 +393,7 @@ public class Main
 				ByteArrayOutputStream bld = new ByteArrayOutputStream();
 				try
 				{
-					propStream = m_propertiesURL.openStream();
+					propStream = propertiesURL.openStream();
 					while((count = propStream.read(bytes, 0, bytes.length)) > 0)
 						bld.write(bytes, 0, count);
 
@@ -449,7 +452,7 @@ public class Main
 			else
 				try
 				{
-					propStream = new BufferedInputStream(m_propertiesURL.openStream());
+					propStream = new BufferedInputStream(propertiesURL.openStream());
 				}
 				catch(IOException e)
 				{
@@ -734,15 +737,6 @@ public class Main
 
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(javaExe.toString());
-		try
-		{
-			allArgs.addAll(getProxySettings(m_propertiesURL));
-		}
-		catch(URISyntaxException e)
-		{
-			throw new JNLPException("Unable to detect proxy settings", "Report the problem",
-					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
-		}
 		allArgs.add("-jar");
 		allArgs.add(launcherFile.toString());
 
@@ -756,6 +750,16 @@ public class Main
 		allArgs.add("org.eclipse.buckminster.jnlp.application");
 		for(String arg : args)
 			allArgs.add(arg);
+
+		try
+		{
+			allArgs.addAll(getProxySettings());
+		}
+		catch(URISyntaxException e)
+		{
+			throw new JNLPException("Unable to detect proxy settings", "Report the problem",
+					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
+		}
 
 		final String syncString = "sync info: application launched";
 		allArgs.add("-syncString");
@@ -849,28 +853,56 @@ public class Main
 		}
 	}
 
-	private List<String> getProxySettings(URL url) throws URISyntaxException
+	/**
+	 * This method prepares argument with proxy information which will be passed to the application. Notice that there
+	 * arguments don't set system properties, they are supposed to be parsed in the application to set up the proxy
+	 * rules internally.
+	 * 
+	 * The algorithm of getting proxy information is not ideal since the proxy selector might use non-trivial rules.
+	 * However, we don't know which proxy selector implementation will handle our requests and there is no way of
+	 * retrieving all the proxy rules.
+	 * 
+	 * Let's keep it simple - we try to use dummy addresses for the most common protocols. This will guarantee that we
+	 * inherit most probable browser proxy settings.
+	 * 
+	 * If the rules are not guessed optimally, there should be an option in the launched application to override
+	 * automatic proxy discovery with user's own rules, with the possibility to persist the settings in the application
+	 * installation directory.
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	private List<String> getProxySettings() throws URISyntaxException
 	{
 		List<String> args = new ArrayList<String>();
-		
-		if ("http".equalsIgnoreCase(url.getProtocol()) || "https".equalsIgnoreCase(url.getProtocol()))
+		ProxySelector proxySelector = ProxySelector.getDefault();
+
+		for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"),
+				new URI("ftp://dummy.host.com") })
 		{
-			ProxySelector proxySelector = ProxySelector.getDefault();
-	
-			List<Proxy> proxies = proxySelector.select(url.toURI());
-			
-			for (Proxy proxy : proxies)
+			List<Proxy> proxies = proxySelector.select(uri);
+			String protocol = uri.getScheme();
+
+			for(Proxy proxy : proxies)
 			{
+				if(Proxy.NO_PROXY.equals(proxy))
+					break;
+
 				SocketAddress address = proxy.address();
-				if (address instanceof InetSocketAddress)
+				if(address instanceof InetSocketAddress)
 				{
-					InetSocketAddress iaddr = (InetSocketAddress) address;
-					args.add("-Dhttp.proxyHost=\"" + iaddr.getHostName() + "\"");
-					args.add("-Dhttp.proxyPort=" + iaddr.getPort());
+					InetSocketAddress iaddr = (InetSocketAddress)address;
+					args.add("-" + protocol + ".proxyHost");
+					args.add(iaddr.getHostName());
+					args.add("-" + protocol + ".proxyPort");
+					args.add("" + iaddr.getPort());
+					args.add("-" + protocol + ".nonProxyHosts");
+					args.add("localhost|127.0.0.1");
+					break;
 				}
 			}
 		}
-		
+
 		return args;
 	}
 
