@@ -214,11 +214,13 @@ public class MaterializationJob extends Job
 		}
 		catch(OperationCanceledException e)
 		{
-			return;
+			jobManager.cancel(m_context);
+			throw e;
 		}
 		catch(InterruptedException e)
 		{
-			return;
+			jobManager.cancel(m_context);
+			throw new OperationCanceledException();
 		}
 
 		IStatus status = m_context.getStatus();
