@@ -143,7 +143,6 @@ public class SimpleDownloadPage extends InstallWizardPage
 		try
 		{
 			getInstallWizard().initMSPEC();
-			setPageComplete(true);
 			getContainer().updateButtons();
 		}
 		catch(JNLPException e)
@@ -151,20 +150,13 @@ public class SimpleDownloadPage extends InstallWizardPage
 			setPageComplete(false);
 			getContainer().updateButtons();
 			throw e;
-/*			
-			IStatus status = BuckminsterException.wrap(e.getCause() != null ? e.getCause() : e).getStatus();
-			CorePlugin.logWarningsAndErrors(status);
-			HelpLinkErrorDialog.openError(
-					null,
-					getInstallWizard().getWindowImage(),
-					MaterializationConstants.ERROR_WINDOW_TITLE,
-					e.getMessage(),
-					MaterializationConstants.ERROR_HELP_TITLE,
-					getInstallWizard().getErrorURL(),
-					e.getErrorCode(),
-					status);
-*/
 		}
+	}
+	
+	@Override
+	public boolean isPageComplete()
+	{
+		return getMaterializationSpecBuilder().getURL() != null;
 	}
 	
 	@Override
