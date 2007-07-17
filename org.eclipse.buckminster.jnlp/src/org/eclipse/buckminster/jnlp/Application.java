@@ -77,9 +77,11 @@ public class Application implements IApplication
 			if(runArgs instanceof String[])
 			{
 				String[] args = (String[])runArgs;
-				for(int idx = 0; idx < args.length && (configUrl == null || m_syncString == null || popupAfter == null); ++idx)
+				for(int idx = 0; idx < args.length; ++idx)
 				{
-					if("-configURL".equals(args[idx]))
+					String arg = args[idx];
+
+					if("-configURL".equals(arg))
 					{
 						if(++idx < args.length)
 						{
@@ -92,7 +94,7 @@ public class Application implements IApplication
 							}
 						}
 					}
-					else if("-syncString".equals(args[idx]))
+					else if("-syncString".equals(arg))
 					{
 						if(++idx < args.length)
 						{
@@ -105,7 +107,7 @@ public class Application implements IApplication
 							}
 						}
 					}
-					else if("-popupAfter".equals(args[idx]))
+					else if("-popupAfter".equals(arg))
 					{
 						if(++idx < args.length)
 						{
@@ -118,6 +120,13 @@ public class Application implements IApplication
 								// popupAfter remains null
 							}
 						}
+					}
+					else if(arg.startsWith("-")
+							&& (arg.endsWith(".proxyHost") || arg.endsWith(".proxyPort") || arg
+									.endsWith(".nonProxyHosts")))
+					{
+						if(++idx < args.length)
+							System.setProperty(arg.substring(1), args[idx]);
 					}
 				}
 			}
@@ -175,28 +184,33 @@ public class Application implements IApplication
 				//
 				InstallWizardDialog dialog = new InstallWizardDialog(new InstallWizard(properties));
 				dialog.create();
-				
+
 				// General exception handler
-				Window.setExceptionHandler(new IExceptionHandler(){
+				Window.setExceptionHandler(new IExceptionHandler()
+				{
 
 					public void handleException(Throwable t)
 					{
-						if (t instanceof ThreadDeath) {
+						if(t instanceof ThreadDeath)
+						{
 							// Don't catch ThreadDeath as this is a normal occurrence when
 							// the thread dies
-							throw (ThreadDeath) t;
+							throw (ThreadDeath)t;
 						}
 
-						IStatus status = BuckminsterException.wrap(t.getCause() != null ? t.getCause() : t).getStatus();
+						IStatus status = BuckminsterException.wrap(t.getCause() != null
+								? t.getCause()
+								: t).getStatus();
 						CorePlugin.logWarningsAndErrors(status);
 
 						if(t instanceof JNLPException)
 						{
 							JNLPException je = (JNLPException)t;
-							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-									je.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
+							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE, je
+									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
 									MaterializationConstants.ERROR_HELP_URL, je.getErrorCode(), status);
-						} else
+						}
+						else
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
 									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
@@ -204,8 +218,9 @@ public class Application implements IApplication
 						}
 
 						// Try to keep running.
-					}});
-				
+					}
+				});
+
 				final Shell shell = dialog.getShell();
 				shell.setSize(WIZARD_WIDTH, WIZARD_HEIGHT);
 
@@ -239,7 +254,7 @@ public class Application implements IApplication
 					if(popupAfter != null)
 					{
 						long popupDelay = popupAfter.longValue() - (new Date()).getTime();
-						if (popupDelay > 0)
+						if(popupDelay > 0)
 							Thread.sleep(popupDelay);
 					}
 
