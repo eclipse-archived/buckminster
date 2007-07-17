@@ -182,7 +182,7 @@ public class Application implements IApplication
 			{
 				// Create the wizard dialog and resize it.
 				//
-				InstallWizardDialog dialog = new InstallWizardDialog(new InstallWizard(properties));
+				AdvancedWizardDialog dialog = new AdvancedWizardDialog(new InstallWizard(properties));
 				dialog.create();
 
 				// General exception handler
