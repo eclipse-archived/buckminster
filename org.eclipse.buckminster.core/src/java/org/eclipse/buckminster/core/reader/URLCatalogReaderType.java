@@ -149,7 +149,13 @@ public class URLCatalogReaderType extends CatalogReaderType
 				return Trivial.EMPTY_PATH_ARRAY;
 			IPath[] result = new IPath[top];
 			while(--top >= 0)
-				result[top] = new Path(list[top].getName());
+			{
+				File file = list[top];
+				IPath path = new Path(list[top].getName());
+				if(file.isDirectory())
+					path = path.addTrailingSeparator();
+				result[top] = path;
+			}
 			return result;
 		}
 
