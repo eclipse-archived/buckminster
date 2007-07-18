@@ -20,8 +20,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.eclipse.buckminster.core.helpers.ProgressReporter;
+import org.eclipse.buckminster.core.helpers.ProgressStatistics;
 import org.eclipse.buckminster.maven.MavenPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -100,6 +103,11 @@ public class LocalCache
 
 	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor) throws CoreException, IOException
 	{
+		return openFile(repository, path, monitor, null);
+	}
+
+	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor, FileInfoBuilder info) throws CoreException, IOException
+	{
 		IProgressMonitor subMonitor = monitor;
 		int failureCounter = 0;
 		for(;;)
@@ -107,7 +115,7 @@ public class LocalCache
 			File localFile;
 			try
 			{
-				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor);
+				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor, info);
 				return new FileInputStream(localFile);
 			}
 			catch(CoreException e)
@@ -157,7 +165,7 @@ public class LocalCache
 	private static final String MD5_SUFFIX = ".md5";
 	private static final int MD5_LEN = 16;
 
-	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException,
+	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor, FileInfoBuilder info) throws IOException,
 			CoreException
 	{
 		IPath fullPath = m_localCacheRoot.append(path);
@@ -258,13 +266,52 @@ public class LocalCache
 			if(!(outputDir.exists() || outputDir.mkdirs()))
 				throw new IOException("Unable to create directory " + outputDir);
 
-			input = URLUtils.openStream(remoteURL, MonitorUtils.subMonitor(monitor, 5));
+			input = URLUtils.openStream(remoteURL, MonitorUtils.subMonitor(monitor, 5), info);
 			output = new FileOutputStream(file);
 			int len;
 			while((len = input.read(transferBuffer)) > 0)
 			{
 				md.update(transferBuffer, 0, len);
 				output.write(transferBuffer, 0, len);
+			}
+			byte[] buf = new byte[0x2000];
+			int count;
+
+			IProgressMonitor writeMonitor = MonitorUtils.subMonitor(monitor, 900);
+
+			writeMonitor.beginTask(null, info.getSize() > 0
+					? (int)info.getSize()
+					: IProgressMonitor.UNKNOWN);
+			try
+			{
+				ProgressStatistics progress = new ProgressStatistics(info.getSize());
+				progress.setConverter(ProgressStatistics.FILESIZE_CONVERTER);
+
+				ProgressReporter progressReporter = new ProgressReporter(writeMonitor, progress, "Fetching "
+						+ info.getName() + " (%s)", progress.getReportInterval());
+				progressReporter.start();
+
+				try
+				{
+					while((count = input.read(buf)) >= 0)
+					{
+						output.write(buf, 0, count);
+						progress.increase(count);
+
+						// Bump the reporter to report the change
+						progressReporter.interrupt();
+
+						MonitorUtils.worked(writeMonitor, info.getSize() > 0 ? count : 1);
+					}
+				}
+				finally
+				{
+					progressReporter.stopReporting();
+				}
+			}
+			finally
+			{
+				writeMonitor.done();
 			}
 		}
 		finally

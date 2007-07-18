@@ -22,6 +22,8 @@ import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -43,10 +45,13 @@ public class MavenReader extends URLFileReader
 {
 	private final MapEntry m_mapEntry;
 
+	private FileInfoBuilder m_fileInfo;
+
 	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException
 	{
 		super(readerType, rInfo, readerType.getURI(rInfo));
 		m_mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(), rInfo.getNodeQuery().getComponentRequest());
+		m_fileInfo = null;
 	}
 
 	VersionMatch getVersionMatch() throws CoreException
@@ -63,8 +68,16 @@ public class MavenReader extends URLFileReader
 	@Override
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
 	{
+		m_fileInfo = new FileInfoBuilder();
+
 		IPath artifactPath = ((MavenReaderType)getReaderType()).getArtifactPath(m_mapEntry, getVersionMatch());
-		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor);
+		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor, m_fileInfo);
+	}
+
+	@Override
+	public IFileInfo getFileInfo()
+	{
+		return m_fileInfo;
 	}
 
 	Document getPOMDocument(IPath[] pomPathRet, IProgressMonitor monitor) throws CoreException
