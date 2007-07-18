@@ -87,60 +87,6 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 						ProgressStatistics progress = new ProgressStatistics(info.getSize());
 						progress.setConverter(ProgressStatistics.FILESIZE_CONVERTER);
 
-						/*
-						 * This class is used for reporting a good progress information even if the download is stalled
-						 * for a while. If specified timeout expires before something is read from the input, a new
-						 * progress message is generated. This enables e.g. reporting recalculated download speed which
-						 * would be frozen if we simply waited for data.
-						 */
-						class ProgressReporter extends Thread
-						{
-							private final IProgressMonitor m_reporterMonitor;
-
-							private final ProgressStatistics m_reporterProgress;
-
-							private final String m_format;
-
-							private final int m_timeout;
-
-							private boolean m_running;
-
-							public ProgressReporter(IProgressMonitor reporterMonitor,
-									ProgressStatistics reporterProgress, String format, int timeout)
-							{
-								m_reporterMonitor = reporterMonitor;
-								m_reporterProgress = reporterProgress;
-								m_format = format;
-								m_timeout = timeout;
-								m_running = true;
-							}
-
-							@Override
-							public void run()
-							{
-								while(m_running)
-								{
-									try
-									{
-										Thread.sleep(m_timeout);
-									}
-									catch(InterruptedException e)
-									{
-										// ignore, it's ok
-									}
-
-									if(m_running && m_reporterProgress.shouldReport())
-										m_reporterMonitor.subTask(String.format(m_format, m_reporterProgress.report()));
-								}
-							}
-
-							public synchronized void stopReporting()
-							{
-								m_running = false;
-								interrupt();
-							}
-						}
-
 						ProgressReporter progressReporter = new ProgressReporter(writeMonitor, progress, "Fetching "
 								+ info.getName() + " (%s)", progress.getReportInterval());
 						progressReporter.start();
