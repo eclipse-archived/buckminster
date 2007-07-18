@@ -261,19 +261,13 @@ public class LocalCache
 		try
 		{
 
-			byte[] transferBuffer = new byte[0x2000];
 			File outputDir = containingFolder.toFile();
 			if(!(outputDir.exists() || outputDir.mkdirs()))
 				throw new IOException("Unable to create directory " + outputDir);
 
 			input = URLUtils.openStream(remoteURL, MonitorUtils.subMonitor(monitor, 5), info);
 			output = new FileOutputStream(file);
-			int len;
-			while((len = input.read(transferBuffer)) > 0)
-			{
-				md.update(transferBuffer, 0, len);
-				output.write(transferBuffer, 0, len);
-			}
+
 			byte[] buf = new byte[0x2000];
 			int count;
 
