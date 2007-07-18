@@ -38,6 +38,8 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 	private static final int MAX_LABEL_LENGTH = 90;
 
 	private static final long DONE_SLEEP = 2000;
+	
+	private static final String AVAILABLE = "available";
 
 	private Composite m_parentComposite;
 
@@ -48,6 +50,8 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 	private Label m_subTaskLabel;
 
 	private ProgressBar m_progressBar;
+
+	private ToolBar m_cancelBar;
 
 	private ToolItem m_cancelButton;
 
@@ -62,7 +66,27 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	private Control createControl(Composite parent)
 	{
-		m_composite = new Composite(parent, SWT.NONE);
+		// Try to reuse Composite to avoid flickering
+		m_composite = null;
+		for(Control progressComposite : parent.getChildren())
+		{
+			if(AVAILABLE.equals(progressComposite.getData()))
+			{
+				m_composite = (Composite)progressComposite;
+				m_composite.setData(null);
+				
+				for(Control control : m_composite.getChildren())
+				{
+					control.dispose();
+				}
+				break;
+			}
+		}
+		
+		if(m_composite == null)
+		{
+			m_composite = new Composite(parent, SWT.NONE);
+		}
 		m_composite.setLayout(new GridLayout(2, false));
 		m_composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -75,8 +99,8 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 		layoutData = new GridData(GridData.FILL_HORIZONTAL);
 		m_progressBar.setLayoutData(layoutData);
 
-		ToolBar cancelToolBar = new ToolBar(m_composite, SWT.FLAT);
-		m_cancelButton = new ToolItem(cancelToolBar, SWT.PUSH);
+		m_cancelBar = new ToolBar(m_composite, SWT.FLAT);
+		m_cancelButton = new ToolItem(m_cancelBar, SWT.PUSH);
 		// cancelToolBar.pack ();
 
 		// m_cancelButton = new Button(m_composite, SWT.TOGGLE);
@@ -93,6 +117,8 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 			}
 		});
 
+		m_composite.setVisible(true);
+
 		m_parentComposite.layout(new Control[] { m_composite });
 
 		return m_composite;
@@ -108,7 +134,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void beginTask(final String name, final int totalWork)
 	{
-		Display.getDefault().asyncExec(new Runnable()
+		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
 			{
@@ -125,7 +151,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 	{
 		if(m_cancelButton != null)
 		{
-			Display.getDefault().asyncExec(new Runnable()
+			Display.getDefault().syncExec(new Runnable()
 			{
 				public void run()
 				{
@@ -145,12 +171,13 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 			// nothing
 		}
 
-		Display.getDefault().asyncExec(new Runnable()
+		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
 			{
-				m_composite.dispose();
-				m_parentComposite.layout();
+				m_composite.setData(AVAILABLE);
+				m_composite.setVisible(false);
+				m_composite.update();
 			}
 		});
 		//System.out.println("Done");
@@ -158,7 +185,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void internalWorked(final double work)
 	{
-		Display.getDefault().asyncExec(new Runnable()
+		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
 			{
@@ -198,7 +225,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void subTask(final String name)
 	{
-		Display.getDefault().asyncExec(new Runnable()
+		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
 			{
