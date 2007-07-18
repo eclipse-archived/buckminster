@@ -11,6 +11,7 @@ package org.eclipse.buckminster.jnlp.progress;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -36,9 +37,13 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	private static final int MAX_LABEL_LENGTH = 90;
 
+	private static final long DONE_SLEEP = 2000;
+
 	private Composite m_parentComposite;
 
 	private Composite m_composite;
+	
+	private String m_jobName;
 
 	private Label m_subTaskLabel;
 
@@ -48,9 +53,10 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	private boolean m_canceled = false;
 
-	public MaterializationSubProgressMonitor(Composite parent)
+	public MaterializationSubProgressMonitor(Composite parent, Job job)
 	{
 		m_parentComposite = parent;
+		m_jobName = job == null ? "operation" : job.getName();
 		//System.out.println("Create");
 	}
 
@@ -117,6 +123,28 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void done()
 	{
+		if(m_cancelButton != null)
+		{
+			Display.getDefault().asyncExec(new Runnable()
+			{
+				public void run()
+				{
+					m_cancelButton.setEnabled(false);
+				}
+			});
+		}
+
+		subTask(m_jobName + " completed");
+		
+		try
+		{
+			Thread.sleep(DONE_SLEEP);
+		}
+		catch(InterruptedException e)
+		{
+			// nothing
+		}
+
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
@@ -152,7 +180,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 		if(m_cancelButton != null)
 		{
-			Display.getDefault().asyncExec(new Runnable()
+			Display.getDefault().syncExec(new Runnable()
 			{
 				public void run()
 				{
