@@ -44,6 +44,11 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 		return m_provider;
 	}
 
+	public Provider getProvider(VersionMatch versionMatch) throws CoreException
+	{
+		return m_provider;
+	}
+
 	public NodeQuery getQuery()
 	{
 		return m_query;

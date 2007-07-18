@@ -21,21 +21,28 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @author Thomas Hallgren
  */
-public interface IVersionFinder
-{
+public interface IVersionFinder {
 	/**
 	 * Find the best match for the designated component
+	 * 
 	 * @param monitor
-	 * @return The match that best matched the conditions or null if no match was found
+	 * @return The match that best matched the conditions or null if no match
+	 *         was found
 	 * @throws CoreException
 	 */
-	VersionMatch getBestVersion(IProgressMonitor monitor)
-			throws CoreException;
+	VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the provider associated with this version finder
 	 */
 	Provider getProvider();
+
+	/**
+	 * Returns the provider that can materialize a <code>versionMatch</code>.
+	 * The <code>versionMatch</code> must be produced by this finder.
+	 * @return The provider
+	 */
+	Provider getProvider(VersionMatch versionMatch) throws CoreException;
 
 	/**
 	 * Returns the query associated with this version finder

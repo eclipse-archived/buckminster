@@ -227,7 +227,7 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 						"Provider %s(%s): Found a match for %s using version designator %s, %s",
 						readerType, providerURI, componentName, desiredVersion, candidate));
 			}
-			return new ProviderMatch(this, ctypeUsed, candidate, score, query);
+			return new ProviderMatch(versionFinder.getProvider(candidate), ctypeUsed, candidate, score, query);
 		}
 		finally
 		{
