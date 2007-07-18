@@ -111,8 +111,6 @@ public class InstallWizard extends Wizard
 		
 		readProperties(properties);
 		
-		m_originalNodeBuilders.addAll(m_builder.getNodes());
-		
 		m_authenticator = createAuthenticator(m_loginRequired);
 		
 		m_learnMores = createLearnMores();
@@ -267,7 +265,7 @@ public class InstallWizard extends Wizard
 			IJobManager jobManager = Job.getJobManager();
 			jobManager.setProgressProvider(operationPage.getProgressProvider());
 			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
-			jobManager.setProgressProvider(null);
+			//jobManager.setProgressProvider(null);
 			getContainer().showPage(getPage("DoneStep"));
 		}
 		catch(InterruptedException e)
@@ -459,7 +457,8 @@ public class InstallWizard extends Wizard
 				CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
 			
 			m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
-			
+			m_originalNodeBuilders.addAll(m_builder.getNodes());
+
 			MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
 			for(MSpecChangeListener listener : m_mspecListeners)
 			{
