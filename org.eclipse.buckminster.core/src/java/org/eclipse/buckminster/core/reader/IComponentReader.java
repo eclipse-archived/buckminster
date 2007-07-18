@@ -28,7 +28,7 @@ public interface IComponentReader
 	/**
 	 * Returns <code>true</code> if this reader is capable of materializing components.
 	 */
-	boolean canMaterialize() throws BuckminsterException;
+	boolean canMaterialize();
 
 	/**
 	 * Free resources used by this connection

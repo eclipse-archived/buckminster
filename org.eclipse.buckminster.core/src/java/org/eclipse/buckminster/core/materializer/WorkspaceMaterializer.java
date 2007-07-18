@@ -42,9 +42,12 @@ import org.eclipse.core.runtime.Path;
 public class WorkspaceMaterializer extends FileSystemMaterializer
 {
 	@Override
-	public IPath getDefaultInstallRoot(MaterializationContext context, boolean forFile) throws CoreException
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution, boolean forFile) throws CoreException
 	{
-		return forFile ? CorePlugin.getDefault().getBuckminsterProjectLocation() : ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		IPath location = context.getWorkspaceLocation(resolution);
+		if(forFile)
+			location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
+		return location;
 	}
 
 	@Override
@@ -132,7 +135,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			if(matLoc.hasTrailingSeparator())
 				wsRelativePath.addTrailingSeparator();
 		}
-		return new WorkspaceBinding(wsRelativePath, mat);
+		return new WorkspaceBinding(context.getWorkspaceLocation(resolution), wsRelativePath, mat);
 	}
 
 	private void createExternalBinding(IPath wsRelativePath, Materialization mat, IProgressMonitor monitor)
@@ -356,7 +359,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), cspec
 					.getComponentIdentifier());
 			newMat.store();
-			return new WorkspaceBinding(new Path(bindingName), newMat);
+			return new WorkspaceBinding(wb.getWorkspaceRoot(), new Path(bindingName), newMat);
 		}
 		catch(CoreException e)
 		{

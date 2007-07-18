@@ -27,6 +27,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -143,20 +144,23 @@ public class MaterializationContext extends RMContext
 		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
 		if(rootLocation == null)
 		{
-			if(nodeLocation == null)
-				return getInstallLocation(resolution);
+			if(nodeLocation != null)
+				//
+				// At this point the nodeLocation must be relative so this
+				// is illegal.
+				//
+				throw BuckminsterException.fromMessage(
+					String.format("WorkspaceLocation %s in node matching %s cannot be relative unless a main workspace location is present",
+						nodeLocation, ci));
 
-			rootLocation = m_materializationSpec.getInstallLocation();
-			if(rootLocation == null)
-				rootLocation = getRootInstallLocation(resolution, false, new boolean[1]);
+			// Default to location of current workspace
+			//
+			return ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		}
 
-		rootLocation = Path.fromOSString(ExpandingProperties.expand(this, rootLocation.toOSString(), 0));	
-		rootLocation = rootLocation.makeAbsolute();
-
-		if(nodeLocation != null)
-			rootLocation = rootLocation.append(nodeLocation);
-		return rootLocation;
+		return (nodeLocation == null)
+			? rootLocation
+			: rootLocation.append(nodeLocation);
 	}
 
 	public IPath processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
@@ -286,8 +290,10 @@ public class MaterializationContext extends RMContext
 			IPath specRelative = null;
 			if(node != null)
 				specRelative = node.getInstallLocation();
-
-			if(!location.isAbsolute() && specRelative == null)
+			
+			if(specRelative != null)
+				specRelative = Path.fromOSString(ExpandingProperties.expand(this, specRelative.toOSString(), 0));
+			else if(!location.isAbsolute())
 			{
 				ComponentName cName = resolution.getRequest();
 				IComponentType cType = cName.getComponentType();
@@ -317,8 +323,11 @@ public class MaterializationContext extends RMContext
 			if(specRoot != null)
 				location = specRoot;
 			else
-				location = m_materializationSpec.getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this, forFiles);
+				location = m_materializationSpec.getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this, resolution, forFiles);
 		}
+
+		location = Path.fromOSString(ExpandingProperties.expand(this, location.toOSString(), 0));	
+		location = location.makeAbsolute();
 		return location;
 	}
 }

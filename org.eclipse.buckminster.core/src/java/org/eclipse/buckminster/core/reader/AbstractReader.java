@@ -36,6 +36,11 @@ public abstract class AbstractReader implements IComponentReader
 		m_readerType = readerType;
 	}
 
+	public boolean canMaterialize()
+	{
+		return true;
+	}
+
 	public NodeQuery getNodeQuery()
 	{
 		return m_providerMatch.getNodeQuery();

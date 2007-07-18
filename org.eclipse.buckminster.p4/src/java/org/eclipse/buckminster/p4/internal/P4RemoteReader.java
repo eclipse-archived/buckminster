@@ -86,11 +86,6 @@ public class P4RemoteReader extends AbstractRemoteReader
 		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), branchNameBin[0], providerMatch.getNodeQuery().getProperties());
 	}
 
-	public boolean canMaterialize() throws BuckminsterException
-	{
-		return true;
-	}
-
 	@Override
 	public void close()
 	{

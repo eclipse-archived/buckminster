@@ -64,12 +64,6 @@ public class ZipFileReader extends AbstractCatalogReader
 		}
 	}
 
-	public boolean canMaterialize()
-	throws BuckminsterException
-	{
-		return true;
-	}
-
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	throws CoreException
 	{

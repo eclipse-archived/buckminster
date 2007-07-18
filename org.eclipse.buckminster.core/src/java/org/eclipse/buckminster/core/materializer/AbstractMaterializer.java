@@ -66,7 +66,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		return true;
 	}
 
-	public IPath getDefaultInstallRoot(MaterializationContext context, boolean forFile) throws CoreException
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution, boolean forFile) throws CoreException
 	{
 		if(Platform.OS_WIN32.equals(Platform.getOS()))
 		{

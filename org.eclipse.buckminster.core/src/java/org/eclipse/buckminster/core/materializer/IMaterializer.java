@@ -42,10 +42,11 @@ public interface IMaterializer
 	/**
 	 * Returns the default root for the installation.
 	 * @param context The context in which the materialization takes place
+	 * @param resolution The resolution
 	 * @param forFile true if the location is for a file. False if it is for a folder
 	 * @return The default root. It can never be <code>null</code>
 	 */
-	IPath getDefaultInstallRoot(MaterializationContext context, boolean forFile) throws CoreException;
+	IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution, boolean forFile) throws CoreException;
 
 	/**
 	 * Materialize all resolutions from the bill of materials <code>bom</code> except the ones listed

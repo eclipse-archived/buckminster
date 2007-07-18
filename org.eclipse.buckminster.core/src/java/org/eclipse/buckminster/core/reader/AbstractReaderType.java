@@ -93,7 +93,6 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 
 	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
-		// FIXME: Perhaps assert that all locations are writeable?
 	}
 
 	public VersionMatch getDefaultVersion() throws CoreException

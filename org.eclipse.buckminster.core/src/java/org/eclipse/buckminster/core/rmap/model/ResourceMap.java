@@ -200,9 +200,8 @@ public class ResourceMap implements ISaxable, ISaxableElement
 					}
 					return node;
 				}
-				catch(BuckminsterException e)
+				catch(CoreException e)
 				{
-					// FIXME: BuckminsterException is perhaps too coarse-grained
 					String msg = String.format("Provider %s(%s): Resolve failed: %s", provider.getReaderTypeId(), providerMatch.getRepositoryURI(), e.getMessage());
 					logger.debug(msg);
 					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));

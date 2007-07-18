@@ -79,11 +79,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 			throw new BuckminsterException("Unable to load model for " + m_base.getComponentName());
 	}
 
-	public boolean canMaterialize()
-	{
-		return true;
-	}
-
 	public List<IFragmentModel> getFragmentsFor(String pluginId) throws CoreException
 	{
 		EclipseImportReaderType rt = (EclipseImportReaderType)getReaderType();

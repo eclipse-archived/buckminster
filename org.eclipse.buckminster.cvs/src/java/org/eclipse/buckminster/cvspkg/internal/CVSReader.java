@@ -62,11 +62,6 @@ public class CVSReader extends AbstractRemoteReader
 		m_session.close();
 	}
 
-	public boolean canMaterialize()
-	{
-		return true;
-	}
-
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);

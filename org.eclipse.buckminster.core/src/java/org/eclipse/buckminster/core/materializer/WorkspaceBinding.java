@@ -15,11 +15,13 @@ import org.eclipse.core.runtime.IPath;
  */
 class WorkspaceBinding
 {
+	private final IPath m_workspaceRoot;
 	private final IPath m_workspaceRelativePath;
 	private final Materialization m_materialization;
 
-	WorkspaceBinding(IPath workspaceRelativePath, Materialization materialization)
+	WorkspaceBinding(IPath workspaceRoot, IPath workspaceRelativePath, Materialization materialization)
 	{
+		m_workspaceRoot = workspaceRoot;
 		m_workspaceRelativePath = workspaceRelativePath;
 		m_materialization = materialization;
 	}
@@ -32,6 +34,11 @@ class WorkspaceBinding
 	IPath getWorkspaceRelativePath()
 	{
 		return m_workspaceRelativePath;
+	}
+  
+	IPath getWorkspaceRoot()
+	{
+		return m_workspaceRoot;
 	}
 }
 

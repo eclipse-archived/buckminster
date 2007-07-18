@@ -43,19 +43,6 @@ public class URLCatalogReader extends AbstractCatalogReader
 		m_uri = readerType.getURI(rInfo);
 	}
 
-	/**
-	 * This method currently returns <code>true</code> if the protocol is &quot;file&quot; since
-	 * it's a bit cumbersome to browse otherwise. All other reader id uses will yield <code>true</code>
-	 * always.
-	 */
-	public boolean canMaterialize()
-	throws BuckminsterException
-	{
-		// FIXME: Should allow browsing of FTP sites.
-		//
-		return "file".equals(this.getURI().getScheme());
-	}
-
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	throws CoreException
 	{

@@ -48,12 +48,6 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		m_fileInfo = null;
 	}
 
-	public boolean canMaterialize()
-	throws BuckminsterException
-	{
-		return true;
-	}
-
 	public boolean exists(IProgressMonitor monitor) throws CoreException, IOException
 	{
 		InputStream input = null;

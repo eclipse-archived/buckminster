@@ -80,11 +80,6 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
 	}
 
-	public boolean canMaterialize()
-	{
-		return true;
-	}
-
 	@Override
 	public void close()
 	{
