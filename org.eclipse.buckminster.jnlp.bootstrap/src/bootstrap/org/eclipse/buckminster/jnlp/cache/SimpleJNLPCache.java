@@ -191,7 +191,14 @@ public class SimpleJNLPCache
 			}
 			finally
 			{
-				Utils.deleteRecursive(tempRoot);
+				try
+				{
+					Utils.deleteRecursive(tempRoot);
+				}
+				catch(Throwable e)
+				{
+					// ignore, perhaps something is broken
+				}
 			}
 		}
 		else if(latestFile != null)
