@@ -51,6 +51,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 	public MaterializationSubProgressMonitor(Composite parent)
 	{
 		m_parentComposite = parent;
+		//System.out.println("Create");
 	}
 
 	private Control createControl(Composite parent)
@@ -111,6 +112,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 				m_progressBar.setMaximum(totalWork);
 			}
 		});
+		//System.out.println("Begin");
 	}
 
 	public void done()
@@ -123,6 +125,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 				m_parentComposite.layout();
 			}
 		});
+		//System.out.println("Done");
 	}
 
 	public void internalWorked(final double work)
@@ -157,6 +160,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 				}
 			});
 		}
+		//System.out.println("Cancel");
 	}
 
 	public void setTaskName(String name)
