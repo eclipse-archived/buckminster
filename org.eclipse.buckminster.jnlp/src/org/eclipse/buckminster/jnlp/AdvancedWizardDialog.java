@@ -156,6 +156,7 @@ public class AdvancedWizardDialog extends WizardDialog
 		
 		if (getWizard().needsProgressMonitor())
 		{
+			getProgressMonitor().setCanceled(false);
 			ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
 			progressMonitorPart.setVisible(true);
 		}
@@ -173,7 +174,6 @@ public class AdvancedWizardDialog extends WizardDialog
 				ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
 				progressMonitorPart.setVisible(false);
 			}
-			getProgressMonitor().setCanceled(false);
 		}
 	}
 	
