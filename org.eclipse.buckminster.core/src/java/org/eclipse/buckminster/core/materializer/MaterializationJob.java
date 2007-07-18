@@ -128,7 +128,7 @@ public class MaterializationJob extends Job
 		this.setPriority(LONG);
 	}
 
-	private void internalRun(IProgressMonitor monitor) throws CoreException
+	private void internalRun(final IProgressMonitor monitor) throws CoreException
 	{
 		CorePlugin corePlugin = CorePlugin.getDefault();
 		Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
@@ -178,19 +178,22 @@ public class MaterializationJob extends Job
 			@Override
 			public void aboutToRun(IJobChangeEvent event)
 			{
-				if(!m_context.isContinueOnError() && m_context.getStatus().getSeverity() == IStatus.ERROR)
+				if(monitor.isCanceled() || (!m_context.isContinueOnError() && m_context.getStatus().getSeverity() == IStatus.ERROR))
 					cancel();
 			}
 
 			@Override
 			public void done(IJobChangeEvent event)
 			{
-				MaterializerJob mjob = allJobs.poll();
-				if(mjob != null)
+				if(!monitor.isCanceled())
 				{
-					mjob.addJobChangeListener(this);
-					mjob.schedule();
-				}
+					MaterializerJob mjob = allJobs.poll();
+					if(mjob != null)
+					{
+						mjob.addJobChangeListener(this);
+						mjob.schedule();
+					}
+				}	
 			}
 		};
 
@@ -215,11 +218,13 @@ public class MaterializationJob extends Job
 		catch(OperationCanceledException e)
 		{
 			jobManager.cancel(m_context);
+			allJobs.clear();
 			throw e;
 		}
 		catch(InterruptedException e)
 		{
 			jobManager.cancel(m_context);
+			allJobs.clear();
 			throw new OperationCanceledException();
 		}
 
