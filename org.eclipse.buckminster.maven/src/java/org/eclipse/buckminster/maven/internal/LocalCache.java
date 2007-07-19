@@ -106,7 +106,8 @@ public class LocalCache
 		return openFile(repository, path, monitor, null);
 	}
 
-	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor, FileInfoBuilder info) throws CoreException, IOException
+	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor, FileInfoBuilder info)
+			throws CoreException, IOException
 	{
 		IProgressMonitor subMonitor = monitor;
 		int failureCounter = 0;
@@ -116,6 +117,7 @@ public class LocalCache
 			try
 			{
 				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor, info);
+				monitor.subTask("Verifying digest...");
 				return new FileInputStream(localFile);
 			}
 			catch(CoreException e)
@@ -128,6 +130,9 @@ public class LocalCache
 			}
 			catch(IOException e)
 			{
+				monitor.subTask("Digest verification failed" + (failureCounter < MAX_FAILURES
+						? ". Trying again..."
+						: ""));
 				if(++failureCounter == MAX_FAILURES)
 					throw e;
 
@@ -136,7 +141,8 @@ public class LocalCache
 		}
 	}
 
-	private static byte[] readRemoteDigest(StringBuilder urlBld, String suffix, int nBytes, IProgressMonitor monitor) throws CoreException
+	private static byte[] readRemoteDigest(StringBuilder urlBld, String suffix, int nBytes, IProgressMonitor monitor)
+			throws CoreException
 	{
 		int len = urlBld.length();
 		urlBld.append(suffix);
@@ -160,13 +166,15 @@ public class LocalCache
 	}
 
 	private static final String SHA1_SUFFIX = ".sha1";
+
 	private static final int SHA1_LEN = 20;
 
 	private static final String MD5_SUFFIX = ".md5";
+
 	private static final int MD5_LEN = 16;
 
-	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor, FileInfoBuilder info) throws IOException,
-			CoreException
+	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor,
+			FileInfoBuilder info) throws IOException, CoreException
 	{
 		IPath fullPath = m_localCacheRoot.append(path);
 		File file = fullPath.toFile();
@@ -182,7 +190,6 @@ public class LocalCache
 
 		IPath md5Path = containingFolder.append(path.lastSegment() + MD5_SUFFIX);
 		File md5File = md5Path.toFile();
-
 
 		byte[] remoteSha1 = null;
 		byte[] remoteMd5 = null;
@@ -249,7 +256,9 @@ public class LocalCache
 		MessageDigest md;
 		try
 		{
-			md = MessageDigest.getInstance(remoteSha1 == null ? "MD5" : "SHA1");
+			md = MessageDigest.getInstance(remoteSha1 == null
+					? "MD5"
+					: "SHA1");
 			md.reset();
 		}
 		catch(NoSuchAlgorithmException e)
@@ -260,18 +269,24 @@ public class LocalCache
 		OutputStream output = null;
 		try
 		{
+			MonitorUtils.ensureNotNull(monitor);
+			monitor.beginTask(null, 1000);
+			monitor.subTask("Reading from " + remoteURL);
+
 
 			File outputDir = containingFolder.toFile();
 			if(!(outputDir.exists() || outputDir.mkdirs()))
 				throw new IOException("Unable to create directory " + outputDir);
 
-			input = URLUtils.openStream(remoteURL, MonitorUtils.subMonitor(monitor, 5), info);
+			input = URLUtils.openStream(remoteURL, MonitorUtils.subMonitor(monitor, 100), info);
 			output = new FileOutputStream(file);
 
 			byte[] buf = new byte[0x2000];
 			int count;
 
-			IProgressMonitor writeMonitor = MonitorUtils.subMonitor(monitor, 900);
+			IProgressMonitor writeMonitor = MonitorUtils.subMonitor(monitor, failureCounter == 0
+					? 900
+					: 0);
 
 			writeMonitor.beginTask(null, info.getSize() > 0
 					? (int)info.getSize()
@@ -295,7 +310,9 @@ public class LocalCache
 						// Bump the reporter to report the change
 						progressReporter.interrupt();
 
-						MonitorUtils.worked(writeMonitor, info.getSize() > 0 ? count : 1);
+						MonitorUtils.worked(writeMonitor, info.getSize() > 0
+								? count
+								: 1);
 					}
 				}
 				finally
@@ -316,7 +333,7 @@ public class LocalCache
 
 		byte[] localDigest = md.digest();
 
-		boolean matchingDigest; 
+		boolean matchingDigest;
 		if(remoteDigest == null)
 		{
 			MavenPlugin.getLogger().warning("Unable to find Digest for " + remoteURL);
@@ -333,7 +350,9 @@ public class LocalCache
 				// The maven repo is not perfect. Sometimes the MD5 and SHA1 are incorrect
 				// due to replace of the actual jar
 				//
-				MavenPlugin.getLogger().warning("Digest for " + remoteURL + " still doesn't match after " + MAX_FAILURES + " download attempts. Corrupt repo?");
+				MavenPlugin.getLogger().warning(
+						"Digest for " + remoteURL + " still doesn't match after " + MAX_FAILURES
+								+ " download attempts. Corrupt repo?");
 
 			try
 			{
