@@ -205,109 +205,104 @@ public class AntRunner
 	 */
 	public void run(IProgressMonitor monitor) throws CoreException
 	{
-		if(s_buildRunning)
+		synchronized(s_internalAntRunnerClass)
 		{
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD, NLS
-					.bind(InternalCoreAntMessages.AntRunner_Already_in_progess, new String[] { m_buildFileLocation }),
-					null);
-			throw new CoreException(status);
-		}
-		s_buildRunning = true;
-		Object runner = null;
-		ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-		try
-		{
-			runner = s_internalAntRunnerClass.newInstance();
-			s_setBuildFileLocation.invoke(runner, new Object[] { m_buildFileLocation });
-
-			if(m_antHome != null)
-				s_setAntHome.invoke(runner, new Object[] { m_antHome });
-
-			if(m_buildLoggerClassName == null)
-				//
-				//indicate that the default logger is not to be used
-				//
-				m_buildLoggerClassName= "";
-
-			s_addBuildLogger.invoke(runner, new Object[] { m_buildLoggerClassName });
-
-			if(m_userProperties != null)
+			Object runner = null;
+			ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+			try
 			{
-				Map<String,String> allProps = m_userProperties;
-
-				// The eclipse ant runner will not include the global properties
-				// if we add user properties so we need to include them here
-				//
-				List<Property> properties = getGlobalAntProperties();
-				if(properties != null)
+				runner = s_internalAntRunnerClass.newInstance();
+				s_setBuildFileLocation.invoke(runner, new Object[] { m_buildFileLocation });
+	
+				if(m_antHome != null)
+					s_setAntHome.invoke(runner, new Object[] { m_antHome });
+	
+				if(m_buildLoggerClassName == null)
+					//
+					//indicate that the default logger is not to be used
+					//
+					m_buildLoggerClassName= "";
+	
+				s_addBuildLogger.invoke(runner, new Object[] { m_buildLoggerClassName });
+	
+				if(m_userProperties != null)
 				{
-					allProps = new HashMap<String,String>(m_userProperties);
-					for(Property property : properties)
+					Map<String,String> allProps = m_userProperties;
+	
+					// The eclipse ant runner will not include the global properties
+					// if we add user properties so we need to include them here
+					//
+					List<Property> properties = getGlobalAntProperties();
+					if(properties != null)
 					{
-						// We must do early expansion since the expansion is based
-						// on Eclipse variables and not on other properties.
-						//
-						String value= property.getValue(true);
-						if (value != null)
-							allProps.put(property.getName(), value);
+						allProps = new HashMap<String,String>(m_userProperties);
+						for(Property property : properties)
+						{
+							// We must do early expansion since the expansion is based
+							// on Eclipse variables and not on other properties.
+							//
+							String value= property.getValue(true);
+							if (value != null)
+								allProps.put(property.getName(), value);
+						}
 					}
+					s_addUserProperties.invoke(runner, new Object[] { allProps });
 				}
-				s_addUserProperties.invoke(runner, new Object[] { allProps });
+	
+				if(m_propertyFiles != null && m_propertyFiles.length > 0)
+					s_addPropertyFiles.invoke(runner, new Object[] { m_propertyFiles });
+	
+				if(m_arguments != null && m_arguments.length > 0)
+					s_setArguments.invoke(runner, new Object[] { m_arguments });
+	
+				if(monitor != null)
+					s_setProgressMonitor.invoke(runner, new Object[] { monitor });
+	
+				int messageOutputLevel;
+				switch(BuckminsterPreferences.getLogLevelAntLogger())
+				{
+				case Logger.DEBUG:
+					messageOutputLevel = MSG_DEBUG;
+					break;
+				case Logger.WARNING:
+					messageOutputLevel = MSG_WARN;
+					break;
+				case Logger.ERROR:
+					messageOutputLevel = MSG_ERR;
+					break;
+				default:
+					messageOutputLevel = MSG_INFO;
+				}
+				if(messageOutputLevel != MSG_INFO)
+					s_setMessageOutputLevel.invoke(runner, new Object[] { new Integer(messageOutputLevel) });
+	
+				if(m_targets != null)
+					s_setExecutionTargets.invoke(runner, new Object[] { m_targets });
+	
+				s_run.invoke(runner, Trivial.EMPTY_OBJECT_ARRAY);
 			}
-
-			if(m_propertyFiles != null && m_propertyFiles.length > 0)
-				s_addPropertyFiles.invoke(runner, new Object[] { m_propertyFiles });
-
-			if(m_arguments != null && m_arguments.length > 0)
-				s_setArguments.invoke(runner, new Object[] { m_arguments });
-
-			if(monitor != null)
-				s_setProgressMonitor.invoke(runner, new Object[] { monitor });
-
-			int messageOutputLevel;
-			switch(BuckminsterPreferences.getLogLevelAntLogger())
+			catch(NoClassDefFoundError e)
 			{
-			case Logger.DEBUG:
-				messageOutputLevel = MSG_DEBUG;
-				break;
-			case Logger.WARNING:
-				messageOutputLevel = MSG_WARN;
-				break;
-			case Logger.ERROR:
-				messageOutputLevel = MSG_ERR;
-				break;
-			default:
-				messageOutputLevel = MSG_INFO;
+				throw problemLoadingClass(e);
 			}
-			if(messageOutputLevel != MSG_INFO)
-				s_setMessageOutputLevel.invoke(runner, new Object[] { new Integer(messageOutputLevel) });
-
-			if(m_targets != null)
-				s_setExecutionTargets.invoke(runner, new Object[] { m_targets });
-
-			s_run.invoke(runner, Trivial.EMPTY_OBJECT_ARRAY);
-		}
-		catch(NoClassDefFoundError e)
-		{
-			throw problemLoadingClass(e);
-		}
-		catch(InvocationTargetException e)
-		{
-			throw handleInvocationTargetException(runner, s_internalAntRunnerClass, e);
-		}
-		catch(Exception e)
-		{
-			String message = (e.getMessage() == null)
-					? InternalCoreAntMessages.AntRunner_Build_Failed__3
-					: e.getMessage();
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD,
-					message, e);
-			throw new CoreException(status);
-		}
-		finally
-		{
-			s_buildRunning = false;
-			Thread.currentThread().setContextClassLoader(originalClassLoader);
+			catch(InvocationTargetException e)
+			{
+				throw handleInvocationTargetException(runner, s_internalAntRunnerClass, e);
+			}
+			catch(Exception e)
+			{
+				String message = (e.getMessage() == null)
+						? InternalCoreAntMessages.AntRunner_Build_Failed__3
+						: e.getMessage();
+				IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD,
+						message, e);
+				throw new CoreException(status);
+			}
+			finally
+			{
+				s_buildRunning = false;
+				Thread.currentThread().setContextClassLoader(originalClassLoader);
+			}
 		}
 	}
 
