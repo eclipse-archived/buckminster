@@ -47,10 +47,11 @@ public class FileSystemMaterializer extends AbstractMaterializer
 		return "downloads";
 	}
 
-	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
+			IProgressMonitor monitor) throws CoreException
 	{
 		ArrayList<Materialization> adjustedMinfos = new ArrayList<Materialization>(resolutions.size());
-		HashMap<ComponentIdentifier,Resolution> resolutionPerID = new HashMap<ComponentIdentifier, Resolution>();
+		HashMap<ComponentIdentifier, Resolution> resolutionPerID = new HashMap<ComponentIdentifier, Resolution>();
 
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 1000);
@@ -78,35 +79,36 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						adjustedMinfos.add(mat);
 						continue;
 					}
-	
+
 					ComponentIdentifier ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
 					IPath installLocation = context.getInstallLocation(cr);
 					mat = new Materialization(installLocation, ci);
 					resolutionPerID.put(ci, cr);
-					
-	
+
 					File file = installLocation.toFile();
 					boolean fileExists = file.exists();
 					if(fileExists && conflictRes == ConflictResolution.KEEP)
 					{
-						boolean pathTypeOK = installLocation.hasTrailingSeparator() ? file.isDirectory() : !file.isDirectory();
-	
+						boolean pathTypeOK = installLocation.hasTrailingSeparator()
+								? file.isDirectory()
+								: !file.isDirectory();
+
 						if(!pathTypeOK)
 							throw new FileFolderMismatchException(ci, installLocation);
-	
+
 						// Don't materialize this one. Instead, pretend that we
 						// just did.
 						//
 						logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
-										+ installLocation);
+								+ installLocation);
 
 						mat.store();
 						adjustedMinfos.add(mat);
 						MonitorUtils.worked(prepMon, 10);
 						continue;
 					}
-	
+
 					// Ensure that the destination exists and that it is empty. This might cause a
 					// DestinationNotEmpty exception to be thrown.
 					//
@@ -115,7 +117,8 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						// We are installing into folder. That folder must be empty
 						// out prior to the installation.
 						//
-						FileUtils.prepareDestination(file, conflictRes != ConflictResolution.FAIL, MonitorUtils.subMonitor(prepMon, 10));
+						FileUtils.prepareDestination(file, conflictRes != ConflictResolution.FAIL, MonitorUtils
+								.subMonitor(prepMon, 10));
 					}
 					else
 					{
@@ -167,15 +170,15 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				{
 					Resolution cr = resolutionPerID.get(mi.getComponentIdentifier());
 					matMon.subTask(cr.getName());
-					IComponentReader reader = readerType
-							.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));
+					IComponentReader reader = readerType.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));
 					try
 					{
 						IPath location = mi.getComponentLocation();
 						IProgressMonitor matSubMon = MonitorUtils.subMonitor(matMon, 80);
 
 						if(reader instanceof IFileReader)
-							((IFileReader)reader).materialize(MaterializerEndPoint.create(location, cr, context), matSubMon);
+							((IFileReader)reader).materialize(MaterializerEndPoint.create(location, cr, context),
+									matSubMon);
 						else
 							((ICatalogReader)reader).materialize(location, matSubMon);
 
