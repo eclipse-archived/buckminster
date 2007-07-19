@@ -66,6 +66,8 @@ public class MavenComponentType extends AbstractComponentType
 
 	private static final Pattern s_timestampPattern = Pattern.compile('^' + MavenComponentType.s_timestampExpr + '$');
 
+	private static final Pattern s_numericDotPattern = Pattern.compile("^[0-9]+\\.[0-9].*$");
+
 	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss");
 	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd");
 
@@ -167,14 +169,18 @@ public class MavenComponentType extends AbstractComponentType
 		if(m.matches())
 			return VersionFactory.TimestampType.coerce(createTimestamp(m.group(1), m.group(2)));
 
-		try
+		m = s_numericDotPattern.matcher(versionStr);
+		if(m.matches())
 		{
-			return VersionFactory.TripletType.fromString(versionStr);
+			try
+			{
+				return VersionFactory.TripletType.fromString(versionStr);
+			}
+			catch(VersionSyntaxException e)
+			{
+			}
 		}
-		catch(VersionSyntaxException e)
-		{
-			return VersionFactory.StringType.fromString(versionStr);
-		}
+		return VersionFactory.StringType.fromString(versionStr);
 	}
 
 	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
@@ -247,7 +253,7 @@ public class MavenComponentType extends AbstractComponentType
 		String artifactId = null;
 		String versionStr = null;
 		String type = null;
-		// String scope = null;
+		boolean optional = false;
 		for(Node depChild = dep.getFirstChild(); depChild != null; depChild = depChild.getNextSibling())
 		{
 			if(depChild.getNodeType() != Node.ELEMENT_NODE)
@@ -265,9 +271,16 @@ public class MavenComponentType extends AbstractComponentType
 				id = nodeValue;
 			else if("type".equals(localName))
 				type = nodeValue;
-			// else if("scope".equals(localName))
-			// scope = nodeValue;
+			else if("optional".equals(localName))
+				optional = Boolean.parseBoolean(nodeValue);
 		}
+
+		if(optional)
+			//
+			// Docs etc. We skip this here since we don't generate an
+			// actions that can make use of it
+			//
+			return;
 
 		if(artifactId == null)
 			artifactId = id;
