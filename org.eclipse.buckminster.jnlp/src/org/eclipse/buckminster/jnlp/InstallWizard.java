@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -263,9 +264,11 @@ public class InstallWizard extends Wizard
 			OperationPage operationPage = (OperationPage)getPage("OperationStep");
 			getContainer().showPage(operationPage);
 			IJobManager jobManager = Job.getJobManager();
+			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(true);
 			jobManager.setProgressProvider(operationPage.getProgressProvider());
 			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
 			jobManager.setProgressProvider(null);
+			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
 			getContainer().showPage(getPage("DoneStep"));
 		}
 		catch(InterruptedException e)

@@ -41,6 +41,8 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 	
 	private static final String AVAILABLE = "available";
 
+	private MaterializationProgressProvider m_provider;
+	
 	private Composite m_parentComposite;
 
 	private Composite m_composite;
@@ -59,8 +61,9 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 
 	private boolean m_done = false;
 
-	public MaterializationProgressMonitor(Composite parent, Job job)
+	public MaterializationProgressMonitor(MaterializationProgressProvider provider, Composite parent, Job job)
 	{
+		m_provider = provider;
 		m_parentComposite = parent;
 		
 		if(job == null)
@@ -157,7 +160,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 
 	public void beginTask(final String name, final int totalWork)
 	{
-		if(m_done)
+		if(!m_provider.isEnabled() || m_done)
 		{
 			return;
 		}
@@ -177,7 +180,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 
 	public void done()
 	{
-		if(m_done)
+		if(!m_provider.isEnabled() || m_done)
 		{
 			return;
 		}
@@ -221,7 +224,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 
 	public void internalWorked(final double work)
 	{
-		if(m_done)
+		if(!m_provider.isEnabled() || m_done)
 		{
 			return;
 		}
@@ -246,7 +249,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 	{
 		m_canceled = value;
 
-		if(m_done)
+		if(!m_provider.isEnabled() || m_done)
 		{
 			return;
 		}
@@ -271,7 +274,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 
 	public void subTask(final String name)
 	{
-		if(m_done)
+		if(!m_provider.isEnabled() || m_done)
 		{
 			return;
 		}

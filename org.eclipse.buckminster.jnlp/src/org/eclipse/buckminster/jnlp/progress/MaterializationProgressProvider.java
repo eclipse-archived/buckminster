@@ -24,6 +24,8 @@ public class MaterializationProgressProvider extends ProgressProvider
 {
 	private Composite m_composite;
 
+	private boolean m_enabled = true;
+	
 	public MaterializationProgressProvider(Composite parent)
 	{
 		m_composite = new Composite(parent, SWT.NONE);
@@ -34,7 +36,16 @@ public class MaterializationProgressProvider extends ProgressProvider
 	@Override
 	public IProgressMonitor createMonitor(Job job)
 	{
-		return new MaterializationProgressMonitor(m_composite, job);
-		
+		return new MaterializationProgressMonitor(this, m_composite, job);	
+	}
+	
+	public boolean isEnabled()
+	{
+		return m_enabled;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		m_enabled = enabled;
 	}
 }
