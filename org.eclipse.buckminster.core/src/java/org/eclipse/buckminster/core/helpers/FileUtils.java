@@ -576,14 +576,14 @@ public abstract class FileUtils
 		return crc32.getValue();
 	}
 
-	public static void createDirectory(File file, IProgressMonitor monitor) throws MkdirException
+	public static synchronized void createDirectory(File file, IProgressMonitor monitor) throws MkdirException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 
 		monitor.beginTask(null, 1);
 		try
 		{
-			if(!(file.isDirectory() || file.mkdirs()))
+			if(!(file.mkdirs() || file.isDirectory()))
 				throw new MkdirException(file);
 			MonitorUtils.worked(monitor, 1);
 		}
