@@ -168,6 +168,8 @@ public class MaterializationJob extends Job
 				allJobs.offer(new MaterializerJob(entry.getKey(), materializer, resolutions, m_context));
 		}
 
+		final Queue<MaterializerJob> jobsToWakeUp = new LinkedList<MaterializerJob>();
+
 		// -- Schedule at most m_maxParallelJobs. After that, let the termination of
 		// a job schedule a new one until the queue is empty.
 		//
@@ -187,18 +189,18 @@ public class MaterializationJob extends Job
 			{
 				if(!monitor.isCanceled())
 				{
-					MaterializerJob mjob = allJobs.poll();
+					MaterializerJob mjob = jobsToWakeUp.poll();
 					if(mjob != null)
 					{
 						mjob.addJobChangeListener(this);
-						mjob.schedule();
+						mjob.wakeUp();
 					}
 				}	
 			}
 		};
 
 		int maxJobs = m_context.getMaxParallelJobs();
-		for(int idx = 0; idx < maxJobs; ++idx)
+		for(int idx = 0; idx < allJobs.size(); ++idx)
 		{
 			MaterializerJob job = allJobs.poll();
 			if(job == null)
@@ -206,6 +208,12 @@ public class MaterializationJob extends Job
 
 			job.addJobChangeListener(listener);
 			job.schedule();
+			
+			if(idx >= maxJobs)
+			{
+				job.sleep();
+				jobsToWakeUp.offer(job);
+			}
 		}
 
 		// Wait until all jobs have completed
