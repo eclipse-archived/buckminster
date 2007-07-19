@@ -89,7 +89,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 			OutputStream out = null;
 			try
 			{
-				in = open(MonitorUtils.subMonitor(monitor, 500));
+				in = open(MonitorUtils.subMonitor(monitor, 800));
 
 				File destDir = destFile.getParentFile();
 				if(destFile.exists())
@@ -103,7 +103,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 				else
 					MonitorUtils.worked(monitor, 100);
 
-				unpacker.unpack(in, MonitorUtils.subMonitor(monitor, 400));
+				unpacker.unpack(in, MonitorUtils.subMonitor(monitor, 100));
 			}
 			catch(IOException e)
 			{
