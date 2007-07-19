@@ -305,6 +305,7 @@ public class LocalCache
 					while((count = input.read(buf)) >= 0)
 					{
 						output.write(buf, 0, count);
+						md.update(buf, 0, count);
 						progress.increase(count);
 
 						// Bump the reporter to report the change
