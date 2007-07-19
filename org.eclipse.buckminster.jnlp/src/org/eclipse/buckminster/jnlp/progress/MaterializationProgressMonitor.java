@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp.progress;
 
 import java.net.URL;
 
+import org.eclipse.buckminster.core.helpers.IJobInfo;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -31,7 +32,7 @@ import org.eclipse.swt.widgets.ToolItem;
  * @author Karel Brezina
  * 
  */
-public class MaterializationSubProgressMonitor implements IProgressMonitor
+public class MaterializationProgressMonitor implements IProgressMonitor
 {
 	private static final String PROGRESS_STOP = "progress_stop.gif";
 
@@ -57,10 +58,27 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	private boolean m_canceled = false;
 
-	public MaterializationSubProgressMonitor(Composite parent, Job job)
+	private boolean m_done = false;
+
+	public MaterializationProgressMonitor(Composite parent, Job job)
 	{
 		m_parentComposite = parent;
-		m_jobName = job == null ? "operation" : job.getName();
+		
+		if(job == null)
+		{
+			m_jobName = "operation";
+		}
+		else
+		{
+			if(job instanceof IJobInfo)
+			{
+				m_jobName = ((IJobInfo)job).getOperationName();
+			}
+			else
+			{
+				m_jobName = job.getName();
+			}
+		}
 		//System.out.println("Create");
 	}
 
@@ -134,6 +152,11 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void beginTask(final String name, final int totalWork)
 	{
+		if(m_done)
+		{
+			return;
+		}
+
 		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
@@ -149,6 +172,11 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void done()
 	{
+		if(m_done)
+		{
+			return;
+		}
+
 		if(m_cancelButton != null)
 		{
 			Display.getDefault().syncExec(new Runnable()
@@ -160,7 +188,7 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 			});
 		}
 
-		subTask(m_jobName + " completed");
+		subTask(m_jobName + " " + (isCanceled() ? "canceled" : "completed"));
 		
 		try
 		{
@@ -171,6 +199,8 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 			// nothing
 		}
 
+		m_done = true;
+		
 		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
@@ -185,6 +215,11 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void internalWorked(final double work)
 	{
+		if(m_done)
+		{
+			return;
+		}
+
 		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
@@ -204,6 +239,11 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 	public void setCanceled(boolean value)
 	{
 		m_canceled = value;
+
+		if(m_done)
+		{
+			return;
+		}
 
 		if(m_cancelButton != null)
 		{
@@ -225,6 +265,11 @@ public class MaterializationSubProgressMonitor implements IProgressMonitor
 
 	public void subTask(final String name)
 	{
+		if(m_done)
+		{
+			return;
+		}
+		
 		Display.getDefault().syncExec(new Runnable()
 		{
 			public void run()
