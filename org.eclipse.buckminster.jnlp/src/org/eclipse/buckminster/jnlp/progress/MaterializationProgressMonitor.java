@@ -215,7 +215,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 			public void run()
 			{
 				m_composite.setData(AVAILABLE);
-				m_composite.setVisible(false);
+				//m_composite.setVisible(false);
 				m_composite.update();
 			}
 		});
