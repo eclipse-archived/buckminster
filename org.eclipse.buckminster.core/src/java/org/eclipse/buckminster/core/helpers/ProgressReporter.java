@@ -54,8 +54,11 @@ public class ProgressReporter extends Thread
 				// ignore, it's ok
 			}
 
-			if(m_running && m_reporterProgress.shouldReport())
-				m_reporterMonitor.subTask(String.format(m_format, m_reporterProgress.report()));
+			synchronized(this)
+			{
+				if(m_running && m_reporterProgress.shouldReport())
+					m_reporterMonitor.subTask(String.format(m_format, m_reporterProgress.report()));
+			}
 		}
 	}
 
