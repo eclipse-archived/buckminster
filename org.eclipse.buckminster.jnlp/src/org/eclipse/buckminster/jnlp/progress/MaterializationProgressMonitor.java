@@ -188,6 +188,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 			{
 				public void run()
 				{
+					m_progressBar.setSelection(m_progressBar.getMaximum());
 					m_cancelButton.setEnabled(false);
 				}
 			});
