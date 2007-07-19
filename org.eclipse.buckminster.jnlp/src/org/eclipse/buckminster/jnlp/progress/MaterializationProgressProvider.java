@@ -34,7 +34,7 @@ public class MaterializationProgressProvider extends ProgressProvider
 	@Override
 	public IProgressMonitor createMonitor(Job job)
 	{
-		return new MaterializationSubProgressMonitor(m_composite, job);
+		return new MaterializationProgressMonitor(m_composite, job);
 		
 	}
 }
