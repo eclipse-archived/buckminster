@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -35,8 +36,6 @@ import org.eclipse.swt.widgets.ToolItem;
 public class MaterializationProgressMonitor implements IProgressMonitor
 {
 	private static final String PROGRESS_STOP = "progress_stop.gif";
-
-	private static final int MAX_LABEL_LENGTH = 90;
 
 	private static final long DONE_SLEEP = 2000;
 	
@@ -108,10 +107,16 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		m_composite.setLayout(new GridLayout(2, false));
 		m_composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		m_subTaskLabel = new Label(m_composite, SWT.NONE);
-		GridData layoutData = new GridData();
+		// labelComposite enables m_subTaskLabel WRAP functionality
+		Composite labelComposite = new Composite(m_composite, SWT.NONE);
+		FillLayout layout = new FillLayout();
+		layout.marginWidth = layout.marginHeight = 0;
+		labelComposite.setLayout(layout);
+		GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
 		layoutData.horizontalSpan = 2;
-		m_subTaskLabel.setLayoutData(layoutData);
+		labelComposite.setLayoutData(layoutData);
+		
+		m_subTaskLabel = new Label(labelComposite, SWT.WRAP);
 
 		m_progressBar = new ProgressBar(m_composite, SWT.NONE);
 		layoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -274,12 +279,10 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		{
 			public void run()
 			{
-				m_subTaskLabel.setText(name == null
-						? ""
-						: (name.length() > MAX_LABEL_LENGTH
-								? name.substring(0, MAX_LABEL_LENGTH - 3) + "..."
-								: name));
-				m_composite.layout(new Control[] { m_subTaskLabel });
+				m_subTaskLabel.setText(name == null ? "" : name);
+				
+				// because label can be wrapped we should call this
+				m_parentComposite.layout(true, true);
 			}
 		});
 	}
