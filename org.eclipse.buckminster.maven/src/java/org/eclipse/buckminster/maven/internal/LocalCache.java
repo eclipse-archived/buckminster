@@ -101,11 +101,6 @@ public class LocalCache
 		m_localCacheRoot = localCacheRoot;
 	}
 
-	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		return openFile(repository, path, monitor, null);
-	}
-
 	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor, FileInfoBuilder info)
 			throws CoreException, IOException
 	{

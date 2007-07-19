@@ -98,7 +98,7 @@ public class MavenReader extends URLFileReader
 		try
 		{
 			URL repoURL = repoURI.toURL();
-			input = rt.getLocalCache().openFile(repoURI.toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
+			input = rt.getLocalCache().openFile(repoURI.toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000), new FileInfoBuilder());
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource source = new InputSource(new BufferedInputStream(input));
