@@ -152,7 +152,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			CorePlugin plugin = CorePlugin.getDefault();
 			IProgressMonitor matMon = MonitorUtils.subMonitor(monitor, 900);
 
-			matMon.beginTask(null, perReader.size() * 10 + totCount * 100);
+			matMon.beginTask(null, perReader.keySet().size() * 2 + perReader.entrySet().size() * 100);
 			for(Map.Entry<String, List<Materialization>> entry : perReader.entrySet())
 			{
 				List<Materialization> rg = entry.getValue();
@@ -173,6 +173,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					{
 						IPath location = mi.getComponentLocation();
 						IProgressMonitor matSubMon = MonitorUtils.subMonitor(matMon, 80);
+
 						if(reader instanceof IFileReader)
 							((IFileReader)reader).materialize(MaterializerEndPoint.create(location, cr, context), matSubMon);
 						else
