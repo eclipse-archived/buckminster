@@ -144,7 +144,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
-	public void postMaterialization(MaterializationContext contextIProgress, IProgressMonitor monitor) throws CoreException
+	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 	}
 }

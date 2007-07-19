@@ -19,12 +19,16 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -35,6 +39,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
+import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.client.NotificationListener;
 import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
@@ -68,6 +73,53 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  */
 public class SvnSession
 {
+	private static class RepositoryAccess
+	{
+		private final SVNUrl m_svnURL;
+		private final String m_user;
+		private final String m_password;
+		public RepositoryAccess(SVNUrl svnURL, String user, String password)
+		{
+			m_svnURL = svnURL;
+			m_user = user;
+			m_password = password;
+		}
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this == o)
+				return true;
+			if(!(o instanceof RepositoryAccess))
+				return false;
+			RepositoryAccess that = (RepositoryAccess)o;
+			return m_svnURL.equals(that.m_svnURL)
+				&& Trivial.equalsAllowNull(m_user, that.m_user)
+				&& Trivial.equalsAllowNull(m_password, that.m_password);
+		}
+		public SVNUrl getSvnURL()
+		{
+			return m_svnURL;
+		}
+		public String getUser()
+		{
+			return m_user;
+		}
+		public String getPassword()
+		{
+			return m_password;
+		}
+		@Override
+		public int hashCode()
+		{
+			int hash = m_svnURL.hashCode();
+			if(m_user != null)
+				hash = hash * 31 + m_user.hashCode();
+			if(m_password != null)
+				hash = hash * 31 + m_password.hashCode();
+			return hash;
+		}
+	}
+
 	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword
 	{
 		private int m_promptPasswordLimit = 3;
@@ -266,6 +318,23 @@ public class SvnSession
 	private static final UUID CACHE_KEY_DIR_CACHE = UUID.randomUUID();
 
 	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
+
+	private static final UUID CACHE_UNKNOWN_ROOTS = UUID.randomUUID();
+
+	@SuppressWarnings("unchecked")
+	private static Set<RepositoryAccess> getUnknownRoots(Map<UUID, Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Set<RepositoryAccess> unknownRoots = (Set<RepositoryAccess>)ctxUserCache.get(CACHE_UNKNOWN_ROOTS);
+			if(unknownRoots == null)
+			{
+				unknownRoots = Collections.synchronizedSet(new HashSet<RepositoryAccess>());
+				ctxUserCache.put(CACHE_UNKNOWN_ROOTS, unknownRoots);
+			}
+			return unknownRoots;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	private static Map<String, ISVNDirEntry[]> getListCache(Map<UUID, Object> ctxUserCache)
@@ -493,7 +562,10 @@ public class SvnSession
 			synchronized(svnPlugin)
 			{
 				if(bestMatch == null)
+				{
 					m_clientAdapter = svnPlugin.createSVNClient();
+					getUnknownRoots(userCache).add(new RepositoryAccess(ourRoot, m_username, m_password));
+				}
 				else
 				{
 					m_clientAdapter = bestMatch.getSVNClient();
@@ -833,5 +905,192 @@ public class SvnSession
 		bld.append('#');
 		bld.append(revision);
 		return bld.toString();
+	}
+
+	static void createCommonRoots(MaterializationContext context) throws CoreException
+	{
+		Set<RepositoryAccess> unknownRoots = SvnSession.getUnknownRoots(context.getUserCache());
+		if(unknownRoots.size() > 1)
+		{
+			// Get all common roots with a segment count of at least 1
+			//
+			Set<RepositoryAccess> sourceRoots = unknownRoots;
+			for(;;)
+			{
+				Set<RepositoryAccess> commonRoots = getCommonRootsStep(sourceRoots);
+				if(commonRoots == sourceRoots)
+					break;
+
+				// Common roots were found. Iterate again to find commons
+				// amongst the commons
+				//
+				sourceRoots = commonRoots;
+			}
+
+			// Create the needed repositories so that Subclipse doesn't create every single
+			// root for us.
+			//
+			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
+			SVNRepositories repos = svnPlugin.getRepositories();
+			for(RepositoryAccess root : sourceRoots)
+			{
+				Properties configuration = new Properties();
+				configuration.setProperty("url", root.getSvnURL().toString());
+				String user = root.getUser();
+				if(user != null)
+					configuration.setProperty("user", user);
+				String password = root.getPassword();
+				if(password != null)
+					configuration.setProperty("password", password);
+				
+				try
+				{
+					repos.addOrUpdateRepository(repos.createRepository(configuration));
+				}
+				catch(SVNException e)
+				{
+					// Repository already exists
+				}
+			}
+			unknownRoots.clear();
+		}
+	}
+
+	private static Set<RepositoryAccess> getCommonRootsStep(Set<RepositoryAccess> source) throws CoreException
+	{
+		Set<RepositoryAccess> commonRoots = null;
+		for(RepositoryAccess repoAccess : source)
+		{
+			SVNUrl url = repoAccess.getSvnURL();
+			for(RepositoryAccess repoAccessCmp : source)
+			{
+				if(repoAccess == repoAccessCmp)
+					continue;
+
+				SVNUrl cmp = repoAccessCmp.getSvnURL();				
+				if(!(url.getHost().equals(cmp.getHost())
+				&& url.getProtocol().equals(cmp.getProtocol())
+				&& url.getPort() == cmp.getPort()))
+					continue;
+
+				String[] urlSegs = url.getPathSegments();
+				String[] cmpSegs = cmp.getPathSegments();
+				int maxSegs = urlSegs.length;
+				if(maxSegs > cmpSegs.length)
+					maxSegs = cmpSegs.length;
+
+				int idx;
+				for(idx = 0; idx < maxSegs; ++idx)
+					if(!urlSegs[idx].equals(cmpSegs[idx]))
+						break;
+	
+				if(idx < 1)
+					continue;
+
+				String user = repoAccess.getUser();
+				String cmpUser = repoAccessCmp.getUser();
+				if(user == null)
+					user = cmpUser;
+				else
+				{
+					if(!(cmpUser == null || user.equals(cmpUser)))
+						continue;
+				}
+
+				String password = repoAccess.getPassword();
+				String cmpPassword = repoAccessCmp.getPassword();
+				if(password == null)
+					password = cmpPassword;
+				else
+				{
+					if(!(cmpPassword == null || password.equals(cmpPassword)))
+						continue;
+				}
+
+				StringBuilder bld = new StringBuilder();
+				bld.append(url.getProtocol());
+				bld.append("://");
+				bld.append(url.getHost());
+				if(url.getPort() >= 0)
+				{
+					bld.append(':');
+					bld.append(url.getPort());
+				}
+				for(int pdx = 0; pdx < idx; ++pdx)
+				{
+					bld.append('/');
+					bld.append(urlSegs[pdx]);
+				}
+				try
+				{
+					if(commonRoots == null)
+						commonRoots = new HashSet<RepositoryAccess>();
+					commonRoots.add(new RepositoryAccess(new SVNUrl(bld.toString()), user, password));
+				}
+				catch(MalformedURLException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+		}
+
+		if(commonRoots == null)
+			//
+			// No common roots found
+			//
+			return source;
+
+		// Add all SVNUrl's for which we don't have a common root
+		//
+		Set<RepositoryAccess> rogueRoots = null;
+		for(RepositoryAccess repoAccess : source)
+		{
+			boolean found = false;
+			SVNUrl url = repoAccess.getSvnURL();
+			for(RepositoryAccess repoAccessCmp : commonRoots)
+			{
+				SVNUrl cmp = repoAccessCmp.getSvnURL();
+				if(!(url.getHost().equals(cmp.getHost())
+				&& url.getProtocol().equals(cmp.getProtocol())
+				&& url.getPort() == cmp.getPort()))
+					continue;
+
+				String[] urlSegs = url.getPathSegments();
+				String[] cmpSegs = cmp.getPathSegments();
+				int maxSegs = cmpSegs.length;
+				if(maxSegs > urlSegs.length)
+					continue;
+
+				int idx;
+				for(idx = 0; idx < maxSegs; ++idx)
+					if(!urlSegs[idx].equals(cmpSegs[idx]))
+						break;
+				
+				if(idx < maxSegs)
+					continue;
+
+				String user = repoAccess.getUser();
+				String cmpUser = repoAccessCmp.getUser();
+				if(!(user == null || cmpUser == null || user.equals(cmpUser)))
+					continue;
+
+				String password = repoAccess.getPassword();
+				String cmpPassword = repoAccessCmp.getPassword();
+				if(!(password == null || cmpPassword == null || password.equals(cmpPassword)))
+					continue;
+
+				found = true;
+				break;
+			}
+			if(found)
+				continue;
+
+			if(rogueRoots == null)
+				rogueRoots = new HashSet<RepositoryAccess>();
+			rogueRoots.add(repoAccess);
+		}
+		if(rogueRoots != null)
+			commonRoots.addAll(rogueRoots);
+		return commonRoots;
 	}
 }

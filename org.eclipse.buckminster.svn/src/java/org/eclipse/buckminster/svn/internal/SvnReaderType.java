@@ -142,6 +142,8 @@ public class SvnReaderType extends CatalogReaderType
 	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
 			throws CoreException
 	{
+		SvnSession.createCommonRoots(context);
 		RepositoryProvider.map(project, SVNProviderPlugin.PROVIDER_ID);
+		MonitorUtils.complete(monitor);
 	}
 }
