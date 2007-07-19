@@ -10,8 +10,10 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.helpers.IJobInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializerJob extends Job
+public class MaterializerJob extends Job implements IJobInfo
 {
 	private final IMaterializer m_materializer;
 	private final MaterializationContext m_context;
@@ -58,5 +60,28 @@ public class MaterializerJob extends Job
 			m_context.addException(BuckminsterException.wrap(e).getStatus());
 		}
 		return Status.OK_STATUS;
+	}
+
+	public String getOperationName()
+	{
+		if(m_resolutions == null || m_resolutions.size() == 0)
+		{
+			return getName();
+		}
+		
+		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
+		
+		try
+		{
+			if(lastResolution == null || lastResolution.getComponentIdentifier() == null)
+			{
+				return getName();
+			}
+			return "Materialization of " + lastResolution.getComponentIdentifier().toString();
+		}
+		catch(CoreException e)
+		{
+			return getName();
+		}
 	}
 }
