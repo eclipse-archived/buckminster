@@ -7,17 +7,27 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.actor;
 
-import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.LocalizedException;
 
 /**
  * @author kolwing
- *
  */
-@SuppressWarnings("serial")
-public class NoSuchActorException extends BuckminsterException
+public class NoSuchActorException extends LocalizedException
 {
+	private static final long serialVersionUID = -8437813291861309750L;
+	private final String[] m_arguments;
+
 	public NoSuchActorException(String actorName, String actionName)
 	{
-		super(actorName + " ("+ actionName + ")");
+		super("Action {0} refers to actor with id {1} but no such actor has been registered with extension-point {2}");
+		m_arguments = new String[] { actionName, actorName, CorePlugin.ACTORS_POINT };
+		this.assignMessage();
+	}
+
+	@Override
+	protected String[] getArguments()
+	{
+		return m_arguments;
 	}
 }
