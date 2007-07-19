@@ -38,7 +38,7 @@ public class MaterializerJob extends Job implements IJobInfo
 		// Report using the standard job reporter.
 		//
 		this.setSystem(false);
-		this.setUser(true);
+		this.setUser(false);
 		this.setPriority(LONG);
 	}
 
