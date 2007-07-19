@@ -265,7 +265,7 @@ public class InstallWizard extends Wizard
 			IJobManager jobManager = Job.getJobManager();
 			jobManager.setProgressProvider(operationPage.getProgressProvider());
 			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
-			//jobManager.setProgressProvider(null);
+			jobManager.setProgressProvider(null);
 			getContainer().showPage(getPage("DoneStep"));
 		}
 		catch(InterruptedException e)
