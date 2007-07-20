@@ -77,6 +77,7 @@ public class ProductInstaller implements IProductInstaller
 
 		installResource("product.zip", monitor);
 		installResource("platform.zip", monitor);
+		installResource("extensions.zip", monitor, false);
 		monitor.taskDone();
 	}
 
@@ -110,6 +111,11 @@ public class ProductInstaller implements IProductInstaller
 
 	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException
 	{
+		installResource(resourceName, monitor, true);
+	}
+
+	private void installResource(String resourceName, ProgressFacade monitor, boolean required) throws JNLPException
+	{
 		monitor.taskIncrementalProgress(5);
 		InputStream resourceZip = getClass().getResourceAsStream(resourceName);
 		monitor.taskIncrementalProgress(5);
@@ -118,7 +124,10 @@ public class ProductInstaller implements IProductInstaller
 			//
 			// Nothing to install
 			//
-			throw new RuntimeException("Missing " + resourceName + " resource");
+			if(required)
+				throw new RuntimeException("Missing " + resourceName + " resource");
+			
+			return;
 		}
 
 		try
