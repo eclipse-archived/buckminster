@@ -119,19 +119,17 @@ public class PDEMapProvider extends Provider
 
 			Format uri = new Format(repoLocator);
 			Provider delegated = new Provider(rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
-				hasSource(), null)
-			{
-				@Override
-				public Provider getMain()
-				{
-					return PDEMapProvider.this;
-				}
-			};
+					hasSource(), null);
 
 			String ctypeID = rq.getComponentTypeID();
 			if(ctypeID == null)
 				return delegated.findMatch(query, problemCollector, monitor);
-			return new ProviderMatch(delegated, plugin.getComponentType(ctypeID), vm, ProviderScore.GOOD, query);
+
+			IComponentType ctype = plugin.getComponentType(ctypeID);
+			ProviderMatch pm = new ProviderMatch(PDEMapProvider.this, ctype, vm, ProviderScore.GOOD, query);
+			pm.setProvider(delegated);
+			pm.setComponentType(ctype);
+			return pm;
 		}
 		finally
 		{

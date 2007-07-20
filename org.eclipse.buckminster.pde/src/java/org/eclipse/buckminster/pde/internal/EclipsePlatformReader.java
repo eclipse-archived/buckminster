@@ -109,6 +109,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		throw new MalformedProviderURIException(readerType, uri);
 	}
 
+	@Override
 	public boolean canMaterialize()
 	{
 		return false;
