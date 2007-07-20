@@ -30,11 +30,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public final class ProviderMatch implements Comparable<ProviderMatch>
 {
-	private final Provider m_provider;
-	private final IComponentType m_componentType;
+	private IComponentType m_componentType;
+	private final IComponentType m_originalComponentType;
+	private final Provider m_originalProvider;
+	private Provider m_provider;
 	private final ProviderScore m_providerScore;
-	private final VersionMatch m_versionMatch;
 	private final NodeQuery m_query;
+	private final VersionMatch m_versionMatch;
 
 	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, NodeQuery query)
 	{
@@ -44,7 +46,9 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, ProviderScore providerScore, NodeQuery query)
 	{
 		m_provider = provider;
+		m_originalProvider = provider;
 		m_componentType = componentType;
+		m_originalComponentType = componentType;
 		m_versionMatch = versionMatch == null ? VersionMatch.DEFAULT : versionMatch;
 		m_providerScore = providerScore;
 		m_query = query;
@@ -91,6 +95,16 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	public NodeQuery getNodeQuery()
 	{
 		return m_query;
+	}
+
+	public IComponentType getOriginalComponentType()
+	{
+		return m_originalComponentType;
+	}
+
+	public Provider getOriginalProvider()
+	{
+		return m_originalProvider;
 	}
 
 	/**
@@ -174,6 +188,16 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	public VersionMatch getVersionMatch()
 	{
 		return m_versionMatch;
+	}
+
+	public void setComponentType(IComponentType componentType)
+	{
+		m_componentType = componentType;
+	}
+
+	public void setProvider(Provider provider)
+	{
+		m_provider = provider;
 	}
 
 	/**

@@ -180,7 +180,7 @@ public class ResourceMap implements ISaxable, ISaxableElement
 							String msg = String.format("Provider %s(%s): CSPEC rejected: %s does not designate %s",
 								provider.getReaderTypeId(), providerMatch.getRepositoryURI(), versionDesignator, version);
 							logger.debug(msg);
-							noGoodList.add(provider.getMain());
+							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 							continue;
 						}
@@ -205,7 +205,7 @@ public class ResourceMap implements ISaxable, ISaxableElement
 					String msg = String.format("Provider %s(%s): Resolve failed: %s", provider.getReaderTypeId(), providerMatch.getRepositoryURI(), e.getMessage());
 					logger.debug(msg);
 					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-					noGoodList.add(provider.getMain());
+					noGoodList.add(providerMatch.getOriginalProvider());
 				}
 			}
 		}

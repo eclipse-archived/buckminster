@@ -10,8 +10,11 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,7 +45,7 @@ public interface IVersionFinder {
 	 * The <code>versionMatch</code> must be produced by this finder.
 	 * @return The provider
 	 */
-	Provider getProvider(VersionMatch versionMatch) throws CoreException;
+	ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctype, ProviderScore providerScore) throws CoreException;
 
 	/**
 	 * Returns the query associated with this version finder

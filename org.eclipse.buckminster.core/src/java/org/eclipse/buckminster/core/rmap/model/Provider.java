@@ -227,7 +227,7 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 						"Provider %s(%s): Found a match for %s using version designator %s, %s",
 						readerType, providerURI, componentName, desiredVersion, candidate));
 			}
-			return new ProviderMatch(versionFinder.getProvider(candidate), ctypeUsed, candidate, score, query);
+			return versionFinder.getProviderMatch(candidate, ctypeUsed, score);
 		}
 		finally
 		{
@@ -260,17 +260,6 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
-	}
-
-	/**
-	 * When ruling out bad providers during resolve, it is important that we can find the provider
-	 * as it was entered into a search path and not a provider that it in turn delegated to.
-	 * Delegees will typically override this method and instead return the delegatee.
-	 * @return
-	 */
-	public Provider getMain()
-	{
-		return this;
 	}
 
 	public final IReaderType getReaderType() throws CoreException
