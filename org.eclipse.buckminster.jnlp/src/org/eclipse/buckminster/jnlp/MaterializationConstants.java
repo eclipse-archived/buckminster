@@ -85,4 +85,6 @@ public interface MaterializationConstants
 	public static final String ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION = "NoAuthenticatorException";
 	
 	public static final String ERROR_CODE_AUTHENTICATOR_EXCEPTION = "AuthenticatorException";
+	
+	public static final String ERROR_CODE_ALREADY_RUNNING_EXCEPTION = "AlreadyRunningException";
 }
