@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -467,9 +468,23 @@ public class InstallWizard extends Wizard
 			{
 				listener.handleMSpecChangeEvent(event);
 			}
+		} catch(FileNotFoundException e)
+		{
+			throw new JNLPException(
+					"Cannot read materialization specification",
+					ERROR_CODE_404_EXCEPTION,
+					new BuckminsterException(m_mspecURL + " cannot be found"));
 		}
 		catch(IOException e)
 		{
+			// TODO how to match 403 error code better?
+			if(e.getMessage() != null && e.getMessage().startsWith("Server returned HTTP response code: 403"))
+			{
+				throw new JNLPException(
+						"Cannot read materialization specification",
+						ERROR_CODE_403_EXCEPTION,
+						new BuckminsterException(m_mspecURL + " - access denied"));
+			}
 			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 		catch(SAXException e)

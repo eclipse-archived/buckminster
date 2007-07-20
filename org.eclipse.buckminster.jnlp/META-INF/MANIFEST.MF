@@ -8,6 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface,
  org.eclipse.buckminster.core,
  org.eclipse.buckminster.runtime,
- org.eclipse.buckminster.sax
+ org.eclipse.buckminster.sax,
+ org.eclipse.core.net,
+ org.apache.commons.httpclient
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.buckminster.jnlp.accountservice

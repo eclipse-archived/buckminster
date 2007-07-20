@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +36,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -345,13 +347,26 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		catch(SAXException e)
 		{
 			throw new JNLPException(
-					"Error while reading artifact specification -\n\tmaterialization is supported only from BOM",
+					"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
 					ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+		} catch(FileNotFoundException e)
+		{
+			throw new JNLPException(
+					"Cannot read artifact specification",
+					ERROR_CODE_404_EXCEPTION,
+					new BuckminsterException(getMaterializationSpecBuilder().getURL() + " cannot be found"));
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Error while reading artifact specification -\n\tcan not read artifact specification",
-					ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+			// TODO how to match 403 error code better?
+			if(e.getMessage() != null && e.getMessage().startsWith("Server returned HTTP response code: 403"))
+			{
+				throw new JNLPException(
+						"Cannot read artifact specification",
+						ERROR_CODE_403_EXCEPTION,
+						new BuckminsterException(getMaterializationSpecBuilder().getURL() + " - access denied"));
+			}
+			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 		catch(CoreException e)
 		{
