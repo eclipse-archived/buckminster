@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -62,6 +63,14 @@ public class CVSReader extends AbstractRemoteReader
 		m_session.close();
 	}
 
+	// We need to synchronize this on something static.
+	// See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=197301
+	//
+	static synchronized Date getTagDate(CVSTag tag)
+	{
+		return tag.asDate();
+	}
+
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
@@ -74,8 +83,8 @@ public class CVSReader extends AbstractRemoteReader
 		CVSTag tag = null;
 		if(m_fixed.getType() == CVSTag.DATE)
 		{
-			if(getMetaData(MonitorUtils.subMonitor(monitor, 20)).getLastModification().compareTo(
-				m_fixed.asDate()) > 0)
+			Date fixedDate = getTagDate(m_fixed);
+			if(getMetaData(MonitorUtils.subMonitor(monitor, 20)).getLastModification().compareTo(fixedDate) > 0)
 				tag = m_fixed;
 		}
 		else
@@ -132,7 +141,7 @@ public class CVSReader extends AbstractRemoteReader
 				throw new FileNotFoundException(fileName);
 
 			CVSTag tag = m_fixed;
-			if(tag.getType() == CVSTag.DATE && metaData.getLastModification().compareTo(tag.asDate()) <= 0)
+			if(tag.getType() == CVSTag.DATE && metaData.getLastModification().compareTo(getTagDate(tag)) <= 0)
 				tag = null;
 
 

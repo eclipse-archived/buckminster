@@ -139,7 +139,7 @@ public class RepositoryMetaData implements Serializable
 		if(result != null)
 		{
 			Date resultTime = result.getTimestamp();
-			if(fixedTag != null && fixedTag.getType() == CVSTag.DATE && fixedTag.asDate().compareTo(resultTime) <= 0)
+			if(fixedTag != null && fixedTag.getType() == CVSTag.DATE && CVSReader.getTagDate(fixedTag).compareTo(resultTime) <= 0)
 				//
 				// Meta-data is newer then requested fixed date.
 				//
