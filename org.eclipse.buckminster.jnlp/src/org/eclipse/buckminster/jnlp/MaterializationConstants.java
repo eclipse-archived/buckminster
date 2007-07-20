@@ -87,4 +87,8 @@ public interface MaterializationConstants
 	public static final String ERROR_CODE_AUTHENTICATOR_EXCEPTION = "AuthenticatorException";
 	
 	public static final String ERROR_CODE_ALREADY_RUNNING_EXCEPTION = "AlreadyRunningException";
+	
+	public static final String ERROR_CODE_403_EXCEPTION = "403Exception";
+	
+	public static final String ERROR_CODE_404_EXCEPTION = "404Exception";
 }
