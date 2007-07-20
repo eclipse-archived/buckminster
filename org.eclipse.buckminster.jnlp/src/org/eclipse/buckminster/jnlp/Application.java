@@ -140,8 +140,10 @@ public class Application implements IApplication
 			HelpLinkErrorDialog.setSyncString(m_syncString);
 
 			if(!Platform.getInstanceLocation().lock())
-				throw new JNLPException("Materializer is already running",
-						MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION);
+			{
+				errorCode = MaterializationConstants.ERROR_CODE_ALREADY_RUNNING_EXCEPTION;
+				throw new BuckminsterException("Materializer is already running");
+			}
 
 			BuckminsterPreferences.setLogLevelConsole(Logger.SILENT);
 			BuckminsterPreferences.setLogLevelEclipseLogger(Logger.DEBUG);
