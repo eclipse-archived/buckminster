@@ -263,8 +263,7 @@ public class LoginPage extends InstallWizardPage
 
 				if(authenticator.login(userName, password) != IAuthenticator.LOGIN_OK)
 				{
-					// TODO uncomment
-					//throw new JNLPException("Cannot login - check username and password and try again", null);
+					throw new JNLPException("Cannot login - check username and password and try again", null);
 				}
 
 				// TODO remove - publish test
@@ -287,7 +286,7 @@ public class LoginPage extends InstallWizardPage
 
 				if(!authenticator.isLoggedIn())
 				{
-					throw new JNLPException("Cannot login - leave the wizard and try again", null);
+					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
 			}
 			catch(Throwable e)
