@@ -153,7 +153,7 @@ public class HelpLinkErrorDialog extends ErrorDialog
 						Program.launch(m_helpLinkURL);
 					} else
 					{
-						Program.launch(m_helpLinkURL + "?errorCode=\"" + m_errorCode + "\"");
+						Program.launch(m_helpLinkURL + "?errorCode=" + m_errorCode);
 					}
 				}
 			}
