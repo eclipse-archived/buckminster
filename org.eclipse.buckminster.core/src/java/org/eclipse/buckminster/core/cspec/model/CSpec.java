@@ -482,7 +482,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+			m_documentation.toSax(handler, BM_CSPEC_NS, BM_CSPEC_PREFIX, m_documentation.getDefaultTag());
 
 		Utils.emitCollection(BM_CSPEC_NS, BM_CSPEC_PREFIX, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, m_dependencies.values(),
 				handler);

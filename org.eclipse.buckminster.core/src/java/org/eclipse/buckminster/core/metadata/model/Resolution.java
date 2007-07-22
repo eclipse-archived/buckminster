@@ -98,6 +98,23 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	private transient Provider m_provider;
 
+	public Resolution(CSpec cspec, NodeQuery nq, Provider provider, String ctypeId, VersionMatch vm) throws CoreException
+	{
+		m_cspec = cspec;
+		m_cspecId = cspec.getId();
+		m_componentTypeId = ctypeId;
+		m_request = nq.getComponentRequest();
+		m_attributes = UUIDKeyed.createUnmodifiableSet(nq.getRequiredAttributes());
+		m_provider = provider;
+		m_providerId = provider.getId();
+		m_versionMatch = vm;
+		m_materializable = true;
+		m_repository = provider.getURI(nq.getProperties());
+		m_remoteName = null;
+		m_contentType = null;
+		m_size = -1L;
+	}
+
 	public Resolution(CSpec cspec, IComponentReader reader) throws CoreException
 	{
 		ProviderMatch providerMatch = reader.getProviderMatch();
