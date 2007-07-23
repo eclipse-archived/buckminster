@@ -96,7 +96,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		}
 		return (url == null)
 				? new LocalResolver(context)
-				: new ResourceMapResolver(this, context);
+				: new ResourceMapResolver(this, context, false);
 	}
 
 	public IPreferenceDescriptor[] getPreferenceDescriptors()

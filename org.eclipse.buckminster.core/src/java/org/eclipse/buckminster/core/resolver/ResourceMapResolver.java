@@ -38,6 +38,8 @@ import org.eclipse.core.runtime.jobs.Job;
 @SuppressWarnings("serial")
 public class ResourceMapResolver extends LocalResolver implements IJobChangeListener, IResolver
 {
+	private boolean m_singleThreaded = false;
+
 	private boolean m_holdQueue = false;
 
 	private static int s_jobCounter = 0;
@@ -50,10 +52,11 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	private final LinkedList<ResolverNodeWithJob> m_waitQueue = new LinkedList<ResolverNodeWithJob>();
 
-	public ResourceMapResolver(IResourceMapResolverFactory factory, ResolutionContext context) throws CoreException
+	public ResourceMapResolver(IResourceMapResolverFactory factory, ResolutionContext context, boolean singleThreaded) throws CoreException
 	{
 		super(context);
 		m_factory = factory;
+		m_singleThreaded = singleThreaded;
 	}
 
 	public void aboutToRun(IJobChangeEvent event)
@@ -86,8 +89,18 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			ComponentQuery query = getContext().getComponentQuery();
 			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(getContext(), new QualifiedDependency(
 					request, query.getAttributes(request)));
-			schedule(topNode);
-			waitForCompletion(MonitorUtils.subMonitor(monitor, 1));
+
+			if(m_singleThreaded)
+			{
+				beginTopMonitor(monitor);
+				schedule(topNode);
+				endTopMonitor();
+			}
+			else
+			{
+				schedule(topNode);
+				waitForCompletion(MonitorUtils.subMonitor(monitor, 1));
+			}
 			return createBillOfMaterials(topNode);
 		}
 		finally
@@ -118,8 +131,17 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			if(topNode.rebuildTree(bom))
 			{
 				m_holdQueue = false;
-				scheduleNext();
-				waitForCompletion(MonitorUtils.subMonitor(monitor, 1));
+				if(m_singleThreaded)
+				{
+					IStatus status = context.getStatus();
+					if(status.getSeverity() == IStatus.ERROR && !context.isContinueOnError())
+						throw new CoreException(status);
+				}
+				else
+				{
+					scheduleNext();
+					waitForCompletion(MonitorUtils.subMonitor(monitor, 1));
+				}
 				BillOfMaterials newBom = createBillOfMaterials(topNode);
 				if(!newBom.contentEqual(bom))
 					bom = newBom;
@@ -149,6 +171,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	synchronized void addJobMonitor(IProgressMonitor monitor)
 	{
+		if(m_singleThreaded)
+			return;
+
 		if(m_topMonitor == null || m_topMonitor.isCanceled())
 		{
 			monitor.setCanceled(true);
@@ -165,6 +190,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	synchronized void resolutionPartDone()
 	{
+		if(m_singleThreaded)
+			return;
+
 		// Allow another job to enter. The resolution part of the
 		// calling job is done.
 		//
@@ -174,6 +202,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	synchronized void removeJobMonitor(IProgressMonitor monitor)
 	{
+		if(m_singleThreaded)
+			return;
+
 		int idx = m_jobMonitors.size();
 		while(--idx >= 0)
 		{
@@ -217,9 +248,18 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 				return false;
 			node.setScheduled(true);
 		}
-		pushOnWaitQueue(node);
-		if(!m_holdQueue)
-			scheduleNext();
+
+		if(m_singleThreaded)
+		{
+			node.run(MonitorUtils.subMonitor(m_topMonitor, 1));
+			node.setScheduled(false);
+		}
+		else
+		{
+			pushOnWaitQueue(node);
+			if(!m_holdQueue)
+				scheduleNext();
+		}
 		return true;
 	}
 

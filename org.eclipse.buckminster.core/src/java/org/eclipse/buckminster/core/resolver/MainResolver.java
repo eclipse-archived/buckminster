@@ -94,14 +94,13 @@ public class MainResolver implements IResolver
 						continue;
 
 					bom = newBom;
-					if(!m_recursiveResolve)
+					if(!m_recursiveResolve || bom.isFullyResolved())
+					{
+						// Something happened with the BOM so we consider ourselves done here
 						//
-						// Something happend with the BOM so we consider ourselfs done here
-						//
-						return bom;
-	
-					if(bom.isFullyResolved())
-						return bom;
+						iteration = MAX_ITERATIONS;
+						break;
+					}
 				}
 
 				if(bomAtIterationStart.equals(bom))
@@ -112,10 +111,6 @@ public class MainResolver implements IResolver
 					break;
 			}
 
-			// If we get here, we probably failed. We might have come further but the bom is
-			// still not fully resolved. This may depend on skip advices so it might not be
-			// an error.
-			//
 			if(!continueOnError)
 			{
 				IStatus status = m_context.getStatus();
