@@ -161,7 +161,7 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 	{
 	}
 
-	abstract void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
+	abstract void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException;
 
 	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException

@@ -136,7 +136,7 @@ public class GeneratorNode extends DepNode
 	}
 
 	@Override
-	void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
+	void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
 	}

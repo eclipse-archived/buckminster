@@ -236,7 +236,7 @@ public class BillOfMaterials extends DepNode
 	throws CoreException
 	{
 		List<Resolution> minfos = new ArrayList<Resolution>();
-		addMaterializationCandidates(minfos, mspec, new HashSet<Resolution>());
+		addMaterializationCandidates(minfos, getQuery(), mspec, new HashSet<Resolution>());
 		return minfos;
 	}
 
@@ -419,10 +419,10 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
+	void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
-		getTopNode().addMaterializationCandidates(resolutions, mspec, perused);
+		getTopNode().addMaterializationCandidates(resolutions, query, mspec, perused);
 	}
 
 	@Override

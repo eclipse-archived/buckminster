@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ObtainedDependency;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
@@ -285,17 +286,19 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	void addMaterializationCandidates(List<Resolution> resolutions, MaterializationSpec mspec, Set<Resolution> perused)
+	void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
 		for(DepNode child : getChildren())
-			child.addMaterializationCandidates(resolutions, mspec, perused);
+			child.addMaterializationCandidates(resolutions, query, mspec, perused);
 
 		Resolution resolution = getResolution();
 		if(!perused.contains(resolution))
 		{
 			perused.add(resolution);
-			if(resolution.isMaterializable() && !mspec.isExcluded(resolution.getComponentIdentifier()))
+			
+			ComponentIdentifier ci = resolution.getComponentIdentifier();
+			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
 				resolutions.add(resolution);
 		}
 	}
