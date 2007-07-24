@@ -492,7 +492,12 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		{
 			Map<String, DepNode> sortedMap = new TreeMap<String, DepNode>();
 			for(DepNode child : children)
-				sortedMap.put(child.getResolution().getComponentIdentifier().toString(), child);
+			{
+				Resolution resolution = child.getResolution();
+				
+				if (resolution != null)
+					sortedMap.put(resolution.getComponentIdentifier().toString(), child);
+			}
 			children = sortedMap.values();
 		}
 		return children;
