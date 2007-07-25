@@ -343,13 +343,23 @@ public class InvokeAction implements IObjectActionDelegate
 		if(!(first instanceof IResource))
 			return;
 
-		try
+		IResource resource = (IResource)first;
+		while(resource != null)
 		{
-			m_selectedComponent = WorkspaceInfo.getCSpec((IResource)first);
-		}
-		catch(CoreException e)
-		{
-			CorePlugin.getLogger().warning(e.getMessage(), e);
+			try
+			{
+				CSpec cspec = WorkspaceInfo.getCSpec(resource);
+				if(cspec != null)
+				{
+					m_selectedComponent = cspec;
+					break;
+				}
+				resource = resource.getParent();
+			}
+			catch(CoreException e)
+			{
+				CorePlugin.getLogger().warning(e.getMessage(), e);
+			}
 		}
 	}
 }

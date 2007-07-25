@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ViewCSpecAction extends ArrayList<IResource> implements IObjectActionDelegate
+public class ViewCSpecAction extends ArrayList<CSpec> implements IObjectActionDelegate
 {
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class ViewCSpecAction extends ArrayList<IResource> implements IObjectActi
 	 * Opens a CSpec viewer on the given file resource.
 	 * @param file the file resource
 	 */
-	void openCSpec(IResource resource)
+	void openCSpec(CSpec cspec)
 	{
 		IWorkbench workbench = PlatformUI.getWorkbench();
 
@@ -53,17 +53,6 @@ public class ViewCSpecAction extends ArrayList<IResource> implements IObjectActi
 
 		IWorkbenchPage page = wbWin.getActivePage();
 		if(page == null)
-			return;
-
-		CSpec cspec = null;
-		try
-		{
-			cspec = WorkspaceInfo.getCSpec(resource);
-		}
-		catch(CoreException e1)
-		{
-		}
-		if(cspec == null)
 			return;
 
 		IEditorRegistry editorRegistry = workbench.getEditorRegistry();
@@ -84,8 +73,8 @@ public class ViewCSpecAction extends ArrayList<IResource> implements IObjectActi
 	 */
 	public void run(IAction action)
 	{
-		for(IResource resource : this)
-			this.openCSpec(resource);
+		for(CSpec cspec : this)
+			openCSpec(cspec);
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart)
@@ -95,11 +84,34 @@ public class ViewCSpecAction extends ArrayList<IResource> implements IObjectActi
 	public void selectionChanged(IAction action, ISelection selection)
 	{
 		this.clear();
-		if(selection instanceof IStructuredSelection)
+		if(!(selection instanceof IStructuredSelection))
+			return;
+
+		Iterator<?> iter = ((IStructuredSelection)selection).iterator();
+		while (iter.hasNext())
 		{
-			Iterator<?> iter = ((IStructuredSelection)selection).iterator();
-			while (iter.hasNext())
-				this.add((IResource)iter.next());
+			Object tmp = iter.next();
+			if(!(tmp instanceof IResource))
+				continue;
+
+			IResource resource = (IResource)tmp;
+			while(resource != null)
+			{
+				try
+				{
+					CSpec cspec = WorkspaceInfo.getCSpec(resource);
+					if(cspec != null)
+					{
+						if(!contains(cspec))
+							add(cspec);
+						break;
+					}
+					resource = resource.getParent();
+				}
+				catch(CoreException e1)
+				{
+				}
+			}
 		}
 	}
 }
