@@ -28,7 +28,7 @@ public class StartPage extends InstallWizardPage
 {
 	protected StartPage()
 	{
-		super("StartStep", "Verify the Product", "Please verify the product described below is what you intend.", null);
+		super("StartStep", "Materialization", "Please verify that what is described below is what you want to materialize.", null);
 	}
 
 	public void createControl(Composite parent)
