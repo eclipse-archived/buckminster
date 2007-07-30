@@ -234,7 +234,12 @@ public class InstallWizard extends Wizard
     @Override
 	public boolean performCancel()
     {
-    	if(m_authenticator != null)
+    	// disable progress provider
+		Job.getJobManager().setProgressProvider(null);
+		OperationPage operationPage = (OperationPage)getPage("OperationStep");
+		((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
+
+		if(m_authenticator != null)
     	{
     		try
 			{
