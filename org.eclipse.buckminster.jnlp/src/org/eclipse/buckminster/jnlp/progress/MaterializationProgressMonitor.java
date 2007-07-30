@@ -60,6 +60,8 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 	private boolean m_canceled = false;
 
 	private boolean m_done = false;
+	
+	private double m_totalWork = 0;
 
 	public MaterializationProgressMonitor(MaterializationProgressProvider provider, Composite parent, Job job)
 	{
@@ -224,6 +226,8 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 
 	public void internalWorked(final double work)
 	{
+		m_totalWork += work;
+		
 		if(!m_provider.isEnabled() || m_done)
 		{
 			return;
@@ -233,9 +237,9 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		{
 			public void run()
 			{
-				m_progressBar.setSelection(m_progressBar.getSelection() + Double.valueOf(work).intValue());
-				// System.out.println("JOB: " + m_subTaskLabel.getText() + " " + m_progressBar.getSelection() + "/" +
-				// m_progressBar.getMaximum() + " - " + work);
+				m_progressBar.setSelection(Double.valueOf(m_totalWork).intValue());
+				System.out.println("JOB: " + m_subTaskLabel.getText() + " " + m_totalWork + "(" + m_progressBar.getSelection() + ")" + "/" +
+				m_progressBar.getMaximum() + " - " + work);
 			}
 		});
 	}
