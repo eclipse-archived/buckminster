@@ -651,12 +651,14 @@ public class InstallWizard extends Wizard
 		}
 		
 		m_loginRequired = false;
+		// TODO uncomment to enable login
+/*		
 		tmp = properties.get(PROP_LOGIN_REQUIRED);
 		if("true".equalsIgnoreCase(tmp))
 		{
 			m_loginRequired = true;
 		}
-		
+*/		
 		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
 		
 		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
