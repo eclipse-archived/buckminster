@@ -10,8 +10,6 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -31,6 +29,7 @@ import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -81,17 +80,8 @@ public class URLReaderType extends AbstractReaderType
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
-		try
-		{
-			URLFileReader reader = new URLFileReader(this, providerMatch, getURI(providerMatch));
-			if(!reader.exists(monitor))
-				throw new FileNotFoundException(reader.getURL().toString());
-			return reader;
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		MonitorUtils.complete(monitor);
+		return new URLFileReader(this, providerMatch, getURI(providerMatch));
 	}
 
 	public IPath getRelativeInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
