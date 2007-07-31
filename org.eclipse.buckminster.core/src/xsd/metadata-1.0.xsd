@@ -249,7 +249,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="materializer" type="string" use="required">
+		<attribute name="materializer" type="string" use="optional">
 			<annotation>
 				<documentation>
 					The materializer to use. Possible values includes &quot;filesystem&quot;, &quot;workspace&quot;, and
@@ -258,7 +258,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="conflictResolution" type="md:ConflictResolution" use="optional" default="UPDATE" />
+		<attribute name="conflictResolution" type="md:ConflictResolution" use="optional" />
 	</complexType>
 
 	<element name="workspaceBinding" type="md:WorkspaceBinding" />
