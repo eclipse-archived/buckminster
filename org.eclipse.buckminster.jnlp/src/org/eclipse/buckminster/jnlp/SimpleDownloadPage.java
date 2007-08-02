@@ -8,6 +8,8 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import java.io.File;
+
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -144,6 +146,18 @@ public class SimpleDownloadPage extends InstallWizardPage
 		{
 			getInstallWizard().initMSPEC();
 			getContainer().updateButtons();
+			
+			if(getMaterializationSpecBuilder().getInstallLocation() == null)
+			{
+				String defaultDestination = getDefaultDestination();
+				
+				if(defaultDestination != null)
+				{
+					getMaterializationSpecBuilder().setInstallLocation(
+								Path.fromOSString(defaultDestination).addTrailingSeparator());
+					m_locationText.setText(defaultDestination);
+				}	
+			}
 		}
 		catch(JNLPException e)
 		{
@@ -167,5 +181,25 @@ public class SimpleDownloadPage extends InstallWizardPage
 			return getWizard().getPage("SimpleAdvancedSettingsStep");
 		}
 		return null;
+	}
+	
+	private String getDefaultDestination() throws JNLPException
+	{
+		String destination = null;
+		
+		if(destination == null)
+		{
+			String userHome = System.getProperty("user.home");
+
+			if(userHome != null)
+			{
+				destination = userHome + File.separatorChar + "materializations";
+			
+				if(getInstallWizard().getArtifactName() != null)
+					destination += File.separatorChar + getInstallWizard().getArtifactName();
+			}
+		}
+		
+		return destination;
 	}
 }
