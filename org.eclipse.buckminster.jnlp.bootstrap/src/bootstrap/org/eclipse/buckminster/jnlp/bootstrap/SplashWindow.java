@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.jnlp.bootstrap;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -19,6 +20,8 @@ import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.net.URL;
 
 /**
  * A Splash window.
@@ -60,6 +63,10 @@ public class SplashWindow extends Frame
 	private static final int PROGRESS_TICK_WIDTH = 4;
 
 	private static final int PROGRESS_TICK_GAP = 2;
+	
+	private static final int STOP_ICON_SIZE = 16;
+	
+	private static final int STOP_ICON_MARGIN = 4;
 
 	/**
 	 * The current instance of the splash window. (Singleton design pattern).
@@ -76,6 +83,29 @@ public class SplashWindow extends Frame
 
 	private static final int WINDOW_ICON_ID = 2;
 
+	private static final int STOP_ICON_DB_ID = 3;
+	private static final int STOP_ICON_BB_ID = 4;
+	private static final int STOP_ICON_DG_ID = 5;
+	private static final int STOP_ICON_BG_ID = 6;
+
+	private static final String STOP_ICON_DB = "stop.gif";
+	private static final String STOP_ICON_BB = "stop_border.gif";
+	private static final String STOP_ICON_DG = "stop_gray.gif";
+	private static final String STOP_ICON_BG = "stop_border_gray.gif";
+
+	private Image m_stopIcon;
+	
+	private Image m_stopIconDB;	
+	private Image m_stopIconBB;
+	private Image m_stopIconDG;	
+	private Image m_stopIconBG;
+	
+	private int m_stopXLocation = 0;
+	
+	private int m_stopYLocation = 0;
+	
+	private boolean stopped = false;
+	
 	/**
 	 * The two splash images which is displayed on the splash window.
 	 */
@@ -119,8 +149,22 @@ public class SplashWindow extends Frame
 	 */
 	private SplashWindow(Image splashImageBoot, Image splashImage, Image windowIconImage)
 	{
+
+		m_stopIconDB = getImageFromResources(STOP_ICON_DB);
+		m_stopIconBB = getImageFromResources(STOP_ICON_BB);	
+		m_stopIconDG = getImageFromResources(STOP_ICON_DG);
+		m_stopIconBG = getImageFromResources(STOP_ICON_BG);	
+		
 		// Load the images
 		MediaTracker mt = new MediaTracker(this);
+		if(m_stopIconDB != null)
+			mt.addImage(m_stopIconDB, STOP_ICON_DB_ID);
+		if(m_stopIconBB != null)
+			mt.addImage(m_stopIconBB, STOP_ICON_BB_ID);
+		if(m_stopIconDG != null)
+			mt.addImage(m_stopIconDG, STOP_ICON_DG_ID);
+		if(m_stopIconBG != null)
+			mt.addImage(m_stopIconBG, STOP_ICON_BG_ID);
 		if(splashImageBoot != null)
 			mt.addImage(splashImageBoot, SPLASH_IMAGE_BOOT_ID);
 		if(splashImage != null)
@@ -130,6 +174,14 @@ public class SplashWindow extends Frame
 
 		try
 		{
+			if(m_stopIconDB != null)
+				mt.waitForID(STOP_ICON_DB_ID);
+			if(m_stopIconBB != null)
+				mt.waitForID(STOP_ICON_BB_ID);
+			if(m_stopIconDG != null)
+				mt.waitForID(STOP_ICON_DG_ID);
+			if(m_stopIconBG != null)
+				mt.waitForID(STOP_ICON_BG_ID);
 			if(splashImageBoot != null)
 				mt.waitForID(SPLASH_IMAGE_BOOT_ID);
 			if(splashImage != null)
@@ -143,6 +195,30 @@ public class SplashWindow extends Frame
 
 		setUndecorated(true);
 		setTitle("Configuring Materialization Infrastructure");
+
+		if(m_stopIconDB != null && mt.isErrorID(STOP_ICON_DB_ID))
+		{
+			System.err.println("Warning: SplashWindow couldn't load stop image.");
+			m_stopIconDB = null;
+		}
+
+		if(m_stopIconBB != null && mt.isErrorID(STOP_ICON_BB_ID))
+		{
+			System.err.println("Warning: SplashWindow couldn't load border stop image.");
+			m_stopIconBB = null;
+		}
+
+		if(m_stopIconDG != null && mt.isErrorID(STOP_ICON_DG_ID))
+		{
+			System.err.println("Warning: SplashWindow couldn't load gray stop image.");
+			m_stopIconDG = null;
+		}
+
+		if(m_stopIconBG != null && mt.isErrorID(STOP_ICON_BG_ID))
+		{
+			System.err.println("Warning: SplashWindow couldn't load gray border stop image.");
+			m_stopIconBG = null;
+		}
 
 		if(windowIconImage != null)
 		{
@@ -163,7 +239,10 @@ public class SplashWindow extends Frame
 			System.err.println("Warning: SplashWindow couldn't load splash image.");
 			splashImage = null;
 		}
-
+		
+		m_stopIcon = m_stopIconDB;
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
 		// Abort on failure
 		if(splashImageBoot == null && splashImage == null)
 		{
@@ -195,19 +274,77 @@ public class SplashWindow extends Frame
 					SplashWindow.this.notifyAll();
 				}
 
-				// Dispose was changed to just ICONIFIED so that the window would not completely disappear
-				// (it is registered on the task bar)
-				// dispose();
-				setExtendedState(Frame.ICONIFIED);
-
+				if(isStopLocation(evt.getX(), evt.getY()))
+				{
+					if(!stopped)
+					{
+						m_stopIconBB = m_stopIconBG;
+						m_stopIconDB = m_stopIconDG;
+						
+						if(m_stopIcon != m_stopIconBG)
+						{
+							m_stopIcon = m_stopIconBG;
+							repaint();
+						}
+						getDownloadServiceListener().setCanceled(true);
+						stopped = true;
+					}
+				} else
+				{
+					// Dispose was changed to just ICONIFIED so that the window would not completely disappear
+					// (it is registered on the task bar)
+					// dispose();
+					setExtendedState(Frame.ICONIFIED);
+				}
 			}
 		};
 		addMouseListener(disposeOnClick);
+		addMouseMotionListener(new MouseMotionAdapter(){
+			@Override
+			public void mouseMoved(MouseEvent e)
+			{
+				boolean repaint = false;
+				
+				if(isStopLocation(e.getX(), e.getY()))
+				{
+					if(m_stopIcon != m_stopIconBB)
+					{
+						m_stopIcon = m_stopIconBB;
+						setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+						repaint = true;
+					}
+				} else
+				{
+					if(m_stopIcon != m_stopIconDB)
+					{
+						m_stopIcon = m_stopIconDB;
+						setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						repaint = true;
+					}
+				}
+				
+				if(repaint)
+					repaint();
+			}});
+		
 		m_progressColor = new Color(0xd8e5ee);
 
 		m_images[SPLASH_IMAGE_BOOT_ID] = splashImageBoot;
 		m_images[SPLASH_IMAGE_ID] = splashImage;
 		setImageId((splashImageBoot == null) ? SPLASH_IMAGE_ID : SPLASH_IMAGE_BOOT_ID);
+	}
+
+	private boolean isStopLocation(int x, int y)
+	{
+		return x >= m_stopXLocation && x <= (m_stopXLocation + STOP_ICON_SIZE - 1) && y >= m_stopYLocation && y <= (m_stopYLocation + STOP_ICON_SIZE - 1);
+	}
+	
+	private Image getImageFromResources(String imageName)
+	{
+			Class<?> myClass = this.getClass();
+			String imageResource = "/icons/" + imageName;
+			URL imageUrl = myClass.getResource(imageResource);
+			return Toolkit.getDefaultToolkit().createImage(imageUrl);
 	}
 
 	public static void setSplashImage(int imageId)
@@ -258,7 +395,7 @@ public class SplashWindow extends Frame
 	public void paint(Graphics g)
 	{
 		g.drawImage(m_images[m_imageId], 0, 0, this);
-
+		
 		// Notify method splash that the window
 		// has been painted.
 		// Note: To improve performance we do not enter
@@ -270,6 +407,14 @@ public class SplashWindow extends Frame
 			{
 				notifyAll();
 			}
+		}
+
+		m_stopXLocation = getWidth() - STOP_ICON_SIZE - STOP_ICON_MARGIN;
+		m_stopYLocation = STOP_ICON_MARGIN;
+		
+		if(m_stopIcon != null)
+		{
+			g.drawImage(m_stopIcon, m_stopXLocation, m_stopYLocation, this);
 		}
 
 		// Continue with painting progress
@@ -456,4 +601,73 @@ public class SplashWindow extends Frame
 			s_listener = new ProgressFacade();
 		return s_listener;
 	}
+/*	
+	public static void main(String[] args) throws Exception
+	{
+		byte[] splashImageBootData = loadData("http://cs-web1.mainloop.net:8080/cssite/img/splash.cloudpowered.png");
+		byte[] windowIconData = loadData("http://cs-web1.mainloop.net:8080/cssite/img/favicont.png");
+
+		Image splashImageBoot = splashImageBootData != null
+				? Toolkit.getDefaultToolkit().createImage(splashImageBootData)
+				: null;
+
+		Image windowIconImage = windowIconData != null
+				? Toolkit.getDefaultToolkit().createImage(windowIconData)
+				: null;
+
+		try
+		{
+			SplashWindow.splash(splashImageBoot, splashImageBoot, windowIconImage);
+
+			final ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
+
+			int startupTime = 200;
+			monitor.setTask("Starting", startupTime);
+			while(--startupTime >= 0 )
+			{
+				Thread.sleep(100);
+				monitor.taskIncrementalProgress(1);
+			}
+
+			monitor.taskDone();
+
+		}
+		finally
+		{
+			SplashWindow.disposeSplash();
+		}
+
+	}
+	
+	private static byte[] loadData(String url) throws JNLPException, IOException
+	{
+		byte[] data = null;
+		if(url != null)
+		{
+			InputStream is = null;
+			try
+			{
+				is = new URL(url).openStream();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				byte[] buf = new byte[0x1000];
+				int count;
+				while((count = is.read(buf)) > 0)
+					os.write(buf, 0, count);
+				data = os.toByteArray();
+
+			}
+			catch(IOException e)
+			{
+				throw new JNLPException("Unable to read a splash screen or window icon image",
+						"Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+			}
+			finally
+			{
+				is.close();
+			}
+		}
+
+		return data;
+	}
+*/
 }
