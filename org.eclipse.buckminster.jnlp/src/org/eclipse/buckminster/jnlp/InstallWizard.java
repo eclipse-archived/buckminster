@@ -161,6 +161,13 @@ public class InstallWizard extends Wizard
 	{
 		List<LearnMoreItem> learnMores = new ArrayList<LearnMoreItem>();
 
+		// Learn more items from properties
+		if(m_learnMoreURL != null)
+		{
+			learnMores.add(new LearnMoreItem("Create your own virtual distribution", m_learnMoreURL));
+		}
+		
+		// Learn more items from extension
 		IExtensionRegistry er = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = er.getConfigurationElementsFor(LEARNMORE_EXTPOINT);
 		
@@ -647,7 +654,9 @@ public class InstallWizard extends Wizard
 		}
 		
 		m_helpURL = properties.get(PROP_HELP_URL);
-		m_moreInfoURL = properties.get(PROP_MORE_INFO_URL);
+		// TODO use different helpURL and moreInfoURL, now there is just helpURL
+		m_moreInfoURL = m_helpURL;
+		//m_moreInfoURL = properties.get(PROP_MORE_INFO_URL);
 		
 		m_errorURL = properties.get(PROP_ERROR_URL);
 		if(m_errorURL == null)
@@ -793,6 +802,7 @@ public class InstallWizard extends Wizard
 	{
 		m_mspecListeners.remove(listener);
 	}
+	
 }
 
 class LearnMoreItem
