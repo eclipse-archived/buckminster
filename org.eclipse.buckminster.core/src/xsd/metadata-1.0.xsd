@@ -158,6 +158,14 @@
 						</documentation>
 					</annotation>
 				</attribute>
+				<attribute name="leafArtifact" type="string" use="optional">
+					<annotation>
+						<documentation>
+							The name of the file system artifact (file or folder) to materialize. This name
+							is optional and normally derived from the remote location.
+						</documentation>
+					</annotation>
+				</attribute>
 				<attribute name="componentType" type="string" use="optional">
 					<annotation>
 						<documentation>
@@ -217,7 +225,7 @@
 			<annotation>
 				<documentation>
 					The suffix to be assumed when a suffix cannot be derived from the resource locator appoints
-					the remote resource
+					the remote resource. This suffix controls the choice of unpacker.
 				</documentation>
 			</annotation>
 		</attribute>

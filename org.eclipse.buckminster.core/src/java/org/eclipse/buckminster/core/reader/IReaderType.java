@@ -51,40 +51,32 @@ public interface IReaderType extends IBuckminsterExtension
 	public static final String URL_CATALOG = "url.catalog";
 
 	/**
-	 * Returns a suggestion for where this reader type would like the component to be materialized relative to the root
-	 * install location. The parameter <code>optional</code> must be a one element array. On return, the element is
-	 * set to <code>true</code> to indicate that the suggestion is optional and may be overridden or
-	 * <code>false</code> to indicate that the location is where the materialization has to take place.
+	 * Returns a suggestion for the leaf artifact (file or folder) for the materialized component.
 	 * 
 	 * @param resolution
 	 *            The resolution for the component that should be materialized.
 	 * @param context
 	 *            The materialization context
-	 * @param optional
-	 *            A one element array that will carry the optional status return value.
-	 * @return A location for materialization. The location will never be null.
+	 * @return The leaf artifact for the materialization in the form of a one element path or null if
+	 * such a path cannot be determined.
 	 * @throws CoreException
 	 */
-	IPath getRelativeInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
-			throws CoreException;
+	IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException;
 
 	/**
-	 * Returns a suggestion for a root install folder for components materialized by this reader. The parameter
-	 * <code>optional</code> must be a one element array. On return, the element is set to <code>true</code> to
-	 * indicate that the suggestion is optional and may be overridden or <code>false</code> to indicate that the
-	 * location is where the materialization has to take place.
-	 * 
+	 * Returns the default install location for the materialized component. The returned location is a
+	 * the folder where the leaf artifact will be materialized. The location can be absolute or relative
+	 * to the root location for the materialization context.
+	 *
 	 * @param resolution
 	 *            The resolution for the component that should be materialized.
 	 * @param context
 	 *            The materialization context
-	 * @param optional
-	 *            A one element array that will carry the optional status return value.
-	 * @return A root install location for materialization or <code>null</code> if this reader type has no opinion.
+	 * @return The preferred install location or null if the reader type has no opinion.
+	 * 
 	 * @throws CoreException
 	 */
-	IPath getRootInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
-			throws CoreException;
+	IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException;
 
 	/**
 	 * Prepare to materialize the given locations. Typically a reader type will use this information to set up some kind

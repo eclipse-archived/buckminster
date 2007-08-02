@@ -42,10 +42,10 @@ import org.eclipse.core.runtime.Path;
 public class WorkspaceMaterializer extends FileSystemMaterializer
 {
 	@Override
-	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution, boolean forFile) throws CoreException
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
 	{
 		IPath location = context.getWorkspaceLocation(resolution);
-		if(forFile)
+		if(!context.getLeafArtifact(resolution).hasTrailingSeparator())
 			location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
 		return location;
 	}

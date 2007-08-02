@@ -105,16 +105,14 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException
+	{
+		return null;
+	}
+
 	public IReaderType getLocalReaderType(boolean destIsFile) throws CoreException
 	{
 		return CorePlugin.getDefault().getReaderType(destIsFile ? URL : URL_CATALOG);
-	}
-
-	public IPath getRootInstallLocation(Resolution cr, MaterializationContext context, boolean[] optional)
-	throws CoreException
-	{
-		optional[0] = true;
-		return null;
 	}
 
 	public String getRemotePath(String repositoryLocation) throws CoreException

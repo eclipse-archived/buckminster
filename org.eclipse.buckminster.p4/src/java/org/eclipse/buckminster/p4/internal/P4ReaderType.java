@@ -57,7 +57,7 @@ public class P4ReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public IPath getRootInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context)
 	throws CoreException
 	{
 		Map<String,String> properties = context.getProperties(resolution.getRequest());
@@ -68,10 +68,6 @@ public class P4ReaderType extends CatalogReaderType
 		{
 			localRoot = ExpandingProperties.expand(properties, localRoot, 0);
 			root = new Path(localRoot);
-			if(!root.isAbsolute())
-				root = null;
-			else
-				optional[0] = false;
 		}
 		return root;
 	}

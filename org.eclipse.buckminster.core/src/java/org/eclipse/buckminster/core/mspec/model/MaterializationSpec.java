@@ -178,6 +178,12 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_name;
 	}
 
+	public IPath getLeafArtifact(ComponentName cname)
+	{
+		MaterializationNode node = getMatchingNode(cname);
+		return node == null ? null : node.getLeafArtifact();
+	}
+
 	public List<MaterializationNode> getNodes()
 	{
 		return m_nodes;
@@ -194,9 +200,9 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_shortDesc;
 	}
 
-	public String getSuffix(ComponentName cname)
+	public String getSuffix(ComponentName cName)
 	{
-		MaterializationNode node = getMatchingNode(cname);
+		MaterializationNode node = getMatchingNode(cName);
 		return node == null ? null : node.getSuffix();
 	}
 

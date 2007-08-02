@@ -41,7 +41,8 @@ import org.eclipse.core.runtime.Path;
  */
 public class MavenReaderType extends URLCatalogReaderType
 {
-	static void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension) throws CoreException
+	static void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension)
+			throws CoreException
 	{
 		String artifactInfo = vm.getArtifactInfo();
 		if(extension == null && artifactInfo != null)
@@ -101,13 +102,12 @@ public class MavenReaderType extends URLCatalogReaderType
 		}
 	}
 
-	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request)
-	throws BuckminsterException
+	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws BuckminsterException
 	{
 		String name = request.getName();
 		return (provider instanceof MavenProvider)
-			? ((MavenProvider)provider).getGroupAndArtifact(name)
-			: MavenProvider.getDefaultGroupAndArtifact(name);
+				? ((MavenProvider)provider).getGroupAndArtifact(name)
+				: MavenProvider.getDefaultGroupAndArtifact(name);
 	}
 
 	private final LocalCache m_localCache;
@@ -115,6 +115,28 @@ public class MavenReaderType extends URLCatalogReaderType
 	public MavenReaderType()
 	{
 		m_localCache = new LocalCache(getLocalRepoPath());
+	}
+
+	@Override
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context)
+			throws CoreException
+	{
+		MapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
+		VersionMatch vs = resolution.getVersionMatch();
+		StringBuilder pbld = new StringBuilder();
+		appendFolder(pbld, getMaterializationFolder());
+		appendArtifactFolder(pbld, ga, vs);
+		return Path.fromPortableString(pbld.toString());
+	}
+
+	@Override
+	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException
+	{
+		MapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
+		VersionMatch vs = resolution.getVersionMatch();
+		StringBuilder pbld = new StringBuilder();
+		appendFileName(pbld, ga.getArtifactId(), vs, null);
+		return Path.fromPortableString(pbld.toString());
 	}
 
 	public IPath getLocalRepoPath()
@@ -125,19 +147,6 @@ public class MavenReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IPath getRelativeInstallLocation(Resolution cr, MaterializationContext context, boolean[] optional)
-	throws CoreException
-	{
-		MapEntry ga = getGroupAndArtifact(cr.getProvider(), cr.getRequest());
-		VersionMatch vs = cr.getVersionMatch();
-		StringBuilder pbld = new StringBuilder();
-		appendFolder(pbld, getMaterializationFolder());
-		appendPathToArtifact(pbld, ga, vs);
-		optional[0] = true;
-		return Path.fromPortableString(pbld.toString());
-	}
-
-	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
@@ -145,7 +154,8 @@ public class MavenReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new MavenVersionFinder(this, provider, ctype, nodeQuery);

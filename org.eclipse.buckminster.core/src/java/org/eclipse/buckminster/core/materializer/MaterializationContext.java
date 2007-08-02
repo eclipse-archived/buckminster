@@ -77,6 +77,20 @@ public class MaterializationContext extends RMContext
 	}
 
 	/**
+	 * Returns the designated full path to the installed artifact for the resolution. This
+	 * is a shortcut for<pre>
+	 * getInstallLocation(resolution).append(getLeafArtifact(resolution))
+	 * </pre>
+	 * @param resolution The resolution for which we want the artifact location
+	 * @return An absolute path in the local file system.
+	 * @throws CoreException
+	 */
+	public IPath getArtifactLocation(Resolution resolution) throws CoreException
+	{
+		return getInstallLocation(resolution).append(getLeafArtifact(resolution));
+	}
+
+	/**
 	 * Returns the install location for the resolution as specified in the {@link MaterializationSpec}
 	 * or the default location if it is not specified.
 	 * @param resolution The resolution for which we want the install location
@@ -85,21 +99,53 @@ public class MaterializationContext extends RMContext
 	 */
 	public IPath getInstallLocation(Resolution resolution) throws CoreException
 	{
-		boolean[] optional = new boolean[] { true };
-		IPath relativeLocation = getRelativeInstallLocation(resolution, optional);
-		if(relativeLocation.isAbsolute())
+		IPath relativeLocation = getRelativeInstallLocation(resolution);
+		if(relativeLocation != null && relativeLocation.isAbsolute())
+			return relativeLocation;
+
+		IPath location = getRootInstallLocation(resolution);
+		if(relativeLocation != null)
+			location = location.append(relativeLocation);
+		return location;
+	}
+
+	public IPath getLeafArtifact(Resolution resolution) throws CoreException
+	{
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		IPath leaf = getMaterializationSpec().getLeafArtifact(ci);
+		if(leaf != null)
+			//
+			// MSpec always take precedence
+			//
+			return leaf;
+
+		IReaderType rd = resolution.getProvider().getReaderType();
+		if(rd.isFileReader())
+			leaf = processUnpack(resolution, null, null);
+		else
+			leaf = rd.getLeafArtifact(resolution, this);
+
+		if(leaf == null)
 		{
-			if(!optional[0])
-				return relativeLocation;
+			// No filename is available, let's use a name built from <componentname>_<version>
+			//
+			StringBuilder nameBld = new StringBuilder(ci.getName());
+			IVersion version = ci.getVersion();
+			if(version != null)
+			{
+				nameBld.append('_');
+				version.toString(nameBld);
+			}
+			if(rd.isFileReader())
+				nameBld.append(".dat");
+			else
+				nameBld.append('/');
 
-			IPath rootLocation = getRootInstallLocation(resolution, !relativeLocation.hasTrailingSeparator(), optional);
-			if(optional[0] || rootLocation.isPrefixOf(relativeLocation))
-				return relativeLocation;
-
-			throw BuckminsterException.fromMessage(String.format(
-				"Required root install %s conflicts with absolute path %s", rootLocation, relativeLocation));
+			leaf = Path.fromPortableString(nameBld.toString());
+			if(leaf.segmentCount() > 1)
+				leaf = leaf.removeFirstSegments(leaf.segmentCount() - 1);
 		}
-		return getRootInstallLocation(resolution, !relativeLocation.hasTrailingSeparator(), optional).append(relativeLocation);
+		return leaf;
 	}
 
 	public MaterializationSpec getMaterializationSpec()
@@ -168,27 +214,23 @@ public class MaterializationContext extends RMContext
 	{
 		ComponentName cName = resolution.getComponentIdentifier();
 		MaterializationSpec mspec = getMaterializationSpec();
-		String name = resolution.getRemoteName();
+
+		String name = mspec.getSuffix(cName);
 		if(name == null)
 		{
-			// No filename is available, let's use a name built from <componentname>_<version><suffix>
-			//
-			StringBuilder nameBld = new StringBuilder(cName.getName());
-			IVersion version = resolution.getVersion();
-			if(version != null)
-			{
-				nameBld.append('_');
-				version.toString(nameBld);
-			}
-			String suffix = mspec.getSuffix(cName);
-			if(suffix == null)
-				suffix = ".dat";
-			nameBld.append(suffix);
-			name = nameBld.toString();
+			IReaderType rd = resolution.getProvider().getReaderType();
+			IPath leaf = rd.getLeafArtifact(resolution, this);
+			if(leaf != null)
+				name = leaf.segment(0);
 		}
 
-		if(!mspec.isUnpack(cName))
-			return new Path(name);
+		if(mspec.isUnpack(cName))
+		{
+			if(name == null)
+				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of " + cName);
+		}
+		else
+			return (name == null) ? null : new Path(name);
 
 		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = extRegistry.getConfigurationElementsFor(DECOMPRESSORS_POINT);
@@ -278,56 +320,45 @@ public class MaterializationContext extends RMContext
 		return new Path(name).addTrailingSeparator();
 	}
 
-	private IPath getRelativeInstallLocation(Resolution resolution, boolean[] optional) throws CoreException
+	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException
 	{
-		optional[0] = true;
-		IReaderType rd = resolution.getProvider().getReaderType();
-		IPath location = rd.getRelativeInstallLocation(resolution, this, optional);
-		if(optional[0])
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IPath location = null;
+		if(node != null)
 		{
-			ComponentIdentifier ci = resolution.getComponentIdentifier();
-			MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-			IPath specRelative = null;
-			if(node != null)
-				specRelative = node.getInstallLocation();
-			
-			if(specRelative != null)
-				specRelative = Path.fromOSString(ExpandingProperties.expand(this, specRelative.toOSString(), 0));
-			else if(!location.isAbsolute())
-			{
-				ComponentName cName = resolution.getRequest();
-				IComponentType cType = cName.getComponentType();
-				if(cType != null)
-				{
-					specRelative = cType.getRelativeLocation();
-					if(specRelative != null)
-						specRelative = specRelative.append(location);
-				}
-			}
-			if(specRelative != null)
-				location = specRelative;
+			location = node.getInstallLocation();
+			if(location != null)
+				return expand(location);
 		}
-		return location;
+
+		IReaderType rd = resolution.getProvider().getReaderType();
+		location = rd.getInstallLocation(resolution, this);
+		IComponentType cType = resolution.getComponentType();
+		if(cType != null)
+		{
+			IPath ctypeRelative = cType.getRelativeLocation();
+			if(ctypeRelative != null)
+			{
+				if(location == null)
+					location = ctypeRelative;
+				else
+					location = location.append(ctypeRelative);
+			}
+		}
+		return location == null ? null : expand(location);
 	}
 
-	private IPath getRootInstallLocation(Resolution resolution, boolean forFiles, boolean[] optional) throws CoreException
-	{		
-		// Consult the reader type.
-		//
-		optional[0] = true;
-		IReaderType rd = resolution.getProvider().getReaderType();
-		IPath location = rd.getRootInstallLocation(resolution, this, optional);
-		if(optional[0])
-		{
-			IPath specRoot = m_materializationSpec.getInstallLocation();
-			if(specRoot != null)
-				location = specRoot;
-			else
-				location = m_materializationSpec.getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this, resolution, forFiles);
-		}
+	private IPath getRootInstallLocation(Resolution resolution) throws CoreException
+	{
+		IPath location = m_materializationSpec.getInstallLocation();
+		if(location == null)
+			location = m_materializationSpec.getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this, resolution);
+		return expand(location).makeAbsolute();
+	}
 
-		location = Path.fromOSString(ExpandingProperties.expand(this, location.toOSString(), 0));	
-		location = location.makeAbsolute();
-		return location;
+	private IPath expand(IPath path)
+	{
+		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
 	}
 }

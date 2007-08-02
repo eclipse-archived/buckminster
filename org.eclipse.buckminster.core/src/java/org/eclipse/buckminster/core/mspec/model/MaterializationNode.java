@@ -24,6 +24,7 @@ public class MaterializationNode extends MaterializationDirective
 {
 	public static final String TAG = "mspecNode";
 	public static final String ATTR_NAME_PATTERN = "namePattern";
+	public static final String ATTR_LEAF_ARTIFACT = "leafArtifact";
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
 	public static final String ATTR_EXCLUDE = "exclude";
 	public static final String ATTR_RESOURCE_PATH = "resourcePath";
@@ -34,6 +35,7 @@ public class MaterializationNode extends MaterializationDirective
 	public static final String ATTR_EXPAND = "expand";
 
 	private final Pattern m_namePattern;
+	private final IPath m_leafArtifact;
 	private final String m_componentTypeID;
 	private final boolean m_exclude;
 	private final IPath m_resourcePath;
@@ -47,14 +49,15 @@ public class MaterializationNode extends MaterializationDirective
 	{
 		super(builder);
 		m_namePattern = builder.getNamePattern();
+		m_leafArtifact = builder.getLeafArtifact();
 		m_componentTypeID = builder.getComponentTypeID();
 		m_exclude = builder.isExclude();
 		m_resourcePath = builder.getResourcePath();
 		m_bindingNamePattern = builder.getBindingNamePattern();
 		m_bindingNameReplacement = builder.getBindingNameReplacement();
+		m_suffix = builder.getSuffix();
 		m_unpack = builder.isUnpack();
 		m_expand = builder.isExpand();
-		m_suffix = builder.getSuffix();
 	}
 
 	public String getDefaultTag()
@@ -65,6 +68,11 @@ public class MaterializationNode extends MaterializationDirective
 	public String getComponentTypeID()
 	{
 		return m_componentTypeID;
+	}
+
+	public IPath getLeafArtifact()
+	{
+		return m_leafArtifact;
 	}
 
 	public Pattern getNamePattern()
@@ -114,6 +122,8 @@ public class MaterializationNode extends MaterializationDirective
 		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
 		if(m_componentTypeID != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
+		if(m_leafArtifact != null)
+			Utils.addAttribute(attrs, ATTR_LEAF_ARTIFACT, m_leafArtifact.toPortableString());
 		if(m_resourcePath != null)
 			Utils.addAttribute(attrs, ATTR_RESOURCE_PATH, m_resourcePath.toPortableString());
 		if(m_exclude)

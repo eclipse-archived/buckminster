@@ -75,6 +75,13 @@ component request is resolved.&lt;/p&gt;
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="teamRepositoryId" type="string">
+            <annotation>
+               <documentation>
+                  The org.eclipse.team.core.repository id that this provider uses (if any).
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

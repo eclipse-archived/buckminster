@@ -6,7 +6,8 @@
          point="org.eclipse.buckminster.core.readerTypes">
       <readerType
             class="org.eclipse.buckminster.cvspkg.internal.CVSReaderType"
-            id="cvs"/>
+            id="cvs"
+            teamRepositoryId="org.eclipse.team.cvs.core.cvsnature"/>
    </extension>
     <extension
           point="org.eclipse.buckminster.core.forcedActivations">

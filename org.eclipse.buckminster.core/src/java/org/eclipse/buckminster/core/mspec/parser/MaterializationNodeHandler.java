@@ -44,7 +44,11 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		builder.setNamePattern(getPatternValue(attrs, MaterializationNode.ATTR_NAME_PATTERN));
 		builder.setComponentTypeID(getComponentType(attrs));
 		builder.setExclude(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXCLUDE, false));
-		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_RESOURCE_PATH);
+		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_LEAF_ARTIFACT);
+		if(tmp != null)
+			builder.setLeafArtifact(Path.fromPortableString(tmp));
+
+		tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_RESOURCE_PATH);
 		if(tmp != null)
 			builder.setResourcePath(Path.fromPortableString(tmp));
 		builder.setBindingNamePattern(getOptionalPatternValue(attrs, MaterializationNode.ATTR_BINDING_NAME_PATTERN));

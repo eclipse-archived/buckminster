@@ -192,13 +192,13 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 				continue;
 			}
 
-			IPath installLocation = context.getInstallLocation(resolution);
+			IPath artifactLocation = context.getArtifactLocation(resolution);
 			String siteURL = resolution.getRepository();
-			Map<String, FeaturesPerSite> sitesInLocation = sites.get(installLocation);
+			Map<String, FeaturesPerSite> sitesInLocation = sites.get(artifactLocation);
 			if(sitesInLocation == null)
 			{
 				sitesInLocation = new HashMap<String, FeaturesPerSite>();
-				sites.put(installLocation, sitesInLocation);
+				sites.put(artifactLocation, sitesInLocation);
 			}
 			FeaturesPerSite fps = sitesInLocation.get(siteURL);
 			if(fps == null)

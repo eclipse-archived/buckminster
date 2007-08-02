@@ -116,7 +116,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				{
 					if(resolution.isMaterializable())
 					{
-						if(resolution.isMaterialized(context.getInstallLocation(resolution)))
+						if(resolution.isMaterialized(context.getArtifactLocation(resolution)))
 							lbl = "Yes";
 						else
 							lbl = "No";
@@ -185,6 +185,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		private Text m_installLocation;
 
+		private Text m_leafArtifact;
+
 		private Combo m_materializer;
 
 		private Text m_resourcePath;
@@ -228,6 +230,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			m_conflictResolution.select(nodeRes == null ? 0 : nodeRes.ordinal() + 1);
 			setTextValue(m_resourcePath, m_node.getResourcePath());
 			setTextValue(m_installLocation, m_node.getInstallLocation());
+			setTextValue(m_leafArtifact, m_node.getLeafArtifact());
 			setTextValue(m_workspaceLocation, m_node.getWorkspaceLocation());
 
 			m_unpackButton.setSelection(m_node.isUnpack());
@@ -262,7 +265,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				}
 			});
 
-			m_installLocation = UiUtils.createGridLabeledText(myParent, "Location:", 2, 2, SWT.NONE, null);
+			m_installLocation = UiUtils.createGridLabeledText(myParent, "Parent folder:", 2, 2, SWT.NONE, null);
 			UiUtils.createPushButton(myParent, "Browse...", new SelectionAdapter()
 			{
 				@Override
@@ -274,6 +277,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 						m_installLocation.setText(newLoc);
 				}
 			}).setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+
+			m_leafArtifact = UiUtils.createGridLabeledText(myParent, "Leaf Artifact:", 2, 3, SWT.NONE, null);
 
 			UiUtils.createGridLabel(myParent, "On non empty install location:", 2, 0, SWT.NONE);
 			m_conflictResolution = UiUtils.createGridCombo(myParent, 2, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
@@ -319,6 +324,9 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		{
 			String tmp = UiUtils.trimmedValue(m_installLocation);
 			m_node.setInstallLocation(tmp == null ? null : Path.fromOSString(tmp));
+
+			tmp = UiUtils.trimmedValue(m_leafArtifact);
+			m_node.setLeafArtifact(tmp == null ? null : Path.fromOSString(tmp));
 
 			int idx = m_materializer.getSelectionIndex();
 			m_node.setMaterializer(idx <= 0 ? null : m_materializer.getItem(idx));
@@ -988,7 +996,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				continue;
 
 			String id = resolution.getRequest().getViewName();
-			IPath destination = context.getInstallLocation(resolution);
+			IPath destination = context.getArtifactLocation(resolution);
 			File f = destination.toFile();
 			if(!f.isAbsolute())
 			{

@@ -19,10 +19,14 @@ import org.eclipse.core.runtime.Path;
  */
 public abstract class CatalogReaderType extends AbstractReaderType
 {
-	public IPath getRelativeInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
+	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context)
 			throws CoreException
 	{
-		return Path.fromPortableString(resolution.getComponentIdentifier().getName()).addTrailingSeparator();
+		IPath path = Path.fromPortableString(resolution.getComponentIdentifier().getName());
+		int segCount = path.segmentCount();
+		if(segCount > 1)
+			path = path.removeFirstSegments(segCount - 1);
+		return path.addTrailingSeparator();
 	}
 
 	public boolean isFileReader()

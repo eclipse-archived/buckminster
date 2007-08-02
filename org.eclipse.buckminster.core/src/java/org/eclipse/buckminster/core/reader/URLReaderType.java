@@ -34,6 +34,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
  * @author Thomas Hallgren
@@ -84,14 +85,18 @@ public class URLReaderType extends AbstractReaderType
 		return new URLFileReader(this, providerMatch, getURI(providerMatch));
 	}
 
-	public IPath getRelativeInstallLocation(Resolution resolution, MaterializationContext context, boolean[] optional)
+	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context)
 	throws CoreException
 	{
-		IPath relativeLocation = context.processUnpack(resolution, null, null);
-		int segCount = relativeLocation.segmentCount();
+		String name = resolution.getRemoteName();
+		if(name != null)
+			return Path.fromPortableString(name);
+
+		IPath path = Path.fromPortableString(getURI(resolution.getRepository()).getPath());
+		int segCount = path.segmentCount();
 		if(segCount > 1)
-			relativeLocation = relativeLocation.removeFirstSegments(segCount - 1);
-		return relativeLocation;
+			path = path.removeFirstSegments(segCount - 1);
+		return path;
 	}
 
 	public URI getURI(Provider provider, Map<String,String> properties) throws CoreException

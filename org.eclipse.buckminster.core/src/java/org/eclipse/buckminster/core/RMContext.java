@@ -134,7 +134,14 @@ public class RMContext extends ExpandingProperties
 	 */
 	public synchronized IStatus getStatus()
 	{
-		return m_status == null ? Status.OK_STATUS : m_status;
+		if(m_status == null)
+			return Status.OK_STATUS;
+
+		IStatus status = m_status;
+		while(status.isMultiStatus() && status.getChildren().length == 1)
+			status = status.getChildren()[0];
+
+		return status;
 	}
 
 	/**

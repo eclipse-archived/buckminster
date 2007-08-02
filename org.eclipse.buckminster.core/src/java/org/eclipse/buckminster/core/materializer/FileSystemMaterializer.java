@@ -82,26 +82,26 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 					ComponentIdentifier ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
-					IPath installLocation = context.getInstallLocation(cr);
-					mat = new Materialization(installLocation, ci);
+					IPath artifactLocation = context.getArtifactLocation(cr);
+					mat = new Materialization(artifactLocation, ci);
 					resolutionPerID.put(ci, cr);
 
-					File file = installLocation.toFile();
+					File file = artifactLocation.toFile();
 					boolean fileExists = file.exists();
 					if(fileExists && conflictRes == ConflictResolution.KEEP)
 					{
-						boolean pathTypeOK = installLocation.hasTrailingSeparator()
+						boolean pathTypeOK = artifactLocation.hasTrailingSeparator()
 								? file.isDirectory()
 								: !file.isDirectory();
 
 						if(!pathTypeOK)
-							throw new FileFolderMismatchException(ci, installLocation);
+							throw new FileFolderMismatchException(ci, artifactLocation);
 
 						// Don't materialize this one. Instead, pretend that we
 						// just did.
 						//
 						logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
-								+ installLocation);
+								+ artifactLocation);
 
 						mat.store();
 						adjustedMinfos.add(mat);
@@ -112,7 +112,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					// Ensure that the destination exists and that it is empty. This might cause a
 					// DestinationNotEmpty exception to be thrown.
 					//
-					if(installLocation.hasTrailingSeparator())
+					if(artifactLocation.hasTrailingSeparator())
 					{
 						// We are installing into folder. That folder must be empty
 						// out prior to the installation.

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IPath;
 public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 {
 	private Pattern m_namePattern;
+	private IPath m_leafArtifact;
 	private String m_componentTypeID;
 	private boolean m_exclude;
 	private Pattern m_bindingNamePattern;
@@ -37,14 +38,15 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	{
 		super.clear();
 		m_namePattern = null;
+		m_leafArtifact = null;
 		m_componentTypeID = null;
 		m_resourcePath = null;
 		m_exclude = false;
 		m_bindingNamePattern = null;
 		m_bindingNameReplacement = null;
+		m_suffix = null;
 		m_unpack = false;
 		m_expand = true;
-		m_suffix = null;
 	}
 
 	public MaterializationNode createMaterializationNode()
@@ -70,6 +72,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	public void setComponentTypeID(String componentTypeID)
 	{
 		m_componentTypeID = componentTypeID;
+	}
+
+	public IPath getLeafArtifact()
+	{
+		return m_leafArtifact;
 	}
 
 	public Pattern getNamePattern()
@@ -116,14 +123,15 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	{
 		super.initFrom(mn);
 		m_namePattern = mn.getNamePattern();
+		m_leafArtifact = mn.getLeafArtifact();
 		m_componentTypeID = mn.getComponentTypeID();
 		m_resourcePath = mn.getResourcePath();
 		m_exclude = mn.isExclude();
 		m_bindingNamePattern = mn.getBindingNamePattern();
 		m_bindingNameReplacement = mn.getBindingNameReplacement();
+		m_suffix = mn.getSuffix();
 		m_unpack = mn.isUnpack();
 		m_expand = mn.isExpand();
-		m_suffix = mn.getSuffix();
 	}
 
 	public boolean isExclude()
@@ -139,6 +147,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	public void setExpand(boolean expand)
 	{
 		m_expand = expand;
+	}
+
+	public void setLeafArtifact(IPath leafArtifact)
+	{
+		m_leafArtifact = leafArtifact;
 	}
 
 	public void setResourcePath(IPath resourcePath)

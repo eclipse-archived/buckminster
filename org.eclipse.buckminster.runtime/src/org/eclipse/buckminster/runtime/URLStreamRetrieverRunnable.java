@@ -11,6 +11,7 @@ package org.eclipse.buckminster.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
@@ -124,14 +125,28 @@ class URLStreamRetrieverRunnable extends Thread
 	{
 		if(m_thrownException != null)
 		{
+			// Always throw a new exception here since the m_thrownException
+			// stems from another thread. If we don't, we will loose the
+			// stacktrace of the thread that is current now.
+			//
+			String msg = "Unable to open URL " + m_url;
 			IOException ioe = null;
 			if(m_thrownException instanceof IOException)
-				ioe = (IOException)m_thrownException;
-			else
 			{
-				ioe = new IOException(m_thrownException.getMessage());
-				ioe.initCause(m_thrownException);
+				try
+				{
+					Class exClass = m_thrownException.getClass();
+					Constructor ctor = exClass.getConstructor(new Class[] { String.class });
+					ioe = (IOException)ctor.newInstance(new Object[] { msg });
+				}
+				catch(Exception e)
+				{
+				}
 			}
+			if(ioe == null)
+				ioe = new IOException(msg);
+
+			ioe.initCause(m_thrownException);
 			throw ioe;
 		}
 
