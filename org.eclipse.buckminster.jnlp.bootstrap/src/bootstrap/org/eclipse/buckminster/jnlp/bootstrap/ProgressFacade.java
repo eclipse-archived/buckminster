@@ -12,6 +12,8 @@ public class ProgressFacade implements IDownloadMonitor // DownloadServiceListen
 	private static long s_numberOfUnits;
 
 	private static long s_unitsProduced;
+	
+	private boolean m_canceled = false;
 
 	// From DownloadServiceListener
 	/**
@@ -100,5 +102,21 @@ public class ProgressFacade implements IDownloadMonitor // DownloadServiceListen
 	public void taskIncrementalProgress(long increment)
 	{
 		taskProgress(s_unitsProduced + increment);
+	}
+
+	public boolean isCanceled()
+	{
+		return m_canceled;
+	}
+
+	public void setCanceled(boolean canceled)
+	{
+		m_canceled = canceled;	
+	}
+
+	public void checkCanceled() throws OperationCanceledException
+	{
+		if(isCanceled())
+			throw new OperationCanceledException();
 	}
 }
