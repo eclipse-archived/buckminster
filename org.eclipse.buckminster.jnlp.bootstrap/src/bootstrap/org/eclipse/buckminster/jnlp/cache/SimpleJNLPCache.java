@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
+import org.eclipse.buckminster.jnlp.bootstrap.OperationCanceledException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -93,7 +94,7 @@ public class SimpleJNLPCache
 		m_listeners = new ArrayList<ISimpleJNLPCacheListener>();
 	}
 
-	public boolean registerJNLP(URL jnlp, IDownloadMonitor progress) throws JNLPException
+	public boolean registerJNLP(URL jnlp, IDownloadMonitor progress) throws JNLPException, DOMException, OperationCanceledException
 	{
 		boolean updated = false;
 		
@@ -250,7 +251,7 @@ public class SimpleJNLPCache
 	}
 
 	private void performDownloads(JNLPResource resource, File jarDir, File resourceDir, IDownloadMonitor progress)
-			throws DOMException, JNLPException
+			throws DOMException, JNLPException, OperationCanceledException
 	{
 		NodeList allJars = resource.getDocument().getElementsByTagName("jar");
 
@@ -300,7 +301,7 @@ public class SimpleJNLPCache
 	}
 
 	private void performDownload(File jarDir, String urlString, String fileName, IDownloadMonitor progress)
-			throws JNLPException
+			throws JNLPException, OperationCanceledException
 	{
 		URL url = null;
 
@@ -317,6 +318,8 @@ public class SimpleJNLPCache
 
 			while((count = input.read(buf)) >= 0)
 			{
+				progress.checkCanceled();
+
 				output.write(buf, 0, count);
 				read += count;
 				progress.progress(url, null, read, len, 0);
@@ -324,6 +327,10 @@ public class SimpleJNLPCache
 
 			input.close();
 			output.close();
+		}
+		catch(OperationCanceledException e)
+		{
+			throw e;
 		}
 		catch(Throwable e)
 		{

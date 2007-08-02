@@ -29,6 +29,7 @@ import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
 import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
+import org.eclipse.buckminster.jnlp.bootstrap.OperationCanceledException;
 import org.eclipse.buckminster.jnlp.bootstrap.ProgressFacade;
 
 public class ProductInstaller implements IProductInstaller
@@ -62,7 +63,7 @@ public class ProductInstaller implements IProductInstaller
 
 	private static final int DEFAULT_UNPACK_COUNT = 80;
 
-	public void installProduct(Main main, ProgressFacade monitor) throws JNLPException
+	public void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException
 	{
 		m_main = main;
 
@@ -75,6 +76,8 @@ public class ProductInstaller implements IProductInstaller
 		deleteRecursive(new File(m_main.getInstallLocation(), "installer"));
 		monitor.taskIncrementalProgress(10);
 
+		monitor.checkCanceled();
+		
 		installResource("product.zip", monitor);
 		installResource("platform.zip", monitor);
 		installResource("extensions.zip", monitor, false);
@@ -109,12 +112,12 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
-	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException
+	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException, OperationCanceledException
 	{
 		installResource(resourceName, monitor, true);
 	}
 
-	private void installResource(String resourceName, ProgressFacade monitor, boolean required) throws JNLPException
+	private void installResource(String resourceName, ProgressFacade monitor, boolean required) throws JNLPException, OperationCanceledException
 	{
 		monitor.taskIncrementalProgress(5);
 		InputStream resourceZip = getClass().getResourceAsStream(resourceName);
@@ -140,7 +143,7 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
-	private void installFromStream(InputStream productZip, ProgressFacade monitor) throws JNLPException
+	private void installFromStream(InputStream productZip, ProgressFacade monitor) throws JNLPException, OperationCanceledException
 	{
 		File installLocation = m_main.getInstallLocation();
 		ZipInputStream zipInput = new ZipInputStream(productZip);
@@ -149,6 +152,8 @@ public class ProductInstaller implements IProductInstaller
 		{
 			while((zipEntry = zipInput.getNextEntry()) != null)
 			{
+				monitor.checkCanceled();				
+				
 				String name = osAdjustName(zipEntry.getName());
 				File file;
 				if(zipEntry.isDirectory())

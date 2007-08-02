@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheSecurityManager;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCache;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheAdapter;
+import org.w3c.dom.DOMException;
 
 /**
  * This class is supposed to be called as a JNLP application. It pops up a splash and the in will access a resource. The
@@ -169,6 +170,10 @@ public class Main
 
 			if(!fromApplet)
 				Runtime.getRuntime().exit(0);
+		}
+		catch(OperationCanceledException e)
+		{
+			System.err.println("Warning: Operation was canceled by user");
 		}
 		catch(Throwable t)
 		{
@@ -480,7 +485,7 @@ public class Main
 		}
 	}
 
-	void run(String[] args) throws JNLPException
+	void run(String[] args) throws JNLPException, DOMException, OperationCanceledException
 	{
 		try
 		{
@@ -622,6 +627,7 @@ public class Main
 				monitor.setTask("Starting", startupTime);
 				while(--startupTime >= 0 && !m_jnlpProductStarted)
 				{
+					monitor.checkCanceled();
 					Thread.sleep(100);
 					monitor.taskIncrementalProgress(1);
 				}

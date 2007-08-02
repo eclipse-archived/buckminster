@@ -13,5 +13,5 @@ package org.eclipse.buckminster.jnlp.bootstrap;
  */
 public interface IProductInstaller
 {
-	void installProduct(Main main, ProgressFacade monitor) throws JNLPException;
+	void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException;
 }
