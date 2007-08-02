@@ -108,6 +108,20 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		if(m_composite == null)
 		{
 			m_composite = new Composite(parent, SWT.NONE);
+		} else
+		{
+			// hide the last progress monitors
+			for(int i = parent.getChildren().length; i > 0; i--)
+			{
+				Control control = parent.getChildren()[i-1];
+				if(AVAILABLE.equals(control.getData()))
+				{
+					control.setVisible(false);
+					control.update();
+					continue;
+				}
+				break;
+			}
 		}
 		m_composite.setLayout(new GridLayout(2, false));
 		m_composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -200,14 +214,27 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		}
 
 		subTask(m_jobName + " " + (isCanceled() ? "canceled" : "completed"));
+
+		final boolean[] visible = new boolean[1];
 		
-		try
+		Display.getDefault().syncExec(new Runnable()
 		{
-			Thread.sleep(DONE_SLEEP);
-		}
-		catch(InterruptedException e)
+			public void run()
+			{
+				visible[0] = m_composite.isVisible();
+			}
+		});
+		
+		if(visible[0])
 		{
-			// nothing
+			try
+			{
+				Thread.sleep(DONE_SLEEP);
+			}
+			catch(InterruptedException e)
+			{
+				// nothing
+			}
 		}
 
 		m_done = true;
@@ -218,9 +245,10 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 			{
 				m_composite.setData(AVAILABLE);
 				//m_composite.setVisible(false);
-				m_composite.update();
+				//m_composite.update();
 			}
 		});
+
 		//System.out.println("Done");
 	}
 
@@ -238,8 +266,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 			public void run()
 			{
 				m_progressBar.setSelection(Double.valueOf(m_totalWork).intValue());
-				System.out.println("JOB: " + m_subTaskLabel.getText() + " " + m_totalWork + "(" + m_progressBar.getSelection() + ")" + "/" +
-				m_progressBar.getMaximum() + " - " + work);
+				//System.out.println("JOB: " + m_subTaskLabel.getText() + " " + m_totalWork + "(" + m_progressBar.getSelection() + ")" + "/" + m_progressBar.getMaximum() + " - " + work);
 			}
 		});
 	}
