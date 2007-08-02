@@ -115,7 +115,7 @@ public class MaterializationJob extends Job
 		mbJob.internalRun(monitor);
 	}
 
-	private MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
+	protected MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
 	{
 		super("Materializing");
 		m_context = ctx;
@@ -128,12 +128,24 @@ public class MaterializationJob extends Job
 		this.setPriority(LONG);
 	}
 
-	private void internalRun(final IProgressMonitor monitor) throws CoreException
+	protected void internalRun(final IProgressMonitor monitor) throws CoreException
+	{
+		BillOfMaterials bom = m_context.getBillOfMaterials();
+
+		Queue<MaterializerJob> allJobs = prepareJobs(monitor, bom);
+		
+		if(allJobs == null)
+			return;
+		
+		triggerJobs(monitor, allJobs);
+		waitForJobs(monitor, allJobs, bom);
+	}	
+	
+	protected Queue<MaterializerJob> prepareJobs(IProgressMonitor monitor, BillOfMaterials bom) throws CoreException
 	{
 		CorePlugin corePlugin = CorePlugin.getDefault();
 		Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
 		MaterializationSpec mspec = m_context.getMaterializationSpec();
-		BillOfMaterials bom = m_context.getBillOfMaterials();
 		for(Resolution cr : bom.findMaterializationCandidates(mspec))
 		{
 			String materializer = mspec.getMaterializerID(cr.getComponentIdentifier());
@@ -149,7 +161,7 @@ public class MaterializationJob extends Job
 		if(resPerMat.size() == 0)
 		{
 			bom.store();
-			return;
+			return null;
 		}
 
 		final Queue<MaterializerJob> allJobs = new LinkedList<MaterializerJob>();
@@ -167,7 +179,12 @@ public class MaterializationJob extends Job
 			else
 				allJobs.offer(new MaterializerJob(entry.getKey(), materializer, resolutions, m_context));
 		}
-
+		
+		return allJobs;
+	}
+	
+	protected void triggerJobs(final IProgressMonitor monitor, final Queue<MaterializerJob> allJobs)
+	{
 		// -- Schedule at most m_maxParallelJobs. After that, let the termination of
 		// a job schedule a new one until the queue is empty.
 		//
@@ -207,7 +224,10 @@ public class MaterializationJob extends Job
 			job.addJobChangeListener(listener);
 			job.schedule();
 		}
-
+	}
+	
+	protected void waitForJobs(IProgressMonitor monitor, Queue<MaterializerJob> allJobs, BillOfMaterials bom) throws CoreException
+	{
 		// Wait until all jobs have completed
 		//
 		IJobManager jobManager = Job.getJobManager();
@@ -248,6 +268,11 @@ public class MaterializationJob extends Job
 		}
 	}
 
+	protected MaterializationContext getMaterializationContext()
+	{
+		return m_context;
+	}
+	
 	@Override
 	public IStatus run(IProgressMonitor monitor)
 	{
