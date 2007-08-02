@@ -172,6 +172,14 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			{
 				smartList.add("Version: " + m_cspec.getVersion());
 			}
+			if(m_node.getInstallLocation() != null)
+			{
+				smartList.add("Destination Address: " + m_node.getInstallLocation().removeTrailingSeparator().toOSString());
+			}
+			if(m_node.getConflictResolution() != null)
+			{
+				smartList.add("Conflict Resolution: " + m_node.getConflictResolution());
+			}
 			
 			return smartList.toString("\n");
 		}
