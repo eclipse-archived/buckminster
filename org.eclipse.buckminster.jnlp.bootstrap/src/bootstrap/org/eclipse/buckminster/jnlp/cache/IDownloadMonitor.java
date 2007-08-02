@@ -10,6 +10,8 @@ package org.eclipse.buckminster.jnlp.cache;
 
 import java.net.URL;
 
+import org.eclipse.buckminster.jnlp.bootstrap.OperationCanceledException;
+
 /**
  * @author Filip Hrbek
  *
@@ -20,4 +22,10 @@ public interface IDownloadMonitor
 	public void progress(URL url, String version, long readSoFar, long total, int overallPercent);
 
 	public void downloadFailed(URL url, String version);
+	
+	public void setCanceled(boolean canceled);
+	
+	public boolean isCanceled();
+	
+	public void checkCanceled() throws OperationCanceledException;
 }
