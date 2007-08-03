@@ -81,7 +81,7 @@ public class InstallWizard extends Wizard
 	
 	private String m_moreInfoURL;
 	
-	private String m_errorURL;
+	private String m_errorURL = ERROR_HELP_URL;
 	
 	private boolean m_loginRequired;
 	
@@ -232,7 +232,7 @@ public class InstallWizard extends Wizard
 				public void run()
 				{
 					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE,
-							ERROR_HELP_URL, e.getErrorCode(), status);
+							m_errorURL, e.getErrorCode(), status);
 				}
 			});
 		}

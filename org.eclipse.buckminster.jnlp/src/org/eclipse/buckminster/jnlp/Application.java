@@ -57,6 +57,8 @@ public class Application implements IApplication
 	 * String for synchronization with the bootstrap
 	 */
 	private String m_syncString = null;
+	
+	private String m_errorURL = ERROR_HELP_URL;
 
 	private void synchronizeWithBootstrap()
 	{
@@ -184,7 +186,10 @@ public class Application implements IApplication
 			{
 				// Create the wizard dialog and resize it.
 				//
-				AdvancedWizardDialog dialog = new AdvancedWizardDialog(new InstallWizard(properties));
+				InstallWizard installWizard = new InstallWizard(properties);
+				m_errorURL = installWizard.getErrorURL();
+				
+				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard);
 				dialog.create();
 
 				// General exception handler
@@ -210,13 +215,13 @@ public class Application implements IApplication
 							JNLPException je = (JNLPException)t;
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE, je
 									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-									MaterializationConstants.ERROR_HELP_URL, je.getErrorCode(), status);
+									m_errorURL, je.getErrorCode(), status);
 						}
 						else
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
 									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
-									MaterializationConstants.ERROR_HELP_URL, ERROR_CODE_RUNTIME_EXCEPTION, status);
+									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
 						}
 
 						// Try to keep running.
@@ -276,7 +281,7 @@ public class Application implements IApplication
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
 									"Materialization wizard failed", MaterializationConstants.ERROR_HELP_TITLE,
-									MaterializationConstants.ERROR_HELP_URL, finalErrorCode, status);
+									m_errorURL, finalErrorCode, status);
 						}
 					});
 					return ERROR_EXIT_CODE;
@@ -303,7 +308,7 @@ public class Application implements IApplication
 				{
 					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
 							"Materialization cannot be started", MaterializationConstants.ERROR_HELP_TITLE,
-							MaterializationConstants.ERROR_HELP_URL, finalErrorCode, status);
+							m_errorURL, finalErrorCode, status);
 				}
 			});
 			return ERROR_EXIT_CODE;
