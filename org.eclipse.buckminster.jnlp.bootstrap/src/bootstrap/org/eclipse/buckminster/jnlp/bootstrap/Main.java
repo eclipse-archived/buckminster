@@ -645,6 +645,7 @@ public class Main
 					while(--startupTimeOut >= 0 && !m_jnlpProductStarted)
 						try
 						{
+							monitor.checkCanceled();
 							processExitValue = m_process.exitValue();
 							processTerminated = true;
 							break;
@@ -681,6 +682,13 @@ public class Main
 			catch(InterruptedException e)
 			{
 			}
+		} catch(OperationCanceledException e)
+		{
+			if(m_process != null)
+			{
+				m_process.destroy();
+			}
+			throw e;
 		}
 		finally
 		{
