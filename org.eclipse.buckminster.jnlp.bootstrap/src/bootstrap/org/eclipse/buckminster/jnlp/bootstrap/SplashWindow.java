@@ -502,6 +502,7 @@ public class SplashWindow extends Frame
 			// s_instance.getOwner().dispose();
 			s_instance.dispose();
 			s_instance = null;
+			s_listener = null;
 		}
 	}
 
