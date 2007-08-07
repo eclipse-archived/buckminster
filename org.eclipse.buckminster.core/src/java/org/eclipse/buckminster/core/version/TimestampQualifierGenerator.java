@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -61,7 +62,10 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		try
 		{
 			IPath location = WorkspaceInfo.getComponentLocation(cid);
-			IReaderType readerType = WorkspaceInfo.getResolution(cid).getProvider().getReaderType();
+			IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
+			if(readerType == null)
+				return null;
+
 			Date lastMod = readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
 			if(lastMod == null)
 				return null;

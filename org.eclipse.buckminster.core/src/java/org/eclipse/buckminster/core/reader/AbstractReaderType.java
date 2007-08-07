@@ -32,9 +32,14 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.team.core.RepositoryProvider;
 
 /**
  * @author Thomas Hallgren
@@ -58,6 +63,29 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 			MonitorUtils.complete(monitor);
 			return m_versionMatch;
 		}
+	}
+
+	public static IReaderType getTypeForResource(IResource resource) throws CoreException
+	{
+		if(resource == null)
+			return null;
+
+		IProject project = resource.getProject();
+		if(project == null)
+			return null;
+
+		RepositoryProvider provider = RepositoryProvider.getProvider(project);
+		if(provider == null)
+			return null;
+
+		String providerId = provider.getID();
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		for(IConfigurationElement elem : exReg.getConfigurationElementsFor(CorePlugin.READER_TYPE_POINT))
+		{
+			if(providerId.equals(elem.getAttribute("teamRepositoryId")))
+				return CorePlugin.getDefault().getReaderType(elem.getAttribute("id"));
+		}
+		return null;
 	}
 
 	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
