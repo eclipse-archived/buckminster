@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheSecurityManager;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCache;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheAdapter;
+import org.eclipse.buckminster.jnlp.cache.Utils;
 import org.w3c.dom.DOMException;
 
 /**
@@ -600,7 +601,15 @@ public class Main
 							"Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
 				}
 
-				installer.installProduct(this, monitor);
+				try
+				{
+					installer.installProduct(this, monitor);
+				}
+				catch(OperationCanceledException e)
+				{
+					Utils.deleteRecursive(new File(getInstallLocation(), IProductInstaller.INSTALL_FOLDER));
+					throw e;
+				}
 			}
 			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
 			// in the clipboard.
