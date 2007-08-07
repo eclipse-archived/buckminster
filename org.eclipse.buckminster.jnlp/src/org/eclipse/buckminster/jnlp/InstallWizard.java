@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -466,9 +467,14 @@ public class InstallWizard extends Wizard
 			int status = client.executeMethod(method);
 
 			InputStream stream = method.getResponseBodyAsStream();
-*/
+			URLConnection connection = m_mspecURL.openConnection();
+			InputStream stream = connection.getInputStream();
 			
-			InputStream stream = m_mspecURL.openStream();
+*/
+			URLConnection connection = m_mspecURL.openConnection();
+			MaterializationUtils.checkConnection(connection, m_mspecURL.toString());
+			InputStream stream = connection.getInputStream();
+			
 			IParser<MaterializationSpec> parser =
 				CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
 			
@@ -489,14 +495,6 @@ public class InstallWizard extends Wizard
 		}
 		catch(IOException e)
 		{
-			// TODO how to match 403 error code better?
-			if(e.getMessage() != null && e.getMessage().startsWith("Server returned HTTP response code: 403"))
-			{
-				throw new JNLPException(
-						"Cannot read materialization specification",
-						ERROR_CODE_403_EXCEPTION,
-						new BuckminsterException(m_mspecURL + " - access denied"));
-			}
 			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 		catch(SAXException e)

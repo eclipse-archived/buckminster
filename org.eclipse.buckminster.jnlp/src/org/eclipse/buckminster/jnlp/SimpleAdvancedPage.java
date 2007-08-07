@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -344,7 +345,11 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		try
 		{
 			URL bomURL = getMaterializationSpecBuilder().getURL();
-			InputStream stream = bomURL.openStream();
+
+			URLConnection connection = bomURL.openConnection();
+			MaterializationUtils.checkConnection(connection, bomURL.toString());
+			InputStream stream = connection.getInputStream();
+
 			IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
 
 			ExportedBillOfMaterials exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
@@ -366,14 +371,6 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		}
 		catch(IOException e)
 		{
-			// TODO how to match 403 error code better?
-			if(e.getMessage() != null && e.getMessage().startsWith("Server returned HTTP response code: 403"))
-			{
-				throw new JNLPException(
-						"Cannot read artifact specification",
-						ERROR_CODE_403_EXCEPTION,
-						new BuckminsterException(getMaterializationSpecBuilder().getURL() + " - access denied"));
-			}
 			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 		catch(CoreException e)
