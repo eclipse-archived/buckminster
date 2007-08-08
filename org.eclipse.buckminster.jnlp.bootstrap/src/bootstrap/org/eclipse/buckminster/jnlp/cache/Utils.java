@@ -98,6 +98,9 @@ public class Utils
 
 	public static void deleteRecursive(File file) throws JNLPException
 	{
+		//TODO remove
+		System.out.println("deleteRecursive - file: " + file);
+		
 		if(!file.exists())
 			return;
 
@@ -113,9 +116,15 @@ public class Utils
 					deleteRecursive(list[count]);
 			}
 
+			//TODO remove
+			System.out.println("deleteRecursive - before delete of file: " + file);
+
 			if(!file.delete() && file.exists())
 				throw new JNLPException("Unable to delete " + file.getAbsolutePath(), "Check file permissions",
 						BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION);
+		
+			//TODO remove
+			System.out.println("deleteRecursive - after delete of file: " + file);
 		}
 		catch(SecurityException e)
 		{

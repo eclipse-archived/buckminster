@@ -175,6 +175,8 @@ public class Main
 		catch(OperationCanceledException e)
 		{
 			System.err.println("Warning: Operation was canceled by user");
+			//TODO remove
+			e.printStackTrace();
 		}
 		catch(Throwable t)
 		{
