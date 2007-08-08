@@ -73,7 +73,7 @@ public class ProductInstaller implements IProductInstaller
 		int unpackCount = Integer.getInteger(PROP_UNPACK_COUNT, DEFAULT_UNPACK_COUNT).intValue();
 		monitor.setTask("Unpacking", unpackCount + 30);
 
-		deleteRecursive(new File(m_main.getInstallLocation(), "installer"));
+		deleteRecursive(new File(m_main.getInstallLocation(), INSTALL_FOLDER));
 		monitor.taskIncrementalProgress(10);
 
 		monitor.checkCanceled();
