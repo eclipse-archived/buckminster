@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.jnlp.product;
 
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,6 +35,10 @@ import org.eclipse.buckminster.jnlp.bootstrap.ProgressFacade;
 
 public class ProductInstaller implements IProductInstaller
 {
+	private static final String INSTALL_FOLDER = "installer";
+	
+	private static final String INSTALL_DONE_FOLDER = "installation.completed";
+	
 	private static final String PACK_SUFFIX = ".pack.gz";
 
 	private static final int PACK_SUFFIX_LEN = PACK_SUFFIX.length();
@@ -73,7 +78,10 @@ public class ProductInstaller implements IProductInstaller
 		int unpackCount = Integer.getInteger(PROP_UNPACK_COUNT, DEFAULT_UNPACK_COUNT).intValue();
 		monitor.setTask("Unpacking", unpackCount + 30);
 
-		deleteRecursive(new File(m_main.getInstallLocation(), INSTALL_FOLDER));
+		for(String folder : getInstallFolders())
+		{
+			deleteRecursive(new File(m_main.getInstallLocation(), folder));
+		}
 		monitor.taskIncrementalProgress(10);
 
 		monitor.checkCanceled();
@@ -81,6 +89,18 @@ public class ProductInstaller implements IProductInstaller
 		installResource("product.zip", monitor);
 		installResource("platform.zip", monitor);
 		installResource("extensions.zip", monitor, false);
+		
+		File appFolder = new File(m_main.getInstallLocation(), getApplicationFolder());
+		try
+		{
+			new File(appFolder, INSTALL_DONE_FOLDER).createNewFile();
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Can not create a new file",
+					"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+		}
+		
 		monitor.taskDone();
 	}
 
@@ -153,6 +173,21 @@ public class ProductInstaller implements IProductInstaller
 			while((zipEntry = zipInput.getNextEntry()) != null)
 			{
 				monitor.checkCanceled();				
+				
+				boolean folderOK = false;
+				for(String folder : getInstallFolders())
+				{
+					if(zipEntry.getName().startsWith(folder))
+					{
+						folderOK = true;
+						break;
+					}
+				}
+				
+				if(!folderOK)
+				{
+					throw new JNLPException("Materializer error", "Materializer is probably corrupted. Report the error.", ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION);
+				}
 				
 				String name = osAdjustName(zipEntry.getName());
 				File file;
@@ -382,5 +417,21 @@ public class ProductInstaller implements IProductInstaller
 		{
 			Main.close(out);
 		}
+	}
+
+	public String getApplicationFolder()
+	{
+		return INSTALL_FOLDER;
+	}
+
+	public String[] getInstallFolders()
+	{
+		return new String[]{INSTALL_FOLDER};
+	}
+
+	public boolean isInstalled(File installLocation) throws JNLPException 
+	{
+		File appFolder = new File(installLocation, getApplicationFolder());
+		return new File(appFolder, INSTALL_DONE_FOLDER).exists();
 	}
 }
