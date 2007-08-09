@@ -294,7 +294,8 @@ public class SplashWindow extends Frame
 					// Dispose was changed to just ICONIFIED so that the window would not completely disappear
 					// (it is registered on the task bar)
 					// dispose();
-					setExtendedState(Frame.ICONIFIED);
+					// the latest comment: we don't want to iconify it
+					//setExtendedState(Frame.ICONIFIED);
 				}
 			}
 		};
