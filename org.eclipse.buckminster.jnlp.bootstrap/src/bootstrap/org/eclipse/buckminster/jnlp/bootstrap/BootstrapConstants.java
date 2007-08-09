@@ -40,6 +40,8 @@ public interface BootstrapConstants
 
 	public static final String ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION = "MaterializerExecutionException";
 
+	public static final String ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION = "MaterializerInstallException";
+	
 	public static final String ERROR_CODE_MISSING_ARGUMENT_EXCEPTION = "MissingArgumentException";
 
 	public static final String ERROR_CODE_MISSING_PROPERTY_EXCEPTION = "MissingPropertyException";
