@@ -175,8 +175,6 @@ public class Main
 		catch(OperationCanceledException e)
 		{
 			System.err.println("Warning: Operation was canceled by user");
-			//TODO remove
-			e.printStackTrace();
 		}
 		catch(Throwable t)
 		{
@@ -539,10 +537,9 @@ public class Main
 					? Toolkit.getDefaultToolkit().createImage(windowIconData)
 					: null;
 
-			File siteRoot = getSiteRoot();
 			final ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 			SimpleJNLPCache cache = new SimpleJNLPCache(getCacheLocation());
-			if(siteRoot == null && splashImageBootData != null || splashImageData != null)
+			if(splashImageBootData != null || splashImageData != null)
 			{
 				cache.addListener(new SimpleJNLPCacheAdapter()
 				{
@@ -587,29 +584,37 @@ public class Main
 
 			boolean productUpdated = cache.registerJNLP(url, monitor);
 
-			if(siteRoot == null || productUpdated)
+			IProductInstaller installer;
+
+			try
 			{
-				IProductInstaller installer;
+				// Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
+				Class<?> installerClass = cache.getClassLoader().loadClass(PRODUCT_INSTALLER_CLASS);
+				installer = (IProductInstaller)installerClass.newInstance();
+			}
+			catch(Exception e)
+			{
+				throw new JNLPException("Can not find materialization wizard resource",
+						"Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
+			}
 
-				try
+			if(productUpdated || !installer.isInstalled(getInstallLocation()))
+			{
+				if(!SplashWindow.splashIsUp())
 				{
-					// Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
-					Class<?> installerClass = cache.getClassLoader().loadClass(PRODUCT_INSTALLER_CLASS);
-					installer = (IProductInstaller)installerClass.newInstance();
+					SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
 				}
-				catch(Exception e)
-				{
-					throw new JNLPException("Can not find materialization wizard resource",
-							"Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
-				}
-
+				
 				try
 				{
 					installer.installProduct(this, monitor);
 				}
 				catch(OperationCanceledException e)
 				{
-					Utils.deleteRecursive(new File(getInstallLocation(), IProductInstaller.INSTALL_FOLDER));
+					for(String installFolder : installer.getInstallFolders())
+					{
+						Utils.deleteRecursive(new File(getInstallLocation(), installFolder));
+					}
 					throw e;
 				}
 			}
@@ -618,7 +623,7 @@ public class Main
 			// ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
 			// StringSelection ss = new StringSelection(SplashWindow.getDebugString());
 			// clipservice.setContents(ss);
-			startProduct(args, (new Date()).getTime() + startupTime);
+			startProduct(installer.getApplicationFolder(), args, (new Date()).getTime() + startupTime);
 			try
 			{
 				// Two seconds to start, with progressbar. The time is an
@@ -738,9 +743,9 @@ public class Main
 		return data;
 	}
 
-	public void startProduct(String[] args, long popupAfter) throws JNLPException
+	public void startProduct(String applicationFolder, String[] args, long popupAfter) throws JNLPException
 	{
-		File launcherFile = findEclipseLauncher();
+		File launcherFile = findEclipseLauncher(applicationFolder);
 		String javaHome = System.getProperty("java.home");
 		if(javaHome == null)
 		{
@@ -933,48 +938,13 @@ public class Main
 
 	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
 
-	private File m_siteRoot;
-
-	/**
-	 * Returns the most recent folder that has a plugins and features subfolder or <code>null</code> if no such folder
-	 * can be found.
-	 * 
-	 * @return The most recent site root folder or <code>null</code>.
-	 * @throws IOException
-	 */
-	public File getSiteRoot() throws JNLPException
-	{
-		if(m_siteRoot == null)
-		{
-			File bestCandidate = null;
-			File[] candidates = getInstallLocation().listFiles();
-			if(candidates != null)
-			{
-				long bestCandidateTime = 0;
-				for(File candidate : candidates)
-				{
-					long candidateTime = candidate.lastModified();
-					if((bestCandidate == null || bestCandidateTime < candidateTime)
-							&& new File(candidate, "plugins").isDirectory()
-							&& new File(candidate, "features").isDirectory())
-					{
-						bestCandidate = candidate;
-						bestCandidateTime = candidateTime;
-					}
-				}
-			}
-			m_siteRoot = bestCandidate;
-		}
-		return m_siteRoot;
-	}
-
-	public File findEclipseLauncher() throws JNLPException
+	public File findEclipseLauncher(String applicationFolder) throws JNLPException
 	{
 		// Eclipse 3.3 no longer have a startup.jar in the root. Instead, they have a
 		// org.eclipse.equinox.launcher_xxxx.jar file under plugins. Let's find
 		// it.
 		//
-		File siteRoot = getSiteRoot();
+		File siteRoot = new File(getInstallLocation(), applicationFolder);
 		if(siteRoot == null)
 		{
 			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(),
