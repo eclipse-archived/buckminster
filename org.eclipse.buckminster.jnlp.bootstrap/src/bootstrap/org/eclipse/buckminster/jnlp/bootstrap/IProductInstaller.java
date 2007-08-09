@@ -8,12 +8,18 @@
 
 package org.eclipse.buckminster.jnlp.bootstrap;
 
+import java.io.File;
+
 /**
  * @author Thomas Hallgren
  */
 public interface IProductInstaller
 {
-	public static final String INSTALL_FOLDER = "installer";
-
 	void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException;
+	
+	public String getApplicationFolder();
+	
+	public String[] getInstallFolders();
+	
+	public boolean isInstalled(File installLocation) throws JNLPException;
 }
