@@ -10,12 +10,6 @@ package org.eclipse.buckminster.jnlp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,23 +18,17 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.helpers.SmartArrayList;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
-import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
-import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -59,7 +47,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.xml.sax.SAXException;
 
 /**
  * @author Karel Brezina
@@ -307,28 +294,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 	{
 		if(!m_treeInitialized)
 		{
-			try
-			{
-				getContainer().run(true, false, new IRunnableWithProgress(){
-
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-					{
-						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-						monitor.subTask("Retrieving artifact specification");
-						initializeTree();
-						monitor.done();
-					}});
-			}
-			catch(Exception e)
-			{
-				if(e.getCause() != null && e.getCause() instanceof JNLPException)
-				{
-					throw ((JNLPException)e.getCause());
-				}
-				
-				throw new JNLPException(
-						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
-			}
+			initializeTree();
 
 			for(TreeItem item : m_tree.getItems())
 			{
@@ -341,44 +307,8 @@ public class SimpleAdvancedPage extends InstallWizardPage
 	
 	private void initializeTree()
 	{
-		BillOfMaterials bom;
-		try
-		{
-			URL bomURL = getMaterializationSpecBuilder().getURL();
-
-			URLConnection connection = bomURL.openConnection();
-			MaterializationUtils.checkConnection(connection, bomURL.toString());
-			InputStream stream = connection.getInputStream();
-
-			IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-
-			ExportedBillOfMaterials exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
-			stream.close();
-
-			bom = BillOfMaterials.importGraph(exported);
-		}
-		catch(SAXException e)
-		{
-			throw new JNLPException(
-					"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
-					ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
-		} catch(FileNotFoundException e)
-		{
-			throw new JNLPException(
-					"Cannot read artifact specification",
-					ERROR_CODE_404_EXCEPTION,
-					new BuckminsterException(getMaterializationSpecBuilder().getURL() + " cannot be found"));
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-		}
-		catch(CoreException e)
-		{
-			throw new JNLPException("Error while reading artifact specification -\n\tbill of materials can not be imported",
-					ERROR_CODE_BOM_IO_EXCEPTION, e);
-		}
-
+		BillOfMaterials bom = getInstallWizard().getBOM();
+		
 		getInstallWizard().getNewMaterializationNodeBuilders().clear();
 		m_componentMap.clear();
 

@@ -8,11 +8,16 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION;
+
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -141,36 +146,64 @@ public class SimpleDownloadPage extends InstallWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		// read MSPEC after login 
-		try
+		if(!getInstallWizard().isMaterializerInitialized())
 		{
-			getInstallWizard().initMSPEC();
-			getContainer().updateButtons();
-			
-			if(getMaterializationSpecBuilder().getInstallLocation() == null)
+			// read MSPEC and BOM after login 
+			try
 			{
-				String defaultDestination = getDefaultDestination();
-				
-				if(defaultDestination != null)
+				getContainer().run(true, false, new IRunnableWithProgress()
 				{
-					getMaterializationSpecBuilder().setInstallLocation(
-								Path.fromOSString(defaultDestination).addTrailingSeparator());
-					m_locationText.setText(defaultDestination);
-				}	
+
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+					{
+						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+						monitor.subTask("Retrieving materialization specification");
+						getInstallWizard().initializeMaterializer();
+						monitor.done();
+					}
+				});
 			}
+			catch(Exception e)
+			{
+				setPageComplete(false);
+
+				if(e instanceof JNLPException)
+				{
+					throw (JNLPException) e;
+				}
+				
+				if(e.getCause() != null && e.getCause() instanceof JNLPException)
+				{
+					throw ((JNLPException)e.getCause());
+				}
+				
+				throw new JNLPException(
+						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+
+			}
+			finally
+			{
+				getContainer().updateButtons();
+			}			
 		}
-		catch(JNLPException e)
+		
+		if(getMaterializationSpecBuilder().getInstallLocation() == null)
 		{
-			setPageComplete(false);
-			getContainer().updateButtons();
-			throw e;
+			String defaultDestination = getDefaultDestination();
+			
+			if(defaultDestination != null)
+			{
+				getMaterializationSpecBuilder().setInstallLocation(
+							Path.fromOSString(defaultDestination).addTrailingSeparator());
+				m_locationText.setText(defaultDestination);
+			}	
 		}
 	}
 	
 	@Override
 	public boolean isPageComplete()
 	{
-		return getMaterializationSpecBuilder().getURL() != null;
+		return getInstallWizard().isMaterializerInitialized();
 	}
 	
 	@Override

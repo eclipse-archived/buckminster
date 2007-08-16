@@ -8,21 +8,13 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
-import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
@@ -146,44 +138,7 @@ public class DonePage extends InstallWizardPage
 				{
 					try
 					{
-						ExportedBillOfMaterials exported;
-						
-						try
-						{
-							URL bomURL = getMaterializationSpecBuilder().getURL();
-							InputStream stream = bomURL.openStream();
-							IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-
-							exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
-							stream.close();
-						}
-						catch(SAXException e1)
-						{
-							throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e1);
-						}
-						catch(IOException e1)
-						{
-							throw new JNLPException("Unable to read remote BOM specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e1);
-						}
-											
-						try
-						{
-							FileOutputStream os = new FileOutputStream(fn);
-							Utils.serialize(exported, os);
-							os.close();
-						}
-						catch(FileNotFoundException e1)
-						{
-							throw new JNLPException("File cannot be opened or created", MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION, e1);
-						}
-						catch(SAXException e1)
-						{
-							throw new JNLPException("Unable to read BOM specification", MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e1);
-						}
-						catch(IOException e1)
-						{
-							throw new JNLPException("Cannot write to file", MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION, e1);
-						}
+						getInstallWizard().saveBOM(getInstallWizard().getBOM(), new File(fn));
 					}
 					catch(JNLPException e1)
 					{

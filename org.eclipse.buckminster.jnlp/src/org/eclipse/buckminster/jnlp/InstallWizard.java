@@ -10,7 +10,9 @@ package org.eclipse.buckminster.jnlp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -28,6 +32,8 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
@@ -67,6 +73,10 @@ public class InstallWizard extends Wizard
 	private String m_brandingString;
 	
 	private URL m_mspecURL = null;
+	
+	private BillOfMaterials m_cachedBOM;
+	
+	private URL m_cachedBOMURL;
 	
 	private String m_artifactName;
 	
@@ -272,9 +282,16 @@ public class InstallWizard extends Wizard
 		
 		WizardPage originalPage = (WizardPage)getContainer().getCurrentPage();
 		
+		URL originalArtifactURL = m_builder.getURL();
+		
 		originalPage.setErrorMessage(null);
 		try
 		{
+			if(m_cachedBOMURL != null)
+			{
+				m_builder.setURL(m_cachedBOMURL);
+			}
+			
 			OperationPage operationPage = (OperationPage)getPage("OperationStep");
 			getContainer().showPage(operationPage);
 			IJobManager jobManager = Job.getJobManager();
@@ -305,7 +322,11 @@ public class InstallWizard extends Wizard
 					m_errorURL,
 					ERROR_CODE_MATERIALIZATION_EXCEPTION,
 					status);
+		} finally
+		{
+			m_builder.setURL(originalArtifactURL);
 		}
+		
 		return false;
 	}
 	
@@ -444,7 +465,18 @@ public class InstallWizard extends Wizard
 		return m_problemInProperties;
 	}
 	
-	void initMSPEC() throws JNLPException
+	boolean isMaterializerInitialized()
+	{
+		return m_cachedBOMURL != null;
+	}
+	
+	void initializeMaterializer()
+	{
+		initMSPEC();
+		getBOM();
+	}
+	
+	private void initMSPEC() throws JNLPException
 	{
 		if(m_mspecURL == null)
 			return;
@@ -481,11 +513,17 @@ public class InstallWizard extends Wizard
 			m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
 			m_originalNodeBuilders.addAll(m_builder.getNodes());
 
-			MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
-			for(MSpecChangeListener listener : m_mspecListeners)
-			{
-				listener.handleMSpecChangeEvent(event);
-			}
+			Display.getDefault().asyncExec(new Runnable(){
+
+				public void run()
+				{
+					MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
+					for(MSpecChangeListener listener : m_mspecListeners)
+					{
+						listener.handleMSpecChangeEvent(event);
+					}
+				}});
+			
 		} catch(FileNotFoundException e)
 		{
 			throw new JNLPException(
@@ -503,6 +541,100 @@ public class InstallWizard extends Wizard
 		}
 		
 		m_mspecURL = null;
+	}
+	
+	BillOfMaterials getBOM()
+	{
+		if(m_cachedBOM == null)
+		{
+			try
+			{
+				URL bomURL = getMaterializationSpecBuilder().getURL();
+
+				URLConnection connection = bomURL.openConnection();
+				MaterializationUtils.checkConnection(connection, bomURL.toString());
+				InputStream stream = connection.getInputStream();
+
+				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(
+						true);
+
+				ExportedBillOfMaterials exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
+				stream.close();
+
+				m_cachedBOM = BillOfMaterials.importGraph(exported);
+			}
+			catch(SAXException e)
+			{
+				throw new JNLPException(
+						"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
+						ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+			}
+			catch(FileNotFoundException e)
+			{
+				throw new JNLPException("Cannot read artifact specification", ERROR_CODE_404_EXCEPTION,
+						new BuckminsterException(getMaterializationSpecBuilder().getURL() + " cannot be found"));
+			}
+			catch(IOException e)
+			{
+				throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+			}
+			catch(CoreException e)
+			{
+				throw new JNLPException(
+						"Error while reading artifact specification -\n\tbill of materials can not be imported",
+						ERROR_CODE_BOM_IO_EXCEPTION, e);
+			}
+			
+			File cachedBOMFile;
+			try
+			{
+				cachedBOMFile = File.createTempFile("jnlp", ".bom");
+				cachedBOMFile.deleteOnExit();
+			}
+			catch(IOException e)
+			{
+				throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
+			}
+			
+			saveBOM(m_cachedBOM, cachedBOMFile);
+			
+			try
+			{
+				m_cachedBOMURL = cachedBOMFile.toURI().toURL();
+			}
+			catch(MalformedURLException e)
+			{
+				throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+			}
+		}
+	
+		return m_cachedBOM;
+	}
+	
+	void saveBOM(BillOfMaterials bom, File file)
+	{
+		try
+		{
+			FileOutputStream os = new FileOutputStream(file);
+			Utils.serialize(bom.exportGraph(), os);
+			os.close();
+		}
+		catch(FileNotFoundException e1)
+		{
+			throw new JNLPException("File cannot be opened or created", ERROR_CODE_FILE_IO_EXCEPTION, e1);
+		}
+		catch(SAXException e1)
+		{
+			throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e1);
+		}
+		catch(IOException e1)
+		{
+			throw new JNLPException("Cannot write to file", ERROR_CODE_FILE_IO_EXCEPTION, e1);
+		}
+		catch(CoreException e)
+		{
+			throw new JNLPException("Cannot save BOM to file " + file.getAbsolutePath(), ERROR_CODE_BOM_IO_EXCEPTION, e);
+		}
 	}
 	
 	private void readProperties(Map<String, String> properties)
