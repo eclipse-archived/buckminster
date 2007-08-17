@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
@@ -174,6 +175,32 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 				Boolean selectionValue = Boolean.valueOf(checkBox.getSelection());
 				checkBox.setData(selectionValue);
 				validateFieldInFieldListener(widgetin, getFieldValidator(idx), selectionValue);				
+			}
+		});
+
+		return widgetin;		
+	}
+
+	
+	protected IWidgetin getComboWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
+	{
+		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
+		final IWidgetin widgetin = new WidgetinWrapper(combo);
+		
+		combo.setItems(items);
+		
+		String stringValue = value == null ? "" : value.toString();
+
+		combo.setText(stringValue);
+		combo.setData(stringValue);
+		
+		combo.addModifyListener(new ModifyListener()
+		{
+
+			public void modifyText(ModifyEvent e)
+			{
+				combo.setData(combo.getText());
+				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());				
 			}
 		});
 

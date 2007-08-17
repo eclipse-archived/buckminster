@@ -28,7 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -88,7 +87,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 			case 0:
 				return getName(parent, idx, value);
 			case 1:
-				return getComponentType(parent, idx, value);
+				return getComboWidgetin(parent, idx, value, AbstractComponentType.getComponentTypeIDs(true), SWT.READ_ONLY);
 			case 2:
 				return getVersionDesignator(parent, idx, value);
 			default:
@@ -120,41 +119,6 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		return widgetin;
 	}
 
-	private IWidgetin getComponentType(Composite parent, final int idx, Object value)
-	{
-		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, SWT.READ_ONLY);
-
-		final IWidgetin widgetin = new WidgetinWrapper(combo);
-		
-		combo.setItems(AbstractComponentType.getComponentTypeIDs(true));
-		
-		int selectionIdx = 0;
-		if(value != null)
-		{
-			selectionIdx = combo.indexOf((String) value);
-			
-			if(selectionIdx < 0)
-			{
-				selectionIdx = 0;
-			}
-		}
-		
-		combo.select(selectionIdx);
-		combo.setData(combo.getText());
-		
-		combo.addModifyListener(new ModifyListener()
-		{
-
-			public void modifyText(ModifyEvent e)
-			{
-				combo.setData(combo.getText());
-				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());				
-			}
-		});
-
-		return widgetin;		
-	}
-	
 	private VersionDesignator getVersionDesignator(Composite parent, final int idx, Object value)
 	{
 		final VersionDesignator designator = new VersionDesignator(parent);
@@ -175,8 +139,6 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 
 		return designator;		
 	}
-	
-
 	
 	@Override
 	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues)

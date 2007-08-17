@@ -60,9 +60,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
-	public ActionsTable(List<ActionBuilder> data, CSpecBuilder cspec)
+	public ActionsTable(CSpecEditor editor, List<ActionBuilder> data, CSpecBuilder cspec)
 	{
-		super(data, cspec);
+		super(editor, data, cspec);
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		PrerequisitesTable preTable = new PrerequisitesTable(m_prerequisites, createNewRow().getPrerequisitesBuilder());
+		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow().getPrerequisitesBuilder());
 		 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
 				geComposite,

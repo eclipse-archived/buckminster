@@ -41,9 +41,9 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 	private List<IPath> m_paths = new ArrayList<IPath>();
 	private SimpleTableEditor<IPath> m_pathsEditor;
 	
-	public ArtifactsTable(List<ArtifactBuilder> data, CSpecBuilder cspec)
+	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec)
 	{
-		super(data, cspec);
+		super(editor, data, cspec);
 	}
 
 	@Override

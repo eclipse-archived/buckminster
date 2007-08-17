@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AttributesTable<T extends AttributeBuilder> extends StructuredTable<T>
 {
+	private CSpecEditor m_editor;
 	private CSpecBuilder m_cspec;
 	
 	private Text m_nameText;
@@ -42,13 +43,25 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 	private List<Property> m_installerHints = new ArrayList<Property>();
 	private SimpleTableEditor<Property> m_installerHintsEditor;
 	private Text m_documentationText;
+	private T m_currentBuilder;
 
-	public AttributesTable(List<T> data, CSpecBuilder cspec)
+	public AttributesTable(CSpecEditor editor, List<T> data, CSpecBuilder cspec)
 	{
 		super(data);
+		m_editor = editor;
 		m_cspec = cspec;
 	}
 
+	public CSpecEditor getCSpecEditor()
+	{
+		return m_editor;
+	}
+	
+	public T getCurrentBuilder()
+	{
+		return m_currentBuilder;
+	}
+	
 	protected CSpecBuilder getCSpecBuilder()
 	{
 		return m_cspec;
@@ -171,6 +184,8 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 	@Override
 	protected void refreshRow(T builder)
 	{
+		m_currentBuilder = builder;
+		
 		m_nameText.setText(TextUtils.notNullString(builder.getName()));
 		m_publicCheck.setSelection(builder.isPublic());
 		

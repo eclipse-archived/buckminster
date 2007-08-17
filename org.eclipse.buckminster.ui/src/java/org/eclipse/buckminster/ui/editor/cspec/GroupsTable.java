@@ -24,9 +24,9 @@ import org.eclipse.swt.widgets.Text;
 
 public class GroupsTable extends AttributesTable<GroupBuilder>
 {
-	public GroupsTable(List<GroupBuilder> data, CSpecBuilder cspec)
+	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec)
 	{
-		super(data, cspec);
+		super(editor, data, cspec);
 	}
 
 	private Text m_rebasePathText;
@@ -135,7 +135,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		PrerequisitesTable preTable = new PrerequisitesTable(m_prerequisites, createNewRow());
+		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow());
 		 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
 				preComposite,

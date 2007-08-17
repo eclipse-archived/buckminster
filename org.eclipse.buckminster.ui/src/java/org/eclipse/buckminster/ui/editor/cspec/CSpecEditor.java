@@ -145,7 +145,7 @@ public class CSpecEditor extends EditorPart
 		if(!commitChanges())
 			return;
 		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.cquery" });
+		dlg.setFilterExtensions(new String[] { "*.cspec" });
 		final String location = dlg.open();
 		if(location == null)
 			return;
@@ -686,7 +686,7 @@ public class CSpecEditor extends EditorPart
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
 
-		ActionsTable table = new ActionsTable(m_actionBuilders, m_cspec);
+		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
 		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(
@@ -703,7 +703,7 @@ public class CSpecEditor extends EditorPart
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Artifacts");
 
-		ArtifactsTable table = new ArtifactsTable(m_artifactBuilders, m_cspec);
+		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
 		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(
@@ -720,7 +720,7 @@ public class CSpecEditor extends EditorPart
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Groups");
 
-		GroupsTable table = new GroupsTable(m_groupBuilders, m_cspec);
+		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
 		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(
@@ -757,7 +757,7 @@ public class CSpecEditor extends EditorPart
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Generators");
 
-		GeneratorsTable table = new GeneratorsTable(m_generatorBuilders, m_cspec);
+		GeneratorsTable table = new GeneratorsTable(this, m_generatorBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
 		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(
@@ -802,5 +802,95 @@ public class CSpecEditor extends EditorPart
 		m_hasChanges = flag;
 		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
+	}
+	
+	List<ActionBuilder> getActionBuilders()
+	{
+		return m_actionBuilders;
+	}
+	
+	List<ArtifactBuilder> getArtifactBuilders()
+	{
+		return m_artifactBuilders;
+	}
+	
+	List<GroupBuilder> getGroupBuilders()
+	{
+		return m_groupBuilders;
+	}
+	
+	List<DependencyBuilder> getDependencyBuilders()
+	{
+		return m_dependencyBuilders;
+	}
+	
+	List<GeneratorBuilder> getGeneratorBuilders()
+	{
+		return m_generatorBuilders;
+	}
+	
+	String[] getAttributeNames(String excludeName)
+	{
+		List<String> list = new ArrayList<String>();
+		
+		for(ActionBuilder builder : m_actionBuilders)
+		{
+			if(builder.getName() != null)
+			{
+				list.add(builder.getName());
+			}
+		}
+		for(ArtifactBuilder builder : m_artifactBuilders)
+		{
+			if(builder.getName() != null)
+			{
+				list.add(builder.getName());
+			}
+		}
+		for(GroupBuilder builder : m_groupBuilders)
+		{
+			if(builder.getName() != null)
+			{
+				list.add(builder.getName());
+			}
+		}
+		
+		if(excludeName != null)
+		{
+			list.remove(excludeName);
+		}
+		
+		String[] array = list.toArray(new String[0]);
+		Arrays.sort(array, new Comparator<String>(){
+
+			public int compare(String o1, String o2)
+			{
+				return o1.compareTo(o2);
+			}});
+		
+		return array;
+	}
+	
+	String[] getComponentNames()
+	{
+		List<String> list = new ArrayList<String>();
+		
+		for(DependencyBuilder builder : m_dependencyBuilders)
+		{
+			if(builder.getName() != null)
+			{
+				list.add(builder.getName());
+			}
+		}
+		
+		String[] array = list.toArray(new String[0]);
+		Arrays.sort(array, new Comparator<String>(){
+
+			public int compare(String o1, String o2)
+			{
+				return o1.compareTo(o2);
+			}});
+		
+		return array;
 	}
 }
