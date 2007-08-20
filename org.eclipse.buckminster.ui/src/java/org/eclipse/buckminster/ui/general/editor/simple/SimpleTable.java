@@ -134,7 +134,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 	{
 		final Text text = UiUtils.createGridText(parent, 1, 0, SWT.NONE, null);
 		
-		final IWidgetin widgetin = new WidgetinWrapper(text);
+		final IWidgetin widgetin = new WidgetWrapper(text);
 		
 		String stringValue = value == null ? "" : value.toString();
 		
@@ -157,7 +157,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Object value)
 	{
 		final Button checkBox = new Button(parent, SWT.CHECK);
-		final IWidgetin widgetin = new WidgetinWrapper(checkBox);
+		final IWidgetin widgetin = new WidgetWrapper(checkBox);
 
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, false, false);
 		checkBox.setLayoutData(data);
@@ -185,7 +185,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 	protected IWidgetin getComboWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
 	{
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
-		final IWidgetin widgetin = new WidgetinWrapper(combo);
+		final IWidgetin widgetin = new WidgetWrapper(combo);
 		
 		combo.setItems(items);
 		

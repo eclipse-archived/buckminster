@@ -23,7 +23,7 @@ import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
-import org.eclipse.buckminster.ui.general.editor.simple.WidgetinWrapper;
+import org.eclipse.buckminster.ui.general.editor.simple.WidgetWrapper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -99,7 +99,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 	{
 		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
 		
-		final IWidgetin widgetin = new WidgetinWrapper(text);
+		final IWidgetin widgetin = new WidgetWrapper(text);
 		
 		String stringValue = value == null ? "" : value.toString();
 		

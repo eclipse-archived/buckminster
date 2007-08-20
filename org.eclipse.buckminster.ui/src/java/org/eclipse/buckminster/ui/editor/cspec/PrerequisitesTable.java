@@ -18,7 +18,7 @@ import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
-import org.eclipse.buckminster.ui.general.editor.simple.WidgetinWrapper;
+import org.eclipse.buckminster.ui.general.editor.simple.WidgetWrapper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -33,7 +33,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 	private CSpecEditor m_editor;
 	private AttributesTable<?> m_parentAttributesTable;
 	private AttributeBuilder m_attributeBuilder;
-	private Combo m_attributeCombo;
+	private IWidgetin m_attributeWidgetin;
 
 	public PrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable, List<PrerequisiteBuilder> data, AttributeBuilder attributeBuilder)
 	{
@@ -82,7 +82,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		switch(idx)
 		{
 			case 0:
-				return getAttributeWidgetin(parent, idx, value, m_editor.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
+				return m_attributeWidgetin =
+					getAttributeWidgetin(parent, idx, value, m_editor.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
 			case 1:
 				return getTextWidgetin(parent, idx, value);
 			case 2:
@@ -101,9 +102,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
 		
-		m_attributeCombo = combo;
-		
-		final IWidgetin widgetin = new WidgetinWrapper(combo);
+		final IWidgetin widgetin = new WidgetWrapper(combo);
 		
 		combo.setItems(items);
 		
@@ -129,7 +128,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
 	{
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
-		final IWidgetin widgetin = new WidgetinWrapper(combo);
+		final IWidgetin widgetin = new WidgetWrapper(combo);
 		
 		combo.setItems(items);
 		
@@ -153,19 +152,21 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		return widgetin;		
 	}
 
-	private void setAttributeItems(String string)
+	private void setAttributeItems(String componentName)
 	{
-		String currentAttribute = m_attributeCombo.getText();
-		if(string == null || string.length() == 0)
+		Combo attributeCombo = ((Combo)((WidgetWrapper)m_attributeWidgetin).getWidget());
+		String currentAttribute = attributeCombo.getText();
+		
+		if(componentName == null || componentName.length() == 0)
 		{
-			m_attributeCombo.setItems(((String[]) m_attributeCombo.getData("items")));
+			attributeCombo.setItems(((String[]) attributeCombo.getData("items")));
 		} else
 		{
-			m_attributeCombo.setItems(new String[]{});
+			attributeCombo.setItems(new String[]{});
 		}
 		
-		m_attributeCombo.setText(currentAttribute);
-		m_attributeCombo.update();
+		attributeCombo.setText(currentAttribute);
+		attributeCombo.update();
 	}
 
 	@Override

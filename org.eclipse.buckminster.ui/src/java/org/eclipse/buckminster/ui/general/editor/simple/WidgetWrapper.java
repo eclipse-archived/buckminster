@@ -16,13 +16,18 @@ import org.eclipse.swt.widgets.Widget;
  * @author Karel Brezina
  *
  */
-public class WidgetinWrapper implements IWidgetin
+public class WidgetWrapper implements IWidgetin
 {
 	private Widget m_widget;
 	
-	public WidgetinWrapper(Widget widget)
+	public WidgetWrapper(Widget widget)
 	{
 		m_widget = widget;
+	}
+	
+	public Widget getWidget()
+	{
+		return m_widget;
 	}
 	
 	public void addListener(int eventType, Listener listener)
