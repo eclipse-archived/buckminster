@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.editor.cspec;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +40,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.editor.SaveRunnable;
@@ -131,6 +133,7 @@ public class CSpecEditor extends EditorPart
 	private CTabItem m_artifactsTab;
 	private CTabItem m_groupsTab;
 	private CTabItem m_attributesTab;
+	private CTabItem m_xmlTab;
 	private Text m_componentName;
 	private Combo m_componentType;
 	private Text m_versionString;
@@ -143,6 +146,7 @@ public class CSpecEditor extends EditorPart
 	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
 	private Text m_shortDesc;
 	private Text m_documentation;
+	private Text m_xml;
 	private Button m_externalSaveAsButton;
 	
 	public void doExternalSaveAs()
@@ -262,6 +266,11 @@ public class CSpecEditor extends EditorPart
 			m_attributesEditor.cancelRow();
 		}
 
+		return innerCommitChanges();
+	}
+	
+	private boolean innerCommitChanges()
+	{
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
 		{
@@ -517,6 +526,8 @@ public class CSpecEditor extends EditorPart
 					? ""
 					: doc.toString()));
 			
+			m_xml.setText(getCSpecXML());
+			
 			m_actionsEditor.refresh();
 			m_artifactsEditor.refresh();
 			m_groupsEditor.refresh();
@@ -531,6 +542,22 @@ public class CSpecEditor extends EditorPart
 			m_mute = false;
 		}
 	}
+
+	private String getCSpecXML()
+	{
+		String cspecXML = "";
+		try
+		{
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			Utils.serialize(m_cspec.createCSpec(), baos);
+			cspecXML = baos.toString();
+		}
+		catch(Exception e)
+		{
+			// nothing
+		}
+		return cspecXML;
+	}			
 
 	@Override
 	public boolean isDirty()
@@ -587,6 +614,10 @@ public class CSpecEditor extends EditorPart
 		documentationTab.setText("Documentation");
 		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
 
+		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_xmlTab.setText("XML Content");
+		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
+
 		m_tabFolder.addSelectionListener(new SelectionAdapter(){
 
 			@Override
@@ -611,6 +642,13 @@ public class CSpecEditor extends EditorPart
 				{
 					if(!m_attributesEditor.isInEditMode())
 						m_attributesEditor.refresh();
+				}
+				else if(m_xmlTab == e.item)
+				{
+					if(!innerCommitChanges())
+						MessageDialog.openWarning(getSite().getShell(), null, "XML Content was not actualised due to errors");
+					else
+						m_xml.setText(getCSpecXML());
 				}
 			}});
 
@@ -852,6 +890,22 @@ public class CSpecEditor extends EditorPart
 		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI
 				| SWT.V_SCROLL, m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		return tabComposite;
+	}
+
+	private Control getXMLTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "XML Content");
+
+		Composite xmlComposite = new Composite(tabComposite, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = layout.marginWidth = 0;
+		xmlComposite.setLayout(layout);
+		xmlComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY, null);
+		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
 	}
