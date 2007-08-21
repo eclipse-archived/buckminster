@@ -49,8 +49,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	
 	private List<Property> m_actorProperties = new ArrayList<Property>();
 	private SimpleTableEditor<Property> m_actorPropertiesEditor;
-	private List<IPath> m_productPaths = new ArrayList<IPath>();
-	private SimpleTableEditor<IPath> m_productPathsEditor;
+	private List<PathWrapper> m_productPaths = new ArrayList<PathWrapper>();
+	private SimpleTableEditor<PathWrapper> m_productPathsEditor;
 	private List<Property> m_properties = new ArrayList<Property>();
 	private SimpleTableEditor<Property> m_propertiesEditor;
 	
@@ -143,7 +143,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		PathsTable table = new PathsTable(m_productPaths);
 		
-		m_productPathsEditor = new SimpleTableEditor<IPath>(
+		m_productPathsEditor = new SimpleTableEditor<PathWrapper>(
 				composite,
 				table,
 				null,
@@ -280,9 +280,14 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		{
 			builder.getProductPaths().clear();
 		}
-		for(IPath path : m_productPaths)
+		for(PathWrapper path : m_productPaths)
 		{
-			builder.addProductPath(path);
+			IPath p = path.getPath();
+			
+			if(p == null)
+				continue;
+			
+			builder.addProductPath(p);
 		}
 
 		properties = builder.getProperties();
@@ -353,7 +358,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		CSpecEditorUtils.copyAndSortItems(builder.getActorProperties(), m_actorProperties);
 		m_actorPropertiesEditor.refresh();
 
-		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths, EditorUtils.getPathComparator());
+		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths);
 		m_productPathsEditor.refresh();
 
 		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);

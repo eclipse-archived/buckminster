@@ -127,6 +127,10 @@ public class CSpecEditor extends EditorPart
 	private boolean m_readOnly = true;
 	
 	private CTabFolder m_tabFolder;
+	private CTabItem m_actionsTab;
+	private CTabItem m_artifactsTab;
+	private CTabItem m_groupsTab;
+	private CTabItem m_attributesTab;
 	private Text m_componentName;
 	private Combo m_componentType;
 	private Text m_versionString;
@@ -134,6 +138,7 @@ public class CSpecEditor extends EditorPart
 	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
 	private OnePageTableEditor<ArtifactBuilder> m_artifactsEditor;
 	private OnePageTableEditor<GroupBuilder> m_groupsEditor;
+	private OnePageTableEditor<AttributeBuilder> m_attributesEditor;
 	private SimpleTableEditor<DependencyBuilder> m_dependenciesEditor;
 	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
 	private Text m_shortDesc;
@@ -248,6 +253,13 @@ public class CSpecEditor extends EditorPart
 			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
 				return false;
 			m_groupsEditor.cancelRow();
+		}
+
+		if(m_attributesEditor.isInEditMode())
+		{
+			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
+				return false;
+			m_attributesEditor.cancelRow();
 		}
 
 		String name = UiUtils.trimmedValue(m_componentName);
@@ -508,6 +520,7 @@ public class CSpecEditor extends EditorPart
 			m_actionsEditor.refresh();
 			m_artifactsEditor.refresh();
 			m_groupsEditor.refresh();
+			m_attributesEditor.refresh();
 			m_dependenciesEditor.refresh();
 			m_generatorsEditor.refresh();
 
@@ -546,17 +559,21 @@ public class CSpecEditor extends EditorPart
 		mainTab.setText("Main");
 		mainTab.setControl(getMainTabControl(m_tabFolder));
 
-		CTabItem actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		actionsTab.setText("Actions");
-		actionsTab.setControl(getActionsTabControl(m_tabFolder));
+		m_actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_actionsTab.setText("Actions");
+		m_actionsTab.setControl(getActionsTabControl(m_tabFolder));
 
-		CTabItem artifactsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		artifactsTab.setText("Artifacts");
-		artifactsTab.setControl(getArtifactsTabControl(m_tabFolder));
+		m_artifactsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_artifactsTab.setText("Artifacts");
+		m_artifactsTab.setControl(getArtifactsTabControl(m_tabFolder));
 
-		CTabItem groupsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		groupsTab.setText("Groups");
-		groupsTab.setControl(getGroupsTabControl(m_tabFolder));
+		m_groupsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_groupsTab.setText("Groups");
+		m_groupsTab.setControl(getGroupsTabControl(m_tabFolder));
+
+		m_attributesTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_attributesTab.setText("Attributes");
+		m_attributesTab.setControl(getAttributesTabControl(m_tabFolder));
 
 		CTabItem dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
 		dependenciesTab.setText("Dependencies");
@@ -569,7 +586,34 @@ public class CSpecEditor extends EditorPart
 		CTabItem documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
 		documentationTab.setText("Documentation");
 		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
-		
+
+		m_tabFolder.addSelectionListener(new SelectionAdapter(){
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if(m_actionsTab == e.item)
+				{
+					if(!m_actionsEditor.isInEditMode())
+						m_actionsEditor.refresh();
+				}
+				else if(m_artifactsTab == e.item)
+				{
+					if(!m_artifactsEditor.isInEditMode())
+						m_artifactsEditor.refresh();
+				}
+				else if(m_groupsTab == e.item)
+				{
+					if(!m_groupsEditor.isInEditMode())
+						m_groupsEditor.refresh();
+				}
+				else if(m_attributesTab == e.item)
+				{
+					if(!m_attributesEditor.isInEditMode())
+						m_attributesEditor.refresh();
+				}
+			}});
+
 		createActionButtons(topComposite);
 	}
 
@@ -727,6 +771,24 @@ public class CSpecEditor extends EditorPart
 				tabComposite,
 				table,
 				false,
+				SWT.NONE);
+
+		return tabComposite;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Control getAttributesTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Attributes");
+
+		AllAttributesTable table = new AllAttributesTable(this, m_cspec);
+		table.addTableModifyListener(m_compoundModifyListener);
+		
+		m_attributesEditor = new OnePageTableEditor<AttributeBuilder>(
+				tabComposite,
+				table,
+				false,
+				true,
 				SWT.NONE);
 
 		return tabComposite;

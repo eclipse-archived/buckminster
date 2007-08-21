@@ -42,6 +42,11 @@ public interface ITable<T>
 	public void removeRow(int row);
 	
 	/**
+	 * Refreshes data table
+	 */
+	public void refresh();
+	
+	/**
 	 * Adds table modify listener
 	 * 
 	 * @param table modify listener

@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.Path;
  * @author Karel Brezina
  *
  */
-public class PathsTable extends SimpleTable<IPath>
+public class PathsTable extends SimpleTable<PathWrapper>
 {
 
-	public PathsTable(List<IPath> data)
+	public PathsTable(List<PathWrapper> data)
 	{
 		super(data);
 	}
@@ -38,15 +38,20 @@ public class PathsTable extends SimpleTable<IPath>
 		return new int[] {1};
 	}
 
-	public Object[] toRowArray(IPath t)
+	public Object[] toRowArray(PathWrapper t)
 	{
-		return new Object[] {t.toOSString()};
+		return new Object[] {t.getPath().toOSString()};
 	}
 
-	public IPath toRowClass(Object[] args) throws ValidatorException
+	public PathWrapper createRowClass()
+	{
+		return new PathWrapper();
+	}
+
+	public void updateRowClass(PathWrapper path, Object[] args) throws ValidatorException
 	{
 		String pathString = (String) args[0];
-		return pathString == null ? null :(IPath) Path.fromOSString(pathString);
+		path.setPath(pathString == null ? null :(IPath) Path.fromOSString(pathString));
 	}
 	
 	@Override
@@ -59,5 +64,29 @@ public class PathsTable extends SimpleTable<IPath>
 		default:
 			return SimpleTable.getEmptyValidator();
 		}
+	}
+}
+
+class PathWrapper
+{
+	private IPath m_path;
+	
+	public PathWrapper()
+	{
+	}
+	
+	public PathWrapper(IPath path)
+	{
+		m_path = path;
+	}
+
+	public IPath getPath()
+	{
+		return m_path;
+	}
+
+	public void setPath(IPath path)
+	{
+		m_path = path;
 	}
 }

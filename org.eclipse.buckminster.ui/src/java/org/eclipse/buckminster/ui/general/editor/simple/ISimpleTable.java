@@ -43,6 +43,21 @@ public interface ISimpleTable<T> extends ITable<T>
 	public T toRowClass(Object[] args) throws ValidatorException;
 	
 	/**
+	 * Creates empty member of this data table
+	 * @return empty member of this data table
+	 */
+	public T createRowClass();
+	
+	/**
+	 * Updates member of this data table
+	 * 
+	 * @param arg member of this data table
+	 * @param args new values
+	 * @throws ValidatorException
+	 */
+	public void updateRowClass(T arg, Object[] args) throws ValidatorException;
+	
+	/**
 	 * Fills a grid composite with widgeds and returns those widgets. For each column there must be just one widget.
 	 * It's used in TableRowDialog for creating a row editing dialog area
 	 * 

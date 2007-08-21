@@ -38,8 +38,8 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 {
 	private Text m_basePathText;
 	private Text m_typeText;
-	private List<IPath> m_paths = new ArrayList<IPath>();
-	private SimpleTableEditor<IPath> m_pathsEditor;
+	private List<PathWrapper> m_paths = new ArrayList<PathWrapper>();
+	private SimpleTableEditor<PathWrapper> m_pathsEditor;
 	
 	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec)
 	{
@@ -74,11 +74,16 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		{
 			builder.getPaths().clear();
 		}
-		for(IPath path : m_paths)
+		for(PathWrapper path : m_paths)
 		{
+			IPath p = path.getPath();
+			
+			if(p == null)
+				continue;
+			
 			try
 			{
-				builder.addPath(path);
+				builder.addPath(p);
 			}
 			catch(PathAlreadyDefinedException e)
 			{
@@ -145,7 +150,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		PathsTable phTable = new PathsTable(m_paths);
 		
-		m_pathsEditor = new SimpleTableEditor<IPath>(
+		m_pathsEditor = new SimpleTableEditor<PathWrapper>(
 				pthComposite,
 				phTable,
 				null,
@@ -166,7 +171,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		m_basePathText.setText(TextUtils.notNullString(basePath ==  null ? null : basePath.toOSString()));
 		m_typeText.setText(TextUtils.notNullString(builder.getType()));
 		
-		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths, EditorUtils.getPathComparator());
+		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths);
 		m_pathsEditor.refresh();
 	}
 

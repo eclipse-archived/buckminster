@@ -40,9 +40,15 @@ public class PropertiesTable extends SimpleTable<Property>
 		return new Object[]{t.getKey(), t.getValue()};
 	}
 
-	public Property toRowClass(Object[] args) throws ValidatorException
-	{	
-		return new Property((String) args[0], (String) args[1]);
+	public Property createRowClass()
+	{
+		return new Property(null, null);
+	}
+
+	public void updateRowClass(Property property, Object[] args) throws ValidatorException
+	{
+		property.setKey((String) args[0]);
+		property.setValue((String) args[1]);
 	}
 	
 	@Override

@@ -17,16 +17,14 @@ public class TableModifyEvent<T>
 	private ITable<T> m_table;
 	private TableModifyEventType m_eventType;
 	private int m_row;
-	private T m_oldTableRow;
-	private T m_newTableRow;
+	private T m_changedTableRow;
 	
-	public TableModifyEvent(ITable<T> table, TableModifyEventType eventType, int row, T oldTableRow, T newTableRow)
+	public TableModifyEvent(ITable<T> table, TableModifyEventType eventType, int row, T changedTableRow)
 	{
 		m_table = table;
 		m_eventType = eventType;
 		m_row = row;
-		m_oldTableRow = oldTableRow;
-		m_newTableRow = newTableRow;
+		m_changedTableRow = changedTableRow;
 	}
 
 	public TableModifyEventType getEventType()
@@ -39,14 +37,9 @@ public class TableModifyEvent<T>
 		return m_table;
 	}
 
-	public T getNewTableRow()
+	public T getChangedTableRow()
 	{
-		return m_newTableRow;
-	}
-
-	public T getOldTableRow()
-	{
-		return m_oldTableRow;
+		return m_changedTableRow;
 	}
 
 	public int getRow()

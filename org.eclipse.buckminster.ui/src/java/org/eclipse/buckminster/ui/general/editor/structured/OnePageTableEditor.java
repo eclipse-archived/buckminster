@@ -26,11 +26,19 @@ import org.eclipse.swt.widgets.Table;
  */
 public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 {
+	private final boolean m_disableNew; // disables new button
+
 	private boolean m_nodeEditMode = false;
 
 	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
+		this(parent, table, swapButtonsFlag, false, style);
+	}
+
+	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, boolean disableNew, int style)
+	{
 		super(parent, table, swapButtonsFlag, style);
+		m_disableNew = disableNew;
 	}
 
 	@Override
@@ -240,6 +248,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			// A node is being edited
 			//
 			getNewButton().setText("Save");
+			getNewButton().setEnabled(true);
 			getEditButton().setText("Cancel");
 			getEditButton().setEnabled(true);
 			getRemoveButton().setEnabled(false);
@@ -256,6 +265,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			int top = table.getItemCount();
 			int idx = table.getSelectionIndex();
 			getNewButton().setText("New");
+			getNewButton().setEnabled(!m_disableNew);
 			getEditButton().setText("Edit");
 			getEditButton().setEnabled(idx >= 0);
 			getRemoveButton().setEnabled(idx >= 0);

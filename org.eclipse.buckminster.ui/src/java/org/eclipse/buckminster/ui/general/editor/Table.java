@@ -52,17 +52,22 @@ public abstract class Table<T> implements ITable<T>
 	public void removeRow(int row)
 	{
 		T oldTableRow = m_data.remove(row);
-		notifyListeners(TableModifyEventType.REMOVE_ROW, row, oldTableRow, null);
+		notifyListeners(TableModifyEventType.REMOVE_ROW, row, oldTableRow);
 	}
 
+	// no need for refreshing
+	public void refresh()
+	{
+	}
+	
 	public void removeTableModifyListener(ITableModifyListener<T> listener)
 	{
 		m_listeners.remove(listener);
 	}
 
-	protected void notifyListeners(TableModifyEventType eventType, int row, T oldTableRow, T newTableRow)
+	protected void notifyListeners(TableModifyEventType eventType, int row, T tableRow)
 	{
-		TableModifyEvent<T> e = new TableModifyEvent<T>(this, eventType, row, oldTableRow, newTableRow);
+		TableModifyEvent<T> e = new TableModifyEvent<T>(this, eventType, row, tableRow);
 		for(ITableModifyListener<T> listener : m_listeners)
 			listener.modifyTable(e);
 	}

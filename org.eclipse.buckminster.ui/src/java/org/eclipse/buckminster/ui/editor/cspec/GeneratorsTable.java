@@ -57,15 +57,16 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 		return array;
 	}
 
-	public GeneratorBuilder toRowClass(Object[] args) throws ValidatorException
+	public GeneratorBuilder createRowClass()
 	{
-		GeneratorBuilder builder = m_cspecBuilder.createGeneratorBuilder();
-		
+		return m_cspecBuilder.createGeneratorBuilder();
+	}
+
+	public void updateRowClass(GeneratorBuilder builder, Object[] args) throws ValidatorException
+	{
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
 		builder.setAttribute(TextUtils.notEmptyString((String) args[1]));
 		builder.setComponent(TextUtils.notEmptyString((String) args[2]));
-		
-		return builder;
 	}
 
 	@Override

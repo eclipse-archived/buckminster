@@ -15,7 +15,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
+import org.eclipse.buckminster.ui.editor.EditorUtils;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Karel Brezina
@@ -40,6 +43,29 @@ public class CSpecEditorUtils
 		}
 	}
 	
+	static class AttributeComparator implements Comparator<AttributeBuilder>
+	{
+		public int compare(AttributeBuilder o1, AttributeBuilder o2)
+		{
+			if(o1.isPublic() && !o2.isPublic())
+				return -1;
+			
+			if(!o1.isPublic() && o2.isPublic())
+				return 1;
+			
+			if(o1.getName() == null && o2.getName() == null)
+				return 0;
+			
+			if(o1.getName() == null && o2.getName() != null)
+				return -1;
+			
+			if(o1.getName() != null && o2.getName() == null)
+				return 1;
+			
+			return o1.getName().compareTo(o2.getName());
+		}
+	}
+	
 	static class PropertyComparator implements Comparator<Property>
 	{
 		public int compare(Property o1, Property o2)
@@ -49,6 +75,7 @@ public class CSpecEditorUtils
 	};
 
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = new CSpecElementComparator();
+	private static Comparator<AttributeBuilder> s_attributeComparator = new AttributeComparator();
 	private static Comparator<Property> s_propertyComparator = new PropertyComparator();
 
 	private CSpecEditorUtils()
@@ -58,6 +85,11 @@ public class CSpecEditorUtils
 	public static Comparator<CSpecElementBuilder> getCSpecElementComparator()
 	{
 		return s_cspecElementComparator;
+	}
+
+	public static Comparator<AttributeBuilder> getAttributeComparator()
+	{
+		return s_attributeComparator;
 	}
 
 	public static Comparator<Property> getPropertyComparator()
@@ -81,6 +113,26 @@ public class CSpecEditorUtils
 			for(Property property : propertyArray)
 			{
 				trgt.add(property);
+			}
+		}
+	}
+	
+	public static void copyAndSortItems(Collection<IPath> src, List<PathWrapper> trgt)
+	{
+		trgt.clear();
+		if(src != null)
+		{
+			List<IPath> hlpList = new ArrayList<IPath>();
+			for(IPath path : src)
+			{
+				hlpList.add(path);
+			}
+			IPath[] pathArray = hlpList.toArray(new IPath[0]);
+			Arrays.sort(pathArray, EditorUtils.getPathComparator());
+			
+			for(IPath path : pathArray)
+			{
+				trgt.add(new PathWrapper(path));
 			}
 		}
 	}

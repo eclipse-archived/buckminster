@@ -84,7 +84,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		getRowValidator().validate(new Integer(-1), tableRow);
 		T newTableRow = toRowClass(tableRow);
 		getRows().add(newTableRow);
-		notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, null, newTableRow);
+		notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, newTableRow);
 	}
 
 	private void validateAllFields(Object[] tableRow) throws ValidatorException
@@ -123,6 +123,14 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		}
 		
 		return null;
+	}
+
+	public T toRowClass(Object[] args) throws ValidatorException
+	{
+		T t = createRowClass();
+		updateRowClass(t, args);
+		
+		return t;
 	}
 
 	protected IWidgetin getWidgetin(Composite parent, final int idx, Object value)
@@ -254,8 +262,9 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 	{
 		validateAllFields(tableRow);
 		getRowValidator().validate(Integer.valueOf(row), tableRow);
-		T newTableRow = toRowClass(tableRow);
-		T oldTableRow = getRows().set(row, newTableRow);
-		notifyListeners(TableModifyEventType.UPDATE_ROW, row, oldTableRow, newTableRow);
+		
+		T tableRowClass = getRows().get(row);
+		updateRowClass(tableRowClass, tableRow);
+		notifyListeners(TableModifyEventType.UPDATE_ROW, row, tableRowClass);
 	}
 }

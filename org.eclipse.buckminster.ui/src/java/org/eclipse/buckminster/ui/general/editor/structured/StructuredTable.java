@@ -81,20 +81,21 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 
 	public void save(int rowIdx) throws ValidatorException
 	{
-		T newTableRow = createNewRow();
-		setRowValues(newTableRow);
-
 		if(rowIdx == -1)
 		{
-			getRows().add(newTableRow);
+			T tableRow = createNewRow();
+			getRows().add(tableRow);
 
-			notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, null, newTableRow);
+			setRowValues(tableRow);
+
+			notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, tableRow);
 		}
 		else
 		{
-			T oldTableRow = getRows().set(rowIdx, newTableRow);
+			T tableRow = getRows().get(rowIdx);
+			setRowValues(tableRow);
 
-			notifyListeners(TableModifyEventType.UPDATE_ROW, rowIdx, oldTableRow, newTableRow);
+			notifyListeners(TableModifyEventType.UPDATE_ROW, rowIdx, tableRow);
 		}
 	}
 
@@ -156,7 +157,8 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		{
 			newIdx = rowIdx - 1;
 		}
-		notifyListeners(TableModifyEventType.SWAP_ROW, newIdx, data.get(rowIdx), data.get(newIdx));
+		notifyListeners(TableModifyEventType.SWAP_ROW, newIdx, data.get(newIdx));
+		notifyListeners(TableModifyEventType.SWAP_ROW, rowIdx, data.get(rowIdx));
 
 		return true;
 	}

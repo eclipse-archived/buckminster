@@ -67,17 +67,17 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		return array;
 	}
 
-	public DependencyBuilder toRowClass(Object[] args) throws ValidatorException
+	public DependencyBuilder createRowClass()
 	{
-		DependencyBuilder builder = m_cspecBuilder.createDependencyBuilder();
-		
+		return m_cspecBuilder.createDependencyBuilder();
+	}
+
+	public void updateRowClass(DependencyBuilder builder, Object[] args) throws ValidatorException
+	{
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
 		builder.setComponentTypeID(TextUtils.notEmptyString((String) args[1]));
 		builder.setVersionDesignator((IVersionDesignator) args[2]);
-		
-		return builder;
 	}
-
 	
 	@Override
 	public IWidgetin getWidgetin(Composite parent, int idx, Object value)

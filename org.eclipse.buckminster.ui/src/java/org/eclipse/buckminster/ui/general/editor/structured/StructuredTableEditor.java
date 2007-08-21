@@ -80,7 +80,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 	private final IStructuredTable<T> m_table;
 
 	private final boolean m_swapButtonsFlag;
-
+	
 	private TableViewer m_tableViewer;
 
 	private int m_lastSelectedRow = -1;
@@ -350,6 +350,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected void refreshTable()
 	{
+		m_table.refresh();
 		m_tableViewer.setInput(m_table);
 
 		if(getSelectionIndex() == -1 && m_table.getRows().size() > 0)

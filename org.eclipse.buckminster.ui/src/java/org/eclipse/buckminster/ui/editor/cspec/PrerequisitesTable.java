@@ -63,17 +63,18 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 				Boolean.valueOf(t.isOptional())};
 	}
 
-	public PrerequisiteBuilder toRowClass(Object[] args) throws ValidatorException
+	public PrerequisiteBuilder createRowClass()
 	{
-		PrerequisiteBuilder builder = m_attributeBuilder.createPrerequisiteBuilder();
-		
+		return m_attributeBuilder.createPrerequisiteBuilder();
+	}
+
+	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
+	{
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
 		builder.setAlias(TextUtils.notEmptyString((String) args[1]));
 		builder.setComponent(TextUtils.notEmptyString((String) args[2]));
 		builder.setContributor(((Boolean) args[3]).booleanValue());
 		builder.setOptional(((Boolean) args[4]).booleanValue());
-		
-		return builder;
 	}
 	
 	@Override
