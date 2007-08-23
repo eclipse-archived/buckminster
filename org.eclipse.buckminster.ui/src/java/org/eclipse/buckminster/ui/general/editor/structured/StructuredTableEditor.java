@@ -101,6 +101,8 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	private Composite m_stackComposite;
 
+	private boolean m_enabled = true;
+	
 	public StructuredTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
 		super(parent, style);
@@ -228,7 +230,8 @@ public abstract class StructuredTableEditor<T> extends Composite
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
 				{
-					editRow();
+					if(m_enabled)
+						editRow();
 				}
 			}
 		});
@@ -384,6 +387,19 @@ public abstract class StructuredTableEditor<T> extends Composite
 		}
 	}
 
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		m_enabled = enabled;
+		enableDisableButtonGroup();
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return m_enabled;
+	}
+	
 	protected abstract void enableDisableButtonGroup();
 
 	protected void enableFields(boolean enabled)

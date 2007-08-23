@@ -43,6 +43,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 			Composite rowComposite = new Composite(composite, SWT.NONE);
 
 			GridLayout layout = new GridLayout(2, false);
+			layout.marginHeight = layout.marginWidth = 10;		
 			rowComposite.setLayout(layout);
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			rowComposite.setLayoutData(gridData);
@@ -166,18 +167,31 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	@Override
 	protected void enableDisableButtonGroup()
 	{
-		Table table = getTableViewer().getTable();
-		int top = table.getItemCount();
-		int idx = getSelectionIndex();
-
-		getEditButton().setEnabled(idx >= 0);
-		getRemoveButton().setEnabled(idx >= 0);
-
-		if(isSwapButtonAllowed())
+		if(isEnabled())
 		{
-			getMoveUpButton().setEnabled(idx > 0);
-			getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
+			Table table = getTableViewer().getTable();
+			int top = table.getItemCount();
+			int idx = getSelectionIndex();
+	
+			getNewButton().setEnabled(true);
+			getEditButton().setEnabled(idx >= 0);
+			getRemoveButton().setEnabled(idx >= 0);
+	
+			if(isSwapButtonAllowed())
+			{
+				getMoveUpButton().setEnabled(idx > 0);
+				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
+			}
+		} else
+		{
+			getNewButton().setEnabled(false);
+			getEditButton().setEnabled(false);
+			getRemoveButton().setEnabled(false);
+			if(isSwapButtonAllowed())
+			{
+				getMoveUpButton().setEnabled(false);
+				getMoveDownButton().setEnabled(false);
+			}
 		}
 	}
-
 }

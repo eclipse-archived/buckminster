@@ -243,39 +243,53 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	@Override
 	protected void enableDisableButtonGroup()
 	{
-		if(m_nodeEditMode)
+		if(isEnabled())
 		{
-			// A node is being edited
-			//
-			getNewButton().setText("Save");
-			getNewButton().setEnabled(true);
-			getEditButton().setText("Cancel");
-			getEditButton().setEnabled(true);
-			getRemoveButton().setEnabled(false);
-
+			if(m_nodeEditMode)
+			{
+				// A node is being edited
+				//
+				getNewButton().setText("Save");
+				getNewButton().setEnabled(true);
+				getEditButton().setText("Cancel");
+				getEditButton().setEnabled(true);
+				getRemoveButton().setEnabled(false);
+	
+				if(isSwapButtonAllowed())
+				{
+					getMoveUpButton().setEnabled(false);
+					getMoveDownButton().setEnabled(false);
+				}
+			}
+			else
+			{
+				Table table = getTableViewer().getTable();
+				int top = table.getItemCount();
+				int idx = table.getSelectionIndex();
+				getNewButton().setText("New");
+				getNewButton().setEnabled(!m_disableNew);
+				getEditButton().setText("Edit");
+				getEditButton().setEnabled(idx >= 0);
+				getRemoveButton().setEnabled(idx >= 0);
+				if(isSwapButtonAllowed())
+				{
+					getMoveUpButton().setEnabled(idx > 0);
+					getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
+				}
+			}
+			getTableViewer().getTable().setEnabled(!m_nodeEditMode);
+			enableFields(m_nodeEditMode);
+		} else
+		{
+			getNewButton().setEnabled(false);
+			getEditButton().setEnabled(false);
+			getRemoveButton().setEnabled(false);			
 			if(isSwapButtonAllowed())
 			{
 				getMoveUpButton().setEnabled(false);
 				getMoveDownButton().setEnabled(false);
 			}
+			enableFields(false);
 		}
-		else
-		{
-			Table table = getTableViewer().getTable();
-			int top = table.getItemCount();
-			int idx = table.getSelectionIndex();
-			getNewButton().setText("New");
-			getNewButton().setEnabled(!m_disableNew);
-			getEditButton().setText("Edit");
-			getEditButton().setEnabled(idx >= 0);
-			getRemoveButton().setEnabled(idx >= 0);
-			if(isSwapButtonAllowed())
-			{
-				getMoveUpButton().setEnabled(idx > 0);
-				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
-			}
-		}
-		getTableViewer().getTable().setEnabled(!m_nodeEditMode);
-		enableFields(m_nodeEditMode);
 	}
 }

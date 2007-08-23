@@ -93,6 +93,8 @@ public class SimpleTableEditor<T> extends Composite
 
 	private Button m_removeButton;
 
+	private boolean m_enabled = true;
+	
 	/**
 	 * Creates general table editor.
 	 * 
@@ -123,7 +125,9 @@ public class SimpleTableEditor<T> extends Composite
 	@Override
 	public void setEnabled(boolean enabled)
 	{
-		m_tableViewer.getTable().setEnabled(enabled);
+		m_enabled = enabled;
+		
+		//m_tableViewer.getTable().setEnabled(enabled);
 
 		if(enabled)
 		{
@@ -177,15 +181,18 @@ public class SimpleTableEditor<T> extends Composite
 
 	private void enableDisableButtonGroup()
 	{
-		boolean enable = false;
-
-		if(m_tableViewer.getTable().getSelectionIndex() >= 0)
+		if(m_enabled)
 		{
-			enable = true;
+			boolean rowSelected = false;
+	
+			if(m_tableViewer.getTable().getSelectionIndex() >= 0)
+			{
+				rowSelected = true;
+			}
+	
+			m_editButton.setEnabled(rowSelected);
+			m_removeButton.setEnabled(rowSelected);
 		}
-
-		m_editButton.setEnabled(enable);
-		m_removeButton.setEnabled(enable);
 	}
 
 	private void initComposite()
@@ -234,7 +241,8 @@ public class SimpleTableEditor<T> extends Composite
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
 				{
-					editRow();
+					if(m_enabled)
+						editRow();
 				}
 			}
 		});
