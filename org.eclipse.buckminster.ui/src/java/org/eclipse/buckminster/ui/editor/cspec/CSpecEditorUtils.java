@@ -138,7 +138,7 @@ public class CSpecEditorUtils
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> void copyAndSortItems(Collection<T> src, List<T> trgt, Comparator<? super T> comparator)
+	public static <T> void copyAndSortItems(Collection<T> src, List<? super T> trgt, Comparator<? super T> comparator)
 	{
 		trgt.clear();
 		if(src != null)

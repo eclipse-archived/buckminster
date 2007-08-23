@@ -18,11 +18,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
@@ -117,6 +119,7 @@ public class CSpecEditor extends EditorPart
 	private CSpecBuilder m_cspec;
 	
 	private List<ActionBuilder> m_actionBuilders = new ArrayList<ActionBuilder>();
+	private Map<ActionBuilder, List<ActionArtifactBuilder>> m_actionArtifactBuilders = new HashMap<ActionBuilder, List<ActionArtifactBuilder>>();
 	private List<ArtifactBuilder> m_artifactBuilders = new ArrayList<ArtifactBuilder>();
 	private List<GroupBuilder> m_groupBuilders = new ArrayList<GroupBuilder>();
 	private List<DependencyBuilder> m_dependencyBuilders = new ArrayList<DependencyBuilder>();
@@ -309,6 +312,10 @@ public class CSpecEditor extends EditorPart
 				m_cspec.addAttribute(action);
 			}
 
+			for(List<ActionArtifactBuilder> list : m_actionArtifactBuilders.values())
+				for(ActionArtifactBuilder item : list)
+					m_cspec.addAttribute(item);
+
 			for(ArtifactBuilder artifact : m_artifactBuilders)
 			{
 				m_cspec.addAttribute(artifact);
@@ -475,6 +482,7 @@ public class CSpecEditor extends EditorPart
 			m_versionType.select(m_versionType.indexOf(m_cspec.getVersion().getType().getId()));
 
 			m_actionBuilders.clear();
+			m_actionArtifactBuilders.clear();
 			m_artifactBuilders.clear();
 			m_groupBuilders.clear();
 			Map<String, AttributeBuilder> attributesMap = m_cspec.getAttributes();
@@ -482,11 +490,15 @@ public class CSpecEditor extends EditorPart
 			{
 				AttributeBuilder[] builders = attributesMap.values().toArray(new AttributeBuilder[0]);
 				Arrays.sort(builders, s_cspecElementComparator);
+				List<ActionArtifactBuilder> tmp_actionArtifactBuilders = new ArrayList<ActionArtifactBuilder>();
 				for(AttributeBuilder attribute : builders)
 				{
 					if(attribute instanceof ActionBuilder)
 					{
 						m_actionBuilders.add((ActionBuilder) attribute);
+					} else if(attribute instanceof ActionArtifactBuilder)
+					{
+						tmp_actionArtifactBuilders.add((ActionArtifactBuilder)attribute);
 					} else if(attribute instanceof ArtifactBuilder)
 					{
 						m_artifactBuilders.add((ArtifactBuilder) attribute);
@@ -494,6 +506,10 @@ public class CSpecEditor extends EditorPart
 					{
 						m_groupBuilders.add((GroupBuilder) attribute);
 					}
+				}
+				for(ActionArtifactBuilder builder : tmp_actionArtifactBuilders)
+				{
+					addToActionArtifactBuilderMap(builder);
 				}
 			}
 			
@@ -542,6 +558,36 @@ public class CSpecEditor extends EditorPart
 		{
 			m_mute = false;
 		}
+	}
+
+	private void addToActionArtifactBuilderMap(ActionArtifactBuilder actionArtifactbuilder)
+	{
+		if(actionArtifactbuilder.getActionName() == null)
+			return;
+		
+		ActionBuilder actionBuilder = findActionBuilder(actionArtifactbuilder.getActionName());
+		
+		if(actionBuilder != null)
+		{
+			List<ActionArtifactBuilder> list = m_actionArtifactBuilders.get(actionBuilder);
+			
+			if(list == null)
+			{
+				list = new ArrayList<ActionArtifactBuilder>();
+				m_actionArtifactBuilders.put(actionBuilder, list);
+			}
+			
+			list.add(actionArtifactbuilder);
+		}
+	}
+
+	private ActionBuilder findActionBuilder(String actionName)
+	{
+		for(ActionBuilder builder : m_actionBuilders)
+			if(actionName.equals(builder.getName()))
+					return builder;
+			
+		return null;
 	}
 
 	private String getCSpecXML()
@@ -600,7 +646,7 @@ public class CSpecEditor extends EditorPart
 		m_groupsTab.setControl(getGroupsTabControl(m_tabFolder));
 
 		m_attributesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_attributesTab.setText("Attributes");
+		m_attributesTab.setText("All Attributes");
 		m_attributesTab.setControl(getAttributesTabControl(m_tabFolder));
 
 		CTabItem dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
@@ -769,7 +815,7 @@ public class CSpecEditor extends EditorPart
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
 
-		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_cspec);
+		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 		
 		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(
@@ -818,7 +864,7 @@ public class CSpecEditor extends EditorPart
 	@SuppressWarnings("unchecked")
 	private Control getAttributesTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Attributes");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "All Attributes");
 
 		AllAttributesTable table = new AllAttributesTable(this, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
@@ -926,6 +972,11 @@ public class CSpecEditor extends EditorPart
 		return m_actionBuilders;
 	}
 	
+	Map<ActionBuilder,List<ActionArtifactBuilder>> getActionArtifactBuilders()
+	{
+		return m_actionArtifactBuilders;
+	}
+	
 	List<ArtifactBuilder> getArtifactBuilders()
 	{
 		return m_artifactBuilders;
@@ -948,36 +999,40 @@ public class CSpecEditor extends EditorPart
 	
 	String[] getAttributeNames(String excludeName)
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> nameList = new ArrayList<String>();
 		
 		for(ActionBuilder builder : m_actionBuilders)
 		{
 			if(builder.getName() != null)
 			{
-				list.add(builder.getName());
+				nameList.add(builder.getName());
 			}
 		}
+		for(List<ActionArtifactBuilder> list : m_actionArtifactBuilders.values())
+			for(ActionArtifactBuilder builder : list)
+				nameList.add(builder.getName());
+
 		for(ArtifactBuilder builder : m_artifactBuilders)
 		{
 			if(builder.getName() != null)
 			{
-				list.add(builder.getName());
+				nameList.add(builder.getName());
 			}
 		}
 		for(GroupBuilder builder : m_groupBuilders)
 		{
 			if(builder.getName() != null)
 			{
-				list.add(builder.getName());
+				nameList.add(builder.getName());
 			}
 		}
 		
 		if(excludeName != null)
 		{
-			list.remove(excludeName);
+			nameList.remove(excludeName);
 		}
 		
-		String[] array = list.toArray(new String[0]);
+		String[] array = nameList.toArray(new String[0]);
 		Arrays.sort(array, new Comparator<String>(){
 
 			public int compare(String o1, String o2)

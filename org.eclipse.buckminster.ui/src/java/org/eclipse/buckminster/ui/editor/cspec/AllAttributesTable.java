@@ -10,7 +10,9 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
@@ -48,6 +50,10 @@ public class AllAttributesTable extends AttributesTable<AttributeBuilder>
 					if(e.getChangedTableRow() instanceof ActionBuilder)
 					{
 						getCSpecEditor().getActionBuilders().remove(e.getChangedTableRow());
+					} else if(e.getChangedTableRow() instanceof ActionArtifactBuilder)
+					{
+						for(List<ActionArtifactBuilder> list : getCSpecEditor().getActionArtifactBuilders().values())
+							list.remove(e.getChangedTableRow());
 					}
 					else if(e.getChangedTableRow() instanceof ArtifactBuilder)
 					{
@@ -109,6 +115,8 @@ public class AllAttributesTable extends AttributesTable<AttributeBuilder>
 	{
 		getRows().clear();
 		getRows().addAll(getCSpecEditor().getActionBuilders());
+		for(List<ActionArtifactBuilder> list : getCSpecEditor().getActionArtifactBuilders().values())
+			getRows().addAll(list);
 		getRows().addAll(getCSpecEditor().getArtifactBuilders());
 		getRows().addAll(getCSpecEditor().getGroupBuilders());
 

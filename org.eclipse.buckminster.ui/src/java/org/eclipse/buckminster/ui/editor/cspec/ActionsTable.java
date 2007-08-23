@@ -10,10 +10,13 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
@@ -23,6 +26,7 @@ import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
+import org.eclipse.buckminster.ui.general.editor.structured.TwoPagesTableEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
@@ -40,6 +44,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ActionsTable extends AttributesTable<ActionBuilder>
 {
+	private Map<ActionBuilder, List<ActionArtifactBuilder>> m_actionArtifacts;
+	
 	private Text m_actorNameText;
 	private Button m_alwaysCheck;
 	private Button m_assignConsoleSupportCheck;
@@ -51,6 +57,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private SimpleTableEditor<Property> m_actorPropertiesEditor;
 	private List<PathWrapper> m_productPaths = new ArrayList<PathWrapper>();
 	private SimpleTableEditor<PathWrapper> m_productPathsEditor;
+	private List<ArtifactBuilder> m_productArtifacts = new ArrayList<ArtifactBuilder>();
+	private TwoPagesTableEditor<ArtifactBuilder> m_productArtifactsEditor;
 	private List<Property> m_properties = new ArrayList<Property>();
 	private SimpleTableEditor<Property> m_propertiesEditor;
 	
@@ -60,9 +68,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
-	public ActionsTable(CSpecEditor editor, List<ActionBuilder> data, CSpecBuilder cspec)
+	public ActionsTable(CSpecEditor editor, List<ActionBuilder> data, Map<ActionBuilder, List<ActionArtifactBuilder>> actionArtifacts, CSpecBuilder cspec)
 	{
 		super(editor, data, cspec);
+		m_actionArtifacts = actionArtifacts;
 	}
 
 	@Override
@@ -153,6 +162,32 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				SWT.NONE);
 		m_productPathsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
+		UiUtils.createEmptyLabel(composite);
+		UiUtils.createEmptyLabel(composite);
+		
+		label = UiUtils.createGridLabel(composite, "Product Artifacts:", 1, 0, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		
+		ArtifactsTable artifactsTable = new ArtifactsTable(getCSpecEditor(), m_productArtifacts, getCSpecBuilder())
+		{
+			@Override
+			protected ArtifactBuilder createNewRow()
+			{
+				return getCSpecBuilder().createActionArtifactBuilder();
+			}
+		};
+
+		m_productArtifactsEditor = new TwoPagesTableEditor<ArtifactBuilder>(
+				composite,
+				artifactsTable,
+				false,
+				null,
+				"Action - Product Artifact",
+				null,
+				null,
+				SWT.NONE);
+		m_productArtifactsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+
 		return composite;
 	}
 	
@@ -290,6 +325,19 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 			builder.addProductPath(p);
 		}
 
+		if(m_productArtifacts.size() > 0)
+		{
+			List<ActionArtifactBuilder> list = new ArrayList<ActionArtifactBuilder>();
+			
+			for(ArtifactBuilder artifactBuilder : m_productArtifacts)
+			{
+				((ActionArtifactBuilder)artifactBuilder).setActionName(builder.getName());
+				list.add((ActionArtifactBuilder)artifactBuilder);
+			}
+			
+			m_actionArtifacts.put(builder, list);
+		}
+		
 		properties = builder.getProperties();
 		
 		if(properties != null)
@@ -361,6 +409,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths);
 		m_productPathsEditor.refresh();
 
+		CSpecEditorUtils.copyAndSortItems(m_actionArtifacts.get(builder), m_productArtifacts, CSpecEditorUtils.getAttributeComparator());
+		m_productArtifactsEditor.refresh();
+		
 		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);
 		m_propertiesEditor.refresh();
 	
@@ -391,6 +442,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_prodBaseText.setEnabled(enabled);
 		m_actorPropertiesEditor.setEnabled(enabled);
 		m_productPathsEditor.setEnabled(enabled);
+		m_productArtifactsEditor.setEnabled(enabled);
 		m_propertiesEditor.setEnabled(enabled);		
 		m_prereqNameText.setEnabled(enabled);
 		m_prereqPublicCheck.setEnabled(enabled);
