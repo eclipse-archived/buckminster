@@ -25,4 +25,5 @@
     <cq:advisorNode namePattern="xercesImpl" skipComponent="true"/>
     <cq:advisorNode namePattern="xml-apis" skipComponent="true"/>
     <cq:advisorNode namePattern="xmlunit" skipComponent="true"/>
+    <cq:advisorNode namePattern="axis2-kernel" versionOverride="[1.2,1.2]" versionOverrideType="Triplet"/>
 </cq:componentQuery>
