@@ -42,6 +42,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.editor.ArtifactType;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.editor.SaveRunnable;
 import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;

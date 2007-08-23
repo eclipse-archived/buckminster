@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.ui.editor.cspec;
+package org.eclipse.buckminster.ui.editor;
 
 /**
  * @author Karel Brezina
