@@ -141,6 +141,8 @@ public class SimpleTableEditor<T> extends Composite
 			m_editButton.setEnabled(false);
 			m_removeButton.setEnabled(false);
 		}
+		
+		m_tableViewer.getTable().setForeground(enabled ? null : m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
 	private void createButtonBox(Composite parent)

@@ -192,6 +192,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 
 	private void edit()
 	{
+		refreshRow();
 		m_nodeEditMode = true;
 		enableDisableButtonGroup();
 		focusStackComposite();

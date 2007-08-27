@@ -86,7 +86,15 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 			T tableRow = createNewRow();
 			getRows().add(tableRow);
 
-			setRowValues(tableRow);
+			try
+			{
+				setRowValues(tableRow);
+			}
+			catch(ValidatorException e)
+			{
+				getRows().remove(tableRow);
+				throw e;
+			}
 
 			notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, tableRow);
 		}

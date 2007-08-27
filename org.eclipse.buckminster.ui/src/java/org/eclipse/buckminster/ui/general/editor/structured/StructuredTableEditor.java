@@ -212,7 +212,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		// gridData.widthHint = 600;
 		table.setLayoutData(gridData);
-
+		
 		m_tableViewer = new TableViewer(table);
 		m_tableViewer.setLabelProvider(new TableLabelProvider());
 		m_tableViewer.setContentProvider(new TableContentProvider());
@@ -392,6 +392,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 	{
 		m_enabled = enabled;
 		enableDisableButtonGroup();
+		m_tableViewer.getTable().setForeground(enabled ? null : m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
 	@Override
