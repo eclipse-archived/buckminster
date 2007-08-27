@@ -410,6 +410,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_productPathsEditor.refresh();
 
 		CSpecEditorUtils.copyAndSortItems(m_actionArtifacts.get(builder), m_productArtifacts, CSpecEditorUtils.getAttributeComparator());
+		createProductArtifactsCopy();
 		m_productArtifactsEditor.refresh();
 		
 		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);
@@ -427,6 +428,17 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getCSpecElementComparator());
 		m_prerequisitesEditor.refresh();
+	}
+
+	private void createProductArtifactsCopy()
+	{
+		for(int i = 0; i < m_productArtifacts.size(); i++)
+		{
+			ActionArtifactBuilder builder = (ActionArtifactBuilder) m_productArtifacts.get(i);
+			ActionArtifactBuilder newBuilder = getCSpecBuilder().createActionArtifactBuilder();
+			newBuilder.initFrom(builder.createAttribute());
+			m_productArtifacts.set(i, newBuilder);
+		}
 	}
 
 	@Override
