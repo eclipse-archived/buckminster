@@ -874,6 +874,7 @@ public class CSpecEditor extends EditorPart
 				table,
 				false,
 				true,
+				true,
 				SWT.NONE);
 
 		return tabComposite;
