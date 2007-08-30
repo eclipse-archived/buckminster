@@ -83,7 +83,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Prerequisites", createPrerequisitesStackLayer(stackComposite));
+		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
@@ -111,25 +111,8 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
 		
-		Label label = UiUtils.createGridLabel(geComposite, "Installer Hints:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		Control ihEditor = createInstallerHintsEditor(geComposite);
-		GridData layoutData = new GridData(GridData.FILL_BOTH);
-		ihEditor.setLayoutData(layoutData);
-
-		geComposite.setData("focusControl", getNameText());
-		
-		return geComposite;
-	}
-
-	private Control createPrerequisitesStackLayer(Composite stackComposite)
-	{
-		Composite preComposite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		preComposite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(preComposite, "Prerequisites", 1);
 
 		// Uses an empty GroupBuilder (createNewRow())
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
@@ -138,7 +121,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow());
 		 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
-				preComposite,
+				geComposite,
 				preTable,
 				null,
 				"Group - Prerequisite",
@@ -146,7 +129,11 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				null,
 				SWT.NONE);
 
-		return preComposite;
+		m_prerequisitesEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		geComposite.setData("focusControl", getNameText());
+		
+		return geComposite;
 	}
 
 	@Override

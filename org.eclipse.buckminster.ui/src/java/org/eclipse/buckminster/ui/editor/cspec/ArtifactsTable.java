@@ -96,7 +96,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Paths", createPathsStackLayer(stackComposite));
+		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
@@ -128,30 +128,13 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
 		
-		Label label = UiUtils.createGridLabel(geComposite, "Installer Hints:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(geComposite, "Paths:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		Control ihEditor = createInstallerHintsEditor(geComposite);
-		GridData layoutData = new GridData(GridData.FILL_BOTH);
-		ihEditor.setLayoutData(layoutData);
-
-		geComposite.setData("focusControl", getNameText());
-
-		return geComposite;
-	}
-	
-	private Control createPathsStackLayer(Composite stackComposite)
-	{
-		Composite pthComposite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		pthComposite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(pthComposite, "Paths", 1);
 
 		PathsTable phTable = new PathsTable(m_paths);
 		
 		m_pathsEditor = new SimpleTableEditor<PathWrapper>(
-				pthComposite,
+				geComposite,
 				phTable,
 				null,
 				"Artifact - Path",
@@ -159,7 +142,11 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 				null,
 				SWT.NONE);
 		
-		return pthComposite;
+		m_pathsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		geComposite.setData("focusControl", getNameText());
+
+		return geComposite;
 	}
 	
 	@Override

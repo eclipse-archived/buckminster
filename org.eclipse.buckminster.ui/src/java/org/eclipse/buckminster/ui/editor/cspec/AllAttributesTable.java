@@ -24,11 +24,9 @@ import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEventType;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
@@ -79,6 +77,7 @@ public class AllAttributesTable extends AttributesTable<AttributeBuilder>
 	protected void fillStack(Composite stackComposite)
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
+		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
@@ -96,14 +95,6 @@ public class AllAttributesTable extends AttributesTable<AttributeBuilder>
 
 		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
-
-		UiUtils.createEmptyLabel(geComposite);
-		UiUtils.createEmptyLabel(geComposite);
-		
-		Label label = UiUtils.createGridLabel(geComposite, "Installer Hints:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		Control ihEditor = createInstallerHintsEditor(geComposite);
-		ihEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		geComposite.setData("focusControl", getNameText());
 

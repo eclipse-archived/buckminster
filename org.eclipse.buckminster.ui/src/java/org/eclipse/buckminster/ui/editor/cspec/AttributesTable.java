@@ -101,10 +101,9 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 		}
 		for(Property property : m_installerHints)
 		{
-			builder.addInstallerHint(property.getKey(), property.getValue());
+			builder.addInstallerHint(property.getKey(), property.getValue(), true);
 		}
-		
-		
+			
 		String doc = UiUtils.trimmedValue(m_documentationText);
 		
 		try
@@ -125,12 +124,19 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 		m_documentationText.setEnabled(enabled);
 	}
 
-	protected Control createInstallerHintsEditor(Composite parent)
+	protected Control createInstallerHintsStackLayer(Composite stackComposite)
 	{
+		Composite composite = new Composite(stackComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		composite.setLayout(layout);
+
+		EditorUtils.createHeaderLabel(composite, "Installer Hints", 1);
+		
 		PropertiesTable ihTable = new PropertiesTable(m_installerHints);
 		
 		m_installerHintsEditor = new SimpleTableEditor<Property>(
-				parent,
+				composite,
 				ihTable,
 				null,
 				"Attribute - Installer Hint",
@@ -138,9 +144,11 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 				null,
 				SWT.NONE);
 
-		return m_installerHintsEditor;
+		m_installerHintsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		return composite;
 	}
-	
+
 	protected Control createDocumentationStackLayer(Composite stackComposite)
 	{
 		Composite docComposite = new Composite(stackComposite, SWT.NONE);

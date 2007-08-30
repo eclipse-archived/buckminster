@@ -67,7 +67,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private SimpleTableEditor<Property> m_propertiesEditor;
 	
 	private Text m_prereqNameText;
-	private Button m_prereqPublicCheck;
 	private Text m_prereqRebasePathText;
 	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
@@ -89,8 +88,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	{
 		addStackMapping("General", createGeneralStackLayer(stackComposite));
 		addStackMapping("Properties", createPropertiesStackLayer(stackComposite));
-		addStackMapping("Prerequisites", createPrereqStackLayer(stackComposite));
 		addStackMapping("Products", createProductsStackLayer(stackComposite));
+		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
@@ -121,13 +120,37 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createGridLabel(geComposite, "Enabled:", 1, 0, SWT.NONE);
 		m_enabledCheck = UiUtils.createCheckButton(geComposite, null, null);
 
+		UiUtils.createGridLabel(geComposite, "Prerequisites Alias:", 1, 0, SWT.NONE);
+
+		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+
+		UiUtils.createGridLabel(geComposite, "Prerequisites Rebase Path:", 1, 0, SWT.NONE);
+
+		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
 		
-		Label label = UiUtils.createGridLabel(geComposite, "Installer Hints:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		Control ihEditor = createInstallerHintsEditor(geComposite);
-		ihEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		// Uses an empty GroupBuilder (createNewRow())
+		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
+		// Need to create "PrerequisiteBuilder"s again while saving them
+
+		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow().getPrerequisitesBuilder());
+		 
+		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
+				geComposite,
+				preTable,
+				null,
+				"Action - Prerequisite",
+				null,
+				null,
+				SWT.NONE);
+		
+		GridData layoutData = new GridData(GridData.FILL_BOTH);
+		m_prerequisitesEditor.setLayoutData(layoutData);
 
 		geComposite.setData("focusControl", getNameText());
 
@@ -256,56 +279,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		return composite;
 	}
 	
-	private Control createPrereqStackLayer(Composite stackComposite)
-	{
-		Composite geComposite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		geComposite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(geComposite, "Prerequisites", 2);
-
-		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
-
-		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
-
-		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
-
-		m_prereqPublicCheck = UiUtils.createCheckButton(geComposite, null, null);
-
-		UiUtils.createGridLabel(geComposite, "Rebase Path:", 1, 0, SWT.NONE);
-
-		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
-
-		UiUtils.createEmptyLabel(geComposite);
-		UiUtils.createEmptyLabel(geComposite);
-		
-		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-
-		// Uses an empty GroupBuilder (createNewRow())
-		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
-		// Need to create "PrerequisiteBuilder"s again while saving them
-
-		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow().getPrerequisitesBuilder());
-		 
-		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
-				geComposite,
-				preTable,
-				null,
-				"Action - Prerequisite",
-				null,
-				null,
-				SWT.NONE);
-		
-		GridData layoutData = new GridData(GridData.FILL_BOTH);
-		m_prerequisitesEditor.setLayoutData(layoutData);
-
-		geComposite.setData("focusControl", m_prereqNameText);
-
-		return geComposite;
-	}
-
 	@Override
 	protected void setRowValues(ActionBuilder builder) throws ValidatorException
 	{
@@ -390,7 +363,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
 		
 		prereqBuilder.setName(UiUtils.trimmedValue(m_prereqNameText));	
-		prereqBuilder.setPublic(m_prereqPublicCheck.getSelection());
 		
 		String rebasePathString = UiUtils.trimmedValue(m_prereqRebasePathText);
 		IPath rebasePath = null;
@@ -459,7 +431,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
 		
 		m_prereqNameText.setText(TextUtils.notNullString(prereqBuilder.getName()));
-		m_prereqPublicCheck.setSelection(prereqBuilder.isPublic());
 		
 		IPath rebasePath = prereqBuilder.getRebase();
 		m_prereqRebasePathText.setText(TextUtils.notNullString(rebasePath == null
@@ -511,7 +482,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_productArtifactsEditor.setEnabled(enabled && m_artifactsButton.getSelection());
 		m_propertiesEditor.setEnabled(enabled);		
 		m_prereqNameText.setEnabled(enabled);
-		m_prereqPublicCheck.setEnabled(enabled);
 		m_prereqRebasePathText.setEnabled(enabled);
 		m_prerequisitesEditor.setEnabled(enabled);
 	}
