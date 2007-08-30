@@ -173,7 +173,7 @@ public class ActionBuilder extends AttributeBuilder
 		Action action = (Action)namedElement;
 		super.initFrom(action);
 		m_actorName = action.getActorName();
-		m_actorProperties.putAll(action.getActorProperties());
+		m_actorProperties.putAll(action.getActorProperties(), true);
 		m_always = action.isAlways();
 		m_assignConsoleSupport = action.assignConsoleSupport();
 		m_enabled = action.isEnabled(null);
@@ -183,7 +183,7 @@ public class ActionBuilder extends AttributeBuilder
 		m_upToDatePolicy = action.getUpToDatePolicy();
 		m_productFileCount = action.getProductFileCount();
 		m_productPaths.addAll(action.getProductPaths());
-		m_properties.putAll(action.getProperties());
+		m_properties.putAll(action.getProperties(), true);
 	}
 
 	public boolean isAlways()

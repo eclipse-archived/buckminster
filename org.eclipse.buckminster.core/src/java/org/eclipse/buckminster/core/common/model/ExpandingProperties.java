@@ -253,17 +253,29 @@ public class ExpandingProperties implements IProperties
 
 	public void putAll(Map<? extends String, ? extends String> t)
 	{
+		putAll(t, false);
+	}
+
+	public void putAll(Map<? extends String, ? extends String> t, boolean mutable)
+	{
 		if(t instanceof ExpandingProperties)
 		{
 			// Defer expansion until access.
 			//
 			for(Map.Entry<String, ValueHolder> ee : ((ExpandingProperties)t).m_map.entrySet())
+			{
+				ee.getValue().setMutable(mutable);
 				setProperty(ee.getKey(), ee.getValue());
+			}
 		}
 		else
 		{
 			for(Map.Entry<? extends String, ? extends String> ee : t.entrySet())
-				setProperty(ee.getKey(), new Constant(ee.getValue()));
+			{
+				ValueHolder vh = new Constant(ee.getValue());
+				vh.setMutable(mutable);
+				setProperty(ee.getKey(), vh);
+			}
 		}
 	}
 

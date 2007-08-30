@@ -42,10 +42,15 @@ public abstract class AttributeBuilder extends CSpecElementBuilder
 		getInstallerHintsForAdd().put(key, hint, false);
 	}
 
+	public void addInstallerHint(String key, String hint, boolean mutable)
+	{
+		getInstallerHintsForAdd().put(key, hint, mutable);
+	}
+
 	public void addInstallerHints(Map<String,String> hints)
 	{
 		if(hints != null && hints.size() > 0)
-			getInstallerHintsForAdd().putAll(hints);
+			getInstallerHintsForAdd().putAll(hints, true);
 	}
 
 	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException
