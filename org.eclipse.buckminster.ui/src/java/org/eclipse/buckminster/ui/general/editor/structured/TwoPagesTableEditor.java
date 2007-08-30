@@ -56,6 +56,8 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 
 			refreshRow();
 
+			focusStackComposite();
+
 			return rowComposite;
 		}
 
