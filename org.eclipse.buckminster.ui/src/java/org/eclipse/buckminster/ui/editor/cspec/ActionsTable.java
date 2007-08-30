@@ -213,6 +213,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				SWT.NONE);
 		m_productArtifactsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
 
+		composite.setData("focusControl", m_prodAliasText);
+
 		return composite;
 	}
 	
