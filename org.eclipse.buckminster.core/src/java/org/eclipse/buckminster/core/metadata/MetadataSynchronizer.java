@@ -352,17 +352,17 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 	}
 
-	public boolean refreshProject(IProject project, IProgressMonitor monitor) throws CoreException
+	public void refreshProject(IProject project, IProgressMonitor monitor) throws CoreException
 	{
-		if(project.getName().equals(CorePlugin.BUCKMINSTER_PROJECT) || !project.isOpen())
+		if(project.getName().equals(CorePlugin.BUCKMINSTER_PROJECT) || !project.isAccessible())
 		{
 			MonitorUtils.complete(monitor);
-			return false;
+			return;
 		}
 
 		IPath location = project.getLocation();
 		if(location == null)
-			return false;
+			return;
 
 		CSpec oldCSpec = WorkspaceInfo.getCSpec(project);
 		Resolution oldInfo = null;
@@ -386,7 +386,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(res.getCSpec().equals(oldCSpec))
 			{
 				updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
-				return false;
+				return;
 			}
 
 			Resolution oldRes = null;
@@ -401,7 +401,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			Materialization mat = new Materialization(location.addTrailingSeparator(), ci);
 			mat.store();
 			WorkspaceInfo.setComponentIdentifier(project, ci);
-	
+
 			if(oldRes != null)
 			{
 				try
@@ -416,7 +416,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				}
 			}
 			updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
-			return true;
 		}
 		finally
 		{
