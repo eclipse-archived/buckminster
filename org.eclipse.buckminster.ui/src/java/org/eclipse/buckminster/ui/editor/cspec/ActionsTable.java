@@ -30,6 +30,8 @@ import org.eclipse.buckminster.ui.general.editor.structured.TwoPagesTableEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -55,8 +57,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	
 	private List<Property> m_actorProperties = new ArrayList<Property>();
 	private SimpleTableEditor<Property> m_actorPropertiesEditor;
+	private Button m_pathsButton;
 	private List<PathWrapper> m_productPaths = new ArrayList<PathWrapper>();
 	private SimpleTableEditor<PathWrapper> m_productPathsEditor;
+	private Button m_artifactsButton;
 	private List<ArtifactBuilder> m_productArtifacts = new ArrayList<ArtifactBuilder>();
 	private TwoPagesTableEditor<ArtifactBuilder> m_productArtifactsEditor;
 	private List<Property> m_properties = new ArrayList<Property>();
@@ -148,8 +152,19 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createEmptyLabel(composite);
 		UiUtils.createEmptyLabel(composite);
 		
-		Label label = UiUtils.createGridLabel(composite, "Product Paths:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		m_pathsButton = new Button(composite, SWT.RADIO);
+		m_pathsButton.setText("Product Paths:");
+		m_pathsButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		m_pathsButton.addSelectionListener(new SelectionAdapter()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				enableProductPathsEditor(true);
+			}
+		});
+
 		PathsTable table = new PathsTable(m_productPaths);
 		
 		m_productPathsEditor = new SimpleTableEditor<PathWrapper>(
@@ -165,9 +180,19 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createEmptyLabel(composite);
 		UiUtils.createEmptyLabel(composite);
 		
-		label = UiUtils.createGridLabel(composite, "Product Artifacts:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		
+		m_artifactsButton = new Button(composite, SWT.RADIO);
+		m_artifactsButton.setText("Product Artifacts:");
+		m_artifactsButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		m_artifactsButton.addSelectionListener(new SelectionAdapter()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				enableProductPathsEditor(false);
+			}
+		});
+
 		ArtifactsTable artifactsTable = new ArtifactsTable(getCSpecEditor(), m_productArtifacts, getCSpecBuilder())
 		{
 			@Override
@@ -313,29 +338,40 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		
 		if(paths != null)
 		{
-			builder.getProductPaths().clear();
+			paths.clear();
 		}
-		for(PathWrapper path : m_productPaths)
+		
+		// save only if selected
+		if(m_pathsButton.getSelection())
 		{
-			IPath p = path.getPath();
-			
-			if(p == null)
-				continue;
-			
-			builder.addProductPath(p);
+			for(PathWrapper path : m_productPaths)
+			{
+				IPath p = path.getPath();
+				
+				if(p == null)
+					continue;
+				
+				builder.addProductPath(p);
+			}
 		}
 
-		if(m_productArtifacts.size() > 0)
+		m_actionArtifacts.remove(builder);
+		
+		// save only if selected
+		if(m_artifactsButton.getSelection())
 		{
-			List<ActionArtifactBuilder> list = new ArrayList<ActionArtifactBuilder>();
-			
-			for(ArtifactBuilder artifactBuilder : m_productArtifacts)
+			if(m_productArtifacts.size() > 0)
 			{
-				((ActionArtifactBuilder)artifactBuilder).setActionName(builder.getName());
-				list.add((ActionArtifactBuilder)artifactBuilder);
+				List<ActionArtifactBuilder> list = new ArrayList<ActionArtifactBuilder>();
+				
+				for(ArtifactBuilder artifactBuilder : m_productArtifacts)
+				{
+					((ActionArtifactBuilder)artifactBuilder).setActionName(builder.getName());
+					list.add((ActionArtifactBuilder)artifactBuilder);
+				}
+				
+				m_actionArtifacts.put(builder, list);
 			}
-			
-			m_actionArtifacts.put(builder, list);
 		}
 		
 		properties = builder.getProperties();
@@ -413,6 +449,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		createProductArtifactsCopy();
 		m_productArtifactsEditor.refresh();
 		
+		chooseProductPathsButton(m_productPaths.size() > 0 || m_productArtifacts.size() == 0);
+		
 		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);
 		m_propertiesEditor.refresh();
 	
@@ -428,6 +466,18 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getCSpecElementComparator());
 		m_prerequisitesEditor.refresh();
+	}
+
+	private void chooseProductPathsButton(boolean choose)
+	{
+		m_pathsButton.setSelection(choose);
+		m_artifactsButton.setSelection(!choose);
+	}
+
+	private void enableProductPathsEditor(boolean enable)
+	{
+		m_productPathsEditor.setEnabled(enable);
+		m_productArtifactsEditor.setEnabled(!enable);
 	}
 
 	private void createProductArtifactsCopy()
@@ -453,8 +503,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_prodAliasText.setEnabled(enabled);
 		m_prodBaseText.setEnabled(enabled);
 		m_actorPropertiesEditor.setEnabled(enabled);
-		m_productPathsEditor.setEnabled(enabled);
-		m_productArtifactsEditor.setEnabled(enabled);
+		m_pathsButton.setEnabled(enabled);
+		m_productPathsEditor.setEnabled(enabled && m_pathsButton.getSelection());
+		m_artifactsButton.setEnabled(enabled);
+		m_productArtifactsEditor.setEnabled(enabled && m_artifactsButton.getSelection());
 		m_propertiesEditor.setEnabled(enabled);		
 		m_prereqNameText.setEnabled(enabled);
 		m_prereqPublicCheck.setEnabled(enabled);
