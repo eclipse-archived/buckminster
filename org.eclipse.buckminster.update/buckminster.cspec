@@ -65,7 +65,7 @@
             	<cs:attribute name="feature.jars" alias="features"/>
             	<cs:attribute name="bundle.jars" alias="plugins" includePattern=".*\.buckminster\..*"/>
             </cs:prerequisites>
-            <cs:products alias="action.output" base="site"/>
+            <cs:products alias="action.output" base="site" upToDatePolicy="COUNT" fileCount="1"/>
         </cs:public>
     </cs:actions>
     <cs:groups>
