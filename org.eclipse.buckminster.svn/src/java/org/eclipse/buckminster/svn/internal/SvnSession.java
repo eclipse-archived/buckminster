@@ -910,11 +910,14 @@ public class SvnSession
 	static void createCommonRoots(MaterializationContext context) throws CoreException
 	{
 		Set<RepositoryAccess> unknownRoots = SvnSession.getUnknownRoots(context.getUserCache());
+		if(unknownRoots.size() == 0)
+			return;
+		
+		Set<RepositoryAccess> sourceRoots = unknownRoots;
 		if(unknownRoots.size() > 1)
 		{
 			// Get all common roots with a segment count of at least 1
 			//
-			Set<RepositoryAccess> sourceRoots = unknownRoots;
 			for(;;)
 			{
 				Set<RepositoryAccess> commonRoots = getCommonRootsStep(sourceRoots);
@@ -926,34 +929,34 @@ public class SvnSession
 				//
 				sourceRoots = commonRoots;
 			}
-
-			// Create the needed repositories so that Subclipse doesn't create every single
-			// root for us.
-			//
-			SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
-			SVNRepositories repos = svnPlugin.getRepositories();
-			for(RepositoryAccess root : sourceRoots)
-			{
-				Properties configuration = new Properties();
-				configuration.setProperty("url", root.getSvnURL().toString());
-				String user = root.getUser();
-				if(user != null)
-					configuration.setProperty("user", user);
-				String password = root.getPassword();
-				if(password != null)
-					configuration.setProperty("password", password);
-				
-				try
-				{
-					repos.addOrUpdateRepository(repos.createRepository(configuration));
-				}
-				catch(SVNException e)
-				{
-					// Repository already exists
-				}
-			}
-			unknownRoots.clear();
 		}
+
+		// Create the needed repositories so that Subclipse doesn't create every single
+		// root for us.
+		//
+		SVNProviderPlugin svnPlugin = SVNProviderPlugin.getPlugin();
+		SVNRepositories repos = svnPlugin.getRepositories();
+		for(RepositoryAccess root : sourceRoots)
+		{
+			Properties configuration = new Properties();
+			configuration.setProperty("url", root.getSvnURL().toString());
+			String user = root.getUser();
+			if(user != null)
+				configuration.setProperty("user", user);
+			String password = root.getPassword();
+			if(password != null)
+				configuration.setProperty("password", password);
+			
+			try
+			{
+				repos.addOrUpdateRepository(repos.createRepository(configuration));
+			}
+			catch(SVNException e)
+			{
+				// Repository already exists
+			}
+		}
+		unknownRoots.clear();
 	}
 
 	private static Set<RepositoryAccess> getCommonRootsStep(Set<RepositoryAccess> source) throws CoreException
