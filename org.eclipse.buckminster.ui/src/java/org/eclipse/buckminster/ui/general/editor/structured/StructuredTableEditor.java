@@ -112,6 +112,11 @@ public abstract class StructuredTableEditor<T> extends Composite
 		initComposite();
 	}
 
+	protected IStructuredTable<T> getTable()
+	{
+		return m_table;
+	}
+	
 	protected Button getEditButton()
 	{
 		return m_editButton;
@@ -401,6 +406,19 @@ public abstract class StructuredTableEditor<T> extends Composite
 		return m_enabled;
 	}
 	
+	public boolean selectRow(T row)
+	{
+		int idx = m_table.getRows().indexOf(row);
+		
+		if(idx == -1)
+			return false;
+		
+		m_tableViewer.getTable().select(idx);
+		refreshRow();
+
+		return true;
+	}
+
 	protected abstract void enableDisableButtonGroup();
 
 	protected void enableFields(boolean enabled)
@@ -408,7 +426,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		m_table.enableFields(enabled);
 	}
 
-	private void setStackOption(int idx)
+	protected void setStackOption(int idx)
 	{
 		String stackKey = m_table.getStackKeys().get(idx);
 		m_stackOptions.setSelection(m_stackOptions.getItem(idx));

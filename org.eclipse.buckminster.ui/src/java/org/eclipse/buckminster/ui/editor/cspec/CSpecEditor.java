@@ -112,6 +112,23 @@ public class CSpecEditor extends EditorPart
 		}
 	}
 	
+	enum CSpecEditorTab
+	{
+		MAIN(0), ACTIONS(1), ARTIFACTS(2), GROUPS(3), ATTRIBUTES(4), DEPENDENCIES(5), GENERATORS(6), DOCUMENTATION(6), XML(8);
+		
+		private int m_seqNum;
+		
+		CSpecEditorTab(int seqNum)
+		{
+			m_seqNum = seqNum;
+		}
+		
+		public int getSeqNum()
+		{
+			return m_seqNum;
+		}
+	}
+	
 	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec";
 	
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = CSpecEditorUtils.getCSpecElementComparator();
@@ -133,10 +150,14 @@ public class CSpecEditor extends EditorPart
 	private boolean m_readOnly = true;
 	
 	private CTabFolder m_tabFolder;
+	private CTabItem m_mainTab;
 	private CTabItem m_actionsTab;
 	private CTabItem m_artifactsTab;
 	private CTabItem m_groupsTab;
 	private CTabItem m_attributesTab;
+	private CTabItem  m_dependenciesTab;
+	private CTabItem m_generatorsTab;
+	private CTabItem m_documentationTab;
 	private CTabItem m_xmlTab;
 	private Text m_componentName;
 	private Combo m_componentType;
@@ -145,7 +166,7 @@ public class CSpecEditor extends EditorPart
 	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
 	private OnePageTableEditor<ArtifactBuilder> m_artifactsEditor;
 	private OnePageTableEditor<GroupBuilder> m_groupsEditor;
-	private OnePageTableEditor<AttributeBuilder> m_attributesEditor;
+	private AllAttributesView m_attributesView;
 	private SimpleTableEditor<DependencyBuilder> m_dependenciesEditor;
 	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
 	private Text m_shortDesc;
@@ -261,13 +282,6 @@ public class CSpecEditor extends EditorPart
 			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
 				return false;
 			m_groupsEditor.cancelRow();
-		}
-
-		if(m_attributesEditor.isInEditMode())
-		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
-				return false;
-			m_attributesEditor.cancelRow();
 		}
 
 		return innerCommitChanges();
@@ -548,7 +562,6 @@ public class CSpecEditor extends EditorPart
 			m_actionsEditor.refresh();
 			m_artifactsEditor.refresh();
 			m_groupsEditor.refresh();
-			m_attributesEditor.refresh();
 			m_dependenciesEditor.refresh();
 			m_generatorsEditor.refresh();
 
@@ -629,9 +642,9 @@ public class CSpecEditor extends EditorPart
 		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
 		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
-		mainTab.setText("Main");
-		mainTab.setControl(getMainTabControl(m_tabFolder));
+		m_mainTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_mainTab.setText("Main");
+		m_mainTab.setControl(getMainTabControl(m_tabFolder));
 
 		m_actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_actionsTab.setText("Actions");
@@ -649,17 +662,17 @@ public class CSpecEditor extends EditorPart
 		m_attributesTab.setText("All Attributes");
 		m_attributesTab.setControl(getAttributesTabControl(m_tabFolder));
 
-		CTabItem dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		dependenciesTab.setText("Dependencies");
-		dependenciesTab.setControl(getDependenciesTabControl(m_tabFolder));
+		m_dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_dependenciesTab.setText("Dependencies");
+		m_dependenciesTab.setControl(getDependenciesTabControl(m_tabFolder));
 
-		CTabItem generatorsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		generatorsTab.setText("Generators");
-		generatorsTab.setControl(getGeneratorsTabControl(m_tabFolder));
+		m_generatorsTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_generatorsTab.setText("Generators");
+		m_generatorsTab.setControl(getGeneratorsTabControl(m_tabFolder));
 
-		CTabItem documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
-		documentationTab.setText("Documentation");
-		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
+		m_documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_documentationTab.setText("Documentation");
+		m_documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
 
 		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_xmlTab.setText("XML Content");
@@ -670,27 +683,31 @@ public class CSpecEditor extends EditorPart
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				if(m_actionsTab == e.item)
+				if(m_mainTab == e.item)
 				{
-					if(!m_actionsEditor.isInEditMode())
-						m_actionsEditor.refresh();
-				}
-				else if(m_artifactsTab == e.item)
+					m_componentName.setFocus();
+				}else if(m_actionsTab == e.item)
 				{
-					if(!m_artifactsEditor.isInEditMode())
-						m_artifactsEditor.refresh();
-				}
-				else if(m_groupsTab == e.item)
+					m_actionsEditor.setFocus();
+				} else if(m_artifactsTab == e.item)
 				{
-					if(!m_groupsEditor.isInEditMode())
-						m_groupsEditor.refresh();
-				}
-				else if(m_attributesTab == e.item)
+					m_artifactsEditor.setFocus();
+				} else if(m_groupsTab == e.item)
 				{
-					if(!m_attributesEditor.isInEditMode())
-						m_attributesEditor.refresh();
-				}
-				else if(m_xmlTab == e.item)
+					m_groupsEditor.setFocus();
+				} else if(m_attributesTab == e.item)
+				{
+					m_attributesView.setFocus();
+				} else if(m_dependenciesTab == e.item)
+				{
+					m_dependenciesEditor.setFocus();
+				} else if(m_generatorsTab == e.item)
+				{
+					m_generatorsEditor.setFocus();
+				} else if(m_documentationTab == e.item)
+				{
+					m_shortDesc.setFocus();
+				} else if(m_xmlTab == e.item)
 				{
 					if(!innerCommitChanges())
 						MessageDialog.openWarning(getSite().getShell(), null, "XML Content was not actualised due to errors");
@@ -866,17 +883,8 @@ public class CSpecEditor extends EditorPart
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "All Attributes");
 
-		AllAttributesTable table = new AllAttributesTable(this, m_cspec);
-		table.addTableModifyListener(m_compoundModifyListener);
+		m_attributesView = new AllAttributesView(tabComposite, SWT.NONE, this);
 		
-		m_attributesEditor = new OnePageTableEditor<AttributeBuilder>(
-				tabComposite,
-				table,
-				false,
-				true,
-				true,
-				SWT.NONE);
-
 		return tabComposite;
 	}
 
@@ -1065,5 +1073,25 @@ public class CSpecEditor extends EditorPart
 			}});
 		
 		return array;
+	}
+
+	void switchTab(CSpecEditorTab tab)
+	{
+		m_tabFolder.setSelection(tab.getSeqNum());
+	}
+	
+	OnePageTableEditor<ActionBuilder> getActionsEditor()
+	{
+		return m_actionsEditor;
+	}
+	
+	OnePageTableEditor<ArtifactBuilder> getArtifactsEditor()
+	{
+		return m_artifactsEditor;
+	}
+	
+	OnePageTableEditor<GroupBuilder> getGroupsEditor()
+	{
+		return m_groupsEditor;
 	}
 }

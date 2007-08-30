@@ -297,4 +297,20 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			enableFields(false);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean show(T row, String tab)
+	{
+		int stackIdx = getTable().getStackKeys().indexOf(tab);
+		
+		if(stackIdx == -1)
+			return false;
+		
+		if(!selectRow(row))
+			return false;
+				
+		setStackOption(stackIdx);
+		
+		return true;
+	}
 }
