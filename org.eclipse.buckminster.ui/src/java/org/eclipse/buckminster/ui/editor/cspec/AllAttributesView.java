@@ -10,7 +10,9 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -30,9 +32,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -93,6 +98,8 @@ public class AllAttributesView extends Composite
 	
 	private List<AttributeBuilder> m_table = new ArrayList<AttributeBuilder>();
 	
+	private Map<ActionArtifactBuilder, ActionBuilder> m_aaMap = new HashMap<ActionArtifactBuilder, ActionBuilder>();
+	
 	private int m_lastSelectedRow = -1;
 	
 	public AllAttributesView(Composite parent, int style, CSpecEditor editor)
@@ -105,13 +112,25 @@ public class AllAttributesView extends Composite
 
 	protected void initComposite()
 	{
-		GridLayout topLayout = new GridLayout();
+		GridLayout topLayout = new GridLayout(2, false);
 		topLayout.marginHeight = topLayout.marginWidth = 0;
 		setLayout(topLayout);
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		Table table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION);
+		
+		Button detailButton = new Button(this, SWT.PUSH);
+		detailButton.setText("Show Details");
+		detailButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		detailButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				show(m_table.get(m_tableViewer.getTable().getSelectionIndex()));
+			}
+		});
 		
 		table.addFocusListener(new FocusListener(){
 
@@ -151,30 +170,7 @@ public class AllAttributesView extends Composite
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
 				{
-					AttributeBuilder builder = m_table.get(m_tableViewer.getTable().getSelectionIndex());
-					
-					if(builder instanceof ActionBuilder)
-					{
-						m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
-						m_cspecEditor.getActionsEditor().show(((ActionBuilder)builder), "General");
-					} else if(builder instanceof ActionArtifactBuilder)
-					{
-						// TODO finish
-						//m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
-						//m_cspecEditor.getActionsEditor().show(((ActionBuilder)builder), "Products");
-					}
-					else if(builder instanceof ArtifactBuilder)
-					{
-						m_cspecEditor.switchTab(CSpecEditorTab.ARTIFACTS);
-						m_cspecEditor.getArtifactsEditor().show(((ArtifactBuilder)builder), "General");
-					}
-					else if(builder instanceof GroupBuilder)
-					{
-						m_cspecEditor.switchTab(CSpecEditorTab.GROUPS);
-						m_cspecEditor.getGroupsEditor().show(((GroupBuilder)builder), "General");
-					}
-					
-					// showAttribute();
+					show(m_table.get(m_tableViewer.getTable().getSelectionIndex()));
 				}
 			}
 		});
@@ -184,8 +180,13 @@ public class AllAttributesView extends Composite
 	{
 		m_table.clear();
 		m_table.addAll(m_cspecEditor.getActionBuilders());
-		for(List<ActionArtifactBuilder> list : m_cspecEditor.getActionArtifactBuilders().values())
-			m_table.addAll(list);
+		for(ActionBuilder actionBuilder : m_cspecEditor.getActionArtifactBuilders().keySet())
+			for(ActionArtifactBuilder actionArtifactBuilder : m_cspecEditor.getActionArtifactBuilders().get(actionBuilder))
+			{
+				m_table.add(actionArtifactBuilder);
+				m_aaMap.put(actionArtifactBuilder, actionBuilder);
+			}
+		
 		m_table.addAll(m_cspecEditor.getArtifactBuilders());
 		m_table.addAll(m_cspecEditor.getGroupBuilders());
 
@@ -228,6 +229,30 @@ public class AllAttributesView extends Composite
 		}
 	}
 
+
+	private void show(AttributeBuilder builder)
+	{
+		if(builder instanceof ActionBuilder)
+		{			
+			if(m_cspecEditor.getActionsEditor().show(((ActionBuilder)builder), "General"))
+				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
+		} else if(builder instanceof ActionArtifactBuilder)
+		{
+			if(m_cspecEditor.getActionsEditor().show(m_aaMap.get(builder), "Products"))
+				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);				
+		}
+		else if(builder instanceof ArtifactBuilder)
+		{
+			if(m_cspecEditor.getArtifactsEditor().show(((ArtifactBuilder)builder), "General"))
+				m_cspecEditor.switchTab(CSpecEditorTab.ARTIFACTS);
+		}
+		else if(builder instanceof GroupBuilder)
+		{
+			if(m_cspecEditor.getGroupsEditor().show(((GroupBuilder)builder), "General"))
+				m_cspecEditor.switchTab(CSpecEditorTab.GROUPS);
+		}
+	}
+	
 	@Override
 	public boolean setFocus()
 	{
