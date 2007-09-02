@@ -76,6 +76,8 @@ public abstract class StructuredTableEditor<T> extends Composite
 					: field.toString();
 		}
 	}
+	
+	private final static int DONT_SAVE = -99;
 
 	private final IStructuredTable<T> m_table;
 
@@ -84,6 +86,8 @@ public abstract class StructuredTableEditor<T> extends Composite
 	private TableViewer m_tableViewer;
 
 	private int m_lastSelectedRow = -1;
+	
+	private int m_lastEditedRow = -1;
 
 	private Button m_newButton;
 
@@ -177,14 +181,26 @@ public abstract class StructuredTableEditor<T> extends Composite
 		return m_swapButtonsFlag;
 	}
 
-	protected void updateLastSelectedRow()
+	protected void updateLastRow()
 	{
 		if(getSelectionIndex() != -1)
 		{
 			m_lastSelectedRow = getSelectionIndex();
 		}
+		
+		m_lastEditedRow = getSelectionIndex();
 	}
 
+	protected int getLastSelectedRow()
+	{
+		return m_lastSelectedRow;
+	}
+	
+	protected int getLastEditedRow()
+	{
+		return m_lastEditedRow;
+	}
+	
 	protected abstract void initComposite();
 
 	protected abstract Composite createTableGroupComposite(Composite parent);
@@ -301,27 +317,21 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected abstract void editRow();
 
-	protected abstract void rowSelectionEvent();
+	protected abstract boolean rowSelectionEvent();
 
 	private void rowSelection()
 	{
-		updateLastSelectedRow();
-		rowSelectionEvent();
+		if(rowSelectionEvent())
+			updateLastRow();
 	}
 
 	protected void saveRow() throws ValidatorException
 	{
-		boolean refreshListNeeded = false;
-
-		m_table.save(getSelectionIndex());
-
-		// TODO set it properly
-		refreshListNeeded = true;
-
-		if(refreshListNeeded)
-		{
-			refresh();
-		}
+		if(m_lastEditedRow == DONT_SAVE)
+			return;
+		
+		m_table.save(m_lastEditedRow);
+		refresh();
 
 		enableDisableButtonGroup();
 	}
@@ -332,6 +342,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		if(row != -1)
 		{
 			m_table.removeRow(row);
+			m_lastEditedRow = DONT_SAVE;
 			refresh();
 		}
 	}
@@ -376,10 +387,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 				m_tableViewer.getTable().setSelection(m_lastSelectedRow);
 			}
 		}
-		if(getSelectionIndex() != -1)
-		{
-			m_lastSelectedRow = getSelectionIndex();
-		}
+		updateLastRow();
 	}
 
 	protected void refreshRow()
@@ -413,8 +421,8 @@ public abstract class StructuredTableEditor<T> extends Composite
 		if(idx == -1)
 			return false;
 		
-		m_tableViewer.getTable().select(idx);
-		refreshRow();
+		m_tableViewer.getTable().setSelection(idx);
+		updateLastRow();
 
 		return true;
 	}

@@ -93,6 +93,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
+	@SuppressWarnings("unchecked")
 	private Control createGeneralStackLayer(Composite stackComposite)
 	{
 		Composite geComposite = new Composite(stackComposite, SWT.NONE);
@@ -110,23 +111,27 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createGridLabel(geComposite, "Actor Name:", 1, 0, SWT.NONE);
 		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_actorNameText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, "Always:", 1, 0, SWT.NONE);
 		m_alwaysCheck = UiUtils.createCheckButton(geComposite, null, null);
+		m_actorNameText.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, "Assign Console Support:", 1, 0, SWT.NONE);
 		m_assignConsoleSupportCheck = UiUtils.createCheckButton(geComposite, null, null);
+		m_assignConsoleSupportCheck.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, "Enabled:", 1, 0, SWT.NONE);
 		m_enabledCheck = UiUtils.createCheckButton(geComposite, null, null);
+		m_enabledCheck.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, "Prerequisites Alias:", 1, 0, SWT.NONE);
-
 		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_prereqNameText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, "Prerequisites Rebase Path:", 1, 0, SWT.NONE);
-
 		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_prereqRebasePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
@@ -139,7 +144,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
 		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow().getPrerequisitesBuilder());
-		 
+		preTable.addTableModifyListener(FIELD_LISTENER);
+		
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
 				geComposite,
 				preTable,
@@ -157,6 +163,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		return geComposite;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Control createProductsStackLayer(Composite stackComposite)
 	{
 		Composite composite = new Composite(stackComposite, SWT.NONE);
@@ -168,9 +175,11 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createGridLabel(composite, "Product Alias:", 1, 0, SWT.NONE);
 		m_prodAliasText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
+		m_prodAliasText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(composite, "Product Base Path:", 1, 0, SWT.NONE);
 		m_prodBaseText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
+		m_prodBaseText.addModifyListener(FIELD_LISTENER);
 		
 		UiUtils.createEmptyLabel(composite);
 		UiUtils.createEmptyLabel(composite);
@@ -189,6 +198,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		});
 
 		PathsTable table = new PathsTable(m_productPaths);
+		table.addTableModifyListener(FIELD_LISTENER);
 		
 		m_productPathsEditor = new SimpleTableEditor<PathWrapper>(
 				composite,
@@ -224,6 +234,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				return getCSpecBuilder().createActionArtifactBuilder();
 			}
 		};
+		artifactsTable.addTableModifyListener(FIELD_LISTENER);
 
 		m_productArtifactsEditor = new TwoPagesTableEditor<ArtifactBuilder>(
 				composite,
@@ -241,6 +252,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		return composite;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Control createPropertiesStackLayer(Composite stackComposite)
 	{
 		Composite composite = new Composite(stackComposite, SWT.NONE);
@@ -251,6 +263,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		EditorUtils.createHeaderLabel(composite, "General Properties", 1);
 
 		PropertiesTable table = new PropertiesTable(m_properties);
+		table.addTableModifyListener(FIELD_LISTENER);
 		
 		m_propertiesEditor = new SimpleTableEditor<Property>(
 				composite,
@@ -266,6 +279,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		EditorUtils.createHeaderLabel(composite, "Actor Properties", 1);
 
 		table = new PropertiesTable(m_actorProperties);
+		table.addTableModifyListener(FIELD_LISTENER);
 		
 		m_actorPropertiesEditor = new SimpleTableEditor<Property>(
 				composite,
@@ -445,6 +459,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	{
 		m_pathsButton.setSelection(choose);
 		m_artifactsButton.setSelection(!choose);
+		
+		if(m_pathsButton.getEnabled())
+			enableProductPathsEditor(choose);
 	}
 
 	private void enableProductPathsEditor(boolean enable)
@@ -484,5 +501,22 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_prereqNameText.setEnabled(enabled);
 		m_prereqRebasePathText.setEnabled(enabled);
 		m_prerequisitesEditor.setEnabled(enabled);
+	}
+	
+	void showProductArtifact(ArtifactBuilder builder)
+	{
+		// find according to name
+		ArtifactBuilder foundBuilder = null;
+		for(ArtifactBuilder item : m_productArtifacts)
+		{
+			if(item.getName().equals(builder.getName()))
+			{
+				foundBuilder = item;
+				break;
+			}
+		}
+		
+		if(foundBuilder != null)
+			m_productArtifactsEditor.show(foundBuilder);
 	}
 }

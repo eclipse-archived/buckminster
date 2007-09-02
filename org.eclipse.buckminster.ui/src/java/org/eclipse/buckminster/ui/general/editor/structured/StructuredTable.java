@@ -13,9 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
 import org.eclipse.buckminster.ui.general.editor.Table;
+import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEventType;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -25,10 +31,42 @@ import org.eclipse.swt.widgets.Control;
  */
 public abstract class StructuredTable<T> extends Table<T> implements IStructuredTable<T>
 {
+	@SuppressWarnings("unchecked")
+	class CompoundFieldModifyListener implements ModifyListener, SelectionListener, ITableModifyListener
+	{
+		public void modifyText(ModifyEvent e)
+		{
+			if(!m_suppressFieldListener)
+				notifyFieldListeners();
+		}
+
+		public void widgetDefaultSelected(SelectionEvent e)
+		{
+			// nothing			
+		}
+
+		public void widgetSelected(SelectionEvent e)
+		{
+			if(!m_suppressFieldListener)
+				notifyFieldListeners();
+		}
+
+		public void modifyTable(TableModifyEvent e)
+		{
+			notifyFieldListeners();
+		}
+	}
+	
+	protected final CompoundFieldModifyListener FIELD_LISTENER = new CompoundFieldModifyListener();
+	
 	private List<String> m_stackKeys = new ArrayList<String>();
 
 	private Map<String, Control> m_stackMap = new HashMap<String, Control>();
 
+	private List<IFieldModifyListener> m_fieldListeners = new ArrayList<IFieldModifyListener>();
+
+	private boolean m_suppressFieldListener = false;
+	
 	/**
 	 * Creates Table instance
 	 * 
@@ -37,6 +75,16 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 	public StructuredTable(List<T> data)
 	{
 		super(data);
+		
+		// notify field listeners about row removal
+		addTableModifyListener(new ITableModifyListener<T>()
+		{
+			public void modifyTable(TableModifyEvent<T> e)
+			{
+				if(e.getEventType() == TableModifyEventType.REMOVE_ROW)
+					notifyFieldListeners();
+			}
+		});
 	}
 
 	public Control getStackControl(String stackKey)
@@ -135,7 +183,9 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 			builder = getRow(rowIdx);
 		}
 
+		m_suppressFieldListener = true;
 		refreshRow(builder);
+		m_suppressFieldListener = false;
 	}
 
 	/**
@@ -169,5 +219,33 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		notifyListeners(TableModifyEventType.SWAP_ROW, rowIdx, data.get(rowIdx));
 
 		return true;
+	}
+	
+	public void addFieldModifyListener(IFieldModifyListener listener)
+	{
+		if(!m_fieldListeners.contains(listener))
+		{
+			m_fieldListeners.add(listener);
+		}
+	}
+
+	public void removeFieldModifyListener(IFieldModifyListener listener)
+	{
+		m_fieldListeners.remove(listener);
+	}
+
+	protected void notifyFieldListeners()
+	{
+		FieldModifyEvent e = new FieldModifyEvent();
+		for(IFieldModifyListener listener : m_fieldListeners)
+			listener.modifyField(e);
+	}
+	
+	public T addEmptyRow()
+	{
+		T tableRow = createNewRow();
+		getRows().add(tableRow);
+		
+		return tableRow;
 	}
 }

@@ -50,6 +50,9 @@ import org.eclipse.buckminster.ui.editor.SaveRunnable;
 import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
 import org.eclipse.buckminster.ui.general.editor.TableModifyEvent;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
+import org.eclipse.buckminster.ui.general.editor.structured.FieldModifyEvent;
+import org.eclipse.buckminster.ui.general.editor.structured.IActivator;
+import org.eclipse.buckminster.ui.general.editor.structured.IFieldModifyListener;
 import org.eclipse.buckminster.ui.general.editor.structured.OnePageTableEditor;
 import org.eclipse.buckminster.ui.internal.CSpecEditorInput;
 import org.eclipse.core.resources.IFile;
@@ -98,7 +101,7 @@ import org.xml.sax.SAXException;
 public class CSpecEditor extends EditorPart
 {
 	@SuppressWarnings("unchecked") // don't need generics here - need just to setDirty
-	class CompoundModifyListener implements ModifyListener, ITableModifyListener
+	class CompoundModifyListener implements ModifyListener, ITableModifyListener, IFieldModifyListener
 	{
 
 		public void modifyText(ModifyEvent e)
@@ -107,6 +110,11 @@ public class CSpecEditor extends EditorPart
 		}
 
 		public void modifyTable(TableModifyEvent e)
+		{
+			setDirty(true);
+		}
+
+		public void modifyField(FieldModifyEvent e)
 		{
 			setDirty(true);
 		}
@@ -163,6 +171,7 @@ public class CSpecEditor extends EditorPart
 	private Combo m_componentType;
 	private Text m_versionString;
 	private Combo m_versionType;
+	private ActionsTable m_actionsTable;
 	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
 	private OnePageTableEditor<ArtifactBuilder> m_artifactsEditor;
 	private OnePageTableEditor<GroupBuilder> m_groupsEditor;
@@ -262,33 +271,19 @@ public class CSpecEditor extends EditorPart
 	}
 
 	private boolean commitChanges()
-	{
-		if(m_actionsEditor.isInEditMode())
-		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current action edit?"))
-				return false;
-			m_actionsEditor.cancelRow();
-		}
-
-		if(m_artifactsEditor.isInEditMode())
-		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current artifact edit?"))
-				return false;
-			m_artifactsEditor.cancelRow();
-		}
-
-		if(m_groupsEditor.isInEditMode())
-		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current group edit?"))
-				return false;
-			m_groupsEditor.cancelRow();
-		}
-
-		return innerCommitChanges();
-	}
-	
-	private boolean innerCommitChanges()
-	{
+	{		
+		if(m_actionsEditor.isVisible())
+			if(!m_actionsEditor.save())
+				return false;		
+		
+		if(m_artifactsEditor.isVisible())
+			if(!m_artifactsEditor.save())
+				return false;		
+		
+		if(m_groupsEditor.isVisible())
+			if(!m_groupsEditor.save())
+				return false;		
+		
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
 		{
@@ -645,44 +640,95 @@ public class CSpecEditor extends EditorPart
 		m_mainTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_mainTab.setText("Main");
 		m_mainTab.setControl(getMainTabControl(m_tabFolder));
+		m_mainTab.setData(CSpecEditorTab.MAIN);
 
 		m_actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_actionsTab.setText("Actions");
 		m_actionsTab.setControl(getActionsTabControl(m_tabFolder));
+		m_actionsTab.setData(CSpecEditorTab.ACTIONS);
 
 		m_artifactsTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_artifactsTab.setText("Artifacts");
 		m_artifactsTab.setControl(getArtifactsTabControl(m_tabFolder));
+		m_artifactsTab.setData(CSpecEditorTab.ARTIFACTS);
 
 		m_groupsTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_groupsTab.setText("Groups");
 		m_groupsTab.setControl(getGroupsTabControl(m_tabFolder));
+		m_groupsTab.setData(CSpecEditorTab.GROUPS);
 
 		m_attributesTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_attributesTab.setText("All Attributes");
 		m_attributesTab.setControl(getAttributesTabControl(m_tabFolder));
+		m_attributesTab.setData(CSpecEditorTab.ATTRIBUTES);
 
 		m_dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_dependenciesTab.setText("Dependencies");
 		m_dependenciesTab.setControl(getDependenciesTabControl(m_tabFolder));
+		m_dependenciesTab.setData(CSpecEditorTab.DEPENDENCIES);
 
 		m_generatorsTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_generatorsTab.setText("Generators");
 		m_generatorsTab.setControl(getGeneratorsTabControl(m_tabFolder));
+		m_generatorsTab.setData(CSpecEditorTab.GENERATORS);
 
 		m_documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_documentationTab.setText("Documentation");
 		m_documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
+		m_documentationTab.setData(CSpecEditorTab.DOCUMENTATION);
 
 		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_xmlTab.setText("XML Content");
 		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
+		m_xmlTab.setData(CSpecEditorTab.XML);
 
-		m_tabFolder.addSelectionListener(new SelectionAdapter(){
-
+		m_tabFolder.addSelectionListener(new SelectionAdapter()
+		{
+			private final IActivator ACTIONS_ACTIVATOR = new IActivator()
+			{
+				public void activate()
+				{
+					switchTab(CSpecEditorTab.ACTIONS);
+				}
+			};
+			
+			private final IActivator ARTIFACTS_ACTIVATOR = new IActivator()
+			{
+				public void activate()
+				{
+					switchTab(CSpecEditorTab.ARTIFACTS);
+				}
+			};
+			
+			private final IActivator GROUPS_ACTIVATOR = new IActivator()
+			{
+				public void activate()
+				{
+					switchTab(CSpecEditorTab.GROUPS);
+				}
+			};
+			
+			private CTabItem m_lastTab =  m_mainTab;
+			
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
+				// save row
+				if(m_lastTab != e.item)
+				{
+					if(m_lastTab == m_actionsTab)
+						if(!m_actionsEditor.save(ACTIONS_ACTIVATOR))
+							return;
+
+					if(m_lastTab == m_artifactsTab)
+						if(!m_artifactsEditor.save(ARTIFACTS_ACTIVATOR))
+							return;
+
+					if(m_lastTab == m_groupsTab)
+						if(!m_groupsEditor.save(GROUPS_ACTIVATOR))
+							return;
+				}
+				
 				if(m_mainTab == e.item)
 				{
 					m_componentName.setFocus();
@@ -709,11 +755,13 @@ public class CSpecEditor extends EditorPart
 					m_shortDesc.setFocus();
 				} else if(m_xmlTab == e.item)
 				{
-					if(!innerCommitChanges())
+					if(!commitChanges())
 						MessageDialog.openWarning(getSite().getShell(), null, "XML Content was not actualised due to errors");
 					else
 						m_xml.setText(getCSpecXML());
 				}
+				
+				m_lastTab = (CTabItem)e.item;
 			}});
 
 		createActionButtons(topComposite);
@@ -833,14 +881,16 @@ public class CSpecEditor extends EditorPart
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
 
 		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec);
-		table.addTableModifyListener(m_compoundModifyListener);
-		
+		table.addFieldModifyListener(m_compoundModifyListener);
+				
 		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(
 				tabComposite,
 				table,
 				false,
 				SWT.NONE);
-
+		
+		m_actionsTable = table;
+		
 		return tabComposite;
 	}
 
@@ -850,7 +900,7 @@ public class CSpecEditor extends EditorPart
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Artifacts");
 
 		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec);
-		table.addTableModifyListener(m_compoundModifyListener);
+		table.addFieldModifyListener(m_compoundModifyListener);
 		
 		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(
 				tabComposite,
@@ -867,7 +917,7 @@ public class CSpecEditor extends EditorPart
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Groups");
 
 		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec);
-		table.addTableModifyListener(m_compoundModifyListener);
+		table.addFieldModifyListener(m_compoundModifyListener);
 		
 		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(
 				tabComposite,
@@ -1078,6 +1128,11 @@ public class CSpecEditor extends EditorPart
 	void switchTab(CSpecEditorTab tab)
 	{
 		m_tabFolder.setSelection(tab.getSeqNum());
+	}
+	
+	ActionsTable getActionsTable()
+	{
+		return m_actionsTable;
 	}
 	
 	OnePageTableEditor<ActionBuilder> getActionsEditor()

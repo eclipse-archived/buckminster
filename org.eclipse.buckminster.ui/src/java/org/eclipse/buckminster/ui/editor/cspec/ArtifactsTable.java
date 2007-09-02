@@ -100,6 +100,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
+	@SuppressWarnings("unchecked")
 	private Control createGeneralStackLayer(Composite stackComposite)
 	{
 		Composite geComposite = new Composite(stackComposite, SWT.NONE);
@@ -120,10 +121,12 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		UiUtils.createGridLabel(geComposite, "Base Path:", 1, 0, SWT.NONE);
 
 		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_basePathText.addModifyListener(FIELD_LISTENER);
 		
 		UiUtils.createGridLabel(geComposite, "Type:", 1, 0, SWT.NONE);
 
 		m_typeText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_typeText.addModifyListener(FIELD_LISTENER);
 		
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
@@ -132,6 +135,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
 		PathsTable phTable = new PathsTable(m_paths);
+		phTable.addTableModifyListener(FIELD_LISTENER);
 		
 		m_pathsEditor = new SimpleTableEditor<PathWrapper>(
 				geComposite,

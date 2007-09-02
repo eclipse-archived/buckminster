@@ -35,6 +35,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AttributesTable<T extends AttributeBuilder> extends StructuredTable<T>
 {
+	private static final String ERROR_MESSAGE_EMPTY_NAME = "Name can not be empty";
+
 	private CSpecEditor m_editor;
 	private CSpecBuilder m_cspec;
 	
@@ -75,11 +77,13 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 	protected void setNameText(Text nameText)
 	{
 		m_nameText = nameText;
+		m_nameText.addModifyListener(FIELD_LISTENER);
 	}
 	
 	protected void setPublicCheck(Button publicCheck)
 	{
 		m_publicCheck = publicCheck;
+		m_publicCheck.addSelectionListener(FIELD_LISTENER);
 	}
 	
 	@Override
@@ -87,9 +91,9 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 	{
 		if(UiUtils.trimmedValue(m_nameText) == null)
 		{
-			throw new ValidatorException("Name can not be empty.");
+			throw new ValidatorException(ERROR_MESSAGE_EMPTY_NAME);
 		}
-		
+
 		builder.setName(UiUtils.trimmedValue(m_nameText));	
 		builder.setPublic(m_publicCheck.getSelection());
 		
@@ -124,6 +128,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 		m_documentationText.setEnabled(enabled);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Control createInstallerHintsStackLayer(Composite stackComposite)
 	{
 		Composite composite = new Composite(stackComposite, SWT.NONE);
@@ -134,6 +139,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 		EditorUtils.createHeaderLabel(composite, "Installer Hints", 1);
 		
 		PropertiesTable ihTable = new PropertiesTable(m_installerHints);
+		ihTable.addTableModifyListener(FIELD_LISTENER);
 		
 		m_installerHintsEditor = new SimpleTableEditor<Property>(
 				composite,
@@ -145,7 +151,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 				SWT.NONE);
 
 		m_installerHintsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+		
 		return composite;
 	}
 
@@ -160,6 +166,7 @@ public abstract class AttributesTable<T extends AttributeBuilder> extends Struct
 
 		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
 		m_documentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_documentationText.addModifyListener(FIELD_LISTENER);
 		
 		docComposite.setData("focusControl", m_documentationText);
 

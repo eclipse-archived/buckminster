@@ -144,6 +144,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	protected void newRow()
 	{
 		getTableViewer().getTable().deselectAll();
+		updateLastRow();
 		editRow();
 	}
 
@@ -154,9 +155,10 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void rowSelectionEvent()
+	protected boolean rowSelectionEvent()
 	{
 		enableDisableButtonGroup();
+		return true;
 	}
 
 	@Override
@@ -195,5 +197,15 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 				getMoveDownButton().setEnabled(false);
 			}
 		}
+	}
+	
+	public boolean show(T row)
+	{
+		if(!selectRow(row))
+			return false;
+			
+		editRow();
+		
+		return true;
 	}
 }

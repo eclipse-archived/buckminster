@@ -239,7 +239,8 @@ public class AllAttributesView extends Composite
 		} else if(builder instanceof ActionArtifactBuilder)
 		{
 			if(m_cspecEditor.getActionsEditor().show(m_aaMap.get(builder), "Products"))
-				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);				
+				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
+				m_cspecEditor.getActionsTable().showProductArtifact((ActionArtifactBuilder)builder);
 		}
 		else if(builder instanceof ArtifactBuilder)
 		{

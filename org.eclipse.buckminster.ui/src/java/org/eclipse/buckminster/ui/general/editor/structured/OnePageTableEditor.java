@@ -29,9 +29,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	private final boolean m_disableNew; // disables New button
 
 	private final boolean m_disableRemove; // disables Remove button
-
-	private boolean m_nodeEditMode = false;
-
+	
 	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
 		this(parent, table, swapButtonsFlag, false, false, style);
@@ -105,16 +103,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				newOrSaveRow();
-			}
-		}));
-
-		setEditButton(UiUtils.createPushButton(buttonBox1, "Edit", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				editOrCancelRow();
+				newRow();
 			}
 		}));
 
@@ -159,82 +148,69 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	@Override
 	protected void newRow()
 	{
-		newOrSaveRow();
-	}
+		if(getSelectionIndex() >= 0)
+			if(!save())
+				return;
 
-	private void newOrSaveRow()
-	{
-		if(m_nodeEditMode)
-		{
-			save();
-		}
-		else
-		{
-			getTableViewer().getTable().deselectAll();
-			refreshRow();
-			edit();
-		}
+		T row = getTable().addEmptyRow();
+		refreshTable();
+		selectRow(row);
+		updateLastRow();
+		enableDisableButtonGroup();
+		refreshRow();
+		focusStackComposite();
 	}
 
 	@Override
 	protected void editRow()
 	{
-		editOrCancelRow();
-	}
-
-	private void editOrCancelRow()
-	{
-		if(m_nodeEditMode)
-		{
-			cancelRow();
-		}
-		else
-		{
-			edit();
-		}
-	}
-
-	private void edit()
-	{
-		refreshRow();
-		m_nodeEditMode = true;
-		enableDisableButtonGroup();
-		focusStackComposite();
+		// automatic
 	}
 
 	public void cancelRow()
 	{
-		m_nodeEditMode = false;
 		enableDisableButtonGroup();
 		refreshRow();
 	}
 
-	public boolean isInEditMode()
+	public boolean save()
 	{
-		return m_nodeEditMode;
+		return save(null);
 	}
-
-	private void save()
+	
+	public boolean save(IActivator activator)
 	{
-		try
+		if(getTableViewer().getTable().getSelectionIndex() >= 0)
 		{
-			saveRow();
-		}
-		catch(ValidatorException e)
-		{
-			MessageDialog.openError(getShell(), "Error", e.getMessage());
-			return;
-		}
+			try
+			{
+				saveRow();
+			}
+			catch(ValidatorException e)
+			{
+				if(activator != null)
+					activator.activate();
+				MessageDialog.openError(getShell(), "Error", e.getMessage());
+				getTableViewer().getTable().select(getLastSelectedRow());
+				return false;
+			}
 
-		m_nodeEditMode = false;
-		enableDisableButtonGroup();
+			enableDisableButtonGroup();
+		}
+		
+		return true;
 	}
 
 	@Override
-	protected void rowSelectionEvent()
+	protected boolean rowSelectionEvent()
 	{
+		if(!save())
+			return false;
+				
 		enableDisableButtonGroup();
 		refreshRow();
+		
+		return true;
 	}
 
 	@Override
@@ -250,55 +226,32 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	{
 		if(isEnabled())
 		{
-			if(m_nodeEditMode)
+			Table table = getTableViewer().getTable();
+			int top = table.getItemCount();
+			int idx = table.getSelectionIndex();
+			getNewButton().setEnabled(!m_disableNew);
+			getRemoveButton().setEnabled(!m_disableRemove && (idx >= 0));
+			if(isSwapButtonAllowed())
 			{
-				// A node is being edited
-				//
-				getNewButton().setText("Save");
-				getNewButton().setEnabled(true);
-				getEditButton().setText("Cancel");
-				getEditButton().setEnabled(true);
-				getRemoveButton().setEnabled(false);
-	
-				if(isSwapButtonAllowed())
-				{
-					getMoveUpButton().setEnabled(false);
-					getMoveDownButton().setEnabled(false);
-				}
+				getMoveUpButton().setEnabled(idx > 0);
+				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
 			}
-			else
-			{
-				Table table = getTableViewer().getTable();
-				int top = table.getItemCount();
-				int idx = table.getSelectionIndex();
-				getNewButton().setText("New");
-				getNewButton().setEnabled(!m_disableNew);
-				getEditButton().setText("Edit");
-				getEditButton().setEnabled(idx >= 0);
-				getRemoveButton().setEnabled(!m_disableRemove && idx >= 0);
-				if(isSwapButtonAllowed())
-				{
-					getMoveUpButton().setEnabled(idx > 0);
-					getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
-				}
-			}
-			getTableViewer().getTable().setEnabled(!m_nodeEditMode);
-			enableFields(m_nodeEditMode);
+			enableFields(idx >= 0);
 		} else
 		{
 			getNewButton().setEnabled(false);
-			getEditButton().setEnabled(false);
 			getRemoveButton().setEnabled(false);			
 			if(isSwapButtonAllowed())
 			{
 				getMoveUpButton().setEnabled(false);
 				getMoveDownButton().setEnabled(false);
 			}
-			enableFields(false);
+			enableFields(isEnabled());
 		}
+		
+		getTableViewer().getTable().setEnabled(isEnabled());
 	}
 	
-	@SuppressWarnings("unchecked")
 	public boolean show(T row, String tab)
 	{
 		int stackIdx = getTable().getStackKeys().indexOf(tab);
@@ -309,6 +262,8 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 		if(!selectRow(row))
 			return false;
 				
+		refreshRow();
+
 		setStackOption(stackIdx);
 		
 		return true;

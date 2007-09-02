@@ -107,4 +107,10 @@ public interface IStructuredTable<T> extends ITable<T>
 	 * @param enabled true=enables controls
 	 */
 	public void enableFields(boolean enabled);
+	
+	/**
+	 * Adds an empty record to the table
+	 * @return
+	 */
+	public T addEmptyRow();
 }

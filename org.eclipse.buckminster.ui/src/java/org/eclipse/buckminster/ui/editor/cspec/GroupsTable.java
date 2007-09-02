@@ -87,6 +87,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
 	}
 
+	@SuppressWarnings("unchecked")
 	private Control createGeneralStackLayer(Composite stackComposite)
 	{
 		Composite geComposite = new Composite(stackComposite, SWT.NONE);
@@ -107,6 +108,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		UiUtils.createGridLabel(geComposite, "Rebase Path:", 1, 0, SWT.NONE);
 
 		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_rebasePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
@@ -119,7 +121,8 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
 		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow());
-		 
+		preTable.addTableModifyListener(FIELD_LISTENER);
+		
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
 				geComposite,
 				preTable,
