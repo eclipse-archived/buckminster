@@ -204,7 +204,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		if(!selectRow(row))
 			return false;
 			
-		editRow();
+		//editRow();
 		
 		return true;
 	}

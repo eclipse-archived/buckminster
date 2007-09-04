@@ -81,16 +81,32 @@ public class AllAttributesView extends Composite
 				case 0:
 					return ((AttributeBuilder)element).getName();
 				case 1:
+					return getAttributeType((AttributeBuilder)element);
+				case 2:
 					return Boolean.valueOf(((AttributeBuilder)element).isPublic()).toString();
 				default:
 					return "";
 			}
 		}
+
+		private String getAttributeType(AttributeBuilder builder)
+		{
+			if (builder instanceof ActionBuilder)
+				return "Action";
+			else if(builder instanceof ActionArtifactBuilder)
+				return "Product Artifact";
+			else if(builder instanceof ArtifactBuilder)
+				return "Artifact";
+			else if(builder instanceof GroupBuilder)
+				return "Group";
+			
+			return "";
+		}
 	}
 
-	private static final String[] TABLE_TITLES = {"Name", "Public"};
+	private static final String[] TABLE_TITLES = {"Name", "Type", "Public"};
 	
-	private static final int[] TABLE_WEIGHTS = {80, 20};
+	private static final int[] TABLE_WEIGHTS = {60, 20, 20};
 
 	private CSpecEditor m_cspecEditor;
 	
@@ -148,7 +164,7 @@ public class AllAttributesView extends Composite
 		DynamicTableLayout layout = new DynamicTableLayout(50);
 
 		int tableIdx = 0;
-		for(int idx = 0; idx < 2; idx++)
+		for(int idx = 0; idx < 3; idx++)
 		{
 			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, tableIdx);
 			tableColumn.setText(TABLE_TITLES[idx]);
@@ -239,8 +255,10 @@ public class AllAttributesView extends Composite
 		} else if(builder instanceof ActionArtifactBuilder)
 		{
 			if(m_cspecEditor.getActionsEditor().show(m_aaMap.get(builder), "Products"))
+			{	
 				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
 				m_cspecEditor.getActionsTable().showProductArtifact((ActionArtifactBuilder)builder);
+			}
 		}
 		else if(builder instanceof ArtifactBuilder)
 		{

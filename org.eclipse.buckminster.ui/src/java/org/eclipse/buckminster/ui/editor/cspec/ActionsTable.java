@@ -137,7 +137,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		
 		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+		gridData.horizontalSpan = 2;
+		label.setLayoutData(gridData);
 
 		// Uses an empty GroupBuilder (createNewRow())
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
@@ -155,8 +157,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				null,
 				SWT.NONE);
 		
-		GridData layoutData = new GridData(GridData.FILL_BOTH);
-		m_prerequisitesEditor.setLayoutData(layoutData);
+		gridData = new GridData(GridData.FILL_BOTH);
+		gridData.horizontalSpan = 2;
+		m_prerequisitesEditor.setLayoutData(gridData);
 
 		geComposite.setData("focusControl", getNameText());
 
@@ -186,7 +189,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		
 		m_pathsButton = new Button(composite, SWT.RADIO);
 		m_pathsButton.setText("Product Paths:");
-		m_pathsButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+		gridData.horizontalSpan = 2;
+		m_pathsButton.setLayoutData(gridData);
 		m_pathsButton.addSelectionListener(new SelectionAdapter()
 		{
 
@@ -208,14 +213,19 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				null,
 				null,
 				SWT.NONE);
-		m_productPathsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		gridData = new GridData(GridData.FILL_BOTH);
+		gridData.horizontalSpan = 2;
+		m_productPathsEditor.setLayoutData(gridData);
 		
 		UiUtils.createEmptyLabel(composite);
 		UiUtils.createEmptyLabel(composite);
 		
 		m_artifactsButton = new Button(composite, SWT.RADIO);
 		m_artifactsButton.setText("Product Artifacts:");
-		m_artifactsButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+		gridData.horizontalSpan = 2;
+		m_artifactsButton.setLayoutData(gridData);
 		m_artifactsButton.addSelectionListener(new SelectionAdapter()
 		{
 
@@ -245,7 +255,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				null,
 				null,
 				SWT.NONE);
-		m_productArtifactsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+		gridData = new GridData(GridData.FILL_BOTH);
+		gridData.horizontalSpan = 2;
+		m_productArtifactsEditor.setLayoutData(gridData);
 
 		composite.setData("focusControl", m_prodAliasText);
 
@@ -517,6 +529,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		}
 		
 		if(foundBuilder != null)
+		{
+			m_productArtifactsEditor.setFocus();
 			m_productArtifactsEditor.show(foundBuilder);
+		}
 	}
 }

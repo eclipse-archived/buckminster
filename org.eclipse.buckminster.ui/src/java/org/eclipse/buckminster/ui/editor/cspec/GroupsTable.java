@@ -114,7 +114,9 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		
 		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+		gridData.horizontalSpan = 2;
+		label.setLayoutData(gridData);
 
 		// Uses an empty GroupBuilder (createNewRow())
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
@@ -132,7 +134,9 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				null,
 				SWT.NONE);
 
-		m_prerequisitesEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+		gridData = new GridData(GridData.FILL_BOTH);
+		gridData.horizontalSpan = 2;
+		m_prerequisitesEditor.setLayoutData(gridData);
 
 		geComposite.setData("focusControl", getNameText());
 		

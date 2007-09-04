@@ -132,7 +132,9 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		
 		Label label = UiUtils.createGridLabel(geComposite, "Paths:", 1, 0, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+		gridData.horizontalSpan = 2;
+		label.setLayoutData(gridData);
 
 		PathsTable phTable = new PathsTable(m_paths);
 		phTable.addTableModifyListener(FIELD_LISTENER);
@@ -146,7 +148,9 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 				null,
 				SWT.NONE);
 		
-		m_pathsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
+		gridData = new GridData(GridData.FILL_BOTH);
+		gridData.horizontalSpan = 2;
+		m_pathsEditor.setLayoutData(gridData);
 
 		geComposite.setData("focusControl", getNameText());
 
