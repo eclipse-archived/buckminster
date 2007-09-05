@@ -122,7 +122,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow());
+		GroupPrerequisitesTable preTable = new GroupPrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow());
 		preTable.addTableModifyListener(FIELD_LISTENER);
 		
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
@@ -153,7 +153,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				? null
 				: rebasePath.toOSString()));
 
-		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getCSpecElementComparator());
+		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getPrerequisiteComparator());
 		m_prerequisitesEditor.refresh();
 	}
 

@@ -463,7 +463,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				? null
 				: rebasePath.toOSString()));
 
-		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getCSpecElementComparator());
+		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getPrerequisiteComparator());
 		m_prerequisitesEditor.refresh();
 	}
 
