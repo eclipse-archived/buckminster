@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
+import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.core.runtime.IPath;
 
@@ -66,6 +67,40 @@ public class CSpecEditorUtils
 		}
 	}
 	
+	static class PrerequisiteComparator implements Comparator<PrerequisiteBuilder>
+	{
+		public int compare(PrerequisiteBuilder o1, PrerequisiteBuilder o2)
+		{
+			int result = localStringCompare(o1.getComponent(), o2.getComponent());
+			
+			if(result != 0)
+				return result;
+			
+			result = localStringCompare(o1.getName(), o2.getName());
+
+			if(result != 0)
+				return result;
+			
+			result = localStringCompare(o1.getAlias(), o2.getAlias());
+
+			return result;
+		}
+
+		private int localStringCompare(String o1, String o2)
+		{
+			if(o1 == null && o2 == null)
+				return 0;
+
+			if(o1 == null && o2 != null)
+				return -1;
+			
+			if(o1 != null && o2 == null)
+				return 1;
+			
+			return o1.compareTo(o2);
+		}
+	}
+	
 	static class PropertyComparator implements Comparator<Property>
 	{
 		public int compare(Property o1, Property o2)
@@ -76,6 +111,7 @@ public class CSpecEditorUtils
 
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = new CSpecElementComparator();
 	private static Comparator<AttributeBuilder> s_attributeComparator = new AttributeComparator();
+	private static Comparator<PrerequisiteBuilder> s_prerequisiteComparator = new PrerequisiteComparator();
 	private static Comparator<Property> s_propertyComparator = new PropertyComparator();
 
 	private CSpecEditorUtils()
@@ -90,6 +126,11 @@ public class CSpecEditorUtils
 	public static Comparator<AttributeBuilder> getAttributeComparator()
 	{
 		return s_attributeComparator;
+	}
+
+	public static Comparator<PrerequisiteBuilder> getPrerequisiteComparator()
+	{
+		return s_prerequisiteComparator;
 	}
 
 	public static Comparator<Property> getPropertyComparator()
