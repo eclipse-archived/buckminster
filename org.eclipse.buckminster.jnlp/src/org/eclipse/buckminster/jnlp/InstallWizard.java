@@ -16,12 +16,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
@@ -32,6 +35,7 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -476,41 +480,50 @@ public class InstallWizard extends Wizard
 		getBOM();
 	}
 	
-	private void initMSPEC() throws JNLPException
+	private void initMSPEC()
 	{
 		if(m_mspecURL == null)
 			return;
 		
 		try
 		{
-// TODO http idea
-/*			
-			HttpClient client = new HttpClient();
+			HttpClient client;
+			
+			if(m_authenticator != null)
+				client = m_authenticator.getHttpClient();
+			else
+				client = new HttpClient();
+			
 			HttpMethod method = null;
+			InputStream stream = null;
+			
 			try
 			{
 				method = new GetMethod(m_mspecURL.toURI().toString());
+
+				int status = client.executeMethod(method);
+				MaterializationUtils.checkConnection(status, m_mspecURL.toString());
+
+				stream = method.getResponseBodyAsStream();
+
+				IParser<MaterializationSpec> parser = CorePlugin.getDefault().getParserFactory()
+						.getMaterializationSpecParser(true);
+
+				m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
 			}
 			catch(URISyntaxException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new JNLPException("Cannot read materialization specification",
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
-			int status = client.executeMethod(method);
-
-			InputStream stream = method.getResponseBodyAsStream();
-			URLConnection connection = m_mspecURL.openConnection();
-			InputStream stream = connection.getInputStream();
+			finally
+			{
+				IOUtils.close(stream);
+				
+				if(method != null)
+					method.releaseConnection();
+			}
 			
-*/
-			URLConnection connection = m_mspecURL.openConnection();
-			MaterializationUtils.checkConnection(connection, m_mspecURL.toString());
-			InputStream stream = connection.getInputStream();
-			
-			IParser<MaterializationSpec> parser =
-				CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
-			
-			m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
 			m_originalNodeBuilders.addAll(m_builder.getNodes());
 
 			Display.getDefault().asyncExec(new Runnable(){
@@ -549,17 +562,45 @@ public class InstallWizard extends Wizard
 		{
 			try
 			{
+				HttpClient client;
+				
+				if(m_authenticator != null)
+					client = m_authenticator.getHttpClient();
+				else
+					client = new HttpClient();
+				
 				URL bomURL = getMaterializationSpecBuilder().getURL();
 
-				URLConnection connection = bomURL.openConnection();
-				MaterializationUtils.checkConnection(connection, bomURL.toString());
-				InputStream stream = connection.getInputStream();
+				HttpMethod method = null;
+				InputStream stream = null;
+				ExportedBillOfMaterials exported = null;
+				
+				try
+				{
+					method = new GetMethod(bomURL.toURI().toString());
 
-				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(
-						true);
+					int status = client.executeMethod(method);
+					MaterializationUtils.checkConnection(status, bomURL.toString());
 
-				ExportedBillOfMaterials exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
-				stream.close();
+					stream = method.getResponseBodyAsStream();
+
+					IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory()
+							.getBillOfMaterialsParser(true);
+
+					exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
+				}
+				catch(URISyntaxException e)
+				{
+					throw new JNLPException("Cannot read materialization specification",
+							ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+				}
+				finally
+				{
+					IOUtils.close(stream);
+					
+					if(method != null)
+						method.releaseConnection();
+				}
 
 				m_cachedBOM = BillOfMaterials.importGraph(exported);
 			}
@@ -795,14 +836,12 @@ public class InstallWizard extends Wizard
 		}
 		
 		m_loginRequired = false;
-		// TODO uncomment to enable login
-/*		
 		tmp = properties.get(PROP_LOGIN_REQUIRED);
 		if("true".equalsIgnoreCase(tmp))
 		{
 			m_loginRequired = true;
 		}
-*/		
+
 		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
 		
 		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
