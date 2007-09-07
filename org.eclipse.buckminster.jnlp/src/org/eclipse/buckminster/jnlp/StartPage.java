@@ -87,19 +87,29 @@ public class StartPage extends InstallWizardPage
 			data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 			data.horizontalSpan = 2; infoGroup.setLayoutData(data);
 
-			Link link = new Link(infoGroup, SWT.WRAP);
-			link.setText("Note that, on request of the publisher of this material, you will be asked to log in to <a>" + getInstallWizard().getAuthenticator().getProvider() + "</a>");
-			link.addSelectionListener(new SelectionAdapter(){
-				@Override
-				public void widgetSelected(SelectionEvent e)
+			final String message = "Note that, on request of the publisher of this material, you will be asked to log in to ";
+			final String providerURL = getInstallWizard().getAuthenticator().getProviderURL();
+			
+			if(providerURL == null)
+			{
+				new Label(infoGroup, SWT.WRAP).setText(message + getInstallWizard().getAuthenticator().getProvider());
+			}
+			else
+			{
+				Link link = new Link(infoGroup, SWT.WRAP);
+				link.setText(message + "<a>" + getInstallWizard().getAuthenticator().getProvider() + "</a>");
+				link.addSelectionListener(new SelectionAdapter()
 				{
-					String providerURL = getInstallWizard().getAuthenticator().getProviderURL();
-					
-					if(providerURL != null)
+					@Override
+					public void widgetSelected(SelectionEvent e)
 					{
-						Program.launch(providerURL);
+						if(providerURL != null)
+						{
+							Program.launch(providerURL);
+						}
 					}
-				}});
+				});
+			}
 		}
 		
 		setControl(pageComposite);
