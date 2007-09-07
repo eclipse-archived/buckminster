@@ -12,6 +12,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
@@ -83,9 +84,12 @@ public class StartPage extends InstallWizardPage
 	
 			Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
 			infoGroup.setText("Info");
-			infoGroup.setLayout(new GridLayout());
-			data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-			data.horizontalSpan = 2; infoGroup.setLayoutData(data);
+			FillLayout fillLayout = new FillLayout();
+			fillLayout.marginHeight = fillLayout.marginWidth = 5;
+			infoGroup.setLayout(fillLayout);
+			data = new GridData(GridData.FILL_HORIZONTAL);
+			data.horizontalSpan = 2;
+			infoGroup.setLayoutData(data);
 
 			final String message = "Note that, on request of the publisher of this material, you will be asked to log in to ";
 			final String providerURL = getInstallWizard().getAuthenticator().getProviderURL();
