@@ -204,10 +204,6 @@ public class InstallWizard extends Wizard
 			addPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : m_authenticator.getProvider()));
 			addPage(new SimpleDownloadPage());
 			addPage(new SimpleAdvancedPage());
-			// TODO connection between wizard and server is not implemented yet
-			//addPage(new RememberSettingsPage());
-			// TODO replace with real spaces
-			//addPage(new SpacePage(new String[] {"Space 1", "Space 2", "Space 3"}));
 			addPage(new OperationPage());
 			addPage(new DonePage());
 		}
