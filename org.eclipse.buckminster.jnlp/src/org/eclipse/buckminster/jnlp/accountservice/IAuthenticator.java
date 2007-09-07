@@ -8,9 +8,12 @@
 
 package org.eclipse.buckminster.jnlp.accountservice;
 
+import org.apache.commons.httpclient.HttpClient;
+
 /**
- * @author kaja
+ * Enables authentication of an user
  * 
+ * @author kaja
  */
 public interface IAuthenticator
 {
@@ -25,6 +28,13 @@ public interface IAuthenticator
 	public static final int REGISTER_FAIL = -99;
 
 	public void initialize(String serviceURL) throws Exception;
+	
+	/**
+	 * Gets HttpClient which was used for authentication. It should be used for getting password protected content after authentication.
+	 * 
+	 * @return
+	 */
+	public HttpClient getHttpClient();
 	
 	public int login(String userName, String password) throws Exception;
 
@@ -43,6 +53,7 @@ public interface IAuthenticator
 	
 	/**
 	 * Gets provider URL
+	 * 
 	 * @return provider URL
 	 */
 	public String getProviderURL();
