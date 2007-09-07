@@ -11,8 +11,9 @@ package org.eclipse.buckminster.jnlp.accountservice;
 import java.util.List;
 
 /**
+ * Enables publishing of an artifact to a space
+ * 
  * @author Karel Brezina
- *
  */
 public interface IPublisher extends IAuthenticator
 {
