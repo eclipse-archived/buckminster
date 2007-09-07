@@ -11,9 +11,8 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
 /**
@@ -30,45 +29,37 @@ public class MaterializationUtils
 	 * @throws JNLPException
 	 * @throws IOException
 	 */
-	public static void checkConnection(URLConnection connection, String originalURL) throws JNLPException, IOException
+	public static void checkConnection(int status, String originalURL) throws JNLPException, IOException
 	{
-		if(connection instanceof HttpURLConnection)
+		if(status != HttpStatus.SC_OK)
 		{
-			HttpURLConnection httpConnection = (HttpURLConnection)connection;
-			
-			int responseCode = httpConnection.getResponseCode();
-			
-			if(responseCode != HttpURLConnection.HTTP_OK)
+			String errorCode;
+
+			switch(status)
 			{
-				String errorCode;
-				
-				switch(responseCode)
-				{
-				case HttpURLConnection.HTTP_FORBIDDEN:
-					
-					errorCode = ERROR_CODE_403_EXCEPTION;
-					break;
+			case HttpStatus.SC_FORBIDDEN:
 
-				case HttpURLConnection.HTTP_NOT_FOUND:
-					
-					errorCode = ERROR_CODE_404_EXCEPTION;
-					break;
+				errorCode = ERROR_CODE_403_EXCEPTION;
+				break;
 
-				case HttpURLConnection.	HTTP_INTERNAL_ERROR:
-					
-					errorCode = ERROR_CODE_500_EXCEPTION;
-					break;
+			case HttpStatus.SC_NOT_FOUND:
 
-				default:
-					errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
-					break;
-				}
-				
-				throw new JNLPException("Cannot read materialization specification",
-						errorCode,
-						new BuckminsterException(originalURL + " - " + httpConnection.getResponseMessage()));
+				errorCode = ERROR_CODE_404_EXCEPTION;
+				break;
 
+			case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+
+				errorCode = ERROR_CODE_500_EXCEPTION;
+				break;
+
+			default:
+				errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
+				break;
 			}
+
+			throw new JNLPException("Cannot read materialization specification", errorCode, new BuckminsterException(
+					originalURL + " - " + HttpStatus.getStatusText(status)));
+
 		}
 	}
 }
