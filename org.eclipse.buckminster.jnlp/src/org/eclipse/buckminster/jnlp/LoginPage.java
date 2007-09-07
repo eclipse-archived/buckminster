@@ -222,11 +222,6 @@ public class LoginPage extends InstallWizardPage
 					throw new JNLPException("Authenticator is not available", null);
 				}
 
-				if(authenticator.isLoggedIn())
-				{
-					authenticator.logout();
-				}
-
 				String userName = m_login1Text.getText();
 				String password = m_password1Text.getText();
 
@@ -266,24 +261,6 @@ public class LoginPage extends InstallWizardPage
 					throw new JNLPException("Cannot login - check username and password and try again", null);
 				}
 
-				// TODO remove - publish test
-/*				
-				System.out.println("LOGGED IN: " + getInstallWizard().getAuthenticator().isLoggedIn());
-
-				if(authenticator.isLoggedIn())
-				{
-					MaterializationSpecBuilder builder = getMaterializationSpecBuilder();
-					builder.setName("bertilsXalan");
-					MaterializationSpec mspec = builder.createMaterializationSpec();
-
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					Utils.serialize(mspec, out);
-					String xmlData = out.toString();
-					((IPublisher)authenticator).publish("private.bertil", "bertilsXalan", xmlData, true);
-				}
-*/				
-				// end of remove
-
 				if(!authenticator.isLoggedIn())
 				{
 					throw new JNLPException("Problem with the remote server - try to login later", null);
@@ -291,7 +268,6 @@ public class LoginPage extends InstallWizardPage
 			}
 			catch(Throwable e)
 			{
-				e.printStackTrace();
 				setErrorMessage(e.getMessage());
 				return false;
 			}
