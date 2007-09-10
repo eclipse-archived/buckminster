@@ -7,44 +7,13 @@
 * such license is available at www.eclipse.org.
 ****************************************************************-->
 
-<project name="org.eclipse.buckminster" default="build.product" basedir="..">
-	<!-- Extract the version of a feature from the feature element found in a
-	     feature.xml file.
-	     Parameters:
-	         file: The full path to the feature.xml file
-	         property: The property that will receive the version string
-	  -->
-	<macrodef name="extractFeatureVersion">
-		<attribute name="file"/>
-		<attribute name="property"/>
-		<sequential>
-			<loadfile property="@{property}" srcfile="@{file}">
-				<filterchain>
-					<striplinebreaks/>
-					<replaceregex
-						pattern="^.*&lt;feature[^&gt;]*version=&quot;([^&quot;]*)&quot;.*$"
-						replace="\1"/>
-				</filterchain>
-			</loadfile>
-		</sequential>
-	</macrodef>
-
+<project name="org.eclipse.buckminster" basedir="..">
 	<property name="sp:site.output" location="${buckminster.output}/site"/>
 	<property name="sp:product.output" location="${buckminster.output}/product"/>
 
 	<target name="clean">
 		<delete dir="${sp:product.output}" failonerror="false" quiet="false"/>
 		<delete dir="${sp:site.output}" failonerror="false" quiet="false"/>
-	</target>
-
-	<target name="build.product">
-		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>
-		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}_incubation.zip"/>
-
-		<mkdir dir="${sp:product.output}"/>
-		<buckminster.zip destfile="${zipped.product}">
-			<buckminster.filesetgroup value="${fs:product}"/>
-		</buckminster.zip>
 	</target>
 
 	<target name="wrap.jnlp">

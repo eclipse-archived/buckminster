@@ -1,0 +1,4 @@
+install ${bm.update.site} org.eclipse.buckminster.core.headless.feature
+install ${bm.update.site} org.eclipse.buckminster.maven.feature
+install ${bm.update.site} org.eclipse.buckminster.cvs.headless.feature
+install ${bm.update.site} org.eclipse.buckminster.pde.headless.feature

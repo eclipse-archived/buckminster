@@ -26,6 +26,31 @@ public abstract class URLUtils
 {
 	private static ICertificateTrustInquiry s_trustInquiry = new DefaultCertificateTrustInquiry();
 
+	/**
+	 * Appends a trailing slash to <code>url</code> and returns the result. If the <code>url</code>
+	 * already has a trailing slash, the argument is returned without
+	 * modification.
+	 * @param url The <code>url</code> that should receive the trailing slash. Cannot be <code>null</code>.
+	 * @return A <code>url</code> that has a trailing slash
+	 */
+	public static URL appendTrailingSlash(URL url)
+	{
+		if(!url.getPath().endsWith("/"))
+		{
+			try
+			{
+				url = new URL(url.toString() + '/');
+			}
+			catch(MalformedURLException e)
+			{
+				// Not very likely since original was a URL.
+				//
+				throw new RuntimeException(e);
+			}
+		}
+		return url;
+	}
+
 	public static ICertificateTrustInquiry getTrustInquiry()
 	{
 		return s_trustInquiry;

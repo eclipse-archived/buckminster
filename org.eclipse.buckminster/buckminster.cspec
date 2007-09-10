@@ -33,8 +33,7 @@
 
 		<public name="build.product" actor="ant">
 			<actorProperties>
-				<property key="buildFile" value="make/build.xml" />
-				<property key="targets" value="build.product" />
+				<property key="buildFile" value="make/headless.ant" />
 			</actorProperties>
 			<properties>
 				<property key="product.name" value="buckminster.product" />
@@ -44,6 +43,36 @@
 				<attribute component="org.eclipse.buckminster.product" name="manifest" alias="product.feature.xml"/>
 			</prerequisites>
             <products base="${buckminster.output}/product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
+		</public>
+
+		<public name="build.core.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/headless.ant" />
+			</actorProperties>
+			<properties>
+				<property key="product.name" value="buckminster.core.product" />
+			</properties>
+			<prerequisites>
+				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
+				<attribute component="org.eclipse.buckminster.product" name="manifest" alias="product.feature.xml"/>
+				<attribute name="sign.site" alias="site"/>
+			</prerequisites>
+            <products base="${buckminster.output}/core.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
+		</public>
+
+		<public name="build.dev.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/headless.ant" />
+			</actorProperties>
+			<properties>
+				<property key="product.name" value="buckminster.dev.product" />
+			</properties>
+			<prerequisites>
+				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
+				<attribute component="org.eclipse.buckminster.product" name="manifest" alias="product.feature.xml"/>
+				<attribute name="sign.site" alias="site"/>
+			</prerequisites>
+            <products base="${buckminster.output}/dev.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
 		</public>
 
 		<private name="normalize.product" actor="ant">

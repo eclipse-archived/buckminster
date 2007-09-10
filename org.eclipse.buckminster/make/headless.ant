@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!--************************************************************************
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ ************************************************************************-->
+
+<project name="project">
+
+	<!-- Extract the version of a feature from the feature element found in a
+	     feature.xml file.
+	     Parameters:
+	         file: The full path to the feature.xml file
+	         property: The property that will receive the version string
+	  -->
+	<macrodef name="extractFeatureVersion">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<striplinebreaks/>
+					<replaceregex
+						pattern="^.*&lt;feature[^&gt;]*version=&quot;([^&quot;]*)&quot;.*$"
+						replace="\1"/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="buckminster">
+		<attribute name="command" default="--scriptfile" />
+		<element name="globargs" optional="true" />
+		<element name="args" optional="true" />
+		<sequential>
+			<java fork="true" jar="${headless.install}/buckminster/startup.jar" dir="${headless.install}" failonerror="true">
+				<!-- <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/> -->
+				<arg value="--displaystacktrace"/>
+				<arg value="--loglevel"/>
+				<arg value="debug"/>
+				<globargs />
+				<arg value="@{command}" />
+				<args />
+			</java>
+		</sequential>
+	</macrodef>
+
+	<property name="headless.install" location="/temp/flum/headless"/>
+	<property name="site" location="/temp/flum/site"/>
+
+	<target name="build.product">
+		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>
+		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}_incubation.zip"/>
+
+		<mkdir dir="${sp:product.output}"/>
+		<buckminster.zip destfile="${zipped.product}">
+			<buckminster.filesetgroup value="${fs:product}"/>
+		</buckminster.zip>
+	</target>
+
+	<target name="headless.install">
+		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>
+		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}_incubation.zip"/>
+
+		<mkdir dir="${headless.install}"/>
+		<mkdir dir="${site}"/>
+
+		<buckminster.copy todir="${headless.install}">
+			<buckminster.filesetgroup value="${fs:product}"/>
+		</buckminster.copy>
+
+		<buckminster.valuefileset value="${fs:site}" id="requirement.fileset"/>
+		<pathconvert property="zipped.site">
+			<path>
+				<fileset refid="requirement.fileset"/>
+			</path>
+		</pathconvert>
+		<unzip src="${zipped.site}" dest="${site}"/>
+	</target>
+
+	<target name="build.core.product" depends="headless.install">
+		<buckminster command="install">
+			<args>
+				<arg value="${site}/headless-site.xml" />
+				<arg value="org.eclipse.buckminster.core.headless.feature" />
+			</args>
+		</buckminster>
+
+		<mkdir dir="${sp:product.output}"/>
+		<zip destfile="${zipped.product}">
+			<fileset dir="${headless.install}"/>
+		</zip>
+	</target>
+
+	<target name="build.dev.product" depends="headless.install">
+		<property name="script" location="make/dev-config.bmscript"/>
+		<buckminster>
+			<globargs>
+				<jvmarg value="-Dbm.update.site=${site}/headless-site.xml"/>
+			</globargs>
+			<args>
+				<arg value="${script}"/>	
+			</args>
+		</buckminster>
+
+		<mkdir dir="${sp:product.output}"/>
+		<zip destfile="${zipped.product}">
+			<fileset dir="${headless.install}"/>
+		</zip>
+	</target>
+</project>
