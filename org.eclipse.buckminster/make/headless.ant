@@ -47,8 +47,8 @@
 		</sequential>
 	</macrodef>
 
-	<property name="headless.install" location="/temp/flum/headless"/>
-	<property name="site" location="/temp/flum/site"/>
+	<property name="headless.install" location="${buckminster.temp}/headless"/>
+	<property name="site" location="${buckminster.temp}/site"/>
 
 	<target name="build.product">
 		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>

@@ -3,6 +3,7 @@
 	<dependencies>
  		<dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
 		<dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
+		<dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature"/>
 		<dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
 		<dependency name="org.eclipse.buckminster.jnlp.bootstrap" componentType="buckminster"/>
 		<dependency name="commons-net"/>
@@ -54,7 +55,7 @@
 			</properties>
 			<prerequisites>
 				<attribute component="org.eclipse.buckminster.product" name="create.buckminster.product" alias="product"/>
-				<attribute component="org.eclipse.buckminster.product" name="manifest" alias="product.feature.xml"/>
+				<attribute component="org.eclipse.buckminster.core.headless.feature" name="manifest" alias="product.feature.xml"/>
 				<attribute name="sign.site" alias="site"/>
 			</prerequisites>
             <products base="${buckminster.output}/core.product" alias="product.output" upToDatePolicy="COUNT" fileCount="1"/>
