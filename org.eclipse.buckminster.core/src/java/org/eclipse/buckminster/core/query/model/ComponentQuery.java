@@ -455,7 +455,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 			m_documentation.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, m_documentation.getDefaultTag());
 
 		m_rootRequest.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, ELEM_ROOT_REQUEST);
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+		SAXEmitter.emitProperties(handler, m_properties, BM_CQUERY_NS, BM_CQUERY_PREFIX, true, false);
 
 		for(AdvisorNode node : m_advisorNodes)
 			node.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, node.getDefaultTag());
