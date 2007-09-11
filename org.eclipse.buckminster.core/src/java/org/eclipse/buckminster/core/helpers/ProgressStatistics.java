@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 public class ProgressStatistics
 {
@@ -102,10 +103,10 @@ public class ProgressStatistics
 		long amount = 0L;
 		SortedMap<Long, Long> relevantData = m_recentSpeedMap.headMap(Long.valueOf(m_recentSpeedMapKey));
 
-		for(Long key : relevantData.keySet())
+		for(Entry<Long, Long> entry : relevantData.entrySet())
 		{
 			dur += m_recentSpeedResolution;
-			amount += relevantData.get(key).longValue();
+			amount += entry.getValue().longValue();
 		}
 
 		if(dur >= 1000)
