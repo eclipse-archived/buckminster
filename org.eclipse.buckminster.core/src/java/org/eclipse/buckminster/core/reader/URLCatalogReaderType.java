@@ -50,8 +50,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -59,6 +61,19 @@ import org.xml.sax.SAXException;
 public class URLCatalogReaderType extends CatalogReaderType
 {
 	private static final DocumentBuilderFactory s_documentBuilderFactory = DocumentBuilderFactory.newInstance();
+
+	static
+	{
+		s_documentBuilderFactory.setIgnoringComments(true);
+		s_documentBuilderFactory.setValidating(false);
+		s_documentBuilderFactory.setNamespaceAware(false);
+	}
+
+	/**
+	 * Pattern that scans for href's that are relative and don't start with ?
+	 */
+	private static final Pattern s_htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>",
+			Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Scan a listing obtained using FTP. The file name comes after a timestamp that ends with <hh:mm> or <year> and
@@ -143,24 +158,51 @@ public class URLCatalogReaderType extends CatalogReaderType
 
 	public static URL[] extractHTMLLinks(URL urlToHTML, IProgressMonitor monitor) throws CoreException
 	{
+		ArrayList<URL> links = new ArrayList<URL>();
+		urlToHTML = URLUtils.appendTrailingSlash(urlToHTML);
 		InputStream pageSource = null;
 		try
 		{
-			urlToHTML = URLUtils.appendTrailingSlash(urlToHTML);
-			pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
-			DocumentBuilder builder = s_documentBuilderFactory.newDocumentBuilder();
-			InputSource source = new InputSource(new BufferedInputStream(pageSource));
-			source.setSystemId(urlToHTML.toString());
-			Document document = builder.parse(source);
-			ArrayList<URL> links = new ArrayList<URL>();
-			collectLinks(document.getDocumentElement(), urlToHTML, links);
-			return links.toArray(new URL[links.size()]);
+			try
+			{
+				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
+				final DocumentBuilder builder = s_documentBuilderFactory.newDocumentBuilder();
+				
+				// Use a very silent error handler
+				//
+				builder.setErrorHandler(new ErrorHandler()
+				{
+					public void error(SAXParseException ex) throws SAXException
+					{
+						throw ex;
+					}
+					public void fatalError(SAXParseException ex) throws SAXException
+					{
+						throw ex;
+					}
+					public void warning(SAXParseException ex) throws SAXException
+					{
+					}
+				});
+				InputSource source = new InputSource(new BufferedInputStream(pageSource));
+				source.setSystemId(urlToHTML.toString());
+				Document document = builder.parse(source);
+				collectLinks(document.getDocumentElement(), urlToHTML, links);
+			}
+			catch(SAXException e)
+			{
+				// HTML was not well formed. Use a scanner instead
+				//
+				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
+				Scanner scanner = new Scanner(pageSource);
+				while(scanner.findWithinHorizon(s_htmlPattern, 0) != null)
+				{
+					MatchResult mr = scanner.match();
+					links.add(new URL(urlToHTML, mr.group(1)));
+				}
+			}
 		}
 		catch(FileNotFoundException e)
-		{
-			return Trivial.EMPTY_URL_ARRAY;
-		}
-		catch(SAXException e)
 		{
 			return Trivial.EMPTY_URL_ARRAY;
 		}
@@ -174,6 +216,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 			CorePlugin.getLogger().warning(e.getMessage(), e);
 			return Trivial.EMPTY_URL_ARRAY;
 		}
+		return links.toArray(new URL[links.size()]);
 	}
 
 	public static URL[] list(URL url, IProgressMonitor monitor) throws CoreException
