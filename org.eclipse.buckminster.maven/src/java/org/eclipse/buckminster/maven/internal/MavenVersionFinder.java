@@ -28,6 +28,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
  * The URL used by the MavenReader denotes the group directory within one
@@ -48,7 +49,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 
 	private final URI m_uri;
 
-	private IPath[] m_fileList;
+	private URL[] m_fileList;
 
 	public MavenVersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
@@ -72,7 +73,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		m_fileList = null;
 	}
 
-	IPath[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		m_readerType.appendFolder(pbld, m_uri.getPath());
@@ -146,12 +147,14 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
 		String artifact = m_mapEntry.getArtifactId() + '-';
 		int artifactLen = artifact.length();
-		for(IPath path : getFileList(designator, monitor))
+		for(URL url : getFileList(designator, monitor))
 		{
-			if(path.segmentCount() != 1)
+			IPath path = Path.fromPortableString(url.getPath());
+			int segCnt = path.segmentCount();
+			if(segCnt < 1)
 				continue;
 
-			String fileName = path.segment(0);
+			String fileName = path.segment(segCnt - 1);
 			if(!fileName.startsWith(artifact))
 				continue;
 
@@ -190,7 +193,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		return m_uri;
 	}
 
-	private IPath[] getFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	private URL[] getFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		if(m_fileList == null)
 			m_fileList = createFileList(designator, monitor);

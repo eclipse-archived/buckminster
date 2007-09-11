@@ -9,11 +9,13 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,6 +29,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -50,13 +54,16 @@ import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.pde.core.plugin.IFragmentModel;
@@ -70,6 +77,7 @@ import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
+import org.eclipse.update.core.PluginEntry;
 import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
 import org.osgi.framework.Constants;
@@ -80,6 +88,21 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	private static final UUID CACHE_KEY_IMPORT_CACHE = UUID.randomUUID();
 
 	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
+
+	public static class RemotePluginEntry extends PluginEntry
+	{
+		private final URL m_remoteLocation;
+
+		public RemotePluginEntry(URL remoteLocation)
+		{
+			m_remoteLocation = remoteLocation;
+		}
+
+		public URL getRemoteLocation()
+		{
+			return m_remoteLocation;
+		}
+	}
 
 	public static File getTempSite(Map<UUID,Object> ucache) throws CoreException
 	{
@@ -330,12 +353,16 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			try
 			{
 				String typeDir = isPlugin ? PLUGINS_FOLDER : FEATURES_FOLDER;
-				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), rInfo, typeDir);
+				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), rInfo.getComponentName(), rInfo.getVersionMatch().getVersion(), typeDir);
 
 				// Use a temporary local site
 				//
-				String vcName = createVersionedComponentName(rInfo);
-				String jarName = vcName + ".jar";
+				IPath path = Path.fromPortableString(pluginURL.getPath());
+				String jarName = path.lastSegment();
+				if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip")))
+					throw BuckminsterException.fromMessage("Invalid url for remote import: " + pluginURL);
+
+				String vcName = jarName.substring(0, jarName.length() - 4);
 				File tempSite = getTempSite(userCache);
 				File subDir = new File(tempSite, typeDir);
 				File jarFile = new File(subDir, jarName);
@@ -410,15 +437,21 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return new CoreException(multiStatus);
 	}
 
-	private URL createRemoteComponentURL(URL remoteLocation, ProviderMatch rInfo, String subDir)
-	throws MalformedURLException
+	static URL createRemoteComponentURL(URL remoteLocation, String name, IVersion version, String subDir)
+	throws MalformedURLException, CoreException
 	{
-		return new URL(remoteLocation, subDir + '/' + createVersionedComponentName(rInfo) + ".jar");
-	}
-
-	private String createVersionedComponentName(ProviderMatch rInfo)
-	{
-		return rInfo.getComponentName() + '_' + rInfo.getVersionMatch().getVersion();
+		String vName = name + '_' + version;
+		if(remoteLocation.getPath().endsWith(".map"))
+		{
+			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, new NullProgressMonitor()))
+			{
+				VersionedIdentifier vid = entry.getVersionedIdentifier();
+				if(name.equals(vid.getIdentifier()) && version.equalsUnqualified(VersionFactory.OSGiType.coerce(vid.getVersion())))
+					return entry.getRemoteLocation();
+			}
+			throw BuckminsterException.fromMessage("Unable to find " + name + " in map " + remoteLocation);
+		}
+		return new URL(remoteLocation, subDir + '/' + vName + ".jar");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -526,9 +559,65 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
+	private static final Pattern s_mapPattern = Pattern.compile("^([^@]+)@([^,]+),([^=]+)=GET,([^,]+)(,unpack=true)?$");
+
+	private static RemotePluginEntry[] getMapPluginEntries(URL location, IProgressMonitor monitor) throws CoreException
+	{
+		BufferedReader input;
+		try
+		{
+			input = new BufferedReader(new InputStreamReader(URLUtils.openStream(location, monitor)));
+			String line;
+			ArrayList<RemotePluginEntry> entries = new ArrayList<RemotePluginEntry>();
+			while((line = input.readLine()) != null)
+			{
+				Matcher m = s_mapPattern.matcher(line);
+				if(m.matches() && "plugin".equals(m.group(1)))
+				{
+					RemotePluginEntry pluginEntry;
+					try
+					{
+						pluginEntry = new RemotePluginEntry(new URL(m.group(4)));
+					}
+					catch(MalformedURLException e)
+					{
+						continue;
+					}
+					String identifier = m.group(2);
+					pluginEntry.setPluginIdentifier(identifier);
+					
+					IPath path = Path.fromPortableString(pluginEntry.getRemoteLocation().getPath());
+					String fileName = path.lastSegment();
+					if(!(fileName.endsWith(".jar") || fileName.endsWith(".zip")))
+						continue;
+
+					String vcName = fileName.substring(0, fileName.length() - 4);
+					if(vcName.startsWith(identifier + '_'))
+						pluginEntry.setPluginVersion(vcName.substring(identifier.length() + 1));
+					else
+						pluginEntry.setPluginVersion(m.group(3));
+					pluginEntry.setUnpack(m.group(5) != null);
+					entries.add(pluginEntry);
+				}
+			}
+			return entries.toArray(new RemotePluginEntry[entries.size()]);
+		}
+		catch(FileNotFoundException e)
+		{
+			return new RemotePluginEntry[0];
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
 	private IPluginEntry[] getSitePluginEntries(URL location, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
+		if(location.getPath().endsWith(".map"))
+			return getMapPluginEntries(location, monitor);
+
 		ISite site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
 		if(site == null)
 			throw new OperationCanceledException();

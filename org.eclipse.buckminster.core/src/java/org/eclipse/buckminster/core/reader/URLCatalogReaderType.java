@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
@@ -41,29 +46,28 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
  */
 public class URLCatalogReaderType extends CatalogReaderType
 {
-	/**
-	 * Pattern that scans for href's that are relative and don't start with ?
-	 */
-	private static final Pattern s_htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>",
-			Pattern.CASE_INSENSITIVE);
+	private static final DocumentBuilderFactory s_documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
 	/**
-	 * Scan a listing obtained using FTP. The file name comes after a timestamp
-	 * that ends with <hh:mm> or <year> and might contain a link, i.e. xxx ->
-	 * yyy.
+	 * Scan a listing obtained using FTP. The file name comes after a timestamp that ends with <hh:mm> or <year> and
+	 * might contain a link, i.e. xxx -> yyy.
 	 */
 	private static final Pattern s_ftpPattern = Pattern.compile(
 			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))",
 			Pattern.CASE_INSENSITIVE);
+
 	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
 
 	public static ProviderMatch getCurrentProviderMatch()
@@ -81,7 +85,8 @@ public class URLCatalogReaderType extends CatalogReaderType
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, null, new Format(urlString), null, false, false, null);
+		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, null, new Format(urlString), null,
+				false, false, null);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return provider.getReaderType().getReader(pm, monitor);
 	}
@@ -104,7 +109,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return this;
 	}
 
-	public URI getURI(Provider provider, Map<String,String> properties) throws CoreException
+	public URI getURI(Provider provider, Map<String, String> properties) throws CoreException
 	{
 		return getURI(provider.getURI(properties));
 	}
@@ -136,67 +141,129 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return new URLCatalogReader(this, providerMatch);
 	}
 
-	public static IPath[] list(final URL url, IProgressMonitor monitor)
+	public static URL[] extractHTMLLinks(URL urlToHTML, IProgressMonitor monitor) throws CoreException
+	{
+		InputStream pageSource = null;
+		try
+		{
+			urlToHTML = URLUtils.appendTrailingSlash(urlToHTML);
+			pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
+			DocumentBuilder builder = s_documentBuilderFactory.newDocumentBuilder();
+			InputSource source = new InputSource(new BufferedInputStream(pageSource));
+			source.setSystemId(urlToHTML.toString());
+			Document document = builder.parse(source);
+			ArrayList<URL> links = new ArrayList<URL>();
+			collectLinks(document.getDocumentElement(), urlToHTML, links);
+			return links.toArray(new URL[links.size()]);
+		}
+		catch(FileNotFoundException e)
+		{
+			return Trivial.EMPTY_URL_ARRAY;
+		}
+		catch(SAXException e)
+		{
+			return Trivial.EMPTY_URL_ARRAY;
+		}
+		catch(IOException e)
+		{
+			CorePlugin.getLogger().warning(e.getMessage(), e);
+			return Trivial.EMPTY_URL_ARRAY;
+		}
+		catch(ParserConfigurationException e)
+		{
+			CorePlugin.getLogger().warning(e.getMessage(), e);
+			return Trivial.EMPTY_URL_ARRAY;
+		}
+	}
+
+	public static URL[] list(URL url, IProgressMonitor monitor) throws CoreException
 	{
 		File dir = FileUtils.getFile(url);
 		if(dir != null)
 		{
 			File[] list = dir.listFiles();
 			if(list == null)
-				return Trivial.EMPTY_PATH_ARRAY;
+				return Trivial.EMPTY_URL_ARRAY;
 			int top = list.length;
 			if(top == 0)
-				return Trivial.EMPTY_PATH_ARRAY;
-			IPath[] result = new IPath[top];
+				return Trivial.EMPTY_URL_ARRAY;
+			URL[] result = new URL[top];
 			while(--top >= 0)
 			{
 				File file = list[top];
-				IPath path = new Path(list[top].getName());
-				if(file.isDirectory())
-					path = path.addTrailingSeparator();
-				result[top] = path;
+				URI uri = URLUtils.normalizeToURI(file.toString(), file.isDirectory());
+				try
+				{
+					result[top] = uri.toURL();
+				}
+				catch(MalformedURLException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
 			}
+			MonitorUtils.complete(monitor);
 			return result;
 		}
 
-		final ArrayList<IPath> result = new ArrayList<IPath>();
-		InputStream pageSource = null;
-		try
+		String proto = url.getProtocol();
+		if(proto.equalsIgnoreCase("ftp") || proto.equalsIgnoreCase("sftp"))
 		{
-			pageSource = CorePlugin.getDefault().openCachedURL(url, monitor);
-			Pattern scanPattern;
-			if(url.getProtocol().equals("ftp"))
-				scanPattern = s_ftpPattern;
-			else
-				// Assume output is html
-				//
-				scanPattern = s_htmlPattern;
-
-			Scanner scanner = new Scanner(pageSource);
-			while(scanner.findWithinHorizon(scanPattern, 0) != null)
+			final ArrayList<URL> result = new ArrayList<URL>();
+			InputStream pageSource = null;
+			try
 			{
-				MatchResult mr = scanner.match();
-				result.add(new Path(mr.group(1)));
+				pageSource = CorePlugin.getDefault().openCachedURL(url, monitor);
+				url = URLUtils.appendTrailingSlash(url);
+				Scanner scanner = new Scanner(pageSource);
+				while(scanner.findWithinHorizon(s_ftpPattern, 0) != null)
+				{
+					MatchResult mr = scanner.match();
+					result.add(new URL(url, mr.group(1)));
+				}
+				return result.toArray(new URL[result.size()]);
 			}
-			return result.toArray(new IPath[result.size()]);
+			catch(CoreException e)
+			{
+				CorePlugin.getLogger().warning(e.getMessage(), e);
+				return Trivial.EMPTY_URL_ARRAY;
+			}
+			catch(FileNotFoundException e)
+			{
+				return Trivial.EMPTY_URL_ARRAY;
+			}
+			catch(IOException e)
+			{
+				CorePlugin.getLogger().warning(e.getMessage(), e);
+				return Trivial.EMPTY_URL_ARRAY;
+			}
+			finally
+			{
+				IOUtils.close(pageSource);
+			}
 		}
-		catch(CoreException e)
+		return extractHTMLLinks(url, monitor);
+	}
+
+	private static void collectLinks(Element element, URL parent, ArrayList<URL> links)
+	{
+		if(element.getNodeName().equals("a"))
 		{
-			CorePlugin.getLogger().warning(e.getMessage(), e);
-			return Trivial.EMPTY_PATH_ARRAY;
+			try
+			{
+				links.add(new URL(parent, element.getAttribute("href")));
+			}
+			catch(MalformedURLException e)
+			{
+				// Invalid href. Just skip it.
+			}
 		}
-		catch(FileNotFoundException e)
+		else
 		{
-			return Trivial.EMPTY_PATH_ARRAY;
-		}
-		catch(IOException e)
-		{
-			CorePlugin.getLogger().warning(e.getMessage(), e);
-			return Trivial.EMPTY_PATH_ARRAY;
-		}
-		finally
-		{
-			IOUtils.close(pageSource);
+			for(Node child = element.getFirstChild(); child != null; child = child.getNextSibling())
+			{
+				if(child.getNodeType() == Node.ELEMENT_NODE)
+					collectLinks((Element)child, parent, links);
+			}
 		}
 	}
 }

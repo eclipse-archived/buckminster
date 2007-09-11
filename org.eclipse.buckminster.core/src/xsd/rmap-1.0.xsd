@@ -92,6 +92,18 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	<complexType name="URLMatcher">
+		<sequence>
+			<element name="name" type="com:Replace" minOccurs="1" maxOccurs="1"/>
+			<element name="version" type="com:Replace" minOccurs="0" maxOccurs="1"/>
+			<choice minOccurs="0" maxOccurs="1">
+				<element name="branch" type="com:Replace"/>
+				<element name="tag" type="com:Replace"/>
+			</choice>
+			<element name="includePattern" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="excludePattern" type="string" minOccurs="0" maxOccurs="1"/>
+		</sequence>
+	</complexType>
 	<complexType name="Provider">
 		<sequence>
 			<element

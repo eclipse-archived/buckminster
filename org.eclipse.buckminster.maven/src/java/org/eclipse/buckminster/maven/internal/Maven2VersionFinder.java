@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.maven.internal;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -20,6 +21,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
  * @author Thomas Hallgren
@@ -32,21 +34,21 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		super(readerType, provider, ctype, query);
 	}
 
-	private void appendFilesInFolder(StringBuilder pbld, ArrayList<IPath> fileList, IProgressMonitor monitor) throws CoreException
+	private void appendFilesInFolder(URL folder, ArrayList<URL> fileList, IProgressMonitor monitor) throws CoreException
 	{
-		for(IPath filePath : URLCatalogReaderType.list(getReaderType().createURL(getURI(), pbld.toString()), monitor))
-			fileList.add(filePath);
+		for(URL url : URLCatalogReaderType.list(folder, monitor))
+			fileList.add(url);
 	}
 
 	@Override
-	IPath[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		Maven2ReaderType readerType = (Maven2ReaderType)getReaderType();
 		URI uri = getURI();
 		StringBuilder pbld = new StringBuilder();
 		readerType.appendFolder(pbld, uri.getPath());
 		readerType.appendEntryFolder(pbld, getMapEntry());
-		ArrayList<IPath> fileList = new ArrayList<IPath>();
+		ArrayList<URL> fileList = new ArrayList<URL>();
 		String rootPath = pbld.toString();
 		int rootLen = rootPath.length();
 		String space = getProvider().getSpace();
@@ -58,13 +60,14 @@ public class Maven2VersionFinder extends MavenVersionFinder
 			//
 			NodeQuery query = getQuery();
 			boolean defaultIsMatched = query.isMatch(null, null, getProvider().getSpace());
-			for(IPath versionPath : URLCatalogReaderType.list(readerType.createURL(uri, rootPath), MonitorUtils.subMonitor(monitor, 1000)))
+			for(URL versionURL : URLCatalogReaderType.list(readerType.createURL(uri, rootPath), MonitorUtils.subMonitor(monitor, 1000)))
 			{
-				if(versionPath.segmentCount() != 1)
+				IPath versionPath = new Path(versionURL.getPath());
+				int segCnt = versionPath.segmentCount();
+				if(segCnt < 1)
 					continue;
-	
-				String folderName = versionPath.segment(0);
-	
+
+				String folderName = versionPath.segment(segCnt - 1);
 				if(!defaultIsMatched)
 				{
 					// No use scanning this folder if the version is incompatible with
@@ -77,9 +80,9 @@ public class Maven2VersionFinder extends MavenVersionFinder
 
 				pbld.setLength(rootLen);
 				readerType.appendFolder(pbld, folderName);
-				appendFilesInFolder(pbld, fileList, MonitorUtils.subMonitor(monitor, 1000));
+				appendFilesInFolder(versionURL, fileList, MonitorUtils.subMonitor(monitor, 1000));
 			}
-			return fileList.toArray(new IPath[fileList.size()]);
+			return fileList.toArray(new URL[fileList.size()]);
 		}
 		finally
 		{

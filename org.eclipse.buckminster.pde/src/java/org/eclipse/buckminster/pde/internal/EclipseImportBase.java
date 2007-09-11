@@ -144,7 +144,7 @@ final class EclipseImportBase
 		{
 			try
 			{
-				if(!path.endsWith("/"))
+				if(!(path.endsWith("/") || path.endsWith("map")))
 					path += '/';
 				remoteLocation = new URL(scheme, uri.getHost(), path);
 			}

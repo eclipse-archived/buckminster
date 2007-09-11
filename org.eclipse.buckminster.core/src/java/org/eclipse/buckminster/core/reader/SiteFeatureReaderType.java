@@ -68,12 +68,16 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		try
 		{
 			siteURL = URLUtils.normalizeToURL(siteURLStr);
+			return SiteManager.getSite(siteURL, monitor);
 		}
 		catch(MalformedURLException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
-		return SiteManager.getSite(siteURL, monitor);
+		catch(CoreException e)
+		{
+			throw new CoreException(BuckminsterException.createStatus("Unable to obtain site from: " + siteURLStr, e));
+		}
 	}
 
 	public static ISiteFeatureReference getSiteFeatureReference(ISite site, ComponentIdentifier ci) throws CoreException

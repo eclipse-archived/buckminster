@@ -266,8 +266,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 
 	private URL createRemoteComponentURL(String subDir) throws MalformedURLException, CoreException
 	{
-		return new URL(m_base.getRemoteLocation(), subDir + '/' + createVersionedComponentName()
-			+ ".jar");
+		return EclipseImportReaderType.createRemoteComponentURL(m_base.getRemoteLocation(), m_base.getComponentName(), getProviderMatch().getVersionMatch().getVersion(), subDir);
 	}
 
 	private ICatalogReader createRemoteReader(String subDir, IProgressMonitor monitor) throws CoreException, IOException
@@ -283,11 +282,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 
 		IReaderType rd = CorePlugin.getDefault().getReaderType(IReaderType.URL_ZIPPED);
 		return (ICatalogReader)rd.getReader(match, monitor);
-	}
-
-	private String createVersionedComponentName()
-	{
-		return m_base.getComponentName() + '_' + getProviderMatch().getVersionMatch().getVersion();
 	}
 
 	private IWorkspaceRunnable getFeatureImportJob(IFeatureModel model, IPath destination)
