@@ -43,7 +43,7 @@ public class ProgressReporter extends Thread
 	@Override
 	public void run()
 	{
-		while(m_running)
+		while(m_running && !m_reporterMonitor.isCanceled())
 		{
 			try
 			{
