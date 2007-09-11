@@ -167,4 +167,5 @@
     <archive path="plugins/org.tigris.subversion.subclipse.core_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.core_1.0.5.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse.ui_1.0.5.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse_1.0.5.jar" url="http://subclipse.tigris.org/update_1.2.x//plugins/org.tigris.subversion.subclipse_1.0.5.jar"/>
+    <archive path="plugins/com.ibm.icu.base_3.6.1.v20070417.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/R200706192011/bundles/com.ibm.icu.base_3.6.1.v20070417.jar"/>
 </site>

@@ -63,7 +63,7 @@
             	<cs:attribute name="site.rootFiles" alias="rootFiles"/>
             	<cs:attribute name="site.template" alias="template"/>
             	<cs:attribute name="feature.jars" alias="features"/>
-            	<cs:attribute name="bundle.jars" alias="plugins" includePattern=".*\.((buckminster\.)|(ibm\.icu\.base)).*"/>
+            	<cs:attribute name="bundle.jars" alias="plugins" includePattern=".*\.buckminster\..*"/>
             </cs:prerequisites>
             <cs:products alias="action.output" base="site" upToDatePolicy="COUNT" fileCount="1"/>
         </cs:public>
