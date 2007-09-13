@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.subversive.feature"
-      label="Buckminster Subversive Feature"
+      label="Buckminster - Subversive support (Incubation)"
       version="0.2.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.subversive">
