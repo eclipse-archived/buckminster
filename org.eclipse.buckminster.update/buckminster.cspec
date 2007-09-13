@@ -12,6 +12,8 @@
         <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.svn.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.svn.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
     </cs:dependencies>
     <cs:artifacts>
         <cs:private name="root.artifacts">
@@ -96,6 +98,7 @@
             <cs:attribute component="org.eclipse.buckminster.p4.feature" name="feature.jars"/>
             <cs:attribute component="org.eclipse.buckminster.pde.feature" name="feature.jars"/>
             <cs:attribute component="org.eclipse.buckminster.svn.feature" name="feature.jars"/>
+            <cs:attribute component="org.eclipse.buckminster.subversive.feature" name="feature.jars"/>
         </cs:public>
 
         <cs:public name="headless.category">
@@ -105,6 +108,7 @@
             <cs:attribute component="org.eclipse.buckminster.p4.headless.feature" name="feature.jars"/>
             <cs:attribute component="org.eclipse.buckminster.pde.headless.feature" name="feature.jars"/>
             <cs:attribute component="org.eclipse.buckminster.svn.headless.feature" name="feature.jars"/>
+            <cs:attribute component="org.eclipse.buckminster.subversive.headless.feature" name="feature.jars"/>
         </cs:public>
 
         <cs:public name="bundle.jars">
@@ -114,11 +118,13 @@
             <cs:attribute component="org.eclipse.buckminster.p4.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.pde.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.svn.feature" name="bundle.jars"/>
+            <cs:attribute component="org.eclipse.buckminster.subversive.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.core.headless.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.cvs.headless.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.p4.headless.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.pde.headless.feature" name="bundle.jars"/>
             <cs:attribute component="org.eclipse.buckminster.svn.headless.feature" name="bundle.jars"/>
+            <cs:attribute component="org.eclipse.buckminster.subversive.headless.feature" name="bundle.jars"/>
         </cs:public>
     </cs:groups>
 </cs:cspec>

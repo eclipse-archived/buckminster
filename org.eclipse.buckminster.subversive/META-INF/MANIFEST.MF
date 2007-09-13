@@ -2,16 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Subversive Support Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.subversive;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.subversive.SvnSubversivePlugin
-Bundle-Localization: plugin
-Require-Bundle: org.polarion.team.client.javasvn.core,
- org.polarion.team.svn.core,
+Require-Bundle: org.polarion.team.svn.core,
  org.eclipse.buckminster.core,
  org.eclipse.team.core,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.buckminster.runtime
 Eclipse-LazyStart: true
-Bundle-Vendor: Buckminster
+Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: .

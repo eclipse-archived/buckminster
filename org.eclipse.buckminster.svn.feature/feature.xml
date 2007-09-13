@@ -7,7 +7,7 @@
       plugin="org.eclipse.buckminster.svn">
 
    <description url="http://www.eclipse.org/buckminster">
-      This feature provides Subversion integration for Buckminster.
+      This feature provides Subversion integration for Buckminster using the Subclipse client from http://subclipse.tigris.org
    </description>
 
    <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
