@@ -223,7 +223,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						}
 						catch(CoreException e)
 						{
-							CorePlugin.getLogger().error("Project refresh on " + project.getName() + " failed: " + e.getMessage(), e);
+							if(project.isAccessible())
+								CorePlugin.getLogger().error("Project refresh on " + project.getName() + " failed: " + e.getMessage(), e);
 						}
 					}
 				}
