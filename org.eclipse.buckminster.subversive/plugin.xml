@@ -11,7 +11,8 @@
          point="org.eclipse.buckminster.core.readerTypes">
       <readerType
             class="org.eclipse.buckminster.subversive.internal.SubversiveReaderType"
-            id="svn"/>
+            id="svn"
+            teamRepositoryId="org.polarion.team.svn.core.svnnature"/>
    </extension>
 
 	
