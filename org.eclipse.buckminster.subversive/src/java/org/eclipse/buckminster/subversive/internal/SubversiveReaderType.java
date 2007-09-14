@@ -29,14 +29,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.polarion.team.svn.core.SVNTeamProjectMapper;
-import org.polarion.team.svn.core.client.ClientWrapperException;
-import org.polarion.team.svn.core.client.ISVNClientWrapper;
-import org.polarion.team.svn.core.client.ISVNProgressMonitor;
 import org.polarion.team.svn.core.client.Info2;
-import org.polarion.team.svn.core.client.Revision;
-import org.polarion.team.svn.core.operation.file.SVNFileStorage;
 import org.polarion.team.svn.core.resource.IRepositoryContainer;
 import org.polarion.team.svn.core.resource.IRepositoryLocation;
+import org.polarion.team.svn.core.utility.SVNUtility;
 
 /**
  * @author Thomas Hallgren
@@ -70,7 +66,8 @@ public class SubversiveReaderType extends CatalogReaderType
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		Info2 info = getWorkingCopyInfo(workingCopy, monitor);
+		Info2 info = SVNUtility.getSVNInfo(workingCopy);
+		MonitorUtils.complete(monitor);
 		return info == null
 				? null
 				: new Date(info.lastChangedDate);
@@ -98,7 +95,8 @@ public class SubversiveReaderType extends CatalogReaderType
 	@Override
 	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		Info2 info = getWorkingCopyInfo(workingCopy, monitor);
+		Info2 info = SVNUtility.getSVNInfo(workingCopy);
+		MonitorUtils.complete(monitor);
 		return info == null
 				? -1
 				: info.lastChangedRevision;
@@ -146,30 +144,6 @@ public class SubversiveReaderType extends CatalogReaderType
 		finally
 		{
 			session.close();
-		}
-	}
-
-	private static Info2 getWorkingCopyInfo(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		IRepositoryLocation location = SVNFileStorage.instance().asRepositoryResource(workingCopy, false)
-				.getRepositoryLocation();
-		ISVNClientWrapper proxy = location.acquireSVNProxy();
-		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 100);
-		try
-		{
-			Info2[] infos = proxy.info2(workingCopy.toString(), Revision.WORKING, null, false, svnMon);
-			return (infos != null && infos.length > 0)
-					? infos[0]
-					: null;
-		}
-		catch(ClientWrapperException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			location.releaseSVNProxy(proxy);
-			monitor.done();
 		}
 	}
 }
