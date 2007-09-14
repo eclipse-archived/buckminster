@@ -957,8 +957,15 @@ public class SubversiveSession
 				}
 				for(int pdx = 0; pdx < idx; ++pdx)
 				{
+					String seg = urlSegs[pdx];
 					bld.append('/');
-					bld.append(urlSegs[pdx]);
+					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches"))
+						//
+						// Assume that common root is above this folder
+						//
+						break;
+
+					bld.append(seg);
 				}
 				try
 				{
