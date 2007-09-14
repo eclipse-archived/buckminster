@@ -893,6 +893,14 @@ public class SubversiveSession
 			location.setUsername(root.getUser());
 			storage.addRepositoryLocation(location);
 		}
+		try
+		{
+			storage.saveConfiguration();
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 		unknownRoots.clear();
 	}
 
