@@ -378,19 +378,22 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					//
 					JarFile jf = new JarFile(jarFile);
 					Manifest mf = jf.getManifest();
-					String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(Constants.BUNDLE_CLASSPATH), ",");
-					jf.close();
-
-					int top = classPath.length;
-					unpack = (top > 0);
-					for(int idx = 0; idx < top; ++idx)
+					if(mf != null)
 					{
-						if(classPath[idx].equals("."))
+						String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(Constants.BUNDLE_CLASSPATH), ",");
+	
+						int top = classPath.length;
+						unpack = (top > 0);
+						for(int idx = 0; idx < top; ++idx)
 						{
-							unpack = false;
-							break;
+							if(classPath[idx].equals("."))
+							{
+								unpack = false;
+								break;
+							}
 						}
 					}
+					jf.close();
 				}
 
 				if(unpack)

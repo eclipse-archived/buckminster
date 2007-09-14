@@ -40,7 +40,8 @@ import org.eclipse.pde.internal.core.bundle.BundleFragmentModel;
 import org.eclipse.pde.internal.core.bundle.BundleModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModelBase;
-import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
+import org.eclipse.pde.internal.core.plugin.ExternalFragmentModel;
+import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 
 /**
  * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml
@@ -76,51 +77,71 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			// META-INF/MANIFEST.MF
 			// file.
 			//
-			BundleModel model = new ExternalBundleModel();
 			try
 			{
+				boolean fragment = false;
+				BundleModel model = new ExternalBundleModel();
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
-			}
-			catch(FileNotFoundException e)
-			{
-				throw new MissingCSpecSourceException(reader.getProviderMatch());
-			}
+				fragment = model.isFragmentModel();
+				BundlePluginModelBase bmodel = fragment ? new BundleFragmentModel()
+					: new BundlePluginModel();
+				bmodel.setBundleModel(model);
+				bmodel.setEnabled(true);
 
-			boolean fragment = model.isFragmentModel();
-			IBundlePluginModelBase bmodel = fragment ? new BundleFragmentModel()
-				: new BundlePluginModel();
+				if(forResolutionAidOnly)
+					return bmodel;
 
-			bmodel.setEnabled(true);
-			bmodel.setBundleModel(model);
-
-			// Extensions etc. that are not part of the OSGi can still be
-			// found in the plugin.xml or fragment.xml
-			//
-			if(!forResolutionAidOnly)
-			{
-				String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
-				try
+				// Extensions etc. that are not part of the OSGi can still be
+				// found in the plugin.xml or fragment.xml
+				//
+				if(bmodel != null)
 				{
-					ExternalExtensionsModel extModel = new ExternalExtensionsModel();
-					loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
-					bmodel.setExtensionsModel(extModel);
-				}
-				catch(FileNotFoundException e)
-				{}
-
-				if(bmodel instanceof BundlePluginModelBase)
-				{
-					IBuildModel buildModel = new ExternalBuildModel();
 					try
 					{
+						String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
+						ExternalExtensionsModel extModel = new ExternalExtensionsModel();
+						loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
+						bmodel.setExtensionsModel(extModel);
+					}
+					catch(FileNotFoundException e)
+					{
+					}
+	
+					try
+					{
+						IBuildModel buildModel = new ExternalBuildModel();
 						loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
-						((BundlePluginModelBase)bmodel).setBuildModel(buildModel);
+						bmodel.setBuildModel(buildModel);
 					}
 					catch(FileNotFoundException e)
 					{}
 				}
+				return bmodel;
 			}
-			return bmodel;
+			catch(FileNotFoundException e)
+			{
+			}
+
+			try
+			{
+				ExternalPluginModel pm = new ExternalPluginModel();
+				loadModel(reader, PLUGIN_FILE, pm, MonitorUtils.subMonitor(monitor, 1000));
+				return pm;
+			}
+			catch(FileNotFoundException e1)
+			{
+			}
+
+			try
+			{
+				ExternalFragmentModel pm = new ExternalFragmentModel();
+				loadModel(reader, FRAGMENT_FILE, pm, MonitorUtils.subMonitor(monitor, 1000));
+				return pm;
+			}
+			catch(FileNotFoundException e1)
+			{
+				throw new MissingCSpecSourceException(reader.getProviderMatch());
+			}
 		}
 		finally
 		{

@@ -21,11 +21,9 @@
          optional="true"
          path=".classpath"/>
 			<metaFile
+         aliases="plugin.xml,fragment.xml"
          optional="false"
          path="META-INF/MANIFEST.MF"/>
-			<metaFile
-         optional="true"
-         path="plugin.xml"/>
 			<metaFile
          optional="true"
          path="build.properties"/>
