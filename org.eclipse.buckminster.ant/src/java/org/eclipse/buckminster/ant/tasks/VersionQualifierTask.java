@@ -108,7 +108,7 @@ public class VersionQualifierTask
 		{
 			newQualifier = qualifier.replaceFirst(QUALIFIER_SUFFIX, newQualifier);
 			if(!qualifier.equals(newQualifier))
-				version = version.replaceQualifier(qualifier);
+				version = version.replaceQualifier(newQualifier);
 		}
 		return version;
 	}

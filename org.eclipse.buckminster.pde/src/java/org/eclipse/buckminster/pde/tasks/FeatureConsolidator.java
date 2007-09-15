@@ -482,7 +482,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			// part of the qualifier, or just the context part (if there is no
 			// suffix part). See bug #162022.
 			//
-			if(qualifier.length() > contextLength)
+			if(qualifier != null && qualifier.length() > contextLength)
 				qualifier = qualifier.substring(contextLength);
 
 			qualifiers[idx++] = qualifier;
