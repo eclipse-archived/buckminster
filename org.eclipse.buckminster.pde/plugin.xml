@@ -123,10 +123,10 @@
     <prefmapping
           class="org.eclipse.buckminster.pde.prefs.TargetArchHandler"
           description="Sets the operating system architecture of the PDE target platform"
-          name="targetOS"/>
+          name="targetArch"/>
     <prefmapping
           class="org.eclipse.buckminster.pde.prefs.TargetNLHandler"
           description="Sets the locale of the PDE target platform"
-          name="targetOS"/>
+          name="targetNL"/>
  </extension>
 </plugin>
