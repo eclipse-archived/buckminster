@@ -61,13 +61,13 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				MonitorUtils.complete(monitor);
 				return;
 			}
-	
+
 			monitor.beginTask(null, 200);
 			try
 			{
 				monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
 				wb = this.performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 100));
-	
+
 				Materialization mat = wb.getMaterialization();
 				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
 				IPath wsRelativePath = wb.getWorkspaceRelativePath();
@@ -119,7 +119,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				//
 				// Default to project.
 				//
-				wsRelativePath = Path.fromPortableString(getDefaultProjectName(context.getMaterializationSpec(), resolution));
+				wsRelativePath = Path.fromPortableString(getDefaultProjectName(context.getMaterializationSpec(),
+						resolution));
 		}
 		else
 		{
@@ -276,38 +277,43 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		monitor.subTask("Binding " + projName);
 		try
 		{
-			try
+			if(project.exists())
 			{
 				description = workspace.loadProjectDescription(locationPath.append(".project"));
+
 				// Consider it an error to attempt a bind using a different
 				// project name then the one present in the .project file.
 				//
 				if(!projName.equals(description.getName()))
 					throw new ProjectNameMismatchException(projName, description.getName());
+				MonitorUtils.worked(monitor, 50);
 			}
-			catch(CoreException exception)
+			else
 			{
-				// Apparently this is not an Eclipse project (yet)
-				//
-				description = workspace.newProjectDescription(projName);
 				IPath wsRootPath = wsRoot.getLocation();
-				if(wsRootPath.isPrefixOf(locationPath) && wsRootPath.segmentCount() == locationPath.segmentCount() - 1)
+				if(wsRootPath.segmentCount() == locationPath.segmentCount() - 1 && isSegmentPrefix(wsRootPath, locationPath))
 				{
 					// This is heading for disaster unless the last segement of the locationPath
 					// is in fact equal to the name of the project
 					//
-					if(!locationPath.lastSegment().equals(projName))
-						description.setLocation(locationPath);
+					String forcedName = locationPath.lastSegment();
+					if(!forcedName.equals(projName))
+					{
+						// We can't use another name since the project is directly below the workspace.
+						// Eclipse stipulates that the name *has* to be the same name as the folder
+						// at this point. So we start over here...
+						//
+						createProjectBinding(forcedName, mat, context, MonitorUtils.subMonitor(monitor, 50));
+						return;
+					}
 				}
 				else
+				{
+					description = workspace.newProjectDescription(projName);
 					description.setLocation(locationPath);
-			}
-			MonitorUtils.worked(monitor, 50);
-
-			if(!project.exists())
+				}
 				project.create(description, MonitorUtils.subMonitor(monitor, 50));
-			else
-				MonitorUtils.worked(monitor, 50);
+			}
 
 			project.open(0, MonitorUtils.subMonitor(monitor, 20));
 			Resolution cr = mat.getResolution();
@@ -320,6 +326,26 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		{
 			monitor.done();
 		}
+	}
+
+	private static boolean isSegmentPrefix(IPath self, IPath other)
+	{
+		String device = self.getDevice();
+		if(device != null && other.getDevice() != null && !device.equalsIgnoreCase(other.getDevice()))
+			return false;
+		if(self.isEmpty() || (self.isRoot() && other.isAbsolute()))
+			return true;
+
+		String[] segments = self.segments();
+		int len = segments.length;
+		String[] otherSegments = other.segments();
+		if(len > otherSegments.length)
+			return false;
+
+		for(int i = 0; i < len; i++)
+			if(!segments[i].equals(otherSegments[i]))
+				return false;
+		return true;
 	}
 
 	private String getDefaultProjectName(MaterializationSpec mspec, Resolution resolution) throws CoreException
