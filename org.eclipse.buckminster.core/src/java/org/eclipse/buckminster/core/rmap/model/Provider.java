@@ -186,6 +186,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 					{
 						versionFinder = getReaderType().getVersionFinder(this, ctype, query, MonitorUtils.subMonitor(monitor, 20));
 						candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
+						if(candidate == null)
+							continue;
 						ctypeUsed = ctype;
 					}
 					catch(MissingCSpecSourceException e)

@@ -118,9 +118,17 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
 	{
-		NodeQuery query = m_context.getNodeQuery(request);
-		ResolverNode node = deepResolve(m_context, new UnresolvedNode(query.getQualifiedDependency()));
-		return createBillOfMaterials(node);
+		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+		try
+		{
+			NodeQuery query = m_context.getNodeQuery(request);
+			ResolverNode node = deepResolve(m_context, new UnresolvedNode(query.getQualifiedDependency()), monitor);
+			return createBillOfMaterials(node);
+		}
+		finally
+		{
+			monitor.done();
+		}
 	}
 
 	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException
@@ -135,14 +143,23 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			MonitorUtils.complete(monitor);
 			return bom;
 		}
-		ComponentQuery cquery = bom.getQuery();
-		ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery()))
-				? m_context
-				: new ResolutionContext(cquery, m_context);
-		BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom));
-		if(!newBom.contentEqual(bom))
-			bom = newBom;
-		return bom;
+		
+		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+		try
+		{
+			ComponentQuery cquery = bom.getQuery();
+			ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery()))
+					? m_context
+					: new ResolutionContext(cquery, m_context);
+			BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom, monitor));
+			if(!newBom.contentEqual(bom))
+				bom = newBom;
+			return bom;
+		}
+		finally
+		{
+			monitor.done();
+		}
 	}
 
 	public void setRecursiveResolve(boolean flag)
@@ -150,7 +167,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		m_recursiveResolve = flag;
 	}
 
-	protected DepNode localResolve(NodeQuery query) throws CoreException
+	protected DepNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
 		if(query.useMaterialization())
@@ -190,6 +207,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				if(res != null)
 				{
 					res.store();
+					MonitorUtils.complete(monitor);
 					return new ResolvedNode(query, res);
 				}
 			}
@@ -226,6 +244,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 					Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(), ci);
 					mat.store();
 					resolution.store();
+					MonitorUtils.complete(monitor);
 					return new ResolvedNode(query, resolution);
 				}
 			}
@@ -249,14 +268,21 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			if(match == null)
 				return null;
 
-			IProgressMonitor nullMonitor = new NullProgressMonitor();
-			IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(match, nullMonitor) };
-			DepNode node = match.getComponentType().getResolutionBuilder(reader[0], nullMonitor).build(reader, false,
-					nullMonitor);
-			node.getResolution().store();
-			if(reader[0] != null)
-				reader[0].close();
-			return node;
+			monitor.beginTask(null, 30);
+			try
+			{
+				IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(match, MonitorUtils.subMonitor(monitor, 10)) };
+				DepNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
+						MonitorUtils.subMonitor(monitor, 10));
+				node.getResolution().store();
+				if(reader[0] != null)
+					reader[0].close();
+				return node;
+			}
+			finally
+			{
+				monitor.done();
+			}
 		}
 		return null;
 	}
@@ -349,7 +375,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return new ResolverNode(new NodeQuery(context, qDep));
 	}
 
-	private ResolverNode deepResolve(ResolutionContext context, DepNode depNode) throws CoreException
+	private ResolverNode deepResolve(ResolutionContext context, DepNode depNode, IProgressMonitor monitor) throws CoreException
 	{
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
 		ResolverNode node = getResolverNode(context, qDep);
@@ -371,7 +397,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		{
 			try
 			{
-				depNode = localResolve(query);
+				depNode = localResolve(query, MonitorUtils.subMonitor(monitor, 1));
 			}
 			catch(CoreException e)
 			{
@@ -410,7 +436,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 					? context
 					: new ResolutionContext(cquery, context);
 			resolvedChildren[idx] = m_recursiveResolve
-					? deepResolve(childContext, child)
+					? deepResolve(childContext, child, monitor)
 					: getResolverNode(childContext, child.getQualifiedDependency());
 		}
 		node.setResolution(depNode.getResolution(), resolvedChildren);

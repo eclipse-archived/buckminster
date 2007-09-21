@@ -134,11 +134,25 @@ public class MaterializationJob extends Job
 
 		Queue<MaterializerJob> allJobs = prepareJobs(monitor, bom);
 		
-		if(allJobs == null)
-			return;
-		
-		triggerJobs(monitor, allJobs);
-		waitForJobs(monitor, allJobs, bom);
+		if(allJobs != null)
+		{
+			triggerJobs(monitor, allJobs);
+			waitForJobs(monitor, allJobs, bom);
+		}
+
+		InstallerJob installerJob = new InstallerJob(m_context);
+		installerJob.schedule();
+		if(m_waitForInstall)
+		{
+			try
+			{
+				installerJob.join();
+			}
+			catch(InterruptedException e)
+			{
+				throw new OperationCanceledException();
+			}
+		}
 	}	
 	
 	protected Queue<MaterializerJob> prepareJobs(IProgressMonitor monitor, BillOfMaterials bom) throws CoreException
@@ -253,19 +267,6 @@ public class MaterializationJob extends Job
 			throw new CoreException(status);
 
 		bom.store();
-		InstallerJob installerJob = new InstallerJob(m_context);
-		installerJob.schedule();
-		if(m_waitForInstall)
-		{
-			try
-			{
-				installerJob.join();
-			}
-			catch(InterruptedException e)
-			{
-				throw new OperationCanceledException();
-			}
-		}
 	}
 
 	protected MaterializationContext getMaterializationContext()

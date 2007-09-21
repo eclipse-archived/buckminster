@@ -218,16 +218,22 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	DepNode innerResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
+		monitor.beginTask(null, 100);
 		try
 		{
-			DepNode node = m_factory.isLocalResolve()
-					? localResolve(query)
-					: null;
+			DepNode node = null;
+			if(m_factory.isLocalResolve())
+				node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
+			else
+				MonitorUtils.worked(monitor, 5);
+
 			if(node == null)
 			{
 				ResourceMap rmap = m_factory.getResourceMap(getContext(), query.getComponentQuery().getResourceMapURL());
-				node = rmap.resolve(query, monitor);
+				node = rmap.resolve(query, MonitorUtils.subMonitor(monitor, 95));
 			}
+			else
+				MonitorUtils.worked(monitor, 95);
 			return node;
 		}
 		catch(CoreException e)
@@ -237,6 +243,10 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 				throw e;
 			context.addException(e.getStatus());
 			return null;
+		}
+		finally
+		{
+			monitor.done();
 		}
 	}
 
