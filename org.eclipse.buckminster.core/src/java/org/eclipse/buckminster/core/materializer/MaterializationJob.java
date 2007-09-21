@@ -47,7 +47,7 @@ public class MaterializationJob extends Job
 
 	public static final int MAX_PARALLEL_JOBS_DEFAULT = 4;
 
-	static
+	public static void setUp()
 	{
 		IEclipsePreferences defaultNode = BuckminsterPreferences.getDefaultNode();
 		defaultNode.putInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);

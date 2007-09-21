@@ -18,6 +18,8 @@ public interface IPreferenceDescriptor
 
 	int getTextWidth();
 
+	int[] getIntegerRange();
+
 	String getName();
 
 	IPreferenceValidator getValidator();

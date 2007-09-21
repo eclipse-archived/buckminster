@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.helpers.ShortDurationURLCache;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.parser.ParserFactory;
@@ -472,6 +473,7 @@ public class CorePlugin extends LogAwarePlugin
 		super.start(context);
 		performForcedActivations();
 		MetadataSynchronizer.setUp();
+		MaterializationJob.setUp();
 	}
 
 	/**

@@ -109,6 +109,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		pds[3] = new PreferenceDescriptor(RESOLVER_THREADS_MAX_PARAM, PreferenceType.Integer,
 				"Maximum number of resolver threads");
 		pds[3].setTextWidth(2);
+		pds[3].setIntegerRange(1, 12);
 		return pds;
 	}
 

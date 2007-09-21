@@ -22,6 +22,8 @@ public class PreferenceDescriptor implements IPreferenceDescriptor
 
 	private int m_textWidth = -1;
 
+	private int[] m_integerRange;
+
 	private final PreferenceType m_type;
 
 	private IPreferenceValidator m_validator;
@@ -51,6 +53,11 @@ public class PreferenceDescriptor implements IPreferenceDescriptor
 		return m_label;
 	}
 
+	public int[] getIntegerRange()
+	{
+		return m_integerRange;
+	}
+
 	public String getName()
 	{
 		return m_preferenceName;
@@ -74,6 +81,11 @@ public class PreferenceDescriptor implements IPreferenceDescriptor
 	public void setEnums(Enum<?>[] enums)
 	{
 		m_enums = enums;
+	}
+
+	public void setIntegerRange(int min, int max)
+	{
+		m_integerRange = new int[] { min, max };
 	}
 
 	public void setLabel(String label)
