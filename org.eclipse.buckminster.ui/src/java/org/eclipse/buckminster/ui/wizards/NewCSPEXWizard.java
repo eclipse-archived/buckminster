@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.ui.INewWizard;
 import java.io.*;
 
@@ -41,22 +42,45 @@ public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard
 	 */
 
 	@Override
-	protected InputStream openContentStream()
+	protected InputStream openContentStream(String containerName, String fileName)
 	{
-		StringBuffer contents = new StringBuffer(300);
-		contents.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		contents.append("<cspecExtension\n");
-		contents.append("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-		contents.append("    xmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"\n");
-		contents.append("    xmlns=\"http://www.eclipse.org/buckminster/CSpec-1.0\"\n");
-		contents.append("    <dependencies>\n");
-		contents.append("        <!-- Place your Dependencies here -->\n");
-		contents.append("    </dependencies>\n");
-		contents.append("    <actions>\n");
-		contents.append("        <!-- Place your Actions here -->\n");
-		contents.append("    </actions>\n");
-		contents.append("</cspecExtension>\n");
+		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
+		PrintStream contents = new PrintStream(bld);
+		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		contents.println("<cspecExtension");
+		contents.println("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+		contents.println("\txmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"");
+		contents.println("\txmlns=\"http://www.eclipse.org/buckminster/CSpec-1.0\">");
+		contents.println("\t<dependencies>");
+		contents.println("\t\t<!-- Place your Dependencies here -->");
+		contents.println("\t</dependencies>");
+		contents.println("\t<generators>");
+		contents.println("\t\t<!-- Place your Generators here -->");
+		contents.println("\t</generators>");
+		contents.println("\t<artifacts>");
+		contents.println("\t\t<!-- Place your Artifacts here -->");
+		contents.println("\t</artifacts>");
+		contents.println("\t<actions>");
+		contents.println("\t\t<!-- Place your Actions here -->");
+		contents.println("\t</actions>");
+		contents.println("\t<groups>");
+		contents.println("\t\t<!-- Place your Groups here -->");
+		contents.println("\t</groups>");
+		contents.println("\t<alterDependencies>");
+		contents.println("\t\t<!-- Place your Dependency alterations here -->");
+		contents.println("\t</alterDependencies>");
+		contents.println("\t<alterArtifacts>");
+		contents.println("\t\t<!-- Place your Artifact alterations here -->");
+		contents.println("\t</alterArtifacts>");
+		contents.println("\t<alterActions>");
+		contents.println("\t\t<!-- Place your Action alterations here -->");
+		contents.println("\t</alterActions>");
+		contents.println("\t<alterGroups>");
+		contents.println("\t\t<!-- Place your Group alterations here -->");
+		contents.println("\t</alterGroups>");
+		contents.println("</cspecExtension>");
+		contents.flush();
 
-		return new ByteArrayInputStream(contents.toString().getBytes());
+		return bld.getInputStream();
 	}
 }

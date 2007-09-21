@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.ui.INewWizard;
 import java.io.*;
 
@@ -41,21 +42,20 @@ public class NewResourceMapWizard extends NewBMFileWizard implements INewWizard
 	 */
 
 	@Override
-	protected InputStream openContentStream()
+	protected InputStream openContentStream(String containerName, String fileName)
 	{
-		StringBuffer contents = new StringBuffer(300);
-		contents.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		contents.append("<rm:rmap\n");
-		contents.append("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-		contents.append("    xmlns:rm=\"http://www.eclipse.org/buckminster/RMap-1.0\"\n");
-		contents.append("    xmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"\n");
-		contents.append("    xmlns:mp=\"http://www.eclipse.org/buckminster/MavenProvider-1.0\"\n");
-		contents.append("    xmlns:pp=\"http://www.eclipse.org/buckminster/PDEMapProvider-1.0\" />\n");
-		contents.append("<!-- Place your RMAP content here -->\n");
-		contents.append("</rm:rmap>\n");
-
-		// String contents = "This is the initial file contents for *.rmap file that should be word-sorted in the
-		// Preview page of the multi-page editor";
-		return new ByteArrayInputStream(contents.toString().getBytes());
+		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
+		PrintStream contents = new PrintStream(bld);
+		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		contents.println("<rmap");
+		contents.println("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+		contents.println("\txmlns=\"http://www.eclipse.org/buckminster/RMap-1.0\"");
+		contents.println("\txmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"");
+		contents.println("\txmlns:mp=\"http://www.eclipse.org/buckminster/MavenProvider-1.0\"");
+		contents.println("\txmlns:pp=\"http://www.eclipse.org/buckminster/PDEMapProvider-1.0\">");
+		contents.println("\t<!-- Place your RMAP content here -->");
+		contents.println("</rmap>\n");
+		contents.flush();
+		return bld.getInputStream();
 	}
 }

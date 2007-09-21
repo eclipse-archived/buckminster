@@ -64,6 +64,11 @@ public abstract class NewBMFileWizard extends Wizard
 		setNeedsProgressMonitor(true);
 	}
 
+	public String getContainerName()
+	{
+		return m_page.getContainerName();
+	}
+
 	/**
 	 * This method is called when 'Finish' button is pressed in the wizard. We will create an operation and run it using
 	 * wizard as execution context.
@@ -71,7 +76,7 @@ public abstract class NewBMFileWizard extends Wizard
 	@Override
 	public boolean performFinish()
 	{
-		final String containerName = m_page.getContainerName();
+		final String containerName = getContainerName();
 		final String fileName = m_page.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress()
 		{
@@ -126,7 +131,7 @@ public abstract class NewBMFileWizard extends Wizard
 		final IFile file = container.getFile(new Path(fileName));
 		try
 		{
-			InputStream stream = openContentStream();
+			InputStream stream = openContentStream(containerName, fileName);
 			if(file.exists())
 			{
 				file.setContents(stream, true, true, monitor);
@@ -163,7 +168,7 @@ public abstract class NewBMFileWizard extends Wizard
 	 * Create the file without content. 
 	 * This default implementation returns empty content.
 	 */
-	protected InputStream openContentStream()
+	protected InputStream openContentStream(String containerName, String fileName)
 	{
 		String contents = "";
 		return new ByteArrayInputStream(contents.getBytes());
