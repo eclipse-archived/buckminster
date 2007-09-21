@@ -167,6 +167,9 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 						return nodePrefs;
 					}
 				};
+				int[] range = descriptor.getIntegerRange();
+				if(range != null)
+					((IntegerFieldEditor)editor).setValidRange(range[0], range[1]);
 				break;
 			case Path:
 				editor = new PathEditor(name, label, label, parent)
@@ -241,7 +244,9 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, "Eclipse logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, "Ant logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, "Copy Eclipse log events to Console", getFieldEditorParent()));
-		addField(new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, "Max number of parallel materializations", getFieldEditorParent()));
+		IntegerFieldEditor mthreads = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, "Max number of parallel materializations", getFieldEditorParent());
+		mthreads.setValidRange(1, 12);
+		addField(mthreads);
 		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, "Resolver order", getFieldEditorParent()));
 
 		IResolverFactory[] factories = ResolverFactoryMaintainer.getInstance().getResolverFactories();
