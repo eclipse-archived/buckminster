@@ -122,7 +122,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.buckminster.sax"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4"/>
    </requires>
 
    <plugin
