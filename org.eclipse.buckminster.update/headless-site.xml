@@ -167,10 +167,10 @@
     <archive path="plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar"/>
     <archive path="plugins/org.junit4_4.3.1.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.junit4_4.3.1.jar"/>
     <archive path="plugins/org.junit_3.8.2.v200706111738.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.junit_3.8.2.v200706111738.jar"/>
-    <archive path="plugins/org.tigris.subversion.subclipse.core_1.2.1.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.core_1.2.1.jar"/>
+    <archive path="plugins/org.tigris.subversion.subclipse.core_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.core_1.2.4.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar"/>
-    <archive path="plugins/org.tigris.subversion.subclipse.ui_1.2.1.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.ui_1.2.1.jar"/>
-    <archive path="plugins/org.tigris.subversion.javahl.win32_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.javahl.win32_1.2.0.jar"/>
+    <archive path="plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar"/>
+    <archive path="plugins/org.tigris.subversion.javahl.win32_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.javahl.win32_1.2.4.jar"/>
     <archive path="plugins/org.polarion.team.svn.client.javasvn_1.1.3.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javasvn_1.1.3.jar"/>
     <archive path="plugins/org.polarion.team.svn.client.svnkit_1.1.7.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.svnkit_1.1.7.jar"/>
     <archive path="plugins/org.polarion.team.svn.core.nl1_1.0.0.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.core.nl1_1.0.0.jar"/>
