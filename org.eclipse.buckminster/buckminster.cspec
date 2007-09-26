@@ -100,7 +100,7 @@
 
 		<private name="build.jnlp" actor="ant">
 			<actorProperties>
-				<property key="buildFile" value="make/build.xml" />
+				<property key="buildFile" value="make/headless.ant" />
 				<property key="targets" value="build.product" />
 			</actorProperties>
 			<properties>
