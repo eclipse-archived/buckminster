@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
@@ -40,6 +41,16 @@ import org.xml.sax.SAXException;
  */
 public class DonePage extends InstallWizardPage
 {
+	/**
+	 * The wizard dialog width
+	 */
+	private static final int PUBLISH_WIZARD_WIDTH = 450;
+
+	/**
+	 * The wizard dialog height
+	 */
+	private static final int PUBLISH_WIZARD_HEIGHT = 500;
+
 	private static final int VERTICAL_SPACING = 10;
 	
 	private static final int HORIZONTAL_INDENT = 50;
@@ -184,7 +195,7 @@ public class DonePage extends InstallWizardPage
 						}
 						catch(SAXException e1)
 						{
-							throw new JNLPException("Unable to read MSPEC specification", MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e1);
+							throw new JNLPException("Unable to read materialization specification", MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e1);
 						}
 						catch(IOException e1)
 						{
@@ -216,8 +227,23 @@ public class DonePage extends InstallWizardPage
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.widthHint = BUTTON_WIDTH;
 		publishMSPECLink.setLayoutData(layoutData);
-		// TODO TBD
-		publishMSPECLink.setEnabled(false);
+		publishMSPECLink.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				PublishWizard publishWizard = new PublishWizard(getInstallWizard());
+				
+				AdvancedWizardDialog dialog = new AdvancedWizardDialog(getShell(), publishWizard);
+				dialog.create();
+				
+				final Shell shell = dialog.getShell();
+				shell.setSize(PUBLISH_WIZARD_WIDTH, PUBLISH_WIZARD_HEIGHT);
+				
+				dialog.showPage(publishWizard.getPageToOpen());
+				dialog.open();
+			}
+		});
 		
 		setControl(pageComposite);
 	}

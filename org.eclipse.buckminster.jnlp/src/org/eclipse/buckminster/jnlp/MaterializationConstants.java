@@ -86,6 +86,12 @@ public interface MaterializationConstants
 	
 	public static final String ERROR_CODE_AUTHENTICATOR_EXCEPTION = "AuthenticatorException";
 	
+	public static final String ERROR_CODE_NO_PUBLISHER_EXCEPTION = "NoPublisherException";
+	
+	public static final String ERROR_CODE_PUBLISHER_EXCEPTION = "PublisherException";
+	
+	public static final String ERROR_CODE_PUBLISHING_EXCEPTION = "PublishingException";
+	
 	public static final String ERROR_CODE_ALREADY_RUNNING_EXCEPTION = "AlreadyRunningException";
 	
 	public static final String ERROR_CODE_403_EXCEPTION = "403Exception";

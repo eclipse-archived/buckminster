@@ -13,6 +13,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
 /**
@@ -60,6 +61,30 @@ public class MaterializationUtils
 			throw new JNLPException("Cannot read materialization specification", errorCode, new BuckminsterException(
 					originalURL + " - " + HttpStatus.getStatusText(status)));
 
+		}
+	}
+	
+	/**
+	 * Checks response of IAuthenticator.register method
+	 * 
+	 * @param result result of IAuthenticator.register method
+	 * @throws JNLPException
+	 */
+	
+	public static void checkRegistrationResponse(int result) throws JNLPException
+	{
+		switch(result)
+		{
+		case IAuthenticator.REGISTER_FAIL:
+			throw new JNLPException("Registration was not successful", null);
+		case IAuthenticator.REGISTER_LOGIN_EXISTS:
+			throw new JNLPException("Login name already exists - choose a different one", null);
+		case IAuthenticator.REGISTER_LOGIN_TOO_SHORT:
+			throw new JNLPException("Login is too short - length must be between 3 and 25", null);
+		case IAuthenticator.REGISTER_PASSWORD_TOO_SHORT:
+			throw new JNLPException("Password is too short - length must be between 4 and 25", null);
+		case IAuthenticator.REGISTER_EMAIL_FORMAT_ERROR:
+			throw new JNLPException("Email does not have standard format", null);
 		}
 	}
 }
