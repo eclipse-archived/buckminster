@@ -34,6 +34,7 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -47,7 +48,6 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -60,7 +60,7 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  * 
  */
-public class InstallWizard extends Wizard
+public class InstallWizard extends AdvancedWizard
 {
 	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication";
 	
@@ -115,6 +115,10 @@ public class InstallWizard extends Wizard
 	private final Map<String,String> m_properties;
 	
 	private final IAuthenticator m_authenticator;
+	
+	private String m_authenticatorUserName;
+	
+	private String m_authenticatorPassword;
 	
 	private final List<LearnMoreItem> m_learnMores;
 	
@@ -195,29 +199,17 @@ public class InstallWizard extends Wizard
 	}
 
 	@Override
-	public void addPages()
+	protected void addAdvancedPages()
 	{
-		addPage(new StartPage());
+		addAdvancedPage(new StartPage());
 
 		if(!m_problemInProperties)
 		{
-			addPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : m_authenticator.getProvider()));
-			addPage(new SimpleDownloadPage());
-			addPage(new SimpleAdvancedPage());
-			addPage(new OperationPage());
-			addPage(new DonePage());
-		}
-		
-		setWindowTitle(m_windowTitle);
-
-		if(m_windowImage != null)
-		{
-			getShell().setImage(m_windowImage);
-		}
-				
-		if(m_wizardImage != null)
-		{
-			setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(m_wizardImage));
+			addAdvancedPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : m_authenticator.getProvider()));
+			addAdvancedPage(new SimpleDownloadPage());
+			addAdvancedPage(new SimpleAdvancedPage());
+			addAdvancedPage(new OperationPage());
+			addAdvancedPage(new DonePage());
 		}
 	}
 	
@@ -405,12 +397,14 @@ public class InstallWizard extends Wizard
 		return m_windowTitle;
 	}
 	
-	Image getWindowImage()
+	@Override
+	protected Image getWindowImage()
 	{
 		return m_windowImage;
 	}
 	
-	Image getWizardImage()
+	@Override
+	protected Image getWizardImage()
 	{
 		return m_wizardImage;
 	}
@@ -420,12 +414,14 @@ public class InstallWizard extends Wizard
 		return m_materializationImage;
 	}
 	
-	String getHelpURL()
+	@Override
+	public String getHelpURL()
 	{
 		return m_helpURL;
 	}
 	
-	String getMoreInfoURL()
+	@Override
+	public String getMoreInfoURL()
 	{
 		return m_moreInfoURL;
 	}
@@ -453,6 +449,26 @@ public class InstallWizard extends Wizard
 	IAuthenticator getAuthenticator()
 	{
 		return m_authenticator;
+	}
+	
+	String getAuthenticatorUserName()
+	{
+		return m_authenticatorUserName;
+	}
+	
+	void setAuthenticatorUserName(String userName)
+	{
+		m_authenticatorUserName = userName;
+	}
+	
+	String getAuthenticatorPassword()
+	{
+		return m_authenticatorPassword;
+	}
+
+	void setAuthenticatorPassword(String password)
+	{
+		m_authenticatorPassword = password;
 	}
 	
 	List<LearnMoreItem> getLearnMores()

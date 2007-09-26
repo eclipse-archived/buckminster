@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -29,6 +30,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.window.Window.IExceptionHandler;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Display;
@@ -189,7 +191,7 @@ public class Application implements IApplication
 				InstallWizard installWizard = new InstallWizard(properties);
 				m_errorURL = installWizard.getErrorURL();
 				
-				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard);
+				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard, ~SWT.APPLICATION_MODAL);
 				dialog.create();
 
 				// General exception handler

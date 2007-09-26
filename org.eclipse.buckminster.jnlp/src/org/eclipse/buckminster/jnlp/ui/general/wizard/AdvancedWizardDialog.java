@@ -6,14 +6,13 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.ui.general.wizard;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -25,6 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * A WizardDialog that is not application modal
@@ -37,10 +37,15 @@ public class AdvancedWizardDialog extends WizardDialog
 	
 	private boolean m_runningOperation = false;
 
-	public AdvancedWizardDialog(IWizard newWizard)
+	public AdvancedWizardDialog(AdvancedWizard newWizard, int styleFilter)
 	{
 		super(null, newWizard);
-		setShellStyle(getShellStyle() & ~SWT.APPLICATION_MODAL);
+		setShellStyle(getShellStyle() & styleFilter);
+	}
+
+	public AdvancedWizardDialog(Shell parentShell, AdvancedWizard newWizard)
+	{
+		super(parentShell, newWizard);
 	}
 
     @Override
@@ -49,7 +54,7 @@ public class AdvancedWizardDialog extends WizardDialog
             return;
         }
         
-        ((InstallWizardPage)page).beforeDisplaySetup();
+        ((AdvancedWizardPage)page).beforeDisplaySetup();
         
         super.showPage(page);
     }
@@ -57,7 +62,7 @@ public class AdvancedWizardDialog extends WizardDialog
 	@Override
 	protected void nextPressed()
 	{
-		InstallWizardPage currentPage = (InstallWizardPage)getCurrentPage();
+		AdvancedWizardPage currentPage = (AdvancedWizardPage)getCurrentPage();
 
 		if(!currentPage.commitPage())
 		{
@@ -72,7 +77,7 @@ public class AdvancedWizardDialog extends WizardDialog
 	{
 		for(IWizardPage page : getWizard().getPages())
 		{
-			InstallWizardPage instalPage = (InstallWizardPage) page;
+			AdvancedWizardPage instalPage = (AdvancedWizardPage) page;
 			if(!instalPage.isCommitted())
 			{
 				if(!instalPage.commitPage())
@@ -90,14 +95,21 @@ public class AdvancedWizardDialog extends WizardDialog
     {
     	super.updateButtons();
     	
-    	String cancelButtonText = ((InstallWizardPage) getCurrentPage()).getOverrideCancelButtonText();
+    	String finishButtonText = ((AdvancedWizardPage) getCurrentPage()).getOverrideFinishButtonText();
+    	
+    	if(finishButtonText != null)
+    	{
+    		getButton(IDialogConstants.FINISH_ID).setText(finishButtonText);
+    	}
+    	
+    	String cancelButtonText = ((AdvancedWizardPage) getCurrentPage()).getOverrideCancelButtonText();
     	
     	if(cancelButtonText != null)
     	{
     		getButton(IDialogConstants.CANCEL_ID).setText(cancelButtonText);
     	}
     	
-    	int defaultButtonId = ((InstallWizardPage) getCurrentPage()).getOverrideDefaultButtonId();
+    	int defaultButtonId = ((AdvancedWizardPage) getCurrentPage()).getOverrideDefaultButtonId();
     	
     	if(defaultButtonId != -1)
     	{
