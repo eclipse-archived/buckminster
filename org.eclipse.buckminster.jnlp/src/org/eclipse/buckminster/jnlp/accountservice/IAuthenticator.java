@@ -20,13 +20,16 @@ public interface IAuthenticator
 	public static final int LOGIN_FAILED = -1;
 	public static final int LOGIN_OK 	= 1;
 	
+	public static final int LOGOUT_FAILED = -1;
+	public static final int LOGOUT_OK 	= 1;
+	
 	public static final int REGISTER_OK = 1;
 	public static final int REGISTER_LOGIN_EXISTS = -1;
 	public static final int REGISTER_LOGIN_TOO_SHORT = -2;
 	public static final int REGISTER_PASSWORD_TOO_SHORT = -3;
 	public static final int REGISTER_EMAIL_FORMAT_ERROR = -4;
 	public static final int REGISTER_FAIL = -99;
-
+	
 	public void initialize(String serviceURL) throws Exception;
 	
 	/**

@@ -17,6 +17,13 @@ import java.util.List;
  */
 public interface IPublisher extends IAuthenticator
 {
+	public static final int STATUS_OK = 1;
+	public static final int STATUS_FAIL = -1;
+	public static final int ERROR_NOT_LOGGED_IN = -2;
+	public static final int ERROR_TIMEOUT = -3;
+	public static final int ERROR_SPACE_ACCESS_DENIED = -4;
+	public static final int ERROR_ARTIFACT_ALREADY_EXISTS = -5;
+
 	public List<String> getSpaceNames() throws Exception;
 	
 	public int publish(String spaceName, String artifactName, String xmlData, boolean replaceExisting) throws Exception;
