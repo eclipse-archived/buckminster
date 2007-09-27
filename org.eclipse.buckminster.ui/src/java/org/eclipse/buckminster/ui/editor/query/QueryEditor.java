@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.editor.query;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,6 +42,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
@@ -285,6 +287,10 @@ public class QueryEditor extends EditorPart
 	private Text m_shortDesc;
 
 	private Text m_documentation;
+	
+	private CTabItem m_xmlTab;
+	
+	private Text m_xml;
 
 	private CompoundModifyListener m_compoundModifyListener;
 
@@ -335,8 +341,44 @@ public class QueryEditor extends EditorPart
 		documentationTab.setText("Documentation");
 		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
 
+		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_xmlTab.setText("XML Content");
+		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
+
+		m_tabFolder.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if(m_xmlTab == e.item)
+				{
+					if(!commitChangesToQuery())
+						MessageDialog.openWarning(getSite().getShell(), null, "XML Content was not actualised due to errors");
+					else
+						m_xml.setText(getCQueryXML());
+				}
+			}
+		});
+
+		
 		createActionButtons(topComposite);
 	}
+
+	private String getCQueryXML()
+	{
+		String cqueryXML = "";
+		try
+		{
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			Utils.serialize(m_componentQuery.createComponentQuery(), baos);
+			cqueryXML = baos.toString();
+		}
+		catch(Exception e)
+		{
+			// nothing
+		}
+		return cqueryXML;
+	}			
 
 	public void doExternalSaveAs()
 	{
@@ -1098,6 +1140,22 @@ public class QueryEditor extends EditorPart
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
 		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL, m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		return tabComposite;
+	}
+
+	private Control getXMLTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "XML Content");
+
+		Composite xmlComposite = new Composite(tabComposite, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = layout.marginWidth = 0;
+		xmlComposite.setLayout(layout);
+		xmlComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY, null);
+		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
 	}
