@@ -258,16 +258,21 @@ public class VersionDesignator extends Widgetin
 		return m_parentComposite.getDisplay();
 	}
 	
-	public IVersionDesignator getVersionDesignator()
+	public IVersionDesignator getDirectVersionDesignator() throws CoreException
 	{
 		int vdIndex = m_versionDsType.getSelectionIndex();
 		if(vdIndex < 0)
 			return null;
 
+		return DesignatorType.values()[vdIndex].createDesignator(this.getVersionType(), m_fromVersion,
+				m_fromVersion, m_toVersion);
+	}
+	
+	public IVersionDesignator getVersionDesignator()
+	{
 		try
 		{
-			return DesignatorType.values()[vdIndex].createDesignator(this.getVersionType(), m_fromVersion,
-					m_fromVersion, m_toVersion);
+			return getDirectVersionDesignator();
 		}
 		catch(CoreException e)
 		{

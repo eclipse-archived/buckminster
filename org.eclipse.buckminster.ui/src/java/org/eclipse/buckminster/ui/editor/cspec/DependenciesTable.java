@@ -24,6 +24,7 @@ import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
 import org.eclipse.buckminster.ui.general.editor.simple.WidgetWrapper;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -38,7 +39,30 @@ import org.eclipse.swt.widgets.Text;
  */
 public class DependenciesTable extends SimpleTable<DependencyBuilder>
 {
+	class VersionDesignatorValidator implements IValidator
+	{
+		VersionDesignator m_designator;
+		
+		public VersionDesignatorValidator(VersionDesignator designator)
+		{
+			m_designator = designator;
+		}
+		
+		public void validate(Object... arg) throws ValidatorException
+		{
+			try
+			{
+				m_designator.getDirectVersionDesignator();
+			} catch(CoreException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}		
+	}
+	
 	private CSpecBuilder m_cspecBuilder;
+	
+	private VersionDesignatorValidator m_versionDesignatorValidator;
 	
 	public DependenciesTable(List<DependencyBuilder> data, CSpecBuilder cspecBuilder)
 	{
@@ -89,7 +113,9 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 			case 1:
 				return getComboWidgetin(parent, idx, value, AbstractComponentType.getComponentTypeIDs(true), SWT.READ_ONLY);
 			case 2:
-				return getVersionDesignator(parent, idx, value);
+				VersionDesignator designator = getVersionDesignator(parent, idx, value);
+				m_versionDesignatorValidator = new VersionDesignatorValidator(designator);
+				return designator;
 			default:
 				return getTextWidgetin(parent, idx, value);
 		}
@@ -131,9 +157,16 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 
 			public void modifyVersionDesignator(VersionDesignatorEvent e)
 			{
-				IVersionDesignator designatorValue = designator.getVersionDesignator();
-				designator.setData(designatorValue);
-				validateFieldInFieldListener(designator, getFieldValidator(idx), designatorValue);				
+				try
+				{
+					IVersionDesignator designatorValue = designator.getDirectVersionDesignator();
+					designator.setData(designatorValue);
+				} catch(CoreException e1)
+				{
+					// nothing - error message is displayed using validateFieldInFieldListener method
+				}
+				
+				validateFieldInFieldListener(designator, getFieldValidator(idx), null);				
 			}
 		});
 
@@ -166,6 +199,8 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		{
 		case 0:
 			return SimpleTable.createNotEmptyStringValidator("Dependency name cannot be empty");
+		case 2:
+			return m_versionDesignatorValidator;
 		default:
 			return SimpleTable.getEmptyValidator();
 		}
