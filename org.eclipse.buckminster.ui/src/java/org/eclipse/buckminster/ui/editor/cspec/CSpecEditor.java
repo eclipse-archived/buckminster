@@ -40,6 +40,8 @@ import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -487,8 +489,17 @@ public class CSpecEditor extends EditorPart
 		{
 			m_componentName.setText(TextUtils.notNullString(m_cspec.getName()));
 			m_componentType.select(m_componentType.indexOf(TextUtils.notNullString(m_cspec.getComponentTypeID())));
-			m_versionString.setText(TextUtils.notNullString(m_cspec.getVersion().toString()));
-			m_versionType.select(m_versionType.indexOf(m_cspec.getVersion().getType().getId()));
+			IVersion version = m_cspec.getVersion();
+			if(version == null)
+			{
+				m_versionString.setText("");
+				m_versionType.select(m_versionType.indexOf(VersionFactory.OSGiType.getId()));
+			}
+			else
+			{
+				m_versionString.setText(TextUtils.notNullString(version));
+				m_versionType.select(m_versionType.indexOf(version.getType().getId()));
+			}
 
 			m_actionBuilders.clear();
 			m_actionArtifactBuilders.clear();
