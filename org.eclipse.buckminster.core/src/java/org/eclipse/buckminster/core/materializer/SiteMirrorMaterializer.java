@@ -94,6 +94,12 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 
 	public static final Object MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
 
+	@Override
+	public boolean canWorkInParallel()
+	{
+		return false;
+	}
+
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
 			IProgressMonitor monitor) throws CoreException
 	{
