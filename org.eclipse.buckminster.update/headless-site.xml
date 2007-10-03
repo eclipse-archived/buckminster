@@ -176,5 +176,5 @@
     <archive path="plugins/org.polarion.team.svn.ui_1.1.7.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.ui_1.1.7.jar"/>
     <archive path="plugins/org.polarion.team.svn.client.javahl.win32_1.1.4.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl.win32_1.1.4.jar"/>
     <archive path="plugins/org.polarion.team.svn.client.javahl_1.1.5.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl_1.1.5.jar"/>
-    <archive path="plugins/com.ibm.icu.base_3.6.1.v200700906.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/R200709171314/bundles/com.ibm.icu.base_3.6.1.v20070906.jar"/>
+    <archive path="plugins/com.ibm.icu.base_3.6.1.v20070906.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/R200709171314/bundles/com.ibm.icu.base_3.6.1.v20070906.jar"/>
 </site>
