@@ -43,6 +43,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -119,7 +120,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 
 		try
 		{
-			job.run(MonitorUtils.subMonitor(monitor, 200));
+			ResourcesPlugin.getWorkspace().run(job, MonitorUtils.subMonitor(monitor, 200));
 		}
 		finally
 		{

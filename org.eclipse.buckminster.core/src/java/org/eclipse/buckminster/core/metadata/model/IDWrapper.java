@@ -67,7 +67,10 @@ public class IDWrapper implements ISaxableElement, Comparable<IDWrapper>
 		Utils.addAttribute(attrs, ATTR_ID, m_id.toString());
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, attrs);
-		((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
+		if(m_wrapped instanceof BillOfMaterials)
+			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
+		else
+			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
 		receiver.endElement(namespace, localName, qName);
 	}
 }

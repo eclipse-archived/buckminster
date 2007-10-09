@@ -104,7 +104,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		ResolverNode[] children = null;
 		if(numChildren > 0)
 		{
-			IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_FEATURE);
+			IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
 			ArrayList<ResolverNode> childArr = new ArrayList<ResolverNode>(numChildren);
 			Provider provider = reader.getProviderMatch().getProvider();
 			for(IIncludedFeatureReference ref : refs)

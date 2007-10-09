@@ -9,11 +9,13 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -32,11 +34,20 @@ class GeneratorNodeHandler extends DepNodeHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_node = new GeneratorNode(
-			UUID.fromString(this.getStringValue(attrs, GeneratorNode.ATTR_DECLARING_CSPEC_ID)),
-			getStringValue(attrs, GeneratorNode.ATTR_COMPONENT),
-			getStringValue(attrs, GeneratorNode.ATTR_ATTRIBUTE),
-			getStringValue(attrs, GeneratorNode.ATTR_GENERATES));
+		UUID cspecId = null;
+		try
+		{
+			cspecId = UUID.fromString(this.getStringValue(attrs, GeneratorNode.ATTR_DECLARING_CSPEC_ID));
+			m_node = new GeneratorNode(
+				(CSpec)getWrapped(cspecId),
+				getStringValue(attrs, GeneratorNode.ATTR_COMPONENT),
+				getStringValue(attrs, GeneratorNode.ATTR_ATTRIBUTE),
+				getStringValue(attrs, GeneratorNode.ATTR_GENERATES));
+		}
+		catch(ClassCastException e)
+		{
+			throw new SAXParseException("wrapper " + cspecId + " does not wrap a cspec", getDocumentLocator());
+		}
 	}
 
 	@Override

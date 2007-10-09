@@ -9,13 +9,11 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
-import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.Utils;
@@ -38,28 +36,25 @@ public class GeneratorNode extends DepNode
 	@SuppressWarnings("hiding")
 	public static final String TAG = "generatorNode";
 
-	private final UUID m_declaringCSpecId;
-
 	private final String m_attribute;
 
 	private final String m_component;
 
 	private final String m_generates;
 
-	private transient CSpec m_declaringCSpec;
+	private final CSpec m_declaringCSpec;
 
 	public GeneratorNode(Generator generator)
 	{
 		m_declaringCSpec = generator.getCSpec();
-		m_declaringCSpecId = m_declaringCSpec.getId();
 		m_component = generator.getComponent();
 		m_attribute = generator.getAttribute();
 		m_generates = generator.getGenerates();
 	}
 
-	public GeneratorNode(UUID declaringCSpecId, String component, String attribute, String generates)
+	public GeneratorNode(CSpec declaringCSpec, String component, String attribute, String generates)
 	{
-		m_declaringCSpecId = declaringCSpecId;
+		m_declaringCSpec = declaringCSpec;
 		m_component = component;
 		m_attribute = attribute;
 		m_generates = generates;
@@ -96,8 +91,6 @@ public class GeneratorNode extends DepNode
 
 	public synchronized CSpec getDeclaringCSpec() throws CoreException
 	{
-		if(m_declaringCSpec == null)
-			m_declaringCSpec = StorageManager.getDefault().getCSpecs().getElement(m_declaringCSpecId);
 		return m_declaringCSpec;
 	}
 
@@ -128,7 +121,7 @@ public class GeneratorNode extends DepNode
 	@Override
 	protected void addAttributes(AttributesImpl attrs)
 	{
-		Utils.addAttribute(attrs, ATTR_DECLARING_CSPEC_ID, m_declaringCSpecId.toString());
+		Utils.addAttribute(attrs, ATTR_DECLARING_CSPEC_ID, m_declaringCSpec.getId().toString());
 		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, m_attribute);
 		if(m_component != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT, m_component);

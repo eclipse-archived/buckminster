@@ -7,9 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.parser;
 
+import java.util.UUID;
+
+import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -21,6 +25,16 @@ abstract class DepNodeHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
-	abstract DepNode getDepNode();
+	IUUIDKeyed getWrapped(UUID id) throws SAXException
+	{
+		return ((IDWrapperHandler)getParentHandler()).getWrapped(id);
+	}
+
+	DepNode getDepNode(UUID id) throws SAXException
+	{
+		return ((IDWrapperHandler)getParentHandler()).getDepNode(id);
+	}
+
+	abstract DepNode getDepNode() throws SAXException;
 }
 

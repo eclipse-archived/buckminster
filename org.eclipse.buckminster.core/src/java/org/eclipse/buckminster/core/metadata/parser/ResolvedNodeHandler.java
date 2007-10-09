@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -62,9 +63,20 @@ class ResolvedNodeHandler extends DepNodeHandler implements ChildPoppedListener
 	}
 
 	@Override
-	DepNode getDepNode()
+	DepNode getDepNode() throws SAXException
 	{
-		return new ResolvedNode(m_resolutionId, m_children);
+		ArrayList<DepNode> childNodes = new ArrayList<DepNode>(m_children.size());
+		for(UUID childId : m_children)
+			childNodes.add(getDepNode(childId));
+
+		try
+		{
+			return new ResolvedNode((Resolution)getWrapped(m_resolutionId), childNodes);
+		}
+		catch(ClassCastException e)
+		{
+			throw new SAXParseException("wrapper " + m_resolutionId + " does not wrap a resolution", getDocumentLocator());			
+		}
 	}
 }
 

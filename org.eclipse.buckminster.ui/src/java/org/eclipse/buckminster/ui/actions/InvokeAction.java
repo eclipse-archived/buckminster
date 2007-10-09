@@ -22,25 +22,20 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -64,14 +59,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * @author Thomas Hallgren
  */
-public class InvokeAction implements IObjectActionDelegate
+public class InvokeAction extends AbstractCSpecAction
 {
 	private static final String LAST_ACTION_PROPERTIES_FILE = "lastActionPropertiesFile";
 
@@ -228,20 +220,19 @@ public class InvokeAction implements IObjectActionDelegate
 		}
 	}
 
-	private IWorkbenchPart m_activePart;
-
-	private CSpec m_selectedComponent;
-
 	private String m_propertiesFile;
 
 	class ActionJob extends WorkspaceJob
 	{
-		ActionJob(String name)
+		private final CSpec m_cspec;
+
+		ActionJob(String name, CSpec cspec)
 		{
 			super(name);
 			setPriority(LONG);
 			setUser(true);
 			setSystem(false);
+			m_cspec = cspec;
 		}
 
 		@Override
@@ -268,7 +259,7 @@ public class InvokeAction implements IObjectActionDelegate
 			}
 			try
 			{
-				return pm.perform(m_selectedComponent, this.getName(), props, false, monitor);
+				return pm.perform(m_cspec, this.getName(), props, false, monitor);
 			}
 			catch(Throwable e)
 			{
@@ -286,22 +277,13 @@ public class InvokeAction implements IObjectActionDelegate
 		}
 	}
 
-	public void run(IAction action)
+	@Override
+	protected void run(CSpec cspec, Shell shell)
 	{
-		if(m_activePart == null)
-			return;
-
-		IWorkbenchPartSite site = m_activePart.getSite();
-		final Shell shell = site.getShell();
-		if(m_selectedComponent == null)
-		{
-			MessageDialog.openInformation(shell, null, "No component is selected");
-			return;
-		}
 		List<Attribute> viableAttributes;
 		try
 		{
-			viableAttributes = m_selectedComponent.getAttributesProducedByActions(false);
+			viableAttributes = cspec.getAttributesProducedByActions(false);
 		}
 		catch(CoreException e)
 		{
@@ -312,7 +294,7 @@ public class InvokeAction implements IObjectActionDelegate
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		m_propertiesFile = preferences.getString(LAST_ACTION_PROPERTIES_FILE);
 		Collections.sort(viableAttributes, s_attributeComparator);
-		ActionsDialog dialog = new ActionsDialog(shell, "Actions of " + m_selectedComponent.getName(),
+		ActionsDialog dialog = new ActionsDialog(shell, "Actions of " + cspec.getName(),
 			viableAttributes);
 		if(dialog.open() != Window.OK)
 			return;
@@ -320,46 +302,7 @@ public class InvokeAction implements IObjectActionDelegate
 		if(m_propertiesFile != null)
 			preferences.setValue(LAST_ACTION_PROPERTIES_FILE, m_propertiesFile);
 
-		ActionJob job = new ActionJob(dialog.getSelectedAttribute().getName());
+		ActionJob job = new ActionJob(dialog.getSelectedAttribute().getName(), cspec);
 		job.schedule();
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_activePart = targetPart;
-	}
-
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-		m_selectedComponent = null;
-		if(!(selection instanceof IStructuredSelection))
-			return;
-
-		IStructuredSelection s = (IStructuredSelection)selection;
-		if(s.size() != 1)
-			return;
-
-		Object first = s.getFirstElement();
-		if(!(first instanceof IResource))
-			return;
-
-		IResource resource = (IResource)first;
-		while(resource != null)
-		{
-			try
-			{
-				CSpec cspec = WorkspaceInfo.getCSpec(resource);
-				if(cspec != null)
-				{
-					m_selectedComponent = cspec;
-					break;
-				}
-				resource = resource.getParent();
-			}
-			catch(CoreException e)
-			{
-				CorePlugin.getLogger().warning(e.getMessage(), e);
-			}
-		}
 	}
 }

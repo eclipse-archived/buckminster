@@ -16,24 +16,21 @@
 	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" />
 	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
 	<element name="billOfMaterials" type="md:BillOfMaterials" />
+	<!--  For backward compatibility -->
+	<element name="exportedBillOfMaterials" type="md:BillOfMaterials" />
 	<complexType name="BOMNode" />
 	<complexType name="BillOfMaterials">
 		<complexContent>
 			<extension base="md:BOMNode">
-				<attribute name="topNodeId" type="com:uuid" use="optional" />
-				<attribute name="componentQueryId" type="com:uuid" use="required" />
-				<attribute name="timestamp" type="string" use="required" />
-			</extension>
-		</complexContent>
-	</complexType>
-	<element name="exportedBillOfMaterials" type="md:ExportedBillOfMaterials" />
-	<complexType name="ExportedBillOfMaterials">
-		<complexContent>
-			<extension base="md:BillOfMaterials">
 				<sequence>
 					<element name="idwrapper" type="md:IDWrapper" minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
-				<attribute name="id" type="com:uuid" use="required" />
+				<attribute name="topNodeId" type="com:uuid" use="optional" />
+				<attribute name="componentQueryId" type="com:uuid" use="required" />
+				<attribute name="timestamp" type="string" use="required" />
+				
+				<!--  For backward compatibility -->
+				<attribute name="id" type="com:uuid" use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>

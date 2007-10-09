@@ -17,14 +17,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
-import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
@@ -34,9 +31,12 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
+ * The resolution graph
  * @author Thomas Hallgren
  */
 public class BillOfMaterials extends DepNode
@@ -71,55 +71,9 @@ public class BillOfMaterials extends DepNode
 		return new BillOfMaterials(topNode, query, timestamp);
 	}
 
-	/**
-	 * Imports a previously exported <code>BillOfMaterials</code> into the workspace meta-data storage. The
-	 * resulting workspace internal <code>BillOfMaterials</code> is returned.
-	 * @param exported The external BillOfMaterials
-	 * @return the workspace internal BillOfMaterials
-	 * @throws CoreException
-	 */
-	public static BillOfMaterials importGraph(ExportedBillOfMaterials exported) throws CoreException
+	private static void addIfNotAdded(IUUIDKeyed object, Set<UUID> unique, List<IDWrapper> wrappers)
 	{
-		StorageManager sm = StorageManager.getDefault();
-		List<IDWrapper> wrappers = exported.getContents();
-		ISaxableStorage<CSpec> cspecStore = sm.getCSpecs();
-		ISaxableStorage<ComponentQuery> queryStore = sm.getQueries();
-		ISaxableStorage<Provider> providerStore = sm.getProviders();
-
-		for(IDWrapper wrapper : wrappers)
-		{
-			IUUIDKeyed wrapped = wrapper.getWrapped();
-			if(wrapped instanceof CSpec)
-				cspecStore.putElement(wrapper.getId(), (CSpec)wrapped);
-			else if(wrapped instanceof ComponentQuery)
-				queryStore.putElement(wrapper.getId(), (ComponentQuery)wrapped);
-			else if(wrapped instanceof Provider)
-				providerStore.putElement(wrapper.getId(), (Provider)wrapped);
-		}
-
-		ISaxableStorage<Resolution> resolutionStore = sm.getResolutions();
-		for(IDWrapper wrapper : wrappers)
-		{
-			IUUIDKeyed wrapped = wrapper.getWrapped();
-			if(wrapped instanceof Resolution)
-				resolutionStore.putElement(wrapper.getId(), (Resolution)wrapped);
-		}
-
-		ISaxableStorage<DepNode> nodeStore = sm.getDepNodes();
-		for(IDWrapper wrapper : wrappers)
-		{
-			IUUIDKeyed wrapped = wrapper.getWrapped();
-			if(wrapped instanceof DepNode)
-				nodeStore.putElement(wrapper.getId(), (DepNode)wrapped);
-		}
-
-		BillOfMaterials bom = new BillOfMaterials(exported.getTopNodeId(), exported.getQueryId(), exported.getTimestamp());
-		bom.store();	
-		return bom;
-	}
-
-	private static void addIfNotAdded(UUID key, IUUIDKeyed object, Set<UUID> unique, List<IDWrapper> wrappers)
-	{
+		UUID key = object.getId();
 		if(unique.contains(key))
 			return;
 		unique.add(key);
@@ -169,10 +123,10 @@ public class BillOfMaterials extends DepNode
 			{
 				// Add the Resolution to the contents
 				//
-				addIfNotAdded(resolution.getProviderId(), resolution.getProvider(), unique, wrappers);
-				addIfNotAdded(resolution.getCSpecId(), resolution.getCSpec(), unique, wrappers);
-				addIfNotAdded(resolution.getId(), resolution, unique, wrappers);
-	
+				addIfNotAdded(resolution.getProvider(), unique, wrappers);
+				addIfNotAdded(resolution.getCSpec(), unique, wrappers);
+				addIfNotAdded(resolution, unique, wrappers);
+
 				// Recursively add all children of this ResolvedNode. It's
 				// very important that we do this depth first since the leafs
 				// must end up first in the list of IDWrappers.
@@ -189,35 +143,17 @@ public class BillOfMaterials extends DepNode
 	//
 	private transient HashMap<ComponentIdentifier,DepNode> m_nodeMap;
 
-	private transient ComponentQuery m_query;
-
-	private final UUID m_queryId;
+	private final ComponentQuery m_query;
 
 	private final Date m_timestamp;
 
-	private transient DepNode m_topNode;
+	private final DepNode m_topNode;
 
-	private final UUID m_topNodeId;
-
-	public BillOfMaterials(UUID topNodeId, UUID queryId, Date timestamp)
+	public BillOfMaterials(DepNode topNode, ComponentQuery query, Date timestamp)
 	{
-		if(topNodeId == null)
-			throw new IllegalArgumentException("Top node ID cannot be null");
-		if(queryId == null)
-			throw new IllegalArgumentException("Component query ID cannot be null");
-		if(timestamp == null)
-			timestamp = new Date();
-		m_topNodeId = topNodeId;
-		m_queryId = queryId;
-		m_timestamp = timestamp;
-	}
-
-	private BillOfMaterials(DepNode topNode, ComponentQuery query, Date timestamp)
-	{
+		super();
 		m_topNode = topNode;
 		m_query = query;
-		m_topNodeId = topNode.getId();
-		m_queryId = query.getId();
 		m_timestamp = (timestamp == null) ? new Date() : timestamp;
 	}
 
@@ -229,7 +165,13 @@ public class BillOfMaterials extends DepNode
 	 */
 	public boolean contentEqual(BillOfMaterials other)
 	{
-		return other != null && m_queryId.equals(other.m_queryId) && m_topNodeId.equals(other.m_topNodeId);
+		return other != null && m_query.equals(other.m_query) && m_topNode.equals(other.m_topNode);
+	}
+
+	@Override
+	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
+	{
+		return getTopNode().findAll(skipThese);
 	}
 
 	public List<Resolution> findMaterializationCandidates(MaterializationSpec mspec)
@@ -238,22 +180,6 @@ public class BillOfMaterials extends DepNode
 		List<Resolution> minfos = new ArrayList<Resolution>();
 		addMaterializationCandidates(minfos, getQuery(), mspec, new HashSet<Resolution>());
 		return minfos;
-	}
-
-	public ExportedBillOfMaterials exportGraph() throws CoreException
-	{
-		store();
-		ArrayList<IDWrapper> wrappers = new ArrayList<IDWrapper>();
-		HashSet<UUID> unique = new HashSet<UUID>();
-		wrappers.add(new IDWrapper(m_queryId, getQuery()));
-		collectNodeContents(getTopNode(), unique, wrappers);
-		return new ExportedBillOfMaterials(getId(), m_topNodeId, m_queryId, m_timestamp, wrappers);
-	}
-
-	@Override
-	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
-	{
-		return getTopNode().findAll(skipThese);
 	}
 
 	public BillOfMaterials fullyResolve(IProgressMonitor monitor) throws CoreException
@@ -272,12 +198,6 @@ public class BillOfMaterials extends DepNode
 		return getTopNode().getChildren();
 	}
 
-	@Override
-	public List<UUID> getChildrenIDs() throws CoreException
-	{
-		return getTopNode().getChildrenIDs();
-	}
-
 	public String getDefaultTag()
 	{
 		return TAG;
@@ -290,17 +210,15 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public synchronized ComponentQuery getQuery() throws CoreException
+	public synchronized ComponentQuery getQuery()
 	{
-		if(m_query == null)
-			m_query = StorageManager.getDefault().getQueries().getElement(m_queryId);
 		return m_query;
 	}
 
 	@Override
 	public UUID getQueryId()
 	{
-		return m_queryId;
+		return m_query.getId();
 	}
 
 	@Override
@@ -340,11 +258,6 @@ public class BillOfMaterials extends DepNode
 		return m_timestamp;
 	}
 
-	public UUID getTopNodeId()
-	{
-		return m_topNodeId;
-	}
-
 	@Override
 	public String getViewName() throws CoreException
 	{
@@ -352,9 +265,9 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public boolean isChildId(UUID nodeId) throws CoreException
+	public boolean isChild(DepNode node) throws CoreException
 	{
-		return getTopNode().isChildId(nodeId);
+		return getTopNode().isChild(node);
 	}
 
 	public boolean isFullyResolved() throws CoreException
@@ -369,23 +282,9 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public boolean isPersisted() throws CoreException
+	public final boolean isReferencing(DepNode node, boolean shallow) throws CoreException
 	{
-		return getStorage().contains(this);
-	}
-
-	@Override
-	public final boolean isReferencing(UUID nodeId, boolean shallow) throws CoreException
-	{
-		return nodeId == getId() || getTopNode().isReferencing(nodeId, shallow);
-	}
-
-	@Override
-	public void remove() throws CoreException
-	{
-		ISaxableStorage<DepNode> depNodes = getStorage();
-		depNodes.removeElement(getId());
-		getTopNode().remove();
+		return equals(node) || getTopNode().isReferencing(node, shallow);
 	}
 
 	public BillOfMaterials replaceNode(DepNode node) throws CoreException
@@ -394,27 +293,54 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public void store() throws CoreException
+	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
-		if(m_topNode == null)
-			getTopNode();
-		else
-			m_topNode.store();
+		// Note, we do not call super here since we want the top element to contain the collection
+		//
+		HashMap<String, String> prefixMappings = new HashMap<String, String>();
+		ArrayList<IDWrapper> wrappers = new ArrayList<IDWrapper>();
+		HashSet<UUID> unique = new HashSet<UUID>();
+		wrappers.add(new IDWrapper(m_query.getId(), m_query));
+		try
+		{
+			collectNodeContents(getTopNode(), unique, wrappers);
+		}
+		catch(CoreException e)
+		{
+			throw new SAXException(e);
+		}
 
-		if(m_query == null)
-			getQuery();
-		else
-			m_query.store();
+		for(IDWrapper wrapper : wrappers)
+		{
+			IUUIDKeyed wrapped = wrapper.getWrapped();
+			if(wrapped instanceof Provider)
+				((Provider)wrapped).addPrefixMappings(prefixMappings);
+		}
 
-		getStorage().putElement(this);
+		Set<Map.Entry<String, String>> pfxMappings = prefixMappings.entrySet();
+		if(pfxMappings.size() > 0)
+		{
+			for(Map.Entry<String, String> pfxMapping : pfxMappings)
+				receiver.startPrefixMapping(pfxMapping.getKey(), pfxMapping.getValue());
+		}
+
+		AttributesImpl attrs = new AttributesImpl();
+		addAttributes(attrs);
+		Utils.emitCollection(namespace, prefix, localName, IDWrapper.TAG, attrs, wrappers, receiver);
+
+		if(pfxMappings.size() > 0)
+		{
+			for(Map.Entry<String, String> pfxMapping : pfxMappings)
+				receiver.endPrefixMapping(pfxMapping.getKey());
+		}
 	}
 
 	@Override
 	void addAttributes(AttributesImpl attrs)
 	{
-		if(m_topNodeId != null)
-			Utils.addAttribute(attrs, ATTR_TOP_NODE_ID, m_topNodeId.toString());
-		Utils.addAttribute(attrs, ATTR_QUERY_ID, m_queryId.toString());
+		if(m_topNode != null)
+			Utils.addAttribute(attrs, ATTR_TOP_NODE_ID, m_topNode.getId().toString());
+		Utils.addAttribute(attrs, ATTR_QUERY_ID, m_query.getId().toString());
 		Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
 	}
 
@@ -458,10 +384,28 @@ public class BillOfMaterials extends DepNode
 		return (oldTop == newTop) ? this : create(newTop, getQuery());
 	}
 
-	private synchronized DepNode getTopNode() throws CoreException
+	/**
+	 * Special sax output method that is used for BillOfMaterials inlined in other BillOfMaterials
+	 * since the attributes are sufficient here. All IdWrapper instances will be emitted in the
+	 * outermost BillOfMaterials
+	 *
+	 * @param receiver
+	 * @param namespace
+	 * @param prefix
+	 * @param localName
+	 * @throws SAXException
+	 */
+	void wrappedToSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
-		if(m_topNode == null)
-			m_topNode = StorageManager.getDefault().getDepNodes().getElement(m_topNodeId);
+		AttributesImpl attrs = new AttributesImpl();
+		addAttributes(attrs);
+		String qName = Utils.makeQualifiedName(prefix, localName);
+		receiver.startElement(namespace, localName, qName, attrs);
+		receiver.endElement(namespace, localName, qName);
+	}
+
+	private synchronized DepNode getTopNode()
+	{
 		return m_topNode;
 	}
 }

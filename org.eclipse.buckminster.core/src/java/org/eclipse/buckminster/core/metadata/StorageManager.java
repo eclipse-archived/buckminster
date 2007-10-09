@@ -11,11 +11,9 @@ import java.io.File;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.IParserFactory;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -52,10 +50,6 @@ public class StorageManager
 
 	private final ISaxableStorage<Provider> m_providers;
 
-	private final ISaxableStorage<ComponentQuery> m_queries;
-
-	private final ISaxableStorage<DepNode> m_depNodes;
-
 	private final ISaxableStorage<Materialization> m_materializations;
 
 	public StorageManager(File baseLocation) throws CoreException, SAXException
@@ -77,12 +71,6 @@ public class StorageManager
 
 		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
 			pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
-
-		m_depNodes = new FileStorage<DepNode>(new File(baseLocation, DepNode.TAG), pf.getDepNodeParser(),
-			DepNode.class, DepNode.SEQUENCE_NUMBER);
-
-		m_queries = new FileStorage<ComponentQuery>(new File(baseLocation, ComponentQuery.TAG),
-			pf.getComponentQueryParser(false), ComponentQuery.class, ComponentQuery.SEQUENCE_NUMBER);
 	}
 
 	public static StorageManager getDefault()
@@ -102,12 +90,6 @@ public class StorageManager
 		return m_materializations;
 	}
 
-	public synchronized ISaxableStorage<ComponentQuery> getQueries() throws CoreException
-	{
-		initialize();
-		return m_queries;
-	}
-
 	public synchronized ISaxableStorage<Resolution> getResolutions() throws CoreException
 	{
 		initialize();
@@ -118,12 +100,6 @@ public class StorageManager
 	{
 		initialize();
 		return m_providers;
-	}
-
-	public synchronized ISaxableStorage<DepNode> getDepNodes() throws CoreException
-	{
-		initialize();
-		return m_depNodes;
 	}
 
 	class MetadataRefreshJob extends Job

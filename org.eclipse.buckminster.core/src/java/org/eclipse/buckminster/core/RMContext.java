@@ -8,24 +8,32 @@
 
 package org.eclipse.buckminster.core;
 
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.common.model.IProperties;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 
 /**
@@ -34,15 +42,58 @@ import org.eclipse.core.runtime.Status;
  * 
  * @author Thomas Hallgren
  */
-public class RMContext extends ExpandingProperties
+public class RMContext extends MapUnion<String, String>
 {
+	private static final Map<String, String> s_globalAdditions;
+
+	static
+	{
+		Map<String,String> additions = new HashMap<String, String>();
+
+		URL eclipseHome = Platform.getInstallLocation().getURL();
+		if(eclipseHome != null)
+		{
+			CorePlugin.getLogger().debug("Platform install location: " + eclipseHome);
+			assert ("file".equals(eclipseHome.getProtocol()));
+			File homeFile = FileUtils.getFile(eclipseHome);
+			if(homeFile != null)
+				additions.put("eclipse.home", homeFile.toString());
+		}
+		else
+			CorePlugin.getLogger().debug("Platform install location is NULL!");
+
+		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation()
+				.toPortableString());
+		try
+		{
+			additions.put("localhost", InetAddress.getLocalHost().getHostName());
+		}
+		catch(UnknownHostException e1)
+		{
+			// We'll just have to do without it.
+		}
+		s_globalAdditions = new MapUnion<String, String>(additions, BMProperties.getSystemProperties());
+	}
+
+	public static Map<String, String> getGlobalPropertyAdditions()
+	{
+		return s_globalAdditions;
+	}
+
 	private boolean m_continueOnError;
 	private MultiStatus m_status;
 	private Map<UUID,Object> m_userCache;
 
+	private static Map<String,String> makeExpanding(Map<String,String> properties)
+	{
+		return (properties instanceof ExpandingProperties)
+			? properties
+			: new ExpandingProperties(properties);
+	}
+
 	public RMContext(Map<String,String> properties)
 	{
-		super(properties);
+		super(makeExpanding(properties), s_globalAdditions);
 	}
 
 	/**
@@ -112,11 +163,7 @@ public class RMContext extends ExpandingProperties
 
 	public Map<String, String> getProperties(ComponentName cName)
 	{
-		// fill this up as you go..
-		//
-		IProperties p = new ExpandingProperties(this);
-		p.putAll(cName.getProperties());
-		return p;
+		return new MapUnion<String, String>(cName.getProperties(), this);
 	}
 
 	public NodeQuery getRootNodeQuery()

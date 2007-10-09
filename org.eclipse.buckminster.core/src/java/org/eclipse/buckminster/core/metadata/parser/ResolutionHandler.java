@@ -129,11 +129,34 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		if(m_componentType == null)
 			m_componentType = legacyComponentType();
 
+		AbstractHandler parent = getParentHandler();
+		CSpec cspec;
+		Provider provider;
+		if(parent instanceof IDWrapperHandler)
+		{
+			IDWrapperHandler wh = (IDWrapperHandler)parent;
+			cspec = (CSpec)wh.getWrapped(m_cspecId);
+			provider = (Provider)wh.getWrapped(m_providerId);
+		}
+		else
+		{
+			try
+			{
+				StorageManager sm = StorageManager.getDefault();
+				cspec = sm.getCSpecs().getElement(m_cspecId);
+				provider = sm.getProviders().getElement(m_providerId);
+			}
+			catch(CoreException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
+
 		return new Resolution(
-				m_cspecId,
+				cspec,
 				m_componentType,
 				m_versionMatch,
-				m_providerId,
+				provider,
 				m_materializable,
 				m_request,
 				m_attributes,

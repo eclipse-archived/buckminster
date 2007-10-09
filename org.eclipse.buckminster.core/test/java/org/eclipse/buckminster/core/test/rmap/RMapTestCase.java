@@ -59,7 +59,7 @@ public class RMapTestCase extends AbstractTestCase
 
 		// Print the XML of exported version of the BOM
 		//
-		Utils.serialize(bom.exportGraph(), System.out);
+		Utils.serialize(bom, System.out);
 		assertTrue("Resolution failed", bom.isFullyResolved());
 	}
 
@@ -72,7 +72,7 @@ public class RMapTestCase extends AbstractTestCase
 
 		// Print the XML of exported version of the BOM
 		//
-		Utils.serialize(bom.exportGraph(), System.out);
+		Utils.serialize(bom, System.out);
 
 		assertTrue("Resolution failed", bom.isFullyResolved());
 	}

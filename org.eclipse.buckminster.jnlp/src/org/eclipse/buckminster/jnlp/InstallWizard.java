@@ -8,7 +8,36 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_MSPEC;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_UNKNOWN;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_UNKNOWN_TEXT;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_404_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_AUTHENTICATOR_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_WINDOW_TITLE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZERS;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_TYPE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_BASE_PATH_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_MATERIALIZATION_IMAGE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,7 +56,6 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -38,7 +66,6 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
@@ -585,7 +612,7 @@ public class InstallWizard extends AdvancedWizard
 
 				HttpMethod method = null;
 				InputStream stream = null;
-				ExportedBillOfMaterials exported = null;
+				BillOfMaterials bom = null;
 				
 				try
 				{
@@ -599,7 +626,7 @@ public class InstallWizard extends AdvancedWizard
 					IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory()
 							.getBillOfMaterialsParser(true);
 
-					exported = (ExportedBillOfMaterials)parser.parse(bomURL.toString(), stream);
+					bom = parser.parse(bomURL.toString(), stream);
 				}
 				catch(URISyntaxException e)
 				{
@@ -614,7 +641,7 @@ public class InstallWizard extends AdvancedWizard
 						method.releaseConnection();
 				}
 
-				m_cachedBOM = BillOfMaterials.importGraph(exported);
+				m_cachedBOM = bom;
 			}
 			catch(SAXException e)
 			{
@@ -630,12 +657,6 @@ public class InstallWizard extends AdvancedWizard
 			catch(IOException e)
 			{
 				throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-			}
-			catch(CoreException e)
-			{
-				throw new JNLPException(
-						"Error while reading artifact specification -\n\tbill of materials can not be imported",
-						ERROR_CODE_BOM_IO_EXCEPTION, e);
 			}
 			
 			File cachedBOMFile;
@@ -669,7 +690,7 @@ public class InstallWizard extends AdvancedWizard
 		try
 		{
 			FileOutputStream os = new FileOutputStream(file);
-			Utils.serialize(bom.exportGraph(), os);
+			Utils.serialize(bom, os);
 			os.close();
 		}
 		catch(FileNotFoundException e1)
@@ -683,10 +704,6 @@ public class InstallWizard extends AdvancedWizard
 		catch(IOException e1)
 		{
 			throw new JNLPException("Cannot write to file", ERROR_CODE_FILE_IO_EXCEPTION, e1);
-		}
-		catch(CoreException e)
-		{
-			throw new JNLPException("Cannot save BOM to file " + file.getAbsolutePath(), ERROR_CODE_BOM_IO_EXCEPTION, e);
 		}
 	}
 	

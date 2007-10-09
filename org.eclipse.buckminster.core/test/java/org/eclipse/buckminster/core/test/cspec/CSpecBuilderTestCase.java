@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.Date;
-import java.util.UUID;
 
 import junit.framework.TestCase;
 
@@ -64,9 +63,7 @@ public class CSpecBuilderTestCase extends TestCase
 		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
 		VersionMatch fixed = new VersionMatch(vs, null, null, -1, new Date(), null);
 		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, null, new Format("svn://foo.bar.com/foobar"), "baz.org", true, true, null);
-		UUID providerId = provider.getId();
-
-		Resolution resolution = new Resolution(c.getId(), IComponentType.BUCKMINSTER, fixed, providerId, true, request,
+		Resolution resolution = new Resolution(c, IComponentType.BUCKMINSTER, fixed, provider, true, request,
 			Collections.<String>emptySet(), provider.getURI(Collections.<String,String>emptyMap()), null, null, -1);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();

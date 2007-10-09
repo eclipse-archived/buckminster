@@ -17,7 +17,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParserFactory;
@@ -243,7 +242,6 @@ public class SelectBOMPage extends AbstractQueryPage
 						{
 							input = byteBld.getInputStream();
 							bom = pf.getBillOfMaterialsParser(true).parse(urlToParse.toString(), input);
-							bom = BillOfMaterials.importGraph((ExportedBillOfMaterials)bom);
 							MonitorUtils.worked(monitor, 40);
 						}
 						wizard.setBOM(bom);

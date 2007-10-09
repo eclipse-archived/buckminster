@@ -34,12 +34,12 @@ import org.eclipse.core.runtime.Platform;
  */
 public abstract class WorkspaceInitCommand extends WorkspaceCommand
 {
+	static final OptionDescriptor CONTINUE_ON_ERROR = new OptionDescriptor('C', "continueonerror",
+		OptionValueType.NONE);
 	static final OptionDescriptor MATERIALIZER = new OptionDescriptor('M', "materializer",
 			OptionValueType.REQUIRED);
 	static final OptionDescriptor TEMPLATE = new OptionDescriptor('T', "template",
 		OptionValueType.REQUIRED);
-	static final OptionDescriptor CONTINUE_ON_ERROR = new OptionDescriptor('C', "continueonerror",
-		OptionValueType.NONE);
 
 	private static boolean isFolderEmpty(File folder)
 	{
@@ -56,9 +56,24 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 
 	private boolean m_continueOnError;
 
+	private String m_materializer;
+
 	private URL m_template;
 
-	private String m_materializer;
+	public void setContinueOnError(boolean flag)
+	{
+		m_continueOnError = flag;
+	}
+
+	public void setMaterializer(String materializer)
+	{
+		m_materializer = materializer;
+	}
+
+	public void setTemplate(URL template)
+	{
+		m_template = template;
+	}
 
 	protected String getMaterializer()
 	{
@@ -78,11 +93,11 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	protected void handleOption(Option option) throws Exception
 	{
 		if(option.is(CONTINUE_ON_ERROR))
-			m_continueOnError = true;
+			setContinueOnError(true);
 		else if(option.is(TEMPLATE))
-			m_template = URLUtils.normalizeToURL(option.getValue());
+			setTemplate(URLUtils.normalizeToURL(option.getValue()));
 		else if(option.is(MATERIALIZER))
-			m_materializer = option.getValue();
+			setMaterializer(option.getValue());
 	}
 
 	/**

@@ -265,8 +265,6 @@ public class MaterializationJob extends Job
 		IStatus status = m_context.getStatus();
 		if(!m_context.isContinueOnError() && status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);
-
-		bom.store();
 	}
 
 	protected MaterializationContext getMaterializationContext()

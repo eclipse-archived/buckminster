@@ -221,7 +221,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						{
 							refreshProject(project, MonitorUtils.subMonitor(monitor, 70));
 						}
-						catch(CoreException e)
+						catch(Exception e)
 						{
 							if(project.isAccessible())
 								CorePlugin.getLogger().error("Project refresh on " + project.getName() + " failed: " + e.getMessage(), e);

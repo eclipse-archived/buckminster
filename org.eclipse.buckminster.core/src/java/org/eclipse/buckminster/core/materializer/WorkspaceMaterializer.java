@@ -66,15 +66,15 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			try
 			{
 				monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
-				wb = this.performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 100));
+				wb = performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 100));
 
 				Materialization mat = wb.getMaterialization();
 				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
 				IPath wsRelativePath = wb.getWorkspaceRelativePath();
 				if(wsRelativePath.segmentCount() == 1)
-					this.createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
+					createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
 				else
-					this.createExternalBinding(wsRelativePath, mat, subMonitor);
+					createExternalBinding(wsRelativePath, mat, subMonitor);
 			}
 			catch(IOException e)
 			{

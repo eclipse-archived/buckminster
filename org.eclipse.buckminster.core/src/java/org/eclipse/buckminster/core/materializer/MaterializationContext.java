@@ -11,7 +11,6 @@ package org.eclipse.buckminster.core.materializer;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -63,17 +62,7 @@ public class MaterializationContext extends RMContext
 	@Override
 	public ComponentQuery getComponentQuery()
 	{
-		try
-		{
-			return m_bom.getQuery();
-		}
-		catch(CoreException e)
-		{
-			// Something is bogus with the meta-data storage.
-			//
-			CorePlugin.getLogger().error(e.getMessage(), e);
-			return null;
-		}
+		return m_bom.getQuery();
 	}
 
 	/**

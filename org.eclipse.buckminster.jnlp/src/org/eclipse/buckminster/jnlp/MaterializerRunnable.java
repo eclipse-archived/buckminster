@@ -16,7 +16,6 @@ import java.net.URL;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -65,7 +64,6 @@ public class MaterializerRunnable implements IRunnableWithProgress
 			input = new BufferedInputStream(url.openStream());
 			IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
 			BillOfMaterials bom = bomParser.parse(url.toString(), input);
-			BillOfMaterials.importGraph((ExportedBillOfMaterials)bom);
 			return new MaterializationContext(bom, m_mspec, null);
 		}
 		finally

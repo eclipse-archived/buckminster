@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.IProperties;
@@ -29,7 +30,7 @@ import org.eclipse.buckminster.core.common.model.IProperties;
  *
  * @author Thomas Hallgren
  */
-class PropertiesWrapper extends AbstractMap<String, String> implements IProperties
+abstract class PropertiesWrapper extends AbstractMap<String, String> implements IProperties
 {
 	class BackedEntry implements Map.Entry<String, String>
 	{
@@ -47,18 +48,18 @@ class PropertiesWrapper extends AbstractMap<String, String> implements IProperti
 
 		public String getValue()
 		{
-			return m_properties.getProperty(m_key);
+			return getProperties().getProperty(m_key);
 		}
 
 		public String setValue(String value)
 		{
-			return (String)m_properties.setProperty(m_key, value);
+			return (String)getProperties().setProperty(m_key, value);
 		}
 	}
 
 	abstract class BackedIterator<X> implements Iterator<X>
 	{
-		private final Enumeration<?> m_names = m_properties.propertyNames();
+		private final Enumeration<?> m_names = getProperties().propertyNames();
 
 		public boolean hasNext()
 		{
@@ -76,17 +77,12 @@ class PropertiesWrapper extends AbstractMap<String, String> implements IProperti
 		}
 	}
 
-	private final java.util.Properties m_properties;
-
-	public PropertiesWrapper(java.util.Properties properties)
-	{
-		m_properties = properties;
-	}
+	protected abstract Properties getProperties();
 
 	@Override
 	public boolean containsKey(Object key)
 	{
-		return (key instanceof String) ? (m_properties.getProperty((String)key) != null) : false;
+		return (key instanceof String) ? (getProperties().getProperty((String)key) != null) : false;
 	}
 
 	@Override
@@ -117,7 +113,7 @@ class PropertiesWrapper extends AbstractMap<String, String> implements IProperti
 	@Override
 	public String get(Object key)
 	{
-		return (key instanceof String) ? m_properties.getProperty((String)key) : null;
+		return (key instanceof String) ? getProperties().getProperty((String)key) : null;
 	}
 
 	@Override
@@ -162,13 +158,13 @@ class PropertiesWrapper extends AbstractMap<String, String> implements IProperti
 	@SuppressWarnings("unchecked")
 	public Set<String> overlayKeySet()
 	{
-		return (Set<String>)(Set<?>)m_properties.keySet();
+		return (Set<String>)(Set<?>)getProperties().keySet();
 	}
 
 	@Override
 	public String put(String key, String value)
 	{
-		return (String)m_properties.setProperty(key, value);
+		return (String)getProperties().setProperty(key, value);
 	}
 
 	public String put(String key, String value, boolean mutable)
@@ -191,7 +187,7 @@ class PropertiesWrapper extends AbstractMap<String, String> implements IProperti
 		// without us knowing.
 		//
 		int sz = 0;
-		Enumeration<?> names = m_properties.propertyNames();
+		Enumeration<?> names = getProperties().propertyNames();
 		try
 		{
 			for(;;)
@@ -228,7 +224,7 @@ class PropertiesWrapper extends AbstractMap<String, String> implements IProperti
 				{
 					public String next()
 					{
-						return m_properties.getProperty(this.nextKey());
+						return getProperties().getProperty(this.nextKey());
 					}
 				};
 			}

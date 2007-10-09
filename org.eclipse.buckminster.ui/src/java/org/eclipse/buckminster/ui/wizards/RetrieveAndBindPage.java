@@ -782,7 +782,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 					bomName = name + ".bom";
 
 				IPath bomPath = parent.append(bomName);
-				SaveRunnable sr = new SaveRunnable(wizard.getBOM().exportGraph(), bomPath);
+				SaveRunnable sr = new SaveRunnable(wizard.getBOM(), bomPath);
 				container.run(true, true, sr);
 				bomURL = bomPath.toFile().toURI().toURL();
 				mspecBuilder.setURL(bomURL);

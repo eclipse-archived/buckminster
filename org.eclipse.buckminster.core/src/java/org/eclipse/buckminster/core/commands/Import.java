@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.ExportedBillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -39,6 +38,11 @@ import org.eclipse.core.runtime.Platform;
 public class Import extends WorkspaceInitCommand
 {
 	private URL m_url;
+
+	public void setURL(URL url)
+	{
+		m_url = url;
+	}
 
 	@Override
 	protected int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception
@@ -64,8 +68,6 @@ public class Import extends WorkspaceInitCommand
 				BillOfMaterials bom = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true).parse(url.toString(), bomIn);
 				IOUtils.close(bomIn);
 				bomIn = null;
-
-				bom = BillOfMaterials.importGraph((ExportedBillOfMaterials)bom);
 
 				if(mspec == null)
 				{
@@ -105,6 +107,6 @@ public class Import extends WorkspaceInitCommand
 			throw new UsageException("Too many arguments");
 		else if(len < 1)
 			throw new UsageException("Missing BOM URL");
-		m_url = URLUtils.normalizeToURL(unparsed[0]);
+		setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
 }

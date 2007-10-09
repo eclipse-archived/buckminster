@@ -18,13 +18,21 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.IProperties;
 
 public class BMProperties implements IProperties
 {
-	private static final IProperties s_systemProperties = new PropertiesWrapper(System.getProperties());
+	private static final IProperties s_systemProperties = new PropertiesWrapper()
+	{
+		@Override
+		protected Properties getProperties()
+		{
+			return System.getProperties();
+		}		
+	};
 
 	/** A table of hex digits */
 	private static final char[] hexDigit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
@@ -63,14 +71,28 @@ public class BMProperties implements IProperties
 
 	public BMProperties(InputStream inStream) throws IOException
 	{
-    	java.util.Properties loader = new java.util.Properties();
+    	final Properties loader = new Properties();
     	loader.load(inStream);
-		m_map = new PropertiesWrapper(loader);
+		m_map = new PropertiesWrapper()
+		{
+			@Override
+			protected Properties getProperties()
+			{
+				return loader;
+			}		
+		};
 	}
 
-	public BMProperties(java.util.Properties defaultProps)
+	public BMProperties(final Properties defaultProps)
 	{
-		m_map = new PropertiesWrapper(defaultProps);
+		m_map = new PropertiesWrapper()
+		{
+			@Override
+			protected Properties getProperties()
+			{
+				return defaultProps;
+			}		
+		};
 	}
 
 	public BMProperties(Map<String, String> defaultProps)

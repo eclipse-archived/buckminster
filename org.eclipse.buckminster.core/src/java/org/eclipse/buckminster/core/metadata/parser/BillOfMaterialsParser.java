@@ -33,10 +33,8 @@ public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
-		if(BillOfMaterialsHandler.TAG.equals(localName))
+		if(BillOfMaterialsHandler.TAG.equals(localName) || "exportedBillOfMaterials".equals(localName))
 			this.pushHandler(new BillOfMaterialsHandler(this), attrs);
-		else if(ExportedBillOfMaterialsHandler.TAG.equals(localName))
-			this.pushHandler(new ExportedBillOfMaterialsHandler(this), attrs);
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}

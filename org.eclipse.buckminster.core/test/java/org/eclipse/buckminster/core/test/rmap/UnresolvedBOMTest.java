@@ -63,11 +63,11 @@ public class UnresolvedBOMTest extends AbstractTestCase
 
 		IProgressMonitor nullMon = new NullProgressMonitor();
 		BillOfMaterials bom1 = resolver1.resolve(query.getRootRequest(), nullMon);
-		Utils.serialize(bom1.exportGraph(), System.out);
+		Utils.serialize(bom1, System.out);
 		BillOfMaterials bom2 = resolver2.resolveRemaining(bom1, nullMon);
-		Utils.serialize(bom2.exportGraph(), System.out);
+		Utils.serialize(bom2, System.out);
 		BillOfMaterials bom3 = resolver1.resolveRemaining(bom2, nullMon);
-		Utils.serialize(bom3.exportGraph(), System.out);
+		Utils.serialize(bom3, System.out);
 		assertTrue("bom3 is not fully resolved", bom3.isFullyResolved());
 	}
 

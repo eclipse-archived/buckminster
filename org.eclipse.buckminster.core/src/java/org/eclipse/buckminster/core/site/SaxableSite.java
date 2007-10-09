@@ -175,8 +175,8 @@ public class SaxableSite implements ISaxable, ISaxableElement
 			AttributesImpl attrs = new AttributesImpl();
 			Utils.addAttribute(attrs, "url", sm.getURLString());
 			Utils.addAttribute(attrs, "id", sm.getFeatureIdentifier());
-			Utils.addAttribute(attrs, "version", sm.getFeatureVersion());
 
+			addOptionalAttribute(attrs, "version", sm.getFeatureVersion());
 			addOptionalAttribute(attrs, "label", sm.getLabelNonLocalized());
 			addOptionalAttribute(attrs, "type", sm.getType());
 			addOptionalAttribute(attrs, "os", sm.getOS());

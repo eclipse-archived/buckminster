@@ -14,19 +14,14 @@ import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_NS;
 import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_PREFIX;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -36,10 +31,6 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
-import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
-import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
@@ -53,10 +44,8 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -67,42 +56,6 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableElement
 {
-	private static final Map<String, String> s_globalAdditions;
-
-	static
-	{
-		s_globalAdditions = new HashMap<String, String>();
-		s_globalAdditions.putAll(BMProperties.getSystemProperties());
-
-		URL eclipseHome = Platform.getInstallLocation().getURL();
-		if(eclipseHome != null)
-		{
-			CorePlugin.getLogger().debug("Platform install location: " + eclipseHome);
-			assert ("file".equals(eclipseHome.getProtocol()));
-			File homeFile = FileUtils.getFile(eclipseHome);
-			if(homeFile != null)
-				s_globalAdditions.put("eclipse.home", homeFile.toString());
-		}
-		else
-			CorePlugin.getLogger().debug("Platform install location is NULL!");
-
-		s_globalAdditions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toPortableString());
-		try
-		{
-			s_globalAdditions.put("localhost", InetAddress.getLocalHost().getHostName());
-		}
-		catch(UnknownHostException e1)
-		{
-			// We'll just have to do without it.
-		}
-	}
-
-	public static Map<String, String> getGlobalPropertyAdditions()
-	{
-		return s_globalAdditions;
-	}
-
 	public static final String ATTR_PROPERTIES = "properties";
 
 	public static final String ATTR_RESOURCE_MAP = "resourceMap";
@@ -219,12 +172,8 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		if(m_allProperties != null)
 			return m_allProperties;
 
-		m_allProperties = getGlobalPropertyAdditions();
-		if(m_properties.size() > 0)
-		{
-			m_allProperties = new ExpandingProperties(m_allProperties);
-			m_allProperties.putAll(m_properties);
-		}
+		m_allProperties = new ExpandingProperties();
+		m_allProperties.putAll(m_properties);
 
 		if(m_propertiesURL != null)
 		{
@@ -395,7 +344,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	public boolean isPersisted() throws CoreException
 	{
-		return getStorage().contains(this);
+		return false;
 	}
 
 	public boolean isPrune(ComponentName cName)
@@ -406,12 +355,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	public void remove() throws CoreException
 	{
-		UUID thisId = getId();
-		StorageManager sm = StorageManager.getDefault();
-		if(!sm.getDepNodes().getReferencingKeys(thisId, "queryId").isEmpty())
-			throw new ReferentialIntegrityException(this, "remove", "Referenced from BillOfMaterials");
-
-		getStorage().removeElement(thisId);
+		throw new UnsupportedOperationException();
 	}
 
 	public void removeAdvisorNode(AdvisorNode node)
@@ -427,7 +371,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	public void store() throws CoreException
 	{
-		getStorage().putElement(this);
+		throw new UnsupportedOperationException();
 	}
 
 	public void toSax(ContentHandler handler) throws SAXException
@@ -480,10 +424,5 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.useMaterialization();
-	}
-
-	private ISaxableStorage<ComponentQuery> getStorage() throws CoreException
-	{
-		return StorageManager.getDefault().getQueries();
 	}
 }

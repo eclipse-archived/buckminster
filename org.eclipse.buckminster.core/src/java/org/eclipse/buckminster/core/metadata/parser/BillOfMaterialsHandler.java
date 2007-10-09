@@ -9,12 +9,19 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
+import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.IDWrapper;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.buckminster.sax.ChildHandler;
+import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -22,9 +29,12 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class BillOfMaterialsHandler extends DepNodeHandler
+public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppedListener
 {
 	public static final String TAG = BillOfMaterials.TAG;
+	
+	private final Map<UUID,IDWrapper> m_wrapperMap = new HashMap<UUID,IDWrapper>();
+	private final IDWrapperHandler m_idWrapperHandler = new IDWrapperHandler(this);
 	private UUID m_topNodeId;
 	private UUID m_queryId;
 	private Date m_timestamp;
@@ -37,6 +47,8 @@ public class BillOfMaterialsHandler extends DepNodeHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
+		super.handleAttributes(attrs);
+		m_wrapperMap.clear();
 		try
 		{
 			String tmp = getOptionalStringValue(attrs, BillOfMaterials.ATTR_TOP_NODE_ID);
@@ -55,23 +67,62 @@ public class BillOfMaterialsHandler extends DepNodeHandler
 	}
 
 	@Override
-	DepNode getDepNode()
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
-		return new BillOfMaterials(m_topNodeId, m_queryId, m_timestamp);
+		ChildHandler ch;
+		if(IDWrapperHandler.TAG.equals(localName))
+			ch = m_idWrapperHandler;
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
 	}
 
-	UUID getQueryId()
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		return m_queryId;
+		if(child == m_idWrapperHandler)
+		{
+			IDWrapper wrapper = m_idWrapperHandler.getWrapper();
+			m_wrapperMap.put(wrapper.getId(), wrapper);
+		}
 	}
 
-	Date getTimestamp()
+	@Override
+	IUUIDKeyed getWrapped(UUID id) throws SAXException
 	{
-		return m_timestamp;
+		IDWrapper wrapper = m_wrapperMap.get(id);
+		if(wrapper == null)
+			throw new SAXParseException("id " + id + " appoints a non existing wrapper", getDocumentLocator());
+		return wrapper.getWrapped();
 	}
 
-	UUID getTopNodeId()
+	@Override
+	DepNode getDepNode(UUID nodeId) throws SAXException
 	{
-		return m_topNodeId;
+		try
+		{
+			return (DepNode)getWrapped(nodeId);
+		}
+		catch(ClassCastException e)
+		{
+			throw new SAXParseException("wrapper " + nodeId + " does not wrap a node", getDocumentLocator());
+		}
+	}
+
+	ComponentQuery getQuery(UUID queryId) throws SAXException
+	{
+		try
+		{
+			return (ComponentQuery)getWrapped(queryId);
+		}
+		catch(ClassCastException e)
+		{
+			throw new SAXParseException("wrapper " + queryId + " does not wrap a query", getDocumentLocator());
+		}
+	}
+
+	@Override
+	DepNode getDepNode() throws SAXException
+	{
+		return new BillOfMaterials(getDepNode(m_topNodeId), getQuery(m_queryId), m_timestamp);
 	}
 }

@@ -248,7 +248,7 @@ public class TripletVersion extends AbstractVersion
 		}
 		if(m_qualifier != null)
 		{
-			bld.append('.');
+			bld.append('-');
 			bld.append(m_qualifier);
 		}
 	}

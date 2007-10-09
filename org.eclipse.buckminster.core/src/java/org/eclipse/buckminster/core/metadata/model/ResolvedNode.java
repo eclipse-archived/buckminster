@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -21,9 +20,6 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ObtainedDependency;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
-import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
-import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.parser.ElementRefHandler;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
@@ -47,13 +43,9 @@ public class ResolvedNode extends DepNode
 	@SuppressWarnings("hiding")
 	public static final String TAG = "resolvedNode";
 
-	private final List<UUID> m_childIds;
+	private final List<DepNode> m_children;
 
-	private transient List<DepNode> m_children;
-
-	private transient Resolution m_resolution;
-
-	private final UUID m_resolutionId;
+	private final Resolution m_resolution;
 
 	/**
 	 * This constructor will create a resolved node that has all of its children unresolved. The set
@@ -66,22 +58,17 @@ public class ResolvedNode extends DepNode
 	public ResolvedNode(NodeQuery query, Resolution resolution) throws CoreException
 	{
 		m_resolution = resolution;
-		m_resolutionId = resolution.getId();
 
 		CSpec cspec = resolution.getCSpec();
 		Attribute[] attributes = query.getAttributes(cspec);
 		List<QualifiedDependency> qDeps = cspec.getQualifiedDependencies(attributes, query.isPrune());
 		int nDeps = qDeps.size();
 		if(nDeps == 0)
-		{
 			m_children = Collections.emptyList();
-			m_childIds = Collections.emptyList();
-		}
 		else
 		{
 			ComponentQuery cquery = query.getComponentQuery();
 			List<DepNode> children = new ArrayList<DepNode>(nDeps);
-			List<UUID> childIds = new ArrayList<UUID>(nDeps);
 			for(QualifiedDependency qDep : qDeps)
 			{
 				ComponentRequest request = qDep.getRequest();
@@ -97,35 +84,15 @@ public class ResolvedNode extends DepNode
 					qDep = qDep.applyAdvice(override);
 				UnresolvedNode node = new UnresolvedNode(qDep);
 				children.add(node);
-				childIds.add(node.getId());
 			}
 			m_children = Collections.unmodifiableList(children);
-			m_childIds = Collections.unmodifiableList(childIds);
 		}
 	}
 
 	public ResolvedNode(Resolution resolution, List<DepNode> children)
 	{
 		m_resolution = resolution;
-		m_resolutionId = resolution.getId();
 		m_children = UUIDKeyed.createUnmodifiableList(children);
-
-		int top = (children == null) ? 0 : children.size();
-		if(top == 0)
-			m_childIds = Collections.emptyList();
-		else
-		{
-			ArrayList<UUID> childIds = new ArrayList<UUID>(top);
-			for(int idx = 0; idx < top; ++idx)
-				childIds.add(children.get(idx).getId());
-			m_childIds = Collections.unmodifiableList(childIds);
-		}
-	}
-
-	public ResolvedNode(UUID resolutionId, List<UUID> childIds)
-	{
-		m_resolutionId = resolutionId;
-		m_childIds = UUIDKeyed.createUnmodifiableList(childIds);
 	}
 
 	@Override
@@ -142,15 +109,7 @@ public class ResolvedNode extends DepNode
 	@Override
 	public synchronized List<DepNode> getChildren() throws CoreException
 	{
-		if(m_children == null)
-			m_children = getChildren(getStorage());
 		return m_children;
-	}
-
-	@Override
-	public List<UUID> getChildrenIDs()
-	{
-		return m_childIds;
 	}
 
 	public String getDefaultTag()
@@ -173,15 +132,7 @@ public class ResolvedNode extends DepNode
 	@Override
 	public synchronized Resolution getResolution() throws CoreException
 	{
-		if(m_resolution == null)
-			m_resolution = StorageManager.getDefault().getResolutions().getElement(m_resolutionId);
 		return m_resolution;
-	}
-
-	@Override
-	public UUID getResolutionId()
-	{
-		return m_resolutionId;
 	}
 
 	@Override
@@ -201,10 +152,10 @@ public class ResolvedNode extends DepNode
 	 * @return true if the nodeID was equal to one of the children ids.
 	 */
 	@Override
-	public boolean isChildId(UUID nodeId)
+	public boolean isChild(DepNode node)
 	{
-		for(UUID child : m_childIds)
-			if(nodeId.equals(child))
+		for(DepNode child : m_children)
+			if(child.equals(node))
 				return true;
 		return false;
 	}
@@ -219,66 +170,40 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	public final boolean isReferencing(UUID nodeId, boolean shallow) throws CoreException
+	public final boolean isReferencing(DepNode node, boolean shallow) throws CoreException
 	{
-		if(getId().equals(nodeId))
+		if(equals(node))
 			return true;
 
-		for(UUID childId : m_childIds)
-			if(childId.equals(nodeId))
+		for(DepNode child : m_children)
+			if(child.equals(node))
 				return true;
 
 		if(!shallow)
 		{
-			for(DepNode child : getChildren())
-				if(child.isReferencing(nodeId, shallow))
+			for(DepNode child : m_children)
+				if(child.isReferencing(node, shallow))
 					return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void store() throws CoreException
-	{
-		ISaxableStorage<DepNode> nodes = getStorage();
-		if(nodes.contains(this))
-			//
-			// Already stored. This also prevents recursion, shoult a
-			// circular dependency ever occur.
-			//
-			return;
-
-		if(m_resolution == null)
-			getResolution();
-		else
-			m_resolution.store();
-
-		if(m_children == null)
-			m_children = getChildren(nodes);
-		else
-		{
-			for(DepNode child : m_children)
-				child.store();
-		}
-		nodes.putElement(this);
-	}
-
-	@Override
 	protected void addAttributes(AttributesImpl attrs)
 	{
-		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
+		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolution.getId().toString());
 	}
 
 	@Override
 	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
-		if(m_childIds.size() > 0)
+		if(m_children.size() > 0)
 		{
 			String childName = Utils.makeQualifiedName(prefix, CHILD_TAG);
-			for(UUID child : m_childIds)
+			for(DepNode child : m_children)
 			{
 				AttributesImpl attrs = new AttributesImpl();
-				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.toString());
+				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.getId().toString());
 				receiver.startElement(namespace, CHILD_TAG, childName, attrs);
 				receiver.endElement(namespace, CHILD_TAG, childName);
 			}
@@ -321,21 +246,6 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	void removeChildren() throws CoreException
-	{
-		// Scan all nodes for children that appoints this node
-		//
-		UUID thisId = getId();
-		ISaxableStorage<DepNode> nodes = getStorage();
-		for(DepNode node : nodes.getElements())
-		{
-			for(UUID childId : node.getChildrenIDs())
-				if(childId.equals(thisId))
-					throw new ReferentialIntegrityException(this, "remove", "Child of other ResolvedNode");
-		}
-	}
-
-	@Override
 	DepNode replaceNode(DepNode topReplacer, DepNode node, Map<DepNode,DepNode> visited) throws CoreException
 	{
 		DepNode self = super.replaceNode(topReplacer, node, visited);
@@ -366,14 +276,5 @@ public class ResolvedNode extends DepNode
 		self = new ResolvedNode(getResolution(), newChildren);
 		visited.put(this, self);
 		return self;
-	}
-
-	private List<DepNode> getChildren(ISaxableStorage<DepNode> storage) throws CoreException
-	{
-		int top = m_childIds.size();
-		ArrayList<DepNode> childNodes = new ArrayList<DepNode>(top);
-		for(int idx = 0; idx < top; ++idx)
-			childNodes.add(storage.getElement(m_childIds.get(idx)));
-		return Collections.unmodifiableList(childNodes);
 	}
 }

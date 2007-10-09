@@ -10,12 +10,10 @@
 
 package org.eclipse.buckminster.p4.ui.prefs;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -46,8 +44,6 @@ abstract class NodeListPrefPane extends Composite
 
 	private final PreferencePage m_prefPage;
 
-	private static final Map<String, String> s_tooltipScope;
-
 	protected static ModifyListener s_tooltipRefresh = new ModifyListener()
 	{
 		public void modifyText(ModifyEvent e)
@@ -56,12 +52,6 @@ abstract class NodeListPrefPane extends Composite
 			setTooltipText(source, source.getText());
 		}
 	};
-
-	static
-	{
-		s_tooltipScope = new BMProperties(BMProperties.getSystemProperties());
-		s_tooltipScope.putAll(ComponentQuery.getGlobalPropertyAdditions());
-	}
 
 	public NodeListPrefPane(PreferencePage prefPage, Composite parent, int colSpan)
 	{
@@ -235,7 +225,7 @@ abstract class NodeListPrefPane extends Composite
 	protected static void setTooltipText(Text text, String value)
 	{
 		if(value != null && value.contains("${"))
-			text.setToolTipText(ExpandingProperties.expand(s_tooltipScope, value, 0));
+			text.setToolTipText(ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), value, 0));
 		else
 			text.setToolTipText(null);
 	}

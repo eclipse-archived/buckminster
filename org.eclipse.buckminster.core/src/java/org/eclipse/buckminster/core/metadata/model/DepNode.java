@@ -17,9 +17,6 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
-import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
-import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -45,11 +42,6 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 	}
 
 	public List<DepNode> getChildren() throws CoreException
-	{
-		return Collections.emptyList();
-	}
-
-	public List<UUID> getChildrenIDs() throws CoreException
 	{
 		return Collections.emptyList();
 	}
@@ -80,7 +72,7 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 
 	public abstract String getViewName() throws CoreException;
 
-	public boolean isChildId(UUID nodeId) throws CoreException
+	public boolean isChild(DepNode node) throws CoreException
 	{
 		return false;
 	}
@@ -92,7 +84,7 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 
 	public boolean isPersisted() throws CoreException
 	{
-		return getStorage().contains(this);
+		return false;
 	}
 
 	/**
@@ -105,30 +97,19 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 	 *         if it is found in the graph extending from this node
 	 * @throws CoreException
 	 */
-	public boolean isReferencing(UUID nodeId, boolean shallow) throws CoreException
+	public boolean isReferencing(DepNode node, boolean shallow) throws CoreException
 	{
-		return nodeId == getId();
+		return equals(node);
 	}
 
 	public void remove() throws CoreException
 	{
-		UUID thisId = getId();
-		ISaxableStorage<DepNode> depNodes = getStorage();
-		for(DepNode node : depNodes.getElements())
-		{
-			if(node.getId().equals(thisId))
-				continue;
-
-			if(node.isReferencing(thisId, true))
-				throw new ReferentialIntegrityException(this, "remove", "Referenced by other node");
-		}
-		depNodes.removeElement(thisId);
-		removeChildren();
+		throw new UnsupportedOperationException();
 	}
 
 	public void store() throws CoreException
 	{
-		getStorage().putElement(this);
+		throw new UnsupportedOperationException();
 	}
 
 	public final void toSax(ContentHandler receiver) throws SAXException
@@ -169,15 +150,6 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 	}
 
 	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-	}
-
-	ISaxableStorage<DepNode> getStorage() throws CoreException
-	{
-		return StorageManager.getDefault().getDepNodes();
-	}
-
-	void removeChildren() throws CoreException
 	{
 	}
 

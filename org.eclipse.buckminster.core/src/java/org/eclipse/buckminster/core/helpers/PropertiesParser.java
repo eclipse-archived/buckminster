@@ -13,7 +13,6 @@ package org.eclipse.buckminster.core.helpers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Properties;
 
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
@@ -28,9 +27,7 @@ public class PropertiesParser implements IStreamConsumer<Map<String,String>>
 	public static Map<String,String> readProperties(InputStream stream)
 	throws IOException
 	{
-		Properties props = new Properties();
-		props.load(stream);
-		return new PropertiesWrapper(props);		
+		return new BMProperties(stream);
 	}
 
 	public Map<String,String> consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)

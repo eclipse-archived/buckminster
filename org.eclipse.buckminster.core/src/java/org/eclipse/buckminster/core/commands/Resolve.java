@@ -44,17 +44,67 @@ import org.eclipse.core.runtime.Platform;
  */
 public class Resolve extends WorkspaceInitCommand
 {
-	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport",
-		OptionValueType.NONE);
-
 	static private final OptionDescriptor BOM_FILE = new OptionDescriptor('B', "bomfile",
 		OptionValueType.REQUIRED);
 
-	private URL m_url;
+	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport",
+		OptionValueType.NONE);
+
+	private File m_bomFile;
 
 	private boolean m_resolveOnly;
 
-	private File m_bomFile;
+	private URL m_url;
+
+	public void setBomFile(File bomFile)
+	{
+		m_bomFile = bomFile;
+	}
+
+	public void setResolveOnly(boolean flag)
+	{
+		m_resolveOnly = flag;
+	}
+
+	public void setURL(URL url)
+	{
+		m_url = url;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void getOptionDescriptors(List appendHere) throws Exception
+	{
+		super.getOptionDescriptors(appendHere);
+		appendHere.add(CONTINUE_ON_ERROR);
+		appendHere.add(NO_IMPORT);
+		appendHere.add(BOM_FILE);
+	}
+
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(NO_IMPORT))
+		{
+			setResolveOnly(true);
+		}
+		else if(option.is(BOM_FILE))
+		{
+			setBomFile(new File(option.getValue()));
+		}
+		else
+			super.handleOption(option);
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		int len = unparsed.length;
+		if(len > 1)
+			throw new UsageException("Too many arguments");
+		if(len == 1)
+			setURL(URLUtils.normalizeToURL(unparsed[0]));
+	}
 
 	@Override
 	protected int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception
@@ -94,7 +144,7 @@ public class Resolve extends WorkspaceInitCommand
 				}
 
 				if(bomOut != null)
-					Utils.serialize(bom.exportGraph(), bomOut);
+					Utils.serialize(bom, bomOut);
 
 				if(!m_resolveOnly)
 				{
@@ -123,40 +173,5 @@ public class Resolve extends WorkspaceInitCommand
 			throw be;
 		}
 		return 0;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
-	{
-		super.getOptionDescriptors(appendHere);
-		appendHere.add(CONTINUE_ON_ERROR);
-		appendHere.add(NO_IMPORT);
-		appendHere.add(BOM_FILE);
-	}
-
-	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(NO_IMPORT))
-		{
-			m_resolveOnly = true;
-		}
-		else if(option.is(BOM_FILE))
-		{
-			m_bomFile = new File(option.getValue());
-		}
-		else
-			super.handleOption(option);
-	}
-
-	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		int len = unparsed.length;
-		if(len > 1)
-			throw new UsageException("Too many arguments");
-		if(len == 1)
-			m_url = URLUtils.normalizeToURL(unparsed[0]);
 	}
 }
