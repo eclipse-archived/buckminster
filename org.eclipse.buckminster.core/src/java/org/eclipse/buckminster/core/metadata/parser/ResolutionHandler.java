@@ -182,31 +182,43 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 	private String legacyComponentType() throws SAXException
 	{
-		try
+		AbstractHandler parent = getParentHandler();
+		CSpec cspec;
+		Provider provider;
+		if(parent instanceof IDWrapperHandler)
 		{
-			StorageManager sm = StorageManager.getDefault();
-			Provider provider = sm.getProviders().getElement(m_providerId);
-			String[] ctypeIDs = provider.getComponentTypeIDs();
-			if(ctypeIDs.length == 1)
-				return ctypeIDs[0];
-
-			CSpec cspec = sm.getCSpecs().getElement(m_cspecId);
-			String ctype = cspec.getComponentIdentifier().getComponentTypeID();
-			if(ctype != null)
-				return ctype;
-
-			if(ctypeIDs.length == 3
-			&& ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE)
-			&& ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE)
-			&& ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
-				return IComponentType.BUCKMINSTER;
-
-			return IComponentType.UNKNOWN;
+			IDWrapperHandler wh = (IDWrapperHandler)parent;
+			cspec = (CSpec)wh.getWrapped(m_cspecId);
+			provider = (Provider)wh.getWrapped(m_providerId);
 		}
-		catch(CoreException e)
+		else
 		{
-			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			try
+			{
+				StorageManager sm = StorageManager.getDefault();
+				cspec = sm.getCSpecs().getElement(m_cspecId);
+				provider = sm.getProviders().getElement(m_providerId);
+			}
+			catch(CoreException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
 		}
+		String[] ctypeIDs = provider.getComponentTypeIDs();
+		if(ctypeIDs.length == 1)
+			return ctypeIDs[0];
+
+		String ctype = cspec.getComponentIdentifier().getComponentTypeID();
+		if(ctype != null)
+			return ctype;
+
+		if(ctypeIDs.length == 3
+		&& ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE)
+		&& ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE)
+		&& ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
+			return IComponentType.BUCKMINSTER;
+
+		return IComponentType.UNKNOWN;
 	}
 	private VersionMatch legacyVersionMatch() throws SAXException
 	{
