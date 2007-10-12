@@ -135,11 +135,11 @@ public class PublishWizard extends AdvancedWizard
 		{
 			throw new JNLPException("Unable to read materialization specification", MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
 		}
-		String xmlData = out.toString();
 
 		int result;
 		try
 		{
+			String xmlData = out.toString("UTF-8");
 			result = getPublisher().publish(selectedSpace, artifactName, xmlData, true);
 		}
 		catch(Exception e)
@@ -206,11 +206,21 @@ public class PublishWizard extends AdvancedWizard
 		return m_installWizard.getAuthenticatorUserName();
 	}
 	
+	void setPreferredUserName(String userName)
+	{
+		m_installWizard.setAuthenticatorUserName(userName);
+	}
+	
 	String getPreferredPassword()
 	{
 		return m_installWizard.getAuthenticatorPassword();
 	}
 
+	void setPreferredPassword(String password)
+	{
+		m_installWizard.setAuthenticatorPassword(password);
+	}
+	
 	IWizardPage getPageToOpen()
 	{		
 		try
