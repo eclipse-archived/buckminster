@@ -111,6 +111,9 @@ public class PublishLoginPage extends PublishWizardPage
 				{
 					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
+
+				getPublishWizard().setPreferredUserName(userName);
+				getPublishWizard().setPreferredPassword(password);
 			}
 			catch(Throwable e)
 			{
