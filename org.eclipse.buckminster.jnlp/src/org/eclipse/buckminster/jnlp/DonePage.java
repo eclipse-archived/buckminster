@@ -238,7 +238,7 @@ public class DonePage extends InstallWizardPage
 				dialog.create();
 				
 				final Shell shell = dialog.getShell();
-				shell.setSize(PUBLISH_WIZARD_WIDTH, PUBLISH_WIZARD_HEIGHT);
+				shell.setSize(Math.max(PUBLISH_WIZARD_WIDTH, shell.getSize().x), PUBLISH_WIZARD_HEIGHT);
 				
 				dialog.showPage(publishWizard.getPageToOpen());
 				dialog.open();
