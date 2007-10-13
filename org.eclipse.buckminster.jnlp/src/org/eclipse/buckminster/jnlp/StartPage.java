@@ -107,10 +107,7 @@ public class StartPage extends InstallWizardPage
 					@Override
 					public void widgetSelected(SelectionEvent e)
 					{
-						if(providerURL != null)
-						{
-							Program.launch(providerURL);
-						}
+						Program.launch(providerURL);
 					}
 				});
 			}

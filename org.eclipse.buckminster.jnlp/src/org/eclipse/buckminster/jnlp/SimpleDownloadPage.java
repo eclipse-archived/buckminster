@@ -220,19 +220,15 @@ public class SimpleDownloadPage extends InstallWizardPage
 	{
 		String destination = null;
 		
-		if(destination == null)
-		{
-			String userHome = System.getProperty("user.home");
+		String userHome = System.getProperty("user.home");
 
-			if(userHome != null)
-			{
-				destination = userHome + File.separatorChar + "materializations";
-			
-				if(getInstallWizard().getArtifactName() != null)
-					destination += File.separatorChar + getInstallWizard().getArtifactName();
-			}
-		}
+		if(userHome != null)
+		{
+			destination = userHome + File.separatorChar + "materializations";
 		
+			if(getInstallWizard().getArtifactName() != null)
+				destination += File.separatorChar + getInstallWizard().getArtifactName();
+		}
 		return destination;
 	}
 }
