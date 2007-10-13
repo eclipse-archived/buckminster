@@ -188,7 +188,7 @@ public class CVSTest extends TestCase
 						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
 
 		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(rd.getId(), new String[] { unknown.getId() }, vd, new Format(
+		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
 				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, false, false, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));

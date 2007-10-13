@@ -21,7 +21,6 @@ import java.net.URLConnection;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
@@ -148,8 +147,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				IReaderType cvsReaderType = plugin.getReaderType("cvs");
 				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), null, -1, null, null);
 				IProgressMonitor nullMon = new NullProgressMonitor();
-				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, null, new Format(bld.toString()), null,
-						false, false, null);
+				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString());
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 				cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
 				if(vm == null)
