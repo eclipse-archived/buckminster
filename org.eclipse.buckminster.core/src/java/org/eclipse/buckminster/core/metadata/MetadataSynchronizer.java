@@ -387,6 +387,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(res.getCSpec().equals(oldCSpec))
 			{
 				updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
+				WorkspaceInfo.setComponentIdentifier(project, res.getComponentIdentifier());
 				return;
 			}
 
