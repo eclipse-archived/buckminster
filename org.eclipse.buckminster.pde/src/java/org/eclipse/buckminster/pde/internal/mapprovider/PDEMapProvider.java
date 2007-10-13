@@ -36,6 +36,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionConverter;
@@ -64,10 +65,10 @@ public class PDEMapProvider extends Provider
 
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
 
-	public PDEMapProvider(String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
+	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
 		Format uri, String space, boolean mutable, boolean source, Documentation documentation)
 	{
-		super(remoteReaderType, componentTypes, vcDesc, uri, space, mutable, source, documentation);
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, space, mutable, source, documentation);
 	}
 
 	@Override
@@ -118,7 +119,7 @@ public class PDEMapProvider extends Provider
 			}
 
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
+			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
 					hasSource(), null);
 
 			String ctypeID = rq.getComponentTypeID();
@@ -232,6 +233,9 @@ public class PDEMapProvider extends Provider
 
 				map = new HashMap<ComponentName, TypedValue>();
 				String[] mapFiles = tempFolder.list();
+				if(mapFiles == null || mapFiles.length == 0)
+					return null;
+
 				MonitorUtils.worked(monitor, 100);
 
 				int amountPerFile = 400 / mapFiles.length;

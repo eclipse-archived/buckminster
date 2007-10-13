@@ -12,7 +12,6 @@ package org.eclipse.buckminster.pde.internal;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -62,9 +61,7 @@ public class ImportBundle
 		// Create the provider that will perform the import.
 		//
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
-		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() },
-			null, new Format(m_siteURL.toExternalForm()),
-			null, false, false, null);
+		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() }, m_siteURL.toString());
 
 		// Next, we need a reader and a Resolution builder in order to create the real resolution
 		// from witch we can derive the origin of the component etc.

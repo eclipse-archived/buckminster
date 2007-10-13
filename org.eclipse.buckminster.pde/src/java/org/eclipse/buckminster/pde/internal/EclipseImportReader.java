@@ -276,7 +276,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 		ProviderMatch myRI = getProviderMatch();
 		IComponentType ctype = myRI.getComponentType();
 		Provider myP = myRI.getProvider();
-		ProviderMatch match = new ProviderMatch(new Provider(IReaderType.URL_ZIPPED, new String[] { ctype.getId() },
+		ProviderMatch match = new ProviderMatch(new Provider(myP.getSearchPath(), IReaderType.URL_ZIPPED, new String[] { ctype.getId() },
 			myP.getVersionConverterDesc(), new Format(remoteURL.toString()), myP.getSpace(),
 			myP.isMutable(), myP.hasSource(), null), ctype, myRI.getVersionMatch(), ProviderScore.PREFERRED,
 			myRI.getNodeQuery());

@@ -94,28 +94,25 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				// Extensions etc. that are not part of the OSGi can still be
 				// found in the plugin.xml or fragment.xml
 				//
-				if(bmodel != null)
+				try
 				{
-					try
-					{
-						String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
-						ExternalExtensionsModel extModel = new ExternalExtensionsModel();
-						loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
-						bmodel.setExtensionsModel(extModel);
-					}
-					catch(FileNotFoundException e)
-					{
-					}
-	
-					try
-					{
-						IBuildModel buildModel = new ExternalBuildModel();
-						loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
-						bmodel.setBuildModel(buildModel);
-					}
-					catch(FileNotFoundException e)
-					{}
+					String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
+					ExternalExtensionsModel extModel = new ExternalExtensionsModel();
+					loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
+					bmodel.setExtensionsModel(extModel);
 				}
+				catch(FileNotFoundException e)
+				{
+				}
+
+				try
+				{
+					IBuildModel buildModel = new ExternalBuildModel();
+					loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
+					bmodel.setBuildModel(buildModel);
+				}
+				catch(FileNotFoundException e)
+				{}
 				return bmodel;
 			}
 			catch(FileNotFoundException e)
