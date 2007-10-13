@@ -38,8 +38,8 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
-		m_searchPath = new SearchPath(this.getStringValue(attrs, SearchPath.ATTR_NAME));
-		ResourceMap rmap = ((ResourceMapHandler)this.getParentHandler()).getResourceMap();
+		ResourceMap rmap = ((ResourceMapHandler)getParentHandler()).getResourceMap();
+		m_searchPath = new SearchPath(rmap, getStringValue(attrs, SearchPath.ATTR_NAME));
 		rmap.addSearchPath(m_searchPath);
 	}
 
@@ -48,7 +48,7 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 	{
 		ChildHandler ch;
 		if(ProviderHandler.TAG.equals(localName))
-			ch = this.createContentHandler(ProviderHandler.class, uri, attrs);
+			ch = createContentHandler(ProviderHandler.class, uri, attrs);
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

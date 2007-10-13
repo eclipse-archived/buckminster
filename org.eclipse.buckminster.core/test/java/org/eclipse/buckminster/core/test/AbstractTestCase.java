@@ -35,6 +35,15 @@ import org.eclipse.core.runtime.CoreException;
  */
 public abstract class AbstractTestCase extends TestCase
 {
+	public AbstractTestCase()
+	{
+	}
+
+	public AbstractTestCase(String name)
+	{
+		super(name);
+	}
+
 	@Override
 	public void setUp()
 	throws Exception

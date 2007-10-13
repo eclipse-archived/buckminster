@@ -18,7 +18,6 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -62,7 +61,7 @@ public class CSpecBuilderTestCase extends TestCase
 		ComponentRequest request = new ComponentRequest("test", null, null);
 		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
 		VersionMatch fixed = new VersionMatch(vs, null, null, -1, new Date(), null);
-		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, null, new Format("svn://foo.bar.com/foobar"), "baz.org", true, true, null);
+		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, "svn://foo.bar.com/foobar");
 		Resolution resolution = new Resolution(c, IComponentType.BUCKMINSTER, fixed, provider, true, request,
 			Collections.<String>emptySet(), provider.getURI(Collections.<String,String>emptyMap()), null, null, -1);
 

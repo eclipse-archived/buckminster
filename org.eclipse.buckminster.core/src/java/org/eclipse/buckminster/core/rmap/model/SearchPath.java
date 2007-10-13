@@ -41,9 +41,12 @@ public class SearchPath implements ISaxableElement
 	private final String m_name;
 
 	private final ArrayList<Provider> m_providers = new ArrayList<Provider>();
+	
+	private final ResourceMap m_resourceMap;
 
-	public SearchPath(String name)
+	public SearchPath(ResourceMap rmap, String name)
 	{
+		m_resourceMap = rmap;
 		m_name = name;
 	}
 
@@ -63,6 +66,15 @@ public class SearchPath implements ISaxableElement
 	public final String getName()
 	{
 		return m_name;
+	}
+
+	/**
+	 * Returns the resource map in which this search path is defined
+	 * @return the resource map
+	 */
+	public ResourceMap getResourceMap()
+	{
+		return m_resourceMap;
 	}
 
 	/**

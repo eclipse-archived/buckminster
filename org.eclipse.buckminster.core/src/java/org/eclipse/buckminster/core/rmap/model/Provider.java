@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
@@ -86,8 +87,16 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	private final ValueHolder m_uri;
 
 	private final VersionConverterDesc m_versionConverter;
+	
+	private final SearchPath m_searchPath;
+
+	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri)
+	{
+		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, false, false, null);
+	}
 
 	/**
+	 * @param searchPath The owner searchPath
 	 * @param remoteReaderType The id of a remote reader type.
 	 * @param componentType The id of a component type.
 	 * @param managedCategories Categories managed by the provider.
@@ -98,10 +107,11 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	 *            modified and commited back.
 	 * @param source Set to <code>true</code> if this provider will provide source.
 	 */
-	public Provider(String remoteReaderType, String[] componentTypeIDs,
+	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
 		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
 		Documentation documentation)
 	{
+		m_searchPath = searchPath;
 		m_readerTypeId = remoteReaderType;
 		m_componentTypeIDs = componentTypeIDs == null ? Trivial.EMPTY_STRING_ARRAY : componentTypeIDs;
 		m_versionConverter = versionConverterDesc;
@@ -274,6 +284,11 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		return m_readerTypeId;
 	}
 
+	public final SearchPath getSearchPath()
+	{
+		return m_searchPath;
+	}
+
 	public final String getSpace()
 	{
 		return m_space;
@@ -284,6 +299,13 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	 */
 	public final String getURI(Map<String, String> properties)
 	{
+		if(m_searchPath != null)
+		{
+			ResourceMap rmap = m_searchPath.getResourceMap();
+			Map<String,String> dfltProps = rmap.getProperties();
+			if(!dfltProps.isEmpty())
+				properties = new MapUnion<String, String>(properties, dfltProps);
+		}
 		return m_uri.getValue(properties);
 	}
 

@@ -29,7 +29,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -100,8 +99,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, null, new Format(urlString), null,
-				false, false, null);
+		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return provider.getReaderType().getReader(pm, monitor);
 	}

@@ -13,9 +13,14 @@ package org.eclipse.buckminster.core.test.rmap;
 import java.io.InputStream;
 import java.net.URL;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.IResolverFactory;
@@ -25,17 +30,42 @@ import org.eclipse.buckminster.core.resolver.ResolverFactoryMaintainer;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.core.test.AbstractTestCase;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-
 /**
- * @author thhal
- *
+ * @author Thomas Hallgren
  */
 public class RMapTestCase extends AbstractTestCase
 {
+	public RMapTestCase(String name)
+	{
+		super(name);
+	}
+
+	public static Test suite() throws Exception
+	{
+		TestSuite suite = new TestSuite();
+		suite.addTest(new RMapTestCase("testLocal"));
+		return suite;
+	}
+
+	public void testLocal() throws Exception
+	{
+		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null));
+		URL rmapURL = getClass().getResource("local_main.rmap");
+		URL parentURL = URLUtils.getParentURL(rmapURL);
+		queryBld.setResourceMapURL(rmapURL);
+		queryBld.getProperties().put("rmaps", parentURL.toString());
+		ComponentQuery query = queryBld.createComponentQuery();
+		ResolutionContext ctx = new ResolutionContext(query);
+		MainResolver resolver = new MainResolver(ctx);
+		resolver.resolve(new NullProgressMonitor());
+	}
+
 	public void testCQUERY2BOM() throws Exception
 	{
 		// Get the ComponentQuery

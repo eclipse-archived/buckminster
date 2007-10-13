@@ -83,6 +83,8 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	{
 		if(child == m_documentationHandler)
 			getResourceMap().setDocumentation(m_documentationHandler.createDocumentation());
+		else
+			super.childPopped(child);
 	}
 
 	@Override

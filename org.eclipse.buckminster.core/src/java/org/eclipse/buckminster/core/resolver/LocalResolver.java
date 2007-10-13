@@ -83,11 +83,11 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	{
 		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType,
 				new BidirectionalTransformer[0]);
-		INSTALLED_BUNDLE_PROVIDER = new Provider(IReaderType.ECLIPSE_PLATFORM,
+		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${"
 						+ KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
 
-		INSTALLED_FEATURE_PROVIDER = new Provider(IReaderType.ECLIPSE_PLATFORM,
+		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${"
 						+ KeyConstants.COMPONENT_NAME + "}"), null, false, false, null);
 	}
@@ -465,10 +465,10 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				possibleTypes.add(IComponentType.UNKNOWN);
 		}
 
-		Format repoURI;
+		String repoURI;
 		try
 		{
-			repoURI = new Format(productPath.toFile().toURI().toURL().toString());
+			repoURI = productPath.toFile().toURI().toURL().toString();
 		}
 		catch(MalformedURLException e)
 		{
@@ -484,8 +484,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]),
-				null, repoURI, null, false, false, null);
+		Provider provider = new Provider(IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), repoURI);
 
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;

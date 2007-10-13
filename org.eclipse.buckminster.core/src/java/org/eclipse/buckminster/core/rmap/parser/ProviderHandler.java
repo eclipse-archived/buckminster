@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -164,6 +165,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	public Provider getProvider()
 	{
 		return new Provider(
+				getSearchPath(),
 				m_readerType,
 				m_componentTypes,
 				m_versionConverter,
@@ -172,6 +174,15 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				m_mutable,
 				m_source,
 				m_documentation);
+	}
+
+	protected SearchPath getSearchPath()
+	{
+		SearchPath searchPath = null;
+		AbstractHandler parent = getParentHandler();
+		if(parent instanceof SearchPathHandler)
+			searchPath = ((SearchPathHandler)parent).getSearchPath();
+		return searchPath;
 	}
 
 	protected final String[] getComponentTypes()
