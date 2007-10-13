@@ -17,7 +17,9 @@ import java.net.URL;
 
 import org.eclipse.buckminster.runtime.internal.DefaultCertificateTrustInquiry;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
  * @author Thomas Hallgren
@@ -49,6 +51,47 @@ public abstract class URLUtils
 			}
 		}
 		return url;
+	}
+
+	public static URL getParentURL(URL url)
+	{
+		if(url == null)
+			return null;
+		
+		try
+		{
+			return getParentURI(url.toURI()).toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			return null;
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
+		}
+	}
+
+	public static URI getParentURI(URI uri)
+	{
+		if(uri == null)
+			return uri;
+		
+		IPath uriPath = Path.fromPortableString(uri.getPath());
+		if(uriPath.segmentCount() == 0)
+			return null;
+
+		uriPath = uriPath.removeLastSegments(1).addTrailingSeparator();
+		try
+		{
+			return new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uriPath.toPortableString(), uri.getQuery(), uri.getFragment());
+		}
+		catch(URISyntaxException e)
+		{
+			// Shouldn't happen since we started with a valid URI
+			//
+			return null;
+		}
 	}
 
 	public static ICertificateTrustInquiry getTrustInquiry()
