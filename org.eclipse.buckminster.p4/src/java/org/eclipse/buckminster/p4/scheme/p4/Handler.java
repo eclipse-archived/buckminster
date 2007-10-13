@@ -19,7 +19,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
@@ -84,7 +83,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				URI parentUri = new URI(uri.getScheme(), uri.getHost(), path.removeLastSegments(1).toPortableString(), uri.getFragment());
 				m_fileName = path.lastSegment();
 
-				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, null, new Format(parentUri.toString()), null, false, false, null);
+				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, parentUri.toString());
 				IReaderType p4ReaderType = plugin.getReaderType("p4");
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
