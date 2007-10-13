@@ -70,6 +70,7 @@ public class MavenProviderHandler extends ProviderHandler
 	public Provider getProvider()
 	{
 		return new MavenProvider(
+				getSearchPath(),
 				getReaderType(),
 				getComponentTypes(),
 				getVersionConverter(),

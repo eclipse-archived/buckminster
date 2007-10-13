@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -77,11 +78,11 @@ public class MavenProvider extends Provider
 
 	private final List<BidirectionalTransformer> m_rules;
 
-	public MavenProvider(String remoteReaderType, String[] componentTypes,
+	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
 		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
 		Documentation documentation, Map<String, MapEntry> mappings, List<BidirectionalTransformer> rules)
 	{
-		super(remoteReaderType, componentTypes, versionConverterDesc, uri, space, mutable, source,
+		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, space, mutable, source,
 			documentation);
 		if(mappings == null)
 			mappings = Collections.emptyMap();
