@@ -14,7 +14,6 @@ import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -142,9 +141,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 		queryBld.setResourceMapURL(TestSVNCSpecProvider.class.getResource("test.rmap"));
 		ComponentQuery query = queryBld.createComponentQuery();
 		IResolver resolver = new MainResolver(new ResolutionContext(query));
-
-		Format vh = new Format("http://subclipse.tigris.org/svn/subclipse/trunk/subclipse/core");
-		Provider provider = new Provider("svn", new String[] { IComponentType.OSGI_BUNDLE }, null, vh, null, true, true, null);
+		Provider provider = new Provider("svn", new String[] { IComponentType.OSGI_BUNDLE }, "http://subclipse.tigris.org/svn/subclipse/trunk/subclipse/core");
 		IReaderType readerType = provider.getReaderType();
 		IProgressMonitor nullMon = new NullProgressMonitor();
 		IComponentReader reader = readerType.getReader(provider, plugin.getComponentType(IComponentType.OSGI_BUNDLE), resolver.getContext().getRootNodeQuery(), VersionMatch.DEFAULT, nullMon);
