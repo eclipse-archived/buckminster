@@ -166,7 +166,7 @@ public class Main
 				cacheSecurityManager.removeTrustedThreadGroup(trustedGroup);
 			}
 
-			if(bootstrap != null && bootstrap.getError() != null)
+			if(bootstrap.getError() != null)
 				throw bootstrap.getError();
 
 			if(!fromApplet)
@@ -945,7 +945,7 @@ public class Main
 		// it.
 		//
 		File siteRoot = new File(getInstallLocation(), applicationFolder);
-		if(siteRoot == null)
+		if(!siteRoot.isDirectory())
 		{
 			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(),
 					"Check disk space, system permissions and try again", ERROR_CODE_SITE_ROOT_EXCEPTION);
