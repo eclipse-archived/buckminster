@@ -1,0 +1,13 @@
+<rm:rmap
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
+
+	<rm:searchPath name="pdemap">
+		<rm:provider xsi:type="pmp:PDEMapProvider" readerType="cvs" componentType="eclipse.project" mutable="false" source="true">
+			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,org.eclipse.releng/maps"/>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:locator searchPathRef="pdemap" pattern="^org\.eclipse\..*" />
+</rm:rmap>
