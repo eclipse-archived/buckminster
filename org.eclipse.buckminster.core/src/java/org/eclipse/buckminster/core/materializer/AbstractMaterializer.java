@@ -142,17 +142,17 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 
 	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor)
 	{
+		CSpec cspec = generatorNode.getDeclaringCSpec();
 		try
 		{
 			IPerformManager performManager = CorePlugin.getPerformManager();
-			CSpec cspec = generatorNode.getDeclaringCSpec();
 			Attribute generatorAttribute = cspec.getReferencedAttribute(
 					generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
 			performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
 		}
 		catch(CoreException e)
 		{
-			context.addException(e.getStatus());
+			context.addException(generatorNode.getRequest(), e.getStatus());
 		}
 	}
 

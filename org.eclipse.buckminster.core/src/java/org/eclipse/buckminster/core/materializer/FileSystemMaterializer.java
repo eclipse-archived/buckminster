@@ -147,7 +147,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				{
 					if(!context.isContinueOnError())
 						throw e;
-					context.addException(e.getStatus());
+					context.addException(cr.getRequest(), e.getStatus());
 				}
 			}
 			prepMon.done();

@@ -84,7 +84,7 @@ public class MaterializationJob extends Job
 				throw new OperationCanceledException();
 			if(!status.isOK())
 				throw new CoreException(status);
-			
+
 			// We wait to give the event manager a chance to deliver all
 			// events while the JobBlocker still active. This gives us
 			// a chance to add dynamic dependencies to projects

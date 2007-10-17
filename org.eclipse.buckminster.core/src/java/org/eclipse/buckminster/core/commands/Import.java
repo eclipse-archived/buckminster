@@ -81,7 +81,8 @@ public class Import extends WorkspaceInitCommand
 				MaterializationContext matCtx = new MaterializationContext(bom, mspec, null);
 				matCtx.setContinueOnError(continueOnError);
 				MaterializationJob.run(matCtx, true);
-				logger.info("Import complete.");
+				if(matCtx.emitWarningsAndErrors())
+					return 1;
 			}
 			finally
 			{
@@ -95,7 +96,8 @@ public class Import extends WorkspaceInitCommand
 			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
 				logger.error("An SSL handshake exception occurred - are all server certificates available in your keystore?");
 			throw be;
-		}
+		}		
+		logger.info("Import complete.");
 		return 0;
 	}
 

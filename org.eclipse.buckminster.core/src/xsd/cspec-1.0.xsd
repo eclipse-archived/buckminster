@@ -19,11 +19,11 @@
 	<!-- References between elements in the document -->
 	<annotation>
 		<documentation>
-			A component defines a set of named attributes. Each attribute is eather an _artifact_ that
-			appoints pre- existing files and directories, an _action_ that describes something that can be
+			A component defines a set of named attributes. Each attribute is either an _artifact_ that
+			appoints pre-existing files and directories, an _action_ that describes something that can be
 			done in order to produce new artifacts, or a _group_ which is an arbitrary grouping of _artifact_,
 			_action_, and _group_ instances. A component also defines a list of _dependencies_ to other
-			components. Such dependencies are referred from _action_ prerequisies and _groups_
+			components. Such dependencies are referred from _action_ prerequisites and _groups_
 		</documentation>
 	</annotation>
 	<element
@@ -41,7 +41,7 @@
 			refer="cs:dependencyKey">
 			<annotation>
 				<documentation>
-					The foreignkey between an external action or group prerequisite and a dependency.
+					The foreign key between an external action or group prerequisite and a dependency.
 				</documentation>
 			</annotation>
 			<selector xpath=".//cs:attribute" />
@@ -52,7 +52,7 @@
 			refer="cs:dependencyKey">
 			<annotation>
 				<documentation>
-					The foreignkey between the dependency obtainedFrom and another dependency.
+					The foreign key between the dependency obtainedFrom and another dependency.
 				</documentation>
 			</annotation>
 			<selector xpath=".//cs:generator" />
@@ -65,8 +65,7 @@
 	<complexType name="ComponentRequest">
 		<annotation>
 			<documentation>
-				A reference to a component that has to be imported into the workspace in order for the project
-				to build.
+				A reference to a component that this component is dependent on.
 			</documentation>
 		</annotation>
 		<attribute
@@ -74,7 +73,7 @@
 			type="string"
 			use="required">
 			<annotation>
-				<documentation>The name of the required component</documentation>
+				<documentation>The name of the component</documentation>
 			</annotation>
 		</attribute>
 		<attribute
@@ -110,7 +109,7 @@
 			type="string"
 			use="optional">
 			<annotation>
-				<documentation>The type of verions used in the version designator</documentation>
+				<documentation>The type of versions used in the version designator</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
@@ -194,11 +193,6 @@
 			name="componentType"
 			type="string"
 			use="optional" />
-		<!-- Deprecated -->
-		<attribute
-			name="category"
-			type="string"
-			use="optional" />
 		<attribute
 			name="version"
 			type="string"
@@ -209,6 +203,15 @@
 			use="optional" />
 		<attribute
 			name="shortDesc"
+			type="string"
+			use="optional" />
+		<attribute
+			name="projectInfo"
+			type="com:URL"
+			use="optional"/>
+		<!-- Deprecated -->
+		<attribute
+			name="category"
 			type="string"
 			use="optional" />
 	</complexType>

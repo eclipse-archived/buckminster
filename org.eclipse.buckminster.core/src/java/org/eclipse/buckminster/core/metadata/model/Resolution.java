@@ -197,7 +197,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	 * @return The component identifier
 	 * @throws CoreException
 	 */
-	public ComponentIdentifier getComponentIdentifier() throws CoreException
+	public ComponentIdentifier getComponentIdentifier()
 	{
 		return getCSpec().getComponentIdentifier();
 	}

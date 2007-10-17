@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.cspec.model;
 import static org.eclipse.buckminster.core.XMLConstants.BM_CSPEC_NS;
 import static org.eclipse.buckminster.core.XMLConstants.BM_CSPEC_PREFIX;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,6 +55,8 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 {
+	public static final String ATTR_PROJECT_INFO = "projectInfo";
+
 	public static final String ATTR_SHORT_DESC = "shortDesc";
 
 	public static final String ELEM_ACTIONS = "actions";
@@ -100,11 +103,14 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	private final Attribute m_selfAttribute;
 
-	public CSpec(String name, String componentType, IVersion version, Documentation documentation, String shortDesc,
+	private final URL m_projectInfo;
+
+	public CSpec(String name, String componentType, IVersion version, URL projectInfo, Documentation documentation, String shortDesc,
 			Map<String, DependencyBuilder> dependencies, Map<String, GeneratorBuilder> generators,
 			Map<String, AttributeBuilder> attributes)
 	{
 		m_componentIdentifier = new ComponentIdentifier(name, componentType, version);
+		m_projectInfo = projectInfo;
 		m_documentation = documentation;
 		m_shortDesc = shortDesc;
 		m_selfAttribute = new Attribute(SELF_ARTIFACT, true, null, null)
@@ -304,6 +310,39 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		return getAttribute(WellknownActions.BUCKMINSTER.PREBIND.toString());
 	}
 
+	public URL getProjectInfo()
+	{
+		return m_projectInfo;
+	}
+
+	public String getTagInfo(String parentInfo)
+	{
+		String path = null;
+		String projectInfo = null;
+		if(parentInfo != null)
+		{
+			int pathIdx = parentInfo.indexOf("path: ");
+			if(pathIdx >= 0)
+				path = String.format("%s -> %s", parentInfo.substring(pathIdx), m_componentIdentifier);
+
+			if(m_projectInfo == null && parentInfo.startsWith("project: "))
+				projectInfo = parentInfo.substring(0, pathIdx - 2);
+		}
+
+		if(m_projectInfo != null)
+			projectInfo = String.format("project: %s", m_projectInfo);
+
+		if(path == null)
+			path = String.format("path: %s", m_componentIdentifier.toString());
+
+		String tagInfo;
+		if(projectInfo == null)
+			tagInfo = path;
+		else
+			tagInfo = String.format("%s, %s", projectInfo, path);
+		return tagInfo;
+	}
+
 	/**
 	 * <p>
 	 * Creates a list of attribute qualified external dependencies that will be unique with respect to their respective
@@ -475,6 +514,10 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
 		}
+		
+		if(m_projectInfo != null)
+			Utils.addAttribute(attrs, ATTR_PROJECT_INFO, m_projectInfo.toString());
+
 		if(m_shortDesc != null)
 			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
 	}

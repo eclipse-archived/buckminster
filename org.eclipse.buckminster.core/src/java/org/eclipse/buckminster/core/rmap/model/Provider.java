@@ -170,7 +170,6 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 						String msg = String.format("Provider %s(%s): does not provide components of type %s",
 								readerType, providerURI, componentTypeID);
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-						logger.debug(msg);
 					}
 					return null;
 				}
@@ -181,7 +180,6 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 			{
 				String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-				logger.debug(msg);
 				return null;
 			}
 
@@ -224,7 +222,6 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 					msg = String.format(
 						"Provider %s(%s): No match found for component %s using version designator %s",
 						readerType, providerURI, componentName, desiredVersion);
-				logger.debug(msg);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, problem));
 				return null;
 			}

@@ -122,7 +122,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		try
 		{
 			NodeQuery query = m_context.getNodeQuery(request);
-			ResolverNode node = deepResolve(m_context, new UnresolvedNode(query.getQualifiedDependency()), monitor);
+			ResolverNode node = deepResolve(m_context, new UnresolvedNode(query.getQualifiedDependency()), null, monitor);
 			return createBillOfMaterials(node);
 		}
 		finally
@@ -151,7 +151,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery()))
 					? m_context
 					: new ResolutionContext(cquery, m_context);
-			BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom, monitor));
+			BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom, bom.getTagInfo(), monitor));
 			if(!newBom.contentEqual(bom))
 				bom = newBom;
 			return bom;
@@ -287,12 +287,13 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return null;
 	}
 
-	ResolverNode getResolverNode(ResolutionContext context, QualifiedDependency qDep) throws CoreException
+	ResolverNode getResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo) throws CoreException
 	{
 		// We use a ComponentName as the key since we don't want the
 		// designator to play a role here.
 		//
-		ComponentName key = qDep.getRequest().toPureComponentName();
+		ComponentRequest request = qDep.getRequest();
+		ComponentName key = request.toPureComponentName();
 		ResolverNode[] nrs;
 		boolean infant;
 		synchronized(this)
@@ -301,7 +302,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			infant = (nrs == null);
 			if(infant)
 			{
-				nrs = new ResolverNode[] { createResolverNode(context, qDep) };
+				nrs = new ResolverNode[] { createResolverNode(context, qDep, requestorInfo) };
 				put(key, nrs);
 			}
 		}
@@ -330,13 +331,13 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 		synchronized(this)
 		{
-			// No known ResolverNode could accomodate the requirements from
-			// this quialified dependency. We need a new one.
+			// No known ResolverNode could accommodate the requirements from
+			// this qualified dependency. We need a new one.
 			//
 			nrs = get(key);
 			if(nrs.length == top)
 			{
-				nr = createResolverNode(context, qDep);
+				nr = createResolverNode(context, qDep, requestorInfo);
 				ResolverNode[] newNrs = new ResolverNode[top + 1];
 				System.arraycopy(nrs, 0, newNrs, 0, top);
 				newNrs[top] = nr;
@@ -355,7 +356,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			//
 			// Start from square one.
 			//
-			nr = getResolverNode(context, qDep);
+			nr = getResolverNode(context, qDep, requestorInfo);
 
 		return nr;
 	}
@@ -368,15 +369,15 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				.getComponentQuery());
 	}
 
-	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep)
+	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
-		return new ResolverNode(new NodeQuery(context, qDep));
+		return new ResolverNode(new NodeQuery(context, qDep), requestorInfo);
 	}
 
-	private ResolverNode deepResolve(ResolutionContext context, DepNode depNode, IProgressMonitor monitor) throws CoreException
+	private ResolverNode deepResolve(ResolutionContext context, DepNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
 	{
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
-		ResolverNode node = getResolverNode(context, qDep);
+		ResolverNode node = getResolverNode(context, qDep, tagInfo);
 		if(node.isResolved())
 			return node;
 
@@ -391,10 +392,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			return node;
 		}
 
-		if(depNode.getResolution() == null)
+		Resolution res = depNode.getResolution();
+		if(res == null)
 		{
 			try
 			{
+				context.addTagInfo(query.getComponentRequest(), node.getTagInfo());
 				depNode = localResolve(query, MonitorUtils.subMonitor(monitor, 1));
 			}
 			catch(CoreException e)
@@ -408,12 +411,16 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				// We don't get any further.
 				//
 				return node;
+
+			res = depNode.getResolution();
+			if(res == null)
+				return node;
 		}
 
 		context = node.startResolvingChildren(depNode);
 		if(context == null)
 			//
-			// Resolution was unsuccesful
+			// Resolution was unsuccessful
 			//
 			return node;
 
@@ -421,11 +428,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		int top = children.size();
 		if(top == 0)
 		{
-			node.setResolution(depNode.getResolution(), null);
+			node.setResolution(res, null);
 			return node;
 		}
 
 		ResolverNode[] resolvedChildren = new ResolverNode[top];
+		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
 		for(int idx = 0; idx < top; ++idx)
 		{
 			DepNode child = children.get(idx);
@@ -433,11 +441,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			ResolutionContext childContext = (cquery == null)
 					? context
 					: new ResolutionContext(cquery, context);
+
 			resolvedChildren[idx] = m_recursiveResolve
-					? deepResolve(childContext, child, monitor)
-					: getResolverNode(childContext, child.getQualifiedDependency());
+					? deepResolve(childContext, child, childTagInfo, monitor)
+					: getResolverNode(childContext, child.getQualifiedDependency(), childTagInfo);
 		}
-		node.setResolution(depNode.getResolution(), resolvedChildren);
+		node.setResolution(res, resolvedChildren);
 		return node;
 	}
 

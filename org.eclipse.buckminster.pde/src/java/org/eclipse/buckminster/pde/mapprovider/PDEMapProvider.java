@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.pde.internal.mapprovider;
+package org.eclipse.buckminster.pde.mapprovider;
 
 import java.io.File;
 import java.io.FileReader;
@@ -69,6 +69,11 @@ public class PDEMapProvider extends Provider
 		Format uri, String space, boolean mutable, boolean source, Documentation documentation)
 	{
 		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, space, mutable, source, documentation);
+	}
+
+	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri)
+	{
+		super(remoteReaderType, componentTypes, uri);
 	}
 
 	@Override

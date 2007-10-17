@@ -41,12 +41,12 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 		return Collections.emptyList();
 	}
 
-	public List<DepNode> getChildren() throws CoreException
+	public List<DepNode> getChildren()
 	{
 		return Collections.emptyList();
 	}
 
-	public abstract QualifiedDependency getQualifiedDependency() throws CoreException;
+	public abstract QualifiedDependency getQualifiedDependency();
 
 	public ComponentQuery getQuery() throws CoreException
 	{
@@ -58,9 +58,9 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 		return null;
 	}
 
-	public abstract ComponentRequest getRequest() throws CoreException;
+	public abstract ComponentRequest getRequest();
 
-	public Resolution getResolution() throws CoreException
+	public Resolution getResolution()
 	{
 		return null;
 	}

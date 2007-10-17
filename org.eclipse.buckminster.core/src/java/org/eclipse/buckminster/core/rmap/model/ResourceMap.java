@@ -141,7 +141,6 @@ public class ResourceMap implements ISaxable, ISaxableElement
 
 	public DepNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 2000);
 		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
 		SearchPath searchPath = getSearchPath(query);
@@ -179,7 +178,6 @@ public class ResourceMap implements ISaxable, ISaxableElement
 						{
 							String msg = String.format("Provider %s(%s): CSPEC rejected: %s does not designate %s",
 								provider.getReaderTypeId(), providerMatch.getRepositoryURI(), versionDesignator, version);
-							logger.debug(msg);
 							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 							continue;
@@ -203,7 +201,6 @@ public class ResourceMap implements ISaxable, ISaxableElement
 				catch(CoreException e)
 				{
 					String msg = String.format("Provider %s(%s): Resolve failed: %s", provider.getReaderTypeId(), providerMatch.getRepositoryURI(), e.getMessage());
-					logger.debug(msg);
 					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 					noGoodList.add(providerMatch.getOriginalProvider());
 				}

@@ -107,7 +107,7 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	public synchronized List<DepNode> getChildren() throws CoreException
+	public synchronized List<DepNode> getChildren()
 	{
 		return m_children;
 	}
@@ -118,19 +118,19 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	public QualifiedDependency getQualifiedDependency() throws CoreException
+	public QualifiedDependency getQualifiedDependency()
 	{
 		return getResolution().getQualifiedDependency();
 	}
 
 	@Override
-	public ComponentRequest getRequest() throws CoreException
+	public ComponentRequest getRequest()
 	{
 		return getResolution().getRequest();
 	}
 
 	@Override
-	public synchronized Resolution getResolution() throws CoreException
+	public synchronized Resolution getResolution()
 	{
 		return m_resolution;
 	}

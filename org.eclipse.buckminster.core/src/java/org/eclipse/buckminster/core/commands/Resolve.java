@@ -36,7 +36,6 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -131,17 +130,8 @@ public class Resolve extends WorkspaceInitCommand
 				MainResolver resolver = new MainResolver(context);
 				context.setContinueOnError(continueOnError);
 				BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 35));
-				IStatus status = context.getStatus();
-				switch(status.getSeverity())
-				{
-				case IStatus.ERROR:
-					throw new CoreException(status);
-				case IStatus.WARNING:
-					logger.warning(status.getMessage());
-					break;
-				case IStatus.INFO:
-					logger.info(status.getMessage());
-				}
+				if(context.emitWarningsAndErrors())
+					return 1;
 
 				if(bomOut != null)
 					Utils.serialize(bom, bomOut);
@@ -156,8 +146,9 @@ public class Resolve extends WorkspaceInitCommand
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
 					MaterializationJob.run(matCtx, true);
+					if(matCtx.emitWarningsAndErrors())
+						return 1;
 				}
-				logger.info("Query complete.");
 			}
 			finally
 			{
@@ -172,6 +163,7 @@ public class Resolve extends WorkspaceInitCommand
 				logger.error("An SSL handshake exception occurred - are all server certificates available in your keystore?");
 			throw be;
 		}
+		logger.info("Query complete.");
 		return 0;
 	}
 }

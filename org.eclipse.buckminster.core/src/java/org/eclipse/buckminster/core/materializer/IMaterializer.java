@@ -48,8 +48,7 @@ public interface IMaterializer
 	IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException;
 
 	/**
-	 * Materialize all resolutions from the bill of materials <code>bom</code> except the ones listed
-	 * in <code>excludes</code>.
+	 * Materialize all resolutions from the bill of materials <code>bom</code>.
 	 * @param resolutions The list of things to materialize.
 	 * @param context The context for the materialization.
 	 * @param monitor provides feedback to the user.

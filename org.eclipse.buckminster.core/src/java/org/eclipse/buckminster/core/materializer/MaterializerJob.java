@@ -13,7 +13,6 @@ import java.util.List;
 import org.eclipse.buckminster.core.helpers.IJobInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,6 +30,9 @@ public class MaterializerJob extends Job implements IJobInfo
 	public MaterializerJob(String id, IMaterializer materializer, List<Resolution> resolutions, MaterializationContext context)
 	{
 		super(id + " materializer");
+		if(resolutions.size() < 1)
+			throw new IllegalArgumentException();
+
 		m_materializer = materializer;
 		m_context = context;
 		m_resolutions = resolutions;
@@ -57,31 +59,14 @@ public class MaterializerJob extends Job implements IJobInfo
 		}
 		catch(Exception e)
 		{
-			m_context.addException(BuckminsterException.wrap(e).getStatus());
+			m_context.addException(m_resolutions.get(m_resolutions.size()-1).getRequest(), BuckminsterException.wrap(e).getStatus());
 		}
 		return Status.OK_STATUS;
 	}
 
 	public String getOperationName()
 	{
-		if(m_resolutions == null || m_resolutions.size() == 0)
-		{
-			return getName();
-		}
-		
-		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
-		
-		try
-		{
-			if(lastResolution == null || lastResolution.getComponentIdentifier() == null)
-			{
-				return getName();
-			}
-			return "Materialization of " + lastResolution.getComponentIdentifier().toString();
-		}
-		catch(CoreException e)
-		{
-			return getName();
-		}
+		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);		
+		return "Materialization of " + lastResolution.getComponentIdentifier().toString();
 	}
 }

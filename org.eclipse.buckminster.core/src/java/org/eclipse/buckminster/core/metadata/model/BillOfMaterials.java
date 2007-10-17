@@ -193,7 +193,7 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public List<DepNode> getChildren() throws CoreException
+	public List<DepNode> getChildren()
 	{
 		return getTopNode().getChildren();
 	}
@@ -204,7 +204,7 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public QualifiedDependency getQualifiedDependency() throws CoreException
+	public QualifiedDependency getQualifiedDependency()
 	{
 		return getTopNode().getQualifiedDependency();
 	}
@@ -222,13 +222,18 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public ComponentRequest getRequest() throws CoreException
+	public ComponentRequest getRequest()
 	{
 		return getTopNode().getRequest();
 	}
 
+	public String getTagInfo()
+	{
+		return getQuery().getTagInfo();
+	}
+
 	@Override
-	public Resolution getResolution() throws CoreException
+	public Resolution getResolution()
 	{
 		return getTopNode().getResolution();
 	}

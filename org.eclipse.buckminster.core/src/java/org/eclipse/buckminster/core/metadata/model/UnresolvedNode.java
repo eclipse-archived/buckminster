@@ -51,7 +51,7 @@ public class UnresolvedNode extends DepNode
 	}
 
 	@Override
-	public ComponentRequest getRequest() throws CoreException
+	public ComponentRequest getRequest()
 	{
 		return m_dependency.getRequest();
 	}

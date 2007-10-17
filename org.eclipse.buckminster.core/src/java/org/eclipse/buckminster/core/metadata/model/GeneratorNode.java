@@ -89,7 +89,7 @@ public class GeneratorNode extends DepNode
 		return m_generates;
 	}
 
-	public synchronized CSpec getDeclaringCSpec() throws CoreException
+	public CSpec getDeclaringCSpec()
 	{
 		return m_declaringCSpec;
 	}

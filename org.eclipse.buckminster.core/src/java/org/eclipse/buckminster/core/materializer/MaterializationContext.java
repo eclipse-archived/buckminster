@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -51,7 +52,12 @@ public class MaterializationContext extends RMContext
 		m_bom = bom;
 		m_materializationSpec = mspec;
 		if(context != null)
+		{
 			getUserCache().putAll(context.getUserCache());
+			getTagInfos().putAll(context.getTagInfos());
+		}
+		else
+			addTagInfosFromBom();
 	}
 
 	public BillOfMaterials getBillOfMaterials()
@@ -349,5 +355,22 @@ public class MaterializationContext extends RMContext
 	private IPath expand(IPath path)
 	{
 		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
+	}
+
+	private void addTagInfosFromBom()
+	{
+		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
+	}
+
+	private void addTagInfosFromNode(String tagInfo, DepNode node)
+	{
+		Resolution res = node.getResolution();
+		if(res == null)
+			return;
+
+		addTagInfo(node.getRequest(), tagInfo);
+		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
+		for(DepNode child : node.getChildren())
+			addTagInfosFromNode(childTagInfo, child);
 	}
 }

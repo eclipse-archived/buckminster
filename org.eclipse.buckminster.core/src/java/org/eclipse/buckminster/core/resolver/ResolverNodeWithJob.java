@@ -64,9 +64,9 @@ class ResolverNodeWithJob extends ResolverNode
 
 	private final ResourceMapResolver m_resolver;
 
-	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep)
+	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
-		super(new NodeQuery(context, qDep));
+		super(new NodeQuery(context, qDep), requestorInfo);
 		m_job = new NodeResolutionJob(qDep.getRequest().toString());
 		m_resolver = resolver;
 	}
@@ -86,6 +86,8 @@ class ResolverNodeWithJob extends ResolverNode
 		DepNode node = null;
 		try
 		{
+			NodeQuery query = getQuery();
+			query.getContext().addTagInfo(query.getComponentRequest(), getTagInfo());
 			node = resolve(monitor);
 			if(node != null)
 			{
@@ -95,7 +97,7 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		catch(CoreException e)
 		{
-			m_resolver.getContext().addException(e.getStatus());
+			m_resolver.getContext().addException(getQuery().getComponentRequest(), e.getStatus());
 		}
 		catch(OperationCanceledException e)
 		{
@@ -104,7 +106,7 @@ class ResolverNodeWithJob extends ResolverNode
 		catch(Throwable e)
 		{
 			CorePlugin.getLogger().warning(e.toString(), e);
-			m_resolver.getContext().addException(BuckminsterException.wrap(e).getStatus());
+			m_resolver.getContext().addException(getQuery().getComponentRequest(), BuckminsterException.wrap(e).getStatus());
 		}
 		finally
 		{
@@ -168,6 +170,7 @@ class ResolverNodeWithJob extends ResolverNode
 		// This section can *not* be synchronized. If it is, we risk running into
 		// deadlocks.
 		//
+		String tagInfo = resolution.getCSpec().getTagInfo(getTagInfo());
 		ResolverNode[] children = new ResolverNode[top];
 		boolean didSchedule = false;
 		for(int idx = 0; idx < top; ++idx)
@@ -175,7 +178,7 @@ class ResolverNodeWithJob extends ResolverNode
 			DepNode childNode = nodeChildren.get(idx);
 			ComponentQuery childQuery = childNode.getQuery();
 			ResolutionContext childContext = (childQuery == null) ? context : new ResolutionContext(childQuery, context);
-			ResolverNode child = m_resolver.getResolverNode(childContext, childNode.getQualifiedDependency());
+			ResolverNode child = m_resolver.getResolverNode(childContext, childNode.getQualifiedDependency(), tagInfo);
 			children[idx] = child;
 			if(((ResolverNodeWithJob)child).buildTree(childNode))
 				didSchedule = true;

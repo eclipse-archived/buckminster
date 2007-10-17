@@ -68,7 +68,7 @@
             parserIds="provider"
             resource="/map-provider-1.0.xsd">
          <handler
-               class="org.eclipse.buckminster.pde.internal.mapprovider.PDEMapProviderHandler"
+               class="org.eclipse.buckminster.pde.mapprovider.PDEMapProviderHandler"
                type="PDEMapProvider"/>
       </parserExtension>
  </extension>

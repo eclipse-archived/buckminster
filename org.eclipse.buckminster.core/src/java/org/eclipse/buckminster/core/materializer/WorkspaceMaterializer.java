@@ -87,7 +87,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 		catch(CoreException e)
 		{
-			context.addException(e.getStatus());
+			context.addException(resolution.getRequest(), e.getStatus());
 		}
 	}
 
@@ -356,11 +356,11 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, MaterializationContext context,
 			IProgressMonitor monitor) throws CoreException
 	{
+		Materialization mat = wb.getMaterialization();
+		Resolution resolution = mat.getResolution();
+		CSpec cspec = resolution.getCSpec();
 		try
 		{
-			Materialization mat = wb.getMaterialization();
-			Resolution resolution = mat.getResolution();
-			CSpec cspec = resolution.getCSpec();
 			IPerformManager performManager = CorePlugin.getPerformManager();
 			Attribute bindEntryPoint = cspec.getBindEntryPoint();
 			if(bindEntryPoint == null)
@@ -389,7 +389,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 		catch(CoreException e)
 		{
-			context.addException(e.getStatus());
+			context.addException(resolution.getRequest(), e.getStatus());
 			return wb;
 		}
 	}

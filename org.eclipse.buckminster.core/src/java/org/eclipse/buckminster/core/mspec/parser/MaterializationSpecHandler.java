@@ -8,9 +8,6 @@
 
 package org.eclipse.buckminster.core.mspec.parser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -18,7 +15,6 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -69,15 +65,7 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 		MaterializationSpecBuilder builder = (MaterializationSpecBuilder)getBuilder();
 		builder.setName(getStringValue(attrs, MaterializationSpec.ATTR_NAME));
 		builder.setShortDesc(getOptionalStringValue(attrs, MaterializationSpec.ATTR_SHORT_DESC));
-		String url = getStringValue(attrs, MaterializationSpec.ATTR_URL);
-		try
-		{
-			builder.setURL(new URL(url));
-		}
-		catch(MalformedURLException e)
-		{
-			throw new SAXParseException("Invalid URL", getDocumentLocator(), e);
-		}
+		builder.setURL(getURLValue(attrs, MaterializationSpec.ATTR_URL));
 	}
 
 	public MaterializationSpec getMaterializationSpec()

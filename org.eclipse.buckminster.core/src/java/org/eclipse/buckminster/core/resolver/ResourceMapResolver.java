@@ -75,9 +75,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	}
 
 	@Override
-	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep)
+	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
-		return new ResolverNodeWithJob(this, context, qDep);
+		return new ResolverNodeWithJob(this, context, qDep, requestorInfo);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		{
 			ComponentQuery query = getContext().getComponentQuery();
 			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(getContext(), new QualifiedDependency(
-					request, query.getAttributes(request)));
+					request, query.getAttributes(request)), null);
 
 			if(m_singleThreaded)
 			{
@@ -125,7 +125,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			ResolutionContext context = getContext();
 			if(!(cquery == null || cquery.equals(context.getComponentQuery())))
 				context = new ResolutionContext(cquery, context);
-			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(context, bom.getQualifiedDependency());
+
+			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(context, bom.getQualifiedDependency(), bom.getTagInfo());
 
 			m_holdQueue = true;
 			if(topNode.rebuildTree(bom))
@@ -241,7 +242,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			RMContext context = getContext();
 			if(!context.isContinueOnError())
 				throw e;
-			context.addException(e.getStatus());
+			context.addException(query.getComponentRequest(), e.getStatus());
 			return null;
 		}
 		finally

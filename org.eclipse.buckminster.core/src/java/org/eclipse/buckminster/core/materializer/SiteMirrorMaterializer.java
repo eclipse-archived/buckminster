@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
@@ -49,7 +48,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 	@SuppressWarnings("serial")
 	private static class FeaturesPerSite extends ArrayList<ISiteFeatureReference>
 	{
-		private final HashSet<ComponentIdentifier> m_includedIDs = new HashSet<ComponentIdentifier>();
+		private final HashSet<Resolution> m_includedRes = new HashSet<Resolution>();
 
 		private final ISite m_site;
 
@@ -68,16 +67,16 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 			return toArray(new ISiteFeatureReference[size()]);
 		}
 
-		ISiteFeatureReference[] getOptionalFeatureRefs()
+		Resolution[] getResolutions()
 		{
-			return toArray(new ISiteFeatureReference[size()]);
+			return m_includedRes.toArray(new Resolution[m_includedRes.size()]);
 		}
 
-		void add(ComponentIdentifier cid) throws CoreException
+		void add(Resolution res) throws CoreException
 		{
-			if(!m_includedIDs.contains(cid))
+			if(!m_includedRes.contains(res))
 			{
-				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site, cid);
+				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site, res.getComponentIdentifier());
 
 				// Get the site reference from the site. It might not exist since we only see
 				// the features that are listed in the site.xml
@@ -85,7 +84,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 				//
 				if(v != null)
 					super.add(v);
-				m_includedIDs.add(cid);
+				m_includedRes.add(res);
 			}
 		}
 	}
@@ -169,7 +168,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 					{
 						if(!context.isContinueOnError())
 							throw e;
-						context.addException(e.getStatus());
+						context.addException(fps.getResolutions()[0].getRequest(), e.getStatus());
 					}
 				}
 			}
@@ -212,7 +211,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 				fps = new FeaturesPerSite(SiteFeatureReaderType.getSite(siteURL, MonitorUtils.subMonitor(monitor, 100)));
 				sitesInLocation.put(siteURL, fps);
 			}
-			fps.add(resolution.getComponentIdentifier());
+			fps.add(resolution);
 		}
 	}
 }

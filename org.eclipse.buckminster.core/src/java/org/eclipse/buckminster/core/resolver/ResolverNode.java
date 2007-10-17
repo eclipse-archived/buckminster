@@ -47,10 +47,13 @@ public class ResolverNode
 
 	private Resolution m_resolution;
 
-	public ResolverNode(NodeQuery query)
+	private String m_tagInfo;
+
+	public ResolverNode(NodeQuery query, String tagInfo)
 	{
 		m_query = query;
 		m_children = s_noChildren;
+		m_tagInfo = tagInfo;
 	}
 
 	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
@@ -211,6 +214,11 @@ public class ResolverNode
 	synchronized void clearInvalidationFlag()
 	{
 		m_invalidateRun = false;
+	}
+
+	String getTagInfo()
+	{
+		return m_tagInfo;
 	}
 
 	NodeQuery getQuery()

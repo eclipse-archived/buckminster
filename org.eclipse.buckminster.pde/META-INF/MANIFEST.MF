@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: pde.jar
 Export-Package: org.eclipse.buckminster.pde,
  org.eclipse.buckminster.pde.internal,
+ org.eclipse.buckminster.pde.mapprovider,
  org.eclipse.buckminster.pde.test
 Require-Bundle: org.eclipse.buckminster.jdt;bundle-version="0.2.0",
  org.eclipse.buckminster.ant;bundle-version="0.2.0",

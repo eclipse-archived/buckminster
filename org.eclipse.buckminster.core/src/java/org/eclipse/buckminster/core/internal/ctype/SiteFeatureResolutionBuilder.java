@@ -151,7 +151,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			infant = (nr == null);
 			if(infant)
 			{
-				nr = new ResolverNode(new NodeQuery(context, qDep));
+				nr = new ResolverNode(new NodeQuery(context, qDep), null);
 				nodes.put(key, nr);
 			}
 		}

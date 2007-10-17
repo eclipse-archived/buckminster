@@ -10,8 +10,6 @@
 
 package org.eclipse.buckminster.core.query.parser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.XMLConstants;
@@ -98,22 +96,10 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	public void handleAttributes(Attributes attrs)
 	throws SAXException
 	{
-		try
-		{
-			m_builder.clear();
-			String tmp = getOptionalStringValue(attrs, ComponentQuery.ATTR_PROPERTIES);
-			if(tmp != null)
-				m_builder.setPropertiesURL(new URL(tmp));
-
-			tmp = getOptionalStringValue(attrs, ComponentQuery.ATTR_RESOURCE_MAP);
-			if(tmp != null)
-				m_builder.setResourceMapURL(new URL(tmp));
-			m_builder.setShortDesc(getOptionalStringValue(attrs, ComponentQuery.ATTR_SHORT_DESC));
-		}
-		catch(MalformedURLException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
+		m_builder.clear();
+		m_builder.setPropertiesURL(getOptionalURLValue(attrs, ComponentQuery.ATTR_PROPERTIES));
+		m_builder.setResourceMapURL(getOptionalURLValue(attrs, ComponentQuery.ATTR_RESOURCE_MAP));
+		m_builder.setShortDesc(getOptionalStringValue(attrs, ComponentQuery.ATTR_SHORT_DESC));
 	}
 }
 

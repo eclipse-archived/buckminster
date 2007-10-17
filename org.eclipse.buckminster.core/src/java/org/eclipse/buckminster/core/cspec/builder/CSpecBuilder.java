@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class CSpecBuilder
 	private Documentation m_documentation;
 	private HashMap<String,GeneratorBuilder> m_generators;
 	private String m_name;
+	private URL m_projectInfo;
 	private String m_shortDesc;
 	private IVersion m_version;
 
@@ -123,6 +125,7 @@ public class CSpecBuilder
 		m_name = null;
 		m_componentType = null;
 		m_version = null;
+		m_projectInfo = null;
 		m_documentation = null;
 		m_shortDesc = null;
 		m_dependencies = null;
@@ -147,7 +150,7 @@ public class CSpecBuilder
 
 	public CSpec createCSpec() throws CoreException
 	{
-		return new CSpec(m_name, m_componentType, m_version, m_documentation, m_shortDesc, m_dependencies, m_generators, m_attributes);
+		return new CSpec(m_name, m_componentType, m_version, m_projectInfo, m_documentation, m_shortDesc, m_dependencies, m_generators, m_attributes);
 	}
 
 	public DependencyBuilder createDependencyBuilder()
@@ -268,6 +271,11 @@ public class CSpecBuilder
 		throw new MissingAttributeException(m_name, name);
 	}
 
+	public URL getProjectInfo()
+	{
+		return m_projectInfo;
+	}
+
 	public String getShortDesc()
 	{
 		return m_shortDesc;
@@ -283,6 +291,7 @@ public class CSpecBuilder
 		m_name = cspec.getName();
 		m_componentType = cspec.getComponentTypeID();
 		m_version = cspec.getVersion();
+		m_projectInfo = cspec.getProjectInfo();
 		m_documentation = cspec.getDocumentation();
 		m_shortDesc = cspec.getShortDesc();
 
@@ -368,6 +377,11 @@ public class CSpecBuilder
 	public void setName(String name)
 	{
 		m_name = name;
+	}
+
+	public void setProjectInfo(URL projectInfo)
+	{
+		m_projectInfo = projectInfo;
 	}
 
 	public void setShortDesc(String shortDesc)

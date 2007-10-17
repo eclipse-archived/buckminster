@@ -325,6 +325,11 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return node == null ? -1 : node.getRevision();
 	}
 
+	public String getTagInfo()
+	{
+		return "Query for " + m_rootRequest;
+	}
+
 	public Date getTimestamp(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);

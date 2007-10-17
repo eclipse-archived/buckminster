@@ -186,7 +186,7 @@ public class Logger
 		setErrStream(getLoggerStream(true));		
 	}
 
-	public void log(int level, String msg, Throwable t)
+	public synchronized void log(int level, String msg, Throwable t)
 	{
 		if(level >= s_consoleThreshold && (s_eclipseLogListener == null || level < s_eclipseLoggerThreshold))
 		{

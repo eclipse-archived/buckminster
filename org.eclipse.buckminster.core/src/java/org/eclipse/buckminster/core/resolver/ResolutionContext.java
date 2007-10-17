@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
@@ -44,12 +45,12 @@ public class ResolutionContext extends RMContext
 	}
 
 	@Override
-	public synchronized void addException(IStatus resolveStatus)
+	public synchronized void addException(ComponentRequest request, IStatus resolveStatus)
 	{
 		if(m_parentContext != null)
-			m_parentContext.addException(resolveStatus);
+			m_parentContext.addException(request, resolveStatus);
 		else
-			super.addException(resolveStatus);
+			super.addException(request, resolveStatus);
 	}
 
 	@Override

@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.sax;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -18,8 +20,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * This handler is the subclass of all handlers in the Tada SAX parser system.
- * It provides utility methods to extract attribute values.
+ * This handler is the subclass of all handlers in the Tada SAX parser system. It provides utility methods to extract
+ * attribute values.
  * 
  * @author Thomas Hallgren
  */
@@ -30,19 +32,16 @@ public abstract class AbstractHandler extends DefaultHandler
 	protected abstract Locator getDocumentLocator();
 
 	/**
-	 * Returns the name of the element for which this class is a handler. In
-	 * essence, this method returns the value of the static variable
-	 * <code>TAG</code> declared for the class of the instance that receives
-	 * the call.
+	 * Returns the name of the element for which this class is a handler. In essence, this method returns the value of
+	 * the static variable <code>TAG</code> declared for the class of the instance that receives the call.
 	 * 
 	 * @return The element name.
 	 */
 	public abstract String getTAG();
 
 	/**
-	 * Returns an attribute that is trimmed from whitespace and with a length
-	 * greater then zero. This method returns the <code>null</code> if the
-	 * attribute does not exist or if it consists entirely of whitespace.
+	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero. This method returns the
+	 * <code>null</code> if the attribute does not exist or if it consists entirely of whitespace.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -63,17 +62,16 @@ public abstract class AbstractHandler extends DefaultHandler
 	}
 
 	/**
-	 * Returns an attribute that is compiled into a regular expression
-	 * pattern. This method returns <code>null</code> when the attribute is
-	 * <code>null</code> or an empty String.
+	 * Returns an attribute that is compiled into a regular expression pattern. This method returns <code>null</code>
+	 * when the attribute is <code>null</code> or an empty String.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
 	 * @param qName
 	 *            The qualified name of the attribute.
 	 * @return The compiled pattern or <code>null</code>.
-	 * @throws SAXParseException when the attribute is not null or empty and cannot
-	 * be compiled into a regular expression pattern.
+	 * @throws SAXParseException
+	 *             when the attribute is not null or empty and cannot be compiled into a regular expression pattern.
 	 */
 	public Pattern getOptionalPatternValue(Attributes attrs, String qName) throws SAXParseException
 	{
@@ -86,14 +84,54 @@ public abstract class AbstractHandler extends DefaultHandler
 		}
 		catch(PatternSyntaxException e)
 		{
-			throw new SAXParseException("The value of attribute " + qName + " is not a valid regular expression", getDocumentLocator(), e);
+			throw new SAXParseException("The value of attribute " + qName + " is not a valid regular expression",
+					getDocumentLocator(), e);
 		}
 	}
 
 	/**
-	 * Returns an attribute that is trimmed from whitespace and with a length
-	 * greater then zero. This method returns the <code>defaultValue</code> if
-	 * the attribute does not exist or if it consists entirely of whitespace.
+	 * Returns an attribute that is parsed into a URL. This method returns <code>null</code> when the attribute is
+	 * <code>null</code> or an empty String.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The URL or <code>null</code>.
+	 * @throws SAXParseException
+	 *             when the attribute is not null or empty and cannot be parsed into a URL
+	 */
+	public URL getOptionalURLValue(Attributes attrs, String qName) throws SAXParseException
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		if(value == null || value.length() == 0)
+			return null;
+		try
+		{
+			return new URL(value);
+		}
+		catch(MalformedURLException e)
+		{
+			// Do a space check.
+			//
+			if(value.indexOf(' ') > 0)
+			{
+				try
+				{
+					return new URL(value.replaceAll("\\s", "%20"));
+				}
+				catch(MalformedURLException me1)
+				{
+				}
+			}
+			throw new SAXParseException("The value of attribute " + qName + " is not a valid URL",
+					getDocumentLocator(), e);
+		}
+	}
+
+	/**
+	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero. This method returns the
+	 * <code>defaultValue</code> if the attribute does not exist or if it consists entirely of whitespace.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -112,9 +150,8 @@ public abstract class AbstractHandler extends DefaultHandler
 	}
 
 	/**
-	 * Returns an boolean value. This method returns the
-	 * <code>defaultValue</code> if the attribute does not exist or if it
-	 * consists entirely of whitespace.
+	 * Returns an boolean value. This method returns the <code>defaultValue</code> if the attribute does not exist or
+	 * if it consists entirely of whitespace.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -137,8 +174,8 @@ public abstract class AbstractHandler extends DefaultHandler
 	}
 
 	/**
-	 * Returns an long value. This method returns the <code>defaultValue</code>
-	 * if the attribute does not exist or if it consists entirely of whitespace.
+	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
+	 * it consists entirely of whitespace.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -151,12 +188,14 @@ public abstract class AbstractHandler extends DefaultHandler
 	public static final double getOptionalDoubleValue(Attributes attrs, String qName, double defaultValue)
 	{
 		String value = getOptionalStringValue(attrs, qName);
-		return (value == null) ? defaultValue : Double.parseDouble(value);
+		return (value == null)
+				? defaultValue
+				: Double.parseDouble(value);
 	}
 
 	/**
-	 * Returns an long value. This method returns the <code>defaultValue</code>
-	 * if the attribute does not exist or if it consists entirely of whitespace.
+	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
+	 * it consists entirely of whitespace.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -169,12 +208,14 @@ public abstract class AbstractHandler extends DefaultHandler
 	public static final long getOptionalLongValue(Attributes attrs, String qName, long defaultValue)
 	{
 		String value = getOptionalStringValue(attrs, qName);
-		return (value == null) ? defaultValue : Long.parseLong(value);
+		return (value == null)
+				? defaultValue
+				: Long.parseLong(value);
 	}
 
 	/**
-	 * Returns an long value. This method returns the <code>defaultValue</code>
-	 * if the attribute does not exist or if it consists entirely of whitespace.
+	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
+	 * it consists entirely of whitespace.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -185,12 +226,13 @@ public abstract class AbstractHandler extends DefaultHandler
 	public static final int getOptionalIntValue(Attributes attrs, String qName, int defaultValue)
 	{
 		String value = getOptionalStringValue(attrs, qName);
-		return (value == null) ? defaultValue : Integer.parseInt(value);
+		return (value == null)
+				? defaultValue
+				: Integer.parseInt(value);
 	}
 
 	/**
-	 * Returns an attribute that is trimmed from whitespace and with a length
-	 * greater then zero.
+	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -198,8 +240,7 @@ public abstract class AbstractHandler extends DefaultHandler
 	 *            The qualified name of the attribute.
 	 * @return The value of the attribute or <code>null</code>.
 	 * @throws MissingRequiredAttributeException
-	 *             if the attribute does not exist or if it consists entirely of
-	 *             whitespace.
+	 *             if the attribute does not exist or if it consists entirely of whitespace.
 	 */
 	protected String getStringValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
 	{
@@ -210,20 +251,44 @@ public abstract class AbstractHandler extends DefaultHandler
 	}
 
 	/**
-	 * Returns an attribute that is compiled into a regular expression
-	 * pattern.
+	 * Returns an attribute that is compiled into a regular expression pattern.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
 	 * @param qName
 	 *            The qualified name of the attribute.
 	 * @return The compiled pattern.
-	 * @throws MissingRequiredAttributeException when the attribute is not null or empty
-	 * @throws SAXParseException when the attribute value cannot be compiled into a regular expression pattern.
+	 * @throws MissingRequiredAttributeException
+	 *             when the attribute is not null or empty
+	 * @throws SAXParseException
+	 *             when the attribute value cannot be compiled into a regular expression pattern.
 	 */
-	protected Pattern getPatternValue(Attributes attrs, String qName) throws SAXParseException, MissingRequiredAttributeException
+	protected Pattern getPatternValue(Attributes attrs, String qName) throws SAXParseException,
+			MissingRequiredAttributeException
 	{
 		Pattern value = getOptionalPatternValue(attrs, qName);
+		if(value == null)
+			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
+		return value;
+	}
+
+	/**
+	 * Returns an attribute that is parsed into a URL.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The URL.
+	 * @throws MissingRequiredAttributeException
+	 *             when the attribute is not null or empty
+	 * @throws SAXParseException
+	 *             when the attribute value cannot be parsed into a URL.
+	 */
+	protected URL getURLValue(Attributes attrs, String qName) throws SAXParseException,
+			MissingRequiredAttributeException
+	{
+		URL value = getOptionalURLValue(attrs, qName);
 		if(value == null)
 			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
 		return value;
@@ -302,7 +367,7 @@ public abstract class AbstractHandler extends DefaultHandler
 	public void startPrefixMapping(String prefix, String uri) throws SAXException
 	{
 		if(m_prefixMappings == null)
-			m_prefixMappings = new HashMap<String,String>();
+			m_prefixMappings = new HashMap<String, String>();
 		m_prefixMappings.put(prefix, uri);
 	}
 
@@ -315,7 +380,9 @@ public abstract class AbstractHandler extends DefaultHandler
 
 	public String getPrefixMapping(String prefix)
 	{
-		return m_prefixMappings == null ? null : m_prefixMappings.get(prefix);
+		return m_prefixMappings == null
+				? null
+				: m_prefixMappings.get(prefix);
 	}
 
 	protected abstract TopHandler getTopHandler();

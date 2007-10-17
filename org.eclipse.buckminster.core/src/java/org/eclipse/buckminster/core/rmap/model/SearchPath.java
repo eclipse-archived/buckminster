@@ -126,7 +126,9 @@ public class SearchPath implements ISaxableElement
 				}
 			}
 			if(bestMatch == null)
+			{
 				throw new CoreException(problemCollector);
+			}
 			return bestMatch;
 		}
 		finally

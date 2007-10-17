@@ -116,6 +116,7 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		m_builder = new CSpecBuilder();
 		m_builder.setName(getOptionalStringValue(attrs, NamedElement.ATTR_NAME));
 		m_builder.setComponentTypeID(getComponentType(attrs));
+		m_builder.setProjectInfo(getOptionalURLValue(attrs, CSpec.ATTR_PROJECT_INFO));
 		m_builder.setShortDesc(getOptionalStringValue(attrs, CSpec.ATTR_SHORT_DESC));
 
 		String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
