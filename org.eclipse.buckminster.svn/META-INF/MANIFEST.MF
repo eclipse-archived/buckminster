@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Subversion Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.buckminster.svn; singleton:=true
 Bundle-Version: 0.2.0.qualifier
-Bundle-Activator: org.eclipse.buckminster.svn.SvnPlugin
+Bundle-Activator: org.eclipse.buckminster.svn.test.SvnPlugin
 Bundle-Vendor: Eclipse.org
-Export-Package: org.eclipse.buckminster.svn
+Export-Package: org.eclipse.buckminster.svn.test
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="0.2.0",
  org.eclipse.buckminster.sax;bundle-version="0.2.0",
  org.eclipse.buckminster.runtime;bundle-version="0.2.0",
