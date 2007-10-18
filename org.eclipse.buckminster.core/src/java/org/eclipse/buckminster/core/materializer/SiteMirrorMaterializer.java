@@ -23,8 +23,11 @@ import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
@@ -130,13 +133,13 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 		}
 	}
 
-	private static void mirrorAndExpose(RMContext context, String mirrorSiteURL,
+	private static void mirrorAndExpose(final RMContext context, String mirrorSiteURL,
 			Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
 	{
 		int count = 0;
 		for (IPath path : sites.keySet())
 			count += sites.get(path).size();
-
+		
 		monitor.beginTask(null, 100 + count * 100);
 		try
 		{
@@ -156,9 +159,26 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 				{
 					throw BuckminsterException.wrap(e);
 				}
-				mirrorSite.setIgnoreNonPresentPlugins(true);
+				mirrorSite.setIgnoreNonPresentPlugins(context.isContinueOnError());
 				for(FeaturesPerSite fps : sitesAndFeatures)
 				{
+					final Resolution first = fps.getResolutions()[0];
+					ILogListener listener = new ILogListener()
+					{
+						public void logging(IStatus status, String plugin)
+						{
+							switch(status.getSeverity())
+							{
+							case IStatus.WARNING:
+							case IStatus.ERROR:
+								Platform.removeLogListener(this);
+								context.addException(first.getRequest(), status);
+								Platform.addLogListener(this);
+							}
+						}	
+					};
+					Platform.addLogListener(listener);
+
 					try
 					{
 						mirrorSite.mirrorAndExpose(fps.getSite(), fps.getFeatureRefs(), null, mirrorSiteURL);
@@ -168,7 +188,11 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 					{
 						if(!context.isContinueOnError())
 							throw e;
-						context.addException(fps.getResolutions()[0].getRequest(), e.getStatus());
+						context.addException(first.getRequest(), e.getStatus());
+					}
+					finally
+					{
+						Platform.removeLogListener(listener);
 					}
 				}
 			}

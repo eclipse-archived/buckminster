@@ -126,7 +126,7 @@ public class RMContext extends MapUnion<String, String>
 				bld.append(infos.next());
 				while(infos.hasNext())
 				{
-					bld.append(',');
+					bld.append(", ");
 					bld.append(infos.next());
 				}
 			}
