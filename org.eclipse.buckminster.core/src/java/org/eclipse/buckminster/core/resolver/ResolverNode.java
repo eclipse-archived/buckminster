@@ -58,7 +58,8 @@ public class ResolverNode
 		m_query = query;
 		m_children = s_noChildren;
 		m_tagInfo = tagInfo;
-		query.getContext().addTagInfo(query.getComponentRequest(), getTagInfo());
+		if(tagInfo != null)
+			query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
 	}
 
 	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
