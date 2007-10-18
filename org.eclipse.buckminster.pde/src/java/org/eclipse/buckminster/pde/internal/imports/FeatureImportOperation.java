@@ -127,7 +127,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
 			FileUtils.prepareDestination(m_destination.toFile(),
-					conflictResolution == ConflictResolution.REPLACE, MonitorUtils.subMonitor(monitor, 10));
+					conflictResolution, MonitorUtils.subMonitor(monitor, 10));
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));

@@ -107,7 +107,7 @@ public class MaterializationNode extends MaterializationDirective
 
 	public boolean isExpand()
 	{
-		return m_exclude;
+		return m_expand;
 	}
 
 	public boolean isExclude()

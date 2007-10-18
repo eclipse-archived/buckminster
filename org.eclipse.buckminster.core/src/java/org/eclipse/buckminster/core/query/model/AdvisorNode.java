@@ -68,7 +68,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_WHEN_NOT_EMPTY = "whenNotEmpty";
 
-	public static final String ATTR_USE_RESOLUTION_SCHEME = "useResolutionSchema";
+	public static final String ATTR_USE_REMOTE_RESOLUTION = "useRemoteResolution";
 
 	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery";
 
@@ -114,7 +114,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	private final IVersionDesignator m_versionOverride;
 
-	private final boolean m_useResolutionScheme;
+	private final boolean m_useRemoteResolution;
 
 	private final boolean m_systemDiscovery;
 
@@ -143,7 +143,7 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		m_useMaterialization = bld.useMaterialization();
 		m_useProject = bld.useProject();
 		m_versionOverride = bld.getVersionOverride();
-		m_useResolutionScheme = bld.isUseResolutionScheme();
+		m_useRemoteResolution = bld.isUseResolutionScheme();
 		m_systemDiscovery = bld.isSystemDiscovery();
 		m_branchTagPath = bld.getBranchTagPath();
 		m_spacePath = bld.getSpacePath();
@@ -249,11 +249,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_useProject;
 	}
 
-	public final boolean isUseResolutionScheme()
-	{
-		return m_useResolutionScheme;
-	}
-
 	public final boolean skipComponent()
 	{
 		return m_skipComponent;
@@ -293,8 +288,8 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		if(m_prune)
 			Utils.addAttribute(attrs, ATTR_PRUNE, "true");
-		if(!m_useResolutionScheme)
-			Utils.addAttribute(attrs, ATTR_USE_RESOLUTION_SCHEME, "false");
+		if(!m_useRemoteResolution)
+			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false");
 		if(!m_systemDiscovery)
 			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
 
@@ -344,6 +339,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 	public final boolean useProject()
 	{
 		return m_useProject;
+	}
+
+	public final boolean useRemoteResolution()
+	{
+		return m_useRemoteResolution;
 	}
 
 	public String[] getSpacePath()

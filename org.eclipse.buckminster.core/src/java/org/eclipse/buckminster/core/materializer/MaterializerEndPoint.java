@@ -52,7 +52,7 @@ public class MaterializerEndPoint
 		return m_finalDestination;
 	}
 
-	public void unpack(InputStream input, IProgressMonitor monitor) throws IOException
+	public void unpack(InputStream input, IProgressMonitor monitor) throws IOException, CoreException
 	{
 		int dcCount = m_decompressors.length;
 		monitor.beginTask(null, 100 + dcCount * 100);

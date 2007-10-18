@@ -64,8 +64,6 @@ class ResolverNodeWithJob extends ResolverNode
 
 	private final NodeResolutionJob m_job;
 
-	private boolean m_completed;
-
 	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
 		super(new NodeQuery(context, qDep), requestorInfo);
@@ -77,11 +75,8 @@ class ResolverNodeWithJob extends ResolverNode
 	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
 	{
 		super.addDependencyQualification(newQDep);
-		if(isInvalidated() && m_completed)
-		{
-			m_resolver.schedule(this);
-			m_completed = false;
-		}
+		if(isInvalidated())
+			setScheduled(false);
 	}
 
 	protected IStatus run(IProgressMonitor monitor)
@@ -113,14 +108,11 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		finally
 		{
-			boolean invalid;
 			synchronized(this)
 			{
-				m_completed = true;
-				invalid = isInvalidated();
+				if(isInvalidated())
+					m_resolver.schedule(this);
 			}
-			if(invalid)
-				m_resolver.schedule(this);
 
 			m_resolver.removeJobMonitor(monitor);
 			if(node == null)

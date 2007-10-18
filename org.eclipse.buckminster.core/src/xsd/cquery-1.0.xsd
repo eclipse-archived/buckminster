@@ -144,7 +144,7 @@
 				<documentation>The version type for the versionOverride.</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useResolutionScheme" type="boolean" use="optional" />
+		<attribute name="useRemoteResolution" type="boolean" use="optional" />
 		<attribute name="systemDiscovery" type="boolean" use="optional" />
 		<attribute name="branchTagPath" type="string" use="optional" />
 		<attribute name="spacePath" type="string" use="optional" />

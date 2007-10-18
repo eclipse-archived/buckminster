@@ -8,9 +8,11 @@
 
 package org.eclipse.buckminster.core.materializer;
 
-import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,7 +21,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  *
  */
-public interface IExpander
+public class ZipExpander extends AbstractExtension implements IExpander
 {
-	void expand(InputStream input, IPath finalLocation, IProgressMonitor monitor) throws IOException, CoreException;
+	public void expand(InputStream input, IPath finalLocation, IProgressMonitor monitor) throws CoreException
+	{
+		FileUtils.unzip(input, null, finalLocation.toFile(), ConflictResolution.UPDATE, monitor);
+	}
 }

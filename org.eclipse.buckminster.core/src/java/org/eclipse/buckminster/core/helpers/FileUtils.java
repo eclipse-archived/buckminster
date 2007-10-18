@@ -33,6 +33,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -204,17 +205,17 @@ public abstract class FileUtils
 
 	/**
 	 * This method will assert that the <code>source</code> is not present inside the <code>destination</code> and
-	 * then call {@link #prepareDestination(File destination, boolean overwrite)}.
+	 * then call {@link #prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)}.
 	 * 
 	 * @param source
 	 *            The source. Might be a file or a directory.
 	 * @param destination
 	 *            The destination directory.
-	 * @param overwrite
-	 *            <code>true</code> if the <code>destination</code> can be cleared prior to copy.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
 	 * @throws BuckminsterException
 	 */
-	public static void checkCopyConditions(File sourceFile, File destination, boolean overwrite,
+	public static void checkCopyConditions(File sourceFile, File destination, ConflictResolution strategy,
 			IProgressMonitor monitor) throws BuckminsterException
 	{
 		// Assert that the destination is different from source and not a
@@ -228,28 +229,21 @@ public abstract class FileUtils
 				throw new CopyOntoSelfException(sourceFile, destination);
 			tmp = tmp.getParentFile();
 		}
-		prepareDestination(destination, overwrite, monitor);
+		prepareDestination(destination, strategy, monitor);
 	}
 
 	/**
-	 * This method will make sure that the <code>destination</code> points to an empty directory. If
-	 * <code>overwrite</code> is <code>true</code> and if <code>destination</code> is a directory, any existing
-	 * files in the <code>destination</code> directory will be removed. If <code>overwrite</code> is
-	 * <code>true</code> and <code>destination</code> is a file, it will be removed and a directory will be created
-	 * in its place. An <code>DestinationNotEmptyException</code> will be thrown if <code>overwrite</code> is
-	 * <code>false</code> and the <code>destination</code> exists and is not an empty directory. An attempt will be
-	 * made to create the <code>destination</code> directory and needed parent directories if <code>destination</code>
-	 * points to a non-existing directory.
-	 * 
+	 * This method prepares the <code>destination</code> to receive a file or files according to the given
+	 * <code>strategy</code>
 	 * @param source
 	 *            The source. Might be a file or a directory.
 	 * @param destination
 	 *            The destination directory.
-	 * @param overwrite
-	 *            <code>true</code> if the <code>destination</code> can be cleared prior to copy.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
 	 * @throws BuckminsterException
 	 */
-	public static void prepareDestination(File destination, boolean overwrite, IProgressMonitor monitor)
+	public static void prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)
 			throws BuckminsterException
 	{
 		monitor.beginTask(null, 200);
@@ -261,10 +255,16 @@ public abstract class FileUtils
 			{
 				if(destination.isFile())
 				{
-					if(!overwrite)
+					if(strategy == ConflictResolution.FAIL)
 						throw new DestinationNotEmptyException(destination);
-					if(!destination.delete())
-						throw new DeleteException(destination);
+
+					if(strategy != ConflictResolution.KEEP)
+					{
+						// Both UPDATE and REPLACE will replace a file
+						//
+						if(!destination.delete())
+							throw new DeleteException(destination);
+					}
 					MonitorUtils.worked(monitor, 85);
 				}
 				createDirectory(destination, MonitorUtils.subMonitor(monitor, 85));
@@ -278,10 +278,14 @@ public abstract class FileUtils
 					subMonitor.beginTask(null, numFiles * 100);
 					try
 					{
-						if(!overwrite)
+						if(strategy == ConflictResolution.FAIL)
 							throw new DestinationNotEmptyException(destination);
-						for(File file : list)
-							deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+
+						if(strategy == ConflictResolution.REPLACE)
+						{
+							for(File file : list)
+								deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+						}
 					}
 					finally
 					{
@@ -300,25 +304,23 @@ public abstract class FileUtils
 
 	/**
 	 * Copy everything found in the <code>sourceDirectory</code> to the <code>destinationDirectory</code>. The
-	 * latter is created if it does not exist. If it exists, and if <code>overwrite</code> is <code>true</code> then
-	 * the destination will be cleaned out and recreated. If <code>overwrite</code> is <code>false</code>, this
-	 * method will throw a {@link FileUtils.DestinationNotEmptyException}.
+	 * destination is prepared according to the given <code>strategy</code>.
 	 * 
 	 * @param sourceDirectory
 	 *            The source directory for the copy
 	 * @param destinationDirectory
 	 *            The destination directory for the copy.
-	 * @param overwrite
-	 *            Set to true if an existing destination should be cleaned out prior to copying.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
 	 * @throws CoreException
 	 */
-	public static void deepCopy(File sourceDirectory, File destinationDirectory, boolean overwrite,
+	public static void deepCopy(File sourceDirectory, File destinationDirectory, ConflictResolution strategy,
 			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1000);
 		try
 		{
-			checkCopyConditions(sourceDirectory, destinationDirectory, overwrite, MonitorUtils.subMonitor(monitor, 100));
+			checkCopyConditions(sourceDirectory, destinationDirectory, strategy, MonitorUtils.subMonitor(monitor, 100));
 			deepCopyUnchecked(sourceDirectory, destinationDirectory, MonitorUtils.subMonitor(monitor, 900));
 		}
 		finally
@@ -329,23 +331,22 @@ public abstract class FileUtils
 
 	/**
 	 * Unzip the <code>source</code> contents to a <code>destDir</code> directory and give it the name
-	 * <code>destName</code>. This mehtod assumes that the source is the URL that points to zipped contents, that
-	 * destDir is a directory, and that a file named destName can be created in destDir. If such a file exists already,
-	 * an attempt will be made to overwrite.
+	 * <code>destName</code>. This method assumes that the source is the URL that points to zipped contents, that
+	 * destDir is a directory, and that a file named destName can be created in destDir.
 	 * 
 	 * @param source
 	 *            The source zipped content.
 	 * @param sourceRelPath
 	 *            Relative path to material inside the soruce file.
-	 * @param destDir
+	 * @param dest
 	 *            The destination directory.
-	 * @param destName
-	 *            The name of the file relative to the destination.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
 	 * @param monitor
 	 *            The progress monitor used during the operation
 	 * @throws BuckminsterException
 	 */
-	public static void unzip(URL source, String sourceRelPath, File dest, boolean overwrite, IProgressMonitor monitor)
+	public static void unzip(URL source, String sourceRelPath, File dest, ConflictResolution strategy, IProgressMonitor monitor)
 			throws CoreException
 	{
 		monitor.beginTask(null, 1000);
@@ -354,7 +355,7 @@ public abstract class FileUtils
 		{
 			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(source,
 					MonitorUtils.subMonitor(monitor, 400)));
-			unzip(input, sourceRelPath, dest, overwrite, MonitorUtils.subMonitor(monitor, 600));
+			unzip(input, sourceRelPath, dest, strategy, MonitorUtils.subMonitor(monitor, 600));
 		}
 		catch(IOException e)
 		{
@@ -367,14 +368,14 @@ public abstract class FileUtils
 		}
 	}
 
-	public static void unzip(InputStream inputs, String sourceRelPath, File dest, boolean overwrite,
+	public static void unzip(InputStream inputs, String sourceRelPath, File dest, ConflictResolution strategy,
 			IProgressMonitor monitor) throws CoreException
 	{
 		ZipEntry entry;
 		ZipInputStream input = null;
 		monitor.beginTask(null, 600);
 		IProgressMonitor nullMon = null;
-		prepareDestination(dest, overwrite, MonitorUtils.subMonitor(monitor, 100));
+		prepareDestination(dest, strategy, MonitorUtils.subMonitor(monitor, 100));
 		try
 		{
 			int ticksLeft = 500;

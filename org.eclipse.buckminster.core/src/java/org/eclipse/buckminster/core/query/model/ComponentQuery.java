@@ -430,4 +430,10 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.useMaterialization();
 	}
+
+	public boolean useResolutionService(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? true : node.useRemoteResolution();
+	}
 }

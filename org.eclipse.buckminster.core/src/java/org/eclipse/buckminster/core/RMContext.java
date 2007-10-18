@@ -219,7 +219,7 @@ public class RMContext extends MapUnion<String, String>
 				status instanceof MultiStatus
 					? ((MultiStatus)status).getChildren()
 					: new IStatus[] { status },
-				"Errors", null);
+				"Errors and Warnings", null);
 		}
 		else
 			m_status.merge(status);
@@ -243,6 +243,18 @@ public class RMContext extends MapUnion<String, String>
 	{
 		for(int idx = 0; idx < indent; ++idx)
 			wrt.append(' ');
+		switch(status.getSeverity())
+		{
+		case IStatus.INFO:
+			wrt.append("INFO    ");
+			break;
+		case IStatus.WARNING:
+			wrt.append("WARNING ");
+			break;
+		case IStatus.ERROR:
+			wrt.append("ERROR   ");
+			break;
+		}
 		wrt.append(status.getMessage());		
 		for(IStatus child : status.getChildren())
 		{

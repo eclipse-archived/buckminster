@@ -117,7 +117,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						// We are installing into folder. That folder must be empty
 						// out prior to the installation.
 						//
-						FileUtils.prepareDestination(file, conflictRes != ConflictResolution.FAIL, MonitorUtils
+						FileUtils.prepareDestination(file, conflictRes, MonitorUtils
 								.subMonitor(prepMon, 10));
 					}
 					else

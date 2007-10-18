@@ -11,6 +11,7 @@ package org.eclipse.buckminster.core.materializer;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -40,8 +41,8 @@ import org.eclipse.core.runtime.Platform;
  */
 public class MaterializationContext extends RMContext
 {
-	public static final String DECOMPRESSORS_POINT = "decompressors";
-	public static final String EXPANDERS_POINT = "expanders";
+	public static final String DECOMPRESSORS_POINT = CorePlugin.CORE_NAMESPACE + ".decompressors";
+	public static final String EXPANDERS_POINT = CorePlugin.CORE_NAMESPACE + ".expanders";
 
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
@@ -107,12 +108,18 @@ public class MaterializationContext extends RMContext
 	public IPath getLeafArtifact(Resolution resolution) throws CoreException
 	{
 		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		IPath leaf = getMaterializationSpec().getLeafArtifact(ci);
+		ComponentName cName = resolution.getComponentIdentifier();
+		MaterializationSpec mspec = getMaterializationSpec();
+		IPath leaf = mspec.getLeafArtifact(ci);
+
 		if(leaf != null)
-			//
+		{
 			// MSpec always take precedence
 			//
+			if(mspec.isUnpack(cName) && mspec.isExpand(cName))
+				leaf = leaf.addTrailingSeparator();
 			return leaf;
+		}
 
 		IReaderType rd = resolution.getProvider().getReaderType();
 		if(rd.isFileReader())
@@ -132,7 +139,12 @@ public class MaterializationContext extends RMContext
 				version.toString(nameBld);
 			}
 			if(rd.isFileReader())
-				nameBld.append(".dat");
+			{
+				if(mspec.isUnpack(cName) && mspec.isExpand(cName))
+					nameBld.append('/');
+				else
+					nameBld.append(".dat");
+			}
 			else
 				nameBld.append('/');
 
@@ -210,13 +222,17 @@ public class MaterializationContext extends RMContext
 		ComponentName cName = resolution.getComponentIdentifier();
 		MaterializationSpec mspec = getMaterializationSpec();
 
+		boolean hasName = false;
 		String name = mspec.getSuffix(cName);
 		if(name == null)
 		{
 			IReaderType rd = resolution.getProvider().getReaderType();
 			IPath leaf = rd.getLeafArtifact(resolution, this);
 			if(leaf != null)
+			{
 				name = leaf.segment(0);
+				hasName = true;
+			}
 		}
 
 		if(mspec.isUnpack(cName))
@@ -225,7 +241,7 @@ public class MaterializationContext extends RMContext
 				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of " + cName);
 		}
 		else
-			return (name == null) ? null : new Path(name);
+			return hasName ? new Path(name) : null;
 
 		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = extRegistry.getConfigurationElementsFor(DECOMPRESSORS_POINT);
@@ -256,10 +272,13 @@ public class MaterializationContext extends RMContext
 			}
 
 			if(matchIdx < 0)
-				//
+			{
 				// No matching decompressor was found
 				//
+				if(!mspec.isExpand(cName))
+					throw BuckminsterException.fromMessage("Unable find decompressor for " + cName);
 				break;
+			}
 
 			if(decompressorsHandle != null)
 			{
@@ -278,7 +297,7 @@ public class MaterializationContext extends RMContext
 			decompressorsHandle[0] = decompressorList.toArray(new IDecompressor[decompressorList.size()]);
 
 		if(!mspec.isExpand(cName))
-			return new Path(name);
+			return hasName ? new Path(name) : null;
 
 		elems = extRegistry.getConfigurationElementsFor(EXPANDERS_POINT);
 		idx = elems.length;
@@ -309,10 +328,12 @@ public class MaterializationContext extends RMContext
 				expanderHandle[0] = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class"));
 			name = name.substring(0, name.length() - matchLen);
 		}
+		else
+			throw BuckminsterException.fromMessage("Unable find expander for " + cName);
 
 		// We now consider the result to be a folder
 		//
-		return new Path(name).addTrailingSeparator();
+		return hasName ? new Path(name).addTrailingSeparator() : null;
 	}
 
 	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException

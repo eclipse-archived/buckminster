@@ -69,7 +69,10 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			NodeQuery query = reader.getNodeQuery();
 			QualifiedDependency qdep = new QualifiedDependency(query.getComponentRequest(), null);
 			ResolverNode rNode = buildCSpecFromSiteFeature(reader, new HashMap<ComponentName, ResolverNode>(), siteFeature, new UnresolvedNode(qdep), null, MonitorUtils.subMonitor(monitor, 50));
-			return rNode.collectNodes(new HashMap<UUID, DepNode>(), new Stack<Resolution>(), true);
+			DepNode node = rNode.collectNodes(new HashMap<UUID, DepNode>(), new Stack<Resolution>(), true);
+			if(node == null)
+				node = new UnresolvedNode(query.getQualifiedDependency());
+			return node;
 		}
 		finally
 		{

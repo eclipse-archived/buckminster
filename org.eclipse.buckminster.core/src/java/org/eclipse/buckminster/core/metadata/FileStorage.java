@@ -30,6 +30,7 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.ElementNotFoundException;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -98,7 +99,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 	{
 		try
 		{
-			FileUtils.prepareDestination(m_folder, true, new NullProgressMonitor());
+			FileUtils.prepareDestination(m_folder, ConflictResolution.REPLACE, new NullProgressMonitor());
 			writeSequenceNumber(m_sequenceNumber);
 		}
 		catch(CoreException e)

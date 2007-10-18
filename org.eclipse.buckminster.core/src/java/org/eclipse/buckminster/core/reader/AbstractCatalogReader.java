@@ -22,6 +22,7 @@ import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -242,7 +243,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			if(fos.endsWith(".zip") || fos.endsWith(".jar"))
 			{
 				File dest = FileUtils.createTempFolder("bmovl", ".tmp");
-				FileUtils.unzip(URLUtils.normalizeToURL(fos), null, dest, false, monitor);
+				FileUtils.unzip(URLUtils.normalizeToURL(fos), null, dest, ConflictResolution.REPLACE, monitor);
 				return dest;
 			}
 
@@ -267,7 +268,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			throw new IllegalOverlayException("Only zip and jar archives allowed for remote overlays");
 
 		File dest = FileUtils.createTempFolder("bmovl", ".tmp");
-		FileUtils.unzip(url, null, dest, false, monitor);
+		FileUtils.unzip(url, null, dest, ConflictResolution.REPLACE, monitor);
 		return dest;
 	}
 

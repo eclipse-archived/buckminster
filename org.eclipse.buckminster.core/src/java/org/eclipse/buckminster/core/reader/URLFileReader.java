@@ -90,10 +90,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 			try
 			{
 				in = open(MonitorUtils.subMonitor(monitor, 800));
-
 				File destDir = destFile.getParentFile();
-				if(destFile.exists())
-					throw new FileUtils.DestinationNotEmptyException(destFile);
 
 				// Assert that parent directory exists unless
 				// we are at the root.

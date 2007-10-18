@@ -539,4 +539,14 @@ public class NodeQuery implements Comparator<VersionMatch>
 	{
 		return getComponentQuery().useMaterialization(getComponentRequest());
 	}
+
+	/**
+	 * Use remote resolution such as an rmap or a service.
+	 * 
+	 * @return <code>true</code> if remote resolution can be used.
+	 */
+	public boolean useResolutionService()
+	{
+		return getComponentQuery().useResolutionService(getComponentRequest());
+	}
 }

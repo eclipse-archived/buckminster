@@ -206,7 +206,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setUseInstalled(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_INSTALLED, true));
 		m_builder.setUseMaterialization(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_MATERIALIZATION, true));
 		m_builder.setUseProject(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_PROJECT, true));
-		m_builder.setUseResolutionScheme(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_RESOLUTION_SCHEME, true));
+		m_builder.setUseResolutionScheme(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_REMOTE_RESOLUTION, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
 		m_builder.setSpacePath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_SPACE_PATH), ","));
 	}

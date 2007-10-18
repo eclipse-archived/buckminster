@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -91,7 +92,13 @@ public class URLReaderType extends AbstractReaderType
 		if(name != null)
 			return Path.fromPortableString(name);
 
-		IPath path = Path.fromPortableString(getURI(resolution.getRepository()).getPath());
+		URI uri = getURI(resolution.getRepository());
+		Map<String,String> params = TextUtils.queryAsParameters(uri.getQuery());
+		String pathStr = params.get("file");
+		if(pathStr == null)
+			pathStr = uri.getPath();
+
+		IPath path = Path.fromPortableString(pathStr);
 		int segCount = path.segmentCount();
 		if(segCount > 1)
 			path = path.removeFirstSegments(segCount - 1);

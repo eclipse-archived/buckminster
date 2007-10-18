@@ -93,7 +93,8 @@ public class PDEMapProvider extends Provider
 				return null;
 
 			IVersion v = null;
-			VersionSelector vs = VersionSelector.tag(tv.getTag());
+			String tag = tv.getTag();
+			VersionSelector vs = (tag == null) ? null : VersionSelector.tag(tag);
 			ComponentRequest rq = query.getComponentRequest();
 			IVersionConverter vc = getVersionConverter();
 			if(vc != null)
@@ -315,7 +316,7 @@ public class PDEMapProvider extends Provider
 
 	private static final Pattern s_mapEntryPattern = Pattern.compile("^"
 		+ "\\s*([a-zA-Z_][a-zA-Z0-9_.-]*)\\s*@\\s*([a-zA-Z_][a-zA-Z0-9_.-]*)\\s*="
-		+ "\\s*([a-zA-Z_][a-zA-Z0-9_.-]*)\\s*,\\s*(.*?)\\s*$");
+		+ "\\s*([a-zA-Z_@][a-zA-Z0-9_.-@]*)\\s*,\\s*(.*?)\\s*$");
 
 	private void collectEntries(File mapFile, Map<ComponentName, TypedValue> map) throws CoreException
 	{
@@ -343,17 +344,30 @@ public class PDEMapProvider extends Provider
 					try
 					{
 						String testReaderTypeId = matcher.group(3).toLowerCase();
-						CorePlugin.getDefault().getReaderType(testReaderTypeId);
-						readerTypeId = testReaderTypeId;
-						tag = theRest.substring(0, cPos);
-						theRest = theRest.substring(cPos + 1);
+						if(testReaderTypeId.equals("@cvstag@"))
+						{
+							readerTypeId = "cvs";
+							tag = null;	// From some property
+						}
+						else
+						{
+							CorePlugin.getDefault().getReaderType(testReaderTypeId);
+							readerTypeId = testReaderTypeId;
+							tag = theRest.substring(0, cPos);
+							theRest = theRest.substring(cPos + 1);
+						}
 					}
 					catch(CoreException e)
 					{
 						readerTypeId = "cvs";
 						tag = matcher.group(3);
 					}
-					map.put(new ComponentName(matcher.group(2), matcher.group(1)), new TypedValue(
+					String ctype = matcher.group(1);
+					if("plugin".equals(ctype))
+						ctype = IComponentType.OSGI_BUNDLE;
+					else if("feature".equals(ctype))
+						ctype = IComponentType.ECLIPSE_FEATURE;
+					map.put(new ComponentName(matcher.group(2), ctype), new TypedValue(
 						readerTypeId, tag, theRest));
 				}
 			}

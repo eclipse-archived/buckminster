@@ -460,6 +460,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			BillOfMaterials bom = wizard.getBOM();
 			tv.setInput(bom.findAll(null));
 			tv.getTable().select(0);
+			setGlobalValues();
 			setSelectedComponentValues(getSelectedComponent());
 		}
 		catch(CoreException e)
@@ -883,19 +884,10 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 	}
 
-	private void setSelectedComponentValues(Resolution resolution) throws CoreException
+	private void setGlobalValues() throws CoreException
 	{
-		if(resolution == null)
-		{
-			UiUtils.setChildrenVisible(m_settingsGroup, false);
-			updatePageCompletion();
-			return;
-		}
-
-		ComponentRequest request = resolution.getRequest();
 		MaterializationContext context = getQueryWizard().getMaterializationContext();
 		MaterializationSpec mspec = context.getMaterializationSpec();
-		MaterializationNode node = mspec.getMatchingNode(resolution.getRequest());
 
 		int matIdx = 0;
 		String materializer = mspec.getMaterializerID();
@@ -929,7 +921,21 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			m_globalWorkspaceLocation.setEnabled(false);
 			m_globalWorkspaceLocationBrowse.setEnabled(false);
 		}
+	}
 
+	private void setSelectedComponentValues(Resolution resolution) throws CoreException
+	{
+		if(resolution == null)
+		{
+			UiUtils.setChildrenVisible(m_settingsGroup, false);
+			updatePageCompletion();
+			return;
+		}
+
+		MaterializationContext context = getQueryWizard().getMaterializationContext();
+		MaterializationSpec mspec = context.getMaterializationSpec();
+		MaterializationNode node = mspec.getMatchingNode(resolution.getComponentIdentifier());
+		ComponentRequest request = resolution.getRequest();
 		ConflictResolution cr = mspec.getConflictResolution();
 		if(cr == null)
 			cr = ConflictResolution.getDefault();
@@ -957,7 +963,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		try
 		{
 			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution.getRequest());
+			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution.getComponentIdentifier());
 			if(skip)
 			{
 				if(node == null || !node.isExclude())

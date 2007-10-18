@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -63,7 +64,7 @@ public class ConvertSiteToRuntime
 			try
 			{
 				input = new BufferedInputStream(new FileInputStream(featureJar));
-				FileUtils.unzip(input, null, featureDir, true, nullMonitor);
+				FileUtils.unzip(input, null, featureDir, ConflictResolution.REPLACE, nullMonitor);
 			}
 			catch(IOException e)
 			{
@@ -115,7 +116,7 @@ public class ConvertSiteToRuntime
 			try
 			{
 				input = new BufferedInputStream(new FileInputStream(pluginJar));
-				FileUtils.unzip(input, null, pluginDir, true, nullMonitor);
+				FileUtils.unzip(input, null, pluginDir, ConflictResolution.REPLACE, nullMonitor);
 			}
 			catch(FileNotFoundException e)
 			{

@@ -219,7 +219,7 @@ public class AdvisorNodeBuilder
 		m_useMaterialization = node.isUseMaterialization();
 		m_useProject = node.isUseProject();
 		m_versionOverride = node.getVersionOverride();
-		m_useResolutionScheme = node.isUseResolutionScheme();
+		m_useResolutionScheme = node.useRemoteResolution();
 		m_systemDiscovery = node.isSystemDiscovery();
 		m_branchTagPath = node.getBranchTagPath();
 		m_spacePath = node.getResolutionPath();

@@ -20,6 +20,7 @@ import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -62,7 +63,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 				success = true;
 				return;
 			}
-			FileUtils.deepCopy(source, destDir, false, monitor);
+			FileUtils.deepCopy(source, destDir, ConflictResolution.UPDATE, monitor);
 			success = true;
 		}
 		catch(MalformedURLException e)

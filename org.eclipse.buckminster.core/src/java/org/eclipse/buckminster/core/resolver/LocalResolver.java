@@ -365,8 +365,10 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	{
 		HashMap<UUID, DepNode> nodeMap = new HashMap<UUID, DepNode>();
 		Stack<Resolution> circularDepTrap = new Stack<Resolution>();
-		return BillOfMaterials.create(topNode.collectNodes(nodeMap, circularDepTrap, true), getContext()
-				.getComponentQuery());
+		DepNode node = topNode.collectNodes(nodeMap, circularDepTrap, true);
+		if(node == null)
+			node = new UnresolvedNode(topNode.getQuery().getQualifiedDependency());
+		return BillOfMaterials.create(node, getContext().getComponentQuery());
 	}
 
 	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)

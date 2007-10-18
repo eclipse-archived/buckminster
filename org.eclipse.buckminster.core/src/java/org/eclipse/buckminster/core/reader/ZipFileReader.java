@@ -24,6 +24,7 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -67,7 +68,7 @@ public class ZipFileReader extends AbstractCatalogReader
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	throws CoreException
 	{
-		FileUtils.unzip(m_sourceURL, m_relPath, destination.toFile(), false, monitor);
+		FileUtils.unzip(m_sourceURL, m_relPath, destination.toFile(), ConflictResolution.UPDATE, monitor);
 	}
 
 	public boolean isWritable()

@@ -182,7 +182,7 @@ public class PluginImportOperation extends JarImportOperation
 
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
-			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution == ConflictResolution.REPLACE,
+			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution,
 					MonitorUtils.subMonitor(monitor, 1));
 
 			if(!workspace.getRoot().getLocation().equals(m_destination.removeLastSegments(1)))

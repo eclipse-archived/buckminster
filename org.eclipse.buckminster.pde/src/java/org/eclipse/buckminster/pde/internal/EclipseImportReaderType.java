@@ -37,6 +37,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
@@ -402,7 +403,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					File destDir = new File(subDir, vcName);
 					try
 					{
-						FileUtils.unzip(input, null, destDir, true, MonitorUtils.subMonitor(monitor, 100));
+						FileUtils.unzip(input, null, destDir, ConflictResolution.REPLACE, MonitorUtils.subMonitor(monitor, 100));
 					}
 					finally
 					{
