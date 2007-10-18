@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -211,11 +212,11 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
 		for(DepNode child : getChildren())
-			child.addMaterializationCandidates(resolutions, query, mspec, perused);
+			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
 
 		Resolution resolution = getResolution();
 		if(!perused.contains(resolution))

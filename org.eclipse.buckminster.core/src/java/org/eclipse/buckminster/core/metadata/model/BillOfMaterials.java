@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -174,11 +175,11 @@ public class BillOfMaterials extends DepNode
 		return getTopNode().findAll(skipThese);
 	}
 
-	public List<Resolution> findMaterializationCandidates(MaterializationSpec mspec)
+	public List<Resolution> findMaterializationCandidates(RMContext context, MaterializationSpec mspec)
 	throws CoreException
 	{
 		List<Resolution> minfos = new ArrayList<Resolution>();
-		addMaterializationCandidates(minfos, getQuery(), mspec, new HashSet<Resolution>());
+		addMaterializationCandidates(context, minfos, getQuery(), mspec, new HashSet<Resolution>());
 		return minfos;
 	}
 
@@ -350,10 +351,10 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
-		getTopNode().addMaterializationCandidates(resolutions, query, mspec, perused);
+		getTopNode().addMaterializationCandidates(context, resolutions, query, mspec, perused);
 	}
 
 	@Override

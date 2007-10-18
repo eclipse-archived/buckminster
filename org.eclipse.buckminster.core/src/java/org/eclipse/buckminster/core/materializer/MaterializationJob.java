@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -95,9 +96,13 @@ public class MaterializationJob extends Job
 		{
 			throw new OperationCanceledException();
 		}
+		catch(OperationCanceledException e)
+		{
+			throw e;
+		}
 		catch(Throwable t)
 		{
-			throw new RuntimeException("Unexpected error", t);
+			throw BuckminsterException.wrap(t);
 		}
 	}
 
@@ -160,7 +165,7 @@ public class MaterializationJob extends Job
 		CorePlugin corePlugin = CorePlugin.getDefault();
 		Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
 		MaterializationSpec mspec = m_context.getMaterializationSpec();
-		for(Resolution cr : bom.findMaterializationCandidates(mspec))
+		for(Resolution cr : bom.findMaterializationCandidates(m_context, mspec))
 		{
 			String materializer = mspec.getMaterializerID(cr.getComponentIdentifier());
 			List<Resolution> crs = resPerMat.get(materializer);

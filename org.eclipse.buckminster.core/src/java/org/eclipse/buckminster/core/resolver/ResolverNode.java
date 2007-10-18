@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -32,6 +34,8 @@ import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 public class ResolverNode
 {
@@ -54,6 +58,7 @@ public class ResolverNode
 		m_query = query;
 		m_children = s_noChildren;
 		m_tagInfo = tagInfo;
+		query.getContext().addTagInfo(query.getComponentRequest(), getTagInfo());
 	}
 
 	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
@@ -65,12 +70,25 @@ public class ResolverNode
 			//
 			return;
 
+		IVersionDesignator currVd = m_query.getVersionDesignator();
+		IVersionDesignator newVd = query.getVersionDesignator();
+
+		if(!(currVd == null || currVd.equals(newVd)))
+		{
+			String newVdStr = (newVd == null) ? "<no designator>" : newVd.toString();
+			IStatus status = new Status(IStatus.WARNING, CorePlugin.getID(), String.format("Requests for: %s has conflicting version designators %s and %s",
+					query.getComponentRequest().getName(), currVd.toString(), newVdStr));
+
+			RMContext context = query.getContext();
+			context.addException(m_query.getComponentRequest(), status);
+			context.addException(query.getComponentRequest(), status);
+		}
+
 		if(m_resolution != null)
 		{
 			// Re-resolve might be necessary
 			//
-			IVersionDesignator vd = query.getVersionDesignator();
-			if((vd == null || vd.designates(m_resolution.getVersion()))
+			if((newVd == null || newVd.designates(m_resolution.getVersion()))
 				&& m_query.getQualifiedDependency().hasAllAttributes(query.getRequiredAttributes()))
 			{
 				m_query = query;

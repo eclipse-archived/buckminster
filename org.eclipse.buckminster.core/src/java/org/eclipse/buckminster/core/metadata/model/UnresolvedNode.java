@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
@@ -86,11 +87,21 @@ public class UnresolvedNode extends DepNode
 	}
 
 	@Override
-	void addMaterializationCandidates(List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
-		ComponentRequest request = getRequest();
-		if(!(query.skipComponent(request) || mspec.isExcluded(request)))
-			throw new UnresolvedNodeException(request);
+		try
+		{
+			ComponentRequest request = getRequest();
+			if(!(query.skipComponent(request) || mspec.isExcluded(request)))
+				throw new UnresolvedNodeException(request);
+		}
+		catch(CoreException e)
+		{
+			if(context.isContinueOnError())
+				context.addException(getRequest(), e.getStatus());
+			else
+				throw e;
+		}
 	}
 }

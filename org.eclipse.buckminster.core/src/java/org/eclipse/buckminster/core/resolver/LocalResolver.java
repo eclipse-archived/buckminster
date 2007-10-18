@@ -397,7 +397,6 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		{
 			try
 			{
-				context.addTagInfo(query.getComponentRequest(), node.getTagInfo());
 				depNode = localResolve(query, MonitorUtils.subMonitor(monitor, 1));
 			}
 			catch(CoreException e)

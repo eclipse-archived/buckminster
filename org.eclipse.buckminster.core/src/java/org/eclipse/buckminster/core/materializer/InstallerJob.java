@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -48,9 +49,13 @@ public class InstallerJob extends WorkspaceJob
 		{
 			throw new OperationCanceledException();
 		}
+		catch(OperationCanceledException e)
+		{
+			throw e;
+		}
 		catch(Throwable t)
 		{
-			throw new RuntimeException("Unexpected error", t);
+			throw BuckminsterException.wrap(t);
 		}
 	}
 

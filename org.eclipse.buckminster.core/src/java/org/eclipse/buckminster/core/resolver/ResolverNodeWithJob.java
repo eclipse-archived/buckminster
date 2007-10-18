@@ -60,9 +60,11 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 	}
 
+	private final ResourceMapResolver m_resolver;
+
 	private final NodeResolutionJob m_job;
 
-	private final ResourceMapResolver m_resolver;
+	private boolean m_completed;
 
 	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
@@ -75,8 +77,11 @@ class ResolverNodeWithJob extends ResolverNode
 	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
 	{
 		super.addDependencyQualification(newQDep);
-		if(isInvalidated())
-			m_job.setScheduled(false);
+		if(isInvalidated() && m_completed)
+		{
+			m_resolver.schedule(this);
+			m_completed = false;
+		}
 	}
 
 	protected IStatus run(IProgressMonitor monitor)
@@ -86,8 +91,6 @@ class ResolverNodeWithJob extends ResolverNode
 		DepNode node = null;
 		try
 		{
-			NodeQuery query = getQuery();
-			query.getContext().addTagInfo(query.getComponentRequest(), getTagInfo());
 			node = resolve(monitor);
 			if(node != null)
 			{
@@ -110,9 +113,19 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		finally
 		{
+			boolean invalid;
+			synchronized(this)
+			{
+				m_completed = true;
+				invalid = isInvalidated();
+			}
+			if(invalid)
+				m_resolver.schedule(this);
+
 			m_resolver.removeJobMonitor(monitor);
 			if(node == null)
 				m_resolver.resolutionPartDone();
+
 		}
 		return Status.OK_STATUS;
 	}
