@@ -300,6 +300,9 @@ public class RMContext extends MapUnion<String, String>
 			if(tagInfo.isUsed())
 				sorted.put(tagInfo.getTagId(), tagInfo);
 
+		if(sorted.size() == 0)
+			return;
+
 		StringWriter bld = new StringWriter();
 		BufferedWriter wrt = new BufferedWriter(bld);
 		try
@@ -315,7 +318,7 @@ public class RMContext extends MapUnion<String, String>
 		{
 			// On a StringWriter? Don't think so.
 		}
-		CorePlugin.getLogger().info(bld.toString());
+		CorePlugin.getLogger().warning(bld.toString());
 	}
 
 	public String getBindingName(Resolution resolution, Map<String,String> props) throws CoreException
