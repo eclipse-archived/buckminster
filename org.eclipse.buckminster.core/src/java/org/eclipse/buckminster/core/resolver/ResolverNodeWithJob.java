@@ -49,6 +49,11 @@ class ResolverNodeWithJob extends ResolverNode
 			return ResolverNodeWithJob.this.run(monitor);
 		}
 
+		ResolverNodeWithJob getNode()
+		{
+			return ResolverNodeWithJob.this;
+		}
+
 		boolean isScheduled()
 		{
 			return m_scheduled;
@@ -75,8 +80,8 @@ class ResolverNodeWithJob extends ResolverNode
 	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
 	{
 		super.addDependencyQualification(newQDep);
-		if(isInvalidated())
-			setScheduled(false);
+		if(isInvalidated() && !isScheduled())
+			m_resolver.schedule(this);
 	}
 
 	protected IStatus run(IProgressMonitor monitor)
@@ -108,16 +113,9 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		finally
 		{
-			synchronized(this)
-			{
-				if(isInvalidated())
-					m_resolver.schedule(this);
-			}
-
 			m_resolver.removeJobMonitor(monitor);
 			if(node == null)
 				m_resolver.resolutionPartDone();
-
 		}
 		return Status.OK_STATUS;
 	}
@@ -145,6 +143,9 @@ class ResolverNodeWithJob extends ResolverNode
 
 	private boolean buildTree(DepNode node) throws CoreException
 	{
+		if(isInvalidated())
+			return false;
+
 		ResolutionContext context = getQuery().getResolutionContext();
 		GeneratorNode generatorNode = context.getGeneratorNode(node.getRequest().getName());
 		if(generatorNode != null)
@@ -180,6 +181,9 @@ class ResolverNodeWithJob extends ResolverNode
 		boolean didSchedule = false;
 		for(int idx = 0; idx < top; ++idx)
 		{
+			if(isInvalidated())
+				return false;
+
 			DepNode childNode = nodeChildren.get(idx);
 			ComponentQuery childQuery = childNode.getQuery();
 			ResolutionContext childContext = (childQuery == null) ? context : new ResolutionContext(childQuery, context);
@@ -204,6 +208,9 @@ class ResolverNodeWithJob extends ResolverNode
 				return null;
 			}
 		}
+		if(isInvalidated())
+			return null;
+
 		return m_resolver.innerResolve(query, monitor);
 	}
 }

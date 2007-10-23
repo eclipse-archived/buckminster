@@ -149,9 +149,6 @@ public abstract class FileUtils
 
 	public static class DeleteException extends LocalizedException
 	{
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 7937022594722296252L;
 
 		private final String m_file;
@@ -163,7 +160,7 @@ public abstract class FileUtils
 
 		public DeleteException(File file, Throwable e)
 		{
-			super("Unable to delete {0}", e);
+			super("Unable to delete: {0}", e);
 			m_file = file.toString();
 			assignMessage();
 		}
@@ -600,9 +597,13 @@ public abstract class FileUtils
 
 	public static void deleteRecursive(File file, IProgressMonitor monitor) throws DeleteException
 	{
+		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1000);
 		try
 		{
+			if(file == null)
+				return;
+
 			File[] list = file.listFiles();
 			int count = (list == null) ? 0 : list.length;
 			if(count > 0)
@@ -823,7 +824,7 @@ public abstract class FileUtils
 
 					// Prevent that s_foldersToRemove is updated during the remove
 					//
-					HashSet<File> folders = s_foldersToRemove;
+					HashSet<File> folders = new HashSet<File>(s_foldersToRemove);
 					s_foldersToRemove = null;
 					for(File folder : folders)
 					{

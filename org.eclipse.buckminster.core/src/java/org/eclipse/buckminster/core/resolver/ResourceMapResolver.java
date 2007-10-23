@@ -71,7 +71,14 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	{
 		ResolverNodeWithJob.NodeResolutionJob job = (ResolverNodeWithJob.NodeResolutionJob)event.getJob();
 		job.removeJobChangeListener(this);
-		job.setScheduled(false);
+		ResolverNodeWithJob node = job.getNode();
+
+		synchronized(node)
+		{
+			node.setScheduled(false);
+			if(node.isInvalidated())
+				schedule(node);
+		}
 	}
 
 	@Override

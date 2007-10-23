@@ -166,6 +166,11 @@ public class Logger
 		this.log(INFO, msg, t);
 	}
 
+	public boolean isInfoEnabled()
+	{
+		return s_consoleThreshold <= INFO || s_eclipseLoggerThreshold <= INFO;
+	}
+
 	public boolean isDebugEnabled()
 	{
 		return s_consoleThreshold <= DEBUG || s_eclipseLoggerThreshold <= DEBUG;

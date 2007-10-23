@@ -75,6 +75,8 @@ public class ResolverNode
 			if((newVd == null || newVd.designates(m_resolution.getVersion()))
 				&& m_query.getQualifiedDependency().hasAllAttributes(query.getRequiredAttributes()))
 			{
+				// Nope, the resolution is still valid for this new query
+				//
 				m_query = query;
 				return;
 			}

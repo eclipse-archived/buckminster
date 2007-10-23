@@ -7,11 +7,15 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.reader;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -22,6 +26,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -33,6 +38,8 @@ import org.eclipse.update.core.VersionedIdentifier;
  */
 public class SiteFeatureReaderType extends CatalogReaderType
 {
+	private static final UUID s_siteCleanedKey = UUID.randomUUID();
+
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		checkComponentType(providerMatch.getProvider());
@@ -45,6 +52,7 @@ public class SiteFeatureReaderType extends CatalogReaderType
 	throws CoreException
 	{
 		checkComponentType(provider);
+		assertCacheCleanedInSession(nodeQuery.getContext().getUserCache());
 		return new SiteFeatureFinder(provider, ctype, nodeQuery, monitor);
 	}
 
@@ -101,6 +109,20 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		{
 			monitor.done();
 		}		
+	}
+
+	private static void assertCacheCleanedInSession(Map<UUID, Object> userCache) throws CoreException
+	{
+		synchronized(userCache)
+		{
+			Boolean cleaned = (Boolean)userCache.get(s_siteCleanedKey);
+			if(cleaned == null)
+			{
+				File eclipseTmp = new File(System.getProperty("java.io.tmpdir"), "eclipse");
+				FileUtils.deleteRecursive(new File(eclipseTmp, ".update"), new NullProgressMonitor());
+				userCache.put(s_siteCleanedKey, Boolean.TRUE);
+			}
+		}
 	}
 
 	private static boolean isEqual(ComponentIdentifier ci, VersionedIdentifier vi)

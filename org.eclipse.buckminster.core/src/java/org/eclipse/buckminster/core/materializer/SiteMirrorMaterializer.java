@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
@@ -91,8 +93,6 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 			}
 		}
 	}
-
-	public static final Object MIRROR_SITE_LOCATION_PROPERTY = "mirror.site.location";
 
 	public static final Object MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
 
@@ -181,6 +181,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 
 					try
 					{
+						context.addException(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "Start mirroring"));
 						mirrorSite.mirrorAndExpose(fps.getSite(), fps.getFeatureRefs(), null, mirrorSiteURL);
 						MonitorUtils.worked(monitor, 100);
 					}
@@ -192,6 +193,7 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 					}
 					finally
 					{
+						context.addException(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "End mirroring"));
 						Platform.removeLogListener(listener);
 					}
 				}

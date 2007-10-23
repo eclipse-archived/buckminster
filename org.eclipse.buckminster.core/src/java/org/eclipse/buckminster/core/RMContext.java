@@ -196,9 +196,10 @@ public class RMContext extends MapUnion<String, String>
 	 */
 	public synchronized void addException(ComponentRequest request, IStatus status)
 	{
-		status = addTagId(getTagId(request), status);
-
 		Logger logger = CorePlugin.getLogger();
+		if(logger.isInfoEnabled())
+			status = addTagId(getTagId(request), status);
+
 		switch(status.getSeverity())
 		{
 		case IStatus.ERROR:
@@ -295,6 +296,10 @@ public class RMContext extends MapUnion<String, String>
 
 	private void emitTagInfos()
 	{
+		Logger logger = CorePlugin.getLogger();
+		if(!logger.isInfoEnabled())
+			return;
+
 		Map<String,TagInfo> sorted = new TreeMap<String, TagInfo>();
 		for(TagInfo tagInfo : m_tagInfos.values())
 			if(tagInfo.isUsed())
@@ -318,7 +323,7 @@ public class RMContext extends MapUnion<String, String>
 		{
 			// On a StringWriter? Don't think so.
 		}
-		CorePlugin.getLogger().warning(bld.toString());
+		logger.info(bld.toString());
 	}
 
 	public String getBindingName(Resolution resolution, Map<String,String> props) throws CoreException
