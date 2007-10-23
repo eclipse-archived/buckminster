@@ -32,6 +32,17 @@
             <products base="${buckminster.output}/site.s" alias="product.output" upToDatePolicy="MAPPER"/>
 		</public>
 
+		<public name="pack.site" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="make/eclipse-signing.ant" />
+				<property key="targets" value="pack.jars" />
+			</actorProperties>
+			<prerequisites>
+				<attribute name="sign.site" alias="requirement"/>
+			</prerequisites>
+            <products base="${buckminster.output}/site.p" alias="product.output" upToDatePolicy="MAPPER"/>
+		</public>
+
 		<public name="build.product" actor="ant">
 			<actorProperties>
 				<property key="buildFile" value="make/headless.ant" />
