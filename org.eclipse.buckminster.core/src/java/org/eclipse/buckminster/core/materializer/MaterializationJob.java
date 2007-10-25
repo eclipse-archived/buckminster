@@ -178,10 +178,7 @@ public class MaterializationJob extends Job
 		}
 
 		if(resPerMat.size() == 0)
-		{
-			bom.store();
 			return null;
-		}
 
 		final Queue<MaterializerJob> allJobs = new LinkedList<MaterializerJob>();
 		for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
