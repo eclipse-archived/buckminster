@@ -6,7 +6,7 @@
       The update site for Buckminster
    </description>
 
-    <!-- Eclipse 3.3.1 (Europa) dependencies -->
+    <!-- Eclipse 3.3.1.1 (Europa) dependencies -->
     <archive path="plugins/com.ibm.icu_3.6.1.v20070906.jar" url="http://update.eclipse.org/updates/3.3/plugins/com.ibm.icu_3.6.1.v20070906.jar"/>
     <archive path="plugins/com.jcraft.jsch_0.1.31.jar" url="http://update.eclipse.org/updates/3.3/plugins/com.jcraft.jsch_0.1.31.jar"/>
     <archive path="plugins/javax.servlet.jsp_2.0.0.v200706191603.jar" url="http://update.eclipse.org/updates/3.3/plugins/javax.servlet.jsp_2.0.0.v200706191603.jar"/>
@@ -98,15 +98,15 @@
     <archive path="plugins/org.eclipse.platform.doc.user_3.3.0.M20070913-1400.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.platform.doc.user_3.3.0.M20070913-1400.jar"/>
     <archive path="plugins/org.eclipse.rcp_3.2.0.v20070612.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.rcp_3.2.0.v20070612.jar"/>
     <archive path="plugins/org.eclipse.search_3.3.1.r331_v20070831-0800.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.search_3.3.1.r331_v20070831-0800.jar"/>
-    <archive path="plugins/org.eclipse.swt.carbon.macosx_3.3.1.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.carbon.macosx_3.3.1.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.gtk.linux.ppc_3.3.1.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.linux.ppc_3.3.1.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_3.3.1.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.linux.x86_3.3.1.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.1.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.1.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.1.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.1.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.motif.aix.ppc_3.3.0.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.motif.aix.ppc_3.3.0.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.win32.win32.x86_3.3.1.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.win32.win32.x86_3.3.1.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt.wpf.win32.x86_3.3.0.v3346i.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.wpf.win32.x86_3.3.0.v3346i.jar"/>
-    <archive path="plugins/org.eclipse.swt_3.3.1.v3346j.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt_3.3.1.v3346j.jar"/>
+    <archive path="plugins/org.eclipse.swt.carbon.macosx_3.3.2.v3347a.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.carbon.macosx_3.3.2.v3347a.jar"/>
+    <archive path="plugins/org.eclipse.swt.gtk.linux.ppc_3.3.2.v3347.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.linux.ppc_3.3.2.v3347.jar"/>
+    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_3.3.2.v3347.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.linux.x86_3.3.2.v3347.jar"/>
+    <archive path="plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.2.v3347.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.linux.x86_64_3.3.2.v3347.jar"/>
+    <archive path="plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.2.v3347.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.gtk.solaris.sparc_3.3.2.v3347.jar"/>
+    <archive path="plugins/org.eclipse.swt.motif.aix.ppc_3.3.1.v3347a.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.motif.aix.ppc_3.3.1.v3347a.jar"/>
+    <archive path="plugins/org.eclipse.swt.win32.win32.x86_3.3.2.v3347a.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.win32.win32.x86_3.3.2.v3347a.jar"/>
+    <archive path="plugins/org.eclipse.swt.wpf.win32.x86_3.3.1.v3347a.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt.wpf.win32.x86_3.3.1.v3347a.jar"/>
+    <archive path="plugins/org.eclipse.swt_3.3.2.v3347.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.swt_3.3.2.v3347.jar"/>
     <archive path="plugins/org.eclipse.team.core_3.3.1.r33x_20070807.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.team.core_3.3.1.r33x_20070807.jar"/>
     <archive path="plugins/org.eclipse.team.cvs.core_3.3.1.r33x_20070724.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.team.cvs.core_3.3.1.r33x_20070724.jar"/>
     <archive path="plugins/org.eclipse.team.cvs.ssh2_3.2.100.I20070604.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.team.cvs.ssh2_3.2.100.I20070604.jar"/>
@@ -125,7 +125,7 @@
     <archive path="plugins/org.eclipse.ui.ide_3.3.1.M20070910-0800b.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.ide_3.3.1.M20070910-0800b.jar"/>
     <archive path="plugins/org.eclipse.ui.intro_3.2.101.v20070827_33x.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.intro_3.2.101.v20070827_33x.jar"/>
     <archive path="plugins/org.eclipse.ui.navigator.resources_3.3.1.M20070831-2000.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.navigator.resources_3.3.1.M20070831-2000.jar"/>
-    <archive path="plugins/org.eclipse.ui.navigator_3.3.1.M20070831-2000.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.navigator_3.3.1.M20070831-2000.jar"/>
+    <archive path="plugins/org.eclipse.ui.navigator_3.3.2.M20071022-1600a.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.navigator_3.3.2.M20071022-1600a.jar"/>
     <archive path="plugins/org.eclipse.ui.net_1.0.0.I20070516.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.net_1.0.0.I20070516.jar"/>
     <archive path="plugins/org.eclipse.ui.presentations.r21_3.2.100.I20070605-0010.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.presentations.r21_3.2.100.I20070605-0010.jar"/>
     <archive path="plugins/org.eclipse.ui.views.properties.tabbed_3.3.1.M20070831-0800.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.views.properties.tabbed_3.3.1.M20070831-0800.jar"/>
@@ -141,23 +141,20 @@
     <archive path="plugins/org.eclipse.update.scheduler_3.2.100.v20070615.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.update.scheduler_3.2.100.v20070615.jar"/>
     <archive path="plugins/org.eclipse.update.ui_3.2.100.v20070615.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.update.ui_3.2.100.v20070615.jar"/>
     <archive path="plugins/org.mortbay.jetty_5.1.11.v200706111724.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.mortbay.jetty_5.1.11.v200706111724.jar"/>
-    <archive path="plugins/org.polarion.team.svn.core_1.1.7.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.polarion.team.svn.core_1.1.7.jar"/>
-    <archive path="plugins/org.polarion.team.svn.help_1.1.7.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.polarion.team.svn.help_1.1.7.jar"/>
-    <archive path="plugins/org.polarion.team.svn.ui_1.1.7.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.polarion.team.svn.ui_1.1.7.jar"/>
     <archive path="plugins/org.apache.ant_1.7.0.v200706080842.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.apache.ant_1.7.0.v200706080842.jar"/>
     <archive path="plugins/org.eclipse.core.runtime.compatibility.registry_3.2.100.v20070316.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.100.v20070316.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.1.R33x_v20070828.jar"/>
-    <archive path="plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.1.R33x_v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.1.R33x_v20070828.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.linux.ppc_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.gtk.solaris.sparc_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.motif.aix.ppc_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.0.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.equinox.launcher.wpf.win32.x86_1.0.2.R331_v20071019.jar"/>
     <archive path="plugins/org.eclipse.jdt.debug_3.3.1.v20070719_r331.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.jdt.debug_3.3.1.v20070719_r331.jar"/>
-    <archive path="plugins/org.eclipse.pde.build_3.3.1.v20070828.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.pde.build_3.3.1.v20070828.jar"/>
-    <archive path="plugins/org.eclipse.platform_3.3.1.M20070725.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.platform_3.3.1.M20070725.jar"/>
-    <archive path="plugins/org.eclipse.sdk_3.3.1.r331_v20070904.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.sdk_3.3.1.r331_v20070904.jar"/>
+    <archive path="plugins/org.eclipse.pde.build_3.3.2.R331_v20071019.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.pde.build_3.3.2.R331_v20071019.jar"/>
+    <archive path="plugins/org.eclipse.platform_3.3.2.R33x_v20071022.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.platform_3.3.2.R33x_v20071022.jar"/>
+    <archive path="plugins/org.eclipse.sdk_3.3.2.R33x_v20071022.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.sdk_3.3.2.R33x_v20071022.jar"/>
     <archive path="plugins/org.eclipse.tomcat_4.1.230.v20070531.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.tomcat_4.1.230.v20070531.jar"/>
     <archive path="plugins/org.eclipse.ui.intro.universal_3.2.100.v20070530A.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.intro.universal_3.2.100.v20070530A.jar"/>
     <archive path="plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20070319-0010.jar"/>
@@ -167,15 +164,8 @@
     <archive path="plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar"/>
     <archive path="plugins/org.tigris.subversion.javahl.win32_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.javahl.win32_1.2.4.jar"/>
-    <archive path="plugins/org.polarion.team.svn.client.javasvn_1.1.3.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javasvn_1.1.3.jar"/>
-    <archive path="plugins/org.polarion.team.svn.client.svnkit_1.1.7.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.svnkit_1.1.7.jar"/>
-    <archive path="plugins/org.polarion.team.svn.core.nl1_1.0.0.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.core.nl1_1.0.0.jar"/>
-    <archive path="plugins/org.polarion.team.svn.core_1.1.7.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.core_1.1.7.jar"/>
-    <archive path="plugins/org.polarion.team.svn.help_1.1.7.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.help_1.1.7.jar"/>
-    <archive path="plugins/org.polarion.team.svn.resource.ignore.rules.jdt_1.0.3.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.resource.ignore.rules.jdt_1.0.3.jar"/>
-    <archive path="plugins/org.polarion.team.svn.ui.nl1_1.0.2.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.ui.nl1_1.0.2.jar"/>
-    <archive path="plugins/org.polarion.team.svn.ui_1.1.7.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.ui_1.1.7.jar"/>
-    <archive path="plugins/org.polarion.team.svn.client.javahl.win32_1.1.4.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl.win32_1.1.4.jar"/>
-    <archive path="plugins/org.polarion.team.svn.client.javahl_1.1.5.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl_1.1.5.jar"/>
+    <archive path="plugins/org.polarion.team.svn.client.javahl.win32_1.1.8.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl.win32_1.1.8.jar"/>
+    <archive path="plugins/org.polarion.team.svn.client.javahl_1.1.8.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl_1.1.8.jar"/>
+    <archive path="plugins/org.polarion.team.svn.core_1.1.9.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.core_1.1.9.jar"/>
     <archive path="plugins/com.ibm.icu.base_3.6.1.v20070906.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/R200709171314/bundles/com.ibm.icu.base_3.6.1.v20070906.jar"/>
 </site>
