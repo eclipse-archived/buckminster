@@ -1667,7 +1667,16 @@ public class QueryEditor extends EditorPart
 		boolean override = m_enableOverride.getSelection();
 		IVersionDesignator versionOverride = null;
 		if(override)
-			versionOverride = m_versionOverride.getVersionDesignator();
+			try
+			{
+				versionOverride = m_versionOverride.getDirectVersionDesignator();
+			}
+			catch(CoreException e1)
+			{
+				failureActivator.activate();
+				ErrorDialog.openError(getSite().getShell(), null, null, e1.getStatus());
+				return false;
+			}
 
 		try
 		{
