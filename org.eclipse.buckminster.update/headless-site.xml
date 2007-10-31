@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site
-      mirrorsURL="http://www.eclipse.org/downloads/download.php?file=/technology/buckminster/updates/headless-site.xml&amp;format=xml">
+      mirrorsURL="http://www.eclipse.org/downloads/download.php?file=/technology/buckminster/updates/headless-site.xml&amp;format=xml"
+      pack200="true">
    <description url="http://download.eclipse.org/technology/buckminster/updates/headless-site.xml">
       The update site for Buckminster
    </description>
