@@ -55,6 +55,7 @@ import org.eclipse.buckminster.ui.editor.SaveRunnable;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorListener;
+import org.eclipse.buckminster.ui.general.editor.structured.IActivator;
 import org.eclipse.buckminster.ui.internal.ResolveJob;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -67,8 +68,6 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -83,6 +82,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -133,7 +133,7 @@ public class QueryEditor extends EditorPart
 			switch(columnIndex)
 			{
 			case 0:
-				lbl = node.getNamePattern().toString(); 
+				lbl = node.getNamePattern() == null ? "" : node.getNamePattern().toString(); 
 				break;
 			case 1:
 				lbl = node.getComponentTypeID();
@@ -145,22 +145,35 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
-	class CompoundModifyListener implements VersionDesignatorListener, ModifyListener, PropertiesModifyListener
+	class CompoundModifyListener implements VersionDesignatorListener, ModifyListener, PropertiesModifyListener, SelectionListener
 	{
 
 		public void modifyProperties(PropertiesModifyEvent e)
 		{
-			setDirty(true);
+			if(!m_suppressModifyListener)
+				setDirty(true);
 		}
 
 		public void modifyText(ModifyEvent e)
 		{
-			setDirty(true);
+			if(!m_suppressModifyListener)
+				setDirty(true);
 		}
 
 		public void modifyVersionDesignator(VersionDesignatorEvent e)
 		{
-			setDirty(true);
+			if(!m_suppressModifyListener)
+				setDirty(true);
+		}
+
+		public void widgetDefaultSelected(SelectionEvent e)
+		{
+		}
+
+		public void widgetSelected(SelectionEvent e)
+		{
+			if(!m_suppressModifyListener)
+				setDirty(true);
 		}
 	}
 
@@ -186,6 +199,17 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
+	private static final IActivator EMPTY_ACTIVATOR = new IActivator()
+	{
+
+		public void activate()
+		{
+			// nothing to activate
+		}
+	};
+	
+	private final static int DONT_SAVE = -99;
+
 	private CTabFolder m_tabFolder;
 
 	private Text m_componentName;
@@ -196,11 +220,7 @@ public class QueryEditor extends EditorPart
 
 	private ComponentQueryBuilder m_componentQuery;
 
-	private Button m_editOrCancelButton;
-
 	private Button m_enableOverride;
-
-	private boolean m_nodeEditMode;
 
 	private boolean m_hasChanges;
 
@@ -232,7 +252,7 @@ public class QueryEditor extends EditorPart
 
 	private boolean m_needsRefresh;
 
-	private Button m_newOrSaveButton;
+	private Button m_newButton;
 
 	private TableViewer m_nodeTable;
 
@@ -295,6 +315,12 @@ public class QueryEditor extends EditorPart
 	private CompoundModifyListener m_compoundModifyListener;
 
 	private final DateFormat m_timestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+	
+	private int m_lastSelectedNode = -1;
+	
+	private int m_lastEditedNode = -1;
+	
+	private boolean m_suppressModifyListener = false;
 
 	public String commitChanges(ComponentRequest[] requestRet)
 	{
@@ -325,11 +351,11 @@ public class QueryEditor extends EditorPart
 		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
 		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
+		final CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
 		mainTab.setText("Main");
 		mainTab.setControl(getMainTabControl(m_tabFolder));
 
-		CTabItem advisorTab = new CTabItem(m_tabFolder, SWT.NONE);
+		final CTabItem advisorTab = new CTabItem(m_tabFolder, SWT.NONE);
 		advisorTab.setText("Advisor Nodes");
 		advisorTab.setControl(getAdvisorTabControl(m_tabFolder));
 
@@ -347,9 +373,27 @@ public class QueryEditor extends EditorPart
 
 		m_tabFolder.addSelectionListener(new SelectionAdapter()
 		{
+			private final IActivator NODE_TAB_ACTIVATOR = new IActivator()
+			{
+				public void activate()
+				{
+					m_tabFolder.setSelection(advisorTab);
+				}
+			};
+			
+			private CTabItem m_lastTab = mainTab;
+
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
+				// save row
+				if(m_lastTab != e.item)
+				{
+					if(m_lastTab == advisorTab)
+						if(!saveLastNode(NODE_TAB_ACTIVATOR))
+							return;
+				}
+
 				if(m_xmlTab == e.item)
 				{
 					if(!commitChangesToQuery())
@@ -357,6 +401,7 @@ public class QueryEditor extends EditorPart
 					else
 						m_xml.setText(getCQueryXML());
 				}
+				m_lastTab = (CTabItem)e.item;
 			}
 		});
 
@@ -533,21 +578,11 @@ public class QueryEditor extends EditorPart
 			refreshQuery();
 	}
 
-	private void cancelNode()
-	{
-		m_nodeEditMode = false;
-		enableDisableButtonGroup();
-		refreshNodeFields();
-	}
-
 	private boolean commitChangesToQuery()
 	{
-		if(m_nodeEditMode)
-		{
-			if(!MessageDialog.openConfirm(getSite().getShell(), null, "Do you want to discard the current node edit?"))
-				return false;
-			cancelNode();
-		}
+		if(m_nodeTable.getControl().isVisible())
+			if(!saveLastNode())
+				return false;		
 
 		try
 		{
@@ -670,21 +705,12 @@ public class QueryEditor extends EditorPart
 		layout.marginWidth = layout.marginHeight = 0;
 		buttonBox2.setLayout(layout);
 
-		m_newOrSaveButton = UiUtils.createPushButton(buttonBox1, "New", new SelectionAdapter()
+		m_newButton = UiUtils.createPushButton(buttonBox1, "New", new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				newOrSaveNode();
-			}
-		});
-
-		m_editOrCancelButton = UiUtils.createPushButton(buttonBox1, "Edit", new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				editOrCancelNode();
+				newNode();
 			}
 		});
 
@@ -745,12 +771,14 @@ public class QueryEditor extends EditorPart
 		UiUtils.createGridLabel(geComposite, "Name pattern:", 1, 0, SWT.NONE);
 
 		m_namePattern = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_namePattern.addModifyListener(m_compoundModifyListener);
 
 		UiUtils.createGridLabel(geComposite, "Matched Component Type:", 1, 0, SWT.NONE);
 
 		m_category = UiUtils.createGridCombo(geComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 		m_category.setItems(AbstractComponentType.getComponentTypeIDs(true));
+		m_category.addModifyListener(m_compoundModifyListener);
 
 		UiUtils.createGridLabel(geComposite, "Skip Component:", 1, 0, SWT.NONE);
 		m_skipComponent = UiUtils.createCheckButton(geComposite, null, new SelectionAdapter()
@@ -758,13 +786,15 @@ public class QueryEditor extends EditorPart
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				enableDisableSkipSensitive();
+				enableDisableSkipSensitive(false);
 			}
 		});
 		m_skipComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		m_skipComponent.addSelectionListener(m_compoundModifyListener);
 
 		UiUtils.createGridLabel(geComposite, "Allow Circular Dependency:", 1, 0, SWT.NONE);
 		m_allowCircular = UiUtils.createCheckButton(geComposite, null, null);
+		m_allowCircular.addSelectionListener(m_compoundModifyListener);
 
 		Composite aqComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -777,8 +807,10 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(aqComposite, "Attributes:", 1, 0, SWT.NONE);
 		m_wantedAttributes = UiUtils.createGridText(aqComposite, 0, 0, SWT.NONE);
+		m_wantedAttributes.addModifyListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(aqComposite, "Prune According To Attributes:", 1, 0, SWT.NONE);
 		m_prune = UiUtils.createCheckButton(aqComposite, null, null);
+		m_prune.addSelectionListener(m_compoundModifyListener);
 
 		Composite srComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -791,8 +823,10 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(srComposite, "Mutable level:", 1, 0, SWT.NONE);
 		m_mutableLevel = UiUtils.createGridEnumCombo(srComposite, 0, 0, MutableLevel.values(), null, null, SWT.NONE);
+		m_mutableLevel.addModifyListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(srComposite, "Source level:", 1, 0, SWT.NONE);
 		m_sourceLevel = UiUtils.createGridEnumCombo(srComposite, 0, 0, SourceLevel.values(), null, null, SWT.NONE);
+		m_sourceLevel.addModifyListener(m_compoundModifyListener);
 
 		Composite kuComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -805,10 +839,13 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(kuComposite, "Target Platform:", 1, 0, SWT.NONE);
 		m_useInstalled = UiUtils.createCheckButton(kuComposite, null, null);
+		m_useInstalled.addSelectionListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(kuComposite, "Materialization:", 1, 0, SWT.NONE);
 		m_useMaterialization = UiUtils.createCheckButton(kuComposite, null, null);
+		m_useMaterialization.addSelectionListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(kuComposite, "Resolution Service:", 1, 0, SWT.NONE);
 		m_useResolutionService = UiUtils.createCheckButton(kuComposite, null, null);
+		m_useResolutionService.addSelectionListener(m_compoundModifyListener);
 
 		Composite scComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -820,13 +857,17 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(scComposite, "Branch/Tag path:", 1, 0, SWT.NONE);
 		m_branchTagPath = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+		m_branchTagPath.addModifyListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(scComposite, "Space path:", 1, 0, SWT.NONE);
 		m_spacePath = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+		m_spacePath.addModifyListener(m_compoundModifyListener);
 
 		UiUtils.createGridLabel(scComposite, "Timestamp:", 1, 0, SWT.NONE);
 		m_timestamp = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+		m_timestamp.addModifyListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(scComposite, "Revision:", 1, 0, SWT.NONE);
 		m_revision = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
+		m_revision.addModifyListener(m_compoundModifyListener);
 
 		Composite ovComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(3, false);
@@ -847,10 +888,11 @@ public class QueryEditor extends EditorPart
 				m_versionOverride.setEnabled(selected);
 			}
 		});
+		m_enableOverride.addSelectionListener(m_compoundModifyListener);
 		UiUtils.createEmptyLabel(ovComposite);
 
 		m_versionOverride = new VersionDesignator(ovComposite);
-		m_nodeEditMode = false;
+		m_versionOverride.addVersionDesignatorListener(m_compoundModifyListener);
 
 		Composite ofComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -863,6 +905,7 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(ofComposite, "Folder:", 1, 0, SWT.NONE);
 		m_overlayFolder = UiUtils.createGridText(ofComposite, 1, 0, SWT.NONE);
+		m_overlayFolder.addModifyListener(m_compoundModifyListener);
 		Label label = UiUtils.createEmptyLabel(ofComposite);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		m_overlayBrowseButton = new Button(ofComposite, SWT.PUSH);
@@ -889,6 +932,7 @@ public class QueryEditor extends EditorPart
 
 		m_nodeProperties = new Properties(prComposite, SWT.NONE);
 		m_nodeProperties.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_nodeProperties.addPropertiesModifyListener(m_compoundModifyListener);
 
 		Composite docComposite = new Composite(m_nodesStackComposite, SWT.NONE);
 		layout = new GridLayout(1, false);
@@ -901,10 +945,9 @@ public class QueryEditor extends EditorPart
 
 		m_nodeDocumentation = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
 		m_nodeDocumentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_nodeDocumentation.addModifyListener(m_compoundModifyListener);
 
-		m_nodeTree.setSelection(m_nodeTree.getItem(0));
-		m_nodesStackLayout.topControl = geComposite;
-		m_nodesStackComposite.layout();
+		initStackControl();
 		/*
 		 * // set the same height for nodeTable and node Tree int height = m_nodeTree.computeSize(SWT.DEFAULT,
 		 * SWT.DEFAULT).y + 35;
@@ -920,6 +963,13 @@ public class QueryEditor extends EditorPart
 		 */
 	}
 
+	private void initStackControl()
+	{
+		m_nodeTree.setSelection(m_nodeTree.getItem(0));
+		m_nodesStackLayout.topControl = m_nodesHash.get(m_nodeTree.getItem(0).getText());
+		m_nodesStackComposite.layout();
+	}
+	
 	private void createNodeTableGroup(Composite parent)
 	{
 		Composite componentTableGroup = new Composite(parent, SWT.NONE);
@@ -954,17 +1004,7 @@ public class QueryEditor extends EditorPart
 		{
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				nodeSelectionEvent();
-			}
-		});
-		m_nodeTable.addDoubleClickListener(new IDoubleClickListener()
-		{
-			public void doubleClick(DoubleClickEvent event)
-			{
-				if(m_nodeTable.getTable().getSelectionIndex() >= 0)
-				{
-					editNode();
-				}
+				changeNodeSelection();
 			}
 		});
 
@@ -1028,57 +1068,26 @@ public class QueryEditor extends EditorPart
 		item.setText("Documentation");
 	}
 
-	private void editNode()
-	{
-		m_nodeEditMode = true;
-		enableDisableButtonGroup();
-		setDirty(true);
-	}
-
-	private void editOrCancelNode()
-	{
-		if(m_nodeEditMode)
-			cancelNode();
-		else
-			editNode();
-	}
-
 	private void enableDisableButtonGroup()
 	{
-		if(m_nodeEditMode)
-		{
-			// A node is being edited
-			//
-			m_newOrSaveButton.setText("Save");
-			m_editOrCancelButton.setText("Cancel");
-			m_editOrCancelButton.setEnabled(true);
-			m_removeButton.setEnabled(false);
-			m_moveUpButton.setEnabled(false);
-			m_moveDownButton.setEnabled(false);
-		}
-		else
-		{
-			Table table = m_nodeTable.getTable();
-			int top = table.getItemCount();
-			int idx = table.getSelectionIndex();
-			m_newOrSaveButton.setText("New");
-			m_editOrCancelButton.setText("Edit");
-			m_editOrCancelButton.setEnabled(idx >= 0);
-			m_removeButton.setEnabled(idx >= 0);
-			m_moveUpButton.setEnabled(idx > 0);
-			m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
-		}
-		m_nodeTable.getTable().setEnabled(!m_nodeEditMode);
+		Table table = m_nodeTable.getTable();
+		int top = table.getItemCount();
+		int idx = table.getSelectionIndex();
+		m_newButton.setText("New");
+		m_removeButton.setEnabled(idx >= 0);
+		m_moveUpButton.setEnabled(idx > 0);
+		m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
 
-		m_namePattern.setEnabled(m_nodeEditMode);
-		m_category.setEnabled(m_nodeEditMode);
-		m_skipComponent.setEnabled(m_nodeEditMode);
-		enableDisableSkipSensitive();
+		boolean disableFields = getSelectionIndex() == -1;
+		m_namePattern.setEnabled(!disableFields);
+		m_category.setEnabled(!disableFields);
+		m_skipComponent.setEnabled(!disableFields);
+		enableDisableSkipSensitive(disableFields);
 	}
 
-	private void enableDisableSkipSensitive()
+	private void enableDisableSkipSensitive(boolean forceDisable)
 	{
-		boolean enableRest = m_nodeEditMode && !m_skipComponent.getSelection();
+		boolean enableRest = !forceDisable && !m_skipComponent.getSelection();
 
 		m_allowCircular.setEnabled(enableRest);
 		m_overlayFolder.setEnabled(enableRest);
@@ -1396,23 +1405,87 @@ public class QueryEditor extends EditorPart
 
 	private void newNode()
 	{
-		m_nodeTable.getTable().deselectAll();
-		refreshNodeFields();
-		editNode();
+		if(!saveLastNode())
+			return;
+
+		AdvisorNodeBuilder node = addEmptyNode();
+		refreshList();
+		selectRow(node);
+		
+		setDirty(true);
+
+		nodeSelectionEvent();
 	}
 
-	private void newOrSaveNode()
+	private int getSelectionIndex()
 	{
-		if(m_nodeEditMode)
-			saveNode();
-		else
-			newNode();
+		return m_nodeTable.getTable().getSelectionIndex();
 	}
 
+	private AdvisorNodeBuilder addEmptyNode()
+	{
+		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
+		node.setNamePattern(Pattern.compile(""));
+		m_componentQuery.addAdvisorNode(node);
+		
+		return node;
+	}
+	
+	private boolean selectRow(AdvisorNodeBuilder node)
+	{
+		int idx = m_componentQuery.getAdvisoryNodeList().indexOf(node);
+		
+		if(idx == -1)
+			return false;
+		
+		m_nodeTable.getTable().setSelection(idx);
+
+		return true;
+	}
+
+	private void changeNodeSelection()
+	{
+		if(!saveLastNode())
+		{
+			if(m_lastSelectedNode != -1)
+				m_nodeTable.getTable().setSelection(m_lastSelectedNode);
+			
+			return;
+		}
+		
+		nodeSelectionEvent();
+	}
+	
+	private boolean saveLastNode(IActivator failureActivator)
+	{
+		if(m_lastEditedNode != -1 && m_lastEditedNode != DONT_SAVE)
+			return saveNode(m_lastEditedNode, failureActivator);
+		
+		return true;
+	}
+	
+	private boolean saveLastNode()
+	{
+		return saveLastNode(EMPTY_ACTIVATOR);
+	}
+	
 	private void nodeSelectionEvent()
 	{
-		enableDisableButtonGroup();
+		updateLastNode();
 		refreshNodeFields();
+		enableDisableButtonGroup();
+		initStackControl();
+		m_namePattern.setFocus();
+	}
+	
+	private void updateLastNode()
+	{
+		if(getSelectionIndex() != -1)
+		{
+			m_lastSelectedNode = getSelectionIndex();
+		}
+		
+		m_lastEditedNode = getSelectionIndex();
 	}
 
 	private void refreshList()
@@ -1422,46 +1495,55 @@ public class QueryEditor extends EditorPart
 
 	private void refreshNodeFields()
 	{
-		AdvisorNodeBuilder node = getSelectedNode();
-		if(node == null)
-			//
-			// Use an empty node as template to get the defaults right.
-			//
-			node = new AdvisorNodeBuilder();
+		try
+		{
+			m_suppressModifyListener = true;
 
-		m_allowCircular.setSelection(node.allowCircularDependency());
-		m_namePattern.setText(TextUtils.notNullString(node.getNamePattern()));
-		m_category.select(m_category.indexOf(TextUtils.notNullString(node.getComponentTypeID())));
-		m_overlayFolder.setText(TextUtils.notNullString(node.getOverlayFolder()));
-		m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.concat(node.getAttributes(), ",")));
-		m_prune.setSelection(node.isPrune());
-		m_mutableLevel.select(m_mutableLevel.indexOf(node.getMutableLevel().toString()));
-		m_sourceLevel.select(m_sourceLevel.indexOf(node.getSourceLevel().toString()));
-		m_skipComponent.setSelection(node.skipComponent());
-		m_useInstalled.setSelection(node.useInstalled());
-		m_useMaterialization.setSelection(node.useMaterialization());
-		m_useResolutionService.setSelection(node.isUseResolutionScheme());
-
-		m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
-		m_spacePath.setText(TextUtils.notNullString(TextUtils.concat(node.getSpacePath(), ",")));
-		long revision = node.getRevision();
-		m_revision.setText(revision == -1 ? "" : Long.toString(revision));
-		Date timestamp = node.getTimestamp();
-		m_timestamp.setText(timestamp == null ? "" : m_timestampFormat.format(timestamp));
-
-		IVersionDesignator vs = node.getVersionOverride();
-		boolean enableOverride = (vs != null);
-		m_enableOverride.setSelection(enableOverride);
-		m_versionOverride.setEnabled(enableOverride);
-		m_versionOverride.refreshValues(vs);
-
-		m_nodeProperties.setProperties(node.getProperties());
-		m_nodeProperties.refreshList();
-
-		Documentation doc = node.getDocumentation();
-		m_nodeDocumentation.setText(TextUtils.notNullString(doc == null
-				? null
-				: doc.toString()));
+			AdvisorNodeBuilder node = getSelectedNode();
+			if(node == null)
+				//
+				// Use an empty node as template to get the defaults right.
+				//
+				node = new AdvisorNodeBuilder();
+	
+			m_allowCircular.setSelection(node.allowCircularDependency());
+			m_namePattern.setText(TextUtils.notNullString(node.getNamePattern()));
+			m_category.select(m_category.indexOf(TextUtils.notNullString(node.getComponentTypeID())));
+			m_overlayFolder.setText(TextUtils.notNullString(node.getOverlayFolder()));
+			m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.concat(node.getAttributes(), ",")));
+			m_prune.setSelection(node.isPrune());
+			m_mutableLevel.select(m_mutableLevel.indexOf(node.getMutableLevel().toString()));
+			m_sourceLevel.select(m_sourceLevel.indexOf(node.getSourceLevel().toString()));
+			m_skipComponent.setSelection(node.skipComponent());
+			m_useInstalled.setSelection(node.useInstalled());
+			m_useMaterialization.setSelection(node.useMaterialization());
+			m_useResolutionService.setSelection(node.isUseResolutionScheme());
+	
+			m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
+			m_spacePath.setText(TextUtils.notNullString(TextUtils.concat(node.getSpacePath(), ",")));
+			long revision = node.getRevision();
+			m_revision.setText(revision == -1 ? "" : Long.toString(revision));
+			Date timestamp = node.getTimestamp();
+			m_timestamp.setText(timestamp == null ? "" : m_timestampFormat.format(timestamp));
+	
+			IVersionDesignator vs = node.getVersionOverride();
+			boolean enableOverride = (vs != null);
+			m_enableOverride.setSelection(enableOverride);
+			m_versionOverride.setEnabled(enableOverride);
+			m_versionOverride.refreshValues(vs);
+	
+			m_nodeProperties.setProperties(node.getProperties());
+			m_nodeProperties.refreshList();
+	
+			Documentation doc = node.getDocumentation();
+			m_nodeDocumentation.setText(TextUtils.notNullString(doc == null
+					? null
+					: doc.toString()));
+		}
+		finally
+		{
+			m_suppressModifyListener = false;
+		}
 	}
 
 	private void refreshQuery()
@@ -1506,15 +1588,30 @@ public class QueryEditor extends EditorPart
 		AdvisorNodeBuilder node = getSelectedNode();
 		if(node != null)
 		{
+			int last_idx = getSelectionIndex();
+			
 			m_componentQuery.removeAdvisorNode(node);
 			setDirty(true);
+			m_lastEditedNode = DONT_SAVE;
 			refreshList();
+			
+			if(m_componentQuery.getAdvisoryNodeList().size() > last_idx)
+			{
+				m_nodeTable.getTable().setSelection(last_idx);
+			} else if(m_componentQuery.getAdvisoryNodeList().size() > 0)
+			{
+				m_nodeTable.getTable().setSelection(last_idx - 1);
+			} else
+			{
+				m_nodeTable.getTable().deselectAll();
+			}
+			nodeSelectionEvent();
 		}
 	}
 
-	private boolean saveNode()
+	private boolean saveNode(int nodeIdx, IActivator failureActivator)
 	{
-		AdvisorNodeBuilder node = getSelectedNode();
+		AdvisorNodeBuilder node = (AdvisorNodeBuilder)m_nodeTable.getElementAt(nodeIdx);
 		boolean isNewNode = false;
 		if(node == null)
 		{
@@ -1530,6 +1627,7 @@ public class QueryEditor extends EditorPart
 
 		if(patternStr == null)
 		{
+			failureActivator.activate();
 			MessageDialog.openError(getSite().getShell(), null, "The name pattern cannot be empty");
 			return false;
 		}
@@ -1540,6 +1638,7 @@ public class QueryEditor extends EditorPart
 		}
 		catch(PatternSyntaxException e)
 		{
+			failureActivator.activate();
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
@@ -1554,6 +1653,7 @@ public class QueryEditor extends EditorPart
 			AdvisorNodeBuilder patternEqual = m_componentQuery.getNodeByPattern(patternStr, category);
 			if(patternEqual != null)
 			{
+				failureActivator.activate();
 				if(!MessageDialog.openQuestion(getSite().getShell(), null, "Overwrite existing node with same pattern"))
 					return false;
 				m_componentQuery.removeAdvisorNode(patternEqual);
@@ -1578,6 +1678,7 @@ public class QueryEditor extends EditorPart
 		}
 		catch(Exception e)
 		{
+			failureActivator.activate();
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
@@ -1616,6 +1717,7 @@ public class QueryEditor extends EditorPart
 			}
 			catch(NumberFormatException e)
 			{
+				failureActivator.activate();
 				MessageDialog.openError(getSite().getShell(), null, "Revision must be a valid integer number");
 				return false;
 			}
@@ -1632,6 +1734,7 @@ public class QueryEditor extends EditorPart
 			}
 			catch(ParseException e)
 			{
+				failureActivator.activate();
 				MessageDialog.openError(getSite().getShell(), null, "Timestamp must conform to format: " + m_timestampFormat.toString());
 				return false;
 			}
@@ -1651,6 +1754,7 @@ public class QueryEditor extends EditorPart
 		}
 		catch(Exception e)
 		{
+			failureActivator.activate();
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
@@ -1663,10 +1767,11 @@ public class QueryEditor extends EditorPart
 			refreshListNeeded = true;
 		}
 		if(refreshListNeeded)
+		{
 			refreshList();
-
-		setDirty(true);
-		m_nodeEditMode = false;
+			nodeSelectionEvent();
+		}
+		
 		enableDisableButtonGroup();
 		return true;
 	}
@@ -1705,6 +1810,11 @@ public class QueryEditor extends EditorPart
 
 	private void swapAndReselect(int idxOffset, int selectionOffset)
 	{
+		if(!saveLastNode())
+		{
+			return;
+		}
+		
 		Table table = m_nodeTable.getTable();
 		int idx = table.getSelectionIndex() + idxOffset;
 		if(idx <= 0)
@@ -1717,7 +1827,7 @@ public class QueryEditor extends EditorPart
 		nl.set(idx - 1, nl.set(idx, nl.get(idx - 1)));
 		refreshList();
 		table.select(idx + selectionOffset);
-		enableDisableButtonGroup();
+		nodeSelectionEvent();
 		setDirty(true);
 	}
 }
