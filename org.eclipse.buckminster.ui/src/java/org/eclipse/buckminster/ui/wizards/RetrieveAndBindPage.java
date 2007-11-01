@@ -715,7 +715,10 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		{
 			ResolutionDetails resolutionDetails = new ResolutionDetails(getShell(), resolution);
 			if(resolutionDetails.open() == Window.OK)
+			{
+				getQueryWizard().invalidateMaterializationContext();
 				updatePageCompletion();
+			}
 		}
 		catch(CoreException e)
 		{
@@ -921,6 +924,11 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			m_globalWorkspaceLocation.setEnabled(false);
 			m_globalWorkspaceLocationBrowse.setEnabled(false);
 		}
+
+		ConflictResolution cr = mspec.getConflictResolution();
+		if(cr == null)
+			cr = ConflictResolution.getDefault();
+		m_globalConflictResolutionCombo.select(cr.ordinal());
 	}
 
 	private void setSelectedComponentValues(Resolution resolution) throws CoreException
@@ -935,14 +943,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		MaterializationContext context = getQueryWizard().getMaterializationContext();
 		MaterializationSpec mspec = context.getMaterializationSpec();
 		MaterializationNode node = mspec.getMatchingNode(resolution.getComponentIdentifier());
-		ComponentRequest request = resolution.getRequest();
-		ConflictResolution cr = mspec.getConflictResolution();
-		if(cr == null)
-			cr = ConflictResolution.getDefault();
-		m_globalConflictResolutionCombo.select(cr.ordinal());
-
 		boolean useDefaults = node == null;
-		boolean skip = mspec.isExcluded(request);
+		boolean skip = !useDefaults && node.isExclude();
 		boolean canMaterialize = resolution.isMaterializable();
 
 		m_settingsGroup.setText(resolution.getRequest().getViewName());
@@ -1010,8 +1012,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				return;
 			}
 
-			if(f.exists()
-					&& context.getMaterializationSpec().getConflictResolution(resolution.getRequest()) == ConflictResolution.FAIL
+			if(f.exists() && mspec.getConflictResolution(resolution.getComponentIdentifier()) == ConflictResolution.FAIL
 					&& !resolution.isMaterialized(destination))
 			{
 				if(f.isFile())
