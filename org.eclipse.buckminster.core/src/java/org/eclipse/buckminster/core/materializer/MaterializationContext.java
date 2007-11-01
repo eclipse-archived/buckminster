@@ -250,6 +250,7 @@ public class MaterializationContext extends RMContext
 		while(--idx >= 0)
 			suffixes[idx] = TextUtils.split(elems[idx].getAttribute("suffixes"), ",");
 
+		boolean first = true;
 		ArrayList<IDecompressor> decompressorList = null;
 		while(name.length() > 0)
 		{
@@ -275,7 +276,7 @@ public class MaterializationContext extends RMContext
 			{
 				// No matching decompressor was found
 				//
-				if(!mspec.isExpand(cName))
+				if(first && !mspec.isExpand(cName))
 					throw BuckminsterException.fromMessage("Unable find decompressor for " + cName);
 				break;
 			}
@@ -292,6 +293,7 @@ public class MaterializationContext extends RMContext
 			// Strip of suffix managed by this decompressor
 			//
 			name = name.substring(0, name.length() - matchLen);
+			first = false;
 		}
 		if(decompressorList != null)
 			decompressorsHandle[0] = decompressorList.toArray(new IDecompressor[decompressorList.size()]);

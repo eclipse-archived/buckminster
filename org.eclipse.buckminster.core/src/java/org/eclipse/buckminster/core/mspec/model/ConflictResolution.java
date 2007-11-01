@@ -53,6 +53,6 @@ public enum ConflictResolution
 
 	public static ConflictResolution getDefault()
 	{
-		return FAIL;
+		return UPDATE;
 	}
 }

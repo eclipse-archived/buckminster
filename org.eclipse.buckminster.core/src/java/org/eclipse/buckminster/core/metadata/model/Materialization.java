@@ -8,7 +8,6 @@
 package org.eclipse.buckminster.core.metadata.model;
 
 import java.io.File;
-import java.util.UUID;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -102,22 +101,7 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 	public void store() throws CoreException
 	{
 		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
-
-		// Remove any other materialization that appoints the same location
-		//
-		UUID thisId = getId();
-		ISaxableStorage<Materialization> mats = getStorage();		
-		mats.putElement(this);
-
-		for(Materialization oldMat : mats.getElements())
-		{
-			if(oldMat.getId().equals(thisId))
-				continue;
-
-			if(oldMat.getComponentIdentifier().equals(m_componentIdentifier)
-			|| oldMat.getComponentLocation().equals(m_componentLocation))
-				oldMat.remove();
-		}
+		getStorage().putElement(this);
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException

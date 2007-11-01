@@ -365,10 +365,10 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		if(location == null)
 			return;
 
-		CSpec oldCSpec = WorkspaceInfo.getCSpec(project);
 		Resolution oldInfo = null;
-		if(oldCSpec != null)
-			oldInfo = WorkspaceInfo.getResolution(oldCSpec.getComponentIdentifier());
+		ComponentIdentifier cid = WorkspaceInfo.getComponentIdentifier(project);
+		if(cid != null)
+			oldInfo = WorkspaceInfo.getResolution(cid);
 
 		monitor.beginTask(null, 100);
 		try
@@ -383,41 +383,30 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			queryBld.setRootRequest(request);
 			ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 			Resolution res = LocalResolver.fromPath(context.getRootNodeQuery(), project.getLocation(), oldInfo);
-
-			if(res.getCSpec().equals(oldCSpec))
+			if(!res.equals(oldInfo))
 			{
-				updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
-				WorkspaceInfo.setComponentIdentifier(project, res.getComponentIdentifier());
-				return;
-			}
+				res.store();
 
-			Resolution oldRes = null;
-			if(oldCSpec != null)
-			{
-				oldRes = WorkspaceInfo.getResolution(oldCSpec.getComponentIdentifier());
-				res = new Resolution(res.getCSpec(), oldRes);
-			}
-			res.store();
+				ComponentIdentifier ci = res.getComponentIdentifier();
+				Materialization mat = new Materialization(location.addTrailingSeparator(), ci);
+				mat.store();
+				WorkspaceInfo.setComponentIdentifier(project, ci);
 
-			ComponentIdentifier ci = res.getComponentIdentifier();
-			Materialization mat = new Materialization(location.addTrailingSeparator(), ci);
-			mat.store();
-			WorkspaceInfo.setComponentIdentifier(project, ci);
-
-			if(oldRes != null)
-			{
-				try
+				if(oldInfo != null)
 				{
-					oldRes.remove();
-					oldCSpec.remove();
-				}
-				catch(ReferentialIntegrityException e)
-				{
-					// Old resolution is being held by a BillOfMaterials. It
-					// cannot be removed at this point.
+					try
+					{
+						oldInfo.remove();
+						oldInfo.getCSpec().remove();
+					}
+					catch(ReferentialIntegrityException e)
+					{
+						// Old resolution is being held by a BillOfMaterials. It
+						// cannot be removed at this point.
+					}
 				}
 			}
-			updateProjectReferences(project, res, MonitorUtils.subMonitor(monitor, 50));
+			updateProjectReferences(project, res.getCSpec(), MonitorUtils.subMonitor(monitor, 50));
 		}
 		finally
 		{
@@ -425,9 +414,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 	}
 
-	private void updateProjectReferences(IProject project, Resolution resolution, IProgressMonitor monitor) throws CoreException
+	private void updateProjectReferences(IProject project, CSpec cspec, IProgressMonitor monitor) throws CoreException
 	{
-		CSpec cspec = resolution.getCSpec();
 		Collection<ComponentRequest> crefs = cspec.getDependencies().values();
 		if(crefs.size() == 0)
 		{

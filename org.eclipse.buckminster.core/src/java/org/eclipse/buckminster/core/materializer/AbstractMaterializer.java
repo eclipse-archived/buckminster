@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -34,6 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.service.datalocation.Location;
 
 /**
@@ -48,10 +50,21 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		try
 		{
 			IMaterializer materializer = context.getMaterializationSpec().getMaterializer(bom.getRequest());
-			materializer.installRecursive(bom, context, new HashSet<String>(), new HashSet<Resolution>(), monitor);
+			Set<Resolution> perused = new LinkedHashSet<Resolution>();
+			materializer.installRecursive(bom, context, new HashSet<String>(), perused, monitor);
 			IStatus status = context.getStatus();
 			if(status.getSeverity() == IStatus.ERROR)
 				throw new CoreException(status);
+
+			// Collect the reader types in the order they were perused
+			//
+			Set<String> readerTypes = new LinkedHashSet<String>();
+			for(Resolution res : perused)
+				readerTypes.add(res.getProvider().getReaderTypeId());
+
+			CorePlugin plugin = CorePlugin.getDefault();
+			for(String readerType : readerTypes)
+				plugin.getReaderType(readerType).postMaterialization(context, new SubProgressMonitor(monitor, 1));
 		}
 		finally
 		{

@@ -32,7 +32,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 
 /**
  * Materializes each component to the local filesystem.
@@ -71,18 +70,28 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				try
 				{
 					cr.store();
-					Materialization mat = WorkspaceInfo.getMaterialization(cr);
-					if(mat != null)
-					{
-						// The resolution is already materialized.
-						//
-						adjustedMinfos.add(mat);
-						continue;
-					}
-
 					ComponentIdentifier ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
 					IPath artifactLocation = context.getArtifactLocation(cr);
+
+					Materialization mat = WorkspaceInfo.getMaterialization(cr);
+					if(mat != null)
+					{
+						if(mat.getComponentLocation().equals(artifactLocation))
+						{
+							if(conflictRes == ConflictResolution.KEEP
+							|| conflictRes == ConflictResolution.UPDATE)
+							{
+								// The same component (name, version, and type) is already materialized to
+								// the same location.
+								//
+								adjustedMinfos.add(mat);
+								continue;
+							}
+						}
+						mat.remove();
+					}
+
 					mat = new Materialization(artifactLocation, ci);
 					resolutionPerID.put(ci, cr);
 
@@ -176,19 +185,16 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						IPath location = mi.getComponentLocation();
 						IProgressMonitor matSubMon = MonitorUtils.subMonitor(matMon, 80);
 
+						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
+							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
+						mi.store();
+
 						if(reader instanceof IFileReader)
 							((IFileReader)reader).materialize(MaterializerEndPoint.create(location, cr, context),
 									matSubMon);
 						else
 							((ICatalogReader)reader).materialize(location, matSubMon);
 
-						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
-							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
-
-						// Remove any duplicates for the given location and then make
-						// sure the materialization is persisted.
-						//
-						mi.store();
 						adjustedMinfos.add(mi);
 					}
 					finally
@@ -196,12 +202,6 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						reader.close();
 					}
 				}
-			}
-
-			for(String readerTypeId : perReader.keySet())
-			{
-				IReaderType readerType = plugin.getReaderType(readerTypeId);
-				readerType.postMaterialization(context, new SubProgressMonitor(matMon, 2));
 			}
 			matMon.done();
 			return adjustedMinfos;

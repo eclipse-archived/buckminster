@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.pde.internal.core.PDECore;
@@ -131,7 +130,6 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));
-			m_classpathCollector.addProjectToDelete(project);
 			File featureDir = new File(m_model.getInstallLocation());
 
 			importContent(featureDir, project.getFullPath(),
@@ -145,10 +143,11 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				project.setPersistentProperty(PDECore.EXTERNAL_PROJECT_PROPERTY, PDECore.BINARY_PROJECT_VALUE);
 			}
 
-			setProjectNatures(project, m_model, MonitorUtils.subMonitor(monitor, 10));
+			setProjectNatures(project, m_model, MonitorUtils.subMonitor(monitor, 20));
 			if(project.hasNature(JavaCore.NATURE_ID))
-				setClasspath(project, m_model, MonitorUtils.subMonitor(monitor, 10));
+				m_classpathCollector.addProjectClasspath(project, getClasspath(project, m_model));
 
+			project.delete(false, true, MonitorUtils.subMonitor(monitor, 100));
 		}
 		finally
 		{
@@ -196,17 +195,15 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		project.setDescription(desc, monitor);
 	}
 
-	private void setClasspath(IProject project, IFeatureModel model, IProgressMonitor monitor)
+	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel model)
 			throws JavaModelException
 	{
-		IJavaProject jProject = JavaCore.create(project);
-
 		IClasspathEntry jreCPEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
 
 		String libName = model.getFeature().getInstallHandler().getLibrary();
 		IClasspathEntry handlerCPEntry = JavaCore.newLibraryEntry(project.getFullPath().append(libName), null, null);
 
-		jProject.setRawClasspath(new IClasspathEntry[] { jreCPEntry, handlerCPEntry }, monitor);
+		return new IClasspathEntry[] { jreCPEntry, handlerCPEntry };
 	}
 
 	private boolean needsJavaNature(IFeatureModel model)

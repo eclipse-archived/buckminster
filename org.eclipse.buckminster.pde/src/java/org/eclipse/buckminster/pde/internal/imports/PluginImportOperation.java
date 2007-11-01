@@ -217,9 +217,8 @@ public class PluginImportOperation extends JarImportOperation
 			{
 				if(project.hasNature(JavaCore.NATURE_ID) && project.findMember(".classpath") == null)
 					m_classpathCollector.addProjectClasspath(project, ClasspathComputer.getClasspath(project, m_model, true));
-				else
-					m_classpathCollector.addProjectToDelete(project);
 			}
+			project.delete(false, true, MonitorUtils.subMonitor(monitor, 100));
 		}
 		finally
 		{

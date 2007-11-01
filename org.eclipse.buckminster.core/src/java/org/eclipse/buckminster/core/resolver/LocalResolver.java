@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -170,7 +171,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	protected DepNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
-		if(query.useMaterialization())
+		if(query.useMaterialization() || query.useExistingProject())
 		{
 			try
 			{
@@ -184,29 +185,23 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				}
 				else
 				{
-					if(!query.useMaterialization())
-						res = null;
-					else
+					Materialization mat = WorkspaceInfo.getMaterialization(res);
+					if(mat == null)
 					{
-						Materialization mat = WorkspaceInfo.getMaterialization(res);
-						if(mat == null)
-						{
-							// Resolution is not materialized so don't use it
-							//
-							res = null;
-						}
-						else if(!query.useExistingProject() && WorkspaceInfo.getProject(mat) != null)
-						{
-							// This component is bound to the workspace and we
-							// are not allowed to use it when we resolve
-							//
-							res = null;
-						}
+						// Resolution is not materialized so don't use it
+						//
+						res = null;
+					}
+					else if(!query.useExistingProject() && WorkspaceInfo.getProject(mat) != null)
+					{
+						// This component is bound to the workspace and we
+						// are not allowed to use it when we resolve
+						//
+						res = null;
 					}
 				}
 				if(res != null)
 				{
-					res.store();
 					MonitorUtils.complete(monitor);
 					return new ResolvedNode(query, res);
 				}
@@ -475,10 +470,24 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				possibleTypes.add(IComponentType.UNKNOWN);
 		}
 
-		String repoURI;
+		Format repoURI;
 		try
 		{
-			repoURI = productPath.toFile().toURI().toURL().toString();
+			String repoStr = productPath.toFile().toURI().toURL().toString();
+			int nameIndex = repoStr.lastIndexOf(name);
+			if(nameIndex > 0)
+			{
+				String parameterized = repoStr.substring(0, nameIndex);
+				parameterized += "{0}";
+				nameIndex += name.length();
+				if(repoStr.length() > nameIndex)
+					parameterized += repoStr.substring(nameIndex, repoStr.length());
+
+				repoURI = new Format(parameterized);
+				repoURI.addValueHolder(new PropertyRef(KeyConstants.COMPONENT_NAME));
+			}
+			else
+				repoURI = new Format(repoStr);
 		}
 		catch(MalformedURLException e)
 		{
@@ -494,8 +503,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), repoURI);
-
+		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, false, false, null);
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
 		Resolution bestMatch = null;

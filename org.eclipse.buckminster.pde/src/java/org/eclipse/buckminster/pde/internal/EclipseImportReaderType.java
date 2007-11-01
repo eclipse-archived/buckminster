@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -201,35 +200,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		//
 		PluginImportOperation.setClasspaths(monitor, m_classpaths);
 
-		// The reader has created projects during materialization. We don't
-		// want them just yet, just their content. The projects will be
-		// recreated during bind.
+		// Clear cached entries
 		//
-		Set<IProject> projectsToDelete = m_classpaths.keySet();
-		monitor.beginTask(null, projectsToDelete.size() * 100);
-		try
-		{
-			for(IProject project : projectsToDelete)
-				//
-				// Delete project but do not delete content
-				//
-				project.delete(false, true, MonitorUtils.subMonitor(monitor, 100));
-		}
-		finally
-		{
-			monitor.done();
-
-			// Clear cached entries
-			//
-			m_pluginCache.clear();
-			m_featureCache.clear();
-			m_classpaths.clear();
-		}
-	}
-
-	public synchronized void addProjectToDelete(IProject project)
-	{
-		m_classpaths.put(project, null);
+		m_pluginCache.clear();
+		m_featureCache.clear();
+		m_classpaths.clear();
 	}
 
 	public synchronized void addProjectClasspath(IProject project, IClasspathEntry[] classPath)
