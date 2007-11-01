@@ -110,4 +110,11 @@
 			name="buckminster.antcallsuccess">
 		</antType>
 	</extension>
+ <extension
+       point="org.eclipse.buckminster.core.expanders">
+    <expander
+          class="org.eclipse.buckminster.ant.materializer.TarExpander"
+          suffixes=".tar">
+    </expander>
+ </extension>
 </plugin>
