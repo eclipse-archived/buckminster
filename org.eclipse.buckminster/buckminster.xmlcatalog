@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-<uri name="http://www.eclipse.org/buckminster/BindSpec-1.0" uri="http://www.eclipse.org/buckminster/schemas/bindspec-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/BOM-1.0" uri="http://www.eclipse.org/buckminster/schemas/bom-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/Common-1.0" uri="http://www.eclipse.org/buckminster/schemas/common-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/CompOrder-1.0" uri="http://www.eclipse.org/buckminster/schemas/corder-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/CSPacking-1.0" uri="http://www.eclipse.org/buckminster/schemas/cspacking-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/CSpec-1.0" uri="http://www.eclipse.org/buckminster/schemas/cspec-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/RMap-1.0" uri="http://www.eclipse.org/buckminster/schemas/rmap-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/CSpecExt-1.0" uri="http://www.eclipse.org/buckminster/schemas/cspecext-1.0.xsd"/>
-<uri name="http://www.eclipse.org/buckminster/Materializations-1.0" uri="http://www.eclipse.org/buckminster/schemas/materializations-1.0.xsd"/>
+	<uri name="http://www.eclipse.org/buckminster/Common-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/common-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/CQuery-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/cquery-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/CSpec-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/cspec-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/MetaData-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/metadata-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/RMap-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/rmap-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.maven/src/xsd/maven-provider-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
+		uri="platform:/resource/org.eclipse.buckminster.pde/src/xsd/map-provider-1.0.xsd" />
+	<uri name="http://www.eclipse.org/buckminster/SiteContribution-1.0"
+		uri="platform:/resource/org.eclipse.dash.siteassembler/src/siteContribution-1.0.xsd" />
 </catalog>
