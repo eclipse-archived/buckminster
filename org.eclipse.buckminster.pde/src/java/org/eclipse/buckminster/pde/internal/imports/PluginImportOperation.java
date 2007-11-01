@@ -27,6 +27,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
 import org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider;
 import org.eclipse.buckminster.pde.internal.datatransfer.ZipFileStructureProvider;
 import org.eclipse.buckminster.pde.internal.plugin.ClasspathComputer;
@@ -108,7 +109,7 @@ public class PluginImportOperation extends JarImportOperation
 
 	private IProject m_project;
 
-	private Map<IProject, IClasspathEntry[]> m_classpaths;
+	private EclipseImportReaderType m_classpathCollector;
 
 	private final IPath m_destination;
 
@@ -212,12 +213,13 @@ public class PluginImportOperation extends JarImportOperation
 			}
 
 			setProjectDescription();
-			IClasspathEntry[] classpaths = null;
-
-			if(m_classpaths != null && project.hasNature(JavaCore.NATURE_ID)
-					&& project.findMember(".classpath") == null)
-				classpaths = ClasspathComputer.getClasspath(project, m_model, true);
-			m_classpaths.put(project, classpaths);
+			if(m_classpathCollector != null)
+			{
+				if(project.hasNature(JavaCore.NATURE_ID) && project.findMember(".classpath") == null)
+					m_classpathCollector.addProjectClasspath(project, ClasspathComputer.getClasspath(project, m_model, true));
+				else
+					m_classpathCollector.addProjectToDelete(project);
+			}
 		}
 		finally
 		{
@@ -231,9 +233,9 @@ public class PluginImportOperation extends JarImportOperation
 		MonitorUtils.testCancelStatus(monitor);
 	}
 
-	public void setClasspathCollector(Map<IProject, IClasspathEntry[]> classpaths)
+	public void setClasspathCollector(EclipseImportReaderType classpathCollector)
 	{
-		m_classpaths = classpaths;
+		m_classpathCollector = classpathCollector;
 	}
 
 	private String addBuildEntry(WorkspaceBuildModel model, String key, String value) throws CoreException

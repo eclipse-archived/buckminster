@@ -227,9 +227,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	Map<IProject, IClasspathEntry[]> getClasspathCollector()
+	public synchronized void addProjectToDelete(IProject project)
 	{
-		return m_classpaths;
+		m_classpaths.put(project, null);
+	}
+
+	public synchronized void addProjectClasspath(IProject project, IClasspathEntry[] classPath)
+	{
+		m_classpaths.put(project, classPath);
 	}
 
 	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException

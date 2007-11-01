@@ -12,7 +12,6 @@ package org.eclipse.buckminster.pde.internal.imports;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -20,6 +19,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
 import org.eclipse.buckminster.pde.internal.datatransfer.IImportStructureProvider;
 import org.eclipse.buckminster.pde.internal.datatransfer.ImportOperation;
 import org.eclipse.buckminster.pde.internal.dialogs.IOverwriteQuery;
@@ -55,7 +55,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 
 	private final NodeQuery m_query;
 
-	private final Map<IProject,IClasspathEntry[]>  m_classpathCollector;
+	private final EclipseImportReaderType  m_classpathCollector;
 
 	private final boolean m_binary;
 
@@ -70,7 +70,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 	 *            a parent of external project or null
 	 * @param replaceQuery
 	 */
-	public FeatureImportOperation(Map<IProject,IClasspathEntry[]> classpathCollector, IFeatureModel model, NodeQuery query, IPath destination, boolean binary)
+	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model, NodeQuery query, IPath destination, boolean binary)
 	{
 		m_classpathCollector = classpathCollector;
 		m_model = model;
@@ -131,7 +131,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));
-			m_classpathCollector.put(project, null);
+			m_classpathCollector.addProjectToDelete(project);
 			File featureDir = new File(m_model.getInstallLocation());
 
 			importContent(featureDir, project.getFullPath(),

@@ -287,8 +287,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 
 	private IWorkspaceRunnable getFeatureImportJob(IFeatureModel model, IPath destination)
 	{
-		return new FeatureImportOperation(
-			((EclipseImportReaderType)getReaderType()).getClasspathCollector(), model,
+		return new FeatureImportOperation((EclipseImportReaderType)getReaderType(), model,
 			getNodeQuery(), destination, m_base.getType() == PluginImportOperation.IMPORT_BINARY);
 	}
 
@@ -365,7 +364,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 	{
 		PluginImportOperation job = new PluginImportOperation(model, getNodeQuery(),
 			destination, m_base.getType());
-		job.setClasspathCollector(((EclipseImportReaderType)getReaderType()).getClasspathCollector());
+		job.setClasspathCollector((EclipseImportReaderType)getReaderType());
 		return job;
 	}
 }
