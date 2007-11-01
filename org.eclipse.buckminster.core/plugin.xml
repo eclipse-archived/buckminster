@@ -326,4 +326,11 @@
           suffixes=".zip">
     </expander>
  </extension>
+ <extension
+       point="org.eclipse.buckminster.core.decompressors">
+    <decompressor
+          class="org.eclipse.buckminster.core.materializer.GZIPDecompressor"
+          suffixes=".gz">
+    </decompressor>
+ </extension>
 </plugin>
