@@ -27,7 +27,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -444,19 +443,8 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected void createStackOptions(Composite parent)
 	{
-		Composite treeComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = layout.marginWidth = 0;
-		treeComposite.setLayout(layout);
-		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-
-		m_stackOptions = new Tree(treeComposite, SWT.BORDER);
-
-		int width = m_stackOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, true);
-		gridData.widthHint = width + 40; // m_nodeTree.setSelection made it
-		// too small
-		m_stackOptions.setLayoutData(gridData);
+		m_stackOptions = new Tree(parent, SWT.BORDER);
+		m_stackOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 		m_stackOptions.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
