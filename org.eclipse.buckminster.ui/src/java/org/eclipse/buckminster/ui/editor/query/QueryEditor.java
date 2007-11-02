@@ -1013,19 +1013,8 @@ public class QueryEditor extends EditorPart
 
 	private void createNodeTree(Composite parent)
 	{
-		Composite treeComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = layout.marginWidth = 0;
-		treeComposite.setLayout(layout);
-		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-
-		m_nodeTree = new Tree(treeComposite, SWT.BORDER);
-
-		int width = m_nodeTree.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, true);
-		gridData.widthHint = width + 40; // m_nodeTree.setSelection made it
-		// too small
-		m_nodeTree.setLayoutData(gridData);
+		m_nodeTree = new Tree(parent, SWT.BORDER);
+		m_nodeTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));		
 		m_nodeTree.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
