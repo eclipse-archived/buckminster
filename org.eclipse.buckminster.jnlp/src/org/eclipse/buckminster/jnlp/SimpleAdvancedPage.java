@@ -368,8 +368,6 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			String componentType = cspec.getComponentTypeID();
 
 			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
-			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
-			nodeBuilder.setComponentTypeID(componentType);
 
 			for(MaterializationNodeBuilder origNodeBuilder : getInstallWizard()
 					.getOriginalMaterializationNodeBuilders())
@@ -378,15 +376,13 @@ public class SimpleAdvancedPage extends InstallWizardPage
 						&& (origNodeBuilder.getComponentTypeID() == null || origNodeBuilder.getComponentTypeID().equals(
 								componentType)))
 				{
-					nodeBuilder.setConflictResolution(origNodeBuilder.getConflictResolution());
-					nodeBuilder.setDocumentation(origNodeBuilder.getDocumentation());
-					nodeBuilder.setExclude(origNodeBuilder.isExclude());
-					nodeBuilder.setInstallLocation(origNodeBuilder.getInstallLocation());
-					nodeBuilder.setMaterializer(origNodeBuilder.getMaterializer());
-					nodeBuilder.setResourcePath(origNodeBuilder.getResourcePath());
+					nodeBuilder.initFrom(origNodeBuilder.createMaterializationNode());
 					break;
 				}
 			}
+
+			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+			nodeBuilder.setComponentTypeID(componentType);
 
 			boolean canChangeExclude = true;
 			
