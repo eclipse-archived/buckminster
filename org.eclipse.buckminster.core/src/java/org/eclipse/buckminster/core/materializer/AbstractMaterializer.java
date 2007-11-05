@@ -25,6 +25,8 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.MissingReaderTypeException;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -63,8 +65,18 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				readerTypes.add(res.getProvider().getReaderTypeId());
 
 			CorePlugin plugin = CorePlugin.getDefault();
-			for(String readerType : readerTypes)
-				plugin.getReaderType(readerType).postMaterialization(context, new SubProgressMonitor(monitor, 1));
+			for(String readerTypeId : readerTypes)
+			{
+				try
+				{
+					IReaderType readerType = plugin.getReaderType(readerTypeId);
+					readerType.postMaterialization(context, new SubProgressMonitor(monitor, 1));
+				}
+				catch(MissingReaderTypeException e)
+				{
+					// the reader type might not be available if a materialization node has been excluded
+				}
+			}
 		}
 		finally
 		{
