@@ -22,7 +22,7 @@ public class JNLPMaterializationJob extends MaterializationJob
 
 	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
-		JNLPMaterializationJob mbJob = new JNLPMaterializationJob(context, false);
+		JNLPMaterializationJob mbJob = new JNLPMaterializationJob(context, true);
 		mbJob.internalRun(monitor);
 	}
 
