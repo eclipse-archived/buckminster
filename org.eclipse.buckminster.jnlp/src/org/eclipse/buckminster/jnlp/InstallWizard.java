@@ -368,19 +368,7 @@ public class InstallWizard extends AdvancedWizard
 	{
 		List<MaterializationNodeBuilder> nodes = m_builder.getNodes();
 		nodes.clear();
-
-		for(MaterializationNodeBuilder nb : m_newNodeBuilders)
-		{
-			if(nb.getConflictResolution() != null ||
-				nb.getDocumentation() != null ||
-				nb.getInstallLocation() != null ||
-				nb.getMaterializer() != null ||
-				nb.getResourcePath() != null ||
-				nb.isExclude())
-			{
-				nodes.add(nb);
-			}
-		}
+		nodes.addAll(m_newNodeBuilders);
 	}
 
 	MaterializationSpecBuilder getMaterializationSpecBuilder()
