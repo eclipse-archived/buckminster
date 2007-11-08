@@ -4,7 +4,7 @@
 	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<cs:dependencies>
 		<cs:dependency name="org.demo.worlds"/>
-		<cs:dependency name="se.tada.util.sax"  versionDesignator="1.0.0" versionType="OSGi"/>
+		<cs:dependency name="se.tada/tada-sax"  versionDesignator="1.0.0" versionType="OSGi"/>
 	</cs:dependencies>
 
 	<cs:actions>
