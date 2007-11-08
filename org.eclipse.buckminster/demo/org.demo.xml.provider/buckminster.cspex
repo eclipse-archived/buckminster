@@ -16,7 +16,7 @@
 			</cs:actorProperties>
 
 			<cs:prerequisites>
-				<cs:attribute component="se.tada.util.sax" alias="tada-sax.jar" name="java.binary.archives"/>
+				<cs:attribute component="se.tada/tada-sax" alias="tada-sax.jar" name="java.binary.archives"/>
 				<cs:attribute component="org.demo.worlds" alias="worlds.jar" name="java.binary.archives"/>
 			</cs:prerequisites>
 
