@@ -36,6 +36,7 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.maven.MavenPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -325,8 +326,9 @@ public class MavenComponentType extends AbstractComponentType
 		}
 		catch(DependencyAlreadyDefinedException e)
 		{
-			MavenPlugin.getLogger().warning(
-				"Dependency to " + componentName + " was defined more then once in " + cspec.getName());
+			DependencyBuilder oldDep = cspec.getDependency(depBld.getName());
+			if(!Trivial.equalsAllowNull(vd, oldDep.getVersionDesignator()))
+				MavenPlugin.getLogger().warning(e.getMessage());
 		}
 	}
 
