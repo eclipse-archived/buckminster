@@ -9,16 +9,9 @@
 package org.eclipse.buckminster.jnlp;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
-import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
@@ -33,7 +26,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.xml.sax.SAXException;
 
 /**
  * @author Karel Brezina
@@ -57,17 +49,17 @@ public class DonePage extends InstallWizardPage
 	
 	private static final int BUTTON_WIDTH = 100;
 	
-	private static final String[] BOM_FILTER_NAMES = {"Bill Of Materials (*.bom)"};
+	//private static final String[] BOM_FILTER_NAMES = {"Bill Of Materials (*.bom)"};
 
-	private static final String[] BOM_FILTER_EXTS = { "*.bom"};
+	//private static final String[] BOM_FILTER_EXTS = { "*.bom"};
 
-	private static final String[] MSPEC_FILTER_NAMES = {"Materialization Specification (*.mspec)"};
+	//private static final String[] MSPEC_FILTER_NAMES = {"Materialization Specification (*.mspec)"};
 
-	private static final String[] MSPEC_FILTER_EXTS = { "*.mspec"};
+	//private static final String[] MSPEC_FILTER_EXTS = { "*.mspec"};
 
 	private static final String ICON_LEARN = "library_wiz.png";
 	
-	private static final String ICON_LOCAL_FOLDER = "workset_wiz.png";
+	//private static final String ICON_LOCAL_FOLDER = "workset_wiz.png";
 	
 	private static final String ICON_PUBLISH = "xhtml_wiz.png";
 	
@@ -116,11 +108,11 @@ public class DonePage extends InstallWizardPage
 		new Label(pageComposite, SWT.NONE);
 		
 		label = new Label(pageComposite, SWT.NONE);
-		label.setText("Artifact Actions:");
+		label.setText("Distro Actions:");
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		label.setLayoutData(layoutData);
-
+/*
 		label = new Label(pageComposite, SWT.NONE);
 		label.setImage(getInstallWizard().getImage(ICON_LOCAL_FOLDER));
 		layoutData = new GridData();
@@ -213,7 +205,7 @@ public class DonePage extends InstallWizardPage
 				}
 			}
 		});
-
+*/
 		label = new Label(pageComposite, SWT.NONE);
 		label.setImage(getInstallWizard().getImage(ICON_PUBLISH));
 		layoutData = new GridData();
@@ -222,7 +214,7 @@ public class DonePage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		Link publishMSPECLink = new Link(pageComposite, SWT.NONE);
-		publishMSPECLink.setText("<a>Publish MSPEC</a>");
+		publishMSPECLink.setText("<a>Publish Distro</a>");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.widthHint = BUTTON_WIDTH;

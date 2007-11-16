@@ -41,7 +41,7 @@ public class PublishWizard extends AdvancedWizard
 	
 	private static final String ATTRIBUTE_CLASS = "class";
 
-	private static final String PUBLISH_WINDOW_TITLE = "Publish MSPEC";
+	private static final String PUBLISH_WINDOW_TITLE = "Publish Distro";
 	
 	private final InstallWizard m_installWizard;
 	

@@ -34,7 +34,7 @@ public class PublishSpacePage extends PublishWizardPage
 	
 	protected PublishSpacePage()
 	{
-		super(PublishWizard.PUBLISH_STEP, "Publish", "Publish MSPEC to a selected space.", null);
+		super(PublishWizard.PUBLISH_STEP, "Publish", "Publish distro to a selected space.", null);
 	}
 
 	public void createControl(Composite parent)
@@ -48,7 +48,7 @@ public class PublishSpacePage extends PublishWizardPage
 
 		m_spaceCombo = new Combo(pageComposite, SWT.READ_ONLY);
 
-		new Label(pageComposite, SWT.NONE).setText("Artifact Name:");
+		new Label(pageComposite, SWT.NONE).setText("Distro Name:");
 		
 		m_artifactName = new Text(pageComposite, SWT.BORDER);
 		m_artifactName.setText(getPublishWizard().getMSpecBuilder().getName() == null ? "" : getPublishWizard().getMSpecBuilder().getName());
@@ -60,7 +60,7 @@ public class PublishSpacePage extends PublishWizardPage
 			{
 				if(m_artifactName.getText().length() == 0)
 				{
-					setErrorMessage("Artifact Name cannot be empty");
+					setErrorMessage("Distro Name cannot be empty");
 				} else
 				{
 					setErrorMessage(null);
