@@ -146,7 +146,14 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				delegateAndInstallRecursive(child, context, generated, perused, monitor);
 
 			if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier()))
+			{
+				// The local reader might create resolutions that are not materialized and
+				// hence not stored so we must make sure it's stored here.
+				//
+				resolution.store();
+
 				performInstallAction(resolution, context, MonitorUtils.subMonitor(monitor, 100));
+			}
 		}
 	}
 
