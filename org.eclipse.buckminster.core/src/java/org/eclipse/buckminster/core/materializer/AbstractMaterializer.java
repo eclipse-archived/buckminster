@@ -56,7 +56,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			materializer.installRecursive(bom, context, new HashSet<String>(), perused, monitor);
 			IStatus status = context.getStatus();
 			if(status.getSeverity() == IStatus.ERROR)
-				throw new CoreException(status);
+				return;
 
 			// Collect the reader types in the order they were perused
 			//

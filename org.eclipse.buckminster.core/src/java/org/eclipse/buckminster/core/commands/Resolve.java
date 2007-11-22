@@ -130,7 +130,7 @@ public class Resolve extends WorkspaceInitCommand
 				MainResolver resolver = new MainResolver(context);
 				context.setContinueOnError(continueOnError);
 				BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 35));
-				if(context.emitWarningsAndErrors())
+				if(context.emitWarningAndErrorTags())
 					return 1;
 
 				if(bomOut != null)
@@ -146,7 +146,7 @@ public class Resolve extends WorkspaceInitCommand
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
 					MaterializationJob.run(matCtx, true);
-					if(matCtx.emitWarningsAndErrors())
+					if(matCtx.emitWarningAndErrorTags())
 						return 1;
 				}
 			}

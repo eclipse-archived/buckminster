@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.materializer;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -86,15 +85,14 @@ public class InstallerJob extends WorkspaceJob
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1000);
+		BillOfMaterials bom = m_context.getBillOfMaterials();
 		try
 		{
-			BillOfMaterials bom = m_context.getBillOfMaterials();
 			AbstractMaterializer.performInstallActions(bom, m_context, MonitorUtils.subMonitor(monitor, 100));
 		}
-		catch(CoreException e)
+		catch(Exception e)
 		{
-			CorePlugin.getLogger().error(e.getMessage(), e);
-			return e.getStatus();
+			m_context.addException(bom.getRequest(), BuckminsterException.wrap(e).getStatus());
 		}
 		finally
 		{

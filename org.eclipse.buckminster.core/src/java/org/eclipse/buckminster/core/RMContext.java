@@ -15,14 +15,10 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
@@ -46,56 +42,29 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 
 /**
- * The <i>Resolution and Materialization</i> context. Maintains information with
- * a lifecycle that lasts throughout the resolution and materialization process.
+ * The <i>Resolution and Materialization</i> context. Maintains information with a lifecycle that lasts throughout the
+ * resolution and materialization process.
  * 
  * @author Thomas Hallgren
  */
 public class RMContext extends MapUnion<String, String>
 {
 	private int m_tagInfoSquenceNumber = 0;
-
-	private final ArrayList<TagInfo> m_knownInfos = new ArrayList<TagInfo>();
-
-	private TagInfo getTagInfo(String infoString)
-	{
-		return getTagInfo(Collections.singleton(infoString));
-	}
-
-	private TagInfo getTagInfo(Set<String> infoStrings)
-	{
-		for(TagInfo info : m_knownInfos)
-			if(info.m_infoStrings.equals(infoStrings))
-				return info;
-
-		TagInfo info = new TagInfo(infoStrings);
-		m_knownInfos.add(info);
-		return info;
-	}
-
-	private TagInfo getTagInfo(TagInfo old, String infoString)
-	{
-		if(old.m_infoStrings.contains(infoString))
-			return old;
-
-		Set<String> infos = new TreeSet<String>();
-		infos.addAll(old.m_infoStrings);
-		infos.add(infoString);
-		return getTagInfo(infos);
-	}
+	
+	private final Map<String,TagInfo> m_knownTagInfos = new HashMap<String,TagInfo>();
 
 	public class TagInfo
 	{
 		private final String m_tagId;
-		
-		private final Set<String> m_infoStrings;
+
+		private final String m_infoString;
 
 		private boolean m_used = false;
 
-		private TagInfo(Set<String> infoStrings)
+		private TagInfo(String infoString)
 		{
 			m_tagId = String.format("%04d", new Integer(++m_tagInfoSquenceNumber));
-			m_infoStrings = infoStrings;
+			m_infoString = infoString;
 		}
 
 		public String getTagId()
@@ -116,21 +85,7 @@ public class RMContext extends MapUnion<String, String>
 		@Override
 		public String toString()
 		{
-			StringBuilder bld = new StringBuilder();
-			bld.append("TAG-ID ");
-			bld.append(m_tagId);
-			bld.append(" = ");
-			Iterator<String> infos = m_infoStrings.iterator();
-			if(infos.hasNext())
-			{
-				bld.append(infos.next());
-				while(infos.hasNext())
-				{
-					bld.append(", ");
-					bld.append(infos.next());
-				}
-			}
-			return bld.toString();
+			return "TAG-ID " + m_tagId + " = " + m_infoString;
 		}
 	}
 
@@ -138,7 +93,7 @@ public class RMContext extends MapUnion<String, String>
 
 	static
 	{
-		Map<String,String> additions = new HashMap<String, String>();
+		Map<String, String> additions = new HashMap<String, String>();
 
 		URL eclipseHome = Platform.getInstallLocation().getURL();
 		if(eclipseHome != null)
@@ -152,8 +107,7 @@ public class RMContext extends MapUnion<String, String>
 		else
 			CorePlugin.getLogger().debug("Platform install location is NULL!");
 
-		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toPortableString());
+		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString());
 		try
 		{
 			additions.put("localhost", InetAddress.getLocalHost().getHostName());
@@ -170,26 +124,29 @@ public class RMContext extends MapUnion<String, String>
 		return s_globalAdditions;
 	}
 
-	private static Map<String,String> makeExpanding(Map<String,String> properties)
+	private static Map<String, String> makeExpanding(Map<String, String> properties)
 	{
 		return (properties instanceof ExpandingProperties)
-			? properties
-			: new ExpandingProperties(properties);
+				? properties
+				: new ExpandingProperties(properties);
 	}
+
 	private boolean m_continueOnError;
+
 	private final Map<ComponentRequest, TagInfo> m_tagInfos = new HashMap<ComponentRequest, TagInfo>();
 
 	private MultiStatus m_status;
-	private Map<UUID,Object> m_userCache;
 
-	public RMContext(Map<String,String> properties)
+	private Map<UUID, Object> m_userCache;
+
+	public RMContext(Map<String, String> properties)
 	{
 		super(makeExpanding(properties), s_globalAdditions);
 	}
 
 	/**
-	 * This is where the exceptions that occur during processing will end up if the
-	 * {@link #isContinueOnError()} returns <code>true</code>.
+	 * This is where the exceptions that occur during processing will end up if the {@link #isContinueOnError()} returns
+	 * <code>true</code>.
 	 * 
 	 * @param resolveStatus
 	 *            A status that indicates an error during processing.
@@ -214,13 +171,9 @@ public class RMContext extends MapUnion<String, String>
 
 		if(m_status == null)
 		{
-			m_status = new MultiStatus(
-				CorePlugin.getID(),
-				IStatus.OK,
-				status instanceof MultiStatus
+			m_status = new MultiStatus(CorePlugin.getID(), IStatus.OK, status instanceof MultiStatus
 					? ((MultiStatus)status).getChildren()
-					: new IStatus[] { status },
-				"Errors and Warnings", null);
+					: new IStatus[] { status }, "Errors and Warnings", null);
 		}
 		else
 			m_status.merge(status);
@@ -236,7 +189,8 @@ public class RMContext extends MapUnion<String, String>
 			wrt.flush();
 		}
 		catch(IOException e)
-		{}
+		{
+		}
 		return bld.toString();
 	}
 
@@ -256,7 +210,7 @@ public class RMContext extends MapUnion<String, String>
 			wrt.append("ERROR   ");
 			break;
 		}
-		wrt.append(status.getMessage());		
+		wrt.append(status.getMessage());
 		for(IStatus child : status.getChildren())
 		{
 			wrt.newLine();
@@ -268,10 +222,15 @@ public class RMContext extends MapUnion<String, String>
 	{
 		TagInfo tagInfo = m_tagInfos.get(request);
 		if(tagInfo == null)
-			tagInfo = getTagInfo(info);
-		else
-			tagInfo = getTagInfo(tagInfo, info);
-		m_tagInfos.put(request, tagInfo);
+		{
+			tagInfo = m_knownTagInfos.get(info);
+			if(tagInfo == null)
+			{
+				tagInfo = new TagInfo(info);
+				m_knownTagInfos.put(info, tagInfo);
+			}
+			m_tagInfos.put(request, tagInfo);
+		}
 	}
 
 	private synchronized String getTagId(ComponentRequest request)
@@ -286,8 +245,7 @@ public class RMContext extends MapUnion<String, String>
 	}
 
 	/**
-	 * Clears the status so that next call to {@link #getStatus()}
-	 * returns {@link IStatus#OK_STATUS}.
+	 * Clears the status so that next call to {@link #getStatus()} returns {@link IStatus#OK_STATUS}.
 	 */
 	public synchronized void clearStatus()
 	{
@@ -300,7 +258,7 @@ public class RMContext extends MapUnion<String, String>
 		if(!logger.isInfoEnabled())
 			return;
 
-		Map<String,TagInfo> sorted = new TreeMap<String, TagInfo>();
+		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
 		for(TagInfo tagInfo : m_tagInfos.values())
 			if(tagInfo.isUsed())
 				sorted.put(tagInfo.getTagId(), tagInfo);
@@ -326,7 +284,7 @@ public class RMContext extends MapUnion<String, String>
 		logger.info(bld.toString());
 	}
 
-	public String getBindingName(Resolution resolution, Map<String,String> props) throws CoreException
+	public String getBindingName(Resolution resolution, Map<String, String> props) throws CoreException
 	{
 		ComponentRequest request = resolution.getRequest();
 		String name = null;
@@ -364,7 +322,7 @@ public class RMContext extends MapUnion<String, String>
 		return new MapUnion<String, String>(cName.getProperties(), this);
 	}
 
-	public synchronized Map<ComponentRequest,TagInfo> getTagInfos()
+	public synchronized Map<ComponentRequest, TagInfo> getTagInfos()
 	{
 		return m_tagInfos;
 	}
@@ -375,10 +333,8 @@ public class RMContext extends MapUnion<String, String>
 	}
 
 	/**
-	 * Returns the status that reflects the outcome of the process.
-	 * If the status is
-	 * {@link org.eclipse.core.runtime.Status#OK_STATUS OK_STATUS} everything
-	 * went OK.
+	 * Returns the status that reflects the outcome of the process. If the status is
+	 * {@link org.eclipse.core.runtime.Status#OK_STATUS OK_STATUS} everything went OK.
 	 * 
 	 * @return The status of the process
 	 */
@@ -394,7 +350,11 @@ public class RMContext extends MapUnion<String, String>
 		return status;
 	}
 
-	public boolean emitWarningsAndErrors()
+	/**
+	 * Emit all tags for warnings and errors that have been added earlier.
+	 * @return <code>true</code> if errors have been added, <code>false</code> if not.
+	 */
+	public boolean emitWarningAndErrorTags()
 	{
 		IStatus status = getStatus();
 		switch(status.getSeverity())
@@ -418,9 +378,11 @@ public class RMContext extends MapUnion<String, String>
 			IStatus[] taggedChildren = new IStatus[idx];
 			while(--idx >= 0)
 				taggedChildren[idx] = addTagId(tagId, children[idx]);
-			return new MultiStatus(status.getPlugin(), status.getCode(), taggedChildren, addTagId(tagId, status.getMessage()), status.getException());
+			return new MultiStatus(status.getPlugin(), status.getCode(), taggedChildren, addTagId(tagId, status
+					.getMessage()), status.getException());
 		}
-		return new Status(status.getSeverity(), status.getPlugin(), addTagId(tagId, status.getMessage()), status.getException());		
+		return new Status(status.getSeverity(), status.getPlugin(), addTagId(tagId, status.getMessage()), status
+				.getException());
 	}
 
 	private static String addTagId(String tagId, String msg)
@@ -434,12 +396,12 @@ public class RMContext extends MapUnion<String, String>
 	}
 
 	/**
-	 * Returns a map intended for caching purposes during resolution and
-	 * materialization. The map is synchronized. Users of the map must
-	 * create UUID's to use as keys in the map.
+	 * Returns a map intended for caching purposes during resolution and materialization. The map is synchronized. Users
+	 * of the map must create UUID's to use as keys in the map.
+	 * 
 	 * @return A map to be used for caching purposes
 	 */
-	public synchronized Map<UUID,Object> getUserCache()
+	public synchronized Map<UUID, Object> getUserCache()
 	{
 		if(m_userCache == null)
 			m_userCache = Collections.synchronizedMap(new HashMap<UUID, Object>());

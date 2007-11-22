@@ -388,7 +388,7 @@ public class MaterializationContext extends RMContext
 	private void addTagInfosFromNode(String tagInfo, DepNode node)
 	{
 		Resolution res = node.getResolution();
-		if(res == null)
+		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
 			return;
 
 		addTagInfo(node.getRequest(), tagInfo);
