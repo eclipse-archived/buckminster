@@ -214,7 +214,7 @@ public class DonePage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		Link publishMSPECLink = new Link(pageComposite, SWT.NONE);
-		publishMSPECLink.setText("<a>Publish Distro</a>");
+		publishMSPECLink.setText("<a>Publish changed settings as a distro</a>");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.widthHint = BUTTON_WIDTH;
