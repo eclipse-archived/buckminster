@@ -217,7 +217,7 @@ public class DonePage extends InstallWizardPage
 		publishMSPECLink.setText("<a>Publish changed settings as a distro</a>");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
-		layoutData.widthHint = BUTTON_WIDTH;
+		//layoutData.widthHint = BUTTON_WIDTH;
 		publishMSPECLink.setLayoutData(layoutData);
 		publishMSPECLink.addSelectionListener(new SelectionAdapter()
 		{
