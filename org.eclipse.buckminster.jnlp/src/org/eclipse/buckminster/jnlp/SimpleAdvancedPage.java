@@ -289,8 +289,11 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		});
 	}
 
-	@Override
-	protected void beforeDisplaySetup()
+	/*
+	 * Initializes tree and creates new MSpec nodes. This has to be called even if the Advanced Page is not needed,
+	 * because it excludes cssite components from materialization.
+	 */
+	void initializeMSpecTree()
 	{
 		if(!m_treeInitialized)
 		{

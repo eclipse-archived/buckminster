@@ -162,6 +162,8 @@ public class SimpleDownloadPage extends InstallWizardPage
 						monitor.done();
 					}
 				});
+				
+				((SimpleAdvancedPage)getInstallWizard().getPage("SimpleAdvancedSettingsStep")).initializeMSpecTree();
 			}
 			catch(Exception e)
 			{

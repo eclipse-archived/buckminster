@@ -271,22 +271,31 @@ public class InstallWizard extends AdvancedWizard
     @Override
 	public boolean performCancel()
     {
-    	// disable progress provider
-		Job.getJobManager().setProgressProvider(null);
-		OperationPage operationPage = (OperationPage)getPage("OperationStep");
-		((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
+    	try
+		{
+			// disable progress provider
+			Job.getJobManager().setProgressProvider(null);
+			OperationPage operationPage = (OperationPage)getPage("OperationStep");
+			if(operationPage != null)
+				((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
 
-		if(m_authenticator != null)
-    	{
-    		try
+			if(m_authenticator != null)
 			{
-				m_authenticator.logout();
+				try
+				{
+					m_authenticator.logout();
+				}
+				catch(Throwable e)
+				{
+					// do nothing - session might be invalidated
+				}
 			}
-			catch(Throwable e)
-			{
-				// do nothing - session might be invalidated
-			}
-    	}
+		}
+		catch(Throwable e)
+		{
+			// it should always finish
+			e.printStackTrace();
+		}
     	
     	return true;
     }
