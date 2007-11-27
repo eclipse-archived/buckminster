@@ -220,7 +220,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public boolean isExpand(ComponentName cName)
 	{
 		MaterializationNode node = getMatchingNode(cName);
-		return node != null && node.isExpand();
+		return node != null && (node.isUnpack() && node.isExpand());
 	}
 
 	public boolean isUnpack(ComponentName cName)
@@ -249,6 +249,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	@Override
 	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
+		super.emitElements(receiver, namespace, prefix);
 		for(MaterializationNode node : m_nodes)
 			node.toSax(receiver, namespace, prefix, node.getDefaultTag());
 	}

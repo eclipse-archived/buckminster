@@ -60,61 +60,6 @@ public class MaterializationNode extends MaterializationDirective
 		m_expand = builder.isExpand();
 	}
 
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public String getComponentTypeID()
-	{
-		return m_componentTypeID;
-	}
-
-	public IPath getLeafArtifact()
-	{
-		return m_leafArtifact;
-	}
-
-	public Pattern getNamePattern()
-	{
-		return m_namePattern;
-	}
-
-	public IPath getResourcePath()
-	{
-		return m_resourcePath;
-	}
-
-	public Pattern getBindingNamePattern()
-	{
-		return m_bindingNamePattern;
-	}
-
-	public String getBindingNameReplacement()
-	{
-		return m_bindingNameReplacement;
-	}
-
-	public String getSuffix()
-	{
-		return m_suffix;
-	}
-
-	public boolean isUnpack()
-	{
-		return m_unpack;
-	}
-
-	public boolean isExpand()
-	{
-		return m_expand;
-	}
-
-	public boolean isExclude()
-	{
-		return m_exclude;
-	}
-
 	@Override
 	protected void appendAttributes(AttributesImpl attrs) throws SAXException
 	{
@@ -149,5 +94,60 @@ public class MaterializationNode extends MaterializationDirective
 			receiver.startElement(namespace, ELEM_UNPACK, qName, attrs);
 			receiver.endElement(namespace, ELEM_UNPACK, qName);
 		}
+	}
+
+	public Pattern getBindingNamePattern()
+	{
+		return m_bindingNamePattern;
+	}
+
+	public String getBindingNameReplacement()
+	{
+		return m_bindingNameReplacement;
+	}
+
+	public String getComponentTypeID()
+	{
+		return m_componentTypeID;
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public IPath getLeafArtifact()
+	{
+		return m_leafArtifact;
+	}
+
+	public Pattern getNamePattern()
+	{
+		return m_namePattern;
+	}
+
+	public IPath getResourcePath()
+	{
+		return m_resourcePath;
+	}
+
+	public String getSuffix()
+	{
+		return m_suffix;
+	}
+
+	public boolean isExclude()
+	{
+		return m_exclude;
+	}
+
+	public boolean isExpand()
+	{
+		return m_expand;
+	}
+
+	public boolean isUnpack()
+	{
+		return m_unpack;
 	}
 }

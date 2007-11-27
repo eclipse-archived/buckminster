@@ -25,8 +25,8 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.MissingReaderTypeException;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -51,7 +51,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		monitor.beginTask(null, bom.uniqueNodeCount() * 100);
 		try
 		{
-			IMaterializer materializer = context.getMaterializationSpec().getMaterializer(bom.getRequest());
+			MaterializationSpec mspec = context.getMaterializationSpec();
+			IMaterializer materializer = mspec.getMaterializer(bom.getRequest());
 			Set<Resolution> perused = new LinkedHashSet<Resolution>();
 			materializer.installRecursive(bom, context, new HashSet<String>(), perused, monitor);
 			IStatus status = context.getStatus();
@@ -62,20 +63,16 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			//
 			Set<String> readerTypes = new LinkedHashSet<String>();
 			for(Resolution res : perused)
-				readerTypes.add(res.getProvider().getReaderTypeId());
+			{
+				if(!mspec.isExcluded(res.getComponentIdentifier()))
+					readerTypes.add(res.getProvider().getReaderTypeId());
+			}
 
 			CorePlugin plugin = CorePlugin.getDefault();
 			for(String readerTypeId : readerTypes)
 			{
-				try
-				{
-					IReaderType readerType = plugin.getReaderType(readerTypeId);
-					readerType.postMaterialization(context, new SubProgressMonitor(monitor, 1));
-				}
-				catch(MissingReaderTypeException e)
-				{
-					// the reader type might not be available if a materialization node has been excluded
-				}
+				IReaderType readerType = plugin.getReaderType(readerTypeId);
+				readerType.postMaterialization(context, new SubProgressMonitor(monitor, 1));
 			}
 		}
 		finally

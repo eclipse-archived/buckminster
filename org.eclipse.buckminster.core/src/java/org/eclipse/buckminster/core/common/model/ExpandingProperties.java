@@ -442,22 +442,21 @@ public class ExpandingProperties implements IProperties
 		for(int idx = 0; idx < top; ++idx)
 		{
 			char c = value.charAt(idx);
-			if(c == '\\')
-			{
-				if(value.charAt(++idx) == '$')
-				{
-					if(bld == null)
-						bld = new StringBuilder();
-
-					if(idx - 1 > fragmentStart)
-						bld.append(value.substring(fragmentStart, idx - 1));
-					fragmentStart = idx;
-				}
-				continue;
-			}
-
 			if(c != '$')
 				continue;
+
+			if(value.charAt(idx + 1) == '$')
+			{
+				// Let '$$' mean '$'
+				//
+				if(bld == null)
+					bld = new StringBuilder();
+
+				if(idx > fragmentStart)
+					bld.append(value.substring(fragmentStart, idx));
+				fragmentStart = ++idx;
+				continue;
+			}
 
 			if(value.charAt(idx + 1) != '{' || idx + 3 >= top)
 				//

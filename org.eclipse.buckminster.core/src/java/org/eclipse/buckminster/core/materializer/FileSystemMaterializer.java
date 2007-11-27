@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.materializer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -73,84 +75,101 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					ComponentIdentifier ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
 					IPath artifactLocation = context.getArtifactLocation(cr);
-
-					Materialization mat = WorkspaceInfo.getMaterialization(cr);
-					if(mat != null)
+					String syncLock = artifactLocation.toOSString().intern();
+					synchronized(syncLock)
 					{
-						if(mat.getComponentLocation().equals(artifactLocation))
+						Materialization mat = WorkspaceInfo.getMaterialization(cr);
+						if(mat != null)
 						{
-							if(conflictRes == ConflictResolution.KEEP
-							|| conflictRes == ConflictResolution.UPDATE)
+							if(mat.getComponentLocation().equals(artifactLocation))
 							{
-								// The same component (name, version, and type) is already materialized to
-								// the same location.
-								//
-								adjustedMinfos.add(mat);
-								continue;
+								if(conflictRes == ConflictResolution.KEEP
+								|| conflictRes == ConflictResolution.UPDATE)
+								{
+									// The same component (name, version, and type) is already materialized to
+									// the same location.
+									//
+									adjustedMinfos.add(mat);
+									continue;
+								}
+							}
+							mat.remove();
+						}
+	
+						mat = new Materialization(artifactLocation, ci);
+						resolutionPerID.put(ci, cr);
+	
+						File file = artifactLocation.toFile();
+						boolean fileExists = file.exists();
+						if(fileExists && conflictRes == ConflictResolution.KEEP)
+						{
+							boolean pathTypeOK = artifactLocation.hasTrailingSeparator()
+									? file.isDirectory()
+									: !file.isDirectory();
+	
+							if(!pathTypeOK)
+								throw new FileFolderMismatchException(ci, artifactLocation);
+	
+							// Don't materialize this one. Instead, pretend that we
+							// just did.
+							//
+							logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
+									+ artifactLocation);
+	
+							mat.store();
+							adjustedMinfos.add(mat);
+							MonitorUtils.worked(prepMon, 10);
+							continue;
+						}
+	
+						// Ensure that the destination exists and that it is empty. This might cause a
+						// DestinationNotEmpty exception to be thrown.
+						//
+						if(artifactLocation.hasTrailingSeparator())
+						{
+							// We are installing into folder
+							//
+							FileUtils.prepareDestination(file, conflictRes, MonitorUtils
+									.subMonitor(prepMon, 10));
+
+							// Make sure the destination is not completely empty.
+							//
+							if(file.list().length == 0)
+							{
+								File mtFile = new File(file, ".mtlock");
+								try
+								{
+									mtFile.createNewFile();
+								}
+								catch(IOException e)
+								{
+									throw BuckminsterException.wrap(e);
+								}
 							}
 						}
-						mat.remove();
-					}
-
-					mat = new Materialization(artifactLocation, ci);
-					resolutionPerID.put(ci, cr);
-
-					File file = artifactLocation.toFile();
-					boolean fileExists = file.exists();
-					if(fileExists && conflictRes == ConflictResolution.KEEP)
-					{
-						boolean pathTypeOK = artifactLocation.hasTrailingSeparator()
-								? file.isDirectory()
-								: !file.isDirectory();
-
-						if(!pathTypeOK)
-							throw new FileFolderMismatchException(ci, artifactLocation);
-
-						// Don't materialize this one. Instead, pretend that we
-						// just did.
-						//
-						logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
-								+ artifactLocation);
-
-						mat.store();
-						adjustedMinfos.add(mat);
-						MonitorUtils.worked(prepMon, 10);
-						continue;
-					}
-
-					// Ensure that the destination exists and that it is empty. This might cause a
-					// DestinationNotEmpty exception to be thrown.
-					//
-					if(artifactLocation.hasTrailingSeparator())
-					{
-						// We are installing into folder. That folder must be empty
-						// out prior to the installation.
-						//
-						FileUtils.prepareDestination(file, conflictRes, MonitorUtils
-								.subMonitor(prepMon, 10));
-					}
-					else
-					{
-						// Assume that we are downloading a file and that the file should
-						// be given this name.
-						//
-						if(fileExists)
+						else
 						{
-							if(conflictRes == ConflictResolution.FAIL)
-								throw new FileUtils.DestinationNotEmptyException(file);
-							if(!file.delete() && file.exists())
-								throw new DeleteException(file);
+							// Assume that we are downloading a file and that the file should
+							// be given this name.
+							//
+							if(fileExists)
+							{
+								if(conflictRes == ConflictResolution.FAIL)
+									throw new FileUtils.DestinationNotEmptyException(file);
+								if(!file.delete() && file.exists())
+									throw new DeleteException(file);
+							}
 						}
+						String readerType = cr.getProvider().getReaderTypeId();
+						List<Materialization> readerGroup = perReader.get(readerType);
+						if(readerGroup == null)
+						{
+							readerGroup = new ArrayList<Materialization>();
+							perReader.put(readerType, readerGroup);
+						}
+						readerGroup.add(mat);
+						totCount++;
 					}
-					String readerType = cr.getProvider().getReaderTypeId();
-					List<Materialization> readerGroup = perReader.get(readerType);
-					if(readerGroup == null)
-					{
-						readerGroup = new ArrayList<Materialization>();
-						perReader.put(readerType, readerGroup);
-					}
-					readerGroup.add(mat);
-					totCount++;
 				}
 				catch(CoreException e)
 				{

@@ -12,6 +12,8 @@ package org.eclipse.buckminster.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
@@ -69,13 +71,18 @@ class URLStreamRetrieverRunnable extends Thread
 
 	public static void getFileInfo(URLConnection conn, FileInfoBuilder infoBuilder)
 	{
-		String filename = parseContentDisposition(conn.getHeaderField("Content-Disposition"));
-		
-		if (filename == null || filename.trim().length() == 0)
+		String filename = parseContentDisposition(conn.getHeaderField("Content-Disposition"));		
+		if(filename == null || filename.trim().length() == 0)
 		{
-			filename = new Path(conn.getURL().getFile()).lastSegment();
+			try
+			{
+				URI uri = conn.getURL().toURI();
+				filename = new Path(uri.getPath()).lastSegment();
+			}
+			catch(URISyntaxException e)
+			{
+			}
 		}
-		
 		infoBuilder.setName(filename);
 		infoBuilder.setContentType(conn.getContentType());
 		infoBuilder.setSize(conn.getContentLength());

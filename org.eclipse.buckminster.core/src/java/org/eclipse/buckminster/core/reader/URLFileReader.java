@@ -30,7 +30,6 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
  * A reader that reads one singleton file denoted by its URL.
@@ -74,62 +73,38 @@ public class URLFileReader extends AbstractReader implements IFileReader
 
 		monitor.beginTask(null, 1000);
 		monitor.subTask("Copying from " + url);
-		boolean success = false;
+
+		InputStream in = null;
+		OutputStream out = null;
 		try
 		{
 			if(destFile.toURI().toURL().equals(url))
-			{
+				//
 				// Materialization would result in copy onto self
 				//
-				success = true;
 				return;
-			}
 
-			InputStream in = null;
-			OutputStream out = null;
-			try
-			{
-				in = open(MonitorUtils.subMonitor(monitor, 800));
-				File destDir = destFile.getParentFile();
+			in = open(MonitorUtils.subMonitor(monitor, 800));
+			File destDir = destFile.getParentFile();
 
-				// Assert that parent directory exists unless
-				// we are at the root.
-				//
-				if(destDir != null && !destDir.isDirectory())
-					FileUtils.createDirectory(destDir, MonitorUtils.subMonitor(monitor, 100));
-				else
-					MonitorUtils.worked(monitor, 100);
+			// Assert that parent directory exists unless
+			// we are at the root.
+			//
+			if(destDir != null && !destDir.isDirectory())
+				FileUtils.createDirectory(destDir, MonitorUtils.subMonitor(monitor, 100));
+			else
+				MonitorUtils.worked(monitor, 100);
 
-				unpacker.unpack(in, MonitorUtils.subMonitor(monitor, 100));
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				IOUtils.close(in);
-				IOUtils.close(out);
-			}
-			success = true;
+			unpacker.unpack(in, MonitorUtils.subMonitor(monitor, 100));
 		}
-		catch(MalformedURLException e)
+		catch(IOException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{
-			if(!success)
-			{
-				try
-				{
-					FileUtils.deleteRecursive(destFile, new NullProgressMonitor());
-				}
-				catch(Throwable t)
-				{
-					t.printStackTrace();
-				}
-			}
+			IOUtils.close(in);
+			IOUtils.close(out);
 			monitor.done();
 		}
 	}
