@@ -114,7 +114,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			case 2:
 				try
 				{
-					if(resolution.isMaterializable())
+					if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier()) && resolution.isMaterializable())
 					{
 						if(resolution.isMaterialized(context.getArtifactLocation(resolution)))
 							lbl = "Yes";
@@ -124,7 +124,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 					else
 						lbl = "N/A";
 				}
-				catch(CoreException e)
+				catch(Exception e)
 				{
 					lbl = "ERROR";
 					CorePlugin.getLogger().error(e.getMessage(), e);
@@ -133,7 +133,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			default:
 				try
 				{
-					if(resolution.isMaterializable())
+					if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier()) && resolution.isMaterializable())
 					{
 						if(WorkspaceInfo.getResources(resolution.getCSpec().getComponentIdentifier()).length > 0)
 							lbl = "Yes";
@@ -143,7 +143,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 					else
 						lbl = "N/A";
 				}
-				catch(CoreException e)
+				catch(Exception e)
 				{
 					lbl = "ERROR";
 					CorePlugin.getLogger().error(e.getMessage(), e);
@@ -811,15 +811,6 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 	{
 		try
 		{
-			if(path != null)
-			{
-				if(!path.isAbsolute())
-				{
-					setErrorMessage("\"" + path + "\" is not an absolute path");
-					return;
-				}
-			}
-
 			QueryWizard wizard = getQueryWizard();
 			MaterializationContext context = wizard.getMaterializationContext();
 			if(!Trivial.equalsAllowNull(context.getMaterializationSpec().getInstallLocation(), path))
@@ -862,15 +853,6 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 	{
 		try
 		{
-			if(path != null)
-			{
-				if(!path.isAbsolute())
-				{
-					setErrorMessage("\"" + path + "\" is not an absolute path");
-					return;
-				}
-			}
-
 			QueryWizard wizard = getQueryWizard();
 			MaterializationContext context = wizard.getMaterializationContext();
 			if(!Trivial.equalsAllowNull(context.getMaterializationSpec().getWorkspaceLocation(), path))
@@ -1000,7 +982,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		for(Resolution resolution : resolutions)
 		{
-			if(!resolution.isMaterializable() || mspec.isExcluded(resolution.getRequest()))
+			if(!resolution.isMaterializable() || mspec.isExcluded(resolution.getComponentIdentifier()))
 				continue;
 
 			String id = resolution.getRequest().getViewName();
