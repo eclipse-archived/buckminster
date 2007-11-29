@@ -83,8 +83,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						{
 							if(mat.getComponentLocation().equals(artifactLocation))
 							{
-								if(conflictRes == ConflictResolution.KEEP
-								|| conflictRes == ConflictResolution.UPDATE)
+								if(conflictRes == ConflictResolution.KEEP)
 								{
 									// The same component (name, version, and type) is already materialized to
 									// the same location.
@@ -95,7 +94,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							}
 							mat.remove();
 						}
-	
+
 						mat = new Materialization(artifactLocation, ci);
 						resolutionPerID.put(ci, cr);
 	
@@ -198,6 +197,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				{
 					Resolution cr = resolutionPerID.get(mi.getComponentIdentifier());
 					matMon.subTask(cr.getName());
+					boolean success = false;
 					IComponentReader reader = readerType.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));
 					try
 					{
@@ -215,10 +215,13 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							((ICatalogReader)reader).materialize(location, matSubMon);
 
 						adjustedMinfos.add(mi);
+						success = true;
 					}
 					finally
 					{
 						reader.close();
+						if(!success)
+							mi.remove();
 					}
 				}
 			}
