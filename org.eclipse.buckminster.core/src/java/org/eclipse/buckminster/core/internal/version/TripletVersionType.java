@@ -35,9 +35,8 @@ public class TripletVersionType extends AbstractVersionType
 		Matcher m = getVersionPattern().matcher(versionString.substring(startPos));
 		if(m.find())
 		{
-			String fullMatch = m.group(5);
-			endPosRet[0] = startPos + m.end() - fullMatch.length();
-			return createVersion(intGroup(m, 1), intGroup(m, 2), intGroup(m, 3), m.group(4), fullMatch);
+			endPosRet[0] = startPos + m.end() - m.group(5).length();
+			return createVersion(intGroup(m, 1), intGroup(m, 2), intGroup(m, 3), m.group(4), versionString.substring(startPos, endPosRet[0]));
 		}
 		throw new VersionSyntaxException("Not a valid " + this.getId() + " version", versionString, startPos);
 	}
