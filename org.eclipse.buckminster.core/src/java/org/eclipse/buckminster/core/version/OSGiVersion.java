@@ -15,7 +15,7 @@ import java.util.Comparator;
 /**
  * @author Thomas Hallgren
  */
-public class OSGiVersion extends TripletVersion
+public class OSGiVersion extends AbstractTripletVersion
 {
 	private static final Comparator<String> s_defaultComparator = new Comparator<String>()
 	{
@@ -82,7 +82,6 @@ public class OSGiVersion extends TripletVersion
 	 * qualifier is the <code>null</code> or
 	 * <code>major.minor.micro.qualifier</code> otherwise.
 	 */
-	@Override
 	public void toString(StringBuilder bld)
 	{
 		bld.append(getMajor());

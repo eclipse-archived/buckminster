@@ -53,7 +53,7 @@ public class OSGiVersionType extends TripletVersionType
 	}
 
 	@Override
-	IVersion createVersion(int major, int minor, int micro, String qual)
+	IVersion createVersion(int major, int minor, int micro, String qual, String stringForm)
 	{
 		return new OSGiVersion(this, major, minor, micro, qual);
 	}
