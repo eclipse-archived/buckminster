@@ -293,6 +293,9 @@ public class InvokeAction extends AbstractCSpecAction
 
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		m_propertiesFile = preferences.getString(LAST_ACTION_PROPERTIES_FILE);
+		if(!(new File(m_propertiesFile).exists()))
+			m_propertiesFile = null;
+
 		Collections.sort(viableAttributes, s_attributeComparator);
 		ActionsDialog dialog = new ActionsDialog(shell, "Actions of " + cspec.getName(),
 			viableAttributes);
