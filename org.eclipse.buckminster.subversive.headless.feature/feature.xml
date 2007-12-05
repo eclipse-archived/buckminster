@@ -132,13 +132,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
          unpack="false"/>
 
    <plugin
-         id="org.polarion.team.svn.client.javahl"
+         id="org.polarion.eclipse.team.svn.connector.javahl"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.polarion.team.svn.client.javahl.win32"
+         id="org.polarion.eclipse.team.svn.connector.javahl.win32"
          os="win32"
          arch="x86"
          download-size="0"
@@ -147,7 +147,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          fragment="true"/>
 
    <plugin
-         id="org.polarion.team.svn.core"
+         id="org.eclipse.team.svn.core"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

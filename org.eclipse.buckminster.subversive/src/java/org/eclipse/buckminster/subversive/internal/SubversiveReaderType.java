@@ -28,11 +28,11 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.polarion.team.svn.core.SVNTeamProjectMapper;
-import org.polarion.team.svn.core.client.Info2;
-import org.polarion.team.svn.core.resource.IRepositoryContainer;
-import org.polarion.team.svn.core.resource.IRepositoryLocation;
-import org.polarion.team.svn.core.utility.SVNUtility;
+import org.eclipse.team.svn.core.SVNTeamProjectMapper;
+import org.eclipse.team.svn.core.connector.SVNEntryInfo;
+import org.eclipse.team.svn.core.resource.IRepositoryContainer;
+import org.eclipse.team.svn.core.resource.IRepositoryLocation;
+import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
  * @author Thomas Hallgren
@@ -66,7 +66,7 @@ public class SubversiveReaderType extends CatalogReaderType
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		Info2 info = SVNUtility.getSVNInfo(workingCopy);
+		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
 		MonitorUtils.complete(monitor);
 		return info == null
 				? null
@@ -95,7 +95,7 @@ public class SubversiveReaderType extends CatalogReaderType
 	@Override
 	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		Info2 info = SVNUtility.getSVNInfo(workingCopy);
+		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
 		MonitorUtils.complete(monitor);
 		return info == null
 				? -1

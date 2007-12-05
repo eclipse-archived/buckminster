@@ -32,11 +32,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.polarion.team.svn.core.client.ClientWrapperException;
-import org.polarion.team.svn.core.client.DirEntry;
-import org.polarion.team.svn.core.client.ISVNClientWrapper;
-import org.polarion.team.svn.core.client.ISVNProgressMonitor;
-import org.polarion.team.svn.core.client.Revision;
+import org.eclipse.team.svn.core.connector.ISVNConnector;
+import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
+import org.eclipse.team.svn.core.connector.SVNConnectorException;
+import org.eclipse.team.svn.core.connector.SVNEntry;
+import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
+import org.eclipse.team.svn.core.connector.SVNRevision;
+import org.eclipse.team.svn.core.operation.file.GetFileContentOperation;
 
 /**
  * The SVN repository reader assumes that any repository contains the three recommended directories <code>trunk</code>,
@@ -62,7 +64,7 @@ import org.polarion.team.svn.core.client.Revision;
 public class SubversiveRemoteFileReader extends AbstractRemoteReader
 {
 	private final SubversiveSession m_session;
-	private final DirEntry[] m_topEntries;
+	private final SVNEntry[] m_topEntries;
 	/**
 	 * @param readerType
 	 * @param rInfo
@@ -92,10 +94,10 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 12);
 		try
 		{
-			m_session.getSVNProxy().checkout(m_session.getSVNUrl(null).toString(), destDir.toString(), m_session.getRevision(), null, true, false, svnMon);
+			m_session.getSVNProxy().checkout(new SVNEntryRevisionReference(m_session.getSVNUrl(null).toString(), null, m_session.getRevision()), destDir.toString(), ISVNConnector.Depth.INFINITY, true, false, svnMon);
 			success = true;
 		}
-		catch(ClientWrapperException e)
+		catch(SVNConnectorException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
@@ -131,7 +133,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		String topEntry = path.segment(0);
 
 		boolean found = false;
-		for(DirEntry dirEntry : m_topEntries)
+		for(SVNEntry dirEntry : m_topEntries)
 		{
 			if(topEntry.equals(dirEntry.path))
 			{
@@ -141,7 +143,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		}
 
 		URI url = m_session.getSVNUrl(fileName);
-		Revision revision = m_session.getRevision();
+		SVNRevision revision = m_session.getRevision();
 		String key = SubversiveSession.cacheKey(url, revision);
 		if(!found)
 			throw new FileNotFoundException(key);
@@ -159,9 +161,13 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 			if(logger.isDebugEnabled())
 				logger.debug(String.format("Reading remote file %s", key));
 
-			ISVNClientWrapper proxy = m_session.getSVNProxy();
-			byte[] buf = proxy.fileContent(url.toString(), revision, null, svnMon);
-			if(buf.length == 0)
+			ISVNConnector proxy = m_session.getSVNProxy();
+			destFile = this.createTempFile();
+			output = new FileOutputStream(destFile);
+			proxy.streamFileContent(new SVNEntryRevisionReference(url.toString(), null, revision), GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
+			IOUtils.close(output);
+			
+			if(destFile.length() == 0)
 			{
 				// Suspect file not found
 				//
@@ -172,14 +178,12 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 					throw new FileNotFoundException(url.toString());
 				}
 			}
-
-			destFile = this.createTempFile();
-			output = new FileOutputStream(destFile);
-			output.write(buf);
+			
 			isTemporary[0] = true;
+
 			return destFile;
 		}
-		catch(ClientWrapperException e)
+		catch(SVNConnectorException e)
 		{
 			// Unwind until we get a message and create an IOException.
 			//

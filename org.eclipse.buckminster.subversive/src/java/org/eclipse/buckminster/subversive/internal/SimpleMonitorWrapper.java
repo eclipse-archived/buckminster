@@ -9,10 +9,10 @@
 package org.eclipse.buckminster.subversive.internal;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.polarion.team.svn.core.client.ISVNProgressMonitor;
-import org.polarion.team.svn.core.operation.SVNNullProgressMonitor;
-import org.polarion.team.svn.core.utility.ProgressMonitorUtility;
-import org.polarion.team.svn.core.utility.SubProgressMonitorWithInfo;
+import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
+import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
+import org.eclipse.team.svn.core.utility.ProgressMonitorUtility;
+import org.eclipse.team.svn.core.utility.SubProgressMonitorWithInfo;
 
 /**
  * @author Thomas Hallgren

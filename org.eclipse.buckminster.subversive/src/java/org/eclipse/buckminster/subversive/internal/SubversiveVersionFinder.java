@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.polarion.team.svn.core.client.DirEntry;
+import org.eclipse.team.svn.core.connector.SVNEntry;
 
 public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 {
@@ -56,20 +56,20 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
 		URI url = m_session.getSVNRootUrl(branches);
-		DirEntry[] list = m_session.listFolder(url, monitor);
+		SVNEntry[] list = m_session.listFolder(url, monitor);
 		if(list.length == 0)
 			return Collections.emptyList();
 
 		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
-		for(DirEntry e : list)
-			entries.add(new RevisionEntry(e.path, null, e.lastChangedRevision));
+		for(SVNEntry e : list)
+			entries.add(new RevisionEntry(e.path, null, e.revision));
 		return entries;
 	}
 
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
-		DirEntry entry = m_session.getRootEntry(monitor);
-		return entry == null ? null : new RevisionEntry(null, null, entry.lastChangedRevision);
+		SVNEntry entry = m_session.getRootEntry(monitor);
+		return entry == null ? null : new RevisionEntry(null, null, entry.revision);
 	}
 }

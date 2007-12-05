@@ -222,7 +222,7 @@ litigation.
    </url>
 
    <requires>
-      <import plugin="org.polarion.team.svn.core"/>
+      <import plugin="org.eclipse.team.svn.core"/>
       <import plugin="org.eclipse.buckminster.core"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.runtime"/>
