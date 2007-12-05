@@ -42,6 +42,7 @@ import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModelBase;
 import org.eclipse.pde.internal.core.plugin.ExternalFragmentModel;
 import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
+import org.osgi.framework.Constants;
 
 /**
  * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml
@@ -82,6 +83,9 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				boolean fragment = false;
 				BundleModel model = new ExternalBundleModel();
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
+				if(model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
+					throw new FileNotFoundException("Not an OSGi manifest");
+
 				fragment = model.isFragmentModel();
 				BundlePluginModelBase bmodel = fragment ? new BundleFragmentModel()
 					: new BundlePluginModel();

@@ -623,7 +623,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			itemsMonitor.beginTask(null, refs.length * 100);
 			for(IFeatureReference ref : refs)
 			{
-				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
+				// The getFeature() call is not thread-safe. It uses static variables without
+				// synchronization
+				//
+				IFeature feature;
+				synchronized(EclipseImportReaderType.class)
+				{
+					feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
+				}
 				for(IPluginEntry entry : feature.getPluginEntries())
 					entries.put(entry.getVersionedIdentifier(), entry);
 			}

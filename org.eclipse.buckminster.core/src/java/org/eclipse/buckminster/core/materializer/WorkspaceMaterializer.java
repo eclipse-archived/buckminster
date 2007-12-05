@@ -45,7 +45,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
 	{
 		IPath location = context.getWorkspaceLocation(resolution);
-		if(!context.getLeafArtifact(resolution).hasTrailingSeparator())
+		IPath leaf = context.getLeafArtifact(resolution);
+		if(leaf != null && leaf.hasTrailingSeparator())
 			location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
 		return location;
 	}

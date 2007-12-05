@@ -132,9 +132,9 @@ public class MaterializationContext extends RMContext
 		}
 
 		IReaderType rd = resolution.getProvider().getReaderType();
-		if(isExpand || !rd.isFileReader())
+		if(isExpand)
 			//
-			// We only name files, not folders
+			// We only name files, not expanded folders
 			//
 			return null;
 

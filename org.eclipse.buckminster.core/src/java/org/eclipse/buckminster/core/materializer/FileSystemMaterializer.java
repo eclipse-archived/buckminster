@@ -220,6 +220,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					finally
 					{
 						reader.close();
+						IPath location = mi.getComponentLocation();
+						if(location.hasTrailingSeparator())
+							location.append(".mtlock").toFile().delete();
+
 						if(!success)
 							mi.remove();
 					}
