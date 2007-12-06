@@ -46,7 +46,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	{
 		IPath location = context.getWorkspaceLocation(resolution);
 		IPath leaf = context.getLeafArtifact(resolution);
-		if(leaf != null && leaf.hasTrailingSeparator())
+		if(leaf != null && !leaf.hasTrailingSeparator())
 			location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
 		return location;
 	}
