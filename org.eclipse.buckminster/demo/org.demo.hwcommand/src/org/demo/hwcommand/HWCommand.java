@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.demo.hwcommand;
 
+import java.util.List;
+
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
@@ -31,10 +33,11 @@ public class HWCommand extends AbstractCommand
 		return 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected OptionDescriptor[] getOptionDescriptors() throws Exception
+	protected void getOptionDescriptors(List appendHere) throws Exception
 	{
-		return new OptionDescriptor[] { GOODBYE_DESCRIPTOR };
+		appendHere.add(GOODBYE_DESCRIPTOR);
 	}
 
 	@Override
