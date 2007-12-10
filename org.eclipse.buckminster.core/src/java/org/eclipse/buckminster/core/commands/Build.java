@@ -107,9 +107,8 @@ public class Build extends WorkspaceCommand
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(s_cleanDescriptor);
 	}

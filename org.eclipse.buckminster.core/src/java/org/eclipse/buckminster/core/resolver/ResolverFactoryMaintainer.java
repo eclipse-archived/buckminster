@@ -93,7 +93,7 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 			}
 			catch(CoreException e)
 			{
-				logger.error("Unable to instantiate Query Resolver Factory " + elem.getAttribute("id"), e);
+				logger.error(e, "Unable to instantiate Query Resolver Factory %s", elem.getAttribute("id"));
 			}
 		}
 		return factories.toArray(new IResolverFactory[factories.size()]);
@@ -116,9 +116,9 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 			IResolverFactory factory = factoriesById.remove(factoryName);
 			if(factory == null)
 			{
-				logger.warning("Resolver factory " + factoryName
+				logger.warning("Resolver factory %s"
 						+ " defined in the Query Resolver Sort Order preference was skipped"
-						+ " since it has not been registered by any extension point.");
+						+ " since it has not been registered by any extension point.", factoryName);
 				continue;
 			}
 			factories.add(factory);

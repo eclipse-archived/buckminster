@@ -60,14 +60,11 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 				File addOnFile = new File(addOnFolder, fileName);
 				if(addOnFile.exists())
 				{
-					if(logger.isDebugEnabled())
-					{
-						logger.debug(String.format("Provider %s(%s): getContents will use overlay %s for file = %s",
-								getReaderType().getId(),
-								ri.getRepositoryURI(),
-								addOnFile,
-								fileName));
-					}
+					logger.debug("Provider %s(%s): getContents will use overlay %s for file = %s",
+							getReaderType().getId(),
+							ri.getRepositoryURI(),
+							addOnFile,
+							fileName);
 					MonitorUtils.worked(monitor, 90);
 					isTemporary[0] = false;
 					return addOnFile;
@@ -103,14 +100,10 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	public final void materialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		ProviderMatch pm = this.getProviderMatch();
-		Logger logger = CorePlugin.getLogger();
-		if(logger.isDebugEnabled())
-		{
-			logger.debug(String.format("Provider %s(%s): materializing to %s",
-				this.getReaderType().getId(),
+		CorePlugin.getLogger().debug("Provider %s(%s): materializing to %s",
+				getReaderType().getId(),
 				pm.getRepositoryURI(),
-				destination));
-		}
+				destination);
 
 		monitor.beginTask(null, 100);
 		try

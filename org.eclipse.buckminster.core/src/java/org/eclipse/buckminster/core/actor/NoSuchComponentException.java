@@ -13,9 +13,10 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
  * @author kolwing
  *
  */
-@SuppressWarnings("serial")
 public class NoSuchComponentException extends BuckminsterException
 {
+	private static final long serialVersionUID = -8595563977012117343L;
+
 	public NoSuchComponentException(String compName)
 	{
 		super(compName);

@@ -11,9 +11,10 @@ package org.eclipse.buckminster.core.manifest;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
-@SuppressWarnings("serial")
 public class ChecksumMismatchException extends BuckminsterException
 {
+	private static final long serialVersionUID = -4146695538865611025L;
+
 	public ChecksumMismatchException(Checksum c1, Checksum c2)
 	{
 		super("Checksums are not equal : " + c1 + " <=> " + c2);

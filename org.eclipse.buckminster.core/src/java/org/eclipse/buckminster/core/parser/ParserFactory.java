@@ -57,7 +57,7 @@ public class ParserFactory implements IParserFactory
 	{
 		private final String m_namespace;
 		private final URL m_resource;
-		private final Map<String,Class<ChildHandler>> m_handlers = new HashMap<String,Class<ChildHandler>>();
+		private final Map<String,Class<? extends ChildHandler>> m_handlers = new HashMap<String,Class<? extends ChildHandler>>();
 
 		public ParserExtension(String namespace, URL resource)
 		{
@@ -67,10 +67,10 @@ public class ParserFactory implements IParserFactory
 
 		public final ChildHandler getHandler(AbstractHandler parent, String xsiType) throws CoreException
 		{
-			Class<ChildHandler> handlerClass = m_handlers.get(xsiType);
+			Class<? extends ChildHandler> handlerClass = m_handlers.get(xsiType);
 			try
 			{
-				Constructor<ChildHandler> ctor = handlerClass.getConstructor(new Class[] { AbstractHandler.class });
+				Constructor<? extends ChildHandler> ctor = handlerClass.getConstructor(new Class[] { AbstractHandler.class });
 				return ctor.newInstance(new Object[] { parent });
 			}
 			catch(Exception e)
@@ -89,8 +89,7 @@ public class ParserFactory implements IParserFactory
 			return m_resource;
 		}
 
-		@SuppressWarnings("unchecked")
-		void addHandler(String xsiType, Class clazz)
+		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
 		{
 			m_handlers.put(xsiType, clazz);
 		}
@@ -181,7 +180,7 @@ public class ParserFactory implements IParserFactory
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().warning("Unable to load parser extensions", e);
+				CorePlugin.getLogger().warning(e, "Unable to load parser extensions");
 				m_parserExtensions = Collections.emptyMap();
 			}
 		}
@@ -227,7 +226,7 @@ public class ParserFactory implements IParserFactory
 				{
 					pe.addHandler(
 						handler.getAttribute("type"),
-						bundle.loadClass(handler.getAttribute("class")));
+						((Class<?>)bundle.loadClass(handler.getAttribute("class"))).asSubclass(ChildHandler.class));
 				}
 				catch(ClassNotFoundException e)
 				{

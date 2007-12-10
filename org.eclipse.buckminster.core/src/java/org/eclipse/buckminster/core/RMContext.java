@@ -95,7 +95,7 @@ public class RMContext extends MapUnion<String, String>
 		File homeFile = TargetPlatform.getPlatformInstallLocation();
 		if(homeFile != null)
 		{
-			CorePlugin.getLogger().debug("Platform install location: " + homeFile);
+			CorePlugin.getLogger().debug("Platform install location: %s", homeFile);
 			additions.put("eclipse.home", homeFile.toString());
 		}
 		else

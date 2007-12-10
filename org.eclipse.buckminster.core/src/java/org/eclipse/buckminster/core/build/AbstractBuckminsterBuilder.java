@@ -125,9 +125,8 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 				}
 
 				if(logger.isDebugEnabled())
-					logger.debug(
-						String.format("[start AntBuilder(%s)] : %s - %s",
-							kindToString(kind), getBestName(args), getProject().getName()));
+					logger.debug("[start AntBuilder(%s)] : %s - %s",
+							kindToString(kind), getBestName(args), getProject().getName());
 
 				projects = doBuild(kind, args, monitor);
 

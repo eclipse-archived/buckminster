@@ -235,8 +235,7 @@ public class ResourceMap implements ISaxable, ISaxableElement
 			if(matcher.matches(componentName))
 			{
 				SearchPath sp = matcher.getSearchPath(query);
-				if(logger.isDebugEnabled())
-					logger.debug(String.format("Found searchPath %s for component %s", sp.getName(), componentName));
+				logger.debug("Found searchPath %s for component %s", sp.getName(), componentName);
 				return sp;
 			}
 		}

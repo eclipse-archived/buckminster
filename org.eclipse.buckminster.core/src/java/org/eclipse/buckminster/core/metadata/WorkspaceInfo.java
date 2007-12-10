@@ -28,7 +28,6 @@ import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
@@ -264,12 +263,8 @@ public class WorkspaceInfo
 					duplicates = new ArrayList<TimestampedKey>();
 				duplicates.add(prevTsKey);
 
-				Logger logger = CorePlugin.getLogger();
-				if(logger.isDebugEnabled())
-				{
-					logger.debug(
-						String.format("Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation));
-				}
+				CorePlugin.getLogger().debug(
+					"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation);
 				continue;
 			}
 

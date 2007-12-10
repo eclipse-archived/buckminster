@@ -36,7 +36,6 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
@@ -70,9 +69,8 @@ public class Resolve extends WorkspaceInitCommand
 		m_url = url;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		super.getOptionDescriptors(appendHere);
 		appendHere.add(CONTINUE_ON_ERROR);
@@ -111,8 +109,6 @@ public class Resolve extends WorkspaceInitCommand
 		Logger logger = Buckminster.getLogger();
 		try
 		{
-			logger.info("Using workspace at " + Platform.getInstanceLocation().getURL().toString() + "...");
-
 			OutputStream bomOut = null;
 			if(m_bomFile != null)
 				//

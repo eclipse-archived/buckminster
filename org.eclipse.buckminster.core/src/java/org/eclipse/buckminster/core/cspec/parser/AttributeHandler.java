@@ -72,7 +72,6 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 		return ch;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public final AttributeBuilder getAttributeBuilder()
 	{

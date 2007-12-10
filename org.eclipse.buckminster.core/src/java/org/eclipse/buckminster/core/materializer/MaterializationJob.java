@@ -58,7 +58,7 @@ public class MaterializationJob extends Job
 		}
 		catch(BackingStoreException e)
 		{
-			Buckminster.getLogger().error(e.toString(), e);
+			Buckminster.getLogger().error(e, e.toString());
 		}		
 	}
 
@@ -287,7 +287,7 @@ public class MaterializationJob extends Job
 		}
 		catch(CoreException e)
 		{
-			CorePlugin.getLogger().error(e.getMessage(), e);
+			CorePlugin.getLogger().error(e, e.getMessage());
 			return e.getStatus();
 		}
 		catch(OperationCanceledException e)

@@ -22,11 +22,11 @@ public class NamespaceDeprecationFilter extends XMLFilterImpl
 	{
 		if(m_oldNamespace.equals(namespace))
 		{
-			CorePlugin.getLogger().warning(String.format(
+			CorePlugin.getLogger().warning(
 					"XML namespace %s is deprecated. Use %s instead: %s",
 						m_oldNamespace,
 						m_newNamespace,
-						m_systemID));
+						m_systemID);
 			namespace = m_newNamespace;
 		}
 		super.startPrefixMapping(prefix, namespace);

@@ -81,9 +81,8 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 		return m_materializer;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(CONTINUE_ON_ERROR);
 		appendHere.add(MATERIALIZER);

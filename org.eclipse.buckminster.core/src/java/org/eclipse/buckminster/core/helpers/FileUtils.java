@@ -1133,7 +1133,7 @@ public abstract class FileUtils
 
 				// Nope, that was not the problem!
 				//
-				CorePlugin.getLogger().warning(e.getMessage(), e);
+				CorePlugin.getLogger().warning(e, e.getMessage());
 			}
 			catch(IllegalArgumentException e)
 			{

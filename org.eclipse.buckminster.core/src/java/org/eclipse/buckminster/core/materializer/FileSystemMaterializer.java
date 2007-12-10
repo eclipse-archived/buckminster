@@ -114,8 +114,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							// Don't materialize this one. Instead, pretend that we
 							// just did.
 							//
-							logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
-									+ artifactLocation);
+							logger.info("Skipping materialization of %s. Instead reusing what's already at %s", ci, artifactLocation);
 	
 							mat.store(sm);
 							adjustedMinfos.add(mat);

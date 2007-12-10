@@ -11,9 +11,10 @@ package org.eclipse.buckminster.core.manifest;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
-@SuppressWarnings("serial")
 public class NonmatchingManifestsException extends BuckminsterException
 {
+	private static final long serialVersionUID = -9133903877802074178L;
+
 	public NonmatchingManifestsException(Manifest mf1, Manifest mf2)
 	{
 		super("Manifest " + mf1 + " and " + mf2 + " does not match");

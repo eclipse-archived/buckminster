@@ -108,7 +108,7 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		catch(Throwable e)
 		{
-			CorePlugin.getLogger().warning(e.toString(), e);
+			CorePlugin.getLogger().warning(e, e.toString());
 			m_resolver.getContext().addException(getQuery().getComponentRequest(), BuckminsterException.wrap(e).getStatus());
 		}
 		finally

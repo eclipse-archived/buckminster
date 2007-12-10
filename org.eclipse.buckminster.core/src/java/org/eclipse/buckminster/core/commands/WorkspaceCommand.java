@@ -47,7 +47,7 @@ public abstract class WorkspaceCommand extends AbstractCommand
 		}
 		catch(Throwable e)
 		{
-			Buckminster.getLogger().error("Error while saving workspace: " + e.getMessage(), e);
+			Buckminster.getLogger().error(e, "Error while saving workspace: %s", e.getMessage());
 		}
 	}
 }

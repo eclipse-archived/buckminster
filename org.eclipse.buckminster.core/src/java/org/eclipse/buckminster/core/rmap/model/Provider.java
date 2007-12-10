@@ -228,12 +228,11 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 			if(logger.isDebugEnabled())
 			{
 				if(desiredVersion == null)
-					logger.debug(String.format("Provider %s(%s): Found a match for component %s, %s",
-						readerType, providerURI, componentName, candidate));
+					logger.debug("Provider %s(%s): Found a match for component %s, %s",
+						readerType, providerURI, componentName, candidate);
 				else
-					logger.debug(String.format(
-						"Provider %s(%s): Found a match for %s using version designator %s, %s",
-						readerType, providerURI, componentName, desiredVersion, candidate));
+					logger.debug("Provider %s(%s): Found a match for %s using version designator %s, %s",
+						readerType, providerURI, componentName, desiredVersion, candidate);
 			}
 			return versionFinder.getProviderMatch(candidate, ctypeUsed, score);
 		}

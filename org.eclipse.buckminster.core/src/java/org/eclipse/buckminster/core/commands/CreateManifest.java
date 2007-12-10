@@ -54,9 +54,8 @@ public class CreateManifest extends WorkspaceCommand
 
 	private File m_root = null;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(ALGORITHM_DESCRIPTOR);
 		appendHere.add(ASSUMEDLINESEPARATOR_DESCRIPTOR);

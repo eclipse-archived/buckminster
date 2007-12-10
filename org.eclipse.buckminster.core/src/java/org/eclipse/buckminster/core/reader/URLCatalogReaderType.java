@@ -214,12 +214,12 @@ public class URLCatalogReaderType extends CatalogReaderType
 		}
 		catch(IOException e)
 		{
-			CorePlugin.getLogger().warning(e.getMessage(), e);
+			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
 		}
 		catch(ParserConfigurationException e)
 		{
-			CorePlugin.getLogger().warning(e.getMessage(), e);
+			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
 		}
 		return links.toArray(new URL[links.size()]);
@@ -273,7 +273,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().warning(e.getMessage(), e);
+				CorePlugin.getLogger().warning(e, e.getMessage());
 				return Trivial.EMPTY_URL_ARRAY;
 			}
 			catch(FileNotFoundException e)
@@ -282,7 +282,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 			}
 			catch(IOException e)
 			{
-				CorePlugin.getLogger().warning(e.getMessage(), e);
+				CorePlugin.getLogger().warning(e, e.getMessage());
 				return Trivial.EMPTY_URL_ARRAY;
 			}
 			finally

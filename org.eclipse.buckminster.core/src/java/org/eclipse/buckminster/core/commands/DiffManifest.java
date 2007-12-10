@@ -58,9 +58,8 @@ public class DiffManifest extends AbstractCommand
 
 	private File m_right = null;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(ALGORITHM_DESCRIPTOR);
 		appendHere.add(ASSUMEDLINESEPARATOR_DESCRIPTOR);

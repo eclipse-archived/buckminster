@@ -521,7 +521,7 @@ public class CorePlugin extends LogAwarePlugin
 			}
 			catch(Exception e)
 			{
-				getLogger().warning("Unable to activate bundle " + pluginId, e);
+				getLogger().warning(e, "Unable to activate bundle %s", pluginId);
 			}
 		}
 	}

@@ -225,7 +225,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						catch(Exception e)
 						{
 							if(project.isAccessible())
-								CorePlugin.getLogger().error("Project refresh on " + project.getName() + " failed: " + e.getMessage(), e);
+								CorePlugin.getLogger().error(e, "Project refresh on %s failed: %s", project.getName(), e.getMessage(), e);
 						}
 					}
 				}
@@ -233,7 +233,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().error(e.toString(), e);
+				CorePlugin.getLogger().error(e, e.toString());
 				return e.getStatus();
 			}
 		}
@@ -256,7 +256,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 		catch(CoreException e)
 		{
-			CorePlugin.getLogger().error(e.getMessage(), e);
+			CorePlugin.getLogger().error(e, e.getMessage());
 		}
 		synchronized(this)
 		{
@@ -453,8 +453,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				IProject refdProj = (IProject)resource;
 				if(!refdProj.isOpen())
 				{
-					logger.warning(
-						"Project " + project.getName() + " references a closed project: " + cref.getName());
+					logger.warning("Project %s references a closed project: %s", project.getName(), cref.getName());
 				}
 				else if(!oldSet.contains(refdProj.getName()))
 				{

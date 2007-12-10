@@ -15,9 +15,10 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
  * @author kolwing
  *
  */
-@SuppressWarnings("serial")
 public class NoSuchActionException extends BuckminsterException
 {
+	private static final long serialVersionUID = -1141237125275735952L;
+
 	public NoSuchActionException(UUID componentId, String actionName)
 	{
 		super(componentId.toString() + " : " + actionName);

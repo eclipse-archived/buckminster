@@ -11,9 +11,10 @@ package org.eclipse.buckminster.core.manifest;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
-@SuppressWarnings("serial")
 public class PathMismatchException extends BuckminsterException
 {
+	private static final long serialVersionUID = 494929038187184807L;
+
 	public PathMismatchException(String root, String path)
 	{
 		super(root + " is not a root for " + path);

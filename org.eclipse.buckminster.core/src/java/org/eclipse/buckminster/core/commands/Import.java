@@ -14,7 +14,6 @@ import java.net.URL;
 
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
@@ -30,7 +29,6 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
@@ -50,8 +48,6 @@ public class Import extends WorkspaceInitCommand
 		Logger logger = Buckminster.getLogger();
 		try
 		{
-			logger.info("Using workspace at " + FileUtils.getFile(Platform.getInstanceLocation().getURL()) + "...");
-
 			InputStream bomIn = null;
 			try
 			{

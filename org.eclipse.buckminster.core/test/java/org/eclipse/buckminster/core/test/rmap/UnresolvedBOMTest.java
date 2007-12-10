@@ -115,7 +115,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 				}
 				catch(CoreException e)
 				{
-					CorePlugin.getLogger().error(e.toString(), e);
+					CorePlugin.getLogger().error(e, e.toString());
 					return e.getStatus();
 				}
 			}	

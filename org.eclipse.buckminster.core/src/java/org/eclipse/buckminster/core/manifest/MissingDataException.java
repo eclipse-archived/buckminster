@@ -11,9 +11,10 @@ package org.eclipse.buckminster.core.manifest;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
-@SuppressWarnings("serial")
 public class MissingDataException extends BuckminsterException
 {
+	private static final long serialVersionUID = 154102122403466784L;
+
 	public MissingDataException(String message)
 	{
 		super(message);

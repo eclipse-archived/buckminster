@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.helpers;
 import java.util.HashSet;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -53,9 +52,7 @@ public class JobBlocker extends JobChangeAdapter
 		if(m_blockByName.contains(jobName) || m_blockByClass.contains(job.getClass()))
 		{
 			job.cancel();
-			Logger logger = CorePlugin.getLogger();
-			if(logger.isDebugEnabled())
-				logger.debug(String.format("blocked(%s[%s])", job.getClass(), jobName));
+			CorePlugin.getLogger().debug("blocked(%s[%s])", job.getClass(), jobName);
 			return;
 		}
 	}

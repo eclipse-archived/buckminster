@@ -382,8 +382,7 @@ public class Action extends Attribute
 				// Not enough files
 				//
 				if(isDebug)
-					logger.debug(
-						String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()), Integer.valueOf(expectedFileCount)));
+					logger.debug("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()), Integer.valueOf(expectedFileCount));
 				return false;
 			}
 

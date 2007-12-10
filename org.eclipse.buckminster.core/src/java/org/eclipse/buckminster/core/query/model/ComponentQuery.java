@@ -193,8 +193,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 			{
 				// We allow missing properties but we log it nevertheless
 				//
-				CorePlugin.getLogger().info("Unable to read property file '"
-					+ m_propertiesURL + "' : " + e.toString());
+				CorePlugin.getLogger().info("Unable to read property file '%s' : %s", m_propertiesURL, e.toString());
 			}
 			finally
 			{

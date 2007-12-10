@@ -55,7 +55,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			throw new BuckminsterException("Couldn't resolve to a command line");
 
 		Logger logger = CorePlugin.getLogger();
-		logger.info("Command line: '" + fullCommandLine + '\'');
+		logger.info("Command line: '%s'", fullCommandLine);
 
 		String[] splitCommandLine = this.splitCommandLine(fullCommandLine);
 
@@ -169,8 +169,8 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 				Logger logger = CorePlugin.getLogger();
 				if(logger.isDebugEnabled())
 				{
-					logger.debug("Definition to use, before: '" + defToUse + '\'');
-					logger.debug("Definition to use, after: '" + resolvedDefsToUse + '\'');
+					logger.debug("Definition to use, before: '%s'", defToUse);
+					logger.debug("Definition to use, after: '%s'", resolvedDefsToUse);
 				}
 
 				for (LauncherDefinition ld : launcherDefs)

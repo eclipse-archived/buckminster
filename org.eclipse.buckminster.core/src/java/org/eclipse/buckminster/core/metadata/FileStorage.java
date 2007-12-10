@@ -104,7 +104,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		}
 		catch(CoreException e)
 		{
-			CorePlugin.getLogger().error(e.toString(), e);
+			CorePlugin.getLogger().error(e, e.toString());
 		}
 		m_parsed.clear();
 		super.clear();
@@ -242,8 +242,8 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		// A discreprancy has occured between elements. Likely due to
 		// different XML versions.
 		//
-		CorePlugin.getLogger().debug(String.format(
-			"Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id));
+		CorePlugin.getLogger().debug(
+			"Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id);
 
 		if(containsKey(id))
 			return;

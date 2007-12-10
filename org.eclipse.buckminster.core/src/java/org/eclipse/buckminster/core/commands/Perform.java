@@ -135,9 +135,8 @@ public class Perform extends WorkspaceCommand
 		return exitValue;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(DEFINE_DESCRIPTOR);
 		appendHere.add(PROPERTIES_DESCRIPTOR);
