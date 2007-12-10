@@ -163,7 +163,7 @@ public class RepositoryMetaData implements Serializable
 
 			if(result == null)
 			{
-				logger.debug("Initial metadata fetch for " + repository);
+				logger.debug("Initial metadata fetch for %s", repository);
 				if(fixedTag != null && !fixedTag.equals(CVSTag.DEFAULT))
 					opts.add(RLog.getCurrentTag(fixedTag));
 			}
