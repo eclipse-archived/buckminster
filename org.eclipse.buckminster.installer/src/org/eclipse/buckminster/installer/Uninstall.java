@@ -33,6 +33,7 @@ public class Uninstall extends AbstractCommand
 
 	private String m_feature;
 
+	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		int len = unparsed.length;
@@ -44,6 +45,7 @@ public class Uninstall extends AbstractCommand
 			m_version = unparsed[1];
 	}
 
+	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		if (m_feature == null)
@@ -79,7 +81,7 @@ public class Uninstall extends AbstractCommand
 
 			// search the features
 			//
-			ArrayList matches = new ArrayList();
+			ArrayList<IFeatureReference> matches = new ArrayList<IFeatureReference>();
 			IFeatureReference[] featureRefs = uninstallSite.getFeatureReferences();
 			for(int idx = 0; idx < featureRefs.length; ++idx)
 			{
@@ -108,10 +110,10 @@ public class Uninstall extends AbstractCommand
 			{
 				StringBuffer sb = new StringBuffer("More than one version found:");
 				for(int idx = 0; idx < matches.size(); ++idx)
-					sb.append(' ').append(((IFeatureReference)matches.get(idx)).getVersionedIdentifier().getVersion());
+					sb.append(' ').append(matches.get(idx).getVersionedIdentifier().getVersion());
 				throw new SimpleErrorExitException(sb.toString());
 			}
-			IFeature featureToUninstall = ((IFeatureReference)matches.get(0)).getFeature(MonitorUtils.subMonitor(monitor, 1000));
+			IFeature featureToUninstall = matches.get(0).getFeature(MonitorUtils.subMonitor(monitor, 1000));
 			monitor.subTask("Uninstalling " + featureToUninstall.getVersionedIdentifier() + "...");
 
 			if (uninstallSite.isConfigured(featureToUninstall))

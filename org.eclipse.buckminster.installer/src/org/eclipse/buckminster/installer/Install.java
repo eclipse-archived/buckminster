@@ -41,6 +41,7 @@ public class Install extends AbstractCommand
 
 	private String m_feature;
 
+	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		int len = unparsed.length;
@@ -54,6 +55,7 @@ public class Install extends AbstractCommand
 			m_version = unparsed[2];
 	}
 
+	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		if (m_site == null)
@@ -83,7 +85,7 @@ public class Install extends AbstractCommand
 			{
 				if (m_version == null)
 				{
-					if (match == null || VersionedIdentifierComparator.compare(vid, match.getVersionedIdentifier()) > 0)
+					if (match == null || VersionedIdentifierComparator.compareStatic(vid, match.getVersionedIdentifier()) > 0)
 						match = featureRef;
 				}
 				else if (vid.equals(vidToFind))

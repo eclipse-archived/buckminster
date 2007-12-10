@@ -18,7 +18,7 @@ import org.eclipse.update.core.VersionedIdentifier;
  * @author kolwing
  * 
  */
-public class VersionedIdentifierComparator implements Comparator
+public class VersionedIdentifierComparator implements Comparator<VersionedIdentifier>
 {
 	public final static VersionedIdentifierComparator ASCENDING = new VersionedIdentifierComparator(1);
 
@@ -31,17 +31,17 @@ public class VersionedIdentifierComparator implements Comparator
 		m_direction = direction;
 	}
 
-	public int compare(Object vid1, Object vid2)
+	public int compare(VersionedIdentifier vid1, VersionedIdentifier vid2)
 	{
-		return internalCompare((VersionedIdentifier)vid1, (VersionedIdentifier)vid2) * m_direction;
+		return internalCompare(vid1, vid2) * m_direction;
 	}
 
-	public static int compare(VersionedIdentifier vid1, VersionedIdentifier vid2)
+	public static int compareStatic(VersionedIdentifier vid1, VersionedIdentifier vid2)
 	{
 		return internalCompare(vid1, vid2);
 	}
 
-	/** @deprecated */
+	@Deprecated
 	private static int internalCompare(VersionedIdentifier vid1, VersionedIdentifier vid2)
 	{
 		// test the id string first

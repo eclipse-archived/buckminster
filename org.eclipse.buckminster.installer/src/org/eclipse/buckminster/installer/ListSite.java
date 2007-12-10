@@ -20,6 +20,7 @@ import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -39,6 +40,7 @@ public class ListSite extends AbstractCommand
 {
 	private URL m_site;
 
+	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		int len = unparsed.length;
@@ -48,10 +50,11 @@ public class ListSite extends AbstractCommand
 			m_site = Install.normalizeToURL(unparsed[0]);
 	}
 
+	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		VersionedIdentifierComparator vidc = VersionedIdentifierComparator.ASCENDING;
-		SortedMap features = new TreeMap(vidc);
+		SortedMap<VersionedIdentifier,IAdaptable> features = new TreeMap<VersionedIdentifier,IAdaptable>(vidc);
 
 		ILocalSite localSite = null;
 		try
@@ -103,11 +106,11 @@ public class ListSite extends AbstractCommand
 		}
 
 		System.out.println("Features:");
-		Iterator itor = features.entrySet().iterator();
+		Iterator<Map.Entry<VersionedIdentifier,IAdaptable>> itor = features.entrySet().iterator();
 		while(itor.hasNext())
 		{
-			Map.Entry entry = (Map.Entry)itor.next();
-			Object f = entry.getValue();
+			Map.Entry<VersionedIdentifier,IAdaptable> entry = itor.next();
+			IAdaptable f = entry.getValue();
 			System.out.print("  ");
 			System.out.print(entry.getKey());
 			System.out.print(" (");
