@@ -67,6 +67,7 @@ public class ListCommands extends AbstractCommand
 		return new OptionDescriptor[] { HIDDEN_OPT, DISABLED_OPT, STYLE_OPT };
 	}
 
+	@Override
 	protected void handleOption(Option option) throws Exception
 	{
 		if (option.is(HIDDEN_OPT))
@@ -77,6 +78,7 @@ public class ListCommands extends AbstractCommand
 			m_style = parseStyle(option.getValue().toUpperCase());
 	}
 
+	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		CommandInfo[] implementors = CommandInfo.getImplementors();
@@ -109,26 +111,26 @@ public class ListCommands extends AbstractCommand
 	{
 		PrintStream out = System.out;
 		out.println("Available commands by namespace:");
-		SortedMap implementorsByNamespace = this.sortImplementorsByNamespace(implementors);
-		Iterator allInfosItor = implementorsByNamespace.entrySet().iterator();
+		SortedMap<String,List<CommandInfo>> implementorsByNamespace = sortImplementorsByNamespace(implementors);
+		Iterator<Map.Entry<String,List<CommandInfo>>> allInfosItor = implementorsByNamespace.entrySet().iterator();
 		while(allInfosItor.hasNext())
 		{
-			Map.Entry entry = (Map.Entry)allInfosItor.next();
-			List implementorsForNamespace = (List)entry.getValue();
-			Collections.sort(implementorsForNamespace, new Comparator()
+			Map.Entry<String,List<CommandInfo>> entry = allInfosItor.next();
+			List<CommandInfo> implementorsForNamespace = entry.getValue();
+			Collections.sort(implementorsForNamespace, new Comparator<CommandInfo>()
 			{
-				public int compare(Object o1, Object o2)
+				public int compare(CommandInfo o1, CommandInfo o2)
 				{
-					return ((CommandInfo)o1).getName().compareTo(((CommandInfo)o2).getName());
+					return o1.getName().compareTo(o2.getName());
 				}
 			});
 
-			String namespace = (String)entry.getKey();
+			String namespace = entry.getKey();
 			int top = implementorsForNamespace.size();
 			for(int idx = 0; idx < top; ++idx)
 			{
-				CommandInfo ci = (CommandInfo)implementorsForNamespace.get(idx);
-				if (this.shouldShow(ci))
+				CommandInfo ci = implementorsForNamespace.get(idx);
+				if (shouldShow(ci))
 				{
 					if (namespace != null)
 					{
@@ -164,11 +166,11 @@ public class ListCommands extends AbstractCommand
 	{
 		PrintStream out = System.out;
 		out.println("Available commands including aliases:");
-		ArrayList names = new ArrayList();
+		ArrayList<String> names = new ArrayList<String>();
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
 			CommandInfo cmdInfo = implementors[idx];
-			if (this.shouldShow(cmdInfo))
+			if (shouldShow(cmdInfo))
 			{
 				String[] allNames = cmdInfo.getAllNames();
 				for(int i = 0; i < allNames.length; ++i)
@@ -187,11 +189,11 @@ public class ListCommands extends AbstractCommand
 	private void showShort(CommandInfo[] implementors)
 	{
 		PrintStream out = System.out;
-		ArrayList names = new ArrayList();
+		ArrayList<String> names = new ArrayList<String>();
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
 			CommandInfo cmdInfo = implementors[idx];
-			if (this.shouldShow(cmdInfo))
+			if (shouldShow(cmdInfo))
 				names.add(cmdInfo.getFullName());
 		}
 		Collections.sort(names);
@@ -200,17 +202,17 @@ public class ListCommands extends AbstractCommand
 			out.println(names.get(idx));
 	}
 
-	private SortedMap sortImplementorsByNamespace(CommandInfo[] implementors)
+	private SortedMap<String,List<CommandInfo>> sortImplementorsByNamespace(CommandInfo[] implementors)
 	{
-		SortedMap implementorsByNamespace = new TreeMap();
+		SortedMap<String,List<CommandInfo>> implementorsByNamespace = new TreeMap<String,List<CommandInfo>>();
 
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
 			CommandInfo ci = implementors[idx];
 			String namespace = ci.getNamespace();
-			ArrayList ciList = (ArrayList)implementorsByNamespace.get(namespace);
+			List<CommandInfo> ciList = implementorsByNamespace.get(namespace);
 			if (ciList == null)
-				ciList = new ArrayList();
+				ciList = new ArrayList<CommandInfo>();
 			ciList.add(ci);
 			implementorsByNamespace.put(namespace, ciList);
 		}

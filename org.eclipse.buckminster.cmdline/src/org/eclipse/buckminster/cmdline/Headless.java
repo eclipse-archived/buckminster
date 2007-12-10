@@ -56,6 +56,7 @@ public class Headless implements IApplication, OptionValueType
 			return m_name;
 		}
 
+		@Override
 		public String toString()
 		{
 			int nargs = m_args.length;
@@ -99,7 +100,7 @@ public class Headless implements IApplication, OptionValueType
 	//
 	private static final OptionDescriptor FILE = new OptionDescriptor('S', "scriptfile", REQUIRED);
 
-	private final ArrayList m_invocations = new ArrayList();
+	private final ArrayList<Invocation> m_invocations = new ArrayList<Invocation>();
 
 	private boolean m_displayStackTrace = false;
 
@@ -176,7 +177,7 @@ public class Headless implements IApplication, OptionValueType
 		Logger logger = Buckminster.getLogger();
 		for(int idx = 0; idx < top; ++idx)
 		{
-			Invocation invocation = (Invocation)m_invocations.get(idx);
+			Invocation invocation = m_invocations.get(idx);
 			String commandName = invocation.getName();
 			CommandInfo ci = CommandInfo.getCommand(commandName);
 			AbstractCommand cmd = ci.createInstance();
@@ -195,7 +196,7 @@ public class Headless implements IApplication, OptionValueType
 
 	protected void parse(String[] args) throws Exception
 	{
-		ArrayList optionArr = new ArrayList();
+		ArrayList<OptionDescriptor> optionArr = new ArrayList<OptionDescriptor>();
 		optionArr.add(DISPLAY_STACKTRACE);
 		optionArr.add(FILE);
 		optionArr.add(HELP);
@@ -264,11 +265,11 @@ public class Headless implements IApplication, OptionValueType
 					CommandLineParser tokenParser = new CommandLineParser(line);
 					if(tokenParser.hasNext())
 					{
-						String command = (String)tokenParser.next();
-						ArrayList tokens = new ArrayList();
+						String command = tokenParser.next();
+						ArrayList<String> tokens = new ArrayList<String>();
 						while(tokenParser.hasNext())
 							tokens.add(tokenParser.next());
-						m_invocations.add(new Invocation(command, (String[])tokens.toArray(new String[tokens.size()])));
+						m_invocations.add(new Invocation(command, tokens.toArray(new String[tokens.size()])));
 						m_usingScript = true;
 					}
 				}

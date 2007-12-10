@@ -23,7 +23,7 @@ import org.eclipse.buckminster.runtime.Logger;
  * @author Thomas Hallgren
  * @see java.util.Iterator
  */
-public class CommandLineParser implements Iterator
+public class CommandLineParser implements Iterator<String>
 {
 	private final StringBuffer m_innerBld = new StringBuffer();
 	private final StringBuffer m_outerBld = new StringBuffer();
@@ -61,7 +61,7 @@ public class CommandLineParser implements Iterator
 		return m_nextToken != null;
 	}
 
-	public Object next()
+	public String next()
 	{
 		if(!this.hasNext())
 			throw new NoSuchElementException();
@@ -129,14 +129,14 @@ public class CommandLineParser implements Iterator
 				String value = (key.length() > 4 && "env:".equalsIgnoreCase(string.substring(0, 4)))
 					? getenv(key.substring(4))
 					: System.getProperty(key);
-				logger.debug("key '" + key + "' expanded to '" + value + "'");
+				logger.debug("key '%s' expanded to '%s'", key, value);
 				if(value != null)
 					bld.append(value);
 			}
 		}
 	}
 
-	/** @deprecated */
+	@Deprecated
 	private static String getenv(String varName)
 	{
 		try

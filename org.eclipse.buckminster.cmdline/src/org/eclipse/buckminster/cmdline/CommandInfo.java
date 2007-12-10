@@ -49,7 +49,7 @@ public class CommandInfo
 
 	public static CommandInfo getCommand(String commandName) throws UsageException
 	{
-		ArrayList matches = new ArrayList();
+		ArrayList<CommandInfo> matches = new ArrayList<CommandInfo>();
 		CommandInfo[] implementors = CommandInfo.getImplementors();
 		int top = implementors.length;
 		StringBuffer sb = new StringBuffer();
@@ -91,7 +91,7 @@ public class CommandInfo
 			sb.append("':");
 			for(int idx = 0; idx < foundMatches; ++idx)
 			{
-				CommandInfo ci = (CommandInfo)matches.get(idx);
+				CommandInfo ci = matches.get(idx);
 				sb.append(ci.getFullName());
 				sb.append(" (implemented by class: ");
 				sb.append(ci.getImplementingClass());
@@ -102,7 +102,7 @@ public class CommandInfo
 			throw new UsageException(sb.toString());
 		}
 
-		CommandInfo ci = (CommandInfo)matches.get(0);
+		CommandInfo ci = matches.get(0);
 		if(ci.getStatus() == DEPRECATED)
 		{
 			sb.setLength(0);

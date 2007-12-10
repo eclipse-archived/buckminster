@@ -34,6 +34,7 @@ abstract public class AbstractCommand
 	{
 		return new ProgressProvider()
 		{
+			@Override
 			public IProgressMonitor createMonitor(Job job)
 			{
 				return this.getDefaultMonitor();
@@ -63,7 +64,7 @@ abstract public class AbstractCommand
 		m_calledUsingName = calledUsingName;
 		m_cmdInfo = cmdInfo;
 
-		ArrayList optionDescriptors = new ArrayList();
+		ArrayList<OptionDescriptor> optionDescriptors = new ArrayList<OptionDescriptor>();
 		this.getOptionDescriptors(optionDescriptors);
 		if(m_addHelpFlags)
 			optionDescriptors.add(s_helpDescriptor);
@@ -112,7 +113,7 @@ abstract public class AbstractCommand
 		return m_cmdInfo.getFullName();
 	}
 
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 	}
 
@@ -128,7 +129,7 @@ abstract public class AbstractCommand
 
 	protected InputStream getHelpStream() throws Exception
 	{
-		Class myClass = this.getClass();
+		Class<? extends AbstractCommand> myClass = getClass();
 		String helpResource = "/" + myClass.getName().replace('.', '/') + ".help";
 		return myClass.getResourceAsStream(helpResource);
 	}
@@ -161,7 +162,7 @@ abstract public class AbstractCommand
 
 	protected abstract int run(IProgressMonitor monitor) throws Exception;
 
-	private boolean parseOptions(String[] args, List optionDescriptors) throws Exception
+	private boolean parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception
 	{
 		ParseResult pr = ParseResult.parse(args, optionDescriptors);
 		Option[] options = pr.getOptions();

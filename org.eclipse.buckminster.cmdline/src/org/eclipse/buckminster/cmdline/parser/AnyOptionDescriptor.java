@@ -20,6 +20,7 @@ public class AnyOptionDescriptor extends OptionDescriptor
 		super(null, null, OptionValueType.OPTIONAL);
 	}
 
+	@Override
 	public boolean isAcceptableName(String name, boolean isLongName, boolean exact)
 	{
 		// we accept anything!

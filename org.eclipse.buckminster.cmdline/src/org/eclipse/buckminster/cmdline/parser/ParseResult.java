@@ -23,10 +23,10 @@ public class ParseResult
 
 	static private final String DOUBLEDASH = "--";
 
-	static public ParseResult parse(String[] args, List optionDescriptors)
+	static public ParseResult parse(String[] args, List<OptionDescriptor> optionDescriptors)
 		throws NoOptionNameException, AmbiguousOptionException, InvalidOptionException, OptionRequiresValueException
 	{
-		List options = new ArrayList();
+		List<Option> options = new ArrayList<Option>();
 		int max = args.length;
 		int i;
 
@@ -104,7 +104,7 @@ public class ParseResult
 				// thus, if --foo and --foobar are valid options, --foo must
 				// not be seen as an abbrev for --foobar
 				//
-				OptionDescriptor descriptor = (OptionDescriptor)optionDescriptors.get(idx);
+				OptionDescriptor descriptor = optionDescriptors.get(idx);
 				if (descriptor.isAcceptableName(argName, isLongName, true))
 				{
 					descriptorToUse = descriptor;
@@ -164,7 +164,7 @@ public class ParseResult
 		String[] unparsed = new String[max - i];
 		System.arraycopy(args, i, unparsed, 0, unparsed.length);
 
-		return new ParseResult((Option[])options.toArray(new Option[options.size()]), unparsed);
+		return new ParseResult(options.toArray(new Option[options.size()]), unparsed);
 	}
 
 	private final Option[] m_options;
