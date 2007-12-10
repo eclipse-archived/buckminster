@@ -39,7 +39,7 @@ public abstract class AdvancedWizardPage extends WizardPage
 
 	void displayException(Throwable e)
 	{
-		CorePlugin.getLogger().warning(e.getMessage(), e);
+		CorePlugin.getLogger().warning(e, e.getMessage());
 		setErrorMessage(e.getMessage());
 	}
 		
