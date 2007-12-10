@@ -156,7 +156,7 @@ public class PluginImportOperation extends JarImportOperation
 					// TODO: There's a misfit in execution environment. The AdvisorNode should have
 					// a way
 					// to handle this.
-					PDEPlugin.getLogger().info("Execution environment misfit. Skipping plugin " + id);
+					PDEPlugin.getLogger().info("Execution environment misfit. Skipping plugin %s", id);
 					return;
 				}
 			}

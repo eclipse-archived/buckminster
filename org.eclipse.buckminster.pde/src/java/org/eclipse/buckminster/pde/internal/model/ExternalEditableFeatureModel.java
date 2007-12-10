@@ -119,7 +119,7 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 		}
 		catch(FileNotFoundException e)
 		{
-			PDEPlugin.getLogger().error("Unable to save feature model", e);
+			PDEPlugin.getLogger().error(e, "Unable to save feature model");
 		}
 	}
 
@@ -133,7 +133,7 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 		}
 		catch(UnsupportedEncodingException e)
 		{
-			PDEPlugin.getLogger().error("UTF-8 is not supported", e);
+			PDEPlugin.getLogger().error(e, "UTF-8 is not supported");
 			throw new RuntimeException(e);
 		}
 		finally
