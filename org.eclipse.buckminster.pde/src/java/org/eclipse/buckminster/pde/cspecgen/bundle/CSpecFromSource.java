@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.jdt.internal.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -39,6 +40,7 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
@@ -136,12 +138,8 @@ public class CSpecFromSource extends CSpecGenerator
 		{
 			classPath = null;
 		}
-
 		if(classPath == null)
-			//
-			// Not much of a build unless we have a classpath.
-			//
-			return;
+			classPath = new IClasspathEntry[0];
 
 		fullClean.addLocalPrerequisite(generateRemoveDirAction("build", OUTPUT_DIR, false));
 		fullClean.addLocalPrerequisite(cspec.addInternalAction(ATTRIBUTE_ECLIPSE_CLEAN, false));
@@ -376,11 +374,23 @@ public class CSpecFromSource extends CSpecGenerator
 				jarContents.addLocalPrerequisite(product);
 		}
 
-		ActionBuilder buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_BUNDLE_JAR, true);
-
-		buildPlugin.addLocalPrerequisite(manifest.getName(), ALIAS_MANIFEST);
-		buildPlugin.addLocalPrerequisite(jarContents.getName(), ALIAS_REQUIREMENTS);
-
+		ActionBuilder buildPlugin;
+		String jarName = m_plugin.getId() + '_' + m_plugin.getVersion() + ".jar";
+		if(IReaderType.LOCAL.equals(getReader().getReaderType().getId()) && getReader().exists(jarName, new NullProgressMonitor()))
+		{
+			buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
+			buildPlugin.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+			ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false,
+					ATTRIBUTE_JAVA_BINARIES, null);
+			importedJar.addPath(Path.fromPortableString(jarName));
+			buildPlugin.getPrerequisitesBuilder().addLocalPrerequisite(importedJar);
+		}
+		else
+		{
+			buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_BUNDLE_JAR, true);
+			buildPlugin.addLocalPrerequisite(manifest.getName(), ALIAS_MANIFEST);
+			buildPlugin.addLocalPrerequisite(jarContents.getName(), ALIAS_REQUIREMENTS);
+		}
 		buildPlugin.setProductAlias(ALIAS_OUTPUT);
 		buildPlugin.setProductBase(OUTPUT_DIR_JAR);
 		buildPlugin.setUpToDatePolicy(UpToDatePolicy.COUNT);

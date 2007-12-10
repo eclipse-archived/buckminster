@@ -190,36 +190,55 @@ public class CSpecFromBinary extends CSpecGenerator
 				setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
 			}
 
+			String jarName = buildArtifactName(true);
+			boolean isImportedBundle = false;
+
+			ArtifactBuilder bundleClasspath = null;
 			if(bundleClassPath == null)
 				classpath.addSelfRequirement();
 			else
 			{
 				// Create an artifact that contains all entries listed in the classpath
 				//
-				ArtifactBuilder bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false,
+				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false,
 					ATTRIBUTE_JAVA_BINARIES, null);
 				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ",");
 				while(tokens.hasMoreTokens())
 				{
 					String token = tokens.nextToken().trim();
+					if(token.equals(jarName))
+						isImportedBundle = true;
 					bundleClasspath.addPath(new Path(token));
 				}
-
 				classpath.addLocalPrerequisite(bundleClasspath);
 			}
 
-			// In order to create a jar of the unpackedPlugin, we need a temporary directory
-			// since this artifact is not a workspace artifact
-			//
-			String jarName = buildArtifactName(true);
-			ActionBuilder bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_ZIP, true);
-
+			ActionBuilder bundleExport;
+			if(!isImportedBundle)
+			{
+				// In order to create a jar of the unpackedPlugin, we need a temporary directory
+				// since this artifact is not a workspace artifact
+				//
+				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_ZIP, true);	
+				bundleExport.addProductPath(Path.fromPortableString(jarName));
+				bundleExport.getPrerequisitesBuilder().addSelfRequirement();
+			}
+			else
+			{
+				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
+				if(bundleClasspath.getPaths().size() == 1)
+					bundleExport.getPrerequisitesBuilder().addLocalPrerequisite(bundleClasspath);
+				else
+				{
+					ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false,
+							ATTRIBUTE_JAVA_BINARIES, null);
+					importedJar.addPath(Path.fromPortableString(jarName));
+					bundleExport.getPrerequisitesBuilder().addLocalPrerequisite(importedJar);
+				}
+			}
 			bundleExport.setProductAlias(ALIAS_OUTPUT);
 			bundleExport.setProductBase(OUTPUT_DIR);
-			bundleExport.addProductPath(Path.fromPortableString(jarName));
-
 			bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-			bundleExport.getPrerequisitesBuilder().addSelfRequirement();
 			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 		}
 		monitor.done();
