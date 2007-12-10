@@ -13,7 +13,6 @@ public class BillOfMaterialsTest extends AbstractMnBTestCase
 	public void testBOM() throws Exception
 	{
 		BillOfMaterials bom = m_bom;
-		bom.store();
 		
 		// Create an exported graph, i.e. a graph that does not rely
 		// on the meta-data storage.

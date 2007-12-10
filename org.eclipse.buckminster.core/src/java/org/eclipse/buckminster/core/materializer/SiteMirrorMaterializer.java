@@ -8,28 +8,12 @@
 package org.eclipse.buckminster.core.materializer;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.metadata.model.Materialization;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
@@ -42,7 +26,7 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class SiteMirrorMaterializer extends AbstractMaterializer
+public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 {
 	@Override
 	public String getMaterializerRootDir()
@@ -50,194 +34,31 @@ public class SiteMirrorMaterializer extends AbstractMaterializer
 		return "siteMirrors";
 	}
 
-	@SuppressWarnings("serial")
-	private static class FeaturesPerSite extends ArrayList<ISiteFeatureReference>
-	{
-		private final HashSet<Resolution> m_includedRes = new HashSet<Resolution>();
-
-		private final ISite m_site;
-
-		FeaturesPerSite(ISite site)
-		{
-			m_site = site;
-		}
-
-		ISite getSite()
-		{
-			return m_site;
-		}
-
-		ISiteFeatureReference[] getFeatureRefs()
-		{
-			return toArray(new ISiteFeatureReference[size()]);
-		}
-
-		Resolution[] getResolutions()
-		{
-			return m_includedRes.toArray(new Resolution[m_includedRes.size()]);
-		}
-
-		void add(Resolution res) throws CoreException
-		{
-			if(!m_includedRes.contains(res))
-			{
-				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site, res.getComponentIdentifier());
-
-				// Get the site reference from the site. It might not exist since we only see
-				// the features that are listed in the site.xml
-				// TODO: Improve this to really check that the feature is there.
-				//
-				if(v != null)
-					super.add(v);
-				m_includedRes.add(res);
-			}
-		}
-	}
-
-	public static final Object MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
+	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
 
 	@Override
-	public boolean canWorkInParallel()
+	protected ISite getDestinationSite(RMContext context, File destination, IProgressMonitor monitor) throws CoreException
 	{
-		return false;
-	}
-
-	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
+		MirrorSiteFactory factory = new MirrorSiteFactory();
+		MirrorSite mirrorSite;
 		try
 		{
-			Map<IPath, Map<String, FeaturesPerSite>> sites = new HashMap<IPath, Map<String, FeaturesPerSite>>();
-
-			IProgressMonitor siteCollectorMon = MonitorUtils.subMonitor(monitor, 50);
-			siteCollectorMon.beginTask(null, resolutions.size() * 100);
-			try
-			{
-				collectSites(context, resolutions, sites, siteCollectorMon);
-			}
-			finally
-			{
-				siteCollectorMon.done();
-			}
-			mirrorAndExpose(context, context.get(MIRROR_SITE_URL_PROPERTY), sites,
-					MonitorUtils.subMonitor(monitor, 50));
-
-			// Not supposed to be further perused
-			//
-			return Collections.emptyList();
+			mirrorSite = (MirrorSite)factory.createSite(destination);
 		}
-		finally
+		catch(InvalidSiteTypeException e)
 		{
-			monitor.done();
+			throw BuckminsterException.wrap(e);
 		}
+		mirrorSite.setIgnoreNonPresentPlugins(context.isContinueOnError());
+		MonitorUtils.complete(monitor);
+		return mirrorSite;
 	}
 
-	private static void mirrorAndExpose(final RMContext context, String mirrorSiteURL,
-			Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
+	@Override
+	protected void installFeatures(RMContext context, ISite destinationSite, ISite fromSite,
+			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException
 	{
-		int count = 0;
-		for (IPath path : sites.keySet())
-			count += sites.get(path).size();
-		
-		monitor.beginTask(null, 100 + count * 100);
-		try
-		{
-			for (IPath path : sites.keySet())
-			{
-				Collection<FeaturesPerSite> sitesAndFeatures = sites.get(path).values();
-				File mirrorSiteFile = path.toFile();
-
-				MirrorSiteFactory factory = new MirrorSiteFactory();
-				MirrorSite mirrorSite;
-				try
-				{
-					mirrorSite = (MirrorSite)factory.createSite(mirrorSiteFile);
-					MonitorUtils.worked(monitor, 100);
-				}
-				catch(InvalidSiteTypeException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-				mirrorSite.setIgnoreNonPresentPlugins(context.isContinueOnError());
-				for(FeaturesPerSite fps : sitesAndFeatures)
-				{
-					final Resolution first = fps.getResolutions()[0];
-					ILogListener listener = new ILogListener()
-					{
-						public void logging(IStatus status, String plugin)
-						{
-							switch(status.getSeverity())
-							{
-							case IStatus.WARNING:
-							case IStatus.ERROR:
-								Platform.removeLogListener(this);
-								context.addException(first.getRequest(), status);
-								Platform.addLogListener(this);
-							}
-						}	
-					};
-					Platform.addLogListener(listener);
-
-					try
-					{
-						context.addException(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "Start mirroring"));
-						mirrorSite.mirrorAndExpose(fps.getSite(), fps.getFeatureRefs(), null, mirrorSiteURL);
-						MonitorUtils.worked(monitor, 100);
-					}
-					catch(CoreException e)
-					{
-						if(!context.isContinueOnError())
-							throw e;
-						context.addException(first.getRequest(), e.getStatus());
-					}
-					finally
-					{
-						context.addException(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "End mirroring"));
-						Platform.removeLogListener(listener);
-					}
-				}
-			}
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
-	private static void collectSites(MaterializationContext context, List<Resolution> resolutions,
-			Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
-	{
-		for(Resolution resolution : resolutions)
-		{
-			try
-			{
-				SiteFeatureReaderType.checkComponentType(resolution.getProvider());
-			}
-			catch(CoreException e)
-			{
-				// Ignore this node, i.e. don't consider it to be a site.feature
-				// We are interested of its children anyway.
-				//
-				MonitorUtils.worked(monitor, 100);
-				continue;
-			}
-
-			IPath installLocation = context.getInstallLocation(resolution);
-			String siteURL = resolution.getRepository();
-			Map<String, FeaturesPerSite> sitesInLocation = sites.get(installLocation);
-			if(sitesInLocation == null)
-			{
-				sitesInLocation = new HashMap<String, FeaturesPerSite>();
-				sites.put(installLocation, sitesInLocation);
-			}
-			FeaturesPerSite fps = sitesInLocation.get(siteURL);
-			if(fps == null)
-			{
-				fps = new FeaturesPerSite(SiteFeatureReaderType.getSite(siteURL, MonitorUtils.subMonitor(monitor, 100)));
-				sitesInLocation.put(siteURL, fps);
-			}
-			fps.add(resolution);
-		}
+		((MirrorSite)destinationSite).mirrorAndExpose(fromSite, features, null, context.get(MIRROR_SITE_URL_PROPERTY));
+		MonitorUtils.complete(monitor);
 	}
 }

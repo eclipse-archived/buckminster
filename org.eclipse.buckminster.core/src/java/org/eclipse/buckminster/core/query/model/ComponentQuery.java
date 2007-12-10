@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
@@ -347,7 +348,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return node == null ? null : node.getVersionOverride();
 	}
 
-	public boolean isPersisted() throws CoreException
+	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
 		return false;
 	}
@@ -358,7 +359,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return node == null ? false : node.isPrune();
 	}
 
-	public void remove() throws CoreException
+	public void remove(StorageManager sm) throws CoreException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -374,7 +375,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return node == null ? false : node.skipComponent();
 	}
 
-	public void store() throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -413,27 +414,27 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		handler.endPrefixMapping(BM_CQUERY_PREFIX);
 	}
 
-	public boolean useExistingProject(ComponentName cName)
+	public boolean useWorkspace(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.useProject();
+		return node == null ? true : node.isUseWorkspace();
 	}
-	
-	public boolean useInstalledComponent(ComponentName cName)
+
+	public boolean useTargetPlatform(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.useInstalled();
+		return node == null ? true : node.isUseTargetPlatform();
 	}
 
 	public boolean useMaterialization(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.useMaterialization();
+		return node == null ? true : node.isUseMaterialization();
 	}
 
 	public boolean useResolutionService(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.useRemoteResolution();
+		return node == null ? true : node.isUseRemoteResolution();
 	}
 }

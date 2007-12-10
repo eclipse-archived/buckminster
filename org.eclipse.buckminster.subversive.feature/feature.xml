@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.subversive.feature"
       label="Buckminster - Subversive support (Incubation)"
-      version="0.2.0.qualifier"
+      version="0.3.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.subversive">
 
@@ -11,7 +11,7 @@
    </description>
 
    <copyright url="http://www.example.com/copyright">
-      Copyright (c) 2006-2007, Cloudsmith Inc.
+      Copyright (c) 2006-2008, Cloudsmith Inc.
 The code, documentation and other materials contained herein have been
 licensed under the Eclipse Public License - v 1.0 by the copyright holder
 listed above, as the Initial Contributor under such license. The text of

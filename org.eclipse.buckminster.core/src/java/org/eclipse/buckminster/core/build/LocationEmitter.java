@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
@@ -48,8 +48,8 @@ public class LocationEmitter extends PropertiesEmitter
 	@Override
 	protected void addFormatters()
 	{
-		this.addFormat(ARG_FORMAT_LOCATION, FORMAT_LOCATION);
-		this.addFormat(ARG_FORMAT_ARTIFACTS, FORMAT_LOCATION_ARTIFACT);
+		addFormat(ARG_FORMAT_LOCATION, FORMAT_LOCATION);
+		addFormat(ARG_FORMAT_ARTIFACTS, FORMAT_LOCATION_ARTIFACT);
 	}
 
 	@Override
@@ -58,10 +58,10 @@ public class LocationEmitter extends PropertiesEmitter
 		try
 		{
 			IModelCache cache = new ModelCache();
-			CSpec cspec = WorkspaceInfo.getCSpec(this.getProject());
-			String attr = this.getArgument(ARG_PURPOSE);
+			CSpec cspec = WorkspaceInfo.getCSpec(getProject());
+			String attr = getArgument(ARG_PURPOSE);
 			Set<String> attrs = attr == null ? Collections.<String>emptySet() : Collections.singleton(attr);
-			this.appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
+			appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
 		}
 		catch(MissingComponentException e)
 		{
@@ -79,8 +79,8 @@ public class LocationEmitter extends PropertiesEmitter
 		String componentName = cspec.getName();
 		if(location.toFile().isFile())
 		{
-			this.addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, this.formatPath(location.removeLastSegments(1)) );
-			this.addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment());
+			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location.removeLastSegments(1)) );
+			addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment());
 		}
 		else
 		{
@@ -92,17 +92,15 @@ public class LocationEmitter extends PropertiesEmitter
 				//
 				IPath dfltOutput = getDefaultOutputFolder(project);
 				if(dfltOutput != null)
-					this.addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput.toOSString());
+					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput.toOSString());
 			}
-			this.addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, this.formatPath(location) );
+			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location) );
 		}
 
 		// Emit properties of all dependencies
 		//
-		boolean prune = !attributes.isEmpty();
-		Attribute[] attrs = prune ? cspec.getAttributes(attributes) : null;
-
-		for(QualifiedDependency dep : cspec.getQualifiedDependencies(attrs, prune))
+		cspec = cspec.prune(RMContext.getGlobalPropertyAdditions(), false, attributes);
+		for(QualifiedDependency dep : cspec.getQualifiedDependencies(false))
 		{
 			CSpec childSpec = cache.findCSpec(cspec, dep.getRequest());
 			appendComponentProperties(childSpec, dep.getAttributeNames(), cache, seenIds);

@@ -1,55 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.update" componentType="buckminster" version="0.2.0.qualifier" versionType="OSGi">
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.update" componentType="buckminster" version="0.3.0.qualifier" versionType="OSGi">
     <cs:dependencies>
-        <cs:dependency name="org.eclipse.buckminster.core.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.cvs.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.cvs.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.maven.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.p4.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.p4.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.pde.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.svn.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.svn.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="0.2.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.core.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.cvs.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.cvs.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.maven.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.p4.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.p4.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.pde.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.svn.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.svn.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
     </cs:dependencies>
     <cs:artifacts>
+        <cs:private name="headless-site.template" path="headless-site.xml"/>
         <cs:private name="root.artifacts">
-        	<cs:path path="build.properties"/>
-        	<cs:path path="COPYRIGHT"/>
-        	<cs:path path="epl-v10.html"/>
-        	<cs:path path="site.properties"/>
+            <cs:path path="epl-v10.html"/>
+            <cs:path path="COPYRIGHT"/>
+            <cs:path path="build.properties"/>
+            <cs:path path="site.properties"/>
         </cs:private>
         <cs:private name="site.template" path="site.xml"/>
-        <cs:private name="headless-site.template" path="headless-site.xml"/>
     </cs:artifacts>
     <cs:actions>
-        <cs:public name="build.site.xml" actor="ant">
-            <cs:actorProperties>
-                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
-                <cs:property key="targets" value="create.site.xml"/>
-            </cs:actorProperties>
-            <cs:prerequisites>
-            	<cs:attribute name="site.features" alias="features"/>
-            	<cs:attribute name="site.template" alias="template"/>
-            </cs:prerequisites>
-            <cs:products alias="action.output" base="generated">
-            	<cs:path path="site.xml"/>
-            </cs:products>
-        </cs:public>
         <cs:public name="build.headless-site.xml" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFileId" value="buckminster.pdetasks"/>
                 <cs:property key="targets" value="create.site.xml"/>
             </cs:actorProperties>
             <cs:prerequisites>
-            	<cs:attribute name="headless.category" alias="features"/>
-            	<cs:attribute name="headless-site.template" alias="template"/>
+                <cs:attribute name="headless-site.template" alias="template"/>
+                <cs:attribute name="headless.category" alias="features"/>
             </cs:prerequisites>
-            <cs:products alias="action.output" base="generated">
-            	<cs:path path="headless-site.xml"/>
+            <cs:products alias="action.output" base="generated/">
+                <cs:path path="headless-site.xml"/>
             </cs:products>
         </cs:public>
         <cs:public name="build.site" actor="ant">
@@ -58,73 +45,80 @@
                 <cs:property key="targets" value="create.complex.site"/>
             </cs:actorProperties>
             <cs:properties>
-            	<cs:property key="site.name" value="buckminster.archivedsite"/>
-            	<cs:property key="site.extra.suffix" value="_incubation"/>
+                <cs:property key="site.extra.suffix" value="_incubation"/>
+                <cs:property key="site.name" value="buckminster.archivedsite"/>
             </cs:properties>
             <cs:prerequisites>
-            	<cs:attribute name="site.rootFiles" alias="rootFiles"/>
-            	<cs:attribute name="site.template" alias="template"/>
-            	<cs:attribute name="feature.jars" alias="features"/>
-            	<cs:attribute name="bundle.jars" alias="plugins" includePattern=".*\.buckminster\..*"/>
+                <cs:attribute name="site.rootFiles" alias="rootFiles"/>
+                <cs:attribute name="site.template" alias="template"/>
+                <cs:attribute name="feature.jars" alias="features"/>
+                <cs:attribute name="bundle.jars" alias="plugins" includePattern=".*\.buckminster\..*"/>
             </cs:prerequisites>
-            <cs:products alias="action.output" base="site" upToDatePolicy="COUNT" fileCount="1"/>
+            <cs:products alias="action.output" base="site/" fileCount="1" upToDatePolicy="COUNT"/>
+        </cs:public>
+        <cs:public name="build.site.xml" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
+                <cs:property key="targets" value="create.site.xml"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="site.features" alias="features"/>
+                <cs:attribute name="site.template" alias="template"/>
+            </cs:prerequisites>
+            <cs:products alias="action.output" base="generated/">
+                <cs:path path="site.xml"/>
+            </cs:products>
         </cs:public>
     </cs:actions>
     <cs:groups>
-        <cs:public name="site.features">
-            <cs:attribute name="core.category"/>
-            <cs:attribute name="optional.category"/>
+        <cs:public name="bundle.jars">
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.core.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.cvs.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.maven.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.p4.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.pde.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.svn.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.core.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.cvs.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.p4.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.svn.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
         </cs:public>
-
-        <cs:public name="site.rootFiles">
-            <cs:attribute name="root.artifacts"/>
-            <cs:attribute name="build.site.xml"/>
-            <cs:attribute name="build.headless-site.xml"/>
+        <cs:public name="core.category">
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.core.feature"/>
         </cs:public>
-
         <cs:public name="feature.jars">
             <cs:attribute name="core.category"/>
             <cs:attribute name="optional.category"/>
             <cs:attribute name="headless.category"/>
         </cs:public>
-
-        <cs:public name="core.category">
-            <cs:attribute component="org.eclipse.buckminster.core.feature" name="feature.jars"/>
-        </cs:public>
-
-        <cs:public name="optional.category">
-            <cs:attribute component="org.eclipse.buckminster.cvs.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.maven.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.p4.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.pde.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.svn.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.subversive.feature" name="feature.jars"/>
-        </cs:public>
-
         <cs:public name="headless.category">
-            <cs:attribute component="org.eclipse.buckminster.core.headless.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.cvs.headless.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.maven.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.p4.headless.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.pde.headless.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.svn.headless.feature" name="feature.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.subversive.headless.feature" name="feature.jars"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.core.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.cvs.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.maven.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.p4.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.svn.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
         </cs:public>
-
-        <cs:public name="bundle.jars">
-            <cs:attribute component="org.eclipse.buckminster.core.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.cvs.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.maven.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.p4.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.pde.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.svn.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.subversive.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.core.headless.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.cvs.headless.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.p4.headless.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.pde.headless.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.svn.headless.feature" name="bundle.jars"/>
-            <cs:attribute component="org.eclipse.buckminster.subversive.headless.feature" name="bundle.jars"/>
+        <cs:public name="optional.category">
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.cvs.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.maven.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.p4.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.pde.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.svn.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subversive.feature"/>
+        </cs:public>
+        <cs:public name="site.features">
+            <cs:attribute name="core.category"/>
+            <cs:attribute name="optional.category"/>
+        </cs:public>
+        <cs:public name="site.rootFiles">
+            <cs:attribute name="root.artifacts"/>
+            <cs:attribute name="build.site.xml"/>
+            <cs:attribute name="build.headless-site.xml"/>
         </cs:public>
     </cs:groups>
 </cs:cspec>

@@ -13,8 +13,10 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -46,13 +48,15 @@ public class StorageManager
 
 	private final ISaxableStorage<CSpec> m_cspecs;
 
+	private final ISaxableStorage<WorkspaceBinding> m_wsBindings;
+
 	private final ISaxableStorage<Resolution> m_resolutions;
 
 	private final ISaxableStorage<Provider> m_providers;
 
 	private final ISaxableStorage<Materialization> m_materializations;
 
-	public StorageManager(File baseLocation) throws CoreException, SAXException
+	public StorageManager(File baseLocation) throws CoreException
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
 		IParserFactory pf = plugin.getParserFactory();
@@ -60,17 +64,27 @@ public class StorageManager
 		// NOTE: The order in which these entries are created and cleared
 		// in case of changes is important. It is in depencency order.
 		//
-		m_providers = new FileStorage<Provider>(new File(baseLocation, Provider.TAG),
-			pf.getProviderParser(false), Provider.class, Provider.SEQUENCE_NUMBER);
-
-		m_cspecs = new FileStorage<CSpec>(new File(baseLocation, CSpec.TAG), pf.getCSpecParser(false),
-			CSpec.class, CSpec.SEQUENCE_NUMBER);
-
-		m_resolutions = new FileStorage<Resolution>(new File(baseLocation, Resolution.TAG),
-			pf.getResolutionParser(), Resolution.class, Resolution.SEQUENCE_NUMBER);
-
-		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
-			pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
+		try
+		{
+			m_providers = new FileStorage<Provider>(new File(baseLocation, Provider.TAG),
+				pf.getProviderParser(false), Provider.class, Provider.SEQUENCE_NUMBER);
+	
+			m_cspecs = new FileStorage<CSpec>(new File(baseLocation, CSpec.TAG), pf.getCSpecParser(false),
+				CSpec.class, CSpec.SEQUENCE_NUMBER);
+	
+			m_resolutions = new FileStorage<Resolution>(new File(baseLocation, Resolution.TAG),
+				pf.getResolutionParser(), Resolution.class, Resolution.SEQUENCE_NUMBER);
+	
+			m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
+				pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
+	
+			m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
+				pf.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
+		}
+		catch(SAXException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	public static StorageManager getDefault()
@@ -100,6 +114,12 @@ public class StorageManager
 	{
 		initialize();
 		return m_providers;
+	}
+
+	public synchronized ISaxableStorage<WorkspaceBinding> getWorkspaceBindings() throws CoreException
+	{
+		initialize();
+		return m_wsBindings;
 	}
 
 	class MetadataRefreshJob extends Job
@@ -140,8 +160,10 @@ public class StorageManager
 		if(!m_initialized)
 		{
 			if(m_materializations.sequenceChanged()
-				|| m_resolutions.sequenceChanged() || m_cspecs.sequenceChanged()
-				|| m_providers.sequenceChanged())
+				|| m_resolutions.sequenceChanged()
+				|| m_cspecs.sequenceChanged()
+				|| m_providers.sequenceChanged()
+				|| m_wsBindings.sequenceChanged())
 			{
 				MetadataRefreshJob refreshJob = new MetadataRefreshJob();
 				refreshJob.schedule();

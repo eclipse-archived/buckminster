@@ -9,9 +9,10 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -28,6 +29,7 @@ import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
+import org.osgi.framework.Filter;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecGenerator
@@ -81,13 +83,10 @@ public class CSpecFromSource extends CSpecGenerator
 
 	private final IFeature m_feature;
 
-	private final ICatalogReader m_reader;
-
 	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature,
 			Map<String, String> buildProperties)
 	{
-		super(cspecBuilder);
-		m_reader = reader;
+		super(cspecBuilder, reader);
 		m_feature = feature;
 		m_buildProperties = buildProperties;
 	}
@@ -99,6 +98,11 @@ public class CSpecFromSource extends CSpecGenerator
 		cspec.setName(m_feature.getId());
 		cspec.setVersion(m_feature.getVersion(), VersionFactory.OSGiType.getId());
 		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
+		cspec.setFilter(FilterUtils.createFilter(
+			m_feature.getOS(),
+			m_feature.getWS(),
+			m_feature.getArch(),
+			m_feature.getNL()));
 
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
@@ -191,7 +195,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(features == null || features.length == 0)
 			return;
 
-		ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
+		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder featureRefs = cspec.getRequiredGroup(ATTRIBUTE_FEATURE_REFS);
@@ -199,7 +203,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder productRootFiles = cspec.getRequiredGroup(PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
 		{
-			ComponentRequest dep = createComponentRequest(feature);
+			Dependency dep = createDependency(feature);
 			if(query.skipComponent(dep))
 				continue;
 
@@ -220,7 +224,7 @@ public class CSpecFromSource extends CSpecGenerator
 		String os = TargetPlatform.getOS();
 		String ws = TargetPlatform.getWS();
 		String arch = TargetPlatform.getOSArch();
-		ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
+		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
@@ -236,7 +240,7 @@ public class CSpecFromSource extends CSpecGenerator
 				if(manager.findEntry(plugin.getId()) == null)
 					continue;
 
-			ComponentRequest dep = createComponentRequest(plugin);
+			Dependency dep = createDependency(plugin);
 			if(query.skipComponent(dep))
 				continue;
 
@@ -246,15 +250,17 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 	}
 
-	ComponentRequest createComponentRequest(IFeatureChild feature) throws CoreException
+	Dependency createDependency(IFeatureChild feature) throws CoreException
 	{
-		return createComponentRequest(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), feature
-				.getMatch());
+		Filter filter = FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
+		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), feature
+				.getMatch(), filter);
 	}
 
-	ComponentRequest createComponentRequest(IFeaturePlugin pluginReference) throws CoreException
+	Dependency createDependency(IFeaturePlugin plugin) throws CoreException
 	{
-		return createComponentRequest(pluginReference.getId(), IComponentType.OSGI_BUNDLE, pluginReference.getVersion());
+		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
+		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), filter);
 	}
 
 	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException

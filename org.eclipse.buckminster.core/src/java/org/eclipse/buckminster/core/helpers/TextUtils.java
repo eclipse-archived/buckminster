@@ -334,4 +334,24 @@ public class TextUtils
 			bld.add(tokens.nextToken());
 		return bld.toArray(new String[bld.size()]);
 	}
+
+	public static String[] splitAndTrim(String str, String delim)
+	{
+		ArrayList<String> bld = null;
+		if(str != null)
+		{
+			StringTokenizer tokens = new StringTokenizer(str, delim);
+			while(tokens.hasMoreTokens())
+			{
+				String token = tokens.nextToken().trim();
+				if(token.length() > 0)
+				{
+					if(bld == null)
+						bld = new ArrayList<String>();
+					bld.add(token);
+				}
+			}
+		}
+		return bld == null ? Trivial.EMPTY_STRING_ARRAY : bld.toArray(new String[bld.size()]);
+	}
 }

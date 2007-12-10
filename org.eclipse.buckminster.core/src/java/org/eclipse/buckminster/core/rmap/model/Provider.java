@@ -24,7 +24,6 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
@@ -333,24 +332,23 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		return m_mutable;
 	}
 
-	public boolean isPersisted() throws CoreException
+	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
-		return getStorage().contains(this);
+		return sm.getProviders().contains(this);
 	}
 
-	public void remove() throws CoreException
+	public void remove(StorageManager sm) throws CoreException
 	{
 		UUID thisId = getId();
-		StorageManager sm = StorageManager.getDefault();
 		if(!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty())
 			throw new ReferentialIntegrityException(this, "remove", "Referenced from Resolution");
 
-		getStorage().removeElement(thisId);
+		sm.getProviders().removeElement(thisId);
 	}
 
-	public void store() throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
-		getStorage().putElement(this);
+		sm.getProviders().putElement(this);
 	}
 
 	public void toSax(ContentHandler handler) throws SAXException
@@ -398,10 +396,5 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		m_uri.toSax(handler, namespace, prefix, TAG_URI);
 		if(m_versionConverter != null)
 			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
-	}
-
-	private ISaxableStorage<Provider> getStorage() throws CoreException
-	{
-		return StorageManager.getDefault().getProviders();
 	}
 }

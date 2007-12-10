@@ -39,7 +39,7 @@ public abstract class Matcher implements ISaxableElement
 
 	public final boolean matches(String componentName)
 	{
-		return m_pattern.matcher(componentName).matches();
+		return m_pattern.matcher(componentName).find();
 	}
 
 	public final ResourceMap getOwner()

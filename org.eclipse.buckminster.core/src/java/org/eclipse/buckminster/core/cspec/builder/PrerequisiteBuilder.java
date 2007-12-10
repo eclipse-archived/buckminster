@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.cspec.builder;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 
 /**
@@ -73,9 +74,11 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		return m_includePattern;
 	}
 
-	public void initFrom(Prerequisite prerequisite)
+	@Override
+	public void initFrom(NamedElement namedElem)
 	{
-		super.initFrom(prerequisite);
+		super.initFrom(namedElem);
+		Prerequisite prerequisite = (Prerequisite)namedElem;
 		m_alias = prerequisite.getAlias();
 		m_component = prerequisite.getComponentName();
 		m_optional = prerequisite.isOptional();

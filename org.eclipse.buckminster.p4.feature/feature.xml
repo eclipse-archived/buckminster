@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.p4.feature"
       label="Buckminster - Perforce support (Incubation)"
-      version="0.2.0.qualifier"
+      version="0.3.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.p4.ui">
 
@@ -11,7 +11,7 @@
    </description>
 
    <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
-      (c) 2004-2005
+      (c) 2004-2008
 Thomas Hallgren, Kenneth Olwing, Mitch Sonies
 Pontus Rydin, Nils Unden, Peer Torngren
 The code, documentation and other materials contained herein

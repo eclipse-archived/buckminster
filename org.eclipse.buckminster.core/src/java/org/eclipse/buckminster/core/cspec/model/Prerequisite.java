@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -64,7 +65,7 @@ public class Prerequisite extends NamedElement implements ISaxableElement, IAttr
 
 	public final String getAttribute()
 	{
-		return this.getName();
+		return getName();
 	}
 
 	public final String getComponentName()
@@ -89,7 +90,7 @@ public class Prerequisite extends NamedElement implements ISaxableElement, IAttr
 
 	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException
 	{
-		return ownerCSpec.getReferencedAttribute(m_componentName, this.getName(), ctx);
+		return ownerCSpec.getReferencedAttribute(m_componentName, getName(), ctx);
 	}
 
 	public boolean isContributor()
@@ -102,7 +103,7 @@ public class Prerequisite extends NamedElement implements ISaxableElement, IAttr
 		return m_componentName != null;
 	}
 
-	public boolean isFilter()
+	public boolean isPatternFilter()
 	{
 		return m_excludePattern != null || m_includePattern != null;
 	}
@@ -145,13 +146,25 @@ public class Prerequisite extends NamedElement implements ISaxableElement, IAttr
 		return m_optional;
 	}
 
+	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException
+	{
+		if(isExternal())
+		{
+			// Omit if the dependency is filtered out
+			//
+			Dependency dep = cspec.getDependency(getComponentName());
+			return FilterUtils.isMatch(dep.getFilter(), cache.getProperties());
+		}
+		return cspec.getAttribute(getAttribute()).isEnabled(cache);
+	}
+
 	@Override
 	public final String toString()
 	{
 		if(m_componentName == null)
-			return this.getName();
+			return getName();
 
-		return m_componentName + '#' + this.getAttribute();
+		return m_componentName + '#' + getAttribute();
 	}
 
 	@Override

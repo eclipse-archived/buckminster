@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.svn.feature"
       label="Buckminster - Subclipse support (Incubation)"
-      version="0.2.0.qualifier"
+      version="0.3.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.svn">
 
@@ -11,7 +11,7 @@
    </description>
 
    <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
-      (c) 2004-2005
+      (c) 2004-2008
 Thomas Hallgren, Kenneth Olwing, Mitch Sonies
 Pontus Rydin, Nils Unden, Peer Torngren
 The code, documentation and other materials contained herein

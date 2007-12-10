@@ -59,6 +59,7 @@ public class MainResolver implements IResolver
 		if(bom.isFullyResolved())
 			return bom;
 
+		m_context.addTagInfo(bom.getRequest(), bom.getQuery().getTagInfo());
 		IResolverFactory[] resolverFactories = ResolverFactoryMaintainer.getInstance().getActiveResolverFactories();
 		int numFactories = resolverFactories.length;
 		if(numFactories == 1)
@@ -115,7 +116,10 @@ public class MainResolver implements IResolver
 			{
 				IStatus status = m_context.getStatus();
 				if(status.getSeverity() == IStatus.ERROR)
+				{
+					m_context.clearStatus();
 					throw new CoreException(status);
+				}
 			}
 			return bom;
 		}

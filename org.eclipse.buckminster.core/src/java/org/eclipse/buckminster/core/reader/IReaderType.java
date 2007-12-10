@@ -106,7 +106,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 *            The monitor used for progress reporting
 	 * @param monitor
 	 */
-	void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
+	void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
 			throws CoreException;
 
 	/**
@@ -118,6 +118,12 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @return The fixed location or <code>null</code> if not applicable.
 	 */
 	IPath getFixedLocation(Resolution cr) throws CoreException;
+
+	/**
+	 * Returns the materializer that this reader type recommends for materializing
+	 * @return A recommended reader type
+	 */
+	String getRecommendedMaterializer();
 
 	/**
 	 * Returns a reader that is maps to the corresponding component info and query

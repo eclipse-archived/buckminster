@@ -54,7 +54,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 
 	public void testResolutionPriority() throws Exception
 	{
-		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "[0.1.0,0.2.0)") ;
+		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "[0.1.0,0.3.0)") ;
 		ComponentRequest request = new ComponentRequest("org.eclipse.buckminster.cmdline", IComponentType.OSGI_BUNDLE, designator);
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
@@ -63,7 +63,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
 		node.setNamePattern(Pattern.compile("buckminster"));
-		node.setUseInstalled(false);
+		node.setUseTargetPlatform(false);
 
 		// Look first at main, then at branch 3.2.x and finally at Europa_GA
 		//
@@ -89,7 +89,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
 		node.setNamePattern(Pattern.compile("buckminster"));
-		node.setUseInstalled(false);
+		node.setUseTargetPlatform(false);
 
 		// Look at branch 3.2.x, tag Europa_GA, and finally in the trunk (main)
 		//
@@ -118,7 +118,7 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 		//
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
 		node.setNamePattern(Pattern.compile("subversion"));
-		node.setUseInstalled(false);
+		node.setUseTargetPlatform(false);
 		node.setBranchTagPath(VersionSelector.fromPath("1.2.x"));
 		node.setRevision(3191);
 		queryBld.addAdvisorNode(node);

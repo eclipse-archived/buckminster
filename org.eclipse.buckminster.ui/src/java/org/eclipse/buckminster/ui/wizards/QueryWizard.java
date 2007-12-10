@@ -10,8 +10,10 @@
 
 package org.eclipse.buckminster.ui.wizards;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
@@ -58,7 +60,6 @@ public class QueryWizard extends Wizard implements INewWizard
 	{
 		m_context = context;
 		m_mspec = new MaterializationSpecBuilder();
-		m_mspec.setMaterializer(IMaterializer.WORKSPACE);
 		if(bom != null)
 		{
 			try
@@ -98,7 +99,7 @@ public class QueryWizard extends Wizard implements INewWizard
 	public MaterializationContext getMaterializationContext()
 	{
 		if(m_materializationContext == null)
-			m_materializationContext = new MaterializationContext(getBOM(), m_mspec.createMaterializationSpec(), m_context);
+			m_materializationContext = new MaterializationContext(getBOM(), m_mspec.createMaterializationSpec(), getContext());
 		return m_materializationContext;
 	}
 
@@ -121,9 +122,13 @@ public class QueryWizard extends Wizard implements INewWizard
 		catch(Exception e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			CorePlugin.getLogger().error(String.format("%s: %s", t.getClass(), t.getMessage()), t);
-			((WizardPage)getContainer().getCurrentPage()).setErrorMessage(BuckminsterException.wrap(t)
-					.getMessage());
+			ByteArrayOutputStream bld = new ByteArrayOutputStream();
+			PrintStream p = new PrintStream(bld);
+			BuckminsterException.deeplyPrint(t, p, false);
+			p.flush();
+			String msg = new String(bld.toByteArray());
+			CorePlugin.getLogger().error(msg, t);
+			((WizardPage)getContainer().getCurrentPage()).setErrorMessage(msg);
 		}
 		return false;
 	}
@@ -160,13 +165,13 @@ public class QueryWizard extends Wizard implements INewWizard
 	void setBOM(BillOfMaterials bom) throws CoreException
 	{
 		m_bom = bom;
-		m_context = new ResolutionContext(bom.getQuery());
+		if(m_context == null)
+			m_context = new ResolutionContext(bom.getQuery());
 		m_mspec.setName(bom.getViewName());
 	}
 
 	public void resetBOM()
 	{
 		m_bom = null;
-		m_context = null;
 	}
 }

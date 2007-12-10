@@ -46,6 +46,7 @@
  <extension-point id="qualifierGenerators" name="%QualifierGenerators" schema="schema/qualifierGenerators.exsd"/>
  <extension-point id="expanders" name="Expanders" schema="schema/expanders.exsd"/>
  <extension-point id="decompressors" name="Decompressors" schema="schema/decompressors.exsd"/>
+ <extension-point id="targetPlatformProviders" name="%TargetPlatformProviders" schema="schema/targetPlatformProviders.exsd"/>
 	<!-- Declare known versionTypes -->
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType
@@ -307,6 +308,10 @@
     <materializer
           class="org.eclipse.buckminster.core.materializer.SiteMirrorMaterializer"
           id="site.mirror"/>
+    <materializer
+          class="org.eclipse.buckminster.core.materializer.TargetPlatformMaterializer"
+          id="targetPlatform">
+    </materializer>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.qualifierGenerators">
@@ -332,5 +337,12 @@
           class="org.eclipse.buckminster.core.materializer.GZIPDecompressor"
           suffixes=".gz">
     </decompressor>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.targetPlatformProviders">
+    <targetPlatform
+          class="org.eclipse.buckminster.core.TargetPlatform"
+          priority="0">
+    </targetPlatform>
  </extension>
 </plugin>

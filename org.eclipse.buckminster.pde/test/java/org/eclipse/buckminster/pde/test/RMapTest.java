@@ -40,7 +40,7 @@ public class RMapTest extends PDETestCase
 
 		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
 		nodeBld.setNamePattern(Pattern.compile("org\\.eclipse"));
-		nodeBld.setUseInstalled(false);
+		nodeBld.setUseTargetPlatform(false);
 		queryBld.addAdvisorNode(nodeBld);
 		ComponentQuery query = queryBld.createComponentQuery();
 

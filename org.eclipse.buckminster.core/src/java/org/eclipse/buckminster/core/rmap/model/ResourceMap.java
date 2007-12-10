@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -163,10 +164,22 @@ public class ResourceMap implements ISaxable, ISaxableElement
 					Resolution resolution = node.getResolution();
 					MonitorUtils.testCancelStatus(monitor);
 
+					CSpec cspec = resolution.getCSpec();
+
+					// Check that the cspec isn't rejected due to filtering
+					//
+					if(!FilterUtils.isMatch(cspec.getFilter(), query.getProperties()))
+					{
+						String msg = String.format("Provider %s(%s): CSPEC rejected: filter %s does not match current environment",
+								provider.getReaderTypeId(), providerMatch.getRepositoryURI(), cspec.getFilter());
+							noGoodList.add(providerMatch.getOriginalProvider());
+							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+							continue;
+					}
+
 					// Assert that the cspec can handle required actions and
 					// exports
 					//
-					CSpec cspec = resolution.getCSpec();
 					IVersion version = cspec.getVersion();
 					IVersionDesignator versionDesignator = query.getVersionDesignator();
 					if(versionDesignator != null && provider.getVersionConverterDesc() == null)

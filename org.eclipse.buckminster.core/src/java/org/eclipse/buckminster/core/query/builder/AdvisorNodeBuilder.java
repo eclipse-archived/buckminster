@@ -60,13 +60,13 @@ public class AdvisorNodeBuilder
 
 	private Date m_timestamp;
 
-	private boolean m_useInstalled;
+	private boolean m_useTargetPlatform;
 
 	private boolean m_useMaterialization;
 
-	private boolean m_useProject;
+	private boolean m_useWorkspace;
 
-	private boolean m_useResolutionScheme;
+	private boolean m_useRemoteResolution;
 
 	private IVersionDesignator m_versionOverride;
 
@@ -103,11 +103,11 @@ public class AdvisorNodeBuilder
 		m_skipComponent = false;
 		m_allowCircularDependency = false;
 		m_sourceLevel = SourceLevel.INDIFFERENT;
-		m_useInstalled = true;
+		m_useTargetPlatform = true;
 		m_useMaterialization = true;
-		m_useProject = true;
+		m_useWorkspace = true;
 		m_versionOverride = null;
-		m_useResolutionScheme = true;
+		m_useRemoteResolution = true;
 		m_systemDiscovery = true;
 		m_branchTagPath = VersionSelector.EMPTY_PATH;
 		m_spacePath = Trivial.EMPTY_STRING_ARRAY;
@@ -215,11 +215,11 @@ public class AdvisorNodeBuilder
 		m_prune = node.isPrune();
 		m_skipComponent = node.skipComponent();
 		m_sourceLevel = node.getSourceLevel();
-		m_useInstalled = node.isUseInstalled();
 		m_useMaterialization = node.isUseMaterialization();
-		m_useProject = node.isUseProject();
+		m_useRemoteResolution = node.isUseRemoteResolution();
+		m_useTargetPlatform = node.isUseTargetPlatform();
+		m_useWorkspace = node.isUseWorkspace();
 		m_versionOverride = node.getVersionOverride();
-		m_useResolutionScheme = node.useRemoteResolution();
 		m_systemDiscovery = node.isSystemDiscovery();
 		m_branchTagPath = node.getBranchTagPath();
 		m_spacePath = node.getResolutionPath();
@@ -238,24 +238,24 @@ public class AdvisorNodeBuilder
 		return m_systemDiscovery;
 	}
 
-	public boolean isUseInstalled()
-	{
-		return m_useInstalled;
-	}
-
 	public boolean isUseMaterialization()
 	{
 		return m_useMaterialization;
 	}
 
-	public boolean isUseProject()
+	public boolean isUseRemoteResolution()
 	{
-		return m_useProject;
+		return m_useRemoteResolution;
 	}
 
-	public boolean isUseResolutionScheme()
+	public boolean isUseTargetPlatform()
 	{
-		return m_useResolutionScheme;
+		return m_useTargetPlatform;
+	}
+
+	public boolean isUseWorkspace()
+	{
+		return m_useWorkspace;
 	}
 
 	public void setAllowCircularDependency(boolean allowCircularDependency)
@@ -337,24 +337,24 @@ public class AdvisorNodeBuilder
 		m_timestamp = timestamp;
 	}
 
-	public void setUseInstalled(boolean useInstalled)
-	{
-		m_useInstalled = useInstalled;
-	}
-
 	public void setUseMaterialization(boolean useMaterialization)
 	{
 		m_useMaterialization = useMaterialization;
 	}
 
-	public void setUseProject(boolean useProject)
+	public void setUseRemoteResolution(boolean useRemoteResolution)
 	{
-		m_useProject = useProject;
+		m_useRemoteResolution = useRemoteResolution;
 	}
 
-	public void setUseResolutionScheme(boolean useResolutionScheme)
+	public void setUseTargetPlatform(boolean useInstalled)
 	{
-		m_useResolutionScheme = useResolutionScheme;
+		m_useTargetPlatform = useInstalled;
+	}
+
+	public void setUseWorkspace(boolean useProject)
+	{
+		m_useWorkspace = useProject;
 	}
 
 	public void setVersionOverride(IVersionDesignator versionOverride)
@@ -365,20 +365,5 @@ public class AdvisorNodeBuilder
 	public boolean skipComponent()
 	{
 		return m_skipComponent;
-	}
-
-	public boolean useInstalled()
-	{
-		return m_useInstalled;
-	}
-
-	public boolean useMaterialization()
-	{
-		return m_useMaterialization;
-	}
-
-	public boolean useProject()
-	{
-		return m_useProject;
 	}
 }

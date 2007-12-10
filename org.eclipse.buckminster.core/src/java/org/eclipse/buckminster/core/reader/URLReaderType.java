@@ -49,9 +49,10 @@ public class URLReaderType extends AbstractReaderType
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
 	{
 		String urlString = url.toString();
-		ComponentRequest rq = new ComponentRequest(urlString, null, null);
+		ComponentRequest rq = new ComponentRequest(urlString, null, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
+		queryBld.setPlatformAgnostic(true);
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 		NodeQuery nq = new NodeQuery(context, rq, null);
 

@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -56,6 +57,7 @@ public class ImportBundle
 		//
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest(m_bundleName, IComponentType.OSGI_BUNDLE, null));
+		queryBld.setPlatformAgnostic(true);
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 
 		// Create the provider that will perform the import.
@@ -83,11 +85,12 @@ public class ImportBundle
 
 			// Fetch the cspec from the materialized component (it's changed)
 			//
+			StorageManager sm = StorageManager.getDefault();
 			CSpec cspec = LocalResolver.fromPath(m_outputDir, m_bundleName);
 			Resolution newRes = new Resolution(cspec, node.getResolution());
-			newRes.store();
+			newRes.store(sm);
 			Materialization mat = new Materialization(m_outputDir, cspec.getComponentIdentifier());
-			mat.store();
+			mat.store(sm);
 		}
 		finally
 		{

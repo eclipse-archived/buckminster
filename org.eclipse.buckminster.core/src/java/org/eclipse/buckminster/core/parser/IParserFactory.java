@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -124,6 +125,16 @@ public interface IParserFactory
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<Provider> getProviderParser(boolean validating)
+	throws SAXException;
+
+	/**
+	 * Creates a SAX parser that can parse a WorkspaceBinding.
+	 * @param validating <code>true</code> if a validating parser is desired
+	 * @return a IProvider parser.
+	 * @throws SAXException if the Java Runtime cannot support
+	 * SAX parsers due to configuration problems.
+	 */
+	IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating)
 	throws SAXException;
 }
 

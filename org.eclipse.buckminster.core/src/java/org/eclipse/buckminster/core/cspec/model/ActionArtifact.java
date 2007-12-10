@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,22 +41,21 @@ public class ActionArtifact extends Artifact
 	}
 
 	@Override
-	public boolean isEnabled(IModelCache ctx)
+	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		try
-		{
-			return this.getAction().isEnabled(ctx);
-		}
-		catch(MissingAttributeException e)
-		{
-			return false;
-		}
+		return getAction().isEnabled(ctx);
 	}
 
 	@Override
 	public boolean isProducedByActions(IModelCache ctx)
 	{
 		return true;
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createActionArtifactBuilder();
 	}
 
 	@Override

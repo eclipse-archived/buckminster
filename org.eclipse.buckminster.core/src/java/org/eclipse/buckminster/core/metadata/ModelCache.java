@@ -13,7 +13,6 @@ import java.util.Map;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.ObtainedDependency;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.core.runtime.CoreException;
 
@@ -53,10 +52,7 @@ public class ModelCache implements IModelCache
 
 		if(cspec == null)
 		{
-			if(request instanceof ObtainedDependency)
-				cspec = ((ObtainedDependency)request).resolveCSpec(ownerCSpec, this);
-			else
-				cspec = WorkspaceInfo.getResolution(request, false).getCSpec();
+			cspec = WorkspaceInfo.getResolution(request, false).getCSpec();
 			m_cspecCache.put(request, cspec);
 		}
 		return cspec;

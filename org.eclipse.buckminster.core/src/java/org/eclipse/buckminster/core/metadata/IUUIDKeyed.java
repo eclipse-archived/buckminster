@@ -38,13 +38,13 @@ public interface IUUIDKeyed
 	 * Returns true if this element has been persisted.
 	 * @throws CoreException
 	 */
-	boolean isPersisted() throws CoreException;
+	boolean isPersisted(StorageManager sm) throws CoreException;
 
 	/**
 	 * Remove this instance from persistent storage. Referential integrity
 	 * is maintained.
 	 */
-	void remove() throws CoreException;
+	void remove(StorageManager sm) throws CoreException;
 
 	/**
 	 * Used by the persistent store when it knows the id and image of an element
@@ -57,5 +57,5 @@ public interface IUUIDKeyed
 	 * Make sure this instance is stored
 	 * @throws CoreException
 	 */
-	void store() throws CoreException;
+	void store(StorageManager sm) throws CoreException;
 }

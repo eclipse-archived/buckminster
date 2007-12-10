@@ -47,18 +47,19 @@ public class MaterializationContext extends RMContext
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
 
-	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec, RMContext context)
+	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec)
 	{
-		super(context == null ? mspec.getProperties() : new MapUnion<String, String>(mspec.getProperties(), context));
+		super(mspec.getProperties());
 		m_bom = bom;
 		m_materializationSpec = mspec;
-		if(context != null)
-		{
-			getUserCache().putAll(context.getUserCache());
-			getTagInfos().putAll(context.getTagInfos());
-		}
-		else
-			addTagInfosFromBom();
+		addTagInfosFromBom();
+	}
+
+	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec, RMContext context)
+	{
+		super(new MapUnion<String, String>(mspec.getProperties(), context), context);
+		m_bom = bom;
+		m_materializationSpec = mspec;
 	}
 
 	public BillOfMaterials getBillOfMaterials()
@@ -362,7 +363,7 @@ public class MaterializationContext extends RMContext
 	{
 		IPath location = m_materializationSpec.getInstallLocation();
 		if(location == null)
-			location = m_materializationSpec.getMaterializer(resolution.getComponentIdentifier()).getDefaultInstallRoot(this, resolution);
+			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
 		return location;
 	}
 

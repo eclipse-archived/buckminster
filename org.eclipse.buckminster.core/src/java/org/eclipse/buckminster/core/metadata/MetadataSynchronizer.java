@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -201,11 +202,11 @@ public class MetadataSynchronizer implements IResourceChangeListener
 									Resolution res = WorkspaceInfo.getResolution(mat.getComponentIdentifier());
 									try
 									{
-										res.remove();
+										res.remove(sm);
 									}
 									catch(ReferentialIntegrityException e)
 									{}
-									mat.remove();
+									mat.remove(sm);
 								}
 								break;
 							}
@@ -381,23 +382,25 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 			queryBld.setRootRequest(request);
+			queryBld.setPlatformAgnostic(true);
 			ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 			Resolution res = LocalResolver.fromPath(context.getRootNodeQuery(), project.getLocation(), oldInfo);
 			if(!res.equals(oldInfo))
 			{
-				res.store();
+				StorageManager sm = StorageManager.getDefault();
+				res.store(sm);
 
 				ComponentIdentifier ci = res.getComponentIdentifier();
 				Materialization mat = new Materialization(location.addTrailingSeparator(), ci);
-				mat.store();
+				mat.store(sm);
 				WorkspaceInfo.setComponentIdentifier(project, ci);
 
 				if(oldInfo != null)
 				{
 					try
 					{
-						oldInfo.remove();
-						oldInfo.getCSpec().remove();
+						oldInfo.remove(sm);
+						oldInfo.getCSpec().remove(sm);
 					}
 					catch(ReferentialIntegrityException e)
 					{
@@ -416,7 +419,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 	private void updateProjectReferences(IProject project, CSpec cspec, IProgressMonitor monitor) throws CoreException
 	{
-		Collection<ComponentRequest> crefs = cspec.getDependencies().values();
+		Collection<Dependency> crefs = cspec.getDependencies().values();
 		if(crefs.size() == 0)
 		{
 			// No use continuing. Project doesn't have any references.
@@ -436,7 +439,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 50 + crefs.size() * 10);
 		ArrayList<IProject> refdProjs = null;
-		for(ComponentRequest cref : crefs)
+		for(Dependency cref : crefs)
 		{
 			for(IResource resource : WorkspaceInfo.getResources(cref))
 			{

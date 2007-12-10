@@ -78,7 +78,7 @@ public class Import extends WorkspaceInitCommand
 					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
 					mspec = mspecBuilder.createMaterializationSpec();
 				}
-				MaterializationContext matCtx = new MaterializationContext(bom, mspec, null);
+				MaterializationContext matCtx = new MaterializationContext(bom, mspec);
 				matCtx.setContinueOnError(continueOnError);
 				MaterializationJob.run(matCtx, true);
 				if(matCtx.emitWarningAndErrorTags())

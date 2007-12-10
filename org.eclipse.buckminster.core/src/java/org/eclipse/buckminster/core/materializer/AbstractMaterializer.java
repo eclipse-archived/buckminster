@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
@@ -51,8 +52,9 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		monitor.beginTask(null, bom.uniqueNodeCount() * 100);
 		try
 		{
+			Resolution resolution = bom.getResolution();
 			MaterializationSpec mspec = context.getMaterializationSpec();
-			IMaterializer materializer = mspec.getMaterializer(bom.getRequest());
+			IMaterializer materializer = mspec.getMaterializer(resolution);
 			Set<Resolution> perused = new LinkedHashSet<Resolution>();
 			materializer.installRecursive(bom, context, new HashSet<String>(), perused, monitor);
 			IStatus status = context.getStatus();
@@ -147,8 +149,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				// The local reader might create resolutions that are not materialized and
 				// hence not stored so we must make sure it's stored here.
 				//
-				resolution.store();
-
+				resolution.store(StorageManager.getDefault());
 				performInstallAction(resolution, context, MonitorUtils.subMonitor(monitor, 100));
 			}
 		}
@@ -164,12 +165,12 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 	private void delegateAndInstallRecursive(DepNode node, MaterializationContext context,
 			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{
-		String materializerId = context.getMaterializationSpec().getMaterializerID(node.getRequest());
+		String materializerId = context.getMaterializationSpec().getMaterializerID(node.getResolution());
 		IMaterializer materializer = materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(materializerId);
 		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
 	}
 
-	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor)
+	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		CSpec cspec = generatorNode.getDeclaringCSpec();
 		try
@@ -181,6 +182,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 		catch(CoreException e)
 		{
+			if(!context.isContinueOnError())
+				throw e;
 			context.addException(generatorNode.getRequest(), e.getStatus());
 		}
 	}

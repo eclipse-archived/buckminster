@@ -12,15 +12,19 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
@@ -52,7 +56,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	}
 
 	@Override
-	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
+	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		try
 		{
@@ -63,32 +67,77 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				return;
 			}
 
-			monitor.beginTask(null, 200);
-			try
+			IPath wsRoot = wb.getWorkspaceRoot();
+			if(wsRoot.toFile().equals(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile()))
+				installLocal(wb, context, monitor);
+			else
 			{
-				monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
-				wb = performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 100));
-
-				Materialization mat = wb.getMaterialization();
-				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
-				IPath wsRelativePath = wb.getWorkspaceRelativePath();
-				if(wsRelativePath.segmentCount() == 1)
-					createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
-				else
-					createExternalBinding(wsRelativePath, mat, subMonitor);
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				monitor.done();
+				// Don't install in this workspace. Instead store it for later installation
+				// in the appointed workspace
+				//
+				ExternalDataArea dataArea = new ExternalDataArea(wsRoot, context.getMaterializationSpec().getConflictResolution(resolution.getComponentIdentifier()));
+				StorageManager sm = new StorageManager(dataArea.getStateLocation(CorePlugin.getID()).toFile());
+				wb.store(sm);
+				storeBelow(resolution, context.getBillOfMaterials(), sm, false);
 			}
 		}
 		catch(CoreException e)
 		{
+			if(!context.isContinueOnError())
+				throw e;
 			context.addException(resolution.getRequest(), e.getStatus());
+		}
+	}
+
+	private static void storeBelow(Resolution resolution, DepNode node, StorageManager sm, boolean isBelow) throws CoreException
+	{
+		Resolution nodeRes = node.getResolution();
+		if(nodeRes == null)
+			return;
+
+		if(!isBelow)
+			isBelow = nodeRes.equals(resolution);
+
+		if(isBelow)
+		{
+			// Store the resolution unless it stems from the current target platform
+			//
+			String readerType = resolution.getProvider().getReaderTypeId();
+			if(!IReaderType.ECLIPSE_PLATFORM.equals(readerType))
+				resolution.store(sm);
+		}
+
+		for(DepNode child : node.getChildren())
+			storeBelow(resolution, child, sm, isBelow);
+	}
+
+	public void installLocal(WorkspaceBinding wb, RMContext context, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 200);
+		try
+		{
+			StorageManager sm = StorageManager.getDefault();
+			monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
+
+			Materialization mat = wb.getMaterialization();
+			mat.store(sm);
+			MonitorUtils.worked(monitor, 10);
+
+			wb = performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 95));
+			IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 95);
+			IPath wsRelativePath = wb.getWorkspaceRelativePath();
+			if(wsRelativePath.segmentCount() == 1)
+				createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
+			else
+				createExternalBinding(wsRelativePath, mat, subMonitor);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			monitor.done();
 		}
 	}
 
@@ -137,7 +186,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			if(matLoc.hasTrailingSeparator())
 				wsRelativePath.addTrailingSeparator();
 		}
-		return new WorkspaceBinding(context.getWorkspaceLocation(resolution), wsRelativePath, mat);
+		return new WorkspaceBinding(matLoc, mat.getComponentIdentifier(), context.getWorkspaceLocation(resolution), wsRelativePath, context.getBindingProperties());
 	}
 
 	private void createExternalBinding(IPath wsRelativePath, Materialization mat, IProgressMonitor monitor)
@@ -252,7 +301,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private void createProjectBinding(String projName, Materialization mat, MaterializationContext context,
+	private void createProjectBinding(String projName, Materialization mat, RMContext context,
 			IProgressMonitor monitor) throws CoreException, IOException
 	{
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -354,9 +403,10 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		return mspec.getProjectName(resolution.getRequest());
 	}
 
-	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, MaterializationContext context,
+	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, RMContext context,
 			IProgressMonitor monitor) throws CoreException
 	{
+		StorageManager sm = StorageManager.getDefault();
 		Materialization mat = wb.getMaterialization();
 		Resolution resolution = mat.getResolution();
 		CSpec cspec = resolution.getCSpec();
@@ -382,14 +432,16 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 			cspec = LocalResolver.fromPath(productPath, resolution.getName());
 			resolution = new Resolution(cspec, resolution);
-			resolution.store();
+			resolution.store(sm);
 			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), cspec
 					.getComponentIdentifier());
-			newMat.store();
-			return new WorkspaceBinding(wb.getWorkspaceRoot(), new Path(bindingName), newMat);
+			newMat.store(sm);
+			return new WorkspaceBinding(newMat.getComponentLocation(), newMat.getComponentIdentifier(), wb.getWorkspaceRoot(), new Path(bindingName), null);
 		}
 		catch(CoreException e)
 		{
+			if(!context.isContinueOnError())
+				throw e;
 			context.addException(resolution.getRequest(), e.getStatus());
 			return wb;
 		}

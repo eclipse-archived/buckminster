@@ -87,25 +87,12 @@ public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppe
 	}
 
 	@Override
-	IUUIDKeyed getWrapped(UUID id) throws SAXException
+	public IUUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		IDWrapper wrapper = m_wrapperMap.get(id);
 		if(wrapper == null)
 			throw new SAXParseException("id " + id + " appoints a non existing wrapper", getDocumentLocator());
 		return wrapper.getWrapped();
-	}
-
-	@Override
-	DepNode getDepNode(UUID nodeId) throws SAXException
-	{
-		try
-		{
-			return (DepNode)getWrapped(nodeId);
-		}
-		catch(ClassCastException e)
-		{
-			throw new SAXParseException("wrapper " + nodeId + " does not wrap a node", getDocumentLocator());
-		}
 	}
 
 	ComponentQuery getQuery(UUID queryId) throws SAXException
@@ -123,6 +110,6 @@ public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppe
 	@Override
 	DepNode getDepNode() throws SAXException
 	{
-		return new BillOfMaterials(getDepNode(m_topNodeId), getQuery(m_queryId), m_timestamp);
+		return new BillOfMaterials((DepNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
 	}
 }

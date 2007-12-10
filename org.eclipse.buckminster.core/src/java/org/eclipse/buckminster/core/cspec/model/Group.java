@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.cspec.PathGroup;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
@@ -144,21 +146,19 @@ public class Group extends Attribute
 	}
 
 	@Override
-	public boolean isEnabled(IModelCache ctx)
+	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		try
-		{
-			CSpec cspec = getCSpec();
-			int idx = m_prerequisites.size();
-			while(--idx >= 0)
-				if(!m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx).isEnabled(ctx))
-					return false;
-			return true;
-		}
-		catch(CoreException e)
-		{
+		if(!super.isEnabled(ctx))
 			return false;
-		}
+
+		// Return true if at least one of the prerequisites is enabled
+		//
+		CSpec cspec = getCSpec();
+		int idx = m_prerequisites.size();
+		while(--idx >= 0)
+			if(m_prerequisites.get(idx).isEnabled(ctx, cspec))
+				return true;
+		return false;
 	}
 
 	@Override
@@ -179,6 +179,12 @@ public class Group extends Attribute
 		IPath prereqsRebase = getPrerequisiteRebase();
 		if(prereqsRebase != null)
 			Utils.addAttribute(attrs, ATTR_REBASE, prereqsRebase.toPortableString());
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createGroupBuilder();
 	}
 
 	@Override
@@ -205,11 +211,11 @@ public class Group extends Attribute
 		ArrayList<PathGroup> bld = new ArrayList<PathGroup>();
 		for(Prerequisite pr : getPrerequisites(filters))
 		{
-			if(!pr.isContributor())
+			if(!pr.isContributor() || !pr.isEnabled(ctx, cspec))
 				continue;
 
 			PathGroup[] pathGroups;
-			if(pr.isFilter())
+			if(pr.isPatternFilter())
 			{
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();

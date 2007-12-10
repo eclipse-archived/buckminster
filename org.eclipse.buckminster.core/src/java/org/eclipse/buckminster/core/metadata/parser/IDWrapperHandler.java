@@ -11,11 +11,11 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryHandler;
 import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
+import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
@@ -39,7 +39,7 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 	private UUID m_id;
 	private IDWrapper m_wrapper;
 
-	public IDWrapperHandler(BillOfMaterialsHandler parent)
+	public IDWrapperHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}
@@ -101,12 +101,7 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 
 	IUUIDKeyed getWrapped(UUID id) throws SAXException
 	{
-		return ((BillOfMaterialsHandler)getParentHandler()).getWrapped(id);
-	}
-
-	DepNode getDepNode(UUID id) throws SAXException
-	{
-		return ((BillOfMaterialsHandler)getParentHandler()).getDepNode(id);
+		return ((IWrapperParent)getParentHandler()).getWrapped(id);
 	}
 }
 

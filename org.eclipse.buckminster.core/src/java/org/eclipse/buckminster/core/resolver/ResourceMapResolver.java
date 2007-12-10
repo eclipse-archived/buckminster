@@ -406,7 +406,10 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			}
 
 			if(status.getSeverity() == IStatus.ERROR && !context.isContinueOnError())
+			{
+				context.clearStatus();
 				throw new CoreException(status);
+			}
 		}
 		finally
 		{

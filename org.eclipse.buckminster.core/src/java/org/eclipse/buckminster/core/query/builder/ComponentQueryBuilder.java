@@ -13,8 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -144,6 +146,29 @@ public class ComponentQueryBuilder
 	public void setDocumentation(Documentation documentation)
 	{
 		m_documentation = documentation;
+	}
+
+	public void setPlatformAgnostic(boolean flag)
+	{
+		if(flag == false)
+		{
+			if(m_properties == null)
+				return;
+			m_properties.remove(TargetPlatform.TARGET_OS);
+			m_properties.remove(TargetPlatform.TARGET_WS);
+			m_properties.remove(TargetPlatform.TARGET_ARCH);
+			m_properties.remove(TargetPlatform.TARGET_NL);
+			if(m_properties.size() == 0)
+				m_properties = null;
+		}
+		else
+		{
+			Map<String,String> props = getProperties();
+			props.put(TargetPlatform.TARGET_OS, FilterUtils.MATCH_ALL);
+			props.put(TargetPlatform.TARGET_WS, FilterUtils.MATCH_ALL);
+			props.put(TargetPlatform.TARGET_ARCH, FilterUtils.MATCH_ALL);
+			props.put(TargetPlatform.TARGET_NL, FilterUtils.MATCH_ALL);
+		}
 	}
 
 	public final void setPropertiesURL(URL propertiesURL)

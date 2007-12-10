@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
@@ -155,20 +156,20 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return null;
 	}
 
-	public IMaterializer getMaterializer(ComponentName cName) throws CoreException
+	public IMaterializer getMaterializer(Resolution resolution) throws CoreException
 	{
-		return CorePlugin.getDefault().getMaterializer(getMaterializerID(cName));
+		return CorePlugin.getDefault().getMaterializer(getMaterializerID(resolution));
 	}
 
-	public String getMaterializerID(ComponentName cName)
+	public String getMaterializerID(Resolution resolution) throws CoreException
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		MaterializationNode node = getMatchingNode(resolution.getComponentIdentifier());
 		String materializer = (node == null) ? null : node.getMaterializerID();
 		if(materializer == null)
 		{
 			materializer = getMaterializerID();
 			if(materializer == null)
-				materializer = IMaterializer.FILE_SYSTEM;
+				materializer = resolution.getProvider().getReaderType().getRecommendedMaterializer();
 		}
 		return materializer;
 	}

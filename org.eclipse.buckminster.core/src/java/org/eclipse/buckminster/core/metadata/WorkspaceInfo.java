@@ -391,7 +391,7 @@ public class WorkspaceInfo
 			{
 				if(!mat.getComponentLocation().toFile().exists())
 				{
-					mat.remove();
+					mat.remove(StorageManager.getDefault());
 					mat = null;
 				}
 				return mat;
@@ -607,6 +607,7 @@ public class WorkspaceInfo
 	{
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
 		qbld.setRootRequest(request);
+		qbld.setPlatformAgnostic(true);
 
 		// Add an advisor node that matches the request and prohibits that we
 		// do something using an existing materialization or something external.
@@ -614,10 +615,10 @@ public class WorkspaceInfo
 		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
 		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$"));
 		nodeBld.setComponentTypeID(request.getComponentTypeID());
-		nodeBld.setUseInstalled(true);
-		nodeBld.setUseProject(true);
+		nodeBld.setUseTargetPlatform(true);
+		nodeBld.setUseWorkspace(true);
 		nodeBld.setUseMaterialization(false);
-		nodeBld.setUseResolutionScheme(false);
+		nodeBld.setUseRemoteResolution(false);
 		qbld.addAdvisorNode(nodeBld);
 
 		// Add an advisor node that matches all remaining components and prohibits that we
@@ -625,10 +626,10 @@ public class WorkspaceInfo
 		//
 		nodeBld = new AdvisorNodeBuilder();
 		nodeBld.setNamePattern(Pattern.compile(".*"));
-		nodeBld.setUseInstalled(true);
-		nodeBld.setUseProject(true);
+		nodeBld.setUseTargetPlatform(true);
+		nodeBld.setUseWorkspace(true);
 		nodeBld.setUseMaterialization(true);
-		nodeBld.setUseResolutionScheme(false);
+		nodeBld.setUseRemoteResolution(false);
 		qbld.addAdvisorNode(nodeBld);
 
 		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));
@@ -645,9 +646,10 @@ public class WorkspaceInfo
 
 	public static void validateMaterializations() throws CoreException
 	{
+		StorageManager sm = StorageManager.getDefault();
 		for(Materialization mt : StorageManager.getDefault().getMaterializations().getElements())
 			if(!mt.getComponentLocation().toFile().exists())
-				mt.remove();
+				mt.remove(sm);
 	}
 
 	private static IProject extractProject(IResource[] resources)

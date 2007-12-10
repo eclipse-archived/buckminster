@@ -16,11 +16,9 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.ObtainedDependency;
 import org.eclipse.buckminster.core.metadata.parser.ElementRefHandler;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
@@ -60,9 +58,8 @@ public class ResolvedNode extends DepNode
 	{
 		m_resolution = resolution;
 
-		CSpec cspec = resolution.getCSpec();
-		Attribute[] attributes = query.getAttributes(cspec);
-		List<QualifiedDependency> qDeps = cspec.getQualifiedDependencies(attributes, query.isPrune());
+		CSpec cspec = resolution.getCSpec().prune(query.getProperties(), query.isPrune(), resolution.getQualifiedDependency().getAttributeNames());
+		List<QualifiedDependency> qDeps = cspec.getQualifiedDependencies(query.isPrune());
 		int nDeps = qDeps.size();
 		if(nDeps == 0)
 			m_children = Collections.emptyList();
@@ -73,16 +70,17 @@ public class ResolvedNode extends DepNode
 			for(QualifiedDependency qDep : qDeps)
 			{
 				ComponentRequest request = qDep.getRequest();
-				if(request instanceof ObtainedDependency)
-					//
-					// Implicitly obtained from another dependency. Don't
-					// include it here.
-					//
-					continue;
-
 				AdvisorNode override = cquery.getMatchingNode(request);
 				if(override != null)
+				{
 					qDep = qDep.applyAdvice(override);
+					if(qDep == null)
+						//
+						// We don't want anything at all from this component. All attributes
+						// were pruned
+						//
+						continue;
+				}
 				UnresolvedNode node = new UnresolvedNode(qDep);
 				children.add(node);
 			}

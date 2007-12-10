@@ -54,11 +54,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	public static final String ATTR_SOURCE_LEVEL = "sourceLevel";
 
-	public static final String ATTR_USE_INSTALLED = "useInstalled";
+	public static final String ATTR_USE_TARGET_PLATFORM = "useTargetPlatform";
 
 	public static final String ATTR_USE_MATERIALIZATION = "useMaterialization";
 
-	public static final String ATTR_USE_PROJECT = "useProject";
+	public static final String ATTR_USE_WORKSPACE = "useWorkspace";
 
 	public static final String ATTR_VERSION_OVERRIDE = "versionOverride";
 
@@ -106,11 +106,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 	private final SourceLevel m_sourceLevel;
 
-	private final boolean m_useInstalled;
+	private final boolean m_useTargetPlatform;
 
 	private final boolean m_useMaterialization;
 
-	private final boolean m_useProject;
+	private final boolean m_useWorkspace;
 
 	private final IVersionDesignator m_versionOverride;
 
@@ -139,11 +139,11 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		m_mutableLevel = bld.getMutableLevel();
 		m_sourceLevel = bld.getSourceLevel();
 		m_skipComponent = bld.skipComponent();
-		m_useInstalled = bld.useInstalled();
-		m_useMaterialization = bld.useMaterialization();
-		m_useProject = bld.useProject();
+		m_useMaterialization = bld.isUseMaterialization();
+		m_useTargetPlatform = bld.isUseTargetPlatform();
+		m_useWorkspace = bld.isUseWorkspace();
 		m_versionOverride = bld.getVersionOverride();
-		m_useRemoteResolution = bld.isUseResolutionScheme();
+		m_useRemoteResolution = bld.isUseRemoteResolution();
 		m_systemDiscovery = bld.isSystemDiscovery();
 		m_branchTagPath = bld.getBranchTagPath();
 		m_spacePath = bld.getSpacePath();
@@ -234,9 +234,9 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_systemDiscovery;
 	}
 
-	public final boolean isUseInstalled()
+	public final boolean isUseTargetPlatform()
 	{
-		return m_useInstalled;
+		return m_useTargetPlatform;
 	}
 
 	public final boolean isUseMaterialization()
@@ -244,9 +244,14 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_useMaterialization;
 	}
 
-	public final boolean isUseProject()
+	public final boolean isUseWorkspace()
 	{
-		return m_useProject;
+		return m_useWorkspace;
+	}
+
+	public final boolean isUseRemoteResolution()
+	{
+		return m_useRemoteResolution;
 	}
 
 	public final boolean skipComponent()
@@ -271,12 +276,16 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true");
 		if(m_allowCircularDependency)
 			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true");
-		if(!m_useInstalled)
-			Utils.addAttribute(attrs, ATTR_USE_INSTALLED, "false");
+		if(!m_systemDiscovery)
+			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
 		if(!m_useMaterialization)
 			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false");
-		if(!m_useProject)
-			Utils.addAttribute(attrs, ATTR_USE_PROJECT, "false");
+		if(!m_useRemoteResolution)
+			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false");
+		if(!m_useTargetPlatform)
+			Utils.addAttribute(attrs, ATTR_USE_TARGET_PLATFORM, "false");
+		if(!m_useWorkspace)
+			Utils.addAttribute(attrs, ATTR_USE_WORKSPACE, "false");
 
 		if(m_versionOverride != null)
 		{
@@ -288,10 +297,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		if(m_prune)
 			Utils.addAttribute(attrs, ATTR_PRUNE, "true");
-		if(!m_useRemoteResolution)
-			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false");
-		if(!m_systemDiscovery)
-			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
 
 		tmp = VersionSelector.toString(m_branchTagPath);
 		if(tmp != null)
@@ -324,26 +329,6 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
 		handler.endElement(namespace, localName, qName);
-	}
-
-	public final boolean useInstalled()
-	{
-		return m_useInstalled;
-	}
-
-	public final boolean useMaterialization()
-	{
-		return m_useMaterialization;
-	}
-
-	public final boolean useProject()
-	{
-		return m_useProject;
-	}
-
-	public final boolean useRemoteResolution()
-	{
-		return m_useRemoteResolution;
 	}
 
 	public String[] getSpacePath()

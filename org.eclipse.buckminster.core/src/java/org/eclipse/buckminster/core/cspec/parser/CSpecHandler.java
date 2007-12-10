@@ -12,13 +12,13 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -119,19 +119,25 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		m_builder.setProjectInfo(getOptionalURLValue(attrs, CSpec.ATTR_PROJECT_INFO));
 		m_builder.setShortDesc(getOptionalStringValue(attrs, CSpec.ATTR_SHORT_DESC));
 
-		String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
-		if(tmp != null)
+		try
 		{
-			String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
-			if(type == null)
-				type = OSGiVersionType.ID;
+			m_builder.setVersion(getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION), getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE));
+		}
+		catch(CoreException e)
+		{
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
+
+		String filter = getOptionalStringValue(attrs, CSpec.ATTR_FILTER);
+		if(filter != null)
+		{
 			try
 			{
-				m_builder.setVersion(VersionFactory.createVersion(type, tmp));
+				m_builder.setFilter(FilterUtils.createFilter(filter));
 			}
-			catch(CoreException e)
+			catch(InvalidSyntaxException e)
 			{
-				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}
 	}

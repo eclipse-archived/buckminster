@@ -513,7 +513,7 @@ public class NodeQuery implements Comparator<VersionMatch>
 	 */
 	public boolean useExistingProject()
 	{
-		return getComponentQuery().useExistingProject(getComponentRequest());
+		return getComponentQuery().useWorkspace(getComponentRequest());
 	}
 
 	/**
@@ -525,7 +525,7 @@ public class NodeQuery implements Comparator<VersionMatch>
 	 */
 	public boolean useInstalledComponent()
 	{
-		return getComponentQuery().useInstalledComponent(getComponentRequest());
+		return getComponentQuery().useTargetPlatform(getComponentRequest());
 	}
 
 	/**

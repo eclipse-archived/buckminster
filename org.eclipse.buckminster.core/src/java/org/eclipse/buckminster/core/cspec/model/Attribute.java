@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -111,6 +112,13 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		return copy;
 	}
 
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		AttributeBuilder bld = createAttributeBuilder(cspecBuilder);
+		bld.initFrom(this);
+		return bld;
+	}
+
 	public final CSpec getCSpec()
 	{
 		assert m_cspec != null;
@@ -139,7 +147,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		for(Prerequisite child : getPrerequisites(filters))
 		{
 			Attribute refAttr = child.getReferencedAttribute(cspec, ctx);
-			if(child.isFilter())
+			if(child.isPatternFilter())
 			{
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();
@@ -297,7 +305,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		return uniquePath;
 	}
 
-	public boolean isEnabled(IModelCache ctx)
+	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
 		return true;
 	}
@@ -326,6 +334,8 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		bld.append('#');
 		bld.append(getName());
 	}
+
+	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
 
 	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException

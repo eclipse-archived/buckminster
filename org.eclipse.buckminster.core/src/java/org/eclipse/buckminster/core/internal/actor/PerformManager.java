@@ -333,7 +333,7 @@ public class PerformManager implements IPerformManager
 			for(Prerequisite preq : attribute.getPrerequisites(filters))
 			{
 				Attribute refAttr = preq.getReferencedAttribute(cspec, ctx);
-				if(preq.isFilter())
+				if(preq.isPatternFilter())
 				{
 					if(filters == null)
 						filters = new Stack<IAttributeFilter>();

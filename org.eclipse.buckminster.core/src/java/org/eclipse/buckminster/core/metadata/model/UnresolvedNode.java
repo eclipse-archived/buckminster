@@ -98,10 +98,9 @@ public class UnresolvedNode extends DepNode
 		}
 		catch(CoreException e)
 		{
-			if(context.isContinueOnError())
-				context.addException(getRequest(), e.getStatus());
-			else
+			if(!context.isContinueOnError())
 				throw e;
+			context.addException(getRequest(), e.getStatus());
 		}
 	}
 }

@@ -203,10 +203,22 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setAllowCircularDependency(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_ALLOW_CIRCULAR_DEPENDENCY,
 				false));
 		m_builder.setSkipComponent(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SKIP_COMPONENT, false));
-		m_builder.setUseInstalled(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_INSTALLED, true));
+
+		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_USE_TARGET_PLATFORM);
+		if(tmp == null)
+			// Get deprecated alternative
+			tmp = getOptionalStringValue(attrs, "useInstalled");
+		m_builder.setUseTargetPlatform(tmp == null || "true".equalsIgnoreCase(tmp));
+
+		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_USE_WORKSPACE);
+		if(tmp == null)
+			// Get deprecated alternative
+			tmp = getOptionalStringValue(attrs, "useProject");
+		m_builder.setUseWorkspace(tmp == null || "true".equalsIgnoreCase(tmp));
+
 		m_builder.setUseMaterialization(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_MATERIALIZATION, true));
-		m_builder.setUseProject(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_PROJECT, true));
-		m_builder.setUseResolutionScheme(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_REMOTE_RESOLUTION, true));
+		m_builder.setUseTargetPlatform(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_TARGET_PLATFORM, true));
+		m_builder.setUseRemoteResolution(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_REMOTE_RESOLUTION, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
 		m_builder.setSpacePath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_SPACE_PATH), ","));
 	}

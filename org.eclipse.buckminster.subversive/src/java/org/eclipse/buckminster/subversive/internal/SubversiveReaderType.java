@@ -13,7 +13,6 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -118,8 +117,8 @@ public class SubversiveReaderType extends CatalogReaderType
 	 *            project.
 	 */
 	@Override
-	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
-			throws CoreException
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
+	throws CoreException
 	{
 		SubversiveSession.createCommonRoots(context);
 		VersionMatch vm = cr.getVersionMatch();

@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -83,7 +84,7 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 		return query.skipComponent(getRequest());
 	}
 
-	public boolean isPersisted() throws CoreException
+	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
 		return false;
 	}
@@ -103,12 +104,12 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 		return equals(node);
 	}
 
-	public void remove() throws CoreException
+	public void remove(StorageManager sm) throws CoreException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	public void store() throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
 		throw new UnsupportedOperationException();
 	}

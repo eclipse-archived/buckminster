@@ -18,21 +18,16 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class DepNodeHandler extends ExtensionAwareHandler
+abstract class DepNodeHandler extends ExtensionAwareHandler implements IWrapperParent
 {
 	DepNodeHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}
 
-	IUUIDKeyed getWrapped(UUID id) throws SAXException
+	public IUUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		return ((IDWrapperHandler)getParentHandler()).getWrapped(id);
-	}
-
-	DepNode getDepNode(UUID id) throws SAXException
-	{
-		return ((IDWrapperHandler)getParentHandler()).getDepNode(id);
 	}
 
 	abstract DepNode getDepNode() throws SAXException;

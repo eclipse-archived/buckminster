@@ -32,7 +32,9 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictExceptio
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -200,7 +202,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 						res = null;
 					}
 				}
-				if(res != null)
+				if(res != null && FilterUtils.isMatch(res.getCSpec().getFilter(), query.getProperties()))
 				{
 					MonitorUtils.complete(monitor);
 					return new ResolvedNode(query, res);
@@ -232,13 +234,14 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			{
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				ComponentIdentifier ci = resolution.getComponentIdentifier();
-				if(request.designates(ci))
+				if(request.designates(ci) && FilterUtils.isMatch(resolution.getCSpec().getFilter(), query.getProperties()))
 				{
 					// Make sure we have a materialization for the project.
 					//
+					StorageManager sm = StorageManager.getDefault();
 					Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(), ci);
-					mat.store();
-					resolution.store();
+					mat.store(sm);
+					resolution.store(sm);
 					MonitorUtils.complete(monitor);
 					return new ResolvedNode(query, resolution);
 				}
@@ -269,10 +272,15 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				IComponentReader[] reader = new IComponentReader[] { provider.getReaderType().getReader(match, MonitorUtils.subMonitor(monitor, 10)) };
 				DepNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
 						MonitorUtils.subMonitor(monitor, 10));
-				node.getResolution().store();
 				if(reader[0] != null)
 					reader[0].close();
-				return node;
+
+				Resolution res = node.getResolution();
+				if(FilterUtils.isMatch(res.getCSpec().getFilter(), query.getProperties()))
+				{
+					res.store(StorageManager.getDefault());
+					return node;
+				}
 			}
 			finally
 			{
@@ -500,6 +508,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentRequest rq = new ComponentRequest(name, givenCtypeId, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
+		queryBld.setPlatformAgnostic(true);
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);

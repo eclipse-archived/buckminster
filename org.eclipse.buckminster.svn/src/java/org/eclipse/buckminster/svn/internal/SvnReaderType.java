@@ -14,7 +14,6 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -139,7 +138,7 @@ public class SvnReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
 			throws CoreException
 	{
 		SvnSession.createCommonRoots(context);

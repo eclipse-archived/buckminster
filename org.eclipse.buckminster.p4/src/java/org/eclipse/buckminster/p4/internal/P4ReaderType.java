@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -106,7 +107,7 @@ public class P4ReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
 		if(P4WSADBridge.isPresent())

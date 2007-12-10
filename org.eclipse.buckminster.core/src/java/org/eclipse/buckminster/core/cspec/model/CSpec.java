@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +31,10 @@ import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
+import org.eclipse.buckminster.core.helpers.MapToDictionary;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -46,6 +49,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -55,6 +59,8 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 {
+	public static final String ATTR_FILTER = "filter";
+
 	public static final String ATTR_PROJECT_INFO = "projectInfo";
 
 	public static final String ATTR_SHORT_DESC = "shortDesc";
@@ -93,7 +99,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	private final ComponentIdentifier m_componentIdentifier;
 
-	private final Map<String, ComponentRequest> m_dependencies;
+	private final Map<String, Dependency> m_dependencies;
 
 	private final Map<String, Generator> m_generators;
 
@@ -102,17 +108,18 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 	private final String m_shortDesc;
 
 	private final Attribute m_selfAttribute;
+	
+	private final Filter m_filter;
 
 	private final URL m_projectInfo;
 
-	public CSpec(String name, String componentType, IVersion version, URL projectInfo, Documentation documentation, String shortDesc,
-			Map<String, DependencyBuilder> dependencies, Map<String, GeneratorBuilder> generators,
-			Map<String, AttributeBuilder> attributes)
+	public CSpec(CSpecBuilder cspecBld)
 	{
-		m_componentIdentifier = new ComponentIdentifier(name, componentType, version);
-		m_projectInfo = projectInfo;
-		m_documentation = documentation;
-		m_shortDesc = shortDesc;
+		m_componentIdentifier = new ComponentIdentifier(cspecBld.getName(), cspecBld.getComponentTypeID(), cspecBld.getVersion());
+		m_projectInfo = cspecBld.getProjectInfo();
+		m_documentation = cspecBld.getDocumentation();
+		m_shortDesc = cspecBld.getShortDesc();
+		m_filter = cspecBld.getFilter();
 		m_selfAttribute = new Attribute(SELF_ARTIFACT, true, null, null)
 		{
 			@Override
@@ -134,9 +141,18 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 				return new PathGroup[] { meGroup };
 			}
+
+			@Override
+			protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+			{
+				// This should be OK. Noone should ever clone the self attribute
+				//
+				return null;
+			}
 		};
 		m_selfAttribute.setCSPec(this);
 
+		Map<String,AttributeBuilder> attributes = cspecBld.getAttributes();
 		int top = (attributes == null) ? 0 : attributes.size();
 		if(top == 0)
 			m_attributes = Collections.emptyMap();
@@ -163,12 +179,13 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			m_attributes = Collections.unmodifiableMap(map);
 		}
 
+		Map<String,DependencyBuilder> dependencies = cspecBld.getDependencies();
 		top = (dependencies == null) ? 0 : dependencies.size();
 		if(top == 0)
 			m_dependencies = Collections.emptyMap();
 		else
 		{
-			Map<String, ComponentRequest> map;
+			Map<String, Dependency> map;
 			Collection<DependencyBuilder> values = dependencies.values();
 			if(top == 1)
 			{
@@ -180,13 +197,14 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 				// We use a TreeMap to assert that the dependencies will be
 				// written in the exact same order at all times
 				//
-				map = new TreeMap<String, ComponentRequest>();
+				map = new TreeMap<String, Dependency>();
 				for(DependencyBuilder bld : values)
 					map.put(bld.getName(), bld.createDependency());
 			}
 			m_dependencies = Collections.unmodifiableMap(map);
 		}
 
+		Map<String,GeneratorBuilder> generators = cspecBld.getGenerators();
 		top = (generators == null) ? 0 : generators.size();
 		if(top == 0)
 			m_generators = Collections.emptyMap();
@@ -233,13 +251,13 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		Attribute[] attributes = new Attribute[sz];
 		int idx = 0;
 		for(String str : attributeNames)
-			attributes[idx++] = this.getRequiredAttribute(str);
+			attributes[idx++] = getRequiredAttribute(str);
 		return attributes;
 	}
 
 	public Attribute[] getAttributes(String... attributeNames) throws MissingAttributeException
 	{
-		return this.getAttributes(Arrays.asList(attributeNames));
+		return getAttributes(Arrays.asList(attributeNames));
 	}
 
 	public List<Attribute> getAttributesProducedByActions(boolean includePrivate) throws CoreException
@@ -277,9 +295,14 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		return TAG;
 	}
 
-	public Map<String, ComponentRequest> getDependencies()
+	public Map<String, Dependency> getDependencies()
 	{
 		return m_dependencies;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public Map<String, Generator> getGenerators()
@@ -287,9 +310,9 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		return m_generators;
 	}
 
-	public ComponentRequest getDependency(String dependencyName) throws MissingDependencyException
+	public Dependency getDependency(String dependencyName) throws MissingDependencyException
 	{
-		ComponentRequest dependency = m_dependencies.get(dependencyName);
+		Dependency dependency = m_dependencies.get(dependencyName);
 		if(dependency == null)
 			throw new MissingDependencyException(m_componentIdentifier.toString(), dependencyName);
 		return dependency;
@@ -355,8 +378,8 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 	 * artifact group will have an empty attribute array.
 	 * </p>
 	 * 
-	 * @param targets
-	 *            The targets that implies and qualifies dependencies. Might be an empty array but never
+	 * @param attributes
+	 *            The attributes that implies and qualifies dependencies. Might be an empty array but never
 	 *            <code>null</code>.
 	 * @param prune
 	 *            True if the result should be pruned to only include dependencies that has an attribute.
@@ -364,24 +387,21 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 	 * @see #getActionsByName(String[])
 	 * @see #getGroupsByName(String[])
 	 */
-	public List<QualifiedDependency> getQualifiedDependencies(Attribute[] attributes, boolean prune)
+	public List<QualifiedDependency> getQualifiedDependencies(boolean attributePrune)
 			throws CoreException
 	{
 		Map<ComponentRequest, Set<String>> deps = new HashMap<ComponentRequest, Set<String>>();
-		if(!prune)
+		if(!attributePrune)
 		{
 			// All dependencies must be included in the result. Even the one for
 			// which there is no requested attribute.
 			//
-			for(ComponentRequest dep : this.getDependencies().values())
+			for(ComponentRequest dep : getDependencies().values())
 				deps.put(dep, new HashSet<String>());
 		}
 
-		if(attributes != null)
-		{
-			for(Attribute ag : attributes)
-				this.addDependencyBundle(deps, ag);
-		}
+		for(Attribute ag : getAttributes().values())
+			addDependencyBundle(deps, ag);
 
 		if(!m_generators.isEmpty())
 		{
@@ -396,12 +416,12 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 					continue;
 				}
 
-				ComponentRequest request = getDependency(component);
-				Set<String> attrs = deps.get(request);
+				Dependency dep = getDependency(component);
+				Set<String> attrs = deps.get(dep);
 				if(attrs == null)
 				{
 					attrs = new HashSet<String>();
-					deps.put(request, attrs);
+					deps.put(dep, attrs);
 				}
 				attrs.add(generator.getAttribute());
 			}
@@ -415,7 +435,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	public Attribute getRequiredAttribute(String name) throws MissingAttributeException
 	{
-		Attribute attr = this.getAttribute(name);
+		Attribute attr = getAttribute(name);
 		if(attr == null)
 			throw new MissingAttributeException(m_componentIdentifier.toString(), name);
 		return attr;
@@ -431,30 +451,29 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		return m_componentIdentifier.getVersion();
 	}
 
-	public boolean isPersisted() throws CoreException
+	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
-		return StorageManager.getDefault().getCSpecs().contains(this);
+		return sm.getCSpecs().contains(this);
 	}
 
-	public void remove() throws CoreException
+	public void remove(StorageManager sm) throws CoreException
 	{
-		UUID thisId = this.getId();
-		StorageManager sm = StorageManager.getDefault();
+		UUID thisId = getId();
 		if(!sm.getResolutions().getReferencingKeys(thisId, "cspecId").isEmpty())
 			throw new ReferentialIntegrityException(this, "remove", "Referenced from Resolution");
 
 		sm.getCSpecs().removeElement(thisId);
 	}
 
-	public void store() throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
-		StorageManager.getDefault().getCSpecs().putElement(this);
+		sm.getCSpecs().putElement(this);
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException
 	{
 		receiver.startDocument();
-		toSax(receiver, BM_CSPEC_NS, BM_CSPEC_PREFIX, this.getDefaultTag());
+		toSax(receiver, BM_CSPEC_NS, BM_CSPEC_PREFIX, getDefaultTag());
 		receiver.endDocument();
 	}
 
@@ -476,7 +495,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		//
 		for(Attribute attr : m_attributes.values())
 			if(!(attr instanceof ActionArtifact))
-				this.verifyPrerequisites(attr, null);
+				verifyPrerequisites(attr, null);
 
 		// Verify validity of generators
 		//
@@ -494,10 +513,10 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			throws SAXException
 	{
 		AttributesImpl attrs = new AttributesImpl();
-		this.addAttributes(attrs);
+		addAttributes(attrs);
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		handler.startElement(namespace, localName, qName, attrs);
-		this.emitElements(handler, namespace, prefix);
+		emitElements(handler, namespace, prefix);
 		handler.endElement(namespace, localName, qName);
 	}
 
@@ -520,6 +539,9 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 
 		if(m_shortDesc != null)
 			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
+
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 	}
 
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
@@ -573,6 +595,218 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		return artifacts;
 	}
 
+	public boolean isPruned(Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
+	{
+		Dictionary<String,String> propsDict = null;
+		Collection<Dependency> deps = getDependencies().values();
+		for(Dependency dep : deps)
+		{
+			Filter filter = dep.getFilter();
+			if(filter == null)
+				continue;
+
+			if(propsDict == null)
+				propsDict = MapToDictionary.wrap(properties); 
+
+			if(!filter.match(propsDict))
+				//
+				// This dependency is pruned
+				//
+				return true;
+		}
+
+		// No dependency pruning occurred.
+		// Let's check for attribute pruning
+		//
+		Set<String> allAttrNames = getAttributes().keySet();
+
+		if(pruneForAttributes)
+		{
+			if(attrNames.isEmpty())
+				attrNames = allAttrNames;
+		}
+		else
+			attrNames = allAttrNames;
+
+		Set<String> referencedAttrNames = new HashSet<String>();
+		for(String attrName : attrNames)
+		{
+			Attribute attr = getAttribute(attrName);
+			if(attr != null)
+				addReferencedDependencies(null, referencedAttrNames, attr, null);
+		}
+		return !allAttrNames.equals(referencedAttrNames);
+	}
+
+	public CSpec prune(Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
+	{
+		if(!isPruned(properties, pruneForAttributes, attrNames))
+			return this;
+
+		CSpecBuilder bld = new CSpecBuilder();
+		bld.setComponentTypeID(getComponentTypeID());
+		bld.setDocumentation(getDocumentation());
+		bld.setName(getName());
+		bld.setProjectInfo(getProjectInfo());
+		bld.setShortDesc(getShortDesc());
+		bld.setVersion(getVersion());
+		bld.setFilter(getFilter());
+
+		Set<String> allAttrNames = getAttributes().keySet();
+
+		if(pruneForAttributes)
+		{
+			if(attrNames.isEmpty())
+				attrNames = allAttrNames;
+		}
+		else
+			attrNames = allAttrNames;
+
+		// Find all truly referenced dependencies. A dependency can
+		// be referenced from an attribute or from a generator
+		//
+		Set<Dependency> referencedDeps = new HashSet<Dependency>();
+		Set<String> referencedAttrs = new HashSet<String>();
+		for(String attrName : attrNames)
+		{
+			Attribute attr = getAttribute(attrName);
+			if(attr != null)
+				addReferencedDependencies(referencedDeps, referencedAttrs, attr, null);
+		}
+
+		for(Generator generator : getGenerators().values())
+		{
+			String component = generator.getComponent();
+			if(component == null)
+				addReferencedDependencies(referencedDeps, referencedAttrs, getRequiredAttribute(generator.getAttribute()), null);
+			else
+				referencedDeps.add(getDependency(component));
+		}
+
+		// Prune the dependencies according to LDAP filters. Add the dependencies
+		// that match to the new cspec
+		//
+		Dictionary<String,String> propsDict = null;
+		for(Dependency dep : referencedDeps)
+		{
+			Filter filter = dep.getFilter();
+			if(filter != null)
+			{
+				if(propsDict == null)
+					propsDict = MapToDictionary.wrap(properties); 
+
+				if(!filter.match(propsDict))
+					//
+					// This dependency is pruned
+					//
+					continue;
+			}
+			bld.addDependency(dep);
+		}
+
+		// Add all attributes that can fulfill the prerequisites transitively using
+		// the filtered dependency list
+		//
+		for(String attrName : attrNames)
+		{
+			Attribute attr = getAttribute(attrName);
+			if(attr != null && dependenciesFulfilled(attr, bld, null))
+				bld.addAttribute(attr);
+		}
+
+		// Add all generators that can be added with respect to dependency or
+		// local attribute
+		//
+		for(Generator generator : getGenerators().values())
+		{
+			String component = generator.getComponent();
+			if(component == null)
+			{
+				if(bld.getAttribute(generator.getAttribute()) == null)
+					//
+					// Local attribute no longer exists
+					//
+					continue;
+			}
+			else if(bld.getDependency(component) == null)
+				//
+				// Dependency no longer exists
+				//
+				continue;
+
+			bld.addGenerator(generator);
+		}
+		return bld.createCSpec();
+	}
+
+	private boolean dependenciesFulfilled(Attribute attr, CSpecBuilder bld, Stack<IAttributeFilter> filters) throws CoreException
+	{
+		if(attr instanceof ActionArtifact)
+			attr = ((ActionArtifact)attr).getAction();
+
+		for(Prerequisite pq : attr.getPrerequisites(filters))
+		{
+			if(pq.isExternal())
+			{
+				if(bld.getDependency(pq.getComponentName()) == null)
+					return false;
+				continue;
+			}
+
+			if(pq.isPatternFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(pq);
+			}
+			if(!dependenciesFulfilled(getRequiredAttribute(pq.getAttribute()), bld, filters))
+				return false;
+			
+			if(pq.isPatternFilter())
+				filters.pop();
+		}
+		return true;
+	}
+
+	private void addReferencedDependencies(Set<Dependency> dependencies, Set<String> attrNames, Attribute attr, Stack<IAttributeFilter> filters) throws CoreException
+	{
+		if(attrNames.contains(attr.getName()))
+			return;
+
+		// Make sure that the pruned CSpec has all prerequisites
+		//
+		attrNames.add(attr.getName());
+
+		if(attr instanceof ActionArtifact)
+		{
+			addReferencedDependencies(dependencies, attrNames, ((ActionArtifact)attr).getAction(), filters);
+			return;
+		}
+
+		for(Prerequisite prereq : attr.getPrerequisites(filters))
+		{
+			if(prereq.isExternal())
+			{
+				if(dependencies != null)
+					dependencies.add(getDependency(prereq.getComponentName()));
+			}
+			else
+			{
+				Attribute localAttr = getRequiredAttribute(prereq.getAttribute());
+				if(prereq.isPatternFilter())
+				{
+					if(filters == null)
+						filters = new Stack<IAttributeFilter>();
+					filters.push(prereq);
+					addReferencedDependencies(dependencies, attrNames, localAttr, filters);
+					filters.pop();
+				}
+				else
+					addReferencedDependencies(dependencies, attrNames, localAttr, filters);
+			}
+		}
+	}
+
 	private void addDependencyBundle(Map<ComponentRequest, Set<String>> deps, Attribute dp) throws CoreException
 	{
 		// Make sure that the pruned CSpec has all prerequisites
@@ -581,7 +815,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		{
 			if(prereq.isExternal())
 			{
-				ComponentRequest rq = this.getDependency(prereq.getComponentName());
+				ComponentRequest rq = getDependency(prereq.getComponentName());
 				Set<String> attributes = deps.get(rq);
 				if(attributes == null)
 				{
@@ -592,10 +826,10 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			}
 			else
 			{
-				Attribute localGroup = this.getAttribute(prereq.getAttribute());
+				Attribute localGroup = getAttribute(prereq.getAttribute());
 				if(localGroup instanceof ActionArtifact)
 					localGroup = ((ActionArtifact)localGroup).getAction();
-				this.addDependencyBundle(deps, localGroup);
+				addDependencyBundle(deps, localGroup);
 			}
 		}
 	}
@@ -611,19 +845,19 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 				//
 				continue;
 
-			Attribute ag = this.getRequiredAttribute(prereq.getAttribute());
+			Attribute ag = getRequiredAttribute(prereq.getAttribute());
 			if(ag instanceof ActionArtifact)
 				ag = ((ActionArtifact)ag).getAction();
 
 			if(seenAttributes.contains(ag.getName()))
-				throw new CircularReferenceException(this.getComponentIdentifier().toString(), seenAttributes, ag
+				throw new CircularReferenceException(getComponentIdentifier().toString(), seenAttributes, ag
 						.getName());
 
 			// Verify that this action dependency doesn't somehow
 			// stem from the action itself
 			//
 			List<Prerequisite> agPreqs;
-			if(prereq.isFilter())
+			if(prereq.isPatternFilter())
 			{
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();
@@ -637,7 +871,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			if(agPreqs.size() > 0)
 			{
 				seenAttributes.push(ag.getName());
-				this.verifyNonCircularDependency(seenAttributes, agPreqs, filters);
+				verifyNonCircularDependency(seenAttributes, agPreqs, filters);
 				seenAttributes.pop();
 			}
 		}
@@ -653,18 +887,18 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			{
 				// Test that the dependency is present.
 				//
-				this.getDependency(prereq.getComponentName());
+				getDependency(prereq.getComponentName());
 				continue;
 			}
 
-			Attribute ag = this.getRequiredAttribute(prereq.getAttribute());
+			Attribute ag = getRequiredAttribute(prereq.getAttribute());
 			if(ag instanceof ActionArtifact)
 				//
 				// Verify that we can get the action
 				//
 				((ActionArtifact)ag).getAction();
 
-			if(prereq.isFilter())
+			if(prereq.isPatternFilter())
 			{
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();
@@ -679,9 +913,9 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			{
 				seenActions.clear();
 				seenActions.push(ag.getName());
-				this.verifyNonCircularDependency(seenActions, agPreqs, filters);
+				verifyNonCircularDependency(seenActions, agPreqs, filters);
 			}
-			if(prereq.isFilter())
+			if(prereq.isPatternFilter())
 				filters.pop();
 		}
 	}

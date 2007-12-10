@@ -20,9 +20,10 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -121,10 +122,11 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				VersionedIdentifier vid = ref.getVersionedIdentifier();
 				IVersion version = VersionFactory.OSGiType.coerce(vid.getVersion());
 				IVersionDesignator vd = (version == null) ? null : VersionFactory.createExplicitDesignator(version);
-				ComponentRequest request = new ComponentRequest(vid.getIdentifier(), getComponentTypeID(), vd);
-				cspecBld.addDependency(request);
+
+				Dependency dep = new Dependency(vid.getIdentifier(), getComponentTypeID(), vd, FilterUtils.createFilter(ref.getOS(), ref.getWS(), ref.getOSArch(), ref.getName()));
+				cspecBld.addDependency(dep);
 				matches[idx] = new VersionMatch(version, null, provider.getSpace(), -1, null, null);
-				qDeps[idx] = new QualifiedDependency(request, null);
+				qDeps[idx] = new QualifiedDependency(dep, null);
 			}
 			cspec = cspecBld.createCSpec();
 			String childTagInfo = cspec.getTagInfo(tagInfo);

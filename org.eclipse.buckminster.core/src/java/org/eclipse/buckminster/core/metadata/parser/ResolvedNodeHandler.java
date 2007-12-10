@@ -67,7 +67,7 @@ class ResolvedNodeHandler extends DepNodeHandler implements ChildPoppedListener
 	{
 		ArrayList<DepNode> childNodes = new ArrayList<DepNode>(m_children.size());
 		for(UUID childId : m_children)
-			childNodes.add(getDepNode(childId));
+			childNodes.add((DepNode)getWrapped(childId));
 
 		try
 		{

@@ -7,11 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
@@ -20,6 +22,7 @@ public class DependencyBuilder extends CSpecElementBuilder
 {
 	private String m_componentType;
 	private IVersionDesignator m_versionDesignator;
+	private Filter m_filter;
 
 	DependencyBuilder(CSpecBuilder cspecBuilder)
 	{
@@ -32,16 +35,22 @@ public class DependencyBuilder extends CSpecElementBuilder
 		super.clear();
 		m_componentType = null;
 		m_versionDesignator = null;
+		m_filter = null;
 	}
 
-	public ComponentRequest createDependency()
+	public Dependency createDependency()
 	{
-		return new ComponentRequest(this.getName(), m_componentType, m_versionDesignator);
+		return new Dependency(this.getName(), m_componentType, m_versionDesignator, m_filter);
 	}
 
 	public String getComponentTypeID()
 	{
 		return m_componentType;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public IVersionDesignator getVersionDesignator()
@@ -59,16 +68,24 @@ public class DependencyBuilder extends CSpecElementBuilder
 		return m_versionDesignator == null ? null : m_versionDesignator.getVersion().getType();
 	}
 
-	public void initFrom(ComponentRequest dependency)
+	@Override
+	public void initFrom(NamedElement depElem)
 	{
-		super.initFrom(dependency);
+		super.initFrom(depElem);
+		Dependency dependency = (Dependency)depElem;
 		m_componentType = dependency.getComponentTypeID();
 		m_versionDesignator = dependency.getVersionDesignator();
+		m_filter = dependency.getFilter();
 	}
 
 	public void setComponentTypeID(String componentType)
 	{
 		m_componentType = componentType;
+	}
+
+	public void setFilter(Filter filter)
+	{
+		m_filter = filter;
 	}
 
 	public void setVersionDesignator(String designatorStr, String versionType) throws CoreException

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.subversive.headless.feature"
       label="Buckminster - Subversive based SVN support for headless operation (Incubation)"
-      version="0.2.0.qualifier"
+      version="0.3.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.subversive">
 
@@ -11,7 +11,7 @@
    </description>
 
    <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
-      Copyright (c) 2006-2007, Cloudsmith Inc.
+      Copyright (c) 2006-2008, Cloudsmith Inc.
 The code, documentation and other materials contained herein
 have been
 licensed under the Eclipse Public License - v 1.0 by the copyright

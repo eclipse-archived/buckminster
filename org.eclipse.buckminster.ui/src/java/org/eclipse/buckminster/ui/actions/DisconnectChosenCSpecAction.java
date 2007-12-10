@@ -9,6 +9,7 @@ package org.eclipse.buckminster.ui.actions;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -33,7 +34,7 @@ public class DisconnectChosenCSpecAction extends AbstractChosenCSpecAction
 				ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
 				if(wanted.matches(cid))
 				{
-					res.remove();
+					res.remove(StorageManager.getDefault());
 				}
 			}
 		}

@@ -12,13 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.cspec.model.Action;
-import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
-import org.eclipse.buckminster.core.cspec.model.Artifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
@@ -28,6 +25,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
@@ -43,27 +41,33 @@ public class CSpecBuilder
 	private URL m_projectInfo;
 	private String m_shortDesc;
 	private IVersion m_version;
+	private Filter m_filter;
 
 	public ActionBuilder addAction(String actionName, boolean publ, String actorName, boolean always) throws AttributeAlreadyDefinedException
 	{
-		ActionBuilder bld = this.createActionBuilder();
+		ActionBuilder bld = createActionBuilder();
 		bld.setName(actionName);
 		bld.setPublic(publ);
 		bld.setActorName(actorName);
 		bld.setAlways(always);
-		this.addAttribute(bld);
+		addAttribute(bld);
 		return bld;
 	}
 
 	public ArtifactBuilder addArtifact(String name, boolean publ, String type, IPath base) throws AttributeAlreadyDefinedException
 	{
-		ArtifactBuilder bld = this.createArtifactBuilder();
+		ArtifactBuilder bld = createArtifactBuilder();
 		bld.setName(name);
 		bld.setPublic(publ);
 		bld.setType(type);
 		bld.setBase(base);
-		this.addAttribute(bld);
+		addAttribute(bld);
 		return bld;
+	}
+
+	public void addAttribute(Attribute attribute) throws AttributeAlreadyDefinedException
+	{
+		addAttribute(attribute.getAttributeBuilder(this));
 	}
 
 	public void addAttribute(AttributeBuilder attribute) throws AttributeAlreadyDefinedException
@@ -77,11 +81,11 @@ public class CSpecBuilder
 		m_attributes.put(name, attribute);
 	}
 
-	public void addDependency(ComponentRequest request) throws DependencyAlreadyDefinedException
+	public void addDependency(Dependency dependency) throws DependencyAlreadyDefinedException
 	{
-		DependencyBuilder bld = this.createDependencyBuilder();
-		bld.initFrom(request);
-		this.addDependency(bld);
+		DependencyBuilder bld = createDependencyBuilder();
+		bld.initFrom(dependency);
+		addDependency(bld);
 	}
 
 	public void addDependency(DependencyBuilder dependency) throws DependencyAlreadyDefinedException
@@ -93,6 +97,13 @@ public class CSpecBuilder
 		if(m_dependencies.containsKey(name))
 			throw new DependencyAlreadyDefinedException(m_name, name);
 		m_dependencies.put(name, dependency);
+	}
+
+	public void addGenerator(Generator generator) throws GeneratorAlreadyDefinedException
+	{
+		GeneratorBuilder bld = createGeneratorBuilder();
+		bld.initFrom(generator);
+		addGenerator(bld);
 	}
 
 	public void addGenerator(GeneratorBuilder generator) throws GeneratorAlreadyDefinedException
@@ -108,16 +119,16 @@ public class CSpecBuilder
 
 	public GroupBuilder addGroup(String name, boolean publ) throws AttributeAlreadyDefinedException
 	{
-		GroupBuilder bld = this.createGroupBuilder();
+		GroupBuilder bld = createGroupBuilder();
 		bld.setName(name);
 		bld.setPublic(publ);
-		this.addAttribute(bld);
+		addAttribute(bld);
 		return bld;
 	}
 
 	public ActionBuilder addInternalAction(String actionName, boolean publ) throws AttributeAlreadyDefinedException
 	{
-		return this.addAction(actionName, publ, null, true);
+		return addAction(actionName, publ, null, true);
 	}
 
 	public void clear()
@@ -125,6 +136,7 @@ public class CSpecBuilder
 		m_name = null;
 		m_componentType = null;
 		m_version = null;
+		m_filter = null;
 		m_projectInfo = null;
 		m_documentation = null;
 		m_shortDesc = null;
@@ -150,7 +162,7 @@ public class CSpecBuilder
 
 	public CSpec createCSpec() throws CoreException
 	{
-		return new CSpec(m_name, m_componentType, m_version, m_projectInfo, m_documentation, m_shortDesc, m_dependencies, m_generators, m_attributes);
+		return new CSpec(this);
 	}
 
 	public DependencyBuilder createDependencyBuilder()
@@ -208,6 +220,11 @@ public class CSpecBuilder
 	public Map<String,GeneratorBuilder> getGenerators()
 	{
 		return m_generators;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public GeneratorBuilder getGenerator(String generatorName)
@@ -291,6 +308,7 @@ public class CSpecBuilder
 		m_name = cspec.getName();
 		m_componentType = cspec.getComponentTypeID();
 		m_version = cspec.getVersion();
+		m_filter = cspec.getFilter();
 		m_projectInfo = cspec.getProjectInfo();
 		m_documentation = cspec.getDocumentation();
 		m_shortDesc = cspec.getShortDesc();
@@ -300,30 +318,18 @@ public class CSpecBuilder
 		{
 			m_attributes = new HashMap<String, AttributeBuilder>(attrs.size());
 			for(Attribute attr : attrs.values())
-			{
-				AttributeBuilder ab;
-				if(attr instanceof ActionArtifact)
-					ab = this.createActionArtifactBuilder();
-				else if(attr instanceof Artifact)
-					ab = this.createArtifactBuilder();
-				else if(attr instanceof Action)
-					ab = this.createActionBuilder();
-				else
-					ab = this.createGroupBuilder();
-				ab.initFrom(attr);
-				m_attributes.put(attr.getName(), ab);
-			}
+				m_attributes.put(attr.getName(), attr.getAttributeBuilder(this));
 		}
 		else
 			m_attributes = null;
 
-		Map<String,ComponentRequest> deps = cspec.getDependencies();
+		Map<String,Dependency> deps = cspec.getDependencies();
 		if(deps.size() > 0)
 		{
 			m_dependencies = new HashMap<String, DependencyBuilder>(deps.size());
-			for(ComponentRequest dep : deps.values())
+			for(Dependency dep : deps.values())
 			{
-				DependencyBuilder db = this.createDependencyBuilder();
+				DependencyBuilder db = createDependencyBuilder();
 				db.initFrom(dep);
 				m_dependencies.put(dep.getName(), db);
 			}
@@ -372,6 +378,11 @@ public class CSpecBuilder
 	public void setDocumentation(Documentation documentation)
 	{
 		m_documentation = documentation;
+	}
+
+	public void setFilter(Filter filter)
+	{
+		m_filter = filter;
 	}
 
 	public void setName(String name)

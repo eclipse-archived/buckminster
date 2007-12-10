@@ -146,7 +146,7 @@ public class PerformContext implements IActionContext
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, this);
 			PathGroup[] paths;
-			if(prereq.isFilter())
+			if(prereq.isPatternFilter())
 			{
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();

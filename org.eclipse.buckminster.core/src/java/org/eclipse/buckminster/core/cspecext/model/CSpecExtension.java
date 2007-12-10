@@ -19,7 +19,7 @@ import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -115,8 +115,8 @@ public class CSpecExtension
 		for(AlterDependency alterDep : m_alteredDependencies.values())
 			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName()));
 
-		Map<String, ComponentRequest> addedDeps = m_base.getDependencies();
-		for(ComponentRequest addedDep : addedDeps.values())
+		Map<String, Dependency> addedDeps = m_base.getDependencies();
+		for(Dependency addedDep : addedDeps.values())
 			cspecBuilder.addDependency(addedDep);
 
 		Map<String,Generator> addedGenerators = m_base.getGenerators();

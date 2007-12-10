@@ -29,6 +29,7 @@ public interface IMaterializer
 	static final String MATERIALIZERS_POINT = CorePlugin.CORE_NAMESPACE + ".materializers";
 	static final String FILE_SYSTEM = "filesystem";
 	static final String WORKSPACE = "workspace";
+	static final String TARGET_PLATFORM = "targetPlatform";
 	static final String SITE_MIRROR = "site.mirror";
 	static final Object MATERIALIZER_PROPERTY = "buckminster.materializer.name";
 

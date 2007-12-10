@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.cspec.builder;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Generator;
+import org.eclipse.buckminster.core.cspec.model.NamedElement;
 
 /**
  * @author Thomas Hallgren
@@ -51,9 +52,11 @@ public class GeneratorBuilder extends CSpecElementBuilder
 		return getName();
 	}
 
-	public void initFrom(Generator generator)
+	@Override
+	public void initFrom(NamedElement namedElem)
 	{
-		super.initFrom(generator);
+		super.initFrom(namedElem);
+		Generator generator = (Generator)namedElem;
 		m_component = generator.getComponent();
 		m_attribute = generator.getAttribute();
 	}

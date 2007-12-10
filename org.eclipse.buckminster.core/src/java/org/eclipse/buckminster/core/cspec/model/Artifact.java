@@ -14,6 +14,8 @@ import java.util.Stack;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
@@ -83,6 +85,12 @@ public class Artifact extends Attribute
 			Utils.addAttribute(attrs, ATTR_TYPE, m_type);
 		if(m_base != null)
 			Utils.addAttribute(attrs, ATTR_BASE, m_base.toPortableString());
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createArtifactBuilder();
 	}
 
 	@Override

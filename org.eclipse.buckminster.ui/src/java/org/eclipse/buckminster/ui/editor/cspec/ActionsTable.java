@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * @author Karel Brezina
@@ -51,7 +53,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private Text m_actorNameText;
 	private Button m_alwaysCheck;
 	private Button m_assignConsoleSupportCheck;
-	private Button m_enabledCheck;
+	private Text m_actionFilter;
 	private Text m_prodAliasText;
 	private Text m_prodBaseText;
 	
@@ -121,9 +123,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_assignConsoleSupportCheck = UiUtils.createCheckButton(geComposite, null, null);
 		m_assignConsoleSupportCheck.addSelectionListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(geComposite, "Enabled:", 1, 0, SWT.NONE);
-		m_enabledCheck = UiUtils.createCheckButton(geComposite, null, null);
-		m_enabledCheck.addSelectionListener(FIELD_LISTENER);
+		UiUtils.createGridLabel(geComposite, "Filter:", 1, 0, SWT.NONE);
+		m_actionFilter = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_actionFilter.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, "Prerequisites Alias:", 1, 0, SWT.NONE);
 		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
@@ -313,7 +315,21 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		builder.setActorName(UiUtils.trimmedValue(m_actorNameText));
 		builder.setAlways(m_alwaysCheck.getSelection());
 		builder.setAssignConsoleSupport(m_assignConsoleSupportCheck.getSelection());
-		builder.setEnabled(m_enabledCheck.getSelection());
+		String filterStr = UiUtils.trimmedValue(m_actionFilter);
+		if(filterStr != null)
+		{
+			try
+			{
+				builder.setFilter(FilterUtils.createFilter(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+		else
+			builder.setFilter(null);
+
 		builder.setProductAlias(UiUtils.trimmedValue(m_prodAliasText));
 		
 		String prodBasePathString = UiUtils.trimmedValue(m_prodBaseText);
@@ -430,9 +446,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_actorNameText.setText(TextUtils.notNullString(builder.getActorName()));
 		m_alwaysCheck.setSelection(builder.isAlways());
 		m_assignConsoleSupportCheck.setSelection(builder.isAssignConsoleSupport());
-		m_enabledCheck.setSelection(builder.isEnabled());
+		m_actionFilter.setText(TextUtils.notNullString(builder.getFilter()));
 		m_prodAliasText.setText(TextUtils.notNullString(builder.getProductAlias()));
-		
+
 		IPath prodBasePath = builder.getProductBase();		
 		m_prodBaseText.setText(
 				TextUtils.notNullString(prodBasePath == null ?
@@ -501,7 +517,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_actorNameText.setEnabled(enabled);
 		m_alwaysCheck.setEnabled(enabled);
 		m_assignConsoleSupportCheck.setEnabled(enabled);
-		m_enabledCheck.setEnabled(enabled);
+		m_actionFilter.setEnabled(enabled);
 		m_prodAliasText.setEnabled(enabled);
 		m_prodBaseText.setEnabled(enabled);
 		m_actorPropertiesEditor.setEnabled(enabled);

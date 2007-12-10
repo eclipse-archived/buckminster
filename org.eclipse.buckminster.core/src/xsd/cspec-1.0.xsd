@@ -65,7 +65,7 @@
 	<complexType name="ComponentRequest">
 		<annotation>
 			<documentation>
-				A reference to a component that this component is dependent on.
+				A resolution request for another component
 			</documentation>
 		</annotation>
 		<attribute
@@ -87,16 +87,6 @@
 			</annotation>
 		</attribute>
 		<attribute
-			name="category"
-			type="string"
-			use="optional">
-			<annotation>
-				<documentation>
-					Deprecated. Category concept is merged into the component type.
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute
 			name="versionDesignator"
 			type="string"
 			use="optional">
@@ -110,6 +100,16 @@
 			use="optional">
 			<annotation>
 				<documentation>The type of versions used in the version designator</documentation>
+			</annotation>
+		</attribute>
+		<attribute
+			name="category"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Category concept is merged into the component type.
+				</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
@@ -202,6 +202,10 @@
 			type="string"
 			use="optional" />
 		<attribute
+			name="platformFilter"
+			type="string"
+			use="optional"/>
+		<attribute
 			name="shortDesc"
 			type="string"
 			use="optional" />
@@ -233,21 +237,12 @@
 	<complexType name="Dependency">
 		<complexContent>
 			<extension base="cs:ComponentRequest">
-				<sequence>
-					<element name="obtainedFrom" type="cs:ObtainedFrom" minOccurs="0" maxOccurs="1"/>
-				</sequence>
+				<attribute
+					name="filter"
+					type="string"
+					use="optional" />
 			</extension>
 		</complexContent>
-	</complexType>
-	<complexType name="ObtainedFrom">
-		<attribute
-			name="attribute"
-			type="string"
-			use="required" />
-		<attribute
-			name="component"
-			type="string"
-			use="required" />
 	</complexType>
 	<complexType name="Action">
 		<sequence>
@@ -328,15 +323,6 @@
 			</annotation>
 		</attribute>
 		<attribute
-			name="enabled"
-			type="boolean"
-			use="optional"
-			default="true">
-			<annotation>
-				<documentation>Used to turn on/off the action</documentation>
-			</annotation>
-		</attribute>
-		<attribute
 			name="always"
 			type="boolean"
 			use="optional"
@@ -354,6 +340,25 @@
 				<documentation>
 					Used to tell the framework if it should assign the actor a stream it can print to
 				</documentation>
+			</annotation>
+		</attribute>
+		<attribute
+			name="filter"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					LDAP filter controlling if this action is enabled or disabled
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute
+			name="enabled"
+			type="boolean"
+			use="optional"
+			default="true">
+			<annotation>
+				<documentation>Deprecated and ignored</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
@@ -590,7 +595,7 @@
 								maxOccurs="unbounded">
 								<element
 									name="dependency"
-									type="cs:ComponentRequest" />
+									type="cs:Dependency" />
 								<element
 									name="remove"
 									type="cs:Remove" />

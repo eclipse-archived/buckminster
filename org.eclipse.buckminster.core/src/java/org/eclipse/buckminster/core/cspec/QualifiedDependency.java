@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
@@ -21,10 +22,18 @@ import org.eclipse.core.runtime.CoreException;
 public class QualifiedDependency
 {
 	private final ComponentRequest m_request;
+
 	private final Set<String> m_attributes;
-	
+
 	public QualifiedDependency(ComponentRequest request, Collection<String> attributes)
 	{
+		if(request instanceof Dependency)
+			//
+			// We don't want the filter at this point
+			//
+			request = new ComponentRequest(request.getName(), request.getComponentTypeID(), request
+					.getVersionDesignator());
+
 		m_request = request;
 		m_attributes = UUIDKeyed.createUnmodifiableSet(attributes);
 	}
@@ -45,11 +54,30 @@ public class QualifiedDependency
 
 		Collection<String> attrs = advice.getAttributes();
 		if(attrs.size() > 0)
+		{
 			change = true;
+			if(advice.isPrune() && m_attributes.size() > 0 && !m_attributes.containsAll(attrs))
+			{
+				HashSet<String> pruned = new HashSet<String>();
+				for(String attrName : attrs)
+					if(m_attributes.contains(attrName))
+						pruned.add(attrName);
+
+				if(pruned.size() == 0)
+					//
+					// We don't want anything from this cspec
+					//
+					return null;
+
+				attrs = pruned;
+			}
+		}
 		else
 			attrs = m_attributes;
 
-		return change ? new QualifiedDependency(request, attrs) : this;
+		return change
+				? new QualifiedDependency(request, attrs)
+				: this;
 	}
 
 	public final Set<String> getAttributeNames()
@@ -64,7 +92,7 @@ public class QualifiedDependency
 			return true;
 		if(!(o instanceof QualifiedDependency))
 			return false;
-		
+
 		QualifiedDependency that = (QualifiedDependency)o;
 		return m_request.equals(that.m_request) && m_attributes.equals(that.m_attributes);
 	}
@@ -91,12 +119,15 @@ public class QualifiedDependency
 	}
 
 	/**
-	 * Merges the version designator and the attributes of the new dependency with the current
-	 * one. The method will return this instance if the merge is a no-op.
-	 * @param newQDep the new qualified depenency
+	 * Merges the version designator and the attributes of the new dependency with the current one. The method will
+	 * return this instance if the merge is a no-op.
+	 * 
+	 * @param newQDep
+	 *            the new qualified depenency
 	 * @return This instance or a new instance if modifications where necessary.
-	 * @throws CoreException if the qualification is in conflict with the previously
-	 * defined dependency with respect to its version designator
+	 * @throws CoreException
+	 *             if the qualification is in conflict with the previously defined dependency with respect to its
+	 *             version designator
 	 */
 	public QualifiedDependency mergeDependency(QualifiedDependency newQDep) throws CoreException
 	{

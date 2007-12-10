@@ -27,10 +27,12 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.metadata.parser.BillOfMaterialsParser;
 import org.eclipse.buckminster.core.metadata.parser.DepNodeParser;
 import org.eclipse.buckminster.core.metadata.parser.MaterializationParser;
 import org.eclipse.buckminster.core.metadata.parser.ResolutionParser;
+import org.eclipse.buckminster.core.metadata.parser.WorkspaceBindingParser;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.mspec.parser.MaterializationSpecParser;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -161,6 +163,12 @@ public class ParserFactory implements IParserFactory
 	throws SAXException
 	{
 		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
+	}
+
+	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating)
+	throws SAXException
+	{
+		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
 	}
 
 	private synchronized List<ParserExtension> getParserExtensions(String ...parserIds)

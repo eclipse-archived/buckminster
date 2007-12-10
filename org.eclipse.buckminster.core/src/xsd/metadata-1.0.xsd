@@ -6,9 +6,12 @@
 	listed above, as the Initial Contributor under such license. The text of
 	such license is available at www.eclipse.org.
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:md="http://www.eclipse.org/buckminster/MetaData-1.0"
-	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
-	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:md="http://www.eclipse.org/buckminster/MetaData-1.0"
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
+	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="http://www.eclipse.org/buckminster/MetaData-1.0">
 	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" />
@@ -23,12 +26,16 @@
 		<complexContent>
 			<extension base="md:BOMNode">
 				<sequence>
-					<element name="idwrapper" type="md:IDWrapper" minOccurs="0" maxOccurs="unbounded" />
+					<element name="idwrapper" type="md:IDWrapper"
+						minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
-				<attribute name="topNodeId" type="com:uuid" use="optional" />
-				<attribute name="componentQueryId" type="com:uuid" use="required" />
-				<attribute name="timestamp" type="string" use="required" />
-				
+				<attribute name="topNodeId" type="com:uuid"
+					use="optional" />
+				<attribute name="componentQueryId" type="com:uuid"
+					use="required" />
+				<attribute name="timestamp" type="string"
+					use="required" />
+
 				<!--  For backward compatibility -->
 				<attribute name="id" type="com:uuid" use="optional" />
 			</extension>
@@ -50,8 +57,10 @@
 	<element name="resolution" type="md:Resolution" />
 	<complexType name="Resolution">
 		<sequence>
-			<element name="request" type="cs:ComponentRequest" minOccurs="1" maxOccurs="1" />
-			<element name="versionMatch" type="md:VersionMatch" minOccurs="0" maxOccurs="1" />
+			<element name="request" type="cs:ComponentRequest"
+				minOccurs="1" maxOccurs="1" />
+			<element name="versionMatch" type="md:VersionMatch"
+				minOccurs="0" maxOccurs="1" />
 		</sequence>
 		<attribute name="attributes" type="string" use="optional" />
 		<attribute name="cspecId" type="com:uuid" use="required" />
@@ -67,7 +76,8 @@
 		<!-- Deprecated. For backward compatiblity with 0.1.0 -->
 		<attribute name="version" type="string" use="optional" />
 		<attribute name="versionType" type="string" use="optional" />
-		<attribute name="fixedVersionSelector" type="string" use="optional" />
+		<attribute name="fixedVersionSelector" type="string"
+			use="optional" />
 	</complexType>
 	<element name="resolvedNode" type="md:ResolvedNode" />
 	<complexType name="VersionMatch">
@@ -83,19 +93,25 @@
 		<complexContent>
 			<extension base="md:BOMNode">
 				<sequence>
-					<element maxOccurs="unbounded" minOccurs="0" name="child" type="md:ElementRef" />
+					<element maxOccurs="unbounded" minOccurs="0"
+						name="child" type="md:ElementRef" />
 				</sequence>
-				<attribute name="resolutionId" type="com:uuid" use="required" />
+				<attribute name="resolutionId" type="com:uuid"
+					use="required" />
 			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="GeneratorNode">
 		<complexContent>
 			<extension base="md:BOMNode">
-				<attribute name="declaringCSpecId" type="com:uuid" use="required" />
-				<attribute name="attribute" type="string" use="required" />
-				<attribute name="component" type="string" use="optional" />
-				<attribute name="generates" type="string" use="required" />
+				<attribute name="declaringCSpecId" type="com:uuid"
+					use="required" />
+				<attribute name="attribute" type="string"
+					use="required" />
+				<attribute name="component" type="string"
+					use="optional" />
+				<attribute name="generates" type="string"
+					use="required" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -107,8 +123,10 @@
 		<complexContent>
 			<extension base="md:BOMNode">
 				<sequence>
-					<element maxOccurs="1" minOccurs="1" name="component" type="cs:ComponentRequest" />
-					<element maxOccurs="unbounded" minOccurs="0" name="attribute">
+					<element maxOccurs="1" minOccurs="1"
+						name="component" type="cs:ComponentRequest" />
+					<element maxOccurs="unbounded" minOccurs="0"
+						name="attribute">
 						<complexType>
 							<attribute name="name" use="required" />
 						</complexType>
@@ -124,18 +142,22 @@
 		<complexContent>
 			<extension base="md:MaterializationDirective">
 				<sequence>
-					<element name="mspecNode" type="md:MaterializationNode" minOccurs="0" maxOccurs="unbounded" />
+					<element name="mspecNode"
+						type="md:MaterializationNode" minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
 				<attribute name="name" type="string" use="required" />
-				<attribute name="shortDesc" type="string" use="optional" />
+				<attribute name="shortDesc" type="string"
+					use="optional" />
 				<attribute name="url" type="com:URL">
 					<annotation>
 						<documentation>
-							A URL appointing the BillOfMaterials or ComponentQuery to materialize
+							A URL appointing the BillOfMaterials or
+							ComponentQuery to materialize
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="maxParallelJobs" type="int" use="optional"/>
+				<attribute name="maxParallelJobs" type="int"
+					use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -144,65 +166,88 @@
 		<complexContent>
 			<extension base="md:MaterializationDirective">
 				<sequence>
-					<element name="unpack" type="md:Unpack" minOccurs="0" maxOccurs="1" />
+					<element name="unpack" type="md:Unpack"
+						minOccurs="0" maxOccurs="1" />
 				</sequence>
-				<attribute name="namePattern" type="string" use="required">
+				<attribute name="namePattern" type="string"
+					use="required">
 					<annotation>
 						<documentation>
-							A regular expression pattern that will be matched against component names. The matching
-							occurs in the order that the nodes are declared. The first node that matches a given
-							component is used. No further matching takes place once a node is found.
+							A regular expression pattern that will be
+							matched against component names. The
+							matching occurs in the order that the nodes
+							are declared. The first node that matches a
+							given component is used. No further matching
+							takes place once a node is found.
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="leafArtifact" type="string" use="optional">
+				<attribute name="leafArtifact" type="string"
+					use="optional">
 					<annotation>
 						<documentation>
-							The name of the file system artifact (file or folder) to materialize. This name
-							is optional and normally derived from the remote location.
+							The name of the file system artifact (file
+							or folder) to materialize. This name is
+							optional and normally derived from the
+							remote location.
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="componentType" type="string" use="optional">
+				<attribute name="componentType" type="string"
+					use="optional">
 					<annotation>
 						<documentation>
-							If set, this node will only match components of this type.
+							If set, this node will only match components
+							of this type.
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="category" type="string" use="optional">
+				<attribute name="category" type="string"
+					use="optional">
 					<annotation>
 						<documentation>
-							Deprecated. Category concept is merged into the component type.
+							Deprecated. Category concept is merged into
+							the component type.
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="resourcePath" type="string" use="optional">
+				<attribute name="resourcePath" type="string"
+					use="optional">
 					<annotation>
 						<documentation>
-							Resource path. Only used when bound to a workspace. Typically used when resolving conflicts
-							between equally named features and bundles.
+							Resource path. Only used when bound to a
+							workspace. Typically used when resolving
+							conflicts between equally named features and
+							bundles.
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="exclude" type="boolean" use="optional">
-					<annotation>
-						<documentation>If set, matched components will be excluded.</documentation>
-					</annotation>
-				</attribute>
-				<attribute name="bindingNamePattern" type="string" use="optional">
+				<attribute name="exclude" type="boolean"
+					use="optional">
 					<annotation>
 						<documentation>
-							A replacement pattern matched against the component name when creating a workspace project name.
-							Must be used in combination with bindingNameReplacement
+							If set, matched components will be excluded.
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="bindingNameReplacement" type="string" use="optional">
+				<attribute name="bindingNamePattern" type="string"
+					use="optional">
 					<annotation>
 						<documentation>
-							A replacement string that produces the resulting project name from a name matched by pattern
-							bindingNamePattern.
+							A replacement pattern matched against the
+							component name when creating a workspace
+							project name. Must be used in combination
+							with bindingNameReplacement
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="bindingNameReplacement" type="string"
+					use="optional">
+					<annotation>
+						<documentation>
+							A replacement string that produces the
+							resulting project name from a name matched
+							by pattern bindingNamePattern.
 						</documentation>
 					</annotation>
 				</attribute>
@@ -211,18 +256,22 @@
 	</complexType>
 
 	<complexType name="Unpack">
-		<attribute name="expand" type="boolean" use="optional" default="true">
+		<attribute name="expand" type="boolean" use="optional"
+			default="true">
 			<annotation>
 				<documentation>
-					Indicates that the materializer should expand the artifact as part of the unpack.
+					Indicates that the materializer should expand the
+					artifact as part of the unpack.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="suffix" type="string" use="optional">
 			<annotation>
 				<documentation>
-					The suffix to be assumed when a suffix cannot be derived from the resource locator appoints
-					the remote resource. This suffix controls the choice of unpacker.
+					The suffix to be assumed when a suffix cannot be
+					derived from the resource locator appoints the
+					remote resource. This suffix controls the choice of
+					unpacker.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -230,47 +279,52 @@
 
 	<complexType name="MaterializationDirective">
 		<sequence>
-			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
+			<element name="documentation" type="com:Documentation"
+				minOccurs="0" maxOccurs="1" />
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<element name="property" type="com:PropertyConstant" />
-				<element name="propertyElement" type="com:PropertyElement" />
+				<element name="propertyElement"
+					type="com:PropertyElement" />
 			</choice>
 		</sequence>
-		<attribute name="installLocation" type="string" use="optional">
+		<attribute name="installLocation" type="string"
+			use="optional">
 			<annotation>
 				<documentation>
-					Path to where the component will be installed. In a node, this path can be relative to the global
-					path. In case the component is represented by a single file, this path denotes that file and not the
-					folder where the file resides.
+					Path to where the component will be installed. In a
+					node, this path can be relative to the global path.
+					In case the component is represented by a single
+					file, this path denotes that file and not the folder
+					where the file resides.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="workspaceLocation" type="string" use="optional">
+		<attribute name="workspaceLocation" type="string"
+			use="optional">
 			<annotation>
 				<documentation>
-					Path to the designated workspace. Only in effect for materializers that has a conceptual understanding
-					of a workspace. Defaults to the installLocation. In a node, this path can be relative to the global
-					path.
+					Path to the designated workspace. Only in effect for
+					materializers that has a conceptual understanding of
+					a workspace. Defaults to the installLocation. In a
+					node, this path can be relative to the global path.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="materializer" type="string" use="optional">
 			<annotation>
 				<documentation>
-					The materializer to use. Possible values includes &quot;filesystem&quot;, &quot;workspace&quot;, and
-					&quot;site.mirror&quot; but other might be added through the buckminster.materializers extension
+					The materializer to use. Possible values includes
+					&quot;filesystem&quot;, &quot;workspace&quot;, and
+					&quot;site.mirror&quot; but other might be added
+					through the buckminster.materializers extension
 					point.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="conflictResolution" type="md:ConflictResolution" use="optional" />
+		<attribute name="conflictResolution"
+			type="md:ConflictResolution" use="optional" />
 	</complexType>
 
-	<element name="workspaceBinding" type="md:WorkspaceBinding" />
-	<complexType name="WorkspaceBinding">
-		<attribute name="materializationId" type="com:uuid" use="required" />
-		<attribute name="workspaceRelativePath" type="string" use="required" />
-	</complexType>
 	<element name="materialization" type="md:Materialization" />
 	<complexType name="Materialization">
 		<attribute name="location" type="string" use="required" />
@@ -279,12 +333,31 @@
 		<attribute name="category" type="string" use="optional">
 			<annotation>
 				<documentation>
-					Deprecated. Category concept is merged into the component type.
+					Deprecated. Category concept is merged into the
+					component type.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="version" type="string" use="optional" />
 		<attribute name="versionType" type="string" use="optional" />
+	</complexType>
+
+	<element name="workspaceBinding" type="md:WorkspaceBinding" />
+	<complexType name="WorkspaceBinding">
+		<complexContent>
+			<extension base="md:Materialization">
+				<sequence>
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element name="property"
+							type="com:PropertyConstant" />
+					</choice>
+				</sequence>
+				<attribute name="workspaceLocation" type="string"
+					use="required" />
+				<attribute name="workspaceRelativePath" type="string"
+					use="required" />
+			</extension>
+		</complexContent>
 	</complexType>
 
 	<simpleType name="ConflictResolution">

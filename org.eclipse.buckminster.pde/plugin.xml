@@ -129,4 +129,11 @@
           description="Sets the locale of the PDE target platform"
           name="targetNL"/>
  </extension>
+ <extension
+       point="org.eclipse.buckminster.core.targetPlatformProviders">
+    <targetPlatform
+          class="org.eclipse.buckminster.pde.internal.PDETargetPlatform"
+          priority="10">
+    </targetPlatform>
+ </extension>
 </plugin>

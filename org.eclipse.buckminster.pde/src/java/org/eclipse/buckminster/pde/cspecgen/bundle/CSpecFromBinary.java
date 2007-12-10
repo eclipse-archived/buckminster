@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.core.plugin.ISharedPluginModel;
+import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.bundle.BundlePluginBase;
 import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.osgi.framework.Constants;
@@ -51,13 +52,11 @@ public class CSpecFromBinary extends CSpecGenerator
 {
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi";
 
-	private final ICatalogReader m_reader;
 	private final IPluginBase m_plugin;
 
 	public CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IPluginBase plugin)
 	{
-		super(cspecBuilder);
-		m_reader = reader;
+		super(cspecBuilder, reader);
 		m_plugin = plugin;
 	}
 
@@ -76,7 +75,7 @@ public class CSpecFromBinary extends CSpecGenerator
 		IPluginImport[] imports = m_plugin.getImports();
 		boolean isFragment = m_plugin.getPluginModel().isFragmentModel();
 
-		ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
+		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
@@ -87,7 +86,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			//
 			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName())))
 			{
-				ComponentRequest sysDep = new ComponentRequest(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null);
+				Dependency sysDep = new Dependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null, null);
 				if(!query.skipComponent(sysDep))
 					cspec.addDependency(sysDep);
 			}
@@ -108,7 +107,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			if(pluginId.equals("system.bundle"))
 				continue;
 
-			ComponentRequest dependency = createComponentRequest(pluginImport, IComponentType.OSGI_BUNDLE);
+			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(query.skipComponent(dependency) || !addDependency(dependency))
 				continue;
 
@@ -183,9 +182,13 @@ public class CSpecFromBinary extends CSpecGenerator
 					}
 				}
 			}
+
 			String bundleClassPath = null;
 			if(bundle != null)
+			{
 				bundleClassPath = bundle.getHeader(Constants.BUNDLE_CLASSPATH);
+				setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
+			}
 
 			if(bundleClassPath == null)
 				classpath.addSelfRequirement();

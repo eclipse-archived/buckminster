@@ -62,6 +62,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.update.core.Utilities;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -474,6 +475,12 @@ public class CorePlugin extends LogAwarePlugin
 		performForcedActivations();
 		MetadataSynchronizer.setUp();
 		MaterializationJob.setUp();
+
+		// This isn't actually shutting down. It will take care
+		// of cleaning up what wasn't cleaned if the update manager
+		// shut down in a non standard way the last time.
+		//
+		Utilities.shutdown();
 	}
 
 	/**

@@ -90,9 +90,11 @@ public class InstallerJob extends WorkspaceJob
 		{
 			AbstractMaterializer.performInstallActions(bom, m_context, MonitorUtils.subMonitor(monitor, 100));
 		}
-		catch(Exception e)
+		catch(CoreException e)
 		{
-			m_context.addException(bom.getRequest(), BuckminsterException.wrap(e).getStatus());
+			if(!m_context.isContinueOnError())
+				throw e;
+			m_context.addException(bom.getRequest(), e.getStatus());
 		}
 		finally
 		{

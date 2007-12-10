@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -77,6 +78,7 @@ public class WorkspaceBindTask
 		//
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
 		qbld.setRootRequest(new ComponentRequest(projDesc.getName(), null, null));
+		qbld.setPlatformAgnostic(true);
 		ComponentQuery query = qbld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(query);
 		NodeQuery topQuery = context.getRootNodeQuery();
@@ -85,8 +87,9 @@ public class WorkspaceBindTask
 		Resolution resolution = LocalResolver.fromPath(topQuery, projectPath, null);
 
 		Materialization mat = new Materialization(projectPath, resolution.getComponentIdentifier());
-		resolution.store();
-		mat.store();
+		StorageManager sm = StorageManager.getDefault();
+		resolution.store(sm);
+		mat.store(sm);
 
 		BillOfMaterials bom = BillOfMaterials.create(new ResolvedNode(topQuery, resolution), query);
 		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();

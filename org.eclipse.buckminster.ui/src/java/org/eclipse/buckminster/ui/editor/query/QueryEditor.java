@@ -280,7 +280,9 @@ public class QueryEditor extends EditorPart
 
 	private HashMap<String, Control> m_nodesHash;
 
-	private Button m_useInstalled;
+	private Button m_useTargetPlatform;
+
+	private Button m_useWorkspace;
 
 	private Button m_useMaterialization;
 
@@ -838,8 +840,11 @@ public class QueryEditor extends EditorPart
 		EditorUtils.createHeaderLabel(kuComposite, "Resolution Scope", 2);
 
 		UiUtils.createGridLabel(kuComposite, "Target Platform:", 1, 0, SWT.NONE);
-		m_useInstalled = UiUtils.createCheckButton(kuComposite, null, null);
-		m_useInstalled.addSelectionListener(m_compoundModifyListener);
+		m_useTargetPlatform = UiUtils.createCheckButton(kuComposite, null, null);
+		m_useTargetPlatform.addSelectionListener(m_compoundModifyListener);
+		UiUtils.createGridLabel(kuComposite, "Workspace:", 1, 0, SWT.NONE);
+		m_useWorkspace = UiUtils.createCheckButton(kuComposite, null, null);
+		m_useWorkspace.addSelectionListener(m_compoundModifyListener);
 		UiUtils.createGridLabel(kuComposite, "Materialization:", 1, 0, SWT.NONE);
 		m_useMaterialization = UiUtils.createCheckButton(kuComposite, null, null);
 		m_useMaterialization.addSelectionListener(m_compoundModifyListener);
@@ -1087,7 +1092,8 @@ public class QueryEditor extends EditorPart
 		m_mutableLevel.setEnabled(enableRest);
 		m_sourceLevel.setEnabled(enableRest);
 
-		m_useInstalled.setEnabled(enableRest);
+		m_useTargetPlatform.setEnabled(enableRest);
+		m_useWorkspace.setEnabled(enableRest);
 		m_useMaterialization.setEnabled(enableRest);
 		m_useResolutionService.setEnabled(enableRest);
 
@@ -1504,9 +1510,10 @@ public class QueryEditor extends EditorPart
 			m_mutableLevel.select(m_mutableLevel.indexOf(node.getMutableLevel().toString()));
 			m_sourceLevel.select(m_sourceLevel.indexOf(node.getSourceLevel().toString()));
 			m_skipComponent.setSelection(node.skipComponent());
-			m_useInstalled.setSelection(node.useInstalled());
-			m_useMaterialization.setSelection(node.useMaterialization());
-			m_useResolutionService.setSelection(node.isUseResolutionScheme());
+			m_useTargetPlatform.setSelection(node.isUseTargetPlatform());
+			m_useWorkspace.setSelection(node.isUseWorkspace());
+			m_useMaterialization.setSelection(node.isUseMaterialization());
+			m_useResolutionService.setSelection(node.isUseRemoteResolution());
 	
 			m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
 			m_spacePath.setText(TextUtils.notNullString(TextUtils.concat(node.getSpacePath(), ",")));
@@ -1699,13 +1706,14 @@ public class QueryEditor extends EditorPart
 				? SourceLevel.values()[idx]
 				: null);
 
-		node.setUseInstalled(m_useInstalled.getSelection());
+		node.setUseTargetPlatform(m_useTargetPlatform.getSelection());
+		node.setUseWorkspace(m_useWorkspace.getSelection());
 		node.setUseMaterialization(m_useMaterialization.getSelection());
-		node.setUseResolutionScheme(m_useResolutionService.getSelection());
+		node.setUseRemoteResolution(m_useResolutionService.getSelection());
 
 		node.setBranchTagPath(VersionSelector.fromPath(UiUtils.trimmedValue(m_branchTagPath)));
 		node.setSpacePath(TextUtils.split(UiUtils.trimmedValue(m_spacePath), ","));
-		
+
 		tmp = UiUtils.trimmedValue(m_revision);
 		if(tmp != null)
 		{

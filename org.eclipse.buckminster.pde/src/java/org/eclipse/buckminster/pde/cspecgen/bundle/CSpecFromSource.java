@@ -26,7 +26,7 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -48,6 +48,7 @@ import org.eclipse.pde.core.build.IBuildModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
+import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.bundle.BundlePlugin;
 import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.osgi.framework.Constants;
@@ -107,12 +108,9 @@ public class CSpecFromSource extends CSpecGenerator
 
 	private final IPluginBase m_plugin;
 
-	private final ICatalogReader m_reader;
-
 	public CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IPluginBase plugin, IBuildModel buildModel)
 	{
-		super(cspecBuilder);
-		m_reader = reader;
+		super(cspecBuilder, reader);
 		m_plugin = plugin;
 		m_buildModel = buildModel;
 	}
@@ -132,7 +130,7 @@ public class CSpecFromSource extends CSpecGenerator
 		IClasspathEntry[] classPath;
 		try
 		{
-			classPath = ClasspathReader.getClasspath(m_reader, MonitorUtils.subMonitor(monitor, 45));
+			classPath = ClasspathReader.getClasspath(getReader(), MonitorUtils.subMonitor(monitor, 45));
 		}
 		catch(CoreException e)
 		{
@@ -235,6 +233,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(m_plugin instanceof BundlePlugin)
 		{
 			IBundle bundle = ((BundlePlugin)m_plugin).getBundle();
+			setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
 			bundleClassPath = bundle.getHeader(Constants.BUNDLE_CLASSPATH);
 			if(bundleClassPath != null)
 			{
@@ -396,7 +395,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(imports == null || imports.length == 0)
 			return;
 
-		ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
+		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 
 		GroupBuilder fullClean = cspec.getRequiredGroup(ATTRIBUTE_FULL_CLEAN);
@@ -408,7 +407,7 @@ public class CSpecFromSource extends CSpecGenerator
 			if(pluginId.equals("system.bundle"))
 				continue;
 
-			ComponentRequest dependency = createComponentRequest(pluginImport, IComponentType.OSGI_BUNDLE);
+			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(query.skipComponent(dependency) || !addDependency(dependency))
 				continue;
 
@@ -420,7 +419,7 @@ public class CSpecFromSource extends CSpecGenerator
 				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, optional);
 		}
 	}
-
+	
 	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
 			throws CoreException
 	{

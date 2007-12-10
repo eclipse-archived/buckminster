@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.product"
       label="Buckminster Product (Incubation)"
-      version="0.2.0.qualifier"
+      version="0.3.0.qualifier"
       provider-name="Eclipse.org">
 
    <description>
@@ -10,7 +10,7 @@
    </description>
 
    <copyright>
-      (c) 2004-2005
+      (c) 2004-2008
 Thomas Hallgren, Kenneth Olwing, Mitch Sonies
 Pontus Rydin, Nils Unden, Peer Torngren
 The code, documentation and other materials contained herein have been

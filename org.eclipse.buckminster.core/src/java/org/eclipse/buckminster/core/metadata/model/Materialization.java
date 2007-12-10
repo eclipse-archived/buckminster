@@ -13,7 +13,6 @@ import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -34,8 +33,6 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 	public static final String TAG = "materialization";
 
 	public static final String ATTR_LOCATION = "location";
-	public static final String ATTR_RESOLUTION_ID = "resolutionId";
-
 	public static final int SEQUENCE_NUMBER = 3;
 
 	private final IPath m_componentLocation;
@@ -69,9 +66,9 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 		return WorkspaceInfo.getResolution(m_componentIdentifier);
 	}
 
-	public boolean isPersisted() throws CoreException
+	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
-		return getStorage().contains(this);
+		return sm.getMaterializations().contains(this);
 	}
 
 	/**
@@ -92,16 +89,16 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 		return (list == null) ? destFile.length() > 0 : list.length > 0;
 	}
 
-	public synchronized void remove() throws CoreException
+	public synchronized void remove(StorageManager sm) throws CoreException
 	{
 		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
-		getStorage().removeElement(getId());
+		sm.getMaterializations().removeElement(getId());
 	}
 
-	public void store() throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
 		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
-		getStorage().putElement(this);
+		sm.getMaterializations().putElement(this);
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException
@@ -114,6 +111,15 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
 		AttributesImpl attrs = new AttributesImpl();
+		addAttributes(attrs);
+		String qName = Utils.makeQualifiedName(prefix, localName);
+		receiver.startElement(namespace, localName, qName, attrs);
+		emitElements(receiver, namespace, prefix);
+		receiver.endElement(namespace, localName, qName);
+	}
+
+	void addAttributes(AttributesImpl attrs)
+	{
 		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
 		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
 		String tmp = m_componentIdentifier.getComponentTypeID();
@@ -126,14 +132,10 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
 		}
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		receiver.endElement(namespace, localName, qName);
 	}
 
-	private ISaxableStorage<Materialization> getStorage() throws CoreException
+	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
-		return StorageManager.getDefault().getMaterializations();
 	}
 }
 

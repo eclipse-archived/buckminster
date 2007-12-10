@@ -60,7 +60,7 @@ public abstract class AbstractTestCase extends TestCase
 		queryBld.setResourceMapURL(getRMAP());
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
 		node.setNamePattern(Pattern.compile("(subclipse)|(buckminster)"));
-		node.setUseInstalled(false);
+		node.setUseTargetPlatform(false);
 		queryBld.addAdvisorNode(node);
 		ComponentQuery query = queryBld.createComponentQuery();
 		return new MainResolver(new ResolutionContext(query));

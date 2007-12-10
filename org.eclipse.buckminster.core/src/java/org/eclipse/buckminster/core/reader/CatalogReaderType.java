@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,12 @@ public abstract class CatalogReaderType extends AbstractReaderType
 		if(segCount > 1)
 			path = path.removeFirstSegments(segCount - 1);
 		return path.addTrailingSeparator();
+	}
+
+	@Override
+	public String getRecommendedMaterializer()
+	{
+		return IMaterializer.WORKSPACE;
 	}
 
 	public boolean isFileReader()

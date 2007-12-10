@@ -18,7 +18,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.ISaxableStorage;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
@@ -379,32 +378,23 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		}
 	}
 
-	public boolean isPersisted() throws CoreException
+	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
-		return getStorage().contains(this);
+		return sm.getResolutions().contains(this);
 	}
 
-	public void remove() throws CoreException
+	public void remove(StorageManager sm) throws CoreException
 	{
 		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
-		getStorage().removeElement(getId());
+		sm.getResolutions().removeElement(getId());
 	}
 
-	public void store() throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
 		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
-
-		if(m_cspec == null)
-			getCSpec();
-		else
-			m_cspec.store();
-
-		if(m_provider == null)
-			getProvider();
-		else
-			m_provider.store();
-
-		getStorage().putElement(this);
+		m_cspec.store(sm);
+		m_provider.store(sm);
+		sm.getResolutions().putElement(this);
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException
@@ -456,10 +446,5 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		result.append(", ");
 		m_versionMatch.toString(result);
 		return result.toString();
-	}
-
-	private ISaxableStorage<Resolution> getStorage() throws CoreException
-	{
-		return StorageManager.getDefault().getResolutions();
 	}
 }

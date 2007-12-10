@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -62,6 +63,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 			MonitorUtils.complete(monitor);
 			return m_versionMatch;
 		}
+	}
+
+	public String getRecommendedMaterializer()
+	{
+		return IMaterializer.FILE_SYSTEM;
 	}
 
 	public static IReaderType getTypeForResource(IResource resource) throws CoreException
@@ -147,7 +153,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
-	public void shareProject(IProject project, Resolution cr, MaterializationContext context, IProgressMonitor monitor)
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
 	throws CoreException
 	{
 	}

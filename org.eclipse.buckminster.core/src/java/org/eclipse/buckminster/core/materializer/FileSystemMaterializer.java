@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -55,6 +56,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 		HashMap<ComponentIdentifier, Resolution> resolutionPerID = new HashMap<ComponentIdentifier, Resolution>();
 
 		Logger logger = CorePlugin.getLogger();
+		StorageManager sm = StorageManager.getDefault();
 		monitor.beginTask(null, 1000);
 		try
 		{
@@ -71,7 +73,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			{
 				try
 				{
-					cr.store();
+					cr.store(sm);
 					ComponentIdentifier ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
 					IPath artifactLocation = context.getArtifactLocation(cr);
@@ -92,7 +94,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 									continue;
 								}
 							}
-							mat.remove();
+							mat.remove(sm);
 						}
 
 						mat = new Materialization(artifactLocation, ci);
@@ -115,7 +117,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							logger.info("Skipping materialization of " + ci + ". Instead reusing what's already at "
 									+ artifactLocation);
 	
-							mat.store();
+							mat.store(sm);
 							adjustedMinfos.add(mat);
 							MonitorUtils.worked(prepMon, 10);
 							continue;
@@ -206,7 +208,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
 							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
-						mi.store();
+						mi.store(sm);
 
 						if(reader instanceof IFileReader)
 							((IFileReader)reader).materialize(MaterializerEndPoint.create(location, cr, context),
@@ -225,7 +227,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							location.append(".mtlock").toFile().delete();
 
 						if(!success)
-							mi.remove();
+							mi.remove(sm);
 					}
 				}
 			}

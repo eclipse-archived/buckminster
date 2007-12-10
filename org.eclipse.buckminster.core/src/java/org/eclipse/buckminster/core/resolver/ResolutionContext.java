@@ -63,6 +63,14 @@ public class ResolutionContext extends RMContext
 	}
 
 	@Override
+	public synchronized Map<String,String> getBindingProperties()
+	{
+		return (m_parentContext != null)
+			? m_parentContext.getBindingProperties()
+			: super.getBindingProperties();
+	}
+
+	@Override
 	public ComponentQuery getComponentQuery()
 	{
 		return m_componentQuery;

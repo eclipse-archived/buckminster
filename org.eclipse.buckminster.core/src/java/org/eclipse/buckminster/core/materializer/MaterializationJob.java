@@ -159,7 +159,7 @@ public class MaterializationJob extends Job
 			}
 		}
 	}	
-	
+
 	protected Queue<MaterializerJob> prepareJobs(IProgressMonitor monitor, BillOfMaterials bom) throws CoreException
 	{
 		CorePlugin corePlugin = CorePlugin.getDefault();
@@ -167,7 +167,7 @@ public class MaterializationJob extends Job
 		MaterializationSpec mspec = m_context.getMaterializationSpec();
 		for(Resolution cr : bom.findMaterializationCandidates(m_context, mspec))
 		{
-			String materializer = mspec.getMaterializerID(cr.getComponentIdentifier());
+			String materializer = mspec.getMaterializerID(cr);
 			List<Resolution> crs = resPerMat.get(materializer);
 			if(crs == null)
 			{
@@ -266,7 +266,10 @@ public class MaterializationJob extends Job
 
 		IStatus status = m_context.getStatus();
 		if(!m_context.isContinueOnError() && status.getSeverity() == IStatus.ERROR)
+		{
+			m_context.clearStatus();
 			throw new CoreException(status);
+		}
 	}
 
 	protected MaterializationContext getMaterializationContext()

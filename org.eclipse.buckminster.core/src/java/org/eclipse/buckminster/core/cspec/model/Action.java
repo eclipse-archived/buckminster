@@ -22,6 +22,9 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
+import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
@@ -32,6 +35,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -45,7 +49,7 @@ public class Action extends Attribute
 
 	public static final String ATTR_ALWAYS = "always";
 
-	public static final String ATTR_ENABLED = "enabled";
+	public static final String ATTR_FILTER = "filter";
 
 	public static final String ATTR_ASSIGN_CONSOLE_SUPPORT = "assignConsoleSupport";
 
@@ -61,8 +65,6 @@ public class Action extends Attribute
 
 	public static final boolean ALWAYS_DEFAULT = false;
 
-	public static final boolean ENABLED_DEFAULT = true;
-
 	public static final boolean ASSIGN_CONSOLE_SUPPORT_DEFAULT = true;
 
 	private final Set<IPath> m_products;
@@ -73,7 +75,7 @@ public class Action extends Attribute
 
 	private final String m_actorName;
 
-	private final boolean m_enabled;
+	private final Filter m_filter;
 
 	private final boolean m_always;
 
@@ -97,7 +99,7 @@ public class Action extends Attribute
 		m_actorName = builder.getActorName();
 		m_prerequisites = new Prerequisites(this, builder.getPrerequisitesBuilder());
 		m_always = builder.isAlways();
-		m_enabled = builder.isEnabled();
+		m_filter = builder.getFilter();
 		m_assignConsoleSupport = builder.isAssignConsoleSupport();
 		m_productAlias = builder.getProductAlias();
 		m_productBase = builder.getProductBase();
@@ -137,7 +139,7 @@ public class Action extends Attribute
 		for(Prerequisite prereq : getPrerequisites(null))
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, ctx);
-			if(prereq.isFilter())
+			if(prereq.isPatternFilter())
 			{
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();
@@ -224,9 +226,9 @@ public class Action extends Attribute
 	}
 
 	@Override
-	public boolean isEnabled(IModelCache ctx)
+	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		return m_enabled && super.isEnabled(ctx);
+		return super.isEnabled(ctx) && FilterUtils.isMatch(m_filter, ctx.getProperties());
 	}
 
 	public boolean assignConsoleSupport()
@@ -256,12 +258,18 @@ public class Action extends Attribute
 		super.addAttributes(attrs);
 		if(m_actorName != null)
 			Utils.addAttribute(attrs, ATTR_ACTOR, m_actorName);
-		if(m_enabled != ENABLED_DEFAULT)
-			Utils.addAttribute(attrs, ATTR_ENABLED, Boolean.toString(m_enabled));
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 		if(m_always != ALWAYS_DEFAULT)
-			Utils.addAttribute(attrs, ATTR_ALWAYS, Boolean.toString(m_enabled));
+			Utils.addAttribute(attrs, ATTR_ALWAYS, Boolean.toString(m_always));
 		if(m_assignConsoleSupport != ASSIGN_CONSOLE_SUPPORT_DEFAULT)
 			Utils.addAttribute(attrs, ATTR_ASSIGN_CONSOLE_SUPPORT, Boolean.toString(m_assignConsoleSupport));
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createActionBuilder();
 	}
 
 	@Override
@@ -307,6 +315,11 @@ public class Action extends Attribute
 	public IPath getExpandedDefaultBase(Map<String, String> local)
 	{
 		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public IPath getExpandedBase(IPath productBase, Map<String, String> local)

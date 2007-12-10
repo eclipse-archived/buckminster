@@ -142,14 +142,15 @@
 			type="string"
 			use="optional" />
 		<attribute
-			name="mutable"
-			type="boolean"
-			use="optional" />
-		<attribute
 			name="source"
 			type="boolean"
 			use="optional" />
 
+		<!-- Deprecated -->
+		<attribute
+			name="mutable"
+			type="boolean"
+			use="optional"/>
 		<!-- Deprecated -->
 		<attribute
 			name="componentType"

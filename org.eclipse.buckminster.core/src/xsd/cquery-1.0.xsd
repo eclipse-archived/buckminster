@@ -18,7 +18,7 @@
 	<complexType name="ComponentQuery">
 		<sequence>
 			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
-			<element name="rootRequest" type="cs:ComponentRequest" minOccurs="1" maxOccurs="1"></element>
+			<element name="rootRequest" type="cs:ComponentRequest" minOccurs="1" maxOccurs="1" />
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<element name="property" type="com:PropertyConstant" />
 				<element name="propertyElement" type="com:PropertyElement" />
@@ -56,13 +56,6 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="category" type="string" use="optional">
-			<annotation>
-				<documentation>
-					Deprecated. Category concept is merged into the component type.
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="overlayFolder" type="string" use="optional">
 			<annotation>
 				<documentation>
@@ -82,13 +75,9 @@
 		<attribute name="prune" type="boolean" use="optional">
 			<annotation>
 				<documentation>
-					If true, prune the external dependency list to include only those dependencies that have purposes
+					If true, prune the external dependency list to include only those dependencies that are traversed
+					using the given attributes
 				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="mutableLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
-			<annotation>
-				<documentation>The mutable level used when the feasibility of a provider is determined.</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="sourceLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
@@ -106,11 +95,11 @@
 				<documentation>Skip components that are matched altogether if this attribute is true</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useInstalled" type="boolean" default="true" use="optional">
+		<attribute name="useTargetPlatform" type="boolean" default="true" use="optional">
 			<annotation>
 				<documentation>
-					Regulates how to treat components that are matched by installed features and plug-ins. Setting this
-					attribute to false will cause the resolver to omit installed components.
+					Regulates how to treat components that are present in the target platform. Setting this
+					attribute to false will cause the resolver to omit target platform components.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -122,7 +111,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="useProject" type="boolean" default="true" use="optional">
+		<attribute name="useWorkspace" type="boolean" default="true" use="optional">
 			<annotation>
 				<documentation>
 					Regulates how the resolver will treat workspace projects that fulfills the component request.
@@ -151,6 +140,32 @@
 		<attribute name="revision" type="long" use="optional" />
 		<attribute name="timestamp" type="string" use="optional" />
 		<attribute name="resolutionPrio" type="string" use="optional" />
+		<attribute name="useProject" type="boolean" default="true" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Replaced by useWorkspace.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useInstalled" type="boolean" default="true" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Replaced by useTargetPlatform
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="category" type="string" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Category concept is merged into the component type.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="mutableLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
+			<annotation>
+				<documentation>Deprecated. No longer used</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 	<simpleType name="Feasibility">
 		<restriction base="string">

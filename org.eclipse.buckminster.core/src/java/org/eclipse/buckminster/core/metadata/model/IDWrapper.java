@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -29,7 +28,7 @@ public class IDWrapper implements ISaxableElement, Comparable<IDWrapper>
 	private final UUID m_id;
 	private final IUUIDKeyed m_wrapped;
 
-	public IDWrapper(IUUIDKeyed wrapped) throws CoreException
+	public IDWrapper(IUUIDKeyed wrapped)
 	{
 		this(wrapped.getId(), wrapped);
 	}

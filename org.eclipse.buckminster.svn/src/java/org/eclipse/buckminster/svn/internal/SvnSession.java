@@ -16,10 +16,14 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -28,7 +32,6 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -78,6 +81,28 @@ public class SvnSession
 		private final SVNUrl m_svnURL;
 		private final String m_user;
 		private final String m_password;
+
+		public RepositoryAccess(String str) throws MalformedURLException
+		{
+			int idx = str.indexOf('^');
+			String user = null;
+			String passwd = null;
+			if(idx >= 0)
+			{
+				user = str.substring(idx + 1);
+				str = str.substring(0, idx);
+				idx = user.indexOf('@');
+				if(idx >= 0)
+				{
+					passwd = user.substring(idx + 1);
+					user = user.substring(0, idx);
+				}
+			}
+			m_svnURL = new SVNUrl(str);
+			m_user = user;
+			m_password = passwd;
+		}
+
 		public RepositoryAccess(SVNUrl svnURL, String user, String password)
 		{
 			m_svnURL = svnURL;
@@ -117,6 +142,23 @@ public class SvnSession
 			if(m_password != null)
 				hash = hash * 31 + m_password.hashCode();
 			return hash;
+		}
+		@Override
+		public String toString()
+		{
+			if(m_user == null)
+				return m_svnURL.toString();
+
+			StringBuilder bld = new StringBuilder();
+			bld.append(m_svnURL.toString());
+			bld.append('^');
+			bld.append(m_user);
+			if(m_password != null)
+			{
+				bld.append('@');
+				bld.append(m_password);
+			}
+			return bld.toString();
 		}
 	}
 
@@ -319,19 +361,85 @@ public class SvnSession
 
 	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
 
-	private static final UUID CACHE_UNKNOWN_ROOTS = UUID.randomUUID();
+	private static final String UNKNOWN_ROOT_PREFIX = SvnSession.class.getPackage().getName() + ".root.";
 
-	@SuppressWarnings("unchecked")
-	private static Set<RepositoryAccess> getUnknownRoots(Map<UUID, Object> ctxUserCache)
+	private static void addUnknownRoot(Map<String,String> properties, RepositoryAccess ra)
 	{
-		synchronized(ctxUserCache)
+		synchronized(properties)
 		{
-			Set<RepositoryAccess> unknownRoots = (Set<RepositoryAccess>)ctxUserCache.get(CACHE_UNKNOWN_ROOTS);
-			if(unknownRoots == null)
+			int maxNum = -1;
+			String raStr = ra.toString();
+			for(Map.Entry<String, String> entries : properties.entrySet())
 			{
-				unknownRoots = Collections.synchronizedSet(new HashSet<RepositoryAccess>());
-				ctxUserCache.put(CACHE_UNKNOWN_ROOTS, unknownRoots);
+				String key = entries.getKey();
+				if(key.startsWith(UNKNOWN_ROOT_PREFIX))
+				{
+					int lastDot = key.lastIndexOf('.');
+					if(lastDot < 0)
+						continue;
+					
+					try
+					{
+						int keyNum = Integer.parseInt(key.substring(lastDot + 1));
+						if(maxNum < keyNum)
+							maxNum = keyNum;
+					}
+					catch(NumberFormatException e)
+					{
+						continue;
+					}
+					if(entries.getValue().equals(raStr))
+						//
+						// Entry is already present. Don't recreate
+						//
+						return;
+				}
+			}	
+			properties.put(UNKNOWN_ROOT_PREFIX + (maxNum + 1), raStr);
+		}
+	}
+
+	private static void clearUnknownRoots(Map<String,String> properties)
+	{
+		synchronized(properties)
+		{
+			Iterator<String> keys = properties.keySet().iterator();
+			while(keys.hasNext())
+			{
+				String key = keys.next();
+				if(key.startsWith(UNKNOWN_ROOT_PREFIX))
+					keys.remove();
 			}
+		}
+	}
+
+	private static List<RepositoryAccess> getUnknownRoots(Map<String,String> properties)
+	{
+		synchronized(properties)
+		{
+			List<RepositoryAccess> unknownRoots = null;
+			for(Map.Entry<String, String> entries : properties.entrySet())
+			{
+				String key = entries.getKey();
+				if(key.startsWith(UNKNOWN_ROOT_PREFIX))
+				{
+					RepositoryAccess ra;
+					try
+					{
+						ra = new RepositoryAccess(entries.getValue());
+					}
+					catch(MalformedURLException e)
+					{
+						// Bogus entry
+						continue;
+					}
+					if(unknownRoots == null)
+						unknownRoots = new ArrayList<RepositoryAccess>();
+					unknownRoots.add(ra);
+				}
+			}
+			if(unknownRoots == null)
+				unknownRoots = Collections.emptyList();
 			return unknownRoots;
 		}
 	}
@@ -564,7 +672,7 @@ public class SvnSession
 				if(bestMatch == null)
 				{
 					m_clientAdapter = svnPlugin.createSVNClient();
-					getUnknownRoots(userCache).add(new RepositoryAccess(ourRoot, m_username, m_password));
+					addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username, m_password));
 				}
 				else
 				{
@@ -907,20 +1015,20 @@ public class SvnSession
 		return bld.toString();
 	}
 
-	static void createCommonRoots(MaterializationContext context) throws CoreException
+	static void createCommonRoots(RMContext context) throws CoreException
 	{
-		Set<RepositoryAccess> unknownRoots = SvnSession.getUnknownRoots(context.getUserCache());
+		List<RepositoryAccess> unknownRoots = SvnSession.getUnknownRoots(context.getBindingProperties());
 		if(unknownRoots.size() == 0)
 			return;
-		
-		Set<RepositoryAccess> sourceRoots = unknownRoots;
+
+		Collection<RepositoryAccess> sourceRoots = unknownRoots;
 		if(unknownRoots.size() > 1)
 		{
 			// Get all common roots with a segment count of at least 1
 			//
 			for(;;)
 			{
-				Set<RepositoryAccess> commonRoots = getCommonRootsStep(sourceRoots);
+				Collection<RepositoryAccess> commonRoots = getCommonRootsStep(sourceRoots);
 				if(commonRoots == sourceRoots)
 					break;
 
@@ -956,12 +1064,12 @@ public class SvnSession
 				// Repository already exists
 			}
 		}
-		unknownRoots.clear();
+		clearUnknownRoots(context.getBindingProperties());
 	}
 
-	private static Set<RepositoryAccess> getCommonRootsStep(Set<RepositoryAccess> source) throws CoreException
+	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source) throws CoreException
 	{
-		Set<RepositoryAccess> commonRoots = null;
+		Collection<RepositoryAccess> commonRoots = null;
 		for(RepositoryAccess repoAccess : source)
 		{
 			SVNUrl url = repoAccess.getSvnURL();

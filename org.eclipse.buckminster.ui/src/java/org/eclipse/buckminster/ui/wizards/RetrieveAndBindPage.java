@@ -363,7 +363,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				int globalIdx = m_globalMaterializer.getSelectionIndex();
 				String globalId = (globalIdx >= 0) ? m_globalMaterializer.getItem(globalIdx) : "";
-				useWorkspace = globalId.length() == 0 || IMaterializer.WORKSPACE.equals(globalId);
+				useWorkspace = IMaterializer.WORKSPACE.equals(globalId);
 			}
 			else
 				useWorkspace = IMaterializer.WORKSPACE.equals(id);
@@ -841,6 +841,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				wizard.invalidateMaterializationContext();
 				getComponentTable().setInput(wizard.getBOM().findAll(null));
 				setSelectedComponentValues(getSelectedComponent());
+				setGlobalValues();
 			}
 		}
 		catch(CoreException e)
@@ -889,7 +890,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				? ""
 				: p.toOSString());
 
-		if(materializer == null || IMaterializer.WORKSPACE.equals(materializer))
+		if(IMaterializer.WORKSPACE.equals(materializer))
 		{
 			p = mspec.getWorkspaceLocation();
 			m_globalWorkspaceLocation.setText(p == null

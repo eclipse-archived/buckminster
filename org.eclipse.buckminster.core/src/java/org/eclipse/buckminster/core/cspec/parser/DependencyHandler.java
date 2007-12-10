@@ -10,9 +10,12 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.NamedElementBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -46,12 +49,24 @@ public class DependencyHandler extends CSpecElementHandler
 		{
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
+		String filter = getOptionalStringValue(attrs, Dependency.ATTR_FILTER);
+		if(filter != null)
+		{
+			try
+			{
+				builder.setFilter(FilterUtils.createFilter(filter));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator());
+			}
+		}
 	}
 
 	@Override
 	protected NamedElementBuilder createBuilder()
 	{
-		return this.getCSpecBuilder().createDependencyBuilder();
+		return getCSpecBuilder().createDependencyBuilder();
 	}
 
 	public ComponentRequest createDependency()

@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.core.runtime.IPath;
+import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
@@ -31,7 +32,7 @@ public class ActionBuilder extends AttributeBuilder
 
 	private boolean m_assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
 
-	private boolean m_enabled = Action.ENABLED_DEFAULT;
+	private Filter m_filter;
 
 	private final PrerequisitesBuilder m_prerequisitesBuilder;;
 
@@ -94,7 +95,7 @@ public class ActionBuilder extends AttributeBuilder
 		m_actorName = null;
 		m_always = Action.ALWAYS_DEFAULT;
 		m_assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
-		m_enabled = Action.ENABLED_DEFAULT;
+		m_filter = null;
 		m_actorProperties.clear();
 		m_prerequisitesBuilder.clear();
 		m_productPaths.clear();
@@ -119,6 +120,11 @@ public class ActionBuilder extends AttributeBuilder
 	public ExpandingProperties getActorProperties()
 	{
 		return m_actorProperties;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
@@ -176,7 +182,7 @@ public class ActionBuilder extends AttributeBuilder
 		m_actorProperties.putAll(action.getActorProperties(), true);
 		m_always = action.isAlways();
 		m_assignConsoleSupport = action.assignConsoleSupport();
-		m_enabled = action.isEnabled(null);
+		m_filter = action.getFilter();
 		m_prerequisitesBuilder.initFrom(action.getPrerequisiteGroup());
 		m_productAlias = action.getProductAlias();
 		m_productBase = action.getProductBase();
@@ -194,11 +200,6 @@ public class ActionBuilder extends AttributeBuilder
 	public boolean isAssignConsoleSupport()
 	{
 		return m_assignConsoleSupport;
-	}
-
-	public boolean isEnabled()
-	{
-		return m_enabled;
 	}
 
 	@Override
@@ -227,9 +228,9 @@ public class ActionBuilder extends AttributeBuilder
 		m_assignConsoleSupport = assignConsoleSupport;
 	}
 
-	public void setEnabled(boolean enabled)
+	public void setFilter(Filter filter)
 	{
-		m_enabled = enabled;
+		m_filter = filter;
 	}
 
 	public void setPrerequisites(Group prerequisites)
