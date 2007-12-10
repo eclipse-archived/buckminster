@@ -332,7 +332,7 @@ public class LocalCache
 		boolean matchingDigest;
 		if(remoteDigest == null)
 		{
-			MavenPlugin.getLogger().warning("Unable to find Digest for " + remoteURL);
+			MavenPlugin.getLogger().warning("Unable to find Digest for %s", remoteURL);
 			matchingDigest = false;
 		}
 		else
@@ -347,8 +347,7 @@ public class LocalCache
 				// due to replace of the actual jar
 				//
 				MavenPlugin.getLogger().warning(
-						"Digest for " + remoteURL + " still doesn't match after " + MAX_FAILURES
-								+ " download attempts. Corrupt repo?");
+					"Digest for %s still doesn't match after %d download attempts. Corrupt repo?", remoteURL, new Integer(MAX_FAILURES));
 
 			try
 			{

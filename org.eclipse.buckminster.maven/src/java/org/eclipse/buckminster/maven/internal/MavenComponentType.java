@@ -368,7 +368,7 @@ public class MavenComponentType extends AbstractComponentType
 		parentPath = mrt.getPomPath(entry, vm);
 
 		MavenPlugin.getLogger().debug(
-				"Getting POM information for parent: " + groupId + " - " + artifactId + " at path " + parentPath);
+				"Getting POM information for parent: %s - %s at path %s", groupId, artifactId, parentPath);
 		Document parentDoc = reader.getPOMDocument(entry, vm, parentPath, new NullProgressMonitor());
 		if(parentDoc == null)
 			return;
