@@ -101,7 +101,7 @@ public class VersionQualifierTask
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().warning("Unable to qualify version", e);
+				CorePlugin.getLogger().warning(e, "Unable to qualify version");
 			}
 		}
 		else

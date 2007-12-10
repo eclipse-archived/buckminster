@@ -86,7 +86,7 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 		}
 		catch(CoreException e)
 		{
-			CorePlugin.getLogger().error(e.getMessage(), e);
+			CorePlugin.getLogger().error(e, e.getMessage());
 			throw e;
 		}
 		finally

@@ -168,19 +168,19 @@ public class AntActor extends AbstractActor
 		catch(Error e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			CorePlugin.getLogger().error(t.toString(), t);
+			CorePlugin.getLogger().error(t, t.toString());
 			throw e;
 		}
 		catch(RuntimeException e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			CorePlugin.getLogger().error(t.toString(), t);
+			CorePlugin.getLogger().error(t, t.toString());
 			throw e;
 		}
 		catch(CoreException e)
 		{
 			Throwable t = BuckminsterException.unwind(e);
-			CorePlugin.getLogger().error(t.toString(), t);
+			CorePlugin.getLogger().error(t, t.toString());
 			throw e;
 		}
 		finally
