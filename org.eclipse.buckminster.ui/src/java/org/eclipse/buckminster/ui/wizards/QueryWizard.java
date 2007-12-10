@@ -68,7 +68,7 @@ public class QueryWizard extends Wizard implements INewWizard
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().error(e.toString(), e);
+				CorePlugin.getLogger().error(e, e.toString());
 			}
 		}
 	}
@@ -127,7 +127,7 @@ public class QueryWizard extends Wizard implements INewWizard
 			BuckminsterException.deeplyPrint(t, p, false);
 			p.flush();
 			String msg = new String(bld.toByteArray());
-			CorePlugin.getLogger().error(msg, t);
+			CorePlugin.getLogger().error(t, msg);
 			((WizardPage)getContainer().getCurrentPage()).setErrorMessage(msg);
 		}
 		return false;

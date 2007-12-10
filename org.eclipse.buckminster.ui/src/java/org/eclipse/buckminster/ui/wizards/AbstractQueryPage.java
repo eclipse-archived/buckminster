@@ -54,7 +54,7 @@ public abstract class AbstractQueryPage extends WizardPage
 
 	protected final void displayException(CoreException e)
 	{
-		CorePlugin.getLogger().warning(e.getMessage(), e);
+		CorePlugin.getLogger().warning(e, e.getMessage());
 		setErrorMessage(e.getMessage());
 	}
 

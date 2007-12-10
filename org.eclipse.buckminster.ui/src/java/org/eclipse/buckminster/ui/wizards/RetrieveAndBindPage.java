@@ -127,7 +127,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				catch(Exception e)
 				{
 					lbl = "ERROR";
-					CorePlugin.getLogger().error(e.getMessage(), e);
+					CorePlugin.getLogger().error(e, e.getMessage());
 				}
 				break;
 			default:
@@ -802,7 +802,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		{
 			CoreException t = BuckminsterException.wrap(e);
 			String msg = "Unable to save file " + path;
-			CorePlugin.getLogger().error(msg, t);
+			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
 		}
 	}

@@ -335,7 +335,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				}
 				catch(Exception e)
 				{
-					CorePlugin.getLogger().error(e.toString(), e);
+					CorePlugin.getLogger().error(e, e.toString());
 					// We don't care to display exceptions here
 				}
 			}

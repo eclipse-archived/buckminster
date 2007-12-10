@@ -594,7 +594,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		{
 			CoreException t = BuckminsterException.wrap(e);
 			String msg = "Unable to save file " + path;
-			CorePlugin.getLogger().error(msg, t);
+			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
 		}
 	}

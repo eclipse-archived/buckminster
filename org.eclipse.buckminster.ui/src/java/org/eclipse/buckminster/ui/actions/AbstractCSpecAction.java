@@ -82,7 +82,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 			catch(CoreException e)
 			{
 				resource = null;
-				CorePlugin.getLogger().warning(e.getMessage(), e);
+				CorePlugin.getLogger().warning(e, e.getMessage());
 			}
 		}
 	}

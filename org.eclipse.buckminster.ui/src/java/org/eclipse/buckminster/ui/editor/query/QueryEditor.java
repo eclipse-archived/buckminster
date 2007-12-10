@@ -1797,7 +1797,7 @@ public class QueryEditor extends EditorPart
 		{
 			CoreException t = BuckminsterException.wrap(e);
 			String msg = "Unable to save file " + path;
-			CorePlugin.getLogger().error(msg, t);
+			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getSite().getShell(), null, msg, t.getStatus());
 		}
 		catch(InterruptedException e)

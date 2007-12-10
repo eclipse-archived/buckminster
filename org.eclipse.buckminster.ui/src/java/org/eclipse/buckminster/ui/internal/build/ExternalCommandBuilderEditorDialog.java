@@ -307,8 +307,8 @@ public class ExternalCommandBuilderEditorDialog extends Dialog implements Extern
 		}
 		catch (CoreException ce)
 		{
-			m_controls.m_currentCommandLine.setText("(error : " + ce.toString() + ")");
-			CorePlugin.getLogger().info(String.format("Error when getting commandline (%s)", ce.toString()));
+			m_controls.m_currentCommandLine.setText("(error : " + ce + ")");
+			CorePlugin.getLogger().info("Error when getting commandline (%s)", ce);
 		}
 	}
 

@@ -276,7 +276,7 @@ public class VersionDesignator extends Widgetin
 		}
 		catch(CoreException e)
 		{
-			CorePlugin.getLogger().error(e.getMessage(), e);
+			CorePlugin.getLogger().error(e, e.getMessage());
 			ErrorDialog.openError(m_parentComposite.getShell(), null, null, e.getStatus());
 			return null;
 		}
