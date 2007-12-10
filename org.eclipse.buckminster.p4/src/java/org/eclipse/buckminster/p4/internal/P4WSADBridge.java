@@ -97,7 +97,7 @@ public abstract class P4WSADBridge
 		Logger logger = P4Plugin.getLogger();
 		try
 		{
-			logger.debug("Sharing project " + project.getName() + " to p4");
+			logger.debug("Sharing project %s to p4", project.getName());
 			s_manageProjectMethod.invoke(null, new Object[] {
 					project, s_connectionInfoCtor.newInstance(new Object[] { bld.toString() }) });
 		}
@@ -105,7 +105,7 @@ public abstract class P4WSADBridge
 		{
 			// We don't consider this an error but it's worth a warning.
 			//
-			logger.warning("Problems when sharing project to P4WSAD: " + e.getMessage());
+			logger.warning("Problems when sharing project to P4WSAD: %s", e.getMessage());
 		}
 	}
 }

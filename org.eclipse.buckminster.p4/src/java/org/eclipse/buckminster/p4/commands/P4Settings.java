@@ -63,9 +63,8 @@ public class P4Settings extends AbstractCommand
 
 	private File m_file;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(REMOVE);
 		appendHere.add(LIST);
