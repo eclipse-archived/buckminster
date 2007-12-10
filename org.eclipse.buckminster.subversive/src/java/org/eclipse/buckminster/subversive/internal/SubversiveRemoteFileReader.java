@@ -158,9 +158,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 
 		try
 		{
-			if(logger.isDebugEnabled())
-				logger.debug(String.format("Reading remote file %s", key));
-
+			logger.debug("Reading remote file %s", key);
 			ISVNConnector proxy = m_session.getSVNProxy();
 			destFile = this.createTempFile();
 			output = new FileOutputStream(destFile);
@@ -173,8 +171,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 				//
 				if(m_session.getDirEntry(url, revision, null) == null)
 				{
-					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote file not found %s", key));
+					logger.debug("Remote file not found %s", key);
 					throw new FileNotFoundException(url.toString());
 				}
 			}

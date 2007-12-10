@@ -903,8 +903,7 @@ public class SubversiveSession
 			ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 100);
 			try
 			{
-				if(logger.isDebugEnabled())
-					logger.debug(String.format("Listing remote folder %s", key));
+				logger.debug("Listing remote folder %s", key);
 				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision), ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, false, svnMon);
 				if(list == null || list.length == 0)
 				{
