@@ -302,7 +302,7 @@ public class ServerPane extends NodeListPrefPane
 
 	void exportServer()
 	{
-		FileDialog dlg = new FileDialog(this.getShell(), SWT.SAVE);
+		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
 		dlg.setFilterExtensions(new String[] { '*' + Server.FILE_EXTENSION });
 		final String location = dlg.open();
 		if(location == null)
@@ -317,8 +317,8 @@ public class ServerPane extends NodeListPrefPane
 		{
 			CoreException t = BuckminsterException.wrap(e);
 			String msg = "Unable to save file " + location;
-			P4Plugin.getLogger().error(msg, t);
-			ErrorDialog.openError(this.getShell(), null, msg, t.getStatus());
+			P4Plugin.getLogger().error(t, msg);
+			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
 		}
 	}
 }
