@@ -63,7 +63,7 @@ public class BMClasspathInitializer extends ClasspathContainerInitializer implem
 			new IJavaProject[] { javaProject },
 			new IClasspathContainer[] { newCP },
 			null);
-		JdtPlugin.getLogger().debug(containerPath + " container initialized for project " + project.getName());
+		JdtPlugin.getLogger().debug("%s container initialized for project %s", containerPath, project.getName());
 	}
 
 	public void resourceChanged(IResourceChangeEvent event)
