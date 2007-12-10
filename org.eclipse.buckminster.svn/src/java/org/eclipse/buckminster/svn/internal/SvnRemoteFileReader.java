@@ -201,9 +201,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		{
 			byte[] buf = new byte[0x1000];
 
-			if(logger.isDebugEnabled())
-				logger.debug(String.format("Reading remote file %s", key));
-
+			logger.debug("Reading remote file %s", key);
 			input = clientAdapter.getContent(url, revision);
 			int bytesRead = input.read(buf);
 
@@ -213,8 +211,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				//
 				if(clientAdapter.getDirEntry(url, revision) == null)
 				{
-					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote file not found %s", key));
+					logger.debug("Remote file not found %s", key);
 					throw new FileNotFoundException(url.toString());
 				}
 			}

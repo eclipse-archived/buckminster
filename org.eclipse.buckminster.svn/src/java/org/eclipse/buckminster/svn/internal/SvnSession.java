@@ -912,8 +912,7 @@ public class SvnSession
 			monitor.beginTask(null, 1);
 			try
 			{
-				if(logger.isDebugEnabled())
-					logger.debug(String.format("Obtaining remote folder %s[%s]", url, revision));
+				logger.debug("Obtaining remote folder %s[%s]", url, revision);
 				ISVNDirEntry entry = getClientAdapter().getDirEntry(url, revision);
 				m_dirCache.put(key, entry);
 				return entry;
@@ -923,8 +922,7 @@ public class SvnSession
 				String msg = e.getMessage();
 				if(msg != null && msg.toLowerCase().contains("non-existent"))
 				{
-					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote folder does not exist %s[%s]", url, revision));
+					logger.debug("Remote folder does not exist %s[%s]", url, revision);
 					m_dirCache.put(key, null);
 					return null;
 				}
@@ -949,14 +947,12 @@ public class SvnSession
 			monitor.beginTask(null, 1);
 			try
 			{
-				if(logger.isDebugEnabled())
-					logger.debug(String.format("Listing remote folder %s", key));
+				logger.debug("Listing remote folder %s", key);
 				list = m_clientAdapter.getList(url, m_revision, false);
 				monitor.worked(1);
 				if(list == null || list.length == 0)
 				{
-					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote folder had no entries %s", key));
+					logger.debug("Remote folder had no entries %s", key);
 					list = s_emptyFolder;
 				}
 				m_listCache.put(key, list);
