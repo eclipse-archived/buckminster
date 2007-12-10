@@ -57,7 +57,7 @@ public class DefaultCertificateTrustInquiry implements ICertificateTrustInquiry
 		}
 		catch(IOException ioe)
 		{
-			Buckminster.getLogger().warning("Input exception", ioe);
+			Buckminster.getLogger().warning(ioe, "Input exception");
 			return false;
 		}
 	}}

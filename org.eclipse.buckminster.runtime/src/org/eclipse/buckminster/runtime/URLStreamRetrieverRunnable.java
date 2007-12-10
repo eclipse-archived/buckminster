@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.Platform;
  */
 class URLStreamRetrieverRunnable extends Thread
 {
-	private static Map s_providers;
+	private static Map<String,IURLConnectionProvider> s_providers;
 
 	private final URL m_url;
 
@@ -53,17 +53,17 @@ class URLStreamRetrieverRunnable extends Thread
 			int idx = elems.length;
 			if(idx == 0)
 			{
-				s_providers = Collections.EMPTY_MAP;
+				s_providers = Collections.emptyMap();
 				return DefaultURLConnectionProvider.INSTANCE;
 			}
-			s_providers = new HashMap();
+			s_providers = new HashMap<String,IURLConnectionProvider>();
 			while(--idx >= 0)
 			{
 				IConfigurationElement elem = elems[idx];
-				s_providers.put(elem.getAttribute("protocol").trim().toLowerCase(), elem.createExecutableExtension("class"));
+				s_providers.put(elem.getAttribute("protocol").trim().toLowerCase(), (IURLConnectionProvider)elem.createExecutableExtension("class"));
 			}
 		}
-		IURLConnectionProvider provider = (IURLConnectionProvider)s_providers.get(url.getProtocol().toLowerCase());
+		IURLConnectionProvider provider = s_providers.get(url.getProtocol().toLowerCase());
 		if(provider == null)
 			provider = DefaultURLConnectionProvider.INSTANCE;
 		return provider;
@@ -101,6 +101,7 @@ class URLStreamRetrieverRunnable extends Thread
 		m_fileInfo = new FileInfoBuilder();
 	}
 
+	@Override
 	public void run()
 	{
 		try
@@ -142,9 +143,9 @@ class URLStreamRetrieverRunnable extends Thread
 			{
 				try
 				{
-					Class exClass = m_thrownException.getClass();
-					Constructor ctor = exClass.getConstructor(new Class[] { String.class });
-					ioe = (IOException)ctor.newInstance(new Object[] { msg });
+					Class<? extends IOException> exClass = ((IOException)m_thrownException).getClass();
+					Constructor<? extends IOException> ctor = exClass.getConstructor(new Class[] { String.class });
+					ioe = ctor.newInstance(new Object[] { msg });
 				}
 				catch(Exception e)
 				{

@@ -33,6 +33,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		s_plugin = this;
 	}
 
+	@Override
 	public void start(BundleContext context) throws Exception
 	{
 		super.start(context);
@@ -43,6 +44,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		BuckminsterPreferences.addListener(this);
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception
 	{
 		s_plugin = null;

@@ -39,7 +39,7 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		}
 		catch(BackingStoreException e)
 		{
-			Buckminster.getLogger().error(e.toString(), e);
+			Buckminster.getLogger().error(e, e.toString());
 		}
 	}
 

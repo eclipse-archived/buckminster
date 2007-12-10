@@ -53,7 +53,7 @@ public class HttpsURLConnectionProvider implements IURLConnectionProvider
 
 	private static final File CACERTS_FILE;
 
-	private static final Set s_knownCertPaths = Collections.synchronizedSet(new HashSet());
+	private static final Set<CertPath> s_knownCertPaths = Collections.synchronizedSet(new HashSet<CertPath>());
 
 	static
 	{

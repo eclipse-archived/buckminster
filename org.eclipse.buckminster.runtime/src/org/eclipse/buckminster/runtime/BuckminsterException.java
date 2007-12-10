@@ -40,6 +40,7 @@ public class BuckminsterException extends CoreException
 			super(severity, pluginId, code, message, exception);
 		}
 
+		@Override
 		protected void setMessage(String message)
 		{
 			super.setMessage(message);
@@ -75,7 +76,7 @@ public class BuckminsterException extends CoreException
 	{
 		for(;;)
 		{
-			Class tc = t.getClass();
+			Class<?> tc = t.getClass();
 
 			// We don't use instanceof operator since we want
 			// the explicit class, not subclasses.

@@ -22,6 +22,7 @@ public class MultiTeeOutputStream extends OutputStream
 		m_streams = streams;
 	}
 
+	@Override
 	public void close() throws IOException
 	{
 		// We do make sure that all streams are closed even if
@@ -48,6 +49,7 @@ public class MultiTeeOutputStream extends OutputStream
 			throw closeException;
 	}
 
+	@Override
 	public void flush() throws IOException
 	{
 		int idx = m_streams.length;
@@ -55,6 +57,7 @@ public class MultiTeeOutputStream extends OutputStream
 			m_streams[idx].flush();
 	}
 
+	@Override
 	public void write(byte[] b, int off, int len) throws IOException
 	{
 		int idx = m_streams.length;
@@ -62,6 +65,7 @@ public class MultiTeeOutputStream extends OutputStream
 			m_streams[idx].write(b, off, len);
 	}
 
+	@Override
 	public void write(byte[] b) throws IOException
 	{
 		int idx = m_streams.length;
@@ -69,6 +73,7 @@ public class MultiTeeOutputStream extends OutputStream
 			m_streams[idx].write(b);
 	}
 
+	@Override
 	public void write(int b) throws IOException
 	{
 		int idx = m_streams.length;
