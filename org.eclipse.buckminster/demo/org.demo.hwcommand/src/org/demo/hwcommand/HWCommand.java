@@ -33,9 +33,8 @@ public class HWCommand extends AbstractCommand
 		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(GOODBYE_DESCRIPTOR);
 	}
