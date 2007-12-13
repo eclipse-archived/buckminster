@@ -872,7 +872,7 @@ public abstract class FileUtils
 	public static void appendRelativeFiles(File directory, File relPath, Map<String,Long> fileNames)
 	{
 		String path = relPath.getPath();
-		File fileOrDir = new File(directory, path);
+		File fileOrDir = relPath.isAbsolute() ? relPath : new File(directory, path);
 		if(fileOrDir.isDirectory())
 		{
 			StringBuilder builder = new StringBuilder();

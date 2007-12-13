@@ -208,12 +208,12 @@ public class PerformManager implements IPerformManager
 			for(PathGroup pathGroup : pathGroups)
 			{
 				IProgressMonitor groupMonitor = MonitorUtils.subMonitor(monitor, 100);
-				
+
 				IPath[] paths = pathGroup.getPaths();
 				groupMonitor.beginTask(null, 10 * paths.length);
 				IPath base = pathGroup.getBase();
 				for(IPath path : paths)
-					refreshAndSetDerivedPath(base.append(path), alreadyRefreshed, MonitorUtils.subMonitor(
+					refreshAndSetDerivedPath(path.isAbsolute() ? path : base.append(path), alreadyRefreshed, MonitorUtils.subMonitor(
 						groupMonitor, 10));
 				groupMonitor.done();
 			}

@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -51,8 +50,6 @@ public class Artifact extends Attribute
 		m_type = type;
 		if(base != null)
 		{
-			if(base.isAbsolute())
-				throw new IllegalArgumentException("Artifact must have a relative base");
 			if(!base.hasTrailingSeparator())
 				base = base.addTrailingSeparator();
 		}
@@ -107,15 +104,13 @@ public class Artifact extends Attribute
 
 	protected IPath getExpandedBase(Map<String, String> local) throws CoreException
 	{
-		IPath root = getCSpec().getComponentLocation();
-		if(m_base != null)
-		{
-			IPath base = PerformManager.expandPath(local, m_base);
-			if(base.isAbsolute())
-				throw new BuckminsterException("Artifact base can not be absolute");
-			root = root.append(base);
-		}
-		return root;
+		if(m_base == null)
+			return getCSpec().getComponentLocation();
+
+		IPath base = PerformManager.expandPath(local, m_base);
+		return base.isAbsolute()
+			? base
+			: getCSpec().getComponentLocation().append(base);
 	}
 
 	@Override

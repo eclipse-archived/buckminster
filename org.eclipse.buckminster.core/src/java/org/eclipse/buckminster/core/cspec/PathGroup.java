@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec;
 
+import java.io.File;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -42,16 +43,19 @@ public class PathGroup
 		if(!isPrefix)
 			return false;
 
+		IPath relPath = path;
 		if(!isCompletelyEmpty)
-			path = path.removeFirstSegments(m_base.segmentCount()).setDevice(null);
+			relPath = path.removeFirstSegments(m_base.segmentCount()).setDevice(null);
 
 		// Check for exact matches or for directories that are parents to
 		// the given path.
 		//
 		for(IPath rel : m_paths)
-			if(rel.equals(path) || rel.hasTrailingSeparator() && rel.isPrefixOf(path))
+		{
+			IPath cmpPath = rel.isAbsolute() ? path : relPath;
+			if(rel.equals(cmpPath) || rel.hasTrailingSeparator() && rel.isPrefixOf(cmpPath))
 				return true;
-		
+		}
 		return false;
 	}
 
@@ -75,7 +79,9 @@ public class PathGroup
 		long firstMod = Long.MAX_VALUE;
 		while(--idx >= 0)
 		{
-			IPath absPath = m_base.append(m_paths[idx]);
+			IPath absPath = m_paths[idx];
+			if(!absPath.isAbsolute())
+				absPath = m_base.append(absPath);
 			long modTime = FileUtils.getFirstModified(absPath.toFile(), expectedCount, fileCount);
 			if(modTime < firstMod)
 			{
@@ -98,8 +104,9 @@ public class PathGroup
 			return;
 		}
 
+		File baseDir = m_base.toFile();
 		while(--idx >= 0)
-			FileUtils.appendRelativeFiles(m_base.toFile(), m_paths[idx].toFile(), fileNames);
+			FileUtils.appendRelativeFiles(baseDir, m_paths[idx].toFile(), fileNames);
 	}
 
 	public long getLastModified(long threshold, int[] fileCount)
@@ -116,7 +123,9 @@ public class PathGroup
 		int[] countBin = new int[1];
 		while(--idx >= 0)
 		{
-			IPath absPath = m_base.append(m_paths[idx]);
+			IPath absPath = m_paths[idx];
+			if(!absPath.isAbsolute())
+				absPath = m_base.append(absPath);
 			countBin[0] = 0;
 			long modTime = FileUtils.getLastModified(absPath.toFile(), threshold, countBin);
 			count += countBin[0];
