@@ -11,9 +11,11 @@
 package org.eclipse.buckminster.pde.cspecgen.bundle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -32,11 +34,16 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.ProjectDescReader;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.jdt.internal.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.core.internal.resources.LinkDescription;
+import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -81,34 +88,24 @@ public class CSpecFromSource extends CSpecGenerator
 
 	private static final IClasspathEntry[] s_emptyClasspath = new IClasspathEntry[0];
 
-	private static IPath asProjectRelativeFolder(IPath classpathEntryPath)
-	{
-		return classpathEntryPath.removeFirstSegments(1).addTrailingSeparator();
-	}
-
 	private static String getArtifactName(IPath buildOutput)
 	{
 		return PREFIX_ECLIPSE_BUILD_OUTPUT + pathToName(buildOutput);
 	}
 
-	private static IPath getDefaultOutputLocation(IClasspathEntry[] classPath)
-	{
-		for(IClasspathEntry cpe : classPath)
-		{
-			if(cpe.getContentKind() == ClasspathEntry.K_OUTPUT)
-				return asProjectRelativeFolder(cpe.getPath());
-		}
-		return null;
-	}
-
 	private static String pathToName(IPath path)
 	{
+		path = path.setDevice(null).makeRelative();
+		if(path.segmentCount() > 2)
+			path = path.removeFirstSegments(path.segmentCount() - 2);
 		return path.removeTrailingSeparator().toPortableString().replace('/', '.');
 	}
 
 	private final IBuildModel m_buildModel;
 
 	private final IPluginBase m_plugin;
+
+	private IProjectDescription m_projectDesc;
 
 	public CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IPluginBase plugin, IBuildModel buildModel)
 	{
@@ -122,9 +119,19 @@ public class CSpecFromSource extends CSpecGenerator
 	{
 		monitor.beginTask(null, 100);
 
+		boolean localReader = IReaderType.LOCAL.equals(getReader().getReaderType().getId());
+
 		CSpecBuilder cspec = getCSpec();
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		GroupBuilder fullClean = cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
+
+		if(localReader)
+			m_projectDesc = ProjectDescReader.getProjectDescription(getReader(), MonitorUtils.subMonitor(monitor, 15));
+		else
+		{
+			m_projectDesc = null;
+			MonitorUtils.worked(monitor, 15);
+		}
 
 		addImports();
 		MonitorUtils.worked(monitor, 5);
@@ -149,9 +156,12 @@ public class CSpecFromSource extends CSpecGenerator
 		//
 		ActionBuilder eclipseBuild = getAttributeEclipseBuild();
 
+		IPath[] projectRootReplacement = new IPath[1];
 		HashMap<IPath,ArtifactBuilder> eclipseBuildProducts = new HashMap<IPath, ArtifactBuilder>();
 		IPath componentHome = Path.fromPortableString(KeyConstants.ACTION_HOME_REF);
 		IPath defaultOutputLocation = null;
+		GroupBuilder ebSrcBld = null;
+		int cnt = 0;
 		for(IClasspathEntry cpe : classPath)
 		{
 			if(cpe.getEntryKind() != IClasspathEntry.CPE_SOURCE)
@@ -165,11 +175,11 @@ public class CSpecFromSource extends CSpecGenerator
 			if(output == null)
 			{
 				if(defaultOutputLocation == null)
-					defaultOutputLocation = getDefaultOutputLocation(classPath);
+					defaultOutputLocation = getDefaultOutputLocation(classPath, projectRootReplacement);
 				output = defaultOutputLocation;
 			}
 			else
-				output = asProjectRelativeFolder(output);
+				output = asProjectRelativeFolder(output, projectRootReplacement);
 
 			if(output != null)
 			{
@@ -182,13 +192,25 @@ public class CSpecFromSource extends CSpecGenerator
 				// Products use ${buckminster.output} as the default base so we need
 				// to prefix the project relative output here
 				//
-				IPath absOutput = componentHome.append(output);
-				eclipseBuildProducts.put(output,
-					eclipseBuild.addProductArtifact(
-							getArtifactName(output), false, WellKnownExports.JAVA_BINARIES, absOutput));
+				IPath base = projectRootReplacement[0];
+				if(base == null && !output.isAbsolute())
+					base = componentHome;
+
+				ArtifactBuilder ab = eclipseBuild.addProductArtifact(
+							getArtifactName(output), false, WellKnownExports.JAVA_BINARIES, base);
+				ab.addPath(output);
+				eclipseBuildProducts.put(output, ab);
 			}
-			getAttributeEclipseBuildSource(true).addPath(asProjectRelativeFolder(cpe.getPath()));
+
+			IPath cpePath = asProjectRelativeFolder(cpe.getPath(), projectRootReplacement);
+			ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE + '_' + cnt++, false, WellKnownExports.JAVA_SOURCES, projectRootReplacement[0]);
+			ab.addPath(cpePath);
+			if(ebSrcBld == null)
+				ebSrcBld = getGroupEclipseBuildSource(true);
+			ebSrcBld.addLocalPrerequisite(ab);
 		}
+		if(ebSrcBld != null)
+			normalizeGroup(ebSrcBld);
 
 		// The classpath already contains all the re-exported stuff (it was
 		// added when the imports were added). Only thing missing is the
@@ -235,6 +257,8 @@ public class CSpecFromSource extends CSpecGenerator
 			bundleClassPath = bundle.getHeader(Constants.BUNDLE_CLASSPATH);
 			if(bundleClassPath != null)
 			{
+				cnt = 0;
+				GroupBuilder eaBld = null;
 				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ",");
 				while(tokens.hasMoreTokens())
 				{
@@ -253,8 +277,17 @@ public class CSpecFromSource extends CSpecGenerator
 					// We don't know how this entry came about. Chances are it has been
 					// checked in with the source.
 					//
-					getAttributeExtraJars().addPath(new Path(token));
+					ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_BUNDLE_EXTRAJARS + '_' + cnt++, false, WellKnownExports.JAVA_BINARIES, null);
+					IPath eaPath = resolveLink(Path.fromPortableString(token), projectRootReplacement);
+					ab.setBase(projectRootReplacement[0]);
+					ab.addPath(eaPath);
+					if(eaBld == null)
+						eaBld = getGroupExtraJars();
+					eaBld.addLocalPrerequisite(ab);
 				}
+
+				if(eaBld != null)
+					normalizeGroup(eaBld);
 			}
 		}
 
@@ -262,7 +295,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// The expansion will create a new copy in a different location. In case there is no
 		// expansion, we can use the original file.
 		//
-		IPath manifestFolder = new Path(IPDEBuildConstants.MANIFEST_FOLDER).addTrailingSeparator();
+		IPath manifestFolder = resolveLink(new Path(IPDEBuildConstants.MANIFEST_FOLDER).append(MANIFEST), null).removeLastSegments(1).addTrailingSeparator();
 		AttributeBuilder manifest = null;
 		OSGiVersion version = (OSGiVersion)cspec.getVersion();
 		String versionQualifier = version.getQualifier();
@@ -334,7 +367,8 @@ public class CSpecFromSource extends CSpecGenerator
 		IBuildEntry binIncludesEntry = build.getEntry(IBuildEntry.BIN_INCLUDES);
 		if(binIncludesEntry != null)
 		{
-			ArtifactBuilder binIncludesSource = null;
+			GroupBuilder binIncludesSource = null;
+			cnt = 0;
 			for(String token : binIncludesEntry.getTokens())
 			{
 				if(BUNDLE_FILE.equalsIgnoreCase(token))
@@ -357,11 +391,19 @@ public class CSpecFromSource extends CSpecGenerator
 					continue;
 
 				if(binIncludesSource == null)
-					binIncludesSource = cspec.addArtifact(IBuildEntry.BIN_INCLUDES, false, null, null);
-				binIncludesSource.addPath(binInclude);
+					binIncludesSource = cspec.addGroup(IBuildEntry.BIN_INCLUDES, false);
+				
+				IPath biPath = resolveLink(binInclude, projectRootReplacement);
+				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false, null, projectRootReplacement[0]);
+				ab.addPath(biPath);
+				binIncludesSource.addLocalPrerequisite(ab);
 			}
+
 			if(binIncludesSource != null)
-				jarContents.addLocalPrerequisite(binIncludesSource);
+			{
+				normalizeGroup(binIncludesSource);
+				jarContents.addLocalPrerequisite(IBuildEntry.BIN_INCLUDES);
+			}
 			if(includeBuildProps)
 				jarContents.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES);
 		}
@@ -376,13 +418,15 @@ public class CSpecFromSource extends CSpecGenerator
 
 		ActionBuilder buildPlugin;
 		String jarName = m_plugin.getId() + '_' + m_plugin.getVersion() + ".jar";
-		if(IReaderType.LOCAL.equals(getReader().getReaderType().getId()) && getReader().exists(jarName, new NullProgressMonitor()))
+		IPath jarPath = Path.fromPortableString(jarName);
+		if(localReader && (getReader().exists(jarName, new NullProgressMonitor()) || getLinkDescriptions().containsKey(jarPath)))
 		{
 			buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
 			buildPlugin.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+			IPath resolvedJarPath = resolveLink(jarPath, projectRootReplacement);
 			ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false,
-					ATTRIBUTE_JAVA_BINARIES, null);
-			importedJar.addPath(Path.fromPortableString(jarName));
+					ATTRIBUTE_JAVA_BINARIES, projectRootReplacement[0]);
+			importedJar.addPath(resolvedJarPath);
 			buildPlugin.getPrerequisitesBuilder().addLocalPrerequisite(importedJar);
 		}
 		else
@@ -440,6 +484,11 @@ public class CSpecFromSource extends CSpecGenerator
 		group.addPrerequisite(pqBld);
 	}
 
+	private IPath asProjectRelativeFolder(IPath classpathEntryPath, IPath[] projectRootReplacement)
+	{
+		return resolveLink(classpathEntryPath.removeFirstSegments(1).addTrailingSeparator(), projectRootReplacement);
+	}
+
 	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build) throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
@@ -458,9 +507,9 @@ public class CSpecFromSource extends CSpecGenerator
 		// development classpath. If it is, then assume that we can use
 		// the eclipse.build to produce the needed .class files.
 		//
-		String[][] missingEntriesRet = new String[1][];
+		IPath[][] missingEntriesRet = new IPath[1][];
 		IClasspathEntry[] srcEntries = getSourceEntries(classPath, jarName, build, missingEntriesRet);
-		String[] missingEntries = missingEntriesRet[0];
+		IPath[] missingEntries = missingEntriesRet[0];
 
 		if(missingEntries.length > 0)
 		{
@@ -469,15 +518,16 @@ public class CSpecFromSource extends CSpecGenerator
 			// TODO: investigate
 			ArtifactBuilder rougeSources = cspec.addArtifact(PREFIX_ROUGE_SOURCE + jarFlatName, false,
 					WellKnownExports.JAVA_SOURCES, null);
-			for(String notFound : missingEntries)
-				rougeSources.addPath(new Path(notFound).addTrailingSeparator());
+			for(IPath notFound : missingEntries)
+				rougeSources.addPath(notFound);
 			action.addLocalPrerequisite(rougeSources);
 		}
 
 		// Remaining sources corresponds to IClasspathEntries in the development classpath
 		// so let's trust the output from the eclipse.build
 		//
-		IPath defaultOutputLocation = getDefaultOutputLocation(classPath);
+		IPath[] projectRootReplacement = new IPath[1];
+		IPath defaultOutputLocation = getDefaultOutputLocation(classPath, projectRootReplacement);
 		for(IClasspathEntry cpe : srcEntries)
 		{
 			IPath output = cpe.getOutputLocation();
@@ -488,7 +538,7 @@ public class CSpecFromSource extends CSpecGenerator
 					continue;
 			}
 			else
-				output = asProjectRelativeFolder(output);
+				output = asProjectRelativeFolder(output, projectRootReplacement);
 
 			// Several source entries might share the same output folder
 			//
@@ -520,27 +570,27 @@ public class CSpecFromSource extends CSpecGenerator
 		return eclipseBuild;
 	}
 
-	private ArtifactBuilder getAttributeEclipseBuildSource(boolean createIfMissing) throws CoreException
+	private GroupBuilder getGroupEclipseBuildSource(boolean createIfMissing) throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
-		ArtifactBuilder buildSource = cspec.getArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE);
+		GroupBuilder buildSource = cspec.getGroup(ATTRIBUTE_ECLIPSE_BUILD_SOURCE);
 		if(buildSource == null && createIfMissing)
 		{
-			buildSource = cspec.addArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE, false, WellKnownExports.JAVA_SOURCES, null);
-			getAttributeEclipseBuild().addLocalPrerequisite(buildSource);
+			buildSource = cspec.addGroup(ATTRIBUTE_ECLIPSE_BUILD_SOURCE, false);
+			getAttributeEclipseBuild().addLocalPrerequisite(ATTRIBUTE_ECLIPSE_BUILD_SOURCE);
 		}
 		return buildSource;
 	}
 
-	private ArtifactBuilder getAttributeExtraJars() throws CoreException
+	private GroupBuilder getGroupExtraJars() throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
-		ArtifactBuilder extraJars = cspec.getArtifact(ATTRIBUTE_BUNDLE_EXTRAJARS);
+		GroupBuilder extraJars = cspec.getGroup(ATTRIBUTE_BUNDLE_EXTRAJARS);
 		if(extraJars == null)
 		{
-			extraJars = cspec.addArtifact(ATTRIBUTE_BUNDLE_EXTRAJARS, false, WellKnownExports.JAVA_BINARIES, null);
-			cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES).addLocalPrerequisite(extraJars);
-			getAttributeBuildRequirements().addLocalPrerequisite(extraJars);
+			extraJars = cspec.addGroup(ATTRIBUTE_BUNDLE_EXTRAJARS, false);
+			cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES).addLocalPrerequisite(ATTRIBUTE_BUNDLE_EXTRAJARS);
+			getAttributeBuildRequirements().addLocalPrerequisite(ATTRIBUTE_BUNDLE_EXTRAJARS);
 		}
 		return extraJars;
 	}
@@ -554,25 +604,47 @@ public class CSpecFromSource extends CSpecGenerator
 		return jarContent;
 	}
 
+	private IPath getDefaultOutputLocation(IClasspathEntry[] classPath, IPath[] projectRootReplacement)
+	{
+		for(IClasspathEntry cpe : classPath)
+		{
+			if(cpe.getContentKind() == ClasspathEntry.K_OUTPUT)
+				return asProjectRelativeFolder(cpe.getPath(), projectRootReplacement);
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<IPath,LinkDescription> getLinkDescriptions()
+	{
+		Map<IPath,LinkDescription> linkDescriptors = null;
+		if(m_projectDesc instanceof ProjectDescription)
+			linkDescriptors = ((ProjectDescription)m_projectDesc).getLinks();
+		
+		if(linkDescriptors == null)
+			linkDescriptors = Collections.emptyMap();
+		return linkDescriptors;
+	}
+
 	private IClasspathEntry[] getSourceEntries(IClasspathEntry[] classPath, String jarName, IBuild build,
-			String[][] notFound)
+			IPath[][] notFound)
 	{
 		IBuildEntry srcIncl = build.getEntry(IBuildEntry.JAR_PREFIX + jarName);
 		if(srcIncl == null)
 		{
-			notFound[0] = Trivial.EMPTY_STRING_ARRAY;
+			notFound[0] = Trivial.EMPTY_PATH_ARRAY;
 			return s_emptyClasspath;
 		}
 
 		List<IClasspathEntry> cpEntries = null;
-		List<String> missingEntries = null;
+		List<IPath> missingEntries = null;
 		if(classPath == null)
 		{
 			for(String src : srcIncl.getTokens())
 			{
 				if(missingEntries == null)
-					missingEntries = new ArrayList<String>();
-				missingEntries.add(src);
+					missingEntries = new ArrayList<IPath>();
+				missingEntries.add(resolveLink(Path.fromPortableString(src).addTrailingSeparator(), null));
 			}
 		}
 		else
@@ -580,13 +652,13 @@ public class CSpecFromSource extends CSpecGenerator
 			for(String src : srcIncl.getTokens())
 			{
 				boolean found = false;
-				IPath srcPath = new Path(src).addTrailingSeparator();
+				IPath srcPath = resolveLink(Path.fromPortableString(src), null).addTrailingSeparator();
 				for(IClasspathEntry ce : classPath)
 				{
 					if(ce.getEntryKind() != IClasspathEntry.CPE_SOURCE)
 						continue;
 
-					IPath cePath = asProjectRelativeFolder(ce.getPath());
+					IPath cePath = asProjectRelativeFolder(ce.getPath(), null);
 					if(cePath.equals(srcPath))
 					{
 						found = true;
@@ -599,12 +671,103 @@ public class CSpecFromSource extends CSpecGenerator
 				if(!found)
 				{
 					if(missingEntries == null)
-						missingEntries = new ArrayList<String>();
-					missingEntries.add(src);
+						missingEntries = new ArrayList<IPath>();
+					missingEntries.add(srcPath);
 				}
 			}
 		}
-		notFound[0] = missingEntries == null ? Trivial.EMPTY_STRING_ARRAY : missingEntries.toArray(new String[missingEntries.size()]);
+		notFound[0] = missingEntries == null ? Trivial.EMPTY_PATH_ARRAY : missingEntries.toArray(new IPath[missingEntries.size()]);
 		return cpEntries == null ? s_emptyClasspath : cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
+	}
+
+	private void normalizeGroup(GroupBuilder bld) throws CoreException
+	{
+		if(bld == null)
+			return;
+		
+		List<PrerequisiteBuilder> preqs = bld.getPrerequisites();
+		if(preqs.size() == 0)
+			return;
+
+		boolean singleCanReplace = true;
+		CSpecBuilder cspec = getCSpec();
+		HashMap<IPath,ArtifactBuilder> byBase = new HashMap<IPath, ArtifactBuilder>();
+		for(PrerequisiteBuilder pq : new ArrayList<PrerequisiteBuilder>(preqs))
+		{
+			if(pq.getComponent() != null)
+			{
+				singleCanReplace = false;
+				continue;
+			}
+
+			AttributeBuilder ab = cspec.getAttribute(pq.getName());
+			if(!(ab instanceof ArtifactBuilder))
+			{
+				singleCanReplace = false;
+				continue;
+			}
+
+			ArtifactBuilder arb = (ArtifactBuilder)ab;
+			ArtifactBuilder prev = byBase.get(arb.getBase());
+			if(prev == null)
+			{
+				byBase.put(arb.getBase(), arb);
+				continue;
+			}
+			for(IPath path : arb.getPaths())
+				prev.addPath(path);
+			bld.removePrerequisite(pq.toString());
+			cspec.removeAttribute(arb.getName());
+		}
+
+		if(singleCanReplace && byBase.size() == 1)
+		{
+			ArtifactBuilder ab = byBase.values().iterator().next();
+			String name = bld.getName();
+			cspec.removeAttribute(name);
+			cspec.removeAttribute(ab.getName());
+			ab.setName(name);
+			getCSpec().addAttribute(ab);
+		}
+	}
+
+	private IPath resolveLink(IPath path, IPath[] projectRootReplacement)
+	{
+		if(projectRootReplacement != null)
+			projectRootReplacement[0] = null;
+
+		if(path == null || path.isAbsolute() || path.isEmpty())
+			return path;
+
+		for(Map.Entry<IPath,LinkDescription> entry : getLinkDescriptions().entrySet())
+		{
+			IPath linkSource = entry.getKey();
+			if(linkSource.isPrefixOf(path))
+			{
+				IPath linkTarget = FileUtil.toPath(entry.getValue().getLocationURI());
+				int sourceSegs = linkSource.segmentCount();
+
+				if(projectRootReplacement != null)
+				{
+					if(linkTarget.setDevice(null).removeFirstSegments(linkTarget.segmentCount() - sourceSegs).equals(linkSource))
+					{
+						projectRootReplacement[0] = linkTarget.removeLastSegments(sourceSegs);
+						break;
+					}
+				}
+
+				if(sourceSegs == path.segmentCount())
+				{
+					if(path.hasTrailingSeparator())
+						path = linkTarget.addTrailingSeparator();
+					else
+						path = linkTarget;
+				}
+				else
+					path = linkTarget.append(path.removeFirstSegments(sourceSegs));
+				break;
+			}
+		}
+		return path;
 	}
 }
