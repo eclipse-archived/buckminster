@@ -69,8 +69,11 @@ public class Logger
 				default:
 					out = System.out;
 				}
-				out.println(status.getMessage());
-				out.flush();
+				synchronized(out)
+				{
+					out.println(status.getMessage());
+					out.flush();
+				}
 			}
 		}
 	};
@@ -138,32 +141,32 @@ public class Logger
 
 	public void debug(String msg, Object ...args)
 	{
-		this.log(DEBUG, msg, args);
+		log(DEBUG, msg, args);
 	}
 
 	public void debug(Throwable t, String msg, Object ...args)
 	{
-		this.log(DEBUG, t, msg, args);
+		log(DEBUG, t, msg, args);
 	}
 
 	public void error(String msg, Object ...args)
 	{
-		this.log(ERROR, msg, args);
+		log(ERROR, msg, args);
 	}
 
 	public void error(Throwable t, String msg, Object ...args)
 	{
-		this.log(ERROR, t, msg, args);
+		log(ERROR, t, msg, args);
 	}
 
 	public void info(String msg, Object ...args)
 	{
-		this.log(INFO, msg, args);
+		log(INFO, msg, args);
 	}
 
 	public void info(Throwable t, String msg, Object ...args)
 	{
-		this.log(INFO, t, msg, args);
+		log(INFO, t, msg, args);
 	}
 
 	public boolean isInfoEnabled()
@@ -176,9 +179,19 @@ public class Logger
 		return s_consoleThreshold <= DEBUG || s_eclipseLoggerThreshold <= DEBUG;
 	}
 
+	public boolean isErrorEnabled()
+	{
+		return s_consoleThreshold <= ERROR || s_eclipseLoggerThreshold <= ERROR;
+	}
+
+	public boolean isWarningEnabled()
+	{
+		return s_consoleThreshold <= WARNING || s_eclipseLoggerThreshold <= WARNING;
+	}
+
 	public void log(int level, String msg, Object ...args)
 	{
-		this.log(level, null, msg, args);
+		log(level, null, msg, args);
 	}
 
 	private static PrintStream s_errStream;
@@ -191,15 +204,18 @@ public class Logger
 		setErrStream(getLoggerStream(true));		
 	}
 
-	public synchronized void log(int level, Throwable t, String msg, Object ...args)
+	public void log(int level, Throwable t, String msg, Object ...args)
 	{
 		if(level >= s_consoleThreshold && (s_eclipseLogListener == null || level < s_eclipseLoggerThreshold))
 		{
 			PrintStream logStream = (level == WARNING || level == ERROR) ? s_errStream : s_outStream;
-			logStream.format(msg, args);
-			if(t != null && level == DEBUG)
-				t.printStackTrace(logStream);
-			logStream.flush();
+			synchronized(logStream)
+			{
+				logStream.format(msg, args);
+				if(t != null && level == DEBUG)
+					t.printStackTrace(logStream);
+				logStream.flush();
+			}
 		}
 		if(level >= s_eclipseLoggerThreshold)
 			m_log.log(new Status(level, m_log.getBundle().getSymbolicName(), MAGIC, String.format(msg, args), t));
@@ -207,12 +223,12 @@ public class Logger
 
 	public void warning(String msg, Object ...args)
 	{
-		this.log(WARNING, msg, args);
+		log(WARNING, msg, args);
 	}
 
 	public void warning(Throwable t, String msg, Object ...args)
 	{
-		this.log(WARNING, t, msg, args);
+		log(WARNING, t, msg, args);
 	}
 
 	public static PrintStream getOutStream()
