@@ -10,6 +10,8 @@ package org.eclipse.buckminster.core.commands;
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -26,12 +28,28 @@ public abstract class WorkspaceCommand extends AbstractCommand
 	protected final int run(IProgressMonitor monitor) throws Exception
 	{
 		monitor.beginTask(null, 1000);
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		boolean wasAuto = ws.isAutoBuilding();
 		try
 		{
-			return this.internalRun(MonitorUtils.subMonitor(monitor, 900));
+			if(wasAuto)
+			{
+				IWorkspaceDescription wsDesc = ws.getDescription();
+				wsDesc.setAutoBuilding(false);
+				ws.setDescription(wsDesc);
+			}
+			return internalRun(MonitorUtils.subMonitor(monitor, 900));
 		}
 		finally
 		{
+			if(wasAuto)
+			{
+				// Restore auto build status
+				//
+				IWorkspaceDescription wsDesc = ws.getDescription();
+				wsDesc.setAutoBuilding(true);
+				ws.setDescription(wsDesc);
+			}
 			saveWorkspace(MonitorUtils.subMonitor(monitor, 100));
 			monitor.done();
 		}

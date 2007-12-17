@@ -27,6 +27,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.internal.resources.ProjectDescription;
@@ -183,7 +184,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				{
 					didSomething = false;
 					IPath removedEntry;
-					while((removedEntry = getNextRemovedEntry()) != null)
+					while(s_default != null && (removedEntry = getNextRemovedEntry()) != null)
 					{
 						didSomething = true;
 						for(Materialization mat : sm.getMaterializations().getElements())
@@ -214,7 +215,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						MonitorUtils.worked(monitor, 30);
 					}
 					IProject project;
-					while((project = getNextProjectNeedingUpdate()) != null)
+					while(s_default != null && (project = getNextProjectNeedingUpdate()) != null)
 					{
 						didSomething = true;
 						monitor.subTask("Refreshing " + project.getName());
@@ -224,23 +225,30 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						}
 						catch(Exception e)
 						{
-							if(project.isAccessible())
-								CorePlugin.getLogger().error(e, "Project refresh on %s failed: %s", project.getName(), e.getMessage(), e);
+							if(s_default != null && project.isAccessible())
+								CorePlugin.getLogger().error(e, "Project refresh on %s failed: %s", project.getName(), e.getMessage());
 						}
 					}
 				}
 				return Status.OK_STATUS;
 			}
-			catch(CoreException e)
+			catch(Exception e)
 			{
-				CorePlugin.getLogger().error(e, e.toString());
-				return e.getStatus();
+				if(s_default != null)
+					CorePlugin.getLogger().error(e, e.toString());
+				return BuckminsterException.wrap(e).getStatus();
 			}
 		}
 	}
 
 	public void resourceChanged(IResourceChangeEvent event)
 	{
+		if(s_default == null)
+			//
+			// We're shutting down so never mind.
+			//
+			return;
+
 		if(event.getType() == IResourceChangeEvent.PRE_DELETE)
 		{
 			IResource resource = event.getResource();
