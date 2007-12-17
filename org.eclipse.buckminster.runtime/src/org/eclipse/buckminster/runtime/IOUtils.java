@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.runtime;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,55 +60,13 @@ public class IOUtils
 	 * Close but no cigar, sorry no Exception...
 	 * @param stream
 	 */
-	public static void close(InputStream stream)
+	public static void close(Closeable stream)
 	{
 		if(stream != null)
 		{
 			try
 			{
 				stream.close();
-			}
-			catch(IOException e)
-			{
-			}
-		}
-	}
-
-	public static void close(OutputStream stream)
-	{
-		if(stream != null)
-		{
-			try
-			{
-				stream.close();
-			}
-			catch(IOException e)
-			{
-			}
-		}
-	}
-
-	public static void close(Reader reader)
-	{
-		if(reader != null)
-		{
-			try
-			{
-				reader.close();
-			}
-			catch(IOException e)
-			{
-			}
-		}
-	}
-
-	public static void close(Writer writer)
-	{
-		if(writer != null)
-		{
-			try
-			{
-				writer.close();
 			}
 			catch(IOException e)
 			{
