@@ -44,14 +44,19 @@ public class Build extends WorkspaceCommand
 
 		try
 		{
-			monitor.beginTask(null, projs.length * (m_clean ? 2 : 1));
+			monitor.beginTask(null, projs.length * (m_clean ? 3 : 2));
 
-			// clean them first if requested
+			// Ensure that the workspace is in sync
 			//
+			wsRoot.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, projs.length));
+
 			if(m_clean)
+				//
+				// Clean first if requested
+				//
 				ws.build(IncrementalProjectBuilder.CLEAN_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
 
-			ws.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
+			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
 
 			// Get all problem markers. Sort them by timestamp
 			//
