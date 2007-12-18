@@ -212,6 +212,7 @@ public class Logger
 			synchronized(logStream)
 			{
 				logStream.format(msg, args);
+				logStream.println();
 				if(t != null && level == DEBUG)
 					t.printStackTrace(logStream);
 				logStream.flush();

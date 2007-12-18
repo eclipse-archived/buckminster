@@ -356,6 +356,8 @@
 					use="required" />
 				<attribute name="workspaceRelativePath" type="string"
 					use="required" />
+				<attribute name="timestamp" type="long"
+					use="required" />
 			</extension>
 		</complexContent>
 	</complexType>

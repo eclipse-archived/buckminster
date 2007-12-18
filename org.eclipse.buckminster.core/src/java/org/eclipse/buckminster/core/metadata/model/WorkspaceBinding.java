@@ -22,7 +22,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class WorkspaceBinding extends Materialization
+public class WorkspaceBinding extends Materialization implements Comparable<WorkspaceBinding>
 {
 	@SuppressWarnings("hiding")
 	public static final int SEQUENCE_NUMBER = 1;
@@ -31,17 +31,51 @@ public class WorkspaceBinding extends Materialization
 
 	public static final String ATTR_WS_RELATIVE_PATH = "workspaceRelativePath";
 	public static final String ATTR_WS_LOCATION = "workspaceLocation";
+	public static final String ATTR_TIMESTAMP = "timestamp";
 
+	private final long m_timestamp;
 	private final IPath m_workspaceRoot;
 	private final IPath m_workspaceRelativePath;
 	private final Map<String,String> m_properties;
 
+	private static long s_lastTS = System.currentTimeMillis();
+
+	/**
+	 * Returns the next timestamp. This is typically the value of
+	 * {@link System#currentTimeMillis()} but if several calls arrive
+	 * on the same millisecond, this method will increase the timestamp
+	 * to a later time in order to ensure that each call returns a unique
+	 * timestamp.
+	 * @return A timestamp that is guaranteed to be unique for each call
+	 * and equal or very close to the current time.
+	 */
+	public static long getNextTimestamp()
+	{
+		long now = System.currentTimeMillis();
+		if(now > s_lastTS)
+			s_lastTS = now;
+		else
+			now = ++s_lastTS;
+		return now;
+	}
+
 	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties)
 	{
+		this(componentLocation, cid, workspaceRoot, workspaceRelativePath, properties, getNextTimestamp());
+	}
+
+	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties, long timestamp)
+	{
 		super(componentLocation, cid);
+		m_timestamp = timestamp;
 		m_workspaceRoot = workspaceRoot;
 		m_workspaceRelativePath = workspaceRelativePath;
 		m_properties = UUIDKeyed.createUnmodifiableProperties(properties);
+	}
+
+	public int compareTo(WorkspaceBinding o)
+	{
+		return m_timestamp < o.m_timestamp ? -1 : (m_timestamp == o.m_timestamp ? 0 : 1);
 	}
 
 	@Override
@@ -94,6 +128,7 @@ public class WorkspaceBinding extends Materialization
 		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
 		Utils.addAttribute(attrs, ATTR_WS_LOCATION, m_workspaceRoot.toPortableString());
+		Utils.addAttribute(attrs, ATTR_TIMESTAMP, Long.toString(m_timestamp));
 	}
 
 	@Override

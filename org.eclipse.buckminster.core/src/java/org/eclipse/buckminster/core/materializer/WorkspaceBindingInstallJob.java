@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.materializer;
 
+import java.util.Arrays;
+
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -46,6 +48,10 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 
 		monitor.beginTask(null, wsBindings.length * 100);
 		WorkspaceMaterializer wsMaterializer = new WorkspaceMaterializer();
+
+		// Sort by timestamp
+		//
+		Arrays.sort(wsBindings);
 		for(WorkspaceBinding wsBinding : wsBindings)
 		{
 			wsMaterializer.installLocal(wsBinding, new RMContext(wsBinding.getProperties()), MonitorUtils.subMonitor(monitor, 100));

@@ -62,6 +62,8 @@ public abstract class FileUtils
 
 	public static final String PATH_SEP = System.getProperty("path.separator");
 
+	public static final boolean CASE_INSENSITIVE_FS = (new File("a").equals(new File("A")));
+
 	private static final Pattern[] s_defaultExcludes;
 
 	static

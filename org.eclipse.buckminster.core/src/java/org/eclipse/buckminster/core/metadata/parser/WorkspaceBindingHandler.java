@@ -40,6 +40,7 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 	private IPath m_wsRoot;
 	private IPath m_wsRelativePath;
 	private Map<String,String> m_properties;
+	private long m_timestamp;
 
 	public WorkspaceBindingHandler(AbstractHandler parent)
 	{
@@ -74,11 +75,12 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 		m_location = Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION));
 		m_wsRoot = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_LOCATION));
 		m_wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));
+		m_timestamp = getLongValue(attrs, WorkspaceBinding.ATTR_TIMESTAMP);
 	}
 
 	WorkspaceBinding getWorkspaceBinding() throws SAXException
 	{
-		return new WorkspaceBinding(m_location, m_cid, m_wsRoot, m_wsRelativePath, m_properties);
+		return new WorkspaceBinding(m_location, m_cid, m_wsRoot, m_wsRelativePath, m_properties, m_timestamp);
 	}
 
 	@Override

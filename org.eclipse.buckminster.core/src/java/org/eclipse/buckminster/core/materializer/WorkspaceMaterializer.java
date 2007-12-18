@@ -68,7 +68,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			}
 
 			IPath wsRoot = wb.getWorkspaceRoot();
-			if(wsRoot.toFile().equals(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile()))
+			if(FileUtils.pathEquals(wsRoot, ResourcesPlugin.getWorkspace().getRoot().getLocation()))
 				installLocal(wb, context, monitor);
 			else
 			{
@@ -104,7 +104,12 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			//
 			String readerType = resolution.getProvider().getReaderTypeId();
 			if(!IReaderType.ECLIPSE_PLATFORM.equals(readerType))
+			{
 				resolution.store(sm);
+				Materialization mat = getMaterialization(resolution);
+				if(mat != null)
+					mat.store(sm);
+			}
 		}
 
 		for(DepNode child : node.getChildren())
@@ -141,24 +146,32 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context) throws CoreException
+	private static Materialization getMaterialization(Resolution resolution) throws CoreException
 	{
 		Materialization mat = WorkspaceInfo.getMaterialization(resolution);
-		if(mat == null)
-		{
-			// We still want to bind stuff produced by the local reader
+		if(mat != null)
+			return mat;
+		
+		// We still want to bind stuff produced by the local reader
+		//
+		String readerTypeName = resolution.getProvider().getReaderTypeId();
+		if(!IReaderType.LOCAL.equals(readerTypeName))
 			//
-			String readerTypeName = resolution.getProvider().getReaderTypeId();
-			if(!IReaderType.LOCAL.equals(readerTypeName))
-				//
-				// From the platform. Don't bind this
-				//
-				return null;
+			// From the platform. Don't bind this
+			//
+			return null;
 
-			IReaderType localReaderType = CorePlugin.getDefault().getReaderType(readerTypeName);
-			mat = new Materialization(localReaderType.getFixedLocation(resolution), resolution.getComponentIdentifier());
-		}
+		IReaderType localReaderType = CorePlugin.getDefault().getReaderType(readerTypeName);
+		return new Materialization(localReaderType.getFixedLocation(resolution), resolution.getComponentIdentifier());
+	}
 
+	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context) throws CoreException
+	{
+		Materialization mat = getMaterialization(resolution);
+		if(mat == null)
+			return null;
+
+		IPath wsRoot = context.getWorkspaceLocation(resolution);
 		IPath wsRelativePath;
 		IPath matLoc = mat.getComponentLocation();
 		if(matLoc.hasTrailingSeparator())
@@ -175,6 +188,16 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		else
 		{
 			IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
+			IPath localWsRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+			if(!FileUtils.pathEquals(wsRoot, localWsRoot))
+			{
+				if(localWsRoot.isPrefixOf(bmProjLoc))
+					//
+					// Switch ws root for the bmProject
+					//
+					bmProjLoc = wsRoot.append(bmProjLoc.removeFirstSegments(localWsRoot.segmentCount()));
+			}
+
 			if(bmProjLoc.isPrefixOf(matLoc))
 				wsRelativePath = matLoc.removeFirstSegments(bmProjLoc.segmentCount() - 1).setDevice(null);
 			else
@@ -184,9 +207,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				wsRelativePath = new Path(CorePlugin.BUCKMINSTER_PROJECT).append(matLoc.lastSegment());
 
 			if(matLoc.hasTrailingSeparator())
-				wsRelativePath.addTrailingSeparator();
+				wsRelativePath = wsRelativePath.addTrailingSeparator();
 		}
-		return new WorkspaceBinding(matLoc, mat.getComponentIdentifier(), context.getWorkspaceLocation(resolution), wsRelativePath, context.getBindingProperties());
+		return new WorkspaceBinding(matLoc, mat.getComponentIdentifier(), wsRoot, wsRelativePath, context.getBindingProperties());
 	}
 
 	private void createExternalBinding(IPath wsRelativePath, Materialization mat, IProgressMonitor monitor)
@@ -239,7 +262,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				// The project does not exist yet. Create it so that it appoints the root
 				// of the materialization or if a link is used, in the current workspace.
 				//
-				if(useLink || locationProjRoot.removeLastSegments(1).equals(wsRoot.getLocation()))
+				if(useLink || FileUtils.pathEquals(locationProjRoot.removeLastSegments(1), wsRoot.getLocation()))
 					projectForBinding.create(MonitorUtils.subMonitor(monitor, 50));
 				else
 				{
@@ -392,9 +415,18 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		if(len > otherSegments.length)
 			return false;
 
-		for(int i = 0; i < len; i++)
-			if(!segments[i].equals(otherSegments[i]))
-				return false;
+		if(FileUtils.CASE_INSENSITIVE_FS)
+		{
+			for(int i = 0; i < len; i++)
+				if(!segments[i].equalsIgnoreCase(otherSegments[i]))
+					return false;
+		}
+		else
+		{
+			for(int i = 0; i < len; i++)
+				if(!segments[i].equals(otherSegments[i]))
+					return false;
+		}
 		return true;
 	}
 

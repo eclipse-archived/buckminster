@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
+import org.eclipse.buckminster.core.materializer.WorkspaceBindingInstallJob;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.parser.ParserFactory;
@@ -475,6 +476,7 @@ public class CorePlugin extends LogAwarePlugin
 		performForcedActivations();
 		MetadataSynchronizer.setUp();
 		MaterializationJob.setUp();
+		WorkspaceBindingInstallJob.start();
 
 		// This isn't actually shutting down. It will take care
 		// of cleaning up what wasn't cleaned if the update manager
