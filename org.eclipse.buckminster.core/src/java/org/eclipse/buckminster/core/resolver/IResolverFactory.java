@@ -1,7 +1,7 @@
 package org.eclipse.buckminster.core.resolver;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
-import org.eclipse.buckminster.core.prefs.IPreferenceDescriptor;
+import org.eclipse.buckminster.core.prefedit.IPreferenceDescriptor;
 import org.eclipse.core.runtime.CoreException;
 
 /**

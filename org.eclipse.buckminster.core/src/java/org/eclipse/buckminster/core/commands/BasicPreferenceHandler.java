@@ -42,7 +42,7 @@ public class BasicPreferenceHandler implements IExecutableExtension
 
 	public void set(String value) throws BackingStoreException
 	{
-		String[] prefNodeAndKey = this.pathAsNodeAndKey(this.getKey());
+		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
 		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
 		node.put(prefNodeAndKey[1], value);
 		node.flush();
@@ -50,13 +50,13 @@ public class BasicPreferenceHandler implements IExecutableExtension
 
 	public String get(String defaultValue) throws CoreException
 	{
-		String[] prefNodeAndKey = this.pathAsNodeAndKey(this.getKey());
+		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
 		return s_eclipsePrefs.node(prefNodeAndKey[0]).get(prefNodeAndKey[1], defaultValue);
 	}
 
 	public void unset() throws BackingStoreException
 	{
-		String[] prefNodeAndKey = this.pathAsNodeAndKey(this.getKey());
+		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
 		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
 		node.remove(prefNodeAndKey[1]);
 		node.flush();

@@ -89,56 +89,62 @@ public class PreferenceMappingManager
 
 	public BasicPreferenceHandler getHandler(String name) throws UsageException
 	{
-		ArrayList<BasicPreferenceHandler> matches = new ArrayList<BasicPreferenceHandler>();
-		ArrayList<String> hierNames = new ArrayList<String>();
-
+		ArrayList<BasicPreferenceHandler> matches = null;
 		int idx = m_mappings.size();
 		while(--idx >= 0)
 		{
 			BasicPreferenceHandler mapping = m_mappings.get(idx);
-			makeListOfHierarchicalNames(hierNames, mapping.getName());
-			int top = hierNames.size();
-			for(int nameIdx = 0; nameIdx < top; ++nameIdx)
+			String prefName = mapping.getName();
+			for(;;)
 			{
-				String hierName = hierNames.get(nameIdx);
-				if (hierName.equals(name))
+				if(name.equals(prefName))
+				{
+					if(matches == null)
+						matches = new ArrayList<BasicPreferenceHandler>();
 					matches.add(mapping);
+					break;
+				}
+				int dotIdx = prefName.indexOf('.');
+				if(dotIdx < 0)
+					break;
+				prefName = prefName.substring(dotIdx + 1);
 			}
 		}
+
+		if(matches == null)
+			throw new UsageException("No preference matches " + name);
 
 		int foundMatches = matches.size();
-		if (foundMatches == 0)
-			throw new UsageException("No preference matches " + name);
-		else if (foundMatches > 1)
+		if(foundMatches == 1)
+			return matches.get(0);
+
+		StringBuilder bld = new StringBuilder(80);
+		bld.append("Preference ");
+		bld.append(name);
+		bld.append(" is ambigous. It matches ");
+		for (int i = 0; i < foundMatches; i++)
 		{
-			StringBuffer bld = new StringBuffer("Preference ");
-			bld.append(name);
-			bld.append(" is ambigous. It matches ");
-			for (int i = 0; i < foundMatches; i++)
+			if(i > 0)
 			{
-				if(i > 0)
-				{
-					bld.append(", ");
-					if(i + 1 == foundMatches)
-						bld.append("and ");
-				}
-				bld.append(matches.get(i).getName());
+				bld.append(", ");
+				if(i + 1 == foundMatches)
+					bld.append("and ");
 			}
-			throw new UsageException(bld.toString());
+			bld.append(matches.get(i).getName());
 		}
-		return matches.get(0);
+		throw new UsageException(bld.toString());
 	}
 
-	public BasicPreferenceHandler[] getAllHandlers(String pattern)
+	public List<BasicPreferenceHandler> getAllHandlers(String pattern)
 	{
-		Pattern rx = Pattern.compile(pattern == null ? ".*" : pattern);
+		Pattern rx = (pattern == null) ? null : Pattern.compile(pattern);
 
 		ArrayList<BasicPreferenceHandler> handlers = new ArrayList<BasicPreferenceHandler>();
 		int top = m_mappings.size();
 		for(int idx = 0; idx < top; ++idx)
 		{
 			BasicPreferenceHandler bph = m_mappings.get(idx);
-			if (rx.matcher(bph.getName()).find())
+			if (rx == null || rx.matcher(bph.getName()).find())
 				handlers.add(bph);
 		}
 
@@ -150,26 +156,6 @@ public class PreferenceMappingManager
 			}
 		};
 		Collections.sort(handlers, bphComparator);
-
-		return handlers.toArray(new BasicPreferenceHandler[handlers.size()]);
-	}
-
-	private static void makeListOfHierarchicalNames(ArrayList<String> hierNames, String fullName)
-	{
-		hierNames.clear();
-		StringBuffer sb = new StringBuffer();
-		String[] parts = fullName.split("\\.");
-		int len = parts.length;
-		for (int i = 0; i < len; i++)
-		{
-			sb.setLength(0);
-			for (int j = len - i - 1; j < len; j++)
-			{
-				if (sb.length() != 0)
-					sb.append('.');
-				sb.append(parts[j]);
-			}
-			hierNames.add(sb.toString());
-		}
+		return handlers;
 	}
 }

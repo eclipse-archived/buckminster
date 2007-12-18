@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.core.prefs;
+package org.eclipse.buckminster.core.prefedit;
 
 /**
  * @author Thomas Hallgren

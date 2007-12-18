@@ -10,6 +10,9 @@
 
 package org.eclipse.buckminster.core.commands;
 
+import java.io.PrintStream;
+import java.util.List;
+
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
@@ -54,37 +57,45 @@ public class ListPreferences extends AbstractCommand
 	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
-		BasicPreferenceHandler[] handlers = PreferenceMappingManager.getInstance(m_test).getAllHandlers(
+		PrintStream out = System.out;
+		List<BasicPreferenceHandler> handlers = PreferenceMappingManager.getInstance(m_test).getAllHandlers(
 			m_pattern);
-		if(handlers.length == 0)
+		int top = handlers.size();
+		if(top == 0)
 		{
-			System.out.print("No preferences found");
+			out.print("No preferences found");
 			if(m_pattern != null)
-				System.out.print(" (is the pattern '" + m_pattern + "' correct?)");
-			System.out.println();
-		}
-		else
-		{
-			System.out.println("Found " + handlers.length + " preference(s):");
-			for(int idx = 0; idx < handlers.length; ++idx)
-			{
-				BasicPreferenceHandler bph = handlers[idx];
-				System.out.println(bph.getName());
-				System.out.print("  Description: ");
-				System.out.println(bph.getDescription());
-				System.out.print("  Key        : ");
-				System.out.println(bph.getKey());
-				String v = bph.get(null);
-				if(v == null)
-					System.out.println("  (no value set)");
-				else
-				{
-					System.out.print("  Value      : ");
-					System.out.println(v);
-				}
-			}
+				out.format(" (is the pattern '%s' correct?)", m_pattern);
+			out.println();
+			return 0;
 		}
 
+		out.print("Found ");
+		out.print(top);
+		out.println(" preference(s):");
+		for(int idx = 0; idx < top; ++idx)
+		{
+			BasicPreferenceHandler bph = handlers.get(idx);
+			out.println(bph.getName());
+			if(bph.getDescription() != null)
+			{
+				out.print("  Description: ");
+				out.println(bph.getDescription());
+			}
+			if(bph.getKey() != null)
+			{
+				out.print("  Key        : ");
+				out.println(bph.getKey());
+			}
+			String v = bph.get(null);
+			if(v == null)
+				out.println("  (no value set)");
+			else
+			{
+				out.print("  Value      : ");
+				out.println(v);
+			}
+		}
 		return 0;
 	}
 }

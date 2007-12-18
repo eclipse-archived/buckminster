@@ -5,13 +5,24 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-
-package org.eclipse.buckminster.core.prefs;
+package org.eclipse.buckminster.core.prefedit;
 
 /**
  * @author Thomas Hallgren
  */
-public interface IPreferenceValidator
+public interface IPreferenceDescriptor
 {
-	boolean validate(String value);
+	String getLabel();
+
+	PreferenceType getType();
+
+	int getTextWidth();
+
+	int[] getIntegerRange();
+
+	String getName();
+
+	IPreferenceValidator getValidator();
+	
+	Enum<?>[] getEnums();
 }

@@ -16,9 +16,9 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.IllegalParameterException;
-import org.eclipse.buckminster.core.prefs.IPreferenceDescriptor;
-import org.eclipse.buckminster.core.prefs.PreferenceDescriptor;
-import org.eclipse.buckminster.core.prefs.PreferenceType;
+import org.eclipse.buckminster.core.prefedit.IPreferenceDescriptor;
+import org.eclipse.buckminster.core.prefedit.PreferenceDescriptor;
+import org.eclipse.buckminster.core.prefedit.PreferenceType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.runtime.Buckminster;
