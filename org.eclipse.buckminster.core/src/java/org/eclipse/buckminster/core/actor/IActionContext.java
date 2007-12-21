@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.actor;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
@@ -42,10 +41,10 @@ public interface IActionContext extends IModelCache
 	CSpec getCSpec() throws CoreException;
 
 	/**
-	 * Returns the cache that is in effect for the whole top level invocation
-	 * @return A cache that various actions can use for arbitrary purposes
+	 * Returns the global context for this execution
+	 * @return The global context
 	 */
-	Map<UUID,Object> getInvocationCache();
+	IGlobalContext getGlobalContext();
 
 	/**
 	 * Returns the stream that should be used for information and debug messages.
@@ -92,14 +91,6 @@ public interface IActionContext extends IModelCache
 	 * @throws CoreException
 	 */
 	IPath makeAbsolute(IPath path) throws CoreException;
-
-	/**
-	 * Schedule the removal of <code>path</code> when the top build invocation
-	 * ends. If <code>path</code> is relative, it will be made absolute using the component
-	 * location as base.
-	 * @param path The file or directory to remove
-	 */
-	void scheduleRemoval(IPath path) throws CoreException;
 
 	/**
 	 * Returns a progress monitor that can be used for cancellation purposes.

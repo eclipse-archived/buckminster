@@ -45,8 +45,10 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("serial")
-public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedKey> implements ISaxableStorage<T>
+public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 {
+	private final HashMap<UUID,TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();
+
 	public static class Lock
 	{
 		public static Lock lock(File file, boolean exclusive) throws CoreException
@@ -152,7 +154,6 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		{
 			ByteBuffer bf = ByteBuffer.allocateDirect(4);
 			bf.order(ByteOrder.LITTLE_ENDIAN);
-			bf.flip();
 			FileChannel fc = lock.getLockChannel();
 			int foundSequenceNumber = fc.read(bf) == 4
 				? bf.getInt(0)
@@ -179,7 +180,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 				if(name.charAt(0) == '.')
 					continue;
 				UUID id = UUID.fromString(name);
-				put(id, new TimestampedKey(id, file.lastModified()));
+				m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
 			}
 			m_cacheTime = m_sqFile.lastModified();
 			m_lastChecked = System.currentTimeMillis();
@@ -194,7 +195,6 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		}
 	}
 
-	@Override
 	public synchronized void clear()
 	{
 		try
@@ -216,19 +216,19 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 			CorePlugin.getLogger().error(e, e.toString());
 		}
 		m_parsed.clear();
-		super.clear();
+		m_timestamps.clear();
 	}
 
 	public synchronized boolean contains(T element) throws CoreException
 	{
 		checkCache();
-		return containsKey(element.getId());
+		return m_timestamps.containsKey(element.getId());
 	}
 
 	public synchronized long getCreationTime(UUID elementId) throws ElementNotFoundException
 	{
 		checkCache();
-		TimestampedKey tsKey = get(elementId);
+		TimestampedKey tsKey = m_timestamps.get(elementId);
 		if(tsKey == null)
 			throw new ElementNotFoundException(this, elementId);
 		return tsKey.getCreationTime();
@@ -237,7 +237,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 	public synchronized T getElement(UUID elementId) throws CoreException
 	{
 		checkCache();
-		if(!containsKey(elementId))
+		if(!m_timestamps.containsKey(elementId))
 			throw new ElementNotFoundException(this, elementId);
 
 		T element = m_parsed.get(elementId);
@@ -276,7 +276,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		checkCache();
 		if(m_allElements == null)
 		{
-			Set<UUID> keys = keySet();
+			Set<UUID> keys = m_timestamps.keySet();
 			Set<UUID> badKeys = null;
 			int idx = keys.size();
 			T[] elems = (T[])Array.newInstance(m_class, idx);
@@ -309,7 +309,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 				}
 				elems = goodElems;
 				for(UUID badKey : badKeys)
-					remove(badKey);
+					m_timestamps.remove(badKey);
 			}
 			m_allElements = elems;
 		}
@@ -319,7 +319,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 	public synchronized UUID[] getKeys()
 	{
 		checkCache();
-		Set<UUID> keys = keySet();
+		Set<UUID> keys = m_timestamps.keySet();
 		return keys.toArray(new UUID[keys.size()]);
 	}
 
@@ -334,7 +334,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		Method getter = getGetter(keyName);
 		try
 		{
-			for(UUID elementId : keySet())
+			for(UUID elementId : m_timestamps.keySet())
 			{
 				T element = getElement(elementId);
 				UUID fkey = (UUID)getter.invoke(element, Trivial.EMPTY_OBJECT_ARRAY);
@@ -358,7 +358,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 	public synchronized TimestampedKey[] getTimestampedKeys()
 	{
 		checkCache();
-		Collection<TimestampedKey> values = values();
+		Collection<TimestampedKey> values = m_timestamps.values();
 		return values.toArray(new TimestampedKey[values.size()]);
 	}
 
@@ -366,7 +366,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 	{
 		UUID id = element.getId();
 		long timestamp;
-		if(!containsKey(id))
+		if(!m_timestamps.containsKey(id))
 		{
 			m_parsed.put(id, element);
 			persistImage(id, element.getImage());
@@ -377,7 +377,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 			timestamp = System.currentTimeMillis();
 			getElementFile(id).setLastModified(timestamp);
 		}
-		put(id, new TimestampedKey(id, timestamp));
+		m_timestamps.put(id, new TimestampedKey(id, timestamp));
 	}
 
 	public synchronized void putElement(UUID id, T element) throws CoreException
@@ -393,12 +393,12 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 		CorePlugin.getLogger().debug(
 			"Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id);
 
-		if(containsKey(id))
+		if(m_timestamps.containsKey(id))
 			return;
 
 		m_parsed.put(id, element);
 		persistImage(id, element.getImage());
-		put(id, new TimestampedKey(id, System.currentTimeMillis()));
+		m_timestamps.put(id, new TimestampedKey(id, System.currentTimeMillis()));
 	}
 
 	public synchronized void removeElement(UUID elementId) throws CoreException
@@ -433,7 +433,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 			Lock lock = Lock.lock(m_sqFile, false);
 			try
 			{
-				super.clear();
+				m_timestamps.clear();
 				m_parsed.clear();
 				m_allElements = null;
 				File[] files = m_folder.listFiles();
@@ -445,7 +445,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 					if(name.charAt(0) == '.')
 						continue;
 					UUID id = UUID.fromString(name);
-					put(id, new TimestampedKey(id, file.lastModified()));
+					m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
 				}
 				m_cacheTime = m_sqFile.lastModified();
 				m_lastChecked = System.currentTimeMillis();
@@ -517,7 +517,7 @@ public class FileStorage<T extends IUUIDKeyed> extends HashMap<UUID,TimestampedK
 				if(!elementFile.delete() && elementFile.exists())
 					throw new FileUtils.DeleteException(elementFile);
 
-				remove(elementId);
+				m_timestamps.remove(elementId);
 			}
 			else
 			{

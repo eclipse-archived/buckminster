@@ -194,6 +194,13 @@ public class FilterUtils
 		public MatchAllAwareFilterImpl(String expression) throws InvalidSyntaxException
 		{
 			super(expression);
+			if(value instanceof Filter[])
+			{
+				Filter[] subFilters = (Filter[])value;
+				int idx = subFilters.length;
+				while(--idx >= 0)
+					subFilters[idx] = new MatchAllAwareFilterImpl(subFilters[idx].toString());
+			}
 		}
 
 		@Override

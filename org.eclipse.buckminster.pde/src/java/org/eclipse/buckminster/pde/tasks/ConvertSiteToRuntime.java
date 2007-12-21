@@ -15,6 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
@@ -24,8 +28,11 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 
 /**
  * @author Thomas Hallgren
@@ -48,66 +55,97 @@ public class ConvertSiteToRuntime
 	public void run() throws CoreException
 	{
 		IProgressMonitor nullMonitor = new NullProgressMonitor();
-		File featuresDir = new File(m_productRoot, FEATURES_DIR);
-		String[] featureCandiates = featuresDir.list();
-		if(featureCandiates == null)
+
+		File pluginsDir = new File(m_productRoot, PLUGINS_DIR);
+		String[] pluginCandiates = pluginsDir.list();
+		if(pluginCandiates == null)
 			return;
 
-		for(String featureCandidate : featureCandiates)
-		{
-			if(!featureCandidate.endsWith(".jar"))
-				continue;
+		File featuresDir = new File(m_productRoot, FEATURES_DIR);
+		String[] featureCandiates = featuresDir.list();
+		ArrayList<String> pluginsToUnpack = null;
+		HashSet<String> seenPlugins = new HashSet<String>();
 
-			File featureJar = new File(featuresDir, featureCandidate);
-			File featureDir = new File(featuresDir, featureCandidate.substring(0, featureCandidate.length() - 4));
-			InputStream input = null;
-			try
+		if(featureCandiates != null && featureCandiates.length > 0)
+		{
+			for(String featureCandidate : featureCandiates)
 			{
-				input = new BufferedInputStream(new FileInputStream(featureJar));
-				FileUtils.unzip(input, null, featureDir, ConflictResolution.REPLACE, nullMonitor);
+				if(!featureCandidate.endsWith(".jar"))
+					continue;
+	
+				File featureJar = new File(featuresDir, featureCandidate);
+				File featureDir = new File(featuresDir, featureCandidate.substring(0, featureCandidate.length() - 4));
+				InputStream input = null;
+				try
+				{
+					input = new BufferedInputStream(new FileInputStream(featureJar));
+					FileUtils.unzip(input, null, featureDir, ConflictResolution.REPLACE, nullMonitor);
+				}
+				catch(IOException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+				finally
+				{
+					IOUtils.close(input);
+					featureJar.delete();
+				}
 			}
-			catch(IOException e)
+	
+			for(File featureCandidate : featuresDir.listFiles())
 			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				IOUtils.close(input);
-				featureJar.delete();
+				if(!featureCandidate.isDirectory())
+					continue;
+	
+				InputStream input = null;
+				try
+				{
+					input = new BufferedInputStream(new FileInputStream(new File(featureCandidate, FEATURE_FILE)));
+					IFeatureModel feature = FeatureModelReader.readFeatureModel(input);
+					for(IFeaturePlugin plugin : feature.getFeature().getPlugins())
+					{
+						String fullName = plugin.getId() + '_' + plugin.getVersion();
+						if(seenPlugins.contains(fullName))
+							continue;
+
+						seenPlugins.add(fullName);
+						if(plugin.isUnpack())
+						{
+							if(pluginsToUnpack == null)
+								pluginsToUnpack = new ArrayList<String>();
+							pluginsToUnpack.add(fullName);
+						}
+					}
+				}
+				catch(FileNotFoundException e)
+				{
+					continue;
+				}
 			}
 		}
 
-		ArrayList<String> pluginsToUnpack = null;
-		for(File featureCandidate : featuresDir.listFiles())
+		for(String pluginCandidate : pluginCandiates)
 		{
-			if(!featureCandidate.isDirectory())
+			if(!pluginCandidate.endsWith(".jar"))
 				continue;
 
-			InputStream input = null;
-			try
-			{
-				input = new BufferedInputStream(new FileInputStream(new File(featureCandidate, FEATURE_FILE)));
-				IFeatureModel feature = FeatureModelReader.readFeatureModel(input);
-				for(IFeaturePlugin plugin : feature.getFeature().getPlugins())
-				{
-					if(plugin.isUnpack())
-					{
-						if(pluginsToUnpack == null)
-							pluginsToUnpack = new ArrayList<String>();
-						pluginsToUnpack.add(plugin.getId() + '_' + plugin.getVersion());
-					}
-				}
-			}
-			catch(FileNotFoundException e)
-			{
+			String fullName = pluginCandidate.substring(0, pluginCandidate.length() - 4);
+			if(seenPlugins.contains(fullName))
 				continue;
+
+			seenPlugins.add(fullName);
+			File pluginJar = new File(pluginsDir, pluginCandidate);
+			if(guessUnpack(pluginJar))
+			{
+				if(pluginsToUnpack == null)
+					pluginsToUnpack = new ArrayList<String>();
+				pluginsToUnpack.add(fullName);
 			}
 		}
 
 		if(pluginsToUnpack == null)
 			return;
 
-		File pluginsDir = new File(m_productRoot, PLUGINS_DIR);
 		for(String pluginToUnpack : pluginsToUnpack)
 		{
 			File pluginJar = new File(pluginsDir, pluginToUnpack + ".jar");
@@ -128,5 +166,53 @@ public class ConvertSiteToRuntime
 				pluginJar.delete();
 			}
 		}
+	}
+	
+	public static boolean guessUnpack(File bundleJar) throws CoreException
+	{
+		try
+		{
+			JarFile jf = new JarFile(bundleJar);
+			try
+			{
+				Manifest mf = jf.getManifest();
+				Attributes attrs = mf.getMainAttributes();
+	
+				String value = attrs.getValue(Constants.FRAGMENT_HOST);
+				if(value != null)
+				{
+					ManifestElement[] elements = ManifestElement.parseHeader(Constants.FRAGMENT_HOST, value);
+					if(elements.length > 0)
+					{
+						if("org.eclipse.equinox.launcher".equals(elements[0].getValue()))
+							return true;
+					}
+				}
+	
+				value = attrs.getValue(Constants.BUNDLE_CLASSPATH);
+				if(value != null)
+				{
+					for(ManifestElement elem : ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, value))
+					{
+						if(elem.getValue().equals("."))
+							return false;
+					}
+					return true;
+				}
+			}
+			finally
+			{
+				jf.close();
+			}
+		}
+		catch(BundleException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		return false;
 	}
 }

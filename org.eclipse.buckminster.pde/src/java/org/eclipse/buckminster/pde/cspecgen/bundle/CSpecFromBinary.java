@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -23,6 +24,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -36,7 +38,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginImport;
-import org.eclipse.pde.core.plugin.ISharedPluginModel;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.bundle.BundlePluginBase;
 import org.eclipse.pde.internal.core.ibundle.IBundle;
@@ -72,13 +74,18 @@ public class CSpecFromBinary extends CSpecGenerator
 
 	private void addImports() throws CoreException
 	{
+		IPluginModelBase model = m_plugin.getPluginModel();
+		Set<String> requiredBundles = getRequiredBundleNames(model.getBundleDescription());
+
 		IPluginImport[] imports = m_plugin.getImports();
-		boolean isFragment = m_plugin.getPluginModel().isFragmentModel();
+		boolean isFragment = model.isFragmentModel();
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
+		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+
 		if(imports == null || imports.length == 0)
 		{
 			// Just add the mandatory system bundle. It's needed since
@@ -107,11 +114,20 @@ public class CSpecFromBinary extends CSpecGenerator
 			if(pluginId.equals("system.bundle"))
 				continue;
 
+			if(requiredBundles != null && !requiredBundles.contains(pluginId))
+			{
+				// This bundle is imported via package import. We don't treat that
+				// as a bundle dependency
+				//
+				continue;
+			}
+
 			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(query.skipComponent(dependency) || !addDependency(dependency))
 				continue;
 
 			String component = dependency.getName();
+			addExternalPrerequisite(bundleJars, component, ATTRIBUTE_BUNDLE_JARS, false);
 			if(pluginImport.isReexported())
 				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, false);
 		}
@@ -131,6 +147,17 @@ public class CSpecFromBinary extends CSpecGenerator
 
 		CSpecBuilder cspec = getCSpec();
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
+		GroupBuilder bundleJars = cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
+
+		IPluginModelBase model = m_plugin.getPluginModel();
+		if(!model.isFragmentModel())
+		{
+			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
+			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
+			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
+			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
+			bundleJars.addLocalPrerequisite(copyTargetFragments);
+		}
 
 		// There are two types of binaries. The one that contain jar files (and must be unpacked
 		// in order to function) and the one that is a jar file in itself.
@@ -139,7 +166,6 @@ public class CSpecFromBinary extends CSpecGenerator
 		MonitorUtils.worked(monitor, 10);
 
 		IPath parentDir = new Path("..");
-		ISharedPluginModel model = m_plugin.getModel();
 		String location = model.getInstallLocation();
 		File locationFile = (location != null) ? new File(location) : null;
 		boolean isFile = (locationFile != null) && locationFile.isFile();
@@ -154,6 +180,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			pluginExport.addPath(new Path(buildArtifactName(true)));
 			pluginExport.setBase(parentDir); // we want the site/plugins folder, i.e. the parent of the jar
 			classpath.addLocalPrerequisite(pluginExport);
+			bundleJars.addLocalPrerequisite(pluginExport);
 		}
 		else
 		{
@@ -239,6 +266,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			bundleExport.setProductAlias(ALIAS_OUTPUT);
 			bundleExport.setProductBase(OUTPUT_DIR);
 			bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+			bundleJars.addLocalPrerequisite(bundleExport);
 			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 		}
 		monitor.done();

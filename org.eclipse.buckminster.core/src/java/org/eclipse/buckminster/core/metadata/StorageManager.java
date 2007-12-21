@@ -18,11 +18,7 @@ import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.xml.sax.SAXException;
 
 /**
@@ -30,21 +26,7 @@ import org.xml.sax.SAXException;
  */
 public class StorageManager
 {
-	private static final StorageManager s_defaultManager;
-
-	private boolean m_initialized;
-
-	static
-	{
-		try
-		{
-			s_defaultManager = new StorageManager(CorePlugin.getDefault().getStateLocation().toFile());
-		}
-		catch(Exception e)
-		{
-			throw new ExceptionInInitializerError(e);
-		}
-	}
+	private static StorageManager s_defaultManager;
 
 	private final ISaxableStorage<CSpec> m_cspecs;
 
@@ -87,95 +69,52 @@ public class StorageManager
 		}
 	}
 
-	public static StorageManager getDefault()
+	public static synchronized StorageManager getDefault() throws CoreException
 	{
+		if(s_defaultManager == null)
+		{
+			s_defaultManager = new StorageManager(CorePlugin.getDefault().getStateLocation().toFile());
+			s_defaultManager.initialize();
+		}
 		return s_defaultManager;
 	}
 
-	public synchronized ISaxableStorage<CSpec> getCSpecs() throws CoreException
+	public ISaxableStorage<CSpec> getCSpecs() throws CoreException
 	{
-		initialize();
 		return m_cspecs;
 	}
 
-	public synchronized ISaxableStorage<Materialization> getMaterializations() throws CoreException
+	public ISaxableStorage<Materialization> getMaterializations() throws CoreException
 	{
-		initialize();
 		return m_materializations;
 	}
 
-	public synchronized ISaxableStorage<Resolution> getResolutions() throws CoreException
+	public ISaxableStorage<Resolution> getResolutions() throws CoreException
 	{
-		initialize();
 		return m_resolutions;
 	}
 
-	public synchronized ISaxableStorage<Provider> getProviders() throws CoreException
+	public ISaxableStorage<Provider> getProviders() throws CoreException
 	{
-		initialize();
 		return m_providers;
 	}
 
-	public synchronized ISaxableStorage<WorkspaceBinding> getWorkspaceBindings() throws CoreException
+	public ISaxableStorage<WorkspaceBinding> getWorkspaceBindings() throws CoreException
 	{
-		initialize();
 		return m_wsBindings;
-	}
-
-	class MetadataRefreshJob extends Job
-	{
-		public MetadataRefreshJob()
-		{
-			super("Meta-data refresh");
-			setPriority(Job.BUILD);
-		}
-
-		@Override
-		public boolean belongsTo(Object family)
-		{
-			return family == this;
-		}
-
-		@Override
-		public IStatus run(IProgressMonitor monitor)
-		{
-			synchronized(StorageManager.this)
-			{
-				m_initialized = true;
-				try
-				{
-					WorkspaceInfo.forceRefreshOnAll(monitor);
-				}
-				finally
-				{
-					StorageManager.this.notify();
-				}
-			}
-			return Status.OK_STATUS;
-		}
 	}
 
 	private void initialize() throws CoreException
 	{
-		if(!m_initialized)
+		if(m_materializations.sequenceChanged()
+		|| m_resolutions.sequenceChanged()
+		|| m_cspecs.sequenceChanged()
+		|| m_providers.sequenceChanged()
+		|| m_wsBindings.sequenceChanged())
 		{
-			if(m_materializations.sequenceChanged()
-				|| m_resolutions.sequenceChanged()
-				|| m_cspecs.sequenceChanged()
-				|| m_providers.sequenceChanged()
-				|| m_wsBindings.sequenceChanged())
-			{
-				MetadataRefreshJob refreshJob = new MetadataRefreshJob();
-				refreshJob.schedule();
-				try
-				{
-					wait();
-				}
-				catch(InterruptedException e)
-				{
-					throw new OperationCanceledException();
-				}
-			}
+			// Don't use another thread here. It will deadlock
+			//
+			WorkspaceInfo.forceRefreshOnAll(new NullProgressMonitor());
 		}
 	}
 }

@@ -17,6 +17,7 @@ import java.io.InputStream;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
@@ -160,7 +161,26 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				public Object consumeStream(IComponentReader fileReader, String streamName,
 					InputStream stream, IProgressMonitor mon) throws CoreException
 				{
-					model.load(stream, true);
+					int len;
+					byte[] buf = new byte[4096];
+					AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
+					try
+					{
+						while((len = stream.read(buf)) > 0)
+						{
+							for(int idx = 0; idx < len; ++idx)
+							{
+								byte b = buf[idx];
+								if(b != '\r')
+									bld.write(b);
+							}
+						}
+					}
+					catch(IOException e)
+					{
+						throw BuckminsterException.wrap(e);
+					}
+					model.load(bld.getInputStream(), true);
 					return null;
 				}
 			}, monitor);

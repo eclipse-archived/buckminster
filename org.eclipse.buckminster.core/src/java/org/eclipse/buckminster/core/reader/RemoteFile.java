@@ -10,9 +10,9 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -36,9 +36,9 @@ public class RemoteFile
 		return m_reader.toString() + ',' + m_fileName;
 	}
 
-	public File getContents(boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
+	public FileHandle getContents(IProgressMonitor monitor) throws CoreException, IOException
 	{
-		return m_reader.getContents(m_fileName, isTemporary, monitor);
+		return m_reader.getContents(m_fileName, monitor);
 	}
 	
 	public void close()

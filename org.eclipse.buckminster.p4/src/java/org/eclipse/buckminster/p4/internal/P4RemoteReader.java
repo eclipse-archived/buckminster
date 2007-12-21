@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -188,7 +189,7 @@ public class P4RemoteReader extends AbstractRemoteReader
 	}
 
 	@Override
-	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		// Obtain the client spec before we do anything else. This will ensure that the
 		// spec is in sync with our preferences. The spec is cached in the reader type
@@ -205,12 +206,13 @@ public class P4RemoteReader extends AbstractRemoteReader
 		try
 		{
 			file.copyTo(destFile);
-			isTemporary[0] = true;
-			return destFile;
+			FileHandle fh = new FileHandle(fileName, destFile, true);
+			destFile = null;
+			return fh;
 		}
 		finally
 		{
-			if(!isTemporary[0])
+			if(destFile != null)
 				destFile.delete();
 		}
 	}

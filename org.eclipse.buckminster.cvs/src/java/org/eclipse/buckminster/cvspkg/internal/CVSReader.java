@@ -18,7 +18,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -117,7 +120,31 @@ public class CVSReader extends AbstractRemoteReader
 	}
 
 	@Override
-	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor)
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
+	throws CoreException, IOException
+	{
+		monitor.beginTask(null, 2000);
+		RepositoryMetaData metaData = getMetaData(MonitorUtils.subMonitor(monitor, 200));
+		String[] fileNames = metaData.getMatchingFiles(pattern);
+		if(fileNames.length == 0)
+			return;
+
+		int ticksPerFile = 1800 / fileNames.length;
+		for(String fileName : fileNames)
+		{
+			try
+			{
+				files.add(innerGetContents(fileName, MonitorUtils.subMonitor(monitor, ticksPerFile)));
+			}
+			catch(FileNotFoundException e)
+			{
+				// This is OK since meta data returns deleted files as well
+			}
+		}
+	}
+
+	@Override
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor)
 	throws CoreException,
 		IOException
 	{
@@ -128,7 +155,6 @@ public class CVSReader extends AbstractRemoteReader
 		Session session = m_session.getReaderSession(new SubProgressMonitor(monitor, 800,
 			SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 
-		isTemporary[0] = false;
 		Writer out = null;
 		File tempFile = null;
 		try
@@ -202,13 +228,14 @@ public class CVSReader extends AbstractRemoteReader
 					throw new FileNotFoundException(fileName);
 				}
 			}
-			isTemporary[0] = true;
-			return tempFile;
+			FileHandle fh = new FileHandle(fileName, tempFile, true);
+			tempFile = null;
+			return fh;
 		}
 		finally
 		{
 			IOUtils.close(out);
-			if(!isTemporary[0] && tempFile != null)
+			if(tempFile != null)
 				tempFile.delete();
 			monitor.done();
 		}

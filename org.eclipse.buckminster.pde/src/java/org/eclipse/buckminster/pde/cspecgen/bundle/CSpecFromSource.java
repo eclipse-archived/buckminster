@@ -124,6 +124,7 @@ public class CSpecFromSource extends CSpecGenerator
 		CSpecBuilder cspec = getCSpec();
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		GroupBuilder fullClean = cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
+		GroupBuilder bundleJars = cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
 
 		if(localReader)
 			m_projectDesc = ProjectDescReader.getProjectDescription(getReader(), MonitorUtils.subMonitor(monitor, 15));
@@ -192,13 +193,18 @@ public class CSpecFromSource extends CSpecGenerator
 				// Products use ${buckminster.output} as the default base so we need
 				// to prefix the project relative output here
 				//
+				IPath absPath = output;
 				IPath base = projectRootReplacement[0];
 				if(base == null && !output.isAbsolute())
-					base = componentHome;
+				{
+					base = componentHome.append(output);
+					absPath = null;
+				}
 
 				ArtifactBuilder ab = eclipseBuild.addProductArtifact(
 							getArtifactName(output), false, WellKnownExports.JAVA_BINARIES, base);
-				ab.addPath(output);
+				if(absPath != null)
+					ab.addPath(absPath);
 				eclipseBuildProducts.put(output, ab);
 			}
 
@@ -440,6 +446,17 @@ public class CSpecFromSource extends CSpecGenerator
 		buildPlugin.setUpToDatePolicy(UpToDatePolicy.COUNT);
 		buildPlugin.setProductFileCount(1);
 
+		if(!m_plugin.getPluginModel().isFragmentModel())
+		{
+			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
+			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
+			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
+			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
+			bundleJars.addLocalPrerequisite(copyTargetFragments);
+		}
+		bundleJars.addLocalPrerequisite(buildPlugin);
+
+		addProducts(MonitorUtils.subMonitor(monitor, 20));
 		monitor.done();
 	}
 
@@ -449,17 +466,28 @@ public class CSpecFromSource extends CSpecGenerator
 		if(imports == null || imports.length == 0)
 			return;
 
+		Set<String> requiredBundles = getRequiredBundleNames(m_plugin.getPluginModel().getBundleDescription());
+
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 
 		GroupBuilder fullClean = cspec.getRequiredGroup(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
+		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 
 		for(IPluginImport pluginImport : imports)
 		{
 			String pluginId = pluginImport.getId();
 			if(pluginId.equals("system.bundle"))
 				continue;
+
+			if(requiredBundles != null && !requiredBundles.contains(pluginId))
+			{
+				// This bundle is imported via package import. We don't treat that
+				// as a bundle dependency
+				//
+				continue;
+			}
 
 			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(query.skipComponent(dependency) || !addDependency(dependency))
@@ -468,6 +496,7 @@ public class CSpecFromSource extends CSpecGenerator
 			String component = dependency.getName();
 			boolean optional = pluginImport.isOptional();
 			addExternalPrerequisite(fullClean, component, ATTRIBUTE_FULL_CLEAN, optional);
+			addExternalPrerequisite(bundleJars, component, ATTRIBUTE_BUNDLE_JARS, optional);
 			addExternalPrerequisite(getAttributeBuildRequirements(), component, ATTRIBUTE_JAVA_BINARIES, optional);
 			if(pluginImport.isReexported())
 				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, optional);

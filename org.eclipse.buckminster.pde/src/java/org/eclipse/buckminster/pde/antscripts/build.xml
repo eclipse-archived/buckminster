@@ -120,16 +120,18 @@
 	<target name="create.eclipse.product">
 		<mkdir dir="${sp:action.output}"/>
 		<property name="copyJavaLauncher" value="true"/>
-		<buckminster.createProductBase
-			productFile="${buckminster.eclipse.productFile}"
-			outputDir="${sp:action.output}"
-			copyJavaLauncher="${copyJavaLauncher}"/>
-
 		<buckminster.copy todir="${sp:action.output}" overwrite="true">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
 		</buckminster.copy>
 
 		<buckminster.convertSiteToRuntime sitedir="${sp:action.output}"/>
+
+		<buckminster.createProductBase
+			productFile="${buckminster.eclipse.productFile}"
+			outputDir="${sp:action.output}"
+			copyJavaLauncher="${copyJavaLauncher}">
+			<buckminster.filesetgroup value="${fs:action.requirements}"/>
+		</buckminster.createProductBase>
 
 		<buckminster.multichmod dir="${sp:action.output}">
 			<propertyset>

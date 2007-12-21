@@ -11,7 +11,11 @@ import java.io.File;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
@@ -62,6 +66,70 @@ public class PathGroup
 	public final IPath getBase()
 	{
 		return m_base;
+	}
+
+	public void copyTo(IPath destination, IProgressMonitor monitor) throws CoreException
+	{
+		File destDir = destination.toFile();
+		if(!destDir.isAbsolute())
+			throw new IllegalArgumentException("destination must be absolute");
+
+		File baseDir = m_base.toFile();
+		if(!baseDir.isAbsolute())
+			throw new IllegalArgumentException("source must be absolute");
+
+		int idx = m_paths.length;
+		if(idx == 0)
+		{
+			// We don't have any paths. Use everything below base
+			//
+			if(baseDir.isDirectory())
+				FileUtils.deepCopy(baseDir, destDir, ConflictResolution.UPDATE, monitor);
+			return;
+		}
+
+		monitor.beginTask(null, idx * 100);
+		while(--idx >= 0)
+		{
+			String fileName = null;
+			File basedDestDir = null; 
+			IPath path = m_paths[idx];
+			if(!path.hasTrailingSeparator())
+			{
+				// Path denotes a file
+				//
+				fileName = path.lastSegment();
+				if(path.isAbsolute() || path.segmentCount() == 1)
+				{
+					basedDestDir = destDir;
+					if(!path.isAbsolute())
+						path = m_base.append(path);
+				}
+				else
+					basedDestDir = destination.append(path.removeLastSegments(1)).toFile();
+
+				File sourceFile = path.toFile();
+				if(sourceFile.exists())
+				{
+					FileUtils.prepareDestination(basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor,20));
+					FileUtils.copyFile(sourceFile, basedDestDir, fileName, MonitorUtils.subMonitor(monitor,80));
+				}
+			}
+			else
+			{
+				if(path.isAbsolute())
+					basedDestDir = destDir;
+				else
+				{
+					basedDestDir = destination.append(path).toFile();
+					path = m_base.append(path);
+				}
+				File sourceDir = path.toFile();
+				if(sourceDir.exists())
+					FileUtils.deepCopy(sourceDir, basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 100));
+			}
+		}
+		monitor.done();
 	}
 
 	public long getFirstModified(int expectedCount, int[] fileCount)

@@ -28,7 +28,7 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 {
 	public interface Materializer
 	{
-		File materialize(boolean[] isTemporary, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
+		FileHandle materialize(IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
 
 		String getKey();
 	}
@@ -113,7 +113,7 @@ class CacheEntry
 				synchronized(CacheEntry.this)
 				{
 					if(--m_openFileCounter < 1 && m_removePending)
-						m_tempFile.delete();
+						m_tempFile.getFile().delete();
 				}
 			}
 		}
@@ -123,9 +123,7 @@ class CacheEntry
 
 	private boolean m_removePending = false;
 
-	private File m_tempFile;
-
-	private boolean m_fileIsTemporary;
+	private FileHandle m_tempFile;
 	
 	private IFileInfo m_fileInfo = null;
 
@@ -136,11 +134,9 @@ class CacheEntry
 		{
 			if(m_tempFile == null)
 			{
-				boolean[] isTemporary = new boolean[1];
-				m_tempFile = materializer.materialize(isTemporary, monitor, fileInfo);
-				m_fileIsTemporary = isTemporary[0];
-				if(m_fileIsTemporary)
-					m_tempFile.deleteOnExit();
+				m_tempFile = materializer.materialize(monitor, fileInfo);
+				if(m_tempFile.isTemporary())
+					m_tempFile.getFile().deleteOnExit();
 				if (fileInfo != null)
 					m_fileInfo = new FileInfoBuilder(fileInfo);
 				cache.schedule(materializer.getKey());
@@ -168,12 +164,12 @@ class CacheEntry
 		if(m_removePending)
 			throw new FileNotFoundException("File is closed");
 
-		if(m_fileIsTemporary)
+		if(m_tempFile.isTemporary())
 		{
 			++m_openFileCounter;
-			return new DeletingInputStream(m_tempFile);
+			return new DeletingInputStream(m_tempFile.getFile());
 		}
-		return new FileInputStream(m_tempFile);
+		return new FileInputStream(m_tempFile.getFile());
 	}
 
 	public final synchronized void remove()
@@ -184,10 +180,10 @@ class CacheEntry
 			//
 			m_removePending = true;
 		else
-		if(m_fileIsTemporary && !m_removePending)
+		if(m_tempFile != null && m_tempFile.isTemporary() && !m_removePending)
 		{
 			m_removePending = true;
-			m_tempFile.delete();
+			m_tempFile.getFile().delete();
 		}
 	}
 }

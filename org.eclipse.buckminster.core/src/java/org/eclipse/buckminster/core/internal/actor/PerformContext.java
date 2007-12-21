@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.UUID;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -69,6 +68,18 @@ public class PerformContext implements IActionContext
 		return normalized.toArray(new PathGroup[normalized.size()]);
 	}
 
+	private static PathGroup[] trimNonExistentBases(PathGroup[] pathGroups) throws CoreException
+	{
+		if(pathGroups.length == 0)
+			return pathGroups;
+		
+		ArrayList<PathGroup> existentBases = new ArrayList<PathGroup>();
+		for(PathGroup pathGroup : pathGroups)
+			if(pathGroup.getBase().toFile().exists())
+				existentBases.add(pathGroup);
+		return existentBases.toArray(new PathGroup[existentBases.size()]);
+	}
+
 	private static void normalizePaths(ArrayList<IPath> paths)
 	{
 		// Remove all paths that has a parent path in the array
@@ -101,20 +112,17 @@ public class PerformContext implements IActionContext
 
 	private final PrintStream m_errorStream;
 
-	private final boolean m_forced;
-
 	private final GlobalContext m_globalCtx;
 
 	private final PrintStream m_outputStream;
 
 	private final Map<String, String> m_properties;
 
-	public PerformContext(GlobalContext globalCtx, Action action, Map<String, String> properties, boolean forced, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor) throws CoreException
+	public PerformContext(GlobalContext globalCtx, Action action, Map<String, String> properties, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor) throws CoreException
 	{
 		m_globalCtx = globalCtx;
 		m_action = action;
 		m_properties = properties;
-		m_forced = forced;
 		m_outputStream = out;
 		m_errorStream = err;
 		m_cancellationMonitor = cancellationMonitor;
@@ -158,6 +166,7 @@ public class PerformContext implements IActionContext
 				paths = ag.getPathGroups(this, filters);
 
 			paths = normalizePathGroups(paths);
+			paths = trimNonExistentBases(paths);
 			if(!prereq.isExternal())
 			{
 				if(prereqRebase != null)
@@ -213,6 +222,11 @@ public class PerformContext implements IActionContext
 		return m_action;
 	}
 
+	public IProgressMonitor getCancellationMonitor()
+	{
+		return new SubProgressMonitor(m_cancellationMonitor, 1);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getComponentLocation()
 	 */
@@ -242,11 +256,6 @@ public class PerformContext implements IActionContext
 		return m_globalCtx;
 	}
 
-	public Map<UUID, Object> getInvocationCache()
-	{
-		return m_globalCtx.getInvocationCache();
-	}
-
 	public Map<String, PathGroup[]> getNamedPathGroupArrays() throws CoreException
 	{
 		HashMap<String, PathGroup[]> pgas = new HashMap<String, PathGroup[]>();
@@ -255,22 +264,16 @@ public class PerformContext implements IActionContext
 		return pgas;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.buckminster.core.actor.IActionContext#getOutputStream()
-	 */
 	public PrintStream getOutputStream()
 	{
 		return m_outputStream;
 	}
 
-	public Map<String,PathGroup[]> getPathGroupsCache()
+	public Map<String, PathGroup[]> getPathGroupsCache()
 	{
 		return m_globalCtx.getPathGroupsCache();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.buckminster.core.actor.IActionContext#getProperties()
-	 */
 	public Map<String, String> getProperties()
 	{
 		return m_properties;
@@ -285,7 +288,7 @@ public class PerformContext implements IActionContext
 	 */
 	public boolean isForced()
 	{
-		return m_forced || m_action.isAlways();
+		return m_globalCtx.isForcedExecution() || m_action.isAlways();
 	}
 
 	public File makeAbsolute(File file) throws CoreException
@@ -300,15 +303,5 @@ public class PerformContext implements IActionContext
 		if(!path.isAbsolute())
 			path = getComponentLocation().append(path);
 		return path;
-	}
-
-	public void scheduleRemoval(IPath path) throws CoreException
-	{
-		m_globalCtx.scheduleRemoval(makeAbsolute(path));
-	}
-
-	public IProgressMonitor getCancellationMonitor()
-	{
-		return new SubProgressMonitor(m_cancellationMonitor, 1);
 	}
 }

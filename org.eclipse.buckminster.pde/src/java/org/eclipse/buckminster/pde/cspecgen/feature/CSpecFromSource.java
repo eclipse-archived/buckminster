@@ -36,8 +36,6 @@ public class CSpecFromSource extends CSpecGenerator
 {
 	private static final String ACTION_COPY_FEATURES = "copy.features";
 
-	private static final String ACTION_COPY_PLUGINS = "copy.plugins";
-
 	private static final String ATTRIBUTE_FEATURE_REFS = "feature.references";
 
 	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root";
@@ -121,7 +119,7 @@ public class CSpecFromSource extends CSpecGenerator
 		//
 		cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 
-		cspec.addGroup(PRODUCT_ROOT_FILES, true);
+		cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
 		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 
 		addFeatures();
@@ -187,6 +185,7 @@ public class CSpecFromSource extends CSpecGenerator
 		createFeatureManifestAction();
 		createFeatureJarAction();
 		createFeatureExportsAction();
+		addProducts(monitor);
 	}
 
 	void addFeatures() throws CoreException
@@ -200,7 +199,7 @@ public class CSpecFromSource extends CSpecGenerator
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder featureRefs = cspec.getRequiredGroup(ATTRIBUTE_FEATURE_REFS);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
-		GroupBuilder productRootFiles = cspec.getRequiredGroup(PRODUCT_ROOT_FILES);
+		GroupBuilder productRootFiles = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
 		{
 			Dependency dep = createDependency(feature);
@@ -211,7 +210,7 @@ public class CSpecFromSource extends CSpecGenerator
 			featureRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_JARS);
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
-			productRootFiles.addExternalPrerequisite(dep.getName(), PRODUCT_ROOT_FILES);
+			productRootFiles.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
 		}
 	}
 
@@ -284,6 +283,14 @@ public class CSpecFromSource extends CSpecGenerator
 
 	private void createFeatureExportsAction() throws CoreException
 	{
+		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
+		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
+		featureExports.addLocalPrerequisite(createCopyPluginsAction());
+		featureExports.setRebase(OUTPUT_DIR_SITE);
+	}
+
+	private ActionBuilder createCopyFeaturesAction() throws CoreException
+	{
 		// Copy all features (including this one) to the features directory.
 		//
 		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_FEATURES, TASK_COPY_GROUP, false);
@@ -292,20 +299,7 @@ public class CSpecFromSource extends CSpecGenerator
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
 		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));
 		copyFeatures.setUpToDatePolicy(UpToDatePolicy.MAPPER);
-
-		// Copy all plug-ins that all features (including this one) is including.
-		//
-		ActionBuilder copyPlugins = addAntAction(ACTION_COPY_PLUGINS, TASK_COPY_GROUP, false);
-		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS);
-		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-		copyPlugins.setProductAlias(ALIAS_OUTPUT);
-		copyPlugins.setProductBase(OUTPUT_DIR_SITE.append(PLUGINS_FOLDER));
-		copyPlugins.setUpToDatePolicy(UpToDatePolicy.MAPPER);
-
-		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
-		featureExports.addLocalPrerequisite(ACTION_COPY_FEATURES);
-		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);
-		featureExports.setRebase(OUTPUT_DIR_SITE);
+		return copyFeatures;
 	}
 
 	private void createFeatureManifestAction() throws CoreException
@@ -434,7 +428,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(productRoot == null)
 		{
 			productRoot = cspec.addGroup(ATTRIBUTE_INTERNAL_PRODUCT_ROOT, false);
-			cspec.getRequiredGroup(PRODUCT_ROOT_FILES).addLocalPrerequisite(productRoot);
+			cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES).addLocalPrerequisite(productRoot);
 		}
 		return productRoot;
 	}

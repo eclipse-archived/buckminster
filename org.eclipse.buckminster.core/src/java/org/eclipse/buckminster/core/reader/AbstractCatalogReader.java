@@ -19,8 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -46,7 +50,29 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		super(readerType, providerMatch);
 	}
 
-	public final File getContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
+	public final List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException,
+			IOException
+	{
+		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
+		monitor.beginTask(null, 100);
+		File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
+		if(addOnFolder != null)
+		{
+			String[] names = addOnFolder.list();
+			if(names != null)
+			{
+				for(String name : names)
+				{
+					if(matchPattern.matcher(name).matches())
+						files.add(new FileHandle(name, new File(addOnFolder, name), false));
+				}
+			}
+		}
+		innerGetMatchingRootFiles(matchPattern, files, MonitorUtils.subMonitor(monitor, 90));
+		return files;
+	}
+
+	public final FileHandle getContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		ProviderMatch ri = getProviderMatch();
 		Logger logger = CorePlugin.getLogger();
@@ -60,17 +86,13 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 				File addOnFile = new File(addOnFolder, fileName);
 				if(addOnFile.exists())
 				{
-					logger.debug("Provider %s(%s): getContents will use overlay %s for file = %s",
-							getReaderType().getId(),
-							ri.getRepositoryURI(),
-							addOnFile,
-							fileName);
+					logger.debug("Provider %s(%s): getContents will use overlay %s for file = %s", getReaderType()
+							.getId(), ri.getRepositoryURI(), addOnFile, fileName);
 					MonitorUtils.worked(monitor, 90);
-					isTemporary[0] = false;
-					return addOnFile;
+					return new FileHandle(fileName, addOnFile, false);
 				}
-			}	
-			return innerGetContents(fileName, isTemporary, MonitorUtils.subMonitor(monitor, 90));
+			}
+			return innerGetContents(fileName, MonitorUtils.subMonitor(monitor, 90));
 		}
 		finally
 		{
@@ -100,10 +122,8 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	public final void materialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		ProviderMatch pm = this.getProviderMatch();
-		CorePlugin.getLogger().debug("Provider %s(%s): materializing to %s",
-				getReaderType().getId(),
-				pm.getRepositoryURI(),
-				destination);
+		CorePlugin.getLogger().debug("Provider %s(%s): materializing to %s", getReaderType().getId(),
+				pm.getRepositoryURI(), destination);
 
 		monitor.beginTask(null, 100);
 		try
@@ -117,7 +137,8 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
-	public final <T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException
+	public final <T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
+			throws CoreException, IOException
 	{
 		monitor.beginTask(null, 100);
 		try
@@ -125,7 +146,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
 			if(addOnFolder == null)
 				return innerReadFile(fileName, consumer, MonitorUtils.subMonitor(monitor, 90));
-	
+
 			InputStream tmp = null;
 			IProgressMonitor overlayReadMon = MonitorUtils.subMonitor(monitor, 10);
 			try
@@ -175,9 +196,13 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
-	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException, IOException
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
+			throws CoreException, IOException
 	{
-		isTemporary[0] = false;
+	}
+
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
+	{
 		OutputStream tmp = null;
 		File tempFile = null;
 		try
@@ -194,8 +219,9 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 					return null;
 				}
 			}, monitor);
-			isTemporary[0] = true;
-			return tempFile;
+			FileHandle fh = new FileHandle(fileName, tempFile, true);
+			tempFile = null;
+			return fh;
 		}
 		catch(FileNotFoundException e)
 		{
@@ -204,7 +230,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		finally
 		{
 			IOUtils.close(tmp);
-			if(!isTemporary[0] && tempFile != null)
+			if(tempFile != null)
 				tempFile.delete();
 		}
 	}
@@ -242,7 +268,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 			if(!fileOverlay.isDirectory())
 				throw new IllegalOverlayException("Only folders, zip, and jar archives allowed");
-			
+
 			// Monitor was not used for anything so make it complete
 			//
 			MonitorUtils.complete(monitor);
@@ -267,5 +293,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 	protected abstract boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException;
 
-	protected abstract <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException;
+	protected abstract <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
+			throws CoreException, IOException;
 }

@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.pde;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
@@ -10,6 +12,8 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
 @SuppressWarnings("restriction")
 public interface IPDEConstants
 {
+	static final String ACTOR_COPY_TARGET_FRAGMENTS = "copyTargetFragments";
+
 	static final String ALIAS_BUNDLES = "bundles";
 
 	static final String ALIAS_FEATURES = "features";
@@ -21,6 +25,8 @@ public interface IPDEConstants
 	static final String ALIAS_MANIFEST = "manifest";
 
 	static final String ALIAS_PROPERTIES = "properties";
+
+	static final String ACTION_COPY_PLUGINS = "copy.plugins";
 
 	/**
 	 * The feature in a format suitable for an update site. No sub-features nor bundles are
@@ -89,7 +95,19 @@ public interface IPDEConstants
 
 	static final String ATTRIBUTE_MANIFEST = "manifest";
 
+	/**
+	 * Appoints all files that PDE features wants to copy to the root of a product they are included
+	 * in.
+	 */
+	static final String ATTRIBUTE_PRODUCT_ROOT_FILES = "product.root.files";
+
 	static final String ATTRIBUTE_RAW_MANIFEST = "raw.manifest";
+
+	/**
+	 * Appoints an action that will copy the fragments for the current component from the
+	 * workspace or target platform
+	 */
+	static final String ATTRIBUTE_TARGET_FRAGMENTS = "target.fragments";
 
 	static final String BUILD_FILE_ID = "buckminster.pdetasks";
 
@@ -118,15 +136,15 @@ public interface IPDEConstants
 
 	static final String PLUGINS_FOLDER = IPDEBuildConstants.DEFAULT_PLUGIN_LOCATION;
 
-	/**
-	 * Appoints all files that PDE features wants to copy to the root of a product they are included
-	 * in.
-	 */
-	static final String PRODUCT_ROOT_FILES = "product.root.files";
+	static final Pattern PRODUCT_CONFIGURATION_FILE_PATTERN = Pattern.compile("^.*\\.product$");
 
 	static final String PROP_DELETE_DIR = "dir.to.delete";
 
 	static final String PROP_DELETE_FILE = "file.to.delete";
+
+	static final String PROP_DELETE_UILAUNCHER="buckminster.eclipse.deleteuilauncher";
+
+	static final String PROP_PRODUCT_FILE="buckminster.eclipse.productFile";
 
 	static final String SITE_FILE = "site.xml";
 
@@ -143,6 +161,8 @@ public interface IPDEConstants
 	static final String TASK_CREATE_JAR = "create.jar";
 
 	static final String TASK_CREATE_ZIP = "create.zip";
+
+	static final String TASK_CREATE_ECLIPSE_PRODUCT = "create.eclipse.product";
 
 	static final String TASK_CREATE_JAR_WM = "create.jar.with.manifest";
 

@@ -25,4 +25,6 @@ public interface IPerformManager
 	IStatus perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
 
 	IStatus perform(List<Attribute> attributes, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
+
+	IStatus perform(List<Attribute> attributes, IGlobalContext globalCtx, IProgressMonitor monitor) throws CoreException;
 }

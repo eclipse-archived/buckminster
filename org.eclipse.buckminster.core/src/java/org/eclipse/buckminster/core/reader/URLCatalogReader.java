@@ -12,13 +12,18 @@ package org.eclipse.buckminster.core.reader;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -44,10 +49,34 @@ public class URLCatalogReader extends AbstractCatalogReader
 		m_uri = readerType.getURI(rInfo);
 	}
 
+	@Override
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
+	throws CoreException, IOException
+	{
+		URL url = getURL();
+		File source = FileUtils.getFile(url);
+		if(source == null)
+			return;
+		
+		String[] rootFiles = source.list();
+		if(rootFiles == null)
+			return;
+		
+		for(String rootFile : rootFiles)
+		{
+			if(pattern.matcher(rootFile).matches())
+			{
+				File f = new File(source, rootFile);
+				if(f.isFile() && f.canRead())
+					files.add(new FileHandle(rootFile, f, false));
+			}
+		}
+	}
+
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	throws CoreException
 	{
-		URL url = this.getURL();
+		URL url = getURL();
 		File source = FileUtils.getFile(url);
 		if(source == null)
 			throw new UnsupportedOperationException("Only file protocol is supported at this time");
@@ -113,7 +142,11 @@ public class URLCatalogReader extends AbstractCatalogReader
 		InputStream input = null;
 		try
 		{
-			URL fileUrl = new URL(this.getURL(), fileName);
+			File source = FileUtils.getFile(getURL());
+			if(source != null)
+				return new File(source, fileName).exists();
+
+			URL fileUrl = new URL(getURL(), fileName);
 			input = CorePlugin.getDefault().openCachedURL(fileUrl, monitor);
 			return true;
 		}
@@ -128,6 +161,28 @@ public class URLCatalogReader extends AbstractCatalogReader
 	}
 
 	@Override
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		File source = FileUtils.getFile(getURL());
+		if(source == null)
+			return super.innerGetContents(fileName, monitor);
+
+		monitor.beginTask(null, 5);
+		try
+		{
+			File file = new File(source, fileName);
+			if(!file.isFile())
+				throw new FileNotFoundException(file.getAbsolutePath());
+			
+			return new FileHandle(fileName, file, false);
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	@Override
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
 	throws CoreException, IOException
 	{
@@ -135,9 +190,22 @@ public class URLCatalogReader extends AbstractCatalogReader
 		monitor.beginTask(fileName, 2);
 		try
 		{
-			URL fileUrl = new URL(getURL(), fileName);
-			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(fileUrl, MonitorUtils.subMonitor(monitor, 1)));
-			return consumer.consumeStream(this, fileUrl.toString(), input, MonitorUtils.subMonitor(monitor, 1));
+			String fullName;
+			File source = FileUtils.getFile(getURL());
+			if(source != null)
+			{
+				File file = new File(source, fileName);
+				input = new FileInputStream(file);
+				fullName = file.getAbsolutePath();
+			}
+			else
+			{
+				URL fileUrl = new URL(getURL(), fileName);
+				input = CorePlugin.getDefault().openCachedURL(fileUrl, MonitorUtils.subMonitor(monitor, 1));
+				fullName = fileUrl.toString();
+			}
+			input = new BufferedInputStream(input);
+			return consumer.consumeStream(this, fullName, input, MonitorUtils.subMonitor(monitor, 1));
 		}
 		finally
 		{

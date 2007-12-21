@@ -25,12 +25,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.cvspkg.CVSPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -112,6 +114,21 @@ public class RepositoryMetaData implements Serializable
 	public final String[] getBranchNames()
 	{
 		return m_branchNames;
+	}
+
+	public final String[] getMatchingFiles(Pattern pattern)
+	{
+		ArrayList<String> matching = null;
+		for(String knownFile : m_knownFiles)
+		{
+			if(pattern.matcher(knownFile).matches())
+			{
+				if(matching == null)
+					matching = new ArrayList<String>();
+				matching.add(knownFile);
+			}
+		}
+		return matching == null ? Trivial.EMPTY_STRING_ARRAY : matching.toArray(new String[matching.size()]);
 	}
 
 	public final String[] getTagNames()

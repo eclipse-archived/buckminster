@@ -57,7 +57,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 
 		return this.open(new Materializer()
 		{
-			public File materialize(boolean[] isTemporary, IProgressMonitor mon, FileInfoBuilder info)
+			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info)
 					throws IOException
 			{
 				if(info == null)
@@ -113,8 +113,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 					{
 						writeMonitor.done();
 					}
-					isTemporary[0] = true;
-					return tempFile;
+					return new FileHandle(url.toString(), tempFile, true);
 				}
 				finally
 				{

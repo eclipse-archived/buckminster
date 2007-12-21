@@ -245,6 +245,7 @@ public abstract class FileUtils
 	public static void prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)
 			throws BuckminsterException
 	{
+		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 200);
 		try
 		{
@@ -316,6 +317,7 @@ public abstract class FileUtils
 	public static void deepCopy(File sourceDirectory, File destinationDirectory, ConflictResolution strategy,
 			IProgressMonitor monitor) throws CoreException
 	{
+		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1000);
 		try
 		{
@@ -727,13 +729,19 @@ public abstract class FileUtils
 			// an empty directory. Both are ok. A missing entry is
 			// not OK.
 			//
-			if(isDir)
-				MonitorUtils.complete(monitor);
-			else if(source.isFile())
-				copyFile(source, dest, source.getName(), monitor);
-			else
-				throw BuckminsterException.wrap(new FileNotFoundException(source.getAbsolutePath()));
-			return;
+			try
+			{
+				if(isDir)
+					MonitorUtils.complete(monitor);
+				else if(source.isFile())
+					copyFile(source, dest, source.getName(), monitor);
+				else
+					throw new FileNotFoundException(source.getAbsolutePath());
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
 		}
 
 		monitor.beginTask(null, 10 + files.length * 100);

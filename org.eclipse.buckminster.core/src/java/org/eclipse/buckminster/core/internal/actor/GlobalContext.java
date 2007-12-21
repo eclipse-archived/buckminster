@@ -9,10 +9,13 @@ package org.eclipse.buckminster.core.internal.actor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.actor.IGlobalContext;
+import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
@@ -21,33 +24,90 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 @SuppressWarnings("serial")
-public class GlobalContext extends ModelCache
+public class GlobalContext extends ModelCache implements IGlobalContext
 {
 	private final ArrayList<Integer> m_executedEclipseKinds = new ArrayList<Integer>();
 	private final ArrayList<IPath> m_scheduledRemovals = new ArrayList<IPath>();
 	private final Map<UUID,Object> m_invocationCache = new HashMap<UUID,Object>();
+	private final HashSet<Action> m_actionsPerformed = new HashSet<Action>();
+	private final Map<String,String> m_userProps;
+	private final boolean m_forcedExecution;
+
 	private boolean m_workspaceRefreshPending;
 
-	public boolean hasExecutedKind(int kind)
+	public GlobalContext(Map<String,String> userProps, boolean forcedExecution)
+	{
+		m_userProps = userProps;
+		m_forcedExecution = forcedExecution;
+	}
+
+	public Map<UUID,Object> getInvocationCache()
+	{
+		return m_invocationCache ;
+	}
+
+	public void scheduleRemoval(IPath path)
+	{
+		if(!path.isAbsolute())
+			throw new IllegalArgumentException("Only absolute paths can be scheduled for removal");
+
+		int idx = m_scheduledRemovals.size();
+		while(--idx >= 0)
+		{
+			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
+			if(alreadyScheduled.isPrefixOf(path))
+				return;
+			if(path.isPrefixOf(alreadyScheduled))
+				m_scheduledRemovals.remove(idx);
+		}
+		m_scheduledRemovals.add(path);
+	}
+
+	/**
+	 * Add an <code>action</code> to the set of performed actions.
+	 * @param action The action to add.
+	 */
+	void addPerformedAction(Action action)
+	{
+		m_actionsPerformed.add(action);
+	}
+
+	Map<String,String> getUserProperties()
+	{
+		return m_userProps;
+	}
+
+	boolean hasExecutedKind(int kind)
 	{
 		return m_executedEclipseKinds.contains(new Integer(kind));
 	}
 
-	public void kindWasExecuted(int kind)
+	/**
+	 * Checks if the <code>action</code> is among the actions that were added using
+	 * the {@link #addPerformedAction(Action)} method.
+	 * @param action The action to check
+	 * @return <code>true</code> if the action has been added.
+	 */
+	boolean hasPerformedAction(Action action)
 	{
-		Integer objKind = new Integer(kind);
-		if(!m_executedEclipseKinds.contains(objKind))
-			m_executedEclipseKinds.add(objKind);
+		return m_actionsPerformed.contains(action);
 	}
 
-	public boolean isWorkspaceRefreshPending()
+	boolean isForcedExecution()
+	{
+		return m_forcedExecution;
+	}
+
+	boolean isWorkspaceRefreshPending()
 	{
 		return m_workspaceRefreshPending;
 	}
 
-	public void setWorkspaceRefreshPending(boolean flag)
+	void kindWasExecuted(int kind)
 	{
-		m_workspaceRefreshPending = flag;
+		Integer objKind = new Integer(kind);
+		if(!m_executedEclipseKinds.contains(objKind))
+			m_executedEclipseKinds.add(objKind);
 	}
 
 	synchronized void removeScheduled(IProgressMonitor monitor)
@@ -75,25 +135,8 @@ public class GlobalContext extends ModelCache
 		m_scheduledRemovals.clear();
 	}
 
-	void scheduleRemoval(IPath path)
+	void setWorkspaceRefreshPending(boolean flag)
 	{
-		if(!path.isAbsolute())
-			throw new IllegalArgumentException("Only absolute paths can be scheduled for removal");
-
-		int idx = m_scheduledRemovals.size();
-		while(--idx >= 0)
-		{
-			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
-			if(alreadyScheduled.isPrefixOf(path))
-				return;
-			if(path.isPrefixOf(alreadyScheduled))
-				m_scheduledRemovals.remove(idx);
-		}
-		m_scheduledRemovals.add(path);
-	}
-
-	public Map<UUID,Object> getInvocationCache()
-	{
-		return m_invocationCache ;
+		m_workspaceRefreshPending = flag;
 	}
 }

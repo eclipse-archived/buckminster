@@ -148,6 +148,11 @@ public class WorkspaceInfo
 	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res)
 			throws CoreException
 	{
+		// Obtain the storage manager outside of the synchronization to avoid
+		// possible deadlock.
+		//
+		StorageManager.getDefault();
+
 		IPath location;
 		ComponentIdentifier ci = res.getComponentIdentifier();
 		synchronized(s_locationCache)
@@ -328,6 +333,11 @@ public class WorkspaceInfo
 	 */
 	public static IPath getComponentLocation(ComponentIdentifier componentIdentifier) throws CoreException
 	{
+		// Obtain the storage manager outside of the synchronization to avoid
+		// possible deadlock.
+		//
+		StorageManager.getDefault();
+
 		synchronized(s_locationCache)
 		{
 			IPath location = s_locationCache.get(componentIdentifier);
@@ -435,6 +445,11 @@ public class WorkspaceInfo
 
 	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException
 	{
+		// Obtain the storage manager outside of the synchronization to avoid
+		// possible deadlock.
+		//
+		StorageManager.getDefault();
+
 		synchronized(s_resolutionCache)
 		{
 			Resolution candidate = s_resolutionCache.get(wanted);

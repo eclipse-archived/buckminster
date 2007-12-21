@@ -16,8 +16,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -84,6 +88,35 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	public void close()
 	{
 		m_session.close();
+	}
+
+	@Override
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
+	throws CoreException, IOException
+	{
+		ArrayList<String> names = null;
+		for(ISVNDirEntry dirEntry : m_topEntries)
+		{
+			String fileName = dirEntry.getPath();
+			if(pattern.matcher(fileName).matches())
+			{
+				if(names == null)
+					names = new ArrayList<String>();
+				names.add(fileName);
+			}
+		}
+		if(names == null)
+			return;
+
+		if(names.size() == 1)
+			files.add(innerGetContents(names.get(0), monitor));
+		else
+		{
+			monitor.beginTask(null, names.size() * 100);
+			for(String name : names)
+				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
+			monitor.done();
+		}
 	}
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
@@ -165,7 +198,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	}
 
 	@Override
-	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor) throws CoreException,
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException,
 			IOException
 	{
 		Logger logger = CorePlugin.getLogger();
@@ -194,7 +227,6 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		InputStream input = null;
 
 		int ticksLeft = 3;
-		isTemporary[0] = false;
 		monitor.beginTask(fileName, ticksLeft);
 
 		try
@@ -230,8 +262,9 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				else
 					MonitorUtils.testCancelStatus(monitor);
 			}
-			isTemporary[0] = true;
-			return destFile;
+			FileHandle fh = new FileHandle(fileName, destFile, true);
+			destFile = null;
+			return fh;
 		}
 		catch(SVNClientException e)
 		{
@@ -262,7 +295,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		{
 			IOUtils.close(input);
 			IOUtils.close(output);
-			if(!isTemporary[0] && destFile != null)
+			if(destFile != null)
 				destFile.delete();
 			if(ticksLeft > 0)
     			MonitorUtils.worked(monitor, ticksLeft);

@@ -25,6 +25,7 @@ import java.util.zip.ZipFile;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -129,7 +130,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 	}
 
 	@Override
-	protected File innerGetContents(String fileName, boolean[] isTemporary, IProgressMonitor monitor)
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor)
 	throws CoreException,
 		IOException
 	{
@@ -137,7 +138,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 
 		File destFile = null;
 		OutputStream output = null;
-		isTemporary[0] = false;
 		try
 		{
 			destFile = createTempFile();
@@ -189,13 +189,14 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 					reader.close();
 				}
 			}
-			isTemporary[0] = true;
-			return destFile;
+			FileHandle fh = new FileHandle(fileName, destFile, true);
+			destFile = null;
+			return fh;
 		}
 		finally
 		{
 			IOUtils.close(output);
-			if(!isTemporary[0] && destFile != null)
+			if(destFile != null)
 				destFile.delete();
 		}
 	}

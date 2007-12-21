@@ -117,7 +117,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 				loggableProps(bld, props);
 			}
 			m_logger.info(bld.toString());
-			ctx.scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP)));
+			ctx.getGlobalContext().scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP)));
 			IStatus status = internalPerform(ctx, monitor);
 			bld.setLength(0);
 			bld.append("[end ");

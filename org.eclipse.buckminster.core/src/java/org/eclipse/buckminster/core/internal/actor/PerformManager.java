@@ -17,7 +17,9 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IActor;
+import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -29,7 +31,6 @@ import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
-import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IContainer;
@@ -64,111 +65,18 @@ public class PerformManager implements IPerformManager
 	public IStatus perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
-		return this.perform(Collections.singletonList(cspec.getRequiredAttribute(attributeName)), props,
+		return perform(Collections.singletonList(cspec.getRequiredAttribute(attributeName)), props,
 			forced, monitor);
 	}
 
 	public IStatus perform(List<Attribute> attributes, Map<String, String> userProps, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
-		// calculate a flat dependency list of actions to be done
-		// adjust as needed when it's a build integration
-		//
-		GlobalContext globalCtx = new GlobalContext();
-		List<Action> actionList = getOrderedActionList(globalCtx, attributes);
-		monitor.beginTask(null, 100 + 100 * actionList.size());
+		GlobalContext globalCtx = new GlobalContext(userProps, forced);
+		monitor.beginTask(null, 1000);
 		try
 		{
-			Logger logger = CorePlugin.getLogger();
-			if(logger.isDebugEnabled())
-			{
-				StringBuilder bld = new StringBuilder(40 + actionList.size() * 40);
-				bld.append("Actions to perform (in order)");
-				for(Action action : actionList)
-				{
-					bld.append("\n  ");
-					action.toString(bld);
-				}
-				logger.debug(bld.toString());
-			}
-
-			Map<String,String> systemProps = BMProperties.getSystemProperties();
-			MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
-			for(Action action : actionList)
-			{
-				// We use ExpandingProperties all the way so that the expansion is deferred
-				//
-				Map<String, String> allProps = new ExpandingProperties(systemProps);
-
-				// enter all the context properties defined in the action as user props
-				//
-				allProps.putAll(action.getProperties());
-
-				// enter all the global properties passed to this perform
-				//
-				if(userProps != null)
-					allProps.putAll(userProps);
-
-				// Add action specific dynamic properties
-				//
-				action.addDynamicProperties(allProps);
-
-				IActor actor = ActorFactory.getInstance().getActor(action);
-				PrintStream out;
-				PrintStream err;
-				if(action.assignConsoleSupport())
-				{
-					out = Logger.getOutStream();
-					err = Logger.getErrStream();
-				}
-				else
-				{
-					out = s_nullPrintStream;
-					err = s_nullPrintStream;
-				}
-
-				IProgressMonitor cancellationMonitor = MonitorUtils.subMonitor(monitor, 1);
-				cancellationMonitor.beginTask(null, IProgressMonitor.UNKNOWN);
-				PerformContext ctx = new PerformContext(globalCtx, action, allProps, forced, out, err, cancellationMonitor);
-				if(!forced && action.isUpToDate(ctx))
-				{
-					cancellationMonitor.done();
-					MonitorUtils.worked(monitor, 99);
-					continue;
-				}
-
-				IStatus status = actor.perform(ctx, new SubProgressMonitor(monitor, 89, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
-				cancellationMonitor.done();
-				MonitorUtils.testCancelStatus(monitor);
-
-				switch(status.getSeverity())
-				{
-				case IStatus.WARNING:
-				case IStatus.INFO:
-					retStatus.add(status);
-					// fall through
-
-				case IStatus.OK:
-					makeWorkspaceAwareOfProducts(ctx, action, MonitorUtils.subMonitor(monitor, 10));
-					continue;
-
-				case IStatus.CANCEL:
-					throw new OperationCanceledException();
-
-				case IStatus.ERROR:
-					retStatus.add(status);
-					break;
-				}
-				break;
-			}
-
-			IStatus[] children = retStatus.getChildren();
-			IStatus status = children.length == 1 ? children[0] : retStatus;
-
-			if(status.getSeverity() == IStatus.ERROR)
-				throw new CoreException(status);
-
-			return status;
+			return perform(attributes, globalCtx, MonitorUtils.subMonitor(monitor, 900));
 		}
 		finally
 		{
@@ -176,8 +84,124 @@ public class PerformManager implements IPerformManager
 			if(globalCtx.isWorkspaceRefreshPending())
 				ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE,
 					MonitorUtils.subMonitor(monitor, 50));
-			monitor.done();
+			monitor.done();			
 		}
+	}
+
+	public IStatus perform(List<Attribute> attributes, IGlobalContext global, IProgressMonitor monitor) throws CoreException
+	{
+		// calculate a flat dependency list of actions to be done
+		// adjust as needed when it's a build integration
+		//
+		GlobalContext globalCtx = (GlobalContext)global;
+		List<Action> actionList = getOrderedActionList(globalCtx, attributes);
+		monitor.beginTask(null, 100 * actionList.size());
+		Logger logger = CorePlugin.getLogger();
+		if(logger.isDebugEnabled())
+		{
+			StringBuilder bld = new StringBuilder(40 + actionList.size() * 40);
+			bld.append("Actions to perform (in order)");
+			for(Action action : actionList)
+			{
+				bld.append("\n  ");
+				action.toString(bld);
+			}
+			logger.debug(bld.toString());
+		}
+
+		Map<String,String> userProps = globalCtx.getUserProperties();
+		Map<String,String> systemProps = BMProperties.getSystemProperties();
+		MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
+		for(Action action : actionList)
+		{
+			// Check that the action hasn't been executed already. This may happen when actions
+			// explicitly call on other actions (such as the fragment actor)
+			//
+			if(globalCtx.hasPerformedAction(action))
+			{
+				MonitorUtils.worked(monitor, 100);
+				continue;
+			}
+
+			globalCtx.addPerformedAction(action);
+
+			// We use ExpandingProperties all the way so that the expansion is deferred
+			//
+			Map<String, String> allProps = new ExpandingProperties(systemProps);
+
+			// Get target platform properties etc.
+			//
+			allProps.putAll(RMContext.getGlobalPropertyAdditions());
+
+			// enter all the context properties defined in the action as user props
+			//
+			allProps.putAll(action.getProperties());
+
+			// enter all the global properties passed to this perform
+			//
+			if(userProps != null)
+				allProps.putAll(userProps);
+
+			// Add action specific dynamic properties
+			//
+			action.addDynamicProperties(allProps);
+
+			IActor actor = ActorFactory.getInstance().getActor(action);
+			PrintStream out;
+			PrintStream err;
+			if(action.assignConsoleSupport())
+			{
+				out = Logger.getOutStream();
+				err = Logger.getErrStream();
+			}
+			else
+			{
+				out = s_nullPrintStream;
+				err = s_nullPrintStream;
+			}
+
+			IProgressMonitor cancellationMonitor = MonitorUtils.subMonitor(monitor, 1);
+			cancellationMonitor.beginTask(null, IProgressMonitor.UNKNOWN);
+			PerformContext ctx = new PerformContext(globalCtx, action, allProps, out, err, cancellationMonitor);
+			if(!ctx.isForced() && action.isUpToDate(ctx))
+			{
+				cancellationMonitor.done();
+				MonitorUtils.worked(monitor, 99);
+				continue;
+			}
+
+			IStatus status = actor.perform(ctx, new SubProgressMonitor(monitor, 89, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+			cancellationMonitor.done();
+			MonitorUtils.testCancelStatus(monitor);
+
+			switch(status.getSeverity())
+			{
+			case IStatus.WARNING:
+			case IStatus.INFO:
+				retStatus.add(status);
+				// fall through
+
+			case IStatus.OK:
+				makeWorkspaceAwareOfProducts(ctx, action, MonitorUtils.subMonitor(monitor, 10));
+				continue;
+
+			case IStatus.CANCEL:
+				throw new OperationCanceledException();
+
+			case IStatus.ERROR:
+				retStatus.add(status);
+				break;
+			}
+			break;
+		}
+
+		IStatus[] children = retStatus.getChildren();
+		IStatus status = children.length == 1 ? children[0] : retStatus;
+
+		if(status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
+
+		return status;
 	}
 
 	public static IPath expandPath(Map<String, String> properties, IPath path)
@@ -298,7 +322,7 @@ public class PerformManager implements IPerformManager
 		}
 	}
 
-	private static List<Action> getOrderedActionList(IModelCache ctx, List<Attribute> attributes) throws CoreException
+	private static List<Action> getOrderedActionList(GlobalContext ctx, List<Attribute> attributes) throws CoreException
 	{
 		Set<Attribute> seen = new HashSet<Attribute>();
 		List<Action> ordered = new ArrayList<Action>();
@@ -320,7 +344,7 @@ public class PerformManager implements IPerformManager
 		return ordered;
 	}
 
-	private static void addAttributeChildren(IModelCache ctx, Attribute attribute, Set<Attribute> seen, List<Action> ordered, Stack<IAttributeFilter> filters)
+	private static void addAttributeChildren(GlobalContext ctx, Attribute attribute, Set<Attribute> seen, List<Action> ordered, Stack<IAttributeFilter> filters)
 	throws CoreException
 	{
 		if(attribute instanceof ActionArtifact)
