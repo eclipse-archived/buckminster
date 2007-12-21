@@ -182,8 +182,6 @@ public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 				UUID id = UUID.fromString(name);
 				m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
 			}
-			m_cacheTime = m_sqFile.lastModified();
-			m_lastChecked = System.currentTimeMillis();
 		}
 		catch(IOException e)
 		{
@@ -193,6 +191,8 @@ public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 		{
 			lock.release();
 		}
+		m_cacheTime = m_sqFile.lastModified();
+		m_lastChecked = System.currentTimeMillis();
 	}
 
 	public synchronized void clear()

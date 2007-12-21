@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
@@ -33,6 +34,9 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 	private WorkspaceBindingInstallJob()
 	{
 		super("workspace binding installer");
+		setPriority(Job.BUILD);
+		setSystem(true);
+		setUser(false);
 	}
 
 	@Override

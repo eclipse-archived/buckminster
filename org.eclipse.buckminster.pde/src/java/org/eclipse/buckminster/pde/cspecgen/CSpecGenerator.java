@@ -371,7 +371,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected Dependency createDependency(String name, String componentType, String version, Filter filter)
 	throws CoreException
 	{
-		if(version != null && version.equals("0.0.0"))
+		if(version != null && (version.length() == 0 || version.equals("0.0.0")))
 			version = null;
 		return new Dependency(name, componentType, version, VersionFactory.OSGiType.getId(), filter);
 	}
