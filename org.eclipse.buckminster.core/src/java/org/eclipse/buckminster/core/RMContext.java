@@ -37,6 +37,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.IValueVariable;
+import org.eclipse.core.variables.VariablesPlugin;
 
 /**
  * The <i>Resolution and Materialization</i> context. Maintains information with a lifecycle that lasts throughout the
@@ -86,12 +89,11 @@ public class RMContext extends MapUnion<String, String>
 		}
 	}
 
-	private static final Map<String, String> s_globalAdditions;
+	private static final Map<String, String> s_staticAdditions;
 
 	static
 	{
-		Map<String, String> additions = new HashMap<String, String>();
-		
+		Map<String,String> additions = new HashMap<String,String>();
 		File homeFile = TargetPlatform.getPlatformInstallLocation();
 		if(homeFile != null)
 		{
@@ -102,6 +104,28 @@ public class RMContext extends MapUnion<String, String>
 			CorePlugin.getLogger().debug("Platform install location is NULL!");
 
 		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString());
+		try
+		{
+			additions.put("localhost", InetAddress.getLocalHost().getHostName());
+		}
+		catch(UnknownHostException e1)
+		{
+			// We'll just have to do without it.
+		}
+		s_staticAdditions = additions;
+	}
+
+	public static Map<String, String> getGlobalPropertyAdditions()
+	{
+		Map<String,String> sysProps = BMProperties.getSystemProperties();
+		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
+		IValueVariable[] vars = varMgr.getValueVariables();
+
+		Map<String,String> additions = new HashMap<String,String>(s_staticAdditions.size() + sysProps.size() + vars.length + 6);
+		additions.putAll(s_staticAdditions);
+		additions.putAll(sysProps);
+		for(IValueVariable var : varMgr.getValueVariables())
+			additions.put(var.getName(), var.getValue());
 
 		try
 		{
@@ -111,22 +135,12 @@ public class RMContext extends MapUnion<String, String>
 			additions.put(TargetPlatform.TARGET_ARCH, tf.getArch());
 			additions.put(TargetPlatform.TARGET_NL, tf.getNL());
 			additions.put(TargetPlatform.TARGET_LOCATION, tf.getLocation().toString());
-			additions.put("localhost", InetAddress.getLocalHost().getHostName());
 		}
 		catch(CoreException e)
 		{
 			e.printStackTrace();
 		}
-		catch(UnknownHostException e1)
-		{
-			// We'll just have to do without it.
-		}
-		s_globalAdditions = new MapUnion<String, String>(additions, BMProperties.getSystemProperties());
-	}
-
-	public static Map<String, String> getGlobalPropertyAdditions()
-	{
-		return s_globalAdditions;
+		return additions;
 	}
 
 	private static Map<String,String> makeExpanding(Map<String,String> properties)
@@ -151,7 +165,7 @@ public class RMContext extends MapUnion<String, String>
 
 	public RMContext(Map<String, String> properties, RMContext source)
 	{
-		super(properties, s_globalAdditions);
+		super(properties, s_staticAdditions);
 		if(source != null)
 		{
 			m_userCache.putAll(source.getUserCache());

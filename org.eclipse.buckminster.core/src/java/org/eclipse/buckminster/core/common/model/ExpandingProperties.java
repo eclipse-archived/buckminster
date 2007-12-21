@@ -89,6 +89,11 @@ public class ExpandingProperties implements IProperties
 		m_map = new HashMap<String, ValueHolder>();
 	}
 
+	public ExpandingProperties(int size)
+	{
+		m_map = new HashMap<String, ValueHolder>(size);
+	}
+
 	public ExpandingProperties(Map<String, String> dflts)
 	{
 		Map<String, ValueHolder> overlay = new HashMap<String, ValueHolder>();

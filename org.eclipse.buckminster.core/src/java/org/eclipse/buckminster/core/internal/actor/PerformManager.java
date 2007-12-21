@@ -29,7 +29,6 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -109,8 +108,11 @@ public class PerformManager implements IPerformManager
 			logger.debug(bld.toString());
 		}
 
+		Map<String,String> globalProps = RMContext.getGlobalPropertyAdditions();
 		Map<String,String> userProps = globalCtx.getUserProperties();
-		Map<String,String> systemProps = BMProperties.getSystemProperties();
+		if(userProps == null)
+			userProps = Collections.emptyMap();
+
 		MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
 		for(Action action : actionList)
 		{
@@ -127,23 +129,12 @@ public class PerformManager implements IPerformManager
 
 			// We use ExpandingProperties all the way so that the expansion is deferred
 			//
-			Map<String, String> allProps = new ExpandingProperties(systemProps);
-
-			// Get target platform properties etc.
-			//
-			allProps.putAll(RMContext.getGlobalPropertyAdditions());
-
-			// enter all the context properties defined in the action as user props
-			//
-			allProps.putAll(action.getProperties());
-
-			// enter all the global properties passed to this perform
-			//
-			if(userProps != null)
-				allProps.putAll(userProps);
-
-			// Add action specific dynamic properties
-			//
+			Map<String,String> actionProps = action.getProperties();
+			int mapSize = globalProps.size() + actionProps.size() + userProps.size() + 10;
+			Map<String, String> allProps = new ExpandingProperties(mapSize);
+			allProps.putAll(globalProps);
+			allProps.putAll(actionProps);
+			allProps.putAll(userProps);
 			action.addDynamicProperties(allProps);
 
 			IActor actor = ActorFactory.getInstance().getActor(action);
