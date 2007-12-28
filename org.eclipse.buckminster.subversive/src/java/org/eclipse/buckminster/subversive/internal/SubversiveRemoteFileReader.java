@@ -98,7 +98,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 12);
 		try
 		{
-			m_session.getSVNProxy().checkout(new SVNEntryRevisionReference(m_session.getSVNUrl(null).toString(), null, m_session.getRevision()), destDir.toString(), ISVNConnector.Depth.INFINITY, true, false, svnMon);
+			m_session.getSVNProxy().checkout(new SVNEntryRevisionReference(m_session.getSVNUrl(null).toString(), null, m_session.getRevision()), destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.IGNORE_EXTERNALS, svnMon);
 			success = true;
 		}
 		catch(SVNConnectorException e)

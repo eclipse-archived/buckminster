@@ -167,7 +167,7 @@ public class SubversiveSession
 	{
 		private int m_promptLimit = 3;
 
-		public int askTrustSSLServer(IRepositoryLocation location, String info, boolean allowPermanently)
+		public int askTrustSSLServer(Object location, String info, boolean allowPermanently)
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.askTrustSSLServer(location, info, allowPermanently);
 		}
@@ -272,7 +272,7 @@ public class SubversiveSession
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveProxyPassword();
 		}
 
-		public boolean prompt(IRepositoryLocation arg0, String arg1)
+		public boolean prompt(Object arg0, String arg1)
 		{
 			// We support the password prompt only if we actually know the password
 			// and only a limited number of times
@@ -280,17 +280,17 @@ public class SubversiveSession
 			return m_password != null && --m_promptLimit >= 0;
 		}
 
-		public boolean promptProxy(IRepositoryLocation location)
+		public boolean promptProxy(Object location)
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptProxy(location);
 		}
 
-		public boolean promptSSH(IRepositoryLocation location, String realm)
+		public boolean promptSSH(Object location, String realm)
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptSSH(location, realm);
 		}
 
-		public boolean promptSSL(IRepositoryLocation location, String realm)
+		public boolean promptSSL(Object location, String realm)
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptSSL(location, realm);
 		}
@@ -904,7 +904,7 @@ public class SubversiveSession
 			try
 			{
 				logger.debug("Listing remote folder %s", key);
-				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision), ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, false, svnMon);
+				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision), ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 				if(list == null || list.length == 0)
 				{
 					if(logger.isDebugEnabled())
