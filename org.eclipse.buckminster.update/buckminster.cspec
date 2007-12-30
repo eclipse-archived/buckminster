@@ -10,10 +10,10 @@
         <dependency name="org.eclipse.buckminster.p4.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <dependency name="org.eclipse.buckminster.pde.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <dependency name="org.eclipse.buckminster.subclipse.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <dependency name="org.eclipse.buckminster.subclipse.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
-        <dependency name="org.eclipse.buckminster.svn.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
-        <dependency name="org.eclipse.buckminster.svn.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
     </dependencies>
     <artifacts>
         <private name="headless-site.template" path="headless-site.xml"/>
@@ -77,13 +77,13 @@
             <attribute name="bundle.jars" component="org.eclipse.buckminster.maven.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.p4.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.pde.feature"/>
-            <attribute name="bundle.jars" component="org.eclipse.buckminster.svn.feature"/>
+            <attribute name="bundle.jars" component="org.eclipse.buckminster.subclipse.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.core.headless.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.cvs.headless.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.p4.headless.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
-            <attribute name="bundle.jars" component="org.eclipse.buckminster.svn.headless.feature"/>
+            <attribute name="bundle.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
             <attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
         </public>
         <public name="core.category">
@@ -100,7 +100,7 @@
             <attribute name="feature.jars" component="org.eclipse.buckminster.maven.feature"/>
             <attribute name="feature.jars" component="org.eclipse.buckminster.p4.headless.feature"/>
             <attribute name="feature.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
-            <attribute name="feature.jars" component="org.eclipse.buckminster.svn.headless.feature"/>
+            <attribute name="feature.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
             <attribute name="feature.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
         </public>
         <public name="optional.category">
@@ -108,7 +108,7 @@
             <attribute name="feature.jars" component="org.eclipse.buckminster.maven.feature"/>
             <attribute name="feature.jars" component="org.eclipse.buckminster.p4.feature"/>
             <attribute name="feature.jars" component="org.eclipse.buckminster.pde.feature"/>
-            <attribute name="feature.jars" component="org.eclipse.buckminster.svn.feature"/>
+            <attribute name="feature.jars" component="org.eclipse.buckminster.subclipse.feature"/>
             <attribute name="feature.jars" component="org.eclipse.buckminster.subversive.feature"/>
         </public>
         <public name="site.features">
