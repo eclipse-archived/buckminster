@@ -127,14 +127,14 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			if(tags)
 			{
 				VersionMatch match = getBestBranchOrTagMatch(false, MonitorUtils.subMonitor(monitor, 10));
-				if(best == null || query.compare(match, best) > 0)
+				if(match != null && (best == null || query.compare(match, best) > 0))
 					best = match;
 			}
 
 			if(trunk)
 			{
 				VersionMatch match = getBestTrunkMatch(MonitorUtils.subMonitor(monitor, 10));
-				if(best == null || query.compare(match, best) > 0)
+				if(match != null && (best == null || query.compare(match, best) > 0))
 					best = match;
 			}
 			return best;
