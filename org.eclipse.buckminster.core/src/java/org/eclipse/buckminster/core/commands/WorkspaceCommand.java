@@ -10,10 +10,12 @@ package org.eclipse.buckminster.core.commands;
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * The workspace command ensures that the workspace is in good shape
@@ -22,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  *
  */
+@SuppressWarnings("restriction")
 public abstract class WorkspaceCommand extends AbstractCommand
 {
 	@Override
@@ -46,9 +49,16 @@ public abstract class WorkspaceCommand extends AbstractCommand
 			{
 				// Restore auto build status
 				//
-				IWorkspaceDescription wsDesc = ws.getDescription();
-				wsDesc.setAutoBuilding(true);
-				ws.setDescription(wsDesc);
+				try
+				{
+					IWorkspaceDescription wsDesc = ws.getDescription();
+					wsDesc.setAutoBuilding(true);
+					ws.setDescription(wsDesc);
+				}
+				catch(Throwable e)
+				{
+					Buckminster.getLogger().error("Error while restoring auto build status: " + e.getMessage(), e);
+				}
 			}
 			saveWorkspace(MonitorUtils.subMonitor(monitor, 100));
 			monitor.done();
@@ -61,7 +71,9 @@ public abstract class WorkspaceCommand extends AbstractCommand
 	{
 		try
 		{
-			ResourcesPlugin.getWorkspace().save(true, monitor);
+			IStatus saveStatus = ResourcesPlugin.getWorkspace().save(true, monitor);
+			if(!(saveStatus == null || saveStatus.isOK()))
+				throw new ResourceException(saveStatus);
 		}
 		catch(Throwable e)
 		{
