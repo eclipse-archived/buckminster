@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.version;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -36,6 +38,8 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	private final ProviderScore m_providerScore;
 	private final NodeQuery m_query;
 	private VersionMatch m_versionMatch;
+	private Map<String,String> m_matcherMap;
+	private String m_repositoryURI;
 
 	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, NodeQuery query)
 	{
@@ -90,6 +94,11 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return m_componentType;
 	}
 
+	public Map<String,String> getMatcherMap()
+	{
+		return m_matcherMap;
+	}
+
 	public NodeQuery getNodeQuery()
 	{
 		return m_query;
@@ -136,7 +145,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 */
 	public IComponentReader getReader(IProgressMonitor monitor) throws CoreException
 	{
-		return this.getReaderType().getReader(this, monitor);
+		return getReaderType().getReader(this, monitor);
 	}
 
 	public IReaderType getReaderType()
@@ -145,9 +154,11 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return m_provider.getReaderType();
 	}
 
-	public String getRepositoryURI()
+	public synchronized String getRepositoryURI()
 	{
-		return m_provider.getURI(m_query.getProperties());
+		if(m_repositoryURI == null)
+			m_repositoryURI = m_provider.getURI(m_query.getProperties());
+		return m_repositoryURI;
 	}
 
 	public String getUniqueKey()
@@ -188,9 +199,20 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		m_componentType = componentType;
 	}
 
-	public void setProvider(Provider provider)
+	public void setMatcherMap(Map<String,String> matcherMap)
+	{
+		m_matcherMap = matcherMap;
+	}
+
+	public synchronized void setProvider(Provider provider)
 	{
 		m_provider = provider;
+		m_repositoryURI = null;
+	}
+
+	public synchronized void setRepositoryURI(String repositoryURI)
+	{
+		m_repositoryURI = repositoryURI;
 	}
 
 	public void setVersionMatch(VersionMatch versionMatch)

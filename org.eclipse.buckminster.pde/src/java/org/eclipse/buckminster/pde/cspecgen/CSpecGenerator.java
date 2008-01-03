@@ -398,7 +398,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected void setFilter(String filterStr) throws CoreException
 	{
-		filterStr = TextUtils.emptyTrimmedStringAsNull(filterStr);
+		filterStr = TextUtils.notEmptyTrimmedString(filterStr);
 		if(filterStr == null)
 			return;
 

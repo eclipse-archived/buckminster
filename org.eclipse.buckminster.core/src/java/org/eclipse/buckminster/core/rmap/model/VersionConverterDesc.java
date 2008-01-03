@@ -10,10 +10,10 @@
 package org.eclipse.buckminster.core.rmap.model;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
-public class VersionConverterDesc implements ISaxableElement
+public class VersionConverterDesc extends AbstractSaxableElement
 {
 	public static final String TAG = "versionConverter";
 	public static final String ATTR_TYPE = "type";
@@ -52,19 +52,6 @@ public class VersionConverterDesc implements ISaxableElement
 		return vct;
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
-	{
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
-		Utils.addAttribute(attrs, ATTR_TYPE, m_type);
-		if(m_versionType != null)
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
-		handler.startElement(namespace, localName, qName, attrs);
-		for(BidirectionalTransformer transformer : m_transformers)
-			transformer.toSax(handler, namespace, prefix, transformer.getDefaultTag());
-		handler.endElement(namespace, localName, qName);
-	}
-
 	public final BidirectionalTransformer[] getTransformers()
 	{
 		return m_transformers;
@@ -73,5 +60,20 @@ public class VersionConverterDesc implements ISaxableElement
 	public final String getType()
 	{
 		return m_type;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_TYPE, m_type);
+		if(m_versionType != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		for(BidirectionalTransformer transformer : m_transformers)
+			transformer.toSax(handler, namespace, prefix, transformer.getDefaultTag());
 	}
 }

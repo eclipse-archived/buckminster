@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
@@ -24,13 +25,12 @@ import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class AdvisorNode implements ISaxableElement, Cloneable
+public class AdvisorNode extends AbstractSaxableElement implements Cloneable
 {
 	public static final int PRIO_VERSION_DESIGNATOR = 1;
 	public static final int PRIO_BRANCHTAG_PATH_INDEX = 2;
@@ -214,6 +214,21 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_resolutionPrio;
 	}
 
+	public String[] getSpacePath()
+	{
+		return m_spacePath;
+	}
+
+	public long getRevision()
+	{
+		return m_revision;
+	}
+
+	public Date getTimestamp()
+	{
+		return m_timestamp;
+	}
+
 	public final SourceLevel getSourceLevel()
 	{
 		return m_sourceLevel;
@@ -259,10 +274,9 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 		return m_skipComponent;
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
 		if(m_overlayFolder != null)
 			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, m_overlayFolder.toString());
@@ -323,26 +337,13 @@ public class AdvisorNode implements ISaxableElement, Cloneable
 
 		if(m_timestamp != null)
 			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
+	}
 
-		handler.startElement(namespace, localName, qName, attrs);
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-		handler.endElement(namespace, localName, qName);
-	}
-
-	public String[] getSpacePath()
-	{
-		return m_spacePath;
-	}
-
-	public long getRevision()
-	{
-		return m_revision;
-	}
-
-	public Date getTimestamp()
-	{
-		return m_timestamp;
 	}
 }

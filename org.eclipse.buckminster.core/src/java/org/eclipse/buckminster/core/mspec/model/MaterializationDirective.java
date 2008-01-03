@@ -10,11 +10,11 @@ package org.eclipse.buckminster.core.mspec.model;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;
 import org.xml.sax.ContentHandler;
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class MaterializationDirective implements ISaxableElement
+public abstract class MaterializationDirective extends AbstractSaxableElement
 {
 	public static final String ATTR_INSTALL_LOCATION = "installLocation";
 	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation";
@@ -86,17 +86,8 @@ public abstract class MaterializationDirective implements ISaxableElement
 		return m_conflictResolution;
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		appendAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		emitElements(receiver, namespace, prefix);
-		receiver.endElement(namespace, localName, qName);
-	}
-
-	protected void appendAttributes(AttributesImpl attrs) throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		if(m_installLocation != null)
 			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, m_installLocation.toPortableString());
@@ -110,6 +101,7 @@ public abstract class MaterializationDirective implements ISaxableElement
 			Utils.addAttribute(attrs, ATTR_MAX_PARALLEL_JOBS, Integer.toString(m_maxParallelJobs));
 	}
 
+	@Override
 	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
 		if(m_documentation != null)

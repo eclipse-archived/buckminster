@@ -103,7 +103,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
 		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
-		return provider.getReaderType().getReader(pm, monitor);
+		return pm.getReader(monitor);
 	}
 
 	@Override
@@ -165,7 +165,6 @@ public class URLCatalogReaderType extends CatalogReaderType
 	public static URL[] extractHTMLLinks(URL urlToHTML, IProgressMonitor monitor) throws CoreException
 	{
 		ArrayList<URL> links = new ArrayList<URL>();
-		urlToHTML = URLUtils.appendTrailingSlash(urlToHTML);
 		InputStream pageSource = null;
 		try
 		{

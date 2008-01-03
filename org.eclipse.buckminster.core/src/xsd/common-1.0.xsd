@@ -288,4 +288,91 @@
 
 	</complexType>
 
+	<attributeGroup name="RxPartAttributes">
+		<attribute name="name" type="string" use="optional">
+			<annotation>
+				<documentation>
+					Denotes if this part a capturing group or not. The
+					match for a named part can be used in replacement
+					patterns.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="optional" type="boolean" use="optional"
+			default="false">
+			<annotation>
+				<documentation>
+					Denotes if this part is optional (must be matched)
+					or not. The top element of a regexp can not be
+					optional.
+				</documentation>
+			</annotation>
+		</attribute>
+	</attributeGroup>
+
+	<complexType name="RxPart" abstract="true">
+		<annotation>
+			<documentation>Defines a partial regexp</documentation>
+		</annotation>
+		<attributeGroup ref="com:RxPartAttributes"/>
+	</complexType>
+
+	<element name="rxPart" abstract="true" type="com:RxPart"/>
+
+	<element name="match" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="group" substitutionGroup="com:rxPart" type="com:RxGroup"/>
+
+	<complexType name="RxPattern">
+		<annotation>
+			<documentation>
+				Defines a partial regexp as a pattern
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="com:RxPart">
+				<attribute name="pattern" type="string"
+					use="required">
+					<annotation>
+						<documentation>
+							The regular expression for this group
+							(excluding parenthesis for the group
+							itself).
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="prefix" type="string" use="optional">
+					<annotation>
+						<documentation>
+							The quoted prefix of the pattern. Not included in the
+							capture
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="suffix" type="string" use="optional">
+					<annotation>
+						<documentation>
+							The quoted suffix of the pattern. Not included in the
+							capture
+						</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="RxGroup">
+		<annotation>
+			<documentation>
+				Defines a regexp capturing group as a named assembly of parts
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="com:RxPart">
+				<sequence>
+					<element ref="com:rxPart" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
 </schema>

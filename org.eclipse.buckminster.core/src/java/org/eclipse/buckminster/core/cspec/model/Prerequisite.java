@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -24,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Prerequisite extends NamedElement implements ISaxableElement, IAttributeFilter
+public class Prerequisite extends NamedElement implements IAttributeFilter
 {
 	public static final String ATTR_ALIAS = "alias";
 

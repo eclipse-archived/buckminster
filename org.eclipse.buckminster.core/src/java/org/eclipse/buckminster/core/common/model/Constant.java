@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -62,14 +61,10 @@ public class Constant extends ValueHolder
 		return TAG;
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-	throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_VALUE, m_value);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		receiver.endElement(namespace, localName, qName);
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
@@ -37,7 +36,6 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,9 +49,11 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Provider extends UUIDKeyed implements ISaxableElement
+public class Provider extends UUIDKeyed
 {
 	public static final String ATTR_COMPONENT_TYPES = "componentTypes";
+
+	public static final String ATTR_ALGORITHM = "algorithm";
 
 	public static final String ATTR_MUTABLE = "mutable";
 
@@ -71,6 +71,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 
 	public static final int SEQUENCE_NUMBER = 2;
 
+	public static final String TAG_DIGEST = "digest";
+
 	private final Documentation m_documentation;
 
 	private final String[] m_componentTypeIDs;
@@ -83,15 +85,21 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 
 	private final boolean m_source;
 
-	private final ValueHolder m_uri;
+	private final Format m_uri;
+
+	private final Format m_digest;
+
+	private final String m_digestAlgorithm;
 
 	private final VersionConverterDesc m_versionConverter;
 	
 	private final SearchPath m_searchPath;
 
+	private final URIMatcher m_uriMatcher;
+
 	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri)
 	{
-		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, false, false, null);
+		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, null, false, false, null, null);
 	}
 
 	/**
@@ -107,7 +115,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	 * @param source Set to <code>true</code> if this provider will provide source.
 	 */
 	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
-		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
+		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, String space, boolean mutable, boolean source,
+		URIMatcher uriMatcher,
 		Documentation documentation)
 	{
 		m_searchPath = searchPath;
@@ -115,9 +124,12 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		m_componentTypeIDs = componentTypeIDs == null ? Trivial.EMPTY_STRING_ARRAY : componentTypeIDs;
 		m_versionConverter = versionConverterDesc;
 		m_uri = uri;
+		m_digest = digest;
+		m_digestAlgorithm = digestAlgorithm;
 		m_space = space;
 		m_mutable = mutable;
 		m_source = source;
+		m_uriMatcher = uriMatcher;
 		m_documentation = documentation;
 	}
 
@@ -129,8 +141,11 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
 	throws CoreException
 	{
+		if(m_uriMatcher != null)
+			return m_uriMatcher.getMatch(this, query, monitor);
+
 		IVersionFinder versionFinder = null;
-		monitor.beginTask(null, 100);
+		monitor.beginTask(null, 120);
 		try
 		{
 			Logger logger = CorePlugin.getLogger();
@@ -173,7 +188,7 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 					return null;
 				}
 			}
-
+		
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 			if(score == ProviderScore.REJECTED)
 			{
@@ -290,9 +305,27 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 	}
 
 	/**
-	 * @return Returns the typeSpecificURI.
+	 * @return Returns the Digest URI.
+	 */
+	public final String getDigest(Map<String, String> properties)
+	{
+		return m_digest == null ? null : m_digest.getValue(getProperties(properties));
+	}
+
+	public final String getDigestAlgorithm()
+	{
+		return m_digestAlgorithm;
+	}
+
+	/**
+	 * @return Returns the File or Repository URI.
 	 */
 	public final String getURI(Map<String, String> properties)
+	{
+		return m_uri.getValue(getProperties(properties));
+	}
+
+	public Map<String,String> getProperties(Map<String,String> properties)
 	{
 		if(m_searchPath != null)
 		{
@@ -301,7 +334,12 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 			if(!dfltProps.isEmpty())
 				properties = new MapUnion<String, String>(properties, dfltProps);
 		}
-		return m_uri.getValue(properties);
+		return properties;
+	}
+
+	public URIMatcher getURIMatcher()
+	{
+		return m_uriMatcher;
 	}
 
 	public IVersionConverter getVersionConverter() throws CoreException
@@ -366,18 +404,8 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		handler.endDocument();
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-	throws SAXException
-	{
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
-		addAttributes(attrs);
-		handler.startElement(namespace, localName, qName, attrs);
-		emitElements(handler, XMLConstants.BM_RMAP_NS, XMLConstants.BM_RMAP_PREFIX);
-		handler.endElement(namespace, localName, qName);
-	}
-
-	protected void addAttributes(AttributesImpl attrs)
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
 		if(m_componentTypeIDs.length > 0)
@@ -388,12 +416,38 @@ public class Provider extends UUIDKeyed implements ISaxableElement
 		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
 	}
 
+	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 		m_uri.toSax(handler, namespace, prefix, TAG_URI);
+
+		if(m_digest != null)
+		{
+			AttributesImpl attrs = new AttributesImpl();
+			Utils.addAttribute(attrs, Format.ATTR_FORMAT, m_digest.getFormat());
+			Utils.addAttribute(attrs, ATTR_ALGORITHM, m_digestAlgorithm);
+			String qName = Utils.makeQualifiedName(prefix, TAG_DIGEST);
+			handler.startElement(namespace, TAG_DIGEST, qName, attrs);
+			handler.endElement(namespace, TAG_DIGEST, qName);
+		}
+
 		if(m_versionConverter != null)
 			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
+		if(m_uriMatcher != null)
+			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_RMAP_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_RMAP_PREFIX;
 	}
 }

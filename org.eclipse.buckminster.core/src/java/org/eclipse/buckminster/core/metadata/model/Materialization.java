@@ -17,7 +17,6 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.sax.ISaxable;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,7 +27,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElement
+public class Materialization extends UUIDKeyed implements ISaxable
 {
 	public static final String TAG = "materialization";
 
@@ -108,17 +107,8 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 		receiver.endDocument();
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		addAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		emitElements(receiver, namespace, prefix);
-		receiver.endElement(namespace, localName, qName);
-	}
-
-	void addAttributes(AttributesImpl attrs)
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
 		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
@@ -132,10 +122,6 @@ public class Materialization extends UUIDKeyed implements ISaxable, ISaxableElem
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
 		}
-	}
-
-	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
 	}
 }
 

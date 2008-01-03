@@ -15,10 +15,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
@@ -103,17 +101,7 @@ public abstract class ValueHolderFilter extends ValueHolder
 		return parameters.toArray(new String[parameters.size()]);
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-	throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		this.addAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		handler.startElement(namespace, localName, qName, attrs);
-		this.emitElements(handler, XMLConstants.BM_COMMON_NS, XMLConstants.BM_COMMON_PREFIX);
-		handler.endElement(namespace, localName, qName);
-	}
-
+	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix)
 	throws SAXException
 	{
@@ -124,9 +112,16 @@ public abstract class ValueHolderFilter extends ValueHolder
 		}
 	}
 
-	protected void addAttributes(AttributesImpl attrs)
-	throws SAXException
+	@Override
+	protected String getElementNamespace(String namespace)
 	{
+		return XMLConstants.BM_COMMON_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_COMMON_PREFIX;
 	}
 }
 

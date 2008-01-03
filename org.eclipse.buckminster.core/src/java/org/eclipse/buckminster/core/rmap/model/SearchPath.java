@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,7 +32,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class SearchPath implements ISaxableElement
+public class SearchPath extends AbstractSaxableElement
 {
 	public static final String TAG = "searchPath";
 
@@ -148,14 +148,16 @@ public class SearchPath implements ISaxableElement
 			provider.addPrefixMappings(prefixMappings);
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		handler.startElement(namespace, localName, qName, attrs);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
 		for(Provider provider : m_providers)
 			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
-		handler.endElement(namespace, localName, qName);
 	}
 }

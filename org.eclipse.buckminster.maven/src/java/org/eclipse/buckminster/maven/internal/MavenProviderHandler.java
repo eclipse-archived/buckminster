@@ -55,7 +55,7 @@ public class MavenProviderHandler extends ProviderHandler
 	}
 
 	@Override
-	public void childPopped(ChildHandler child)
+	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child instanceof MappingsHandler)
 		{

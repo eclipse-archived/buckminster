@@ -492,7 +492,7 @@ public class ExpandingProperties implements IProperties
 				bld.append(checkedExpand(props, topValue, propVal, recursionGuard + 1));
 				fragmentStart = endPos + 1;
 			}
-			idx = endPos + 1;
+			idx = endPos;
 		}
 
 		if(bld != null)

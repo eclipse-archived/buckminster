@@ -10,19 +10,17 @@
 
 package org.eclipse.buckminster.p4.preferences;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
 /**
  * @author Thomas Hallgren
  */
-public abstract class NodeWrapper implements ISaxableElement
+public abstract class NodeWrapper extends AbstractSaxableElement
 {
 	private final Preferences m_nodePrefs;
 
@@ -105,22 +103,9 @@ public abstract class NodeWrapper implements ISaxableElement
 		m_nodePrefs.flush();
 	}
 
-	protected abstract void addAttributes(AttributesImpl attrs) throws SAXException;
-	protected abstract void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException;
-	
 	protected static final void addAttribute(AttributesImpl attrs, String name, String value)
 	{
 		if(value != null)
 			Utils.addAttribute(attrs, name, value);
-	}
-
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		this.addAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		this.emitElements(receiver, namespace, prefix);
-		receiver.endElement(namespace, localName, qName);
 	}
 }

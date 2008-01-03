@@ -8,8 +8,8 @@
 package org.eclipse.buckminster.core.metadata.parser;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +45,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this);
 	private final VersionMatchHandler m_versionMatchHandler = new VersionMatchHandler(this);
-	private final HashSet<String> m_attributes = new HashSet<String>();
+	private final ArrayList<String> m_attributes = new ArrayList<String>();
 	private UUID m_cspecId;
 	private UUID m_providerId;
 	private ComponentRequest m_request;
@@ -87,7 +87,10 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		if(attributes != null)
 		{
 			for(String attr : attributes.split(","))
-				m_attributes.add(attr);
+			{
+				if(!m_attributes.contains(attr))
+					m_attributes.add(attr);
+			}
 		}
 
 		// For backward compatibility with the 0.1.0 Resolution

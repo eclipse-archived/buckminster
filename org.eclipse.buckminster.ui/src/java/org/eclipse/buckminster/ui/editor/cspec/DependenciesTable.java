@@ -217,7 +217,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		{
 			public void modifyText(ModifyEvent e)
 			{
-				String filterStr = TextUtils.emptyTrimmedStringAsNull(text.getText());
+				String filterStr = TextUtils.notEmptyTrimmedString(text.getText());
 				if(filterStr == null)
 					widgetin.setData(null);
 				else

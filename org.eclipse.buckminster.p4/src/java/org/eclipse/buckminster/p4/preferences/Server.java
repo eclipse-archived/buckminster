@@ -42,14 +42,14 @@ public class Server extends NodeWrapper implements ISaxable
 
 	public Client addClient(String name) throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		boolean first = (prefs.childrenNames().length == 0);
 		if(!first && prefs.nodeExists(name))
 			throw new BackingStoreException("Client already exists");
 
 		Client client = new Client(this, prefs.node(name));
 		if(first)
-			this.setDefaultClient(name);
+			setDefaultClient(name);
 
 		return client;
 	}
@@ -57,39 +57,39 @@ public class Server extends NodeWrapper implements ISaxable
 	public Server createCopy(String newName) throws BackingStoreException
 	{
 		Server copy = P4Preferences.getInstance().addServer(newName);
-		deepCopy(this.getPreferences(), copy.getPreferences());
+		deepCopy(getPreferences(), copy.getPreferences());
 		return copy;
 	}
 
 	public Client getClient(String name) throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		return prefs.nodeExists(name) ? new Client(this, prefs.node(name)) : null;
 	}
 
 	public String getPassword()
 	{
-		return this.getPreferences().get(ATTR_PASSWORD, null);
+		return getPreferences().get(ATTR_PASSWORD, null);
 	}
 
 	public String getUser()
 	{
-		return this.getPreferences().get(ATTR_USER, null);
+		return getPreferences().get(ATTR_USER, null);
 	}
 
 	public String getDefaultClientName()
 	{
-		return this.getPreferences().get(ATTR_DEFAULT_CLIENT, null);
+		return getPreferences().get(ATTR_DEFAULT_CLIENT, null);
 	}
 
 	public String[] getClientNames() throws BackingStoreException
 	{
-		return this.getPreferences().childrenNames();
+		return getPreferences().childrenNames();
 	}
 
 	public Client[] getClients() throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		ArrayList<Client> clients = new ArrayList<Client>();
 		for (String child : prefs.childrenNames())
 		{
@@ -108,10 +108,10 @@ public class Server extends NodeWrapper implements ISaxable
 
 	public Client getDefaultClient() throws BackingStoreException
 	{
-		String defaultName = this.getDefaultClientName();
+		String defaultName = getDefaultClientName();
 		if(defaultName != null)
 		{
-			Client defaultClient = this.getClient(defaultName);
+			Client defaultClient = getClient(defaultName);
 			if(defaultClient != null)
 				return defaultClient;
 		}
@@ -125,35 +125,35 @@ public class Server extends NodeWrapper implements ISaxable
 
 	public void setDefaultClient(String clientName)
 	{
-		this.putString(ATTR_DEFAULT_CLIENT, clientName);
+		putString(ATTR_DEFAULT_CLIENT, clientName);
 	}
 
 	public boolean isDefaultServer()
 	{
-		return this.getName().equals(P4Preferences.getInstance().getDefaultServerName());
+		return getName().equals(P4Preferences.getInstance().getDefaultServerName());
 	}
 
 	@Override
 	public void remove() throws BackingStoreException
 	{
-		if(this.isDefaultServer())
-			P4Preferences.getInstance().setOtherDefaultServer(this.getName());
+		if(isDefaultServer())
+			P4Preferences.getInstance().setOtherDefaultServer(getName());
 		super.remove();
 	}
 
 	public void setAsDefault()
 	{
-		P4Preferences.getInstance().setDefaultServer(this.getName());
+		P4Preferences.getInstance().setDefaultServer(getName());
 	}
 
 	public void setOtherDefaultClient(String clientName) throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		for (String childName : prefs.childrenNames())
 		{
 			if(!childName.equals(clientName))
 			{
-				this.setDefaultClient(childName);
+				setDefaultClient(childName);
 				break;
 			}
 		}
@@ -161,21 +161,21 @@ public class Server extends NodeWrapper implements ISaxable
 
 	public void setPassword(String password)
 	{
-		this.putString(ATTR_PASSWORD, password);
+		putString(ATTR_PASSWORD, password);
 	}
 
 	public void setUser(String user)
 	{
-		this.putString(ATTR_USER, user);
+		putString(ATTR_USER, user);
 	}
 
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		addAttribute(attrs, ATTR_NAME, this.getName());
-		addAttribute(attrs, ATTR_DEFAULT_CLIENT, this.getDefaultClientName());
-		addAttribute(attrs, ATTR_USER, this.getUser());
-		addAttribute(attrs, ATTR_PASSWORD, this.getPassword());
+		addAttribute(attrs, ATTR_NAME, getName());
+		addAttribute(attrs, ATTR_DEFAULT_CLIENT, getDefaultClientName());
+		addAttribute(attrs, ATTR_USER, getUser());
+		addAttribute(attrs, ATTR_PASSWORD, getPassword());
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class Server extends NodeWrapper implements ISaxable
 	{
 		try
 		{
-			for(Client client : this.getClients())
+			for(Client client : getClients())
 				client.toSax(receiver, namespace, prefix, client.getDefaultTag());
 		}
 		catch(BackingStoreException e)
@@ -196,7 +196,7 @@ public class Server extends NodeWrapper implements ISaxable
 	{
 		receiver.startDocument();
 		receiver.startPrefixMapping(BM_SERVER_PREFIX, BM_SERVER_NS);
-		this.toSax(receiver, BM_SERVER_NS, BM_SERVER_PREFIX, this.getDefaultTag());
+		toSax(receiver, BM_SERVER_NS, BM_SERVER_PREFIX, getDefaultTag());
 		receiver.endPrefixMapping(BM_SERVER_PREFIX);
 		receiver.endDocument();
 	}

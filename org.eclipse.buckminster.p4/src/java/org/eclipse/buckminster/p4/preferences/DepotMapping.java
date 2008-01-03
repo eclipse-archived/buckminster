@@ -39,7 +39,7 @@ public class DepotMapping extends NodeWrapper
 	public DepotMapping createCopy(String newName) throws BackingStoreException
 	{
 		DepotMapping copy = m_client.addDepotMapping(newName);
-		deepCopy(this.getPreferences(), copy.getPreferences());
+		deepCopy(getPreferences(), copy.getPreferences());
 		return copy;
 	}
 
@@ -65,7 +65,7 @@ public class DepotMapping extends NodeWrapper
 			return false;
 		DepotMapping that = (DepotMapping)o;
 
-		if(this.m_client != that.m_client)
+		if(m_client != that.m_client)
 			return false;
 		
 		return true;
@@ -83,31 +83,31 @@ public class DepotMapping extends NodeWrapper
 
 	public final Pattern getDepotPattern()
 	{
-		String localPathExp = this.getPreferences().get(DepotMapping.ATTR_DEPOT_PATTERN, null);
+		String localPathExp = getPreferences().get(DepotMapping.ATTR_DEPOT_PATTERN, null);
 		return (localPathExp == null) ? null : Pattern.compile(localPathExp);
 	}
 
 	public final String getLocalReplacement()
 	{
-		return this.getPreferences().get(DepotMapping.ATTR_LOCAL_REPLACEMENT, null);
+		return getPreferences().get(DepotMapping.ATTR_LOCAL_REPLACEMENT, null);
 	}
 
 	public void setDepotPattern(Pattern pattern)
 	{
-		this.putString(DepotMapping.ATTR_DEPOT_PATTERN, pattern == null ? null : pattern.pattern());
+		putString(DepotMapping.ATTR_DEPOT_PATTERN, pattern == null ? null : pattern.pattern());
 	}
 
 	public void setLocalReplacement(String replacement)
 	{
-		this.putString(DepotMapping.ATTR_LOCAL_REPLACEMENT, replacement);
+		putString(DepotMapping.ATTR_LOCAL_REPLACEMENT, replacement);
 	}
 
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		addAttribute(attrs, ATTR_NAME, this.getName());
-		addAttribute(attrs, ATTR_DEPOT_PATTERN, this.getDepotPattern().toString());
-		addAttribute(attrs, ATTR_LOCAL_REPLACEMENT, this.getLocalReplacement());
+		addAttribute(attrs, ATTR_NAME, getName());
+		addAttribute(attrs, ATTR_DEPOT_PATTERN, getDepotPattern().toString());
+		addAttribute(attrs, ATTR_LOCAL_REPLACEMENT, getLocalReplacement());
 	}
 
 	@Override

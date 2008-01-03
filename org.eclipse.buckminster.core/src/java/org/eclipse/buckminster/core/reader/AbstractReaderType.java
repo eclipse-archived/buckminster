@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
@@ -160,14 +159,13 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 
 	public IComponentReader getReader(Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException
 	{
-		return this.getReader(cr.getProvider(), cr.getComponentType(), new NodeQuery(context, new QualifiedDependency(
-			cr.getRequest(), cr.getAttributes())), cr.getVersionMatch(), monitor);
+		return getReader(cr.getProviderMatch(context), monitor);
 	}
 
 	public IComponentReader getReader(Provider provider, IComponentType ctype, NodeQuery query, VersionMatch versionMatch, IProgressMonitor monitor)
 	throws CoreException
 	{
-		return this.getReader(new ProviderMatch(provider, ctype, versionMatch, ProviderScore.FAIR, query), monitor);
+		return getReader(new ProviderMatch(provider, ctype, versionMatch, ProviderScore.FAIR, query), monitor);
 	}
 
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException

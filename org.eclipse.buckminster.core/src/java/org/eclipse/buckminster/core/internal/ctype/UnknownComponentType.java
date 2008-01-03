@@ -13,7 +13,7 @@ package org.eclipse.buckminster.core.internal.ctype;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -24,15 +24,12 @@ public class UnknownComponentType extends AbstractComponentType
 {
 	private static final DefaultResolutionBuilder s_defaultBuilder = new DefaultResolutionBuilder();
 
-	public static IResolutionBuilder getDefaultCSpecPackingBuilder()
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
+			throws CoreException
 	{
-		return s_defaultBuilder;
-	}
-
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return getDefaultCSpecPackingBuilder();
+		ProviderMatch pm = reader.getProviderMatch();
+		return (pm.getMatcherMap() == null)
+				? s_defaultBuilder
+				: new URIMatcherBuilder(pm);
 	}
 }
-

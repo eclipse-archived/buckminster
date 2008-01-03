@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
+import org.eclipse.buckminster.core.rmap.model.URIMatcher;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -28,6 +29,7 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -38,8 +40,11 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	public final static String TAG = Provider.TAG;
 	
 	private DocumentationHandler m_documentationHandler;
-	private FormatHandler m_formatHandler;
+	private FormatHandler m_uriHandler;
+	private DigestHandler m_digestHandler;
 	private VersionConverterHandler m_versionConverterHandler;
+	private URIMatcherHandler m_uriMetaDataHandler;
+	private URIMatcher m_uriMatcher;
 	private Documentation m_documentation;
 	private String	m_readerType;
 	private String[] m_componentTypes;
@@ -48,6 +53,8 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	private boolean	m_mutable;
 
 	private Format m_uriFormat;
+	private Format m_digestFormat;
+	private String m_digestAlgorithm;
 	private VersionConverterDesc m_versionConverter;
 
 	public ProviderHandler(AbstractHandler parent)
@@ -62,9 +69,15 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		ChildHandler ch;
 		if(Provider.TAG_URI.equals(localName))
 		{
-			if(m_formatHandler == null)
-				m_formatHandler = new FormatHandler(this);
-			ch = m_formatHandler;
+			if(m_uriHandler == null)
+				m_uriHandler = new FormatHandler(this);
+			ch = m_uriHandler;
+		}
+		else if(Provider.TAG_DIGEST.equals(localName))
+		{
+			if(m_digestHandler == null)
+				m_digestHandler = new DigestHandler(this);
+			ch = m_digestHandler;
 		}
 		else if(DocumentationHandler.TAG.equals(localName))
 		{
@@ -77,6 +90,12 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 			if(m_versionConverterHandler == null)
 				m_versionConverterHandler = new VersionConverterHandler(this);
 			ch = m_versionConverterHandler;			
+		}
+		else if(URIMatcher.TAG.equals(localName))
+		{
+			if(m_uriMetaDataHandler == null)
+				m_uriMetaDataHandler = new URIMatcherHandler(this);
+			ch = m_uriMetaDataHandler;			
 		}
 		else
 			ch = super.createHandler(uri, localName, attrs);
@@ -148,20 +167,39 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		m_source = getOptionalBooleanValue(attrs, Provider.ATTR_SOURCE, true);
 		m_space = getOptionalStringValue(attrs, Provider.ATTR_SPACE);
 		m_uriFormat = null;
+		m_digestFormat = null;
+		m_digestAlgorithm = null;
 		m_versionConverter = null;
+		m_uriMatcher = null;
 		m_documentation = null;
 	}
 
-	public void childPopped(ChildHandler child)
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(child == m_formatHandler)
-			m_uriFormat = (Format)m_formatHandler.getValueHolder();
+		if(child == m_uriHandler)
+			m_uriFormat = (Format)m_uriHandler.getValueHolder();
+		else if(child == m_digestHandler)
+		{
+			m_digestFormat = (Format)m_digestHandler.getValueHolder();
+			m_digestAlgorithm = m_digestHandler.getAlgorithm();
+		}
 		else if(child == m_versionConverterHandler)
 			m_versionConverter = m_versionConverterHandler.getVersionConverter();
 		else if(child == m_documentationHandler)
 			m_documentation = m_documentationHandler.createDocumentation();
+		else if(child == m_uriMetaDataHandler)
+		{
+			try
+			{
+				m_uriMatcher = m_uriMetaDataHandler.createURIMetaData();
+			}
+			catch(Exception e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
 	}
-	
+
 	public Provider getProvider()
 	{
 		return new Provider(
@@ -170,9 +208,12 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				m_componentTypes,
 				m_versionConverter,
 				m_uriFormat,
+				m_digestFormat,
+				m_digestAlgorithm,
 				m_space,
 				m_mutable,
 				m_source,
+				m_uriMatcher,
 				m_documentation);
 	}
 
@@ -198,6 +239,16 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	protected final boolean isMutable()
 	{
 		return m_mutable;
+	}
+
+	protected final Format getDigestFormat()
+	{
+		return m_digestFormat;
+	}
+
+	protected final String getDigestAlgorithm()
+	{
+		return m_digestAlgorithm;
 	}
 
 	protected final String getReaderType()

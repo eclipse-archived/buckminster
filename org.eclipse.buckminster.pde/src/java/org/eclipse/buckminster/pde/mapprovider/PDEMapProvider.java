@@ -57,6 +57,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PDEMapProvider extends Provider
@@ -68,7 +69,7 @@ public class PDEMapProvider extends Provider
 	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
 		Format uri, String space, boolean mutable, boolean source, Documentation documentation)
 	{
-		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, space, mutable, source, documentation);
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, space, mutable, source, null, documentation);
 	}
 
 	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri)
@@ -125,8 +126,8 @@ public class PDEMapProvider extends Provider
 			}
 
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, getSpace(), isMutable(),
-					hasSource(), null);
+			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getSpace(), isMutable(),
+					hasSource(), null, null);
 
 			String ctypeID = rq.getComponentTypeID();
 			if(ctypeID == null)
@@ -276,7 +277,7 @@ public class PDEMapProvider extends Provider
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
 		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type",

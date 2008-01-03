@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -39,7 +38,7 @@ public class Replace extends ValueHolderFilter
 	public static final String ATTR_REPLACEMENT = "replacement";
 	public static final String ATTR_QUOTE_PATTERN = "quotePattern";
 
-	public static final class Match implements ISaxableElement
+	public static final class Match extends AbstractSaxableElement
 	{
 		private final Pattern		m_pattern;
 		private final String		m_patternString;
@@ -99,19 +98,8 @@ public class Replace extends ValueHolderFilter
 			return MATCH_TAG;
 		}
 
-		public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-		throws SAXException
-		{
-			AttributesImpl attrs = new AttributesImpl();
-			this.addAttributes(attrs);
-
-			String qName = Utils.makeQualifiedName(prefix, localName);
-			handler.startElement(namespace, localName, qName, attrs);
-			handler.endElement(namespace, localName, qName);
-		}
-
-		void addAttributes(AttributesImpl attrs)
-		throws SAXException
+		@Override
+		protected void addAttributes(AttributesImpl attrs) throws SAXException
 		{
 			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
 			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);

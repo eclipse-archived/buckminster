@@ -7,16 +7,15 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
 /**
  * @author Thomas Hallgren
  */
-public abstract class NamedElement extends AbstractElement
+public abstract class NamedElement extends AbstractSaxableElement
 {
 	public static final String ATTR_NAME = "name";
 
@@ -53,10 +52,5 @@ public abstract class NamedElement extends AbstractElement
 	{
 		if(m_name != null)
 			Utils.addAttribute(attrs, this.getNameAttributeName(), m_name);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
 	}
 }

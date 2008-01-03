@@ -44,7 +44,6 @@ import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxable;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -57,7 +56,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
+public class CSpec extends UUIDKeyed implements ISaxable
 {
 	public static final String ATTR_FILTER = "filter";
 
@@ -509,17 +508,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 		}
 	}
 
-	public final void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-			throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		addAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		handler.startElement(namespace, localName, qName, attrs);
-		emitElements(handler, namespace, prefix);
-		handler.endElement(namespace, localName, qName);
-	}
-
+	@Override
 	protected void addAttributes(AttributesImpl attrs)
 	{
 		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
@@ -544,6 +533,7 @@ public class CSpec extends UUIDKeyed implements ISaxable, ISaxableElement
 			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 	}
 
+	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		if(m_documentation != null)

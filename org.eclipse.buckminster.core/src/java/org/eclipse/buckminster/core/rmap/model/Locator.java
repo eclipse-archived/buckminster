@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.rmap.model;
 
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.sax.Utils;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
@@ -49,7 +50,7 @@ public class Locator extends Matcher
 	}
 
 	@Override
-	void addAttributes(AttributesImpl attrs)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, m_searchPath.toString());
 		super.addAttributes(attrs);

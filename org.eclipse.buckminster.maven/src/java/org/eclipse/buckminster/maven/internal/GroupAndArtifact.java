@@ -9,14 +9,12 @@
  *******************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
-class GroupAndArtifact implements ISaxableElement
+class GroupAndArtifact extends AbstractSaxableElement
 {
 	public static final String ALIAS_TAG = "alias";
 	public static final String ATTR_GROUP_ID = "groupId";
@@ -51,21 +49,8 @@ class GroupAndArtifact implements ISaxableElement
 		return m_groupId.equals(groupId) && m_artifactId.equals(artifactId);
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		addAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		emitElements(receiver, namespace, prefix);
-		receiver.endElement(namespace, localName, qName);
-	}
-
-	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-	}
-
-	void addAttributes(AttributesImpl attrs) throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_GROUP_ID, m_groupId);
 		Utils.addAttribute(attrs, ATTR_ARTIFACT_ID, m_artifactId);

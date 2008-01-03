@@ -7,10 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.model;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -31,7 +32,6 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.sax.ISaxable;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -42,7 +42,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
+public class Resolution extends UUIDKeyed implements ISaxable
 {
 	public static final String TAG = "resolution";
 
@@ -76,7 +76,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 
 	private final ComponentRequest m_request;
 
-	private final Set<String> m_attributes;
+	private final List<String> m_attributes;
 
 	private final String m_repository;
 
@@ -97,7 +97,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_cspec = cspec;
 		m_componentTypeId = ctypeId;
 		m_request = nq.getComponentRequest();
-		m_attributes = UUIDKeyed.createUnmodifiableSet(nq.getRequiredAttributes());
+		m_attributes = UUIDKeyed.createUnmodifiableList(nq.getRequiredAttributes());
 		m_provider = provider;
 		m_versionMatch = vm;
 		m_materializable = true;
@@ -124,7 +124,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_cspec = cspec;
 		m_componentTypeId = providerMatch.getComponentType().getId();
 		m_request = nq.getComponentRequest();
-		m_attributes = UUIDKeyed.createUnmodifiableSet(nq.getRequiredAttributes());
+		m_attributes = UUIDKeyed.createUnmodifiableList(nq.getRequiredAttributes());
 		m_provider = provider;
 		m_versionMatch = providerMatch.getVersionMatch();
 		m_materializable = reader.canMaterialize();
@@ -179,7 +179,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	}
 
 	public Resolution(CSpec cspec, String componentTypeId, VersionMatch versionMatch, Provider provider,
-		boolean materializeable, ComponentRequest request, Set<String> attributes,
+		boolean materializeable, ComponentRequest request, List<String> attributes,
 		String repository, String remoteName, String contentType, long size)
 	{
 		m_cspec = cspec;
@@ -188,14 +188,14 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		m_versionMatch = versionMatch;
 		m_materializable = materializeable;
 		m_request = request;
-		m_attributes = UUIDKeyed.createUnmodifiableSet(attributes);
+		m_attributes = UUIDKeyed.createUnmodifiableList(attributes);
 		m_repository = repository;
 		m_remoteName = remoteName;
 		m_contentType = contentType;
 		m_size = size;
 	}
 
-	public Set<String> getAttributes()
+	public List<String> getAttributes()
 	{
 		return m_attributes;
 	}
@@ -265,6 +265,15 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 	public Provider getProvider()
 	{
 		return m_provider;
+	}
+
+	public ProviderMatch getProviderMatch(RMContext context) throws CoreException
+	{
+		ProviderMatch pm = new ProviderMatch(
+			m_provider, getComponentType(), getVersionMatch(),
+			new NodeQuery(context, getQualifiedDependency()));
+		pm.setRepositoryURI(m_repository);
+		return pm;
 	}
 
 	/**
@@ -405,13 +414,29 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 		receiver.endDocument();
 	}
 
+	@Override
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
 	throws SAXException
 	{
 		handler.startPrefixMapping(XMLConstants.BM_METADATA_PREFIX, XMLConstants.BM_METADATA_NS);
+		super.toSax(handler, namespace, prefix, localName);
+		handler.endPrefixMapping(XMLConstants.BM_METADATA_PREFIX);
+	}
 
-		AttributesImpl attrs = new AttributesImpl();
-
+	@Override
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("Name: ");
+		result.append(m_request.getName());
+		result.append(", ");
+		m_versionMatch.toString(result);
+		return result.toString();
+	}
+	
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
 		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
 		String tmp = TextUtils.concat(m_attributes, ",");
 		if(tmp != null)
@@ -428,23 +453,25 @@ public class Resolution extends UUIDKeyed implements ISaxable, ISaxableElement
 			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
 		if(m_size != -1)
 			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
-
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		handler.startElement(namespace, localName, qName, attrs);
-		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
-		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch.getDefaultTag());
-		handler.endElement(namespace, localName, qName);
-		handler.endPrefixMapping(XMLConstants.BM_METADATA_PREFIX);
 	}
 
 	@Override
-	public String toString()
+	public void emitElements(ContentHandler handler, String namespace, String prefix)
+	throws SAXException
 	{
-		StringBuilder result = new StringBuilder();
-		result.append("Name: ");
-		result.append(m_request.getName());
-		result.append(", ");
-		m_versionMatch.toString(result);
-		return result.toString();
+		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
+		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch.getDefaultTag());
+	}
+	
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_METADATA_NS;
+	}
+	
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_METADATA_PREFIX;
 	}
 }

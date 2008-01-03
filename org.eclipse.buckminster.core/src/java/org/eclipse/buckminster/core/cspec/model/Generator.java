@@ -7,14 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
  */
-public class Generator extends NamedElement implements ISaxableElement
+public class Generator extends NamedElement
 {
 	public static final String ATTR_ATTRIBUTE = "attribute";
 

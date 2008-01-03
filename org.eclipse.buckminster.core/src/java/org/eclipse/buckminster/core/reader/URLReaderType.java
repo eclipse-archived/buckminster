@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -59,7 +60,7 @@ public class URLReaderType extends AbstractReaderType
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
 		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
-		return provider.getReaderType().getReader(pm, monitor);
+		return pm.getReader(monitor);
 	}
 
 	@Override
@@ -78,6 +79,13 @@ public class URLReaderType extends AbstractReaderType
 	public IReaderType getLocalReaderType()
 	{
 		return this;
+	}
+
+	@Override
+	public IComponentReader getReader(Resolution resolution, RMContext context, IProgressMonitor monitor) throws CoreException
+	{
+		MonitorUtils.complete(monitor);
+		return new URLFileReader(this, resolution.getProviderMatch(context), getURI(resolution.getRepository()));
 	}
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
@@ -106,11 +114,6 @@ public class URLReaderType extends AbstractReaderType
 		return path;
 	}
 
-	public URI getURI(Provider provider, Map<String,String> properties) throws CoreException
-	{
-		return getURI(provider.getURI(properties));
-	}
-
 	public URI getURI(ProviderMatch providerMatch) throws CoreException
 	{
 		return getURI(providerMatch.getRepositoryURI());
@@ -119,6 +122,12 @@ public class URLReaderType extends AbstractReaderType
 	public URI getURI(String repository) throws CoreException
 	{
 		return URLUtils.normalizeToURI(repository, false);
+	}
+
+	@Override
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	{
+		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
 	public boolean isFileReader()

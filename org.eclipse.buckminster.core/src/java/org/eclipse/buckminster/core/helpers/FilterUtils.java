@@ -139,7 +139,7 @@ public class FilterUtils
 
 	private static boolean addProperty(StringBuilder bld, String key, String value)
 	{
-		value = TextUtils.emptyTrimmedStringAsNull(value);
+		value = TextUtils.notEmptyTrimmedString(value);
 		if(value == null)
 			return false;
 

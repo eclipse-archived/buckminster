@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
@@ -58,7 +59,7 @@ public class Redirect extends Matcher
 	}
 
 	@Override
-	void addAttributes(AttributesImpl attrs)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_HREF, m_url);
 		super.addAttributes(attrs);

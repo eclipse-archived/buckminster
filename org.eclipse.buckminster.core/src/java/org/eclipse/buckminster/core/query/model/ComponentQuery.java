@@ -43,7 +43,6 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,7 +54,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableElement
+public class ComponentQuery extends UUIDKeyed implements ISaxable
 {
 	public static final String ATTR_PROPERTIES = "properties";
 
@@ -65,9 +64,9 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	public static final String ELEM_ROOT_REQUEST = "rootRequest";
 
-	public static final String TAG = "componentQuery";
-
 	public static final int SEQUENCE_NUMBER = 4;
+
+	public static final String TAG = "componentQuery";
 
 	public static ComponentQuery fromStream(String systemId, InputStream stream) throws CoreException
 	{
@@ -103,9 +102,9 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	private final List<AdvisorNode> m_advisorNodes;
 
-	private final Documentation m_documentation;
+	private transient Map<String, String> m_allProperties;
 
-	private final String m_shortDesc;
+	private final Documentation m_documentation;
 
 	private final Map<String, String> m_properties;
 
@@ -115,7 +114,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 
 	private final ComponentRequest m_rootRequest;
 
-	private transient Map<String, String> m_allProperties;
+	private final String m_shortDesc;
 
 	public ComponentQuery(Documentation documentation, String shortDesc, List<AdvisorNode> advisorNodes, Map<String,String> properties, URL propertiesURL, URL resourceMapURL, ComponentRequest rootRequest)
 	{
@@ -151,6 +150,12 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? Collections.<String>emptyList() : node.getAttributes();
+	}
+
+	public VersionSelector[] getBranchTagPath(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? VersionSelector.EMPTY_PATH : node.getBranchTagPath();
 	}
 
 	public Map<String,String> getDeclaredProperties()
@@ -291,9 +296,21 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return ProviderScore.values()[(sourceScore.ordinal() + mutableScore.ordinal()) / 2];
 	}
 
+	public int[] getResolutionPrio(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? AdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
+	}
+
 	public URL getResourceMapURL()
 	{
 		return m_resourceMapURL;
+	}
+
+	public long getRevision(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? -1 : node.getRevision();
 	}
 
 	public ComponentRequest getRootRequest()
@@ -301,28 +318,15 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		return m_rootRequest;
 	}
 
-	public VersionSelector[] getBranchTagPath(ComponentName cName)
+	public String getShortDesc()
 	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? VersionSelector.EMPTY_PATH : node.getBranchTagPath();
+		return m_shortDesc;
 	}
 
 	public String[] getSpacePath(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? Trivial.EMPTY_STRING_ARRAY : node.getSpacePath();
-	}
-
-	public int[] getResolutionPrio(ComponentName cName)
-	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? AdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
-	}
-
-	public long getRevision(ComponentName cName)
-	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? -1 : node.getRevision();
 	}
 
 	public String getTagInfo()
@@ -334,11 +338,6 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getTimestamp();
-	}
-
-	public String getShortDesc()
-	{
-		return m_shortDesc;
 	}
 
 	public IVersionDesignator getVersionOverride(ComponentName cName)
@@ -386,45 +385,14 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 		handler.endDocument();
 	}
 
+	@Override
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
 	{
 		handler.startPrefixMapping(BM_CQUERY_PREFIX, BM_CQUERY_NS);
-
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
-		if(m_resourceMapURL != null)
-			Utils.addAttribute(attrs, ATTR_RESOURCE_MAP, m_resourceMapURL.toString());
-		if(m_propertiesURL != null)
-			Utils.addAttribute(attrs, ATTR_PROPERTIES, m_propertiesURL.toString());
-		if(m_shortDesc != null)
-			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
-
-		handler.startElement(namespace, localName, qName, attrs);
-		if(m_documentation != null)
-			m_documentation.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, m_documentation.getDefaultTag());
-
-		m_rootRequest.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, ELEM_ROOT_REQUEST);
-		SAXEmitter.emitProperties(handler, m_properties, BM_CQUERY_NS, BM_CQUERY_PREFIX, true, false);
-
-		for(AdvisorNode node : m_advisorNodes)
-			node.toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, node.getDefaultTag());
-
-		handler.endElement(namespace, localName, qName);
+		super.toSax(handler, namespace, prefix, localName);
 		handler.endPrefixMapping(BM_CQUERY_PREFIX);
 	}
-
-	public boolean useWorkspace(ComponentName cName)
-	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.isUseWorkspace();
-	}
-
-	public boolean useTargetPlatform(ComponentName cName)
-	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.isUseTargetPlatform();
-	}
-
+	
 	public boolean useMaterialization(ComponentName cName)
 	{
 		AdvisorNode node = getMatchingNode(cName);
@@ -435,5 +403,53 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable, ISaxableEleme
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.isUseRemoteResolution();
+	}
+
+	public boolean useTargetPlatform(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? true : node.isUseTargetPlatform();
+	}
+
+	public boolean useWorkspace(ComponentName cName)
+	{
+		AdvisorNode node = getMatchingNode(cName);
+		return node == null ? true : node.isUseWorkspace();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		if(m_resourceMapURL != null)
+			Utils.addAttribute(attrs, ATTR_RESOURCE_MAP, m_resourceMapURL.toString());
+		if(m_propertiesURL != null)
+			Utils.addAttribute(attrs, ATTR_PROPERTIES, m_propertiesURL.toString());
+		if(m_shortDesc != null)
+			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		m_rootRequest.toSax(handler, namespace, prefix, ELEM_ROOT_REQUEST);
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
+		for(AdvisorNode node : m_advisorNodes)
+			node.toSax(handler, namespace, prefix, node.getDefaultTag());
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return BM_CQUERY_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return BM_CQUERY_PREFIX;
 	}
 }

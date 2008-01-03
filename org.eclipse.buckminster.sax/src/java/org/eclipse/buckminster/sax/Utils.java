@@ -47,17 +47,22 @@ public class Utils
 			return new ByteArrayInputStream(buf, 0, count);
 		}
 	}
-	private static final Class<?>[] s_emptyArgTypes = new Class[] {};
-	private static final Object[] s_emptyArgs = new Object[] {};
 
+	private static final Class<?>[] s_emptyArgTypes = new Class[] {};
+
+	private static final Object[] s_emptyArgs = new Object[] {};
 
 	private static final SAXParserFactory s_parserFactory = SAXParserFactory.newInstance();
 
 	/**
 	 * Adds a CDATA type attribute using the default namespace
-	 * @param attrs The attribtue collection receiveing the attribute
-	 * @param name The name of the attribute
-	 * @param value The attribute value
+	 * 
+	 * @param attrs
+	 *            The attribtue collection receiveing the attribute
+	 * @param name
+	 *            The name of the attribute
+	 * @param value
+	 *            The attribute value
 	 */
 	public static void addAttribute(AttributesImpl attrs, String name, String value)
 	{
@@ -66,13 +71,16 @@ public class Utils
 
 	/**
 	 * Create an XMLReader instance.
-	 * @param validating true if a validating parser is desired
-	 * @param withNamespace true if the parser is namespace aware
+	 * 
+	 * @param validating
+	 *            true if a validating parser is desired
+	 * @param withNamespace
+	 *            true if the parser is namespace aware
 	 * @return The created instance.
-	 * @throws SAXException If no XMLReader could be created.
+	 * @throws SAXException
+	 *             If no XMLReader could be created.
 	 */
-	public static XMLReader createXMLReader(boolean validating, boolean withNamespace)
-	throws SAXException
+	public static XMLReader createXMLReader(boolean validating, boolean withNamespace) throws SAXException
 	{
 		try
 		{
@@ -90,14 +98,13 @@ public class Utils
 	}
 
 	/**
-	 * Using J2SE 5.0 or higher, we would not need this since the
-	 * <code>Locator</code> then can be casted to a <code>Locator2</code>.
-	 * With 1.4 we know that the method is there but we can't get to
-	 * it without using reflection.
-	 *
-	 * @param locator The locator to extract the encoding from
-	 * @return The encoding as stated in the entity or <code>null</code>
-	 * if not found.
+	 * Using J2SE 5.0 or higher, we would not need this since the <code>Locator</code> then can be casted to a
+	 * <code>Locator2</code>. With 1.4 we know that the method is there but we can't get to it without using
+	 * reflection.
+	 * 
+	 * @param locator
+	 *            The locator to extract the encoding from
+	 * @return The encoding as stated in the entity or <code>null</code> if not found.
 	 */
 	public static String getEncoding(Locator locator)
 	{
@@ -106,8 +113,7 @@ public class Utils
 		{
 			try
 			{
-				enc = (String)locator.getClass().getMethod(
-					"getEncoding", s_emptyArgTypes).invoke(locator, s_emptyArgs);
+				enc = (String)locator.getClass().getMethod("getEncoding", s_emptyArgTypes).invoke(locator, s_emptyArgs);
 			}
 			catch(Exception e)
 			{
@@ -121,10 +127,12 @@ public class Utils
 	}
 
 	/**
-	 * Obtain the byte image that corresponds to the <code>UTF-8</code> encoded XML image of the
-	 * <code>saxable</code> argument. The method will make no attempt to nice indenting and the
-	 * newline character used will be unix style always.
-	 * @param saxable The element to be emited. Must not be <code>null</code>.
+	 * Obtain the byte image that corresponds to the <code>UTF-8</code> encoded XML image of the <code>saxable</code>
+	 * argument. The method will make no attempt to nice indenting and the newline character used will be unix style
+	 * always.
+	 * 
+	 * @param saxable
+	 *            The element to be emited. Must not be <code>null</code>.
 	 * @return the byte image
 	 */
 	public static byte[] getImage(ISaxable saxable)
@@ -142,9 +150,10 @@ public class Utils
 	}
 
 	/**
-	 * Obtain the input stream to the <code>UTF-8</code> encoded XML image of the
-	 * <code>saxable</code> argument.
-	 * @param saxable The element to be emited. Must not be <code>null</code>.
+	 * Obtain the input stream to the <code>UTF-8</code> encoded XML image of the <code>saxable</code> argument.
+	 * 
+	 * @param saxable
+	 *            The element to be emited. Must not be <code>null</code>.
 	 * @return the input stream
 	 */
 	public static InputStream getInputStream(ISaxable saxable) throws SAXException
@@ -155,29 +164,37 @@ public class Utils
 	}
 
 	/**
-	 * Creates a qualified name by concatenating the <code>prefix</code>, a colon, and
-	 * the <code>localName</code>
-	 * @param prefix The prefix for the qualified name
-	 * @param localName The localName
+	 * Creates a qualified name by concatenating the <code>prefix</code>, a colon, and the <code>localName</code>.
+	 * If <code>prefix</code> is <code>null</code> or an empty string, the <code>localName</code> is returned.
+	 * 
+	 * @param prefix
+	 *            The prefix for the qualified name
+	 * @param localName
+	 *            The localName
 	 * @return The qualified name.
 	 */
 	public static String makeQualifiedName(String prefix, String localName)
 	{
-		return prefix + ':' + localName;
+		return (prefix == null || prefix.length() == 0)
+				? localName
+				: prefix + ':' + localName;
 	}
 
 	/**
-	 * Instantiates and returns a new ContentHandler that will print its
-	 * output to a stream.
-	 * @param file The name of the output file. Use for diagnostic only.
-	 * @param stream The stream that will receive the output.
-	 * @param indent The indentation to use when pretty-printing or -1 if
-	 * no pretty-printing is desired.
+	 * Instantiates and returns a new ContentHandler that will print its output to a stream.
+	 * 
+	 * @param file
+	 *            The name of the output file. Use for diagnostic only.
+	 * @param stream
+	 *            The stream that will receive the output.
+	 * @param indent
+	 *            The indentation to use when pretty-printing or -1 if no pretty-printing is desired.
 	 * @return A ContentHandler that will act as a serializer.
-	 * @throws SAXException if a problem occured creating the serializer.
+	 * @throws SAXException
+	 *             if a problem occured creating the serializer.
 	 */
-	public static ContentHandler newSerializer(File file, OutputStream stream, String encoding, int indent, boolean useSysLinesep)
-	throws SAXException
+	public static ContentHandler newSerializer(File file, OutputStream stream, String encoding, int indent,
+			boolean useSysLinesep) throws SAXException
 	{
 		TransformerHandler serializer = createTransformerHandler(indent);
 		Transformer t = serializer.getTransformer();
@@ -207,7 +224,7 @@ public class Utils
 		if(useSysLinesep || "\n".equals(lineSep))
 			serializer.setResult(out);
 		else
-		{	
+		{
 			// Someone forgot to expose the ToXMLStream.setLineSepUse(boolean) so there's
 			// no way we can do that in a nice way. This has been known to work though
 			//
@@ -224,9 +241,8 @@ public class Utils
 		return serializer;
 	}
 
-	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix,
-		String localName, String elemName, Attributes attrs, Collection<T> collection, ContentHandler handler)
-	throws SAXException
+	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
+			String elemName, Attributes attrs, Collection<T> collection, ContentHandler handler) throws SAXException
 	{
 		if(collection.isEmpty() && attrs.getLength() == 0)
 			return;
@@ -234,30 +250,31 @@ public class Utils
 		String qName = makeQualifiedName(prefix, localName);
 		handler.startElement(namespace, localName, qName, attrs);
 		for(T elem : collection)
-			elem.toSax(handler, namespace, prefix, elemName == null ? elem.getDefaultTag() : elemName);
+			elem.toSax(handler, namespace, prefix, elemName == null
+					? elem.getDefaultTag()
+					: elemName);
 		handler.endElement(namespace, localName, qName);
 	}
 
-	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix,
-		String localName, String elemName, Attributes attrs, T[] array, ContentHandler handler)
-	throws SAXException
+	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
+			String elemName, Attributes attrs, T[] array, ContentHandler handler) throws SAXException
 	{
 		if(array.length == 0)
 			return;
-	
+
 		String qName = makeQualifiedName(prefix, localName);
 		handler.startElement(namespace, localName, qName, attrs);
 		for(T elem : array)
-			elem.toSax(handler, namespace, prefix, elemName == null ? elem.getDefaultTag() : elemName);
+			elem.toSax(handler, namespace, prefix, elemName == null
+					? elem.getDefaultTag()
+					: elemName);
 		handler.endElement(namespace, localName, qName);
 	}
 
-	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix,
-		String localName, String elemName, Collection<T> collection, ContentHandler handler)
-	throws SAXException
+	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
+			String elemName, Collection<T> collection, ContentHandler handler) throws SAXException
 	{
-		emitCollection(namespace, prefix, localName, elemName, ISaxableElement.EMPTY_ATTRIBUTES,
-			collection, handler);
+		emitCollection(namespace, prefix, localName, elemName, ISaxableElement.EMPTY_ATTRIBUTES, collection, handler);
 	}
 
 	public static void serializeUgly(ISaxable saxable, OutputStream outputStream) throws SAXException

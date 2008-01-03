@@ -47,7 +47,7 @@ import org.eclipse.core.variables.VariablesPlugin;
  * 
  * @author Thomas Hallgren
  */
-public class RMContext extends MapUnion<String, String>
+public class RMContext extends ExpandingProperties
 {
 	private int m_tagInfoSquenceNumber = 0;
 
@@ -143,12 +143,6 @@ public class RMContext extends MapUnion<String, String>
 		return additions;
 	}
 
-	private static Map<String,String> makeExpanding(Map<String,String> properties)
-	{
-		return (properties instanceof ExpandingProperties)
-			? properties
-			: new ExpandingProperties(properties);
-	}
 	private boolean m_continueOnError;
 	private final Map<ComponentRequest, TagInfo> m_tagInfos = new HashMap<ComponentRequest, TagInfo>();
 
@@ -160,12 +154,13 @@ public class RMContext extends MapUnion<String, String>
 
 	public RMContext(Map<String, String> properties)
 	{
-		this(makeExpanding(properties), null);
+		this(properties, null);
 	}
 
 	public RMContext(Map<String, String> properties, RMContext source)
 	{
-		super(properties, s_staticAdditions);
+		super(getGlobalPropertyAdditions());
+		putAll(properties);
 		if(source != null)
 		{
 			m_userCache.putAll(source.getUserCache());

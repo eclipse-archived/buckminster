@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
@@ -31,7 +32,7 @@ import org.eclipse.core.runtime.IPath;
  *
  * @author Thomas Hallgren
  */
-public abstract class UUIDKeyed implements IUUIDKeyed, ISaxable
+public abstract class UUIDKeyed extends AbstractSaxableElement implements IUUIDKeyed, ISaxable
 {
 	public static <T> List<T> createUnmodifiableList(Collection<T> coll)
 	{

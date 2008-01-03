@@ -12,8 +12,6 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
-
 /**
  * Abstract class for holder of values. The holder will produce either exactly
  * one value (holders such as {@link Format}, {@link Replace}, or
@@ -28,7 +26,7 @@ import org.eclipse.buckminster.sax.ISaxableElement;
  * 
  * @author Thomas Hallgren
  */
-public abstract class ValueHolder implements ISaxableElement
+public abstract class ValueHolder extends AbstractSaxableElement
 {
 	public static final String NO_VALUE = "";
 

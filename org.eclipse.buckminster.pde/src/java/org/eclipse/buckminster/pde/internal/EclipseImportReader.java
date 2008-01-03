@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileHandle;
@@ -278,12 +277,11 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 		IComponentType ctype = myRI.getComponentType();
 		Provider myP = myRI.getProvider();
 		ProviderMatch match = new ProviderMatch(new Provider(myP.getSearchPath(), IReaderType.URL_ZIPPED, new String[] { ctype.getId() },
-			myP.getVersionConverterDesc(), new Format(remoteURL.toString()), myP.getSpace(),
-			myP.isMutable(), myP.hasSource(), null), ctype, myRI.getVersionMatch(), ProviderScore.PREFERRED,
+			myP.getVersionConverterDesc(), new Format(remoteURL.toString()), null, null, myP.getSpace(),
+			myP.isMutable(), myP.hasSource(), null, null), ctype, myRI.getVersionMatch(), ProviderScore.PREFERRED,
 			myRI.getNodeQuery());
 
-		IReaderType rd = CorePlugin.getDefault().getReaderType(IReaderType.URL_ZIPPED);
-		return (ICatalogReader)rd.getReader(match, monitor);
+		return (ICatalogReader)match.getReader(monitor);
 	}
 
 	private IWorkspaceRunnable getFeatureImportJob(IFeatureModel model, IPath destination)

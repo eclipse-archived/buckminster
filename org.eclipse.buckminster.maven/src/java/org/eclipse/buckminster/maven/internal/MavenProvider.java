@@ -82,8 +82,8 @@ public class MavenProvider extends Provider
 		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
 		Documentation documentation, Map<String, MapEntry> mappings, List<BidirectionalTransformer> rules)
 	{
-		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, space, mutable, source,
-			documentation);
+		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, space, mutable, source,
+			null, documentation);
 		if(mappings == null)
 			mappings = Collections.emptyMap();
 		if(rules == null)
@@ -106,7 +106,7 @@ public class MavenProvider extends Provider
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
 		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type",

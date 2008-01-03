@@ -78,12 +78,12 @@ public class AntActor extends AbstractActor
 
 	protected String getBuildFileProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.emptyTrimmedStringAsNull(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
 	}
 
 	protected String getBuildFileIdProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.emptyTrimmedStringAsNull(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
 	}
 
 	protected final String getTargetsString(IActionContext ctx)

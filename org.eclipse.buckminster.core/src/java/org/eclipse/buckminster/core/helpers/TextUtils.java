@@ -177,19 +177,6 @@ public class TextUtils
 			pairs[idx] = pairs[idx].replace("&&", "&");
 		return pairs;
 	}
-
-	public static String emptyTrimmedStringAsNull(String s)
-	{
-		if(s == null || s.length() == 0)
-			return null;
-
-		String ts = s.trim();
-		if(ts.length() == 0)
-			return null;
-
-		return s;
-	}
-
 	public static String encodeFromQueryPairs(List<String> pairs)
 	{
 		if(pairs == null || pairs.size() == 0)
@@ -289,16 +276,22 @@ public class TextUtils
 				: txt.toString();
 	}
 
-	public static String notEmptyString(String txt)
+	public static String notEmptyString(String s)
 	{
-		if(txt == null)
+		return (s == null || s.length() == 0) ? null : s;
+	}
+
+	public static String notEmptyTrimmedString(String s)
+	{
+		if(s == null || s.length() == 0)
+			s = null;
+		else
 		{
-			return txt;
+			s = s.trim();
+			if(s.length() == 0)
+				s = null;
 		}
-		
-		return txt.length() == 0
-				? null
-				: txt.toString();
+		return s;
 	}
 
 	public static Map<String, String> queryAsParameters(String query)

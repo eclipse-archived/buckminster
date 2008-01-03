@@ -123,7 +123,7 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	}
 
 	@Override
-	void addAttributes(AttributesImpl attrs)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
@@ -132,7 +132,7 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	}
 
 	@Override
-	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
 		super.emitElements(receiver, namespace, prefix);
 		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);

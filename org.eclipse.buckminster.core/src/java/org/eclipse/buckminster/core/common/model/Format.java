@@ -50,6 +50,11 @@ public class Format extends ValueHolderFilter
 		return hc;
 	}
 
+	public String getFormat()
+	{
+		return m_format;
+	}
+
 	@Override
 	protected void addAttributes(AttributesImpl attrs)
 	throws SAXException

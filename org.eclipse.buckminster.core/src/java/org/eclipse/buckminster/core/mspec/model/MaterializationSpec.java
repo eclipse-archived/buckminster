@@ -238,9 +238,9 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	}
 
 	@Override
-	protected void appendAttributes(AttributesImpl attrs) throws SAXException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		super.appendAttributes(attrs);
+		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_NAME, m_name);
 		Utils.addAttribute(attrs, ATTR_URL, m_url.toString());
 		if(m_shortDesc != null)

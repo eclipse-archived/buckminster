@@ -61,9 +61,9 @@ public class MaterializationNode extends MaterializationDirective
 	}
 
 	@Override
-	protected void appendAttributes(AttributesImpl attrs) throws SAXException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		super.appendAttributes(attrs);
+		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
 		if(m_componentTypeID != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);

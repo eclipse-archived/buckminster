@@ -12,9 +12,8 @@ package org.eclipse.buckminster.core.rmap.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -22,7 +21,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class BidirectionalTransformer implements ISaxableElement
+public class BidirectionalTransformer extends AbstractSaxableElement
 {
 	public static final String TAG = "transform";
 	public static final String ATTR_TO_PATTERN = "toPattern";
@@ -58,16 +57,13 @@ public class BidirectionalTransformer implements ISaxableElement
 		return transform(source, m_toPattern, m_toReplacement, m_fromPattern, m_fromReplacement);
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_TO_PATTERN, m_toPattern.toString());
 		Utils.addAttribute(attrs, ATTR_TO_REPLACEMENT, m_toReplacement);
 		Utils.addAttribute(attrs, ATTR_FROM_PATTERN, m_fromPattern.toString());
 		Utils.addAttribute(attrs, ATTR_FROM_REPLACEMENT, m_fromReplacement);
-		handler.startElement(namespace, localName, qName, attrs);
-		handler.endElement(namespace, localName, qName);
 	}
 
 	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern, String reverseReplacement)

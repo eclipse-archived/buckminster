@@ -12,11 +12,10 @@ package org.eclipse.buckminster.core.rmap.model;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -24,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class Matcher implements ISaxableElement
+public abstract class Matcher extends AbstractSaxableElement
 {
 	public static final String ATTR_PATTERN = "pattern";
 
@@ -55,17 +54,8 @@ public abstract class Matcher implements ISaxableElement
 	public abstract SearchPath getSearchPath(NodeQuery query)
 	throws CoreException;
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-	throws SAXException
-	{
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		AttributesImpl attrs = new AttributesImpl();
-		addAttributes(attrs);
-		handler.startElement(namespace, localName, qName, attrs);
-		handler.endElement(namespace, localName, qName);
-	}
-
-	void addAttributes(AttributesImpl attrs)
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
 	}

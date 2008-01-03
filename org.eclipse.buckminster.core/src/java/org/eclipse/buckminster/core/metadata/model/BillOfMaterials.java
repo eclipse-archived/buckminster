@@ -342,7 +342,7 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	void addAttributes(AttributesImpl attrs)
+	protected void addAttributes(AttributesImpl attrs)
 	{
 		if(m_topNode != null)
 			Utils.addAttribute(attrs, ATTR_TOP_NODE_ID, m_topNode.getId().toString());

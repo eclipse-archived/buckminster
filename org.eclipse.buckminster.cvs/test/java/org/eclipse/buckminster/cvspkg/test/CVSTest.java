@@ -189,7 +189,7 @@ public class CVSTest extends TestCase
 
 		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
 		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
-				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, false, false, null);
+				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, false, false, null, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));
 		cq.setResourceMapURL(this.getClass().getResource("test.rmap"));

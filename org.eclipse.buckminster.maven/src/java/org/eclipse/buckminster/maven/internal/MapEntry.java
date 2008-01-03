@@ -17,7 +17,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 class MapEntry extends GroupAndArtifact
 {
 	@SuppressWarnings("hiding")
@@ -51,14 +50,14 @@ class MapEntry extends GroupAndArtifact
 	}
 
 	@Override
-	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
 		for(GroupAndArtifact alias : m_aliases)
 			alias.toSax(receiver, namespace, prefix, GroupAndArtifact.ALIAS_TAG);
 	}
 
 	@Override
-	void addAttributes(AttributesImpl attrs) throws SAXException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_NAME, m_name);

@@ -22,17 +22,14 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.ISaxable;
-import org.eclipse.buckminster.sax.ISaxableElement;
-import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
  */
-public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableElement
+public abstract class DepNode extends UUIDKeyed implements ISaxable
 {
 	public static final int SEQUENCE_NUMBER = 3;
 
@@ -122,17 +119,6 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 		receiver.endDocument();
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-	throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		addAttributes(attrs);
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		emitElements(receiver, namespace, prefix);
-		receiver.endElement(namespace, localName, qName);
-	}
-
 	public int uniqueNodeCount() throws CoreException
 	{
 		HashSet<DepNode> allNodes = new HashSet<DepNode>();
@@ -140,18 +126,10 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable, ISaxableEle
 		return allNodes.size();
 	}
 
-	void addAttributes(AttributesImpl attrs)
-	{
-	}
-
 	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException;
 
 	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
-	{
-	}
-
-	void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
 	{
 	}
 

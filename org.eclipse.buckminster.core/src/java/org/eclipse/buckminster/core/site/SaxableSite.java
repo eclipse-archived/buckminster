@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.core.site;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -28,7 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class SaxableSite implements ISaxable, ISaxableElement
+public class SaxableSite extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "site";
 
@@ -50,11 +51,10 @@ public class SaxableSite implements ISaxable, ISaxableElement
 		toSax(receiver, "", "", TAG);
 		receiver.endDocument();
 	}
-
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-	throws SAXException
+	
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		AttributesImpl attrs = new AttributesImpl();
 		String type = m_site.getType();
 		if(type != null)
 			Utils.addAttribute(attrs, "type", type);
@@ -82,17 +82,11 @@ public class SaxableSite implements ISaxable, ISaxableElement
 					Utils.addAttribute(attrs, "availableLocales", bld.toString());
 			}
 		}
+	}
 
-		String qName;
-		if(prefix == null || prefix.length() == 0)
-		{
-			qName = localName;
-			localName = "";
-		}
-		else
-			qName = Utils.makeQualifiedName(prefix, localName);
-
-		handler.startElement(namespace, localName, qName, attrs);
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
 		URLEntryModel description = m_site.getDescriptionModel();
 		if(description != null)
 			writeDescription(handler, description);
@@ -100,7 +94,6 @@ public class SaxableSite implements ISaxable, ISaxableElement
 		writeFeatures(handler, m_site.getFeatureReferenceModels());
 		writeCategories(handler, m_site.getCategoryModels());
 		writeArchives(handler, m_site.getArchiveReferenceModels());
-		handler.endElement(namespace, localName, qName);
 	}
 
 	private static void addOptionalAttribute(AttributesImpl attrs, String name, String value)

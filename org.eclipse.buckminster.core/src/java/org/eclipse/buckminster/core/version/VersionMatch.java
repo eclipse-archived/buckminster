@@ -11,18 +11,17 @@ package org.eclipse.buckminster.core.version;
 
 import java.util.Date;
 
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
  */
-public class VersionMatch implements ISaxableElement
+public class VersionMatch extends AbstractSaxableElement
 {
 	public static final VersionMatch DEFAULT = new VersionMatch(null, null, null, -1L, null, null);
 
@@ -148,10 +147,9 @@ public class VersionMatch implements ISaxableElement
 		return TAG;
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		AttributesImpl attrs = new AttributesImpl();
-
 		if(m_artifactInfo != null)
 			Utils.addAttribute(attrs, ATTR_ARTIFACT_INFO, m_artifactInfo);
 
@@ -172,9 +170,5 @@ public class VersionMatch implements ISaxableElement
 			Utils.addAttribute(attrs, ATTR_VERSION, m_version.toString());
 			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_version.getType().getId());
 		}
-
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		receiver.startElement(namespace, localName, qName, attrs);
-		receiver.endElement(namespace, localName, qName);
 	}
 }

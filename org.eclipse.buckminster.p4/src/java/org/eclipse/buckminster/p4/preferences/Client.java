@@ -41,7 +41,7 @@ public class Client extends NodeWrapper
 
 	public DepotMapping addDepotMapping(String name) throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		boolean first = (prefs.childrenNames().length == 0);
 		if(!first && prefs.nodeExists(name))
 			throw new BackingStoreException("Depot mapping already exists");
@@ -52,7 +52,7 @@ public class Client extends NodeWrapper
 	public Client createCopy(String newName) throws BackingStoreException
 	{
 		Client copy = m_server.addClient(newName);
-		deepCopy(this.getPreferences(), copy.getPreferences());
+		deepCopy(getPreferences(), copy.getPreferences());
 		return copy;
 	}
 
@@ -78,7 +78,7 @@ public class Client extends NodeWrapper
 			return false;
 		Client that = (Client)o;
 
-		if(this.m_server != that.m_server)
+		if(m_server != that.m_server)
 			return false;
 		
 		return true;
@@ -86,18 +86,18 @@ public class Client extends NodeWrapper
 
 	public String[] getDepotMappingNames() throws BackingStoreException
 	{
-		return this.getPreferences().childrenNames();
+		return getPreferences().childrenNames();
 	}
 
 	public DepotMapping getDepotMapping(String name) throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		return prefs.nodeExists(name) ? new DepotMapping(this, prefs.node(name)) : null;
 	}
 
 	public DepotMapping[] getDepotMappings() throws BackingStoreException
 	{
-		Preferences prefs = this.getPreferences();
+		Preferences prefs = getPreferences();
 		ArrayList<DepotMapping> depotMappings = new ArrayList<DepotMapping>();
 		for (String child : prefs.childrenNames())
 		{
@@ -126,24 +126,24 @@ public class Client extends NodeWrapper
 
 	public final String getLocalRoot()
 	{
-		return this.getPreferences().get(Client.ATTR_LOCAL_ROOT, null);
+		return getPreferences().get(Client.ATTR_LOCAL_ROOT, null);
 	}
 
 	public void setLocalRoot(String localRoot)
 	{
-		this.putString(Client.ATTR_LOCAL_ROOT, localRoot);
+		putString(Client.ATTR_LOCAL_ROOT, localRoot);
 	}
 
 	public boolean isDefaultClient()
 	{
-		return this.getName().equals(m_server.getDefaultClientName());
+		return getName().equals(m_server.getDefaultClientName());
 	}
 
 	@Override
 	public void remove() throws BackingStoreException
 	{
-		if(this.isDefaultClient())
-			m_server.setOtherDefaultClient(this.getName());
+		if(isDefaultClient())
+			m_server.setOtherDefaultClient(getName());
 		super.remove();
 	}
 
@@ -153,7 +153,7 @@ public class Client extends NodeWrapper
 	 */
 	public void setAsDefault()
 	{
-		m_server.setDefaultClient(this.getName());
+		m_server.setDefaultClient(getName());
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class Client extends NodeWrapper
 	public IPath getMappingForDepot(IPath depotPath) throws BackingStoreException
 	{
 		String pathString = depotPath.toPortableString();
-		for(DepotMapping mapping : this.getDepotMappings())
+		for(DepotMapping mapping : getDepotMappings())
 		{
 			Pattern lpExpr = mapping.getDepotPattern();
 			Matcher matcher = lpExpr.matcher(pathString);
@@ -181,8 +181,8 @@ public class Client extends NodeWrapper
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		addAttribute(attrs, ATTR_NAME, this.getName());
-		addAttribute(attrs, ATTR_LOCAL_ROOT, this.getLocalRoot());
+		addAttribute(attrs, ATTR_NAME, getName());
+		addAttribute(attrs, ATTR_LOCAL_ROOT, getLocalRoot());
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class Client extends NodeWrapper
 	{
 		try
 		{
-			for(DepotMapping depotMapping : this.getDepotMappings())
+			for(DepotMapping depotMapping : getDepotMappings())
 				depotMapping.toSax(receiver, namespace, prefix, depotMapping.getDefaultTag());
 		}
 		catch(BackingStoreException e)

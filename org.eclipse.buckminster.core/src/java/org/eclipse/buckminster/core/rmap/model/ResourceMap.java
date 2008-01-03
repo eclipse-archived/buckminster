@@ -19,9 +19,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
@@ -45,8 +47,6 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
-import org.eclipse.buckminster.sax.ISaxableElement;
-import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ResourceMap implements ISaxable, ISaxableElement
+public class ResourceMap extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "rmap";
 
@@ -275,16 +275,22 @@ public class ResourceMap implements ISaxable, ISaxableElement
 		handler.endDocument();
 	}
 
+	@Override
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
 	{
 		HashMap<String,String> prefixMappings = new HashMap<String,String>();
 		addPrefixMappings(prefixMappings);
-		for(Map.Entry<String,String> pfxMapping : prefixMappings.entrySet())
+		Set<Map.Entry<String,String>> pfxMappings = prefixMappings.entrySet();
+		for(Map.Entry<String,String> pfxMapping : pfxMappings)
 			handler.startPrefixMapping(pfxMapping.getKey(), pfxMapping.getValue());
+		super.toSax(handler, namespace, prefix, localName);
+		for(Map.Entry<String,String> pfxMapping : pfxMappings)
+			handler.endPrefixMapping(pfxMapping.getKey());
+	}
 
-		String qName = Utils.makeQualifiedName(prefix, localName);
-		handler.startElement(namespace, localName, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 
@@ -295,9 +301,5 @@ public class ResourceMap implements ISaxable, ISaxableElement
 
 		for(Matcher matcher : m_matchers)
 			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
-
-		handler.endElement(namespace, localName, qName);
-		for(String pfx : prefixMappings.keySet())
-			handler.endPrefixMapping(pfx);
 	}
 }
