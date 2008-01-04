@@ -100,7 +100,7 @@ public class CVSReaderType extends CatalogReaderType
 		if(parts.length >= 3 && parts[2].length() > 0)
 			locator.append(parts[2]);
 		else
-			locator.append(componentName);			
+			locator.append(componentName);
 		return locator.toString();
 	}
 
@@ -112,7 +112,9 @@ public class CVSReaderType extends CatalogReaderType
 			VersionSelector versionSelector = versionMatch.getBranchOrTag();
 			CVSSession session = new CVSSession(repositoryLocator);
 			ICVSRepositoryLocation location = session.getLocation();
-			String fragment = versionSelector == null ? null : versionSelector.toString();
+			String fragment = versionSelector == null
+					? null
+					: versionSelector.toString();
 			StringBuilder query = new StringBuilder();
 			query.append("repository=");
 			query.append(location.getRootDirectory());
@@ -128,7 +130,8 @@ public class CVSReaderType extends CatalogReaderType
 				user = null;
 
 			IPath modulePath = new Path(session.getModuleName()).makeAbsolute();
-			URI uri = new URI("cvs", user, location.getHost(), -1, modulePath.toPortableString(), query.toString(), fragment);
+			URI uri = new URI("cvs", user, location.getHost(), -1, modulePath.toPortableString(), query.toString(),
+					fragment);
 			return uri.toURL();
 		}
 		catch(Exception e)
@@ -279,7 +282,9 @@ public class CVSReaderType extends CatalogReaderType
 				{
 					argument = NLS.bind(CVSMessages.Command_seriousServerError, new String[] { argument });
 					if(!session.hasErrors())
-						session.addError(new CVSStatus(IStatus.ERROR, CVSStatus.SERVER_ERROR, argument, (Throwable)null));
+						session
+								.addError(new CVSStatus(IStatus.ERROR, CVSStatus.SERVER_ERROR, argument,
+										(Throwable)null));
 					serious = true;
 				}
 
@@ -368,7 +373,7 @@ public class CVSReaderType extends CatalogReaderType
 
 	@Override
 	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		CVSSession session = null;
 		try
@@ -412,7 +417,7 @@ public class CVSReaderType extends CatalogReaderType
 			subMon.done();
 		}
 		else
-			MonitorUtils.worked(monitor, 10);		
+			MonitorUtils.worked(monitor, 10);
 
 		File entries = new File(new File(workingCopy, FileSystemCopier.CVS_DIRNAME), FileSystemCopier.ENTRIES);
 		BufferedReader input = null;
@@ -432,8 +437,8 @@ public class CVSReaderType extends CatalogReaderType
 				catch(CVSException e)
 				{
 				}
-			}				
-			MonitorUtils.worked(monitor, 10);		
+			}
+			MonitorUtils.worked(monitor, 10);
 		}
 		catch(FileNotFoundException e)
 		{
@@ -452,7 +457,8 @@ public class CVSReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider, ctype, nodeQuery);
@@ -479,7 +485,8 @@ public class CVSReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
+			throws CoreException
 	{
 		// Register the project with the CVSTeamProvider.
 		//
@@ -492,11 +499,12 @@ public class CVSReaderType extends CatalogReaderType
 	static CVSTag getCVSTag(VersionMatch match) throws CoreException
 	{
 		CVSTag tag;
-		Date timestamp = match.getTimestamp();
-		if(timestamp != null)
+		VersionSelector selector = match.getBranchOrTag();
+		Date timestamp;
+		if(selector == null && (timestamp = match.getTimestamp()) != null)
 			tag = new CVSTag(timestamp);
 		else
-			tag = getCVSTag(match.getBranchOrTag());
+			tag = getCVSTag(selector);
 		return tag;
 	}
 
@@ -506,7 +514,9 @@ public class CVSReaderType extends CatalogReaderType
 		if(selector == null)
 			tag = CVSTag.DEFAULT;
 		else
-			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG ? CVSTag.VERSION : CVSTag.BRANCH);
+			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG
+					? CVSTag.VERSION
+					: CVSTag.BRANCH);
 		return tag;
 	}
 }
