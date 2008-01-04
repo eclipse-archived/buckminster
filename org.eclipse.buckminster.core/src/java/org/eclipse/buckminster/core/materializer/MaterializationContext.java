@@ -46,6 +46,7 @@ public class MaterializationContext extends RMContext
 
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
+	private final MaterializationStatistics m_statistics = new MaterializationStatistics();
 
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec)
 	{
@@ -157,6 +158,11 @@ public class MaterializationContext extends RMContext
 				leaf = leaf.removeFirstSegments(leaf.segmentCount() - 1);
 		}
 		return leaf;
+	}
+
+	public MaterializationStatistics getMaterializationStatistics()
+	{
+		return m_statistics;
 	}
 
 	public MaterializationSpec getMaterializationSpec()

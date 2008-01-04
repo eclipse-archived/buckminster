@@ -11,8 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -57,6 +59,9 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 		Logger logger = CorePlugin.getLogger();
 		StorageManager sm = StorageManager.getDefault();
+		Set<ComponentIdentifier> updateCandidates = new HashSet<ComponentIdentifier>();
+
+		MaterializationStatistics statistics = context.getMaterializationStatistics();
 		monitor.beginTask(null, 1000);
 		try
 		{
@@ -90,6 +95,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 									// The same component (name, version, and type) is already materialized to
 									// the same location.
 									//
+									statistics.addKept();
 									adjustedMinfos.add(mat);
 									continue;
 								}
@@ -114,6 +120,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							// Don't materialize this one. Instead, pretend that we
 							// just did.
 							//
+							statistics.addKept();
 							logger.info("Skipping materialization of %s. Instead reusing what's already at %s", ci, artifactLocation);
 	
 							mat.store(sm);
@@ -146,6 +153,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 									throw BuckminsterException.wrap(e);
 								}
 							}
+
 						}
 						else
 						{
@@ -160,6 +168,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 									throw new DeleteException(file);
 							}
 						}
+
+						if(fileExists && conflictRes == ConflictResolution.UPDATE)
+							updateCandidates.add(ci);
+
 						String readerType = cr.getProvider().getReaderTypeId();
 						List<Materialization> readerGroup = perReader.get(readerType);
 						if(readerGroup == null)
@@ -173,6 +185,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				}
 				catch(CoreException e)
 				{
+					statistics.addFailed();
 					if(!context.isContinueOnError())
 						throw e;
 					context.addException(cr.getRequest(), e.getStatus());
@@ -196,8 +209,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				readerType.prepareMaterialization(rg, context, MonitorUtils.subMonitor(matMon, 8));
 				for(Materialization mi : rg)
 				{
-					Resolution cr = resolutionPerID.get(mi.getComponentIdentifier());
-					matMon.subTask(cr.getName());
+					ComponentIdentifier ci = mi.getComponentIdentifier();
+					Resolution cr = resolutionPerID.get(ci);
+					matMon.subTask(ci.getName());
+
 					boolean success = false;
 					IComponentReader reader = readerType.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));
 					try
@@ -206,7 +221,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						IProgressMonitor matSubMon = MonitorUtils.subMonitor(matMon, 80);
 
 						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
-							mi = new Materialization(location.addTrailingSeparator(), cr.getComponentIdentifier());
+							mi = new Materialization(location.addTrailingSeparator(), ci);
 						mi.store(sm);
 
 						if(reader instanceof IFileReader)
@@ -218,6 +233,12 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						adjustedMinfos.add(mi);
 						success = true;
 					}
+					catch(CoreException e)
+					{
+						if(!context.isContinueOnError())
+							throw e;
+						context.addException(cr.getRequest(), e.getStatus());
+					}
 					finally
 					{
 						reader.close();
@@ -225,8 +246,18 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						if(location.hasTrailingSeparator())
 							location.append(".mtlock").toFile().delete();
 
-						if(!success)
+						if(success)
+						{
+							if(updateCandidates.contains(ci))
+								statistics.addUpdated();
+							else
+								statistics.addReplaced();
+						}
+						else
+						{
+							statistics.addFailed();
 							mi.remove(sm);
+						}
 					}
 				}
 			}
