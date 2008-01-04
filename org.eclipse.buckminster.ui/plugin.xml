@@ -44,19 +44,29 @@
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			class="org.eclipse.buckminster.ui.internal.properties.ProjectPropertyPage"
-			id="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
-			name="%ProjectPropertyPage.name"/>
+        class="org.eclipse.buckminster.ui.internal.properties.ProjectPropertyPage"
+        id="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
+        name="%ProjectPropertyPage.name">
+     <enabledWhen>
+        <instanceof
+              value="org.eclipse.core.resources.IProject">
+        </instanceof>
+     </enabledWhen>
+  </page>
 		<page
-			category="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
-			class="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
-			id="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
-			name="%ProjectBuildersPropertyPage.name"/>
+        category="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
+        class="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
+        id="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
+        name="%ProjectBuildersPropertyPage.name">
+     <enabledWhen>
+        <instanceof
+              value="org.eclipse.core.resources.IProject">
+        </instanceof>
+     </enabledWhen>
+  </page>
 	</extension>
 	<extension
 		point="org.eclipse.buckminster.ui.incrementalBuilderEditors">
-		<editor builder="org.eclipse.buckminster.core.SimulationBuilder"
-			class="org.eclipse.buckminster.ui.internal.build.SimulationBuilderEditor" />
 		<editor
 			builder="org.eclipse.buckminster.core.ExternalCommandBuilder"
 			class="org.eclipse.buckminster.ui.internal.build.ExternalCommandBuilderEditor" />
