@@ -151,14 +151,6 @@
 		</builder>
 	</extension>
 	<extension
-		id="NullBuilder"
-		name="%nullBuilder"
-		point="org.eclipse.core.resources.builders">
-		<builder isConfigurable="false">
-			<run class="org.eclipse.buckminster.core.build.NullBuilder" />
-		</builder>
-	</extension>
-	<extension
 		id="ExternalCommandBuilder"
 		name="%externalCommandBuilder"
 		point="org.eclipse.core.resources.builders">
@@ -166,18 +158,8 @@
 			<run class="org.eclipse.buckminster.core.build.ExternalCommandBuilder" />
 		</builder>
 	</extension>
-	<extension
-		id="SimulationBuilder"
-		name="%simulationBuilder"
-		point="org.eclipse.core.resources.builders">
-		<builder isConfigurable="true">
-			<run class="org.eclipse.buckminster.core.build.SimulationBuilder" />
-		</builder>
-	</extension>
 	<extension point="org.eclipse.buckminster.core.incrementalBuilders">
 		<builder ID="org.eclipse.buckminster.core.ExternalCommandBuilder" />
-		<builder ID="org.eclipse.buckminster.core.NullBuilder" />
-		<builder ID="org.eclipse.buckminster.core.SimulationBuilder" />
 		<builder ID="org.eclipse.buckminster.core.locationEmitter" />
 	</extension>
 	<extension point="org.eclipse.buckminster.core.actors">
