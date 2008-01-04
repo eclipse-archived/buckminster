@@ -48,9 +48,9 @@
         id="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
         name="%ProjectPropertyPage.name">
      <enabledWhen>
-        <instanceof
-              value="org.eclipse.core.resources.IProject">
-        </instanceof>
+        <adapt
+              type="org.eclipse.core.resources.IProject">
+        </adapt>
      </enabledWhen>
   </page>
 		<page
@@ -59,9 +59,9 @@
         id="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
         name="%ProjectBuildersPropertyPage.name">
      <enabledWhen>
-        <instanceof
-              value="org.eclipse.core.resources.IProject">
-        </instanceof>
+        <adapt
+              type="org.eclipse.core.resources.IProject">
+        </adapt>
      </enabledWhen>
   </page>
 	</extension>
