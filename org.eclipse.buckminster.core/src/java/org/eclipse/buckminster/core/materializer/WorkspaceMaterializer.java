@@ -236,12 +236,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			if(matSegs >= relSegs)
 			{
 				if(locationPath.removeFirstSegments(matSegs - relSegs).setDevice(null).equals(projRelativePath))
-				{
-					if(relSegs == 1)
-						locationProjRoot = locationPath;
-					else
-						locationProjRoot = locationPath.removeLastSegments(relSegs);
-				}
+					locationProjRoot = locationPath.removeLastSegments(relSegs);
 			}
 
 			boolean useLink = false;
