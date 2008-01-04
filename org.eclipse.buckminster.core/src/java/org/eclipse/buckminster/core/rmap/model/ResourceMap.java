@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -133,6 +134,13 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 	public Map<String,String> getProperties()
 	{
 		return m_properties;
+	}
+
+	public Map<String,String> getProperties(Map<String,String> properties)
+	{
+		if(!m_properties.isEmpty())
+			properties = new MapUnion<String, String>(properties, m_properties);
+		return properties;
 	}
 
 	public Collection<SearchPath> getSearchPaths()

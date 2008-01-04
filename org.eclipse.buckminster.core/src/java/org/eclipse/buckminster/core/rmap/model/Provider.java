@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
-import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -328,12 +327,7 @@ public class Provider extends UUIDKeyed
 	public Map<String,String> getProperties(Map<String,String> properties)
 	{
 		if(m_searchPath != null)
-		{
-			ResourceMap rmap = m_searchPath.getResourceMap();
-			Map<String,String> dfltProps = rmap.getProperties();
-			if(!dfltProps.isEmpty())
-				properties = new MapUnion<String, String>(properties, dfltProps);
-		}
+			properties = m_searchPath.getResourceMap().getProperties(properties);
 		return properties;
 	}
 
