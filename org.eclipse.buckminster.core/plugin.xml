@@ -26,10 +26,6 @@
 		name="%VersionConverters"
 		schema="schema/versionConverters.exsd" />
 	<extension-point
-		id="incrementalBuilders"
-		name="%IncrementalBuilders"
-		schema="schema/incrementalBuilders.exsd" />
-	<extension-point
 		id="parserExtensions"
 		name="%ParserExtensions"
 		schema="schema/parserExtensions.exsd" />
@@ -157,10 +153,6 @@
 		<builder isConfigurable="true">
 			<run class="org.eclipse.buckminster.core.build.ExternalCommandBuilder" />
 		</builder>
-	</extension>
-	<extension point="org.eclipse.buckminster.core.incrementalBuilders">
-		<builder ID="org.eclipse.buckminster.core.ExternalCommandBuilder" />
-		<builder ID="org.eclipse.buckminster.core.locationEmitter" />
 	</extension>
 	<extension point="org.eclipse.buckminster.core.actors">
 		<actor

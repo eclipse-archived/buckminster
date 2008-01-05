@@ -16,10 +16,6 @@
     </builder>
  </extension>
  <extension
-       point="org.eclipse.buckminster.core.incrementalBuilders">
-    <builder ID="org.eclipse.buckminster.jdt.classpathEmitter"/>
- </extension>
- <extension
        point="org.eclipse.buckminster.cmdline.prefmappings">
      <prefmapping
           class="org.eclipse.buckminster.jdt.prefs.ComplianceLevelHandler"

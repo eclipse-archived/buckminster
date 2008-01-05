@@ -91,10 +91,6 @@ public class CorePlugin extends LogAwarePlugin
 
 	public static final String FORCED_ACTIVATIONS_POINT = CORE_NAMESPACE + ".forcedActivations";
 
-	public static final String INCREMENTAL_BUILDERS_POINT = CORE_NAMESPACE + ".incrementalBuilders";
-
-	public static final String MATERIALIZATIONS_FILE = "buckminster.mtr";
-
 	public static final String QUALIFIER_GENERATOR_POINT = CORE_NAMESPACE + ".qualifierGenerators";
 
 	public static final String READER_TYPE_POINT = CORE_NAMESPACE + ".readerTypes";

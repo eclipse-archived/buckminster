@@ -13,9 +13,6 @@
 			<run class="org.eclipse.buckminster.ant.internal.build.AntBuilder" />
 		</builder>
 	</extension>
-	<extension point="org.eclipse.buckminster.core.incrementalBuilders">
-		<builder ID="org.eclipse.buckminster.ant.AntBuilder" />
-	</extension>
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
 		<extraClasspathEntry library="ant_tasks/ant_tasks.jar" />
 	</extension>

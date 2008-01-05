@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-	<extension-point id="incrementalBuilderEditors"
-		name="%IncrementalBuilderEditors"
-		schema="schema/incrementalBuilderEditors.exsd" />
-
 	<extension point="org.eclipse.ui.importWizards">
 		<wizard id="org.eclipse.buckminster.ui.Import"
 			name="%ImportWizardShortDescription" icon="icons/materialize.png"
@@ -41,35 +37,6 @@
 			id="org.eclipse.buckminster.ui.prefs.BuckminsterPreferencePage"
 			name="%PreferencePage.name">
 		</page>
-	</extension>
-	<extension point="org.eclipse.ui.propertyPages">
-		<page
-        class="org.eclipse.buckminster.ui.internal.properties.ProjectPropertyPage"
-        id="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
-        name="%ProjectPropertyPage.name">
-     <enabledWhen>
-        <adapt
-              type="org.eclipse.core.resources.IProject">
-        </adapt>
-     </enabledWhen>
-  </page>
-		<page
-        category="org.eclipse.buckminster.ui.properties.ProjectPropertyPage"
-        class="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
-        id="org.eclipse.buckminster.ui.internal.build.ProjectBuildersPropertyPage"
-        name="%ProjectBuildersPropertyPage.name">
-     <enabledWhen>
-        <adapt
-              type="org.eclipse.core.resources.IProject">
-        </adapt>
-     </enabledWhen>
-  </page>
-	</extension>
-	<extension
-		point="org.eclipse.buckminster.ui.incrementalBuilderEditors">
-		<editor
-			builder="org.eclipse.buckminster.core.ExternalCommandBuilder"
-			class="org.eclipse.buckminster.ui.internal.build.ExternalCommandBuilderEditor" />
 	</extension>
 	<extension point="org.eclipse.buckminster.runtime.logReceivers">
 		<logreceiver
