@@ -7,12 +7,16 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.manifest;
+package org.eclipse.buckminster.manifest;
 
-public interface Constants
+import org.eclipse.buckminster.runtime.BuckminsterException;
+
+public class PathMismatchException extends BuckminsterException
 {
-	public static final String LOCAL_LINESEPARATOR = System.getProperty("line.separator");
-	public static final char CANONICAL_SEPARATOR_CHAR = '/';
-	public static final String CANONICAL_SEPARATOR = String.valueOf(CANONICAL_SEPARATOR_CHAR);
-	public static final String DEFAULT_ALGORITHM = "MD5";
+	private static final long serialVersionUID = 494929038187184807L;
+
+	public PathMismatchException(String root, String path)
+	{
+		super(root + " is not a root for " + path);
+	}
 }

@@ -7,16 +7,14 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.manifest;
+package org.eclipse.buckminster.manifest;
 
-import org.eclipse.buckminster.runtime.BuckminsterException;
-
-public class MissingDataException extends BuckminsterException
+public class PathEntryPair extends LeftRightPair<PathEntry>
 {
-	private static final long serialVersionUID = 154102122403466784L;
+	public static final PathEntryPair[] EMPTY_LIST = new PathEntryPair[0];
 
-	public MissingDataException(String message)
+	public PathEntryPair(PathEntry left, PathEntry right)
 	{
-		super(message);
+		super(left, right);
 	}
 }

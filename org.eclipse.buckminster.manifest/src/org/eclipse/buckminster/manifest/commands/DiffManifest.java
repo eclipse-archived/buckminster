@@ -7,7 +7,7 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.commands;
+package org.eclipse.buckminster.manifest.commands;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,8 +23,8 @@ import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.manifest.Difference;
-import org.eclipse.buckminster.core.manifest.Manifest;
+import org.eclipse.buckminster.manifest.Difference;
+import org.eclipse.buckminster.manifest.Manifest;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 

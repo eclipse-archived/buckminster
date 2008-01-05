@@ -198,20 +198,6 @@
 			class="org.eclipse.buckminster.core.commands.Clean"
 			name="clean"
 			status="NORMAL" />
-		<command
-			addhelpflags="true"
-			class="org.eclipse.buckminster.core.commands.CreateManifest"
-			name="createmanifest"
-			status="NORMAL">
-			<alias name="mkmf" />
-		</command>
-		<command
-			addhelpflags="true"
-			class="org.eclipse.buckminster.core.commands.DiffManifest"
-			name="diffmanifest"
-			status="NORMAL">
-			<alias name="diffmf" />
-		</command>
   <command
         addhelpflags="true"
         class="org.eclipse.buckminster.core.commands.Resolve"

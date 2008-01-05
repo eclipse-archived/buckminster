@@ -7,16 +7,16 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.manifest;
+package org.eclipse.buckminster.manifest;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
-public class PathMismatchException extends BuckminsterException
+public class ChecksumMismatchException extends BuckminsterException
 {
-	private static final long serialVersionUID = 494929038187184807L;
+	private static final long serialVersionUID = -4146695538865611025L;
 
-	public PathMismatchException(String root, String path)
+	public ChecksumMismatchException(Checksum c1, Checksum c2)
 	{
-		super(root + " is not a root for " + path);
+		super("Checksums are not equal : " + c1 + " <=> " + c2);
 	}
 }

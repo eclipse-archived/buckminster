@@ -7,16 +7,12 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.manifest;
+package org.eclipse.buckminster.manifest;
 
-import org.eclipse.buckminster.runtime.BuckminsterException;
-
-public class NonmatchingManifestsException extends BuckminsterException
+public interface Constants
 {
-	private static final long serialVersionUID = -9133903877802074178L;
-
-	public NonmatchingManifestsException(Manifest mf1, Manifest mf2)
-	{
-		super("Manifest " + mf1 + " and " + mf2 + " does not match");
-	}
+	public static final String LOCAL_LINESEPARATOR = System.getProperty("line.separator");
+	public static final char CANONICAL_SEPARATOR_CHAR = '/';
+	public static final String CANONICAL_SEPARATOR = String.valueOf(CANONICAL_SEPARATOR_CHAR);
+	public static final String DEFAULT_ALGORITHM = "MD5";
 }

@@ -7,16 +7,16 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.manifest;
+package org.eclipse.buckminster.manifest;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
-public class ChecksumMismatchException extends BuckminsterException
+public class NonmatchingManifestsException extends BuckminsterException
 {
-	private static final long serialVersionUID = -4146695538865611025L;
+	private static final long serialVersionUID = -9133903877802074178L;
 
-	public ChecksumMismatchException(Checksum c1, Checksum c2)
+	public NonmatchingManifestsException(Manifest mf1, Manifest mf2)
 	{
-		super("Checksums are not equal : " + c1 + " <=> " + c2);
+		super("Manifest " + mf1 + " and " + mf2 + " does not match");
 	}
 }

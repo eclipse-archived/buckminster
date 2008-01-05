@@ -7,7 +7,7 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.core.commands;
+package org.eclipse.buckminster.manifest.commands;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,16 +16,17 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.manifest.Manifest;
+import org.eclipse.buckminster.manifest.Manifest;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class CreateManifest extends WorkspaceCommand
+public class CreateManifest extends AbstractCommand
 {
 	static private final OptionDescriptor ALGORITHM_DESCRIPTOR = new OptionDescriptor('a', "algorithm",
 			OptionValueType.REQUIRED);
@@ -89,7 +90,7 @@ public class CreateManifest extends WorkspaceCommand
 	}
 
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
+	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		if (m_root == null)
 			throw new SimpleErrorExitException("No root given");
