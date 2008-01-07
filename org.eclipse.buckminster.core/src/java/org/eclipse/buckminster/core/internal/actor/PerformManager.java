@@ -131,9 +131,9 @@ public class PerformManager implements IPerformManager
 			//
 			Map<String,String> actionProps = action.getProperties();
 			int mapSize = globalProps.size() + actionProps.size() + userProps.size() + 10;
-			Map<String, String> allProps = new ExpandingProperties(mapSize);
-			allProps.putAll(globalProps);
-			allProps.putAll(actionProps);
+			ExpandingProperties allProps = new ExpandingProperties(mapSize);
+			allProps.putAll(globalProps, true);
+			allProps.putAll(actionProps, true);
 			allProps.putAll(userProps);
 			action.addDynamicProperties(allProps);
 
