@@ -343,6 +343,12 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		IProjectDescription description = null;
 		monitor.beginTask(null, 150);
 		monitor.subTask("Binding " + projName);
+
+		// Some special treatment is needed for projects that are rooted in the workspace location
+		//
+		IPath wsRootPath = wsRoot.getLocation();
+		boolean isRootedInWorkspace = (wsRootPath.segmentCount() == locationPath.segmentCount() - 1 && isSegmentPrefix(wsRootPath, locationPath));
+
 		try
 		{
 			if(project.exists())
@@ -352,16 +358,15 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				// Consider it an error to attempt a bind using a different
 				// project name then the one present in the .project file.
 				//
-				if(!projName.equals(description.getName()))
+				if(isRootedInWorkspace && !projName.equals(description.getName()))
 					throw new ProjectNameMismatchException(projName, description.getName());
 				MonitorUtils.worked(monitor, 50);
 			}
 			else
 			{
-				IPath wsRootPath = wsRoot.getLocation();
-				if(wsRootPath.segmentCount() == locationPath.segmentCount() - 1 && isSegmentPrefix(wsRootPath, locationPath))
+				if(isRootedInWorkspace)
 				{
-					// This is heading for disaster unless the last segement of the locationPath
+					// This is heading for disaster unless the last segment of the locationPath
 					// is in fact equal to the name of the project
 					//
 					String forcedName = locationPath.lastSegment();
@@ -371,7 +376,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 						// Eclipse stipulates that the name *has* to be the same name as the folder
 						// at this point. So we start over here...
 						//
-						createProjectBinding(forcedName, mat, context, MonitorUtils.subMonitor(monitor, 50));
+						createProjectBinding(forcedName, mat, context, MonitorUtils.subMonitor(monitor, 150));
 						return;
 					}
 				}
@@ -386,7 +391,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			project.open(0, MonitorUtils.subMonitor(monitor, 20));
 			Resolution cr = mat.getResolution();
 			IReaderType readerType = cr.getProvider().getReaderType();
-			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 30));
+			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 50));
 			WorkspaceInfo.setComponentIdentifier(project, cr.getCSpec().getComponentIdentifier());
 			MonitorUtils.worked(monitor, 30);
 		}
