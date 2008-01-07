@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.svn;
+package org.eclipse.buckminster.subclipse;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

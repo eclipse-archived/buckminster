@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.buckminster.core.readerTypes">
 		<readerType
-        class="org.eclipse.buckminster.svn.internal.SvnReaderType"
+        class="org.eclipse.buckminster.subclipse.internal.SvnReaderType"
         id="svn"
         teamRepositoryId="org.tigris.subversion.subclipse.core.svnnature"/>
 	</extension>	
