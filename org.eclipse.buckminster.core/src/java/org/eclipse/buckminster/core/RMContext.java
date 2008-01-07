@@ -160,7 +160,7 @@ public class RMContext extends ExpandingProperties
 	public RMContext(Map<String, String> properties, RMContext source)
 	{
 		super(getGlobalPropertyAdditions());
-		putAll(properties);
+		putAll(properties, true);
 		if(source != null)
 		{
 			m_userCache.putAll(source.getUserCache());
