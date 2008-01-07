@@ -147,17 +147,12 @@ public class InvokeAction extends AbstractCSpecAction
 			{
 				public void modifyText(ModifyEvent e)
 				{
-					String txt = m_propertiesFileText.getText().trim();
-					if(txt.length() > 0 && new File(txt).exists())
-					{
-						m_propertiesFile = txt;
+					String txt = TextUtils.notEmptyTrimmedString(m_propertiesFileText.getText().trim());
+					if(txt == null || new File(txt).exists())
 						setErrorMessage(null);
-					}
 					else
-					{
-						m_propertiesFile = null;
 						setErrorMessage("File does not exist");
-					}
+					m_propertiesFile = null;
 				}
 			});
 			if(m_propertiesFile != null)
@@ -302,7 +297,9 @@ public class InvokeAction extends AbstractCSpecAction
 		if(dialog.open() != Window.OK)
 			return;
 
-		if(m_propertiesFile != null)
+		if(m_propertiesFile == null)
+			preferences.setToDefault(LAST_ACTION_PROPERTIES_FILE);
+		else
 			preferences.setValue(LAST_ACTION_PROPERTIES_FILE, m_propertiesFile);
 
 		ActionJob job = new ActionJob(dialog.getSelectedAttribute().getName(), cspec);

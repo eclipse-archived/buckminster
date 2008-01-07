@@ -8,7 +8,6 @@ Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Export-Package: org.eclipse.buckminster.ui,
  org.eclipse.buckminster.ui.actions,
- org.eclipse.buckminster.ui.build,
  org.eclipse.buckminster.ui.editor,
  org.eclipse.buckminster.ui.editor.rmap,
  org.eclipse.buckminster.ui.prefs,
