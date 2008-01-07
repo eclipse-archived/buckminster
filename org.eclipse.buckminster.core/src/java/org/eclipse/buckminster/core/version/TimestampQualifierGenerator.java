@@ -126,14 +126,15 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 
 	// Milliseconds corresponding to approximately 10 years
 	//
-	private static final long SANITY_THRESHOLD = (10 * 365 + 5) * 24 * 60 * 60 * 1000;
+	private static final long SANITY_THRESHOLD = (10L * 365L + 5L) * 24L * 60L * 60L * 1000L;
 
 	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
 	{
 		long now = System.currentTimeMillis();
+		long sanePast = now - SANITY_THRESHOLD;
 		Date dt = mf.parse(str);
 		long tm = dt.getTime();
-		if(tm > now || tm < now - SANITY_THRESHOLD)
+		if(tm > now || tm < sanePast)
 			throw new ParseException("Bogus", 0);
 		return dt;
 	}
