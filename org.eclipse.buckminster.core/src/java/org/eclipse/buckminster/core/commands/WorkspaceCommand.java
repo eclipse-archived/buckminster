@@ -11,6 +11,7 @@ import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.internal.resources.ResourceException;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -45,6 +46,14 @@ public abstract class WorkspaceCommand extends AbstractCommand
 		}
 		finally
 		{
+			try
+			{
+				ws.getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
+			}
+			catch(Throwable e)
+			{
+				Buckminster.getLogger().error("Error while refreshing workspace: " + e.getMessage(), e);
+			}
 			if(wasAuto)
 			{
 				// Restore auto build status
