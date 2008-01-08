@@ -9,18 +9,18 @@ package org.eclipse.buckminster.core.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Dependency;
-import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -46,7 +46,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -58,7 +57,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 {
 	private static MetadataSynchronizer s_default = new MetadataSynchronizer();
 
-	private final HashMap<IPath,String> m_cspecSources = new HashMap<IPath,String>();
+	private final HashMap<String,Pattern> m_cspecSources = new HashMap<String,Pattern>();
 
 	private final HashMap<String,IPath> m_deletedProjectLocations = new HashMap<String,IPath>();
 
@@ -77,18 +76,25 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				if(resource == null)
 					return false;
 
+				IPath relPath = resource.getProjectRelativePath();
 				IPath path = resource.getLocation();
 				if(path == null)
 				{
+					// Project is probably removed. If it is, we should have it in our cache
+					//
 					IProject project = resource.getProject();
 					if(project == null)
 						return true;
 
 					IPath projPath = m_deletedProjectLocations.get(project.getName());
 					if(projPath == null)
+						//
+						// No location and not a remove project. We have no clue
+						// what to do with this.
+						//
 						return false;
 
-					path = projPath.append(resource.getProjectRelativePath());
+					path = projPath.append(relPath);
 				}
 
 				if(!(resource instanceof IFile))
@@ -97,15 +103,20 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				synchronized(MetadataSynchronizer.this)
 				{
 					m_removedEntries.add(path);
+					if(isCSpecSource(relPath))
+					{
+						m_projectsNeedingUpdate.add(resource.getProject());
+						return false;
+					}
+					return true;
 				}
-				return true;
 			}
 
 			if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
 			{
 				IResource resource = delta.getResource();
 				IPath path = resource.getProjectRelativePath();
-				if((path.isEmpty() && resource instanceof IProject) || m_cspecSources.containsKey(path))
+				if((path.isEmpty() && resource instanceof IProject) || isCSpecSource(path))
 				{
 					synchronized(MetadataSynchronizer.this)
 					{
@@ -118,19 +129,71 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 	}
 
+	private boolean isCSpecSource(IPath path)
+	{
+		String pathStr = path.toPortableString();
+		for(Pattern pattern : m_cspecSources.values())
+		{
+			Matcher m = pattern.matcher(pathStr);
+			if(m.matches())
+				return true;
+		}
+		return false;
+	}
+
 	public static MetadataSynchronizer getDefault()
 	{
 		return s_default;
 	}
 
-	public Map<IPath,String> getCSpecSources()
+	public void registerCSpecSource(String path)
 	{
-		return Collections.unmodifiableMap(m_cspecSources);
-	}
+		path = TextUtils.notEmptyTrimmedString(path);
+		if(path == null)
+			return;
 
-	public void registerCSpecSource(IPath path, String componentType)
-	{
-		m_cspecSources.put(path, componentType);
+		StringBuilder bld = new StringBuilder(path.length() + 10);
+		bld.append('^');
+		int top = path.length();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = path.charAt(idx);
+			switch(c)
+			{
+			case '\\':
+				bld.append('/'); // We compare with path.toPortableString()
+				break;
+			case '.':
+			case '{':
+			case '}':
+			case '[':
+			case ']':
+			case '+':
+			case '^':
+			case '$':
+			case '(':
+			case ')':
+			case '|':
+			case '&':
+				bld.append('\\');
+				bld.append(c);
+				break;
+			case '?':
+				bld.append('.');
+				break;
+			case '*':
+				bld.append(".*");
+				break;
+			default:
+				bld.append(c);
+			}
+		}
+		bld.append('$');
+		int flags = 0;
+		if(FileUtils.CASE_INSENSITIVE_FS)
+			flags = Pattern.CASE_INSENSITIVE;
+
+		m_cspecSources.put(path, Pattern.compile(bld.toString(), flags));
 	}
 
 	synchronized IPath getNextRemovedEntry()
@@ -268,7 +331,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 		synchronized(this)
 		{
-			if(m_currentRefreshJob == null && m_projectsNeedingUpdate.size() > 0 || m_removedEntries.size() > 0)
+			if(m_currentRefreshJob == null && (m_projectsNeedingUpdate.size() > 0 || m_removedEntries.size() > 0))
 			{
 				// Start a refresh job.
 				//
@@ -307,11 +370,10 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		// The extension file can exist in every project but we use Buckminster component
 		// type as a placeholder.
 		//
-		s_default.registerCSpecSource(new Path(CorePlugin.CSPECEXT_FILE), IComponentType.BUCKMINSTER);
+		s_default.registerCSpecSource(CorePlugin.CSPECEXT_FILE);
 
 		for(IConfigurationElement elem : elems)
 		{
-			String componentType = elem.getAttribute("id");
 			for(IConfigurationElement metaFile : elem.getChildren("metaFile"))
 			{
 				String metaPath = metaFile.getAttribute("path");
@@ -319,13 +381,13 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					continue;
 				metaPath = metaPath.trim();
 				if(metaPath.length() > 0)
-					s_default.registerCSpecSource(new Path(metaPath), componentType);
+					s_default.registerCSpecSource(metaPath);
 
 				for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
 				{
 					alias = alias.trim();
 					if(alias.length() > 0)
-						s_default.registerCSpecSource(new Path(alias), componentType);
+						s_default.registerCSpecSource(alias);
 				}
 			}
 		}
