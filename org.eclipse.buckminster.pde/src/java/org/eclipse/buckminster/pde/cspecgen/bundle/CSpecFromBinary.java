@@ -62,77 +62,6 @@ public class CSpecFromBinary extends CSpecGenerator
 		m_plugin = plugin;
 	}
 
-	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
-	throws CoreException
-	{
-		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
-		pqBld.setComponent(component);
-		pqBld.setName(name);
-		pqBld.setOptional(optional);
-		group.addPrerequisite(pqBld);
-	}
-
-	private void addImports() throws CoreException
-	{
-		IPluginModelBase model = m_plugin.getPluginModel();
-		Set<String> requiredBundles = getRequiredBundleNames(model.getBundleDescription());
-
-		IPluginImport[] imports = m_plugin.getImports();
-		boolean isFragment = model.isFragmentModel();
-
-		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
-		CSpecBuilder cspec = getCSpec();
-
-		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
-		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
-
-		if(imports == null || imports.length == 0)
-		{
-			// Just add the mandatory system bundle. It's needed since
-			// that bundle defines the execution environments.
-			//
-			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName())))
-			{
-				Dependency sysDep = new Dependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null, null);
-				if(!query.skipComponent(sysDep))
-					cspec.addDependency(sysDep);
-			}
-			return;
-		}
-
-		for(IPluginImport pluginImport : imports)
-		{
-			if(pluginImport.isOptional())
-				//
-				// We don't care about expressing dependencies to
-				// optional plugins when we peruse the runtime
-				// environment.
-				//
-				continue;
-
-			String pluginId = pluginImport.getId();
-			if(pluginId.equals("system.bundle"))
-				continue;
-
-			if(requiredBundles != null && !requiredBundles.contains(pluginId))
-			{
-				// This bundle is imported via package import. We don't treat that
-				// as a bundle dependency
-				//
-				continue;
-			}
-
-			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
-			if(query.skipComponent(dependency) || !addDependency(dependency))
-				continue;
-
-			String component = dependency.getName();
-			addExternalPrerequisite(bundleJars, component, ATTRIBUTE_BUNDLE_JARS, false);
-			if(pluginImport.isReexported())
-				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, false);
-		}
-	}
-
 	/**
 	 * Creates the attributes needed for a prebuilt bundle. The target bundle can
 	 * be represented as a folder or a jar file.
@@ -270,6 +199,83 @@ public class CSpecFromBinary extends CSpecGenerator
 			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 		}
 		monitor.done();
+	}
+
+	@Override
+	protected String getProductOutputFolder(String productId)
+	{
+		return null;
+	}
+
+	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
+	throws CoreException
+	{
+		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
+		pqBld.setComponent(component);
+		pqBld.setName(name);
+		pqBld.setOptional(optional);
+		group.addPrerequisite(pqBld);
+	}
+
+	private void addImports() throws CoreException
+	{
+		IPluginModelBase model = m_plugin.getPluginModel();
+		Set<String> requiredBundles = getRequiredBundleNames(model.getBundleDescription());
+
+		IPluginImport[] imports = m_plugin.getImports();
+		boolean isFragment = model.isFragmentModel();
+
+		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
+		CSpecBuilder cspec = getCSpec();
+
+		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
+		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+
+		if(imports == null || imports.length == 0)
+		{
+			// Just add the mandatory system bundle. It's needed since
+			// that bundle defines the execution environments.
+			//
+			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName())))
+			{
+				Dependency sysDep = new Dependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null, null);
+				if(!query.skipComponent(sysDep))
+					cspec.addDependency(sysDep);
+			}
+			return;
+		}
+
+		for(IPluginImport pluginImport : imports)
+		{
+			if(pluginImport.isOptional())
+				//
+				// We don't care about expressing dependencies to
+				// optional plugins when we peruse the runtime
+				// environment.
+				//
+				continue;
+
+			String pluginId = pluginImport.getId();
+			if(pluginId.equals("system.bundle"))
+				continue;
+
+			if(requiredBundles != null && !requiredBundles.contains(pluginId))
+			{
+				// This bundle is imported via package import. We don't treat that
+				// as a bundle dependency
+				//
+				continue;
+			}
+
+			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			if(query.skipComponent(dependency) || !addDependency(dependency))
+				continue;
+
+			String component = dependency.getName();
+			addExternalPrerequisite(bundleJars, component, ATTRIBUTE_BUNDLE_JARS, false);
+			if(pluginImport.isReexported())
+				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, false);
+		}
 	}
 
 	private String buildArtifactName(boolean asJar)

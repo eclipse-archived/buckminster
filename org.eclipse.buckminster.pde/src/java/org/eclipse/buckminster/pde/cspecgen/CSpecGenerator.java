@@ -192,6 +192,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		monitor.done();
 	}
 
+	protected abstract String getProductOutputFolder(String productId);
+
 	protected Set<String> getRequiredBundleNames(BundleDescription bundleDesc)
 	{
 		HashSet<String> requiredBundles = null;
@@ -274,7 +276,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			createProduct.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			createProduct.setProductAlias(ALIAS_OUTPUT);
 			createProduct.setProductBase(OUTPUT_DIR);
-			createProduct.addProductPath(Path.fromPortableString("eclipse/"));
+			String outputFolder = TextUtils.notEmptyTrimmedString(getProductOutputFolder(product.getId()));
+			if(outputFolder == null)
+				outputFolder = "eclipse";
+			createProduct.addProductPath(Path.fromPortableString(outputFolder).addTrailingSeparator());
 		}
 		finally
 		{

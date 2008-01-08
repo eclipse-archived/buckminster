@@ -177,4 +177,6 @@ public interface IPDEConstants
 	static final String TASK_UNZIP = "unzip";
 
 	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
+	
+	static final String TOP_FOLDER_SUFFIX = ".topfolder";
 }

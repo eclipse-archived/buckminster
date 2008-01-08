@@ -502,7 +502,20 @@ public class CSpecFromSource extends CSpecGenerator
 				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, optional);
 		}
 	}
-	
+
+	@Override
+	protected String getProductOutputFolder(String productId)
+	{
+		IBuildEntry entry = m_buildModel.getBuild().getEntry(productId + TOP_FOLDER_SUFFIX);
+		if(entry != null)
+		{
+			String[] tokens = entry.getTokens();
+			if(tokens.length == 1)
+				return tokens[0];
+		}
+		return null;
+	}
+
 	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
 			throws CoreException
 	{

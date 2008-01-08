@@ -188,6 +188,14 @@ public class CSpecFromSource extends CSpecGenerator
 		addProducts(monitor);
 	}
 
+	@Override
+	protected String getProductOutputFolder(String productId)
+	{
+		return m_buildProperties == null
+			? null
+			: m_buildProperties.get(productId + TOP_FOLDER_SUFFIX);
+	}
+
 	void addFeatures() throws CoreException
 	{
 		IFeatureChild[] features = m_feature.getIncludedFeatures();
