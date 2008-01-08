@@ -13,10 +13,10 @@ package org.eclipse.buckminster.core.materializer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -180,7 +180,7 @@ public class MaterializationJob extends Job
 		if(resPerMat.size() == 0)
 			return null;
 
-		final Queue<MaterializerJob> allJobs = new LinkedList<MaterializerJob>();
+		final Queue<MaterializerJob> allJobs = new ConcurrentLinkedQueue<MaterializerJob>();
 		for(Map.Entry<String, List<Resolution>> entry : resPerMat.entrySet())
 		{
 			IMaterializer materializer = corePlugin.getMaterializer(entry.getKey());

@@ -69,11 +69,7 @@ public class Logger
 				default:
 					out = System.out;
 				}
-				synchronized(out)
-				{
-					out.println(status.getMessage());
-					out.flush();
-				}
+				Logger.printStatus(status, out);
 			}
 		}
 	};
@@ -240,6 +236,52 @@ public class Logger
 	public static PrintStream getErrStream()
 	{
 		return s_errStream;
+	}
+
+	public static void printStatus(IStatus status, PrintStream out)
+	{
+		synchronized(out)
+		{
+			printStatus(status, out, 0);
+			out.flush();
+		}
+	}
+
+	private static void printStatus(IStatus status, PrintStream out, int indent)
+	{
+		boolean hasSeverityPrefix = false;
+		String msg = status.getMessage();
+		if(msg != null)
+			hasSeverityPrefix = msg.startsWith("ERROR") || msg.startsWith("WARN") || msg.startsWith("INFO");
+
+		for(int idx = 0; idx < indent; ++idx)
+			out.print(' ');
+
+		if(!hasSeverityPrefix)
+		{
+			switch(status.getSeverity())
+			{
+			case IStatus.CANCEL:
+				return;
+			case IStatus.ERROR:
+				out.print("ERROR: ");
+				break;
+			case IStatus.INFO:
+				out.print("INFO:  ");
+				break;
+			case IStatus.WARNING:
+				out.print("WARN:  ");
+			}
+		}
+
+		out.println(msg);
+		Throwable t = status.getException();
+		if(t != null)
+			t.printStackTrace(out);
+
+		indent += 2;
+		for(IStatus child : status.getChildren())
+			printStatus(child, out, indent);
 	}
 
 	private static PrintStream getLoggerStream(boolean errorStream)
