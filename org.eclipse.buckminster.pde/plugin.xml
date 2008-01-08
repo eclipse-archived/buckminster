@@ -27,6 +27,10 @@
 			<metaFile
          optional="true"
          path="build.properties"/>
+   <metaFile
+         optional="true"
+         path="*.product">
+   </metaFile>
 		</componentType>
 		<componentType
 			class="org.eclipse.buckminster.pde.internal.EclipseFeatureType"
@@ -44,6 +48,10 @@
 			<metaFile
          optional="true"
          path="build.properties"/>
+   <metaFile
+         optional="true"
+         path="*.product">
+   </metaFile>
 		</componentType>
 	</extension>
  <extension
