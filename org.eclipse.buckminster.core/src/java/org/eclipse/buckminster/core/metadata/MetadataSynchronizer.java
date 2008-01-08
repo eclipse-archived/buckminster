@@ -342,8 +342,14 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	                public void done(IJobChangeEvent ev)
 	                {
 						// I'm about to terminate. First make absolutely sure that there's nothing
-						// left todo
+						// left to do
 						//
+						if(s_default == null)
+							//
+							// We're shutting down
+							//
+							return;
+
 						synchronized(MetadataSynchronizer.this)
 						{
 							if(m_removedEntries.isEmpty() && m_projectsNeedingUpdate.isEmpty())
