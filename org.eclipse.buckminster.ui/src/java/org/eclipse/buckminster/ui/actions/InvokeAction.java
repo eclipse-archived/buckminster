@@ -152,7 +152,7 @@ public class InvokeAction extends AbstractCSpecAction
 						setErrorMessage(null);
 					else
 						setErrorMessage("File does not exist");
-					m_propertiesFile = null;
+					m_propertiesFile = txt;
 				}
 			});
 			if(m_propertiesFile != null)
