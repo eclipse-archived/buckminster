@@ -200,10 +200,11 @@ public class URLCatalogReaderType extends CatalogReaderType
 				//
 				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
 				Scanner scanner = new Scanner(pageSource);
+				URL parent = URLUtils.appendTrailingSlash(urlToHTML);
 				while(scanner.findWithinHorizon(s_htmlPattern, 0) != null)
 				{
 					MatchResult mr = scanner.match();
-					links.add(new URL(urlToHTML, mr.group(1)));
+					links.add(new URL(parent, mr.group(1)));
 				}
 			}
 		}
