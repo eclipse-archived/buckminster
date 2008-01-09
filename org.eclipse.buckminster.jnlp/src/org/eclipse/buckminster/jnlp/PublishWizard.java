@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.graphics.Image;
 import org.xml.sax.SAXException;
 
@@ -33,10 +32,6 @@ import org.xml.sax.SAXException;
  */
 public class PublishWizard extends AdvancedWizard
 {
-	public static final String LOGIN_STEP = "LoginStep";
-
-	public static final String PUBLISH_STEP = "PublishStep";
-
 	private static final String PUBLICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.publication";
 	
 	private static final String ATTRIBUTE_CLASS = "class";
@@ -45,11 +40,22 @@ public class PublishWizard extends AdvancedWizard
 	
 	private final InstallWizard m_installWizard;
 	
+	private IPublisher m_publisher;
+	
 	public PublishWizard(InstallWizard installWizard)
 	{
 		setNeedsProgressMonitor(true);
 
 		m_installWizard = installWizard;
+		
+		try
+		{
+			m_publisher = ((IPublisher)installWizard.getAuthenticator()).createDuplicatePublisher(true);
+		}
+		catch(Throwable e)
+		{
+			throw new JNLPException("Cannot create publisher", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
+		}
 	}
 	
 	protected IPublisher createPublisher(String basePathURL)
@@ -79,14 +85,15 @@ public class PublishWizard extends AdvancedWizard
 	@Override
 	protected void addAdvancedPages()
 	{
-		addAdvancedPage(new PublishLoginPage(getPublisher().getProvider()));
+		if(!isLoggedIn())
+			addAdvancedPage(new PublishLoginPage(getServiceProvider()));
 		addAdvancedPage(new PublishSpacePage());
 	}
 
 	@Override
 	public boolean performFinish()
 	{
-		PublishSpacePage spacePage = (PublishSpacePage)getPage(PUBLISH_STEP);
+		PublishSpacePage spacePage = (PublishSpacePage)getPage(STEP_PUBLISH);
 		final String selectedSpace = spacePage.getSelectedSpace();
 		final String artifactName = spacePage.getArtifactName();
 		
@@ -196,9 +203,55 @@ public class PublishWizard extends AdvancedWizard
 		return m_installWizard.getMaterializationSpecBuilder();
 	}
 	
+	String getServiceProvider()
+	{
+		return m_installWizard.getServiceProvider();
+	}
+	
 	IPublisher getPublisher()
 	{
-		return (IPublisher)m_installWizard.getAuthenticator();
+		return m_publisher;
+	}
+	
+	void setPublisher(IPublisher publisher)
+	{
+		m_publisher = publisher;
+	}
+	
+	boolean isLoggedIn()
+	{
+		boolean isLoggedIn = false;
+		
+		try
+		{
+			isLoggedIn = m_publisher.isLoggedIn();
+		}
+		catch(Exception e1)
+		{
+			// nothing isLoggedIn == false
+		}
+		
+		return isLoggedIn;
+	}
+		
+	String getLoginKey()
+	{
+		return m_installWizard.getAuthenticatorLoginKey();
+	}
+	
+	void removeLoginKey()
+	{
+		m_installWizard.removeAuthenticatorLoginKey();
+	}
+	
+	String getLoginKeyUserName()
+	{
+		return m_installWizard.getAuthenticatorLoginKeyUserName();
+	}
+	
+	String getCurrentUserName()
+	{
+		return getPublisher().getCurrenlyLoggedUserName();
 	}
 	
 	String getPreferredUserName()
@@ -219,17 +272,5 @@ public class PublishWizard extends AdvancedWizard
 	void setPreferredPassword(String password)
 	{
 		m_installWizard.setAuthenticatorPassword(password);
-	}
-	
-	IWizardPage getPageToOpen()
-	{		
-		try
-		{
-			return getPublisher().isLoggedIn() ? getPage(PUBLISH_STEP) : getPage(LOGIN_STEP) ;
-		}
-		catch(Exception e)
-		{
-			return getPage(LOGIN_STEP);
-		}
 	}
 }

@@ -50,15 +50,25 @@ public class AdvancedWizardDialog extends WizardDialog
 
     @Override
 	public void showPage(IWizardPage page) {
-        if (page == null || page == getCurrentPage()) {
+        if (page == null)
             return;
-        }
         
         ((AdvancedWizardPage)page).beforeDisplaySetup();
-        
+               
+        if(page == getCurrentPage())
+            return;
+
         super.showPage(page);
     }
 
+	@Override
+	public int open()
+	{
+		// need to call showPage to call beforeDisplaySetup() method of the starting page
+		showPage(getWizard().getStartingPage());
+		return super.open();
+	}
+	
 	@Override
 	protected void nextPressed()
 	{

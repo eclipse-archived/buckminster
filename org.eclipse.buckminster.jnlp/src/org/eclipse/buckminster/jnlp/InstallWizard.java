@@ -8,36 +8,7 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_MSPEC;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_UNKNOWN;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_UNKNOWN_TEXT;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_404_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_AUTHENTICATOR_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_WINDOW_TITLE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZERS;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_TYPE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_BASE_PATH_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_MATERIALIZATION_IMAGE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -131,6 +102,16 @@ public class InstallWizard extends AdvancedWizard
 	
 	private String m_basePathURL;
 	
+	private String m_homePageURL;
+	
+	private String m_serviceProvider;
+	
+	private String m_loginKey;
+	
+	private String m_loginKeyUserName;
+	
+	private boolean m_loginPageRequested = false;
+	
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
 	
 	private final List<MaterializationNodeBuilder> m_originalNodeBuilders = new ArrayList<MaterializationNodeBuilder>();
@@ -181,6 +162,19 @@ public class InstallWizard extends AdvancedWizard
 			{
 				authenticator = (IAuthenticator) elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
 				authenticator.initialize(m_basePathURL);
+				
+				if(m_loginKey != null)
+				{
+					int result = authenticator.login(m_loginKey);
+					
+					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
+						m_loginKey = null;
+					
+					if(result == IAuthenticator.LOGIN_OK)
+						m_loginKeyUserName = authenticator.getCurrenlyLoggedUserName();
+					else
+						m_loginKeyUserName = null;
+				}
 			}
 			catch(Throwable e)
 			{
@@ -213,6 +207,11 @@ public class InstallWizard extends AdvancedWizard
 			learnMores.add(new LearnMoreItem("Create your own virtual distribution", m_learnMoreURL));
 		}
 		
+		if(m_homePageURL != null)
+		{
+			learnMores.add(new LearnMoreItem("Search your components at " + m_serviceProvider, m_homePageURL));
+		}
+		
 		// Learn more items from extension
 		IExtensionRegistry er = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = er.getConfigurationElementsFor(LEARNMORE_EXTPOINT);
@@ -232,7 +231,7 @@ public class InstallWizard extends AdvancedWizard
 
 		if(!m_problemInProperties)
 		{
-			addAdvancedPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : m_authenticator.getProvider()));
+			addAdvancedPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : getServiceProvider()));
 			addAdvancedPage(new SimpleDownloadPage());
 			addAdvancedPage(new SimpleAdvancedPage());
 			addAdvancedPage(new OperationPage());
@@ -275,7 +274,7 @@ public class InstallWizard extends AdvancedWizard
 		{
 			// disable progress provider
 			Job.getJobManager().setProgressProvider(null);
-			OperationPage operationPage = (OperationPage)getPage("OperationStep");
+			OperationPage operationPage = (OperationPage)getPage(MaterializationConstants.STEP_OPERATION);
 			if(operationPage != null)
 				((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
 
@@ -283,7 +282,7 @@ public class InstallWizard extends AdvancedWizard
 			{
 				try
 				{
-					m_authenticator.logout();
+					m_authenticator.releaseConnection();
 				}
 				catch(Throwable e)
 				{
@@ -320,7 +319,7 @@ public class InstallWizard extends AdvancedWizard
 				m_builder.setURL(m_cachedBOMURL);
 			}
 			
-			OperationPage operationPage = (OperationPage)getPage("OperationStep");
+			OperationPage operationPage = (OperationPage)getPage(MaterializationConstants.STEP_OPERATION);
 			getContainer().showPage(operationPage);
 			IJobManager jobManager = Job.getJobManager();
 			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(true);
@@ -328,7 +327,7 @@ public class InstallWizard extends AdvancedWizard
 			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
 			jobManager.setProgressProvider(null);
 			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
-			getContainer().showPage(getPage("DoneStep"));
+			getContainer().showPage(getPage(MaterializationConstants.STEP_DONE));
 		}
 		catch(InterruptedException e)
 		{
@@ -414,7 +413,7 @@ public class InstallWizard extends AdvancedWizard
 	{
 		return m_artifactName;
 	}
-
+	
 	@Override
 	public String getWindowTitle()
 	{
@@ -455,6 +454,32 @@ public class InstallWizard extends AdvancedWizard
 		return m_loginRequired;
 	}
 	
+	boolean isLoggedIn()
+	{
+		boolean isLoggedIn = false;
+		
+		try
+		{
+			isLoggedIn = m_authenticator.isLoggedIn();
+		}
+		catch(Exception e1)
+		{
+			// nothing isLoggedIn == false
+		}
+		
+		return isLoggedIn;
+	}
+	
+	boolean isLoginPageRequested()
+	{
+		return m_loginPageRequested;
+	}
+	
+	void setLoginPageRequested(boolean loginPageRequested)
+	{
+		m_loginPageRequested = loginPageRequested;
+	}
+	
 	String getLearnMoreURL()
 	{
 		return m_learnMoreURL;
@@ -465,6 +490,16 @@ public class InstallWizard extends AdvancedWizard
 		return m_errorURL;
 	}
 	
+	String getServiceProviderHomePageURL()
+	{
+		return m_homePageURL;
+	}
+	
+	String getServiceProvider()
+	{
+		return m_serviceProvider;
+	}
+	
 	String[] getMaterializers()
 	{
 		return MATERIALIZERS;
@@ -473,6 +508,22 @@ public class InstallWizard extends AdvancedWizard
 	IAuthenticator getAuthenticator()
 	{
 		return m_authenticator;
+	}
+	
+	String getAuthenticatorLoginKey()
+	{
+		return m_loginKey;
+	}
+	
+	void removeAuthenticatorLoginKey()
+	{
+		m_loginKey = null;
+		m_loginKeyUserName = null;
+	}
+	
+	String getAuthenticatorLoginKeyUserName()
+	{
+		return m_loginKeyUserName;
 	}
 	
 	String getAuthenticatorUserName()
@@ -510,17 +561,19 @@ public class InstallWizard extends AdvancedWizard
 		return m_cachedBOMURL != null;
 	}
 	
+	void resetMaterializerInitialization()
+	{
+		m_cachedBOMURL = null;
+	}
+	
 	void initializeMaterializer()
 	{
 		initMSPEC();
-		getBOM();
+		initBOM();
 	}
 	
 	private void initMSPEC()
 	{
-		if(m_mspecURL == null)
-			return;
-		
 		try
 		{
 			HttpClient client;
@@ -588,95 +641,100 @@ public class InstallWizard extends AdvancedWizard
 		{
 			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
 		}
-		
-		m_mspecURL = null;
 	}
 	
+	private void initBOM()
+	{
+		m_cachedBOM = null;
+		
+		try
+		{
+			HttpClient client;
+			
+			if(m_authenticator != null)
+				client = m_authenticator.getHttpClient();
+			else
+				client = new HttpClient();
+			
+			URL bomURL = getMaterializationSpecBuilder().getURL();
+
+			HttpMethod method = null;
+			InputStream stream = null;
+			BillOfMaterials bom = null;
+			
+			try
+			{
+				method = new GetMethod(bomURL.toURI().toString());
+
+				int status = client.executeMethod(method);
+				MaterializationUtils.checkConnection(status, bomURL.toString());
+
+				stream = method.getResponseBodyAsStream();
+
+				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory()
+						.getBillOfMaterialsParser(true);
+
+				bom = parser.parse(bomURL.toString(), stream);
+			}
+			catch(URISyntaxException e)
+			{
+				throw new JNLPException("Cannot read materialization specification",
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+			}
+			finally
+			{
+				IOUtils.close(stream);
+				
+				if(method != null)
+					method.releaseConnection();
+			}
+
+			m_cachedBOM = bom;
+		}
+		catch(SAXException e)
+		{
+			throw new JNLPException(
+					"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
+					ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+		}
+		catch(FileNotFoundException e)
+		{
+			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_404_EXCEPTION,
+					new BuckminsterException(getMaterializationSpecBuilder().getURL() + " cannot be found"));
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+		}
+		
+		File cachedBOMFile;
+		try
+		{
+			cachedBOMFile = File.createTempFile("jnlp", ".bom");
+			cachedBOMFile.deleteOnExit();
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
+		}
+		
+		saveBOM(m_cachedBOM, cachedBOMFile);
+		
+		try
+		{
+			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+		}
+	}
+		
 	BillOfMaterials getBOM()
 	{
 		if(m_cachedBOM == null)
 		{
-			try
-			{
-				HttpClient client;
-				
-				if(m_authenticator != null)
-					client = m_authenticator.getHttpClient();
-				else
-					client = new HttpClient();
-				
-				URL bomURL = getMaterializationSpecBuilder().getURL();
-
-				HttpMethod method = null;
-				InputStream stream = null;
-				BillOfMaterials bom = null;
-				
-				try
-				{
-					method = new GetMethod(bomURL.toURI().toString());
-
-					int status = client.executeMethod(method);
-					MaterializationUtils.checkConnection(status, bomURL.toString());
-
-					stream = method.getResponseBodyAsStream();
-
-					IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory()
-							.getBillOfMaterialsParser(true);
-
-					bom = parser.parse(bomURL.toString(), stream);
-				}
-				catch(URISyntaxException e)
-				{
-					throw new JNLPException("Cannot read materialization specification",
-							ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-				}
-				finally
-				{
-					IOUtils.close(stream);
-					
-					if(method != null)
-						method.releaseConnection();
-				}
-
-				m_cachedBOM = bom;
-			}
-			catch(SAXException e)
-			{
-				throw new JNLPException(
-						"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
-						ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
-			}
-			catch(FileNotFoundException e)
-			{
-				throw new JNLPException("Cannot read artifact specification", ERROR_CODE_404_EXCEPTION,
-						new BuckminsterException(getMaterializationSpecBuilder().getURL() + " cannot be found"));
-			}
-			catch(IOException e)
-			{
-				throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-			}
-			
-			File cachedBOMFile;
-			try
-			{
-				cachedBOMFile = File.createTempFile("jnlp", ".bom");
-				cachedBOMFile.deleteOnExit();
-			}
-			catch(IOException e)
-			{
-				throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
-			}
-			
-			saveBOM(m_cachedBOM, cachedBOMFile);
-			
-			try
-			{
-				m_cachedBOMURL = cachedBOMFile.toURI().toURL();
-			}
-			catch(MalformedURLException e)
-			{
-				throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-			}
+			initBOM();
 		}
 	
 		return m_cachedBOM;
@@ -870,8 +928,10 @@ public class InstallWizard extends AdvancedWizard
 
 		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
 		
-		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
+		m_homePageURL = properties.get(PROP_HOME_PAGE_URL);
 		
+		m_serviceProvider = properties.get(PROP_SERVICE_PROVIDER);
+
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;
@@ -909,6 +969,8 @@ public class InstallWizard extends AdvancedWizard
 				}
 			});
 		}
+		
+		m_loginKey = properties.get(PROP_LOGIN_KEY);
 	}		
 
 	/**

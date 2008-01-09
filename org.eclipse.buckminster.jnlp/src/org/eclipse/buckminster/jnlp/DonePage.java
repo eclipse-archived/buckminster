@@ -47,7 +47,7 @@ public class DonePage extends InstallWizardPage
 	
 	private static final int HORIZONTAL_INDENT = 50;
 	
-	private static final int BUTTON_WIDTH = 100;
+	//private static final int BUTTON_WIDTH = 100;
 	
 	//private static final String[] BOM_FILTER_NAMES = {"Bill Of Materials (*.bom)"};
 
@@ -65,7 +65,7 @@ public class DonePage extends InstallWizardPage
 	
 	protected DonePage()
 	{
-		super("DoneStep", "Materialization Completed", "Close the materialization dialog.", null);
+		super(MaterializationConstants.STEP_DONE, "Materialization Completed", "Close the materialization dialog.", null);
 		setPreviousPage(this);
 	}
 
@@ -230,9 +230,8 @@ public class DonePage extends InstallWizardPage
 				dialog.create();
 				
 				final Shell shell = dialog.getShell();
-				shell.setSize(Math.max(PUBLISH_WIZARD_WIDTH, shell.getSize().x), PUBLISH_WIZARD_HEIGHT);
+				shell.setSize(Math.max(PUBLISH_WIZARD_WIDTH, shell.getSize().x), Math.max(PUBLISH_WIZARD_HEIGHT, shell.getSize().y));
 				
-				dialog.showPage(publishWizard.getPageToOpen());
 				dialog.open();
 			}
 		});

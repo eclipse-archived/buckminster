@@ -14,6 +14,22 @@ package org.eclipse.buckminster.jnlp;
  */
 public interface MaterializationConstants
 {
+	public static final String STEP_START = "StartStep";
+	
+	public static final String STEP_LOGIN = "LoginStep";
+	
+	public static final String STEP_DOWNLOAD_LOCATION = "SimpleDownloadLocationStep";
+	
+	public static final String STEP_ADVANCED_SETTINGS = "SimpleAdvancedSettingsStep";
+	
+	public static final String STEP_OPERATION = "OperationStep";
+	
+	public static final String STEP_DONE = "DoneStep";
+	
+	public static final String STEP_PUBLISH_LOGIN = "LoginStep";
+
+	public static final String STEP_PUBLISH = "PublishStep";
+
 	public static final String PROP_PROPVERSION = "propVersion";
 
 	public static final String PROP_PROFILE_IMAGE_URL = "profileImageURL";
@@ -47,6 +63,12 @@ public interface MaterializationConstants
 	public static final String PROP_LOGIN_REQUIRED = "loginRequired";
 
 	public static final String PROP_LEARN_MORE_URL = "learnMoreURL";
+
+	public static final String PROP_HOME_PAGE_URL = "homePageURL";
+
+	public static final String PROP_SERVICE_PROVIDER = "serviceProvider";
+
+	public static final String PROP_LOGIN_KEY = "loginKey";
 
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
 

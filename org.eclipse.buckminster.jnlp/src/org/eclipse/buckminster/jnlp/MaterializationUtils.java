@@ -11,6 +11,8 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
@@ -22,6 +24,22 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
  */
 public class MaterializationUtils
 {
+	private static final Map<String,String> s_humanReadableComponentTypes;
+	
+	// needs to be synchronized with the server side, new component types need to be added
+	static
+	{
+		s_humanReadableComponentTypes = new HashMap<String,String>();
+		s_humanReadableComponentTypes.put("unknown", "None");
+		s_humanReadableComponentTypes.put("cssite", "Cloudsmith");
+		s_humanReadableComponentTypes.put("osgi.bundle", "OSGi Bundle");
+		s_humanReadableComponentTypes.put("eclipse.feature", "Eclipse Feature");
+		s_humanReadableComponentTypes.put("maven", "Maven");
+		s_humanReadableComponentTypes.put("site.feature", "Eclipse Update Manager");
+		s_humanReadableComponentTypes.put("buckminster", "Buckminster");
+		s_humanReadableComponentTypes.put("jar", "Java Archive");
+		s_humanReadableComponentTypes.put("bom", "Bill of Materials");
+	}
 
 	/**
 	 * Checks HTTP response code and throws JNLPException if there is a problem
@@ -81,10 +99,30 @@ public class MaterializationUtils
 			throw new JNLPException("Login name already exists - choose a different one", null);
 		case IAuthenticator.REGISTER_LOGIN_TOO_SHORT:
 			throw new JNLPException("Login is too short - length must be between 3 and 25", null);
+		case IAuthenticator.REGISTER_LOGIN_CONTAINS_AT:
+			throw new JNLPException("Login name contains '@'", null);
+		case IAuthenticator.REGISTER_LOGIN_INVALID:
+			throw new JNLPException("Login name is invalid", null);
 		case IAuthenticator.REGISTER_PASSWORD_TOO_SHORT:
 			throw new JNLPException("Password is too short - length must be between 4 and 25", null);
 		case IAuthenticator.REGISTER_EMAIL_FORMAT_ERROR:
 			throw new JNLPException("Email does not have standard format", null);
+		case IAuthenticator.REGISTER_EMAIL_ALREADY_VALIDATED:
+			throw new JNLPException("Email is already verified for another user", null);	
 		}
+	}
+	
+	/**
+	 * Gets human readable component type
+	 * 
+	 * @param componentType componentType ID
+	 * @return human readable component type
+	 */
+	public static String getHumanReadableComponentType(String componentType)
+	{
+		String hrType = s_humanReadableComponentTypes.get(componentType);
+		if(hrType == null)
+			hrType = componentType;
+		return hrType;
 	}
 }

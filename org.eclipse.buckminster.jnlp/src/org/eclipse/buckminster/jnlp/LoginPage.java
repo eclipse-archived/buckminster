@@ -28,13 +28,21 @@ public class LoginPage extends InstallWizardPage
 
 	protected LoginPage(String provider)
 	{
-		super("LoginStep", "Login", "Materialization requires login to " + provider + ".", null);
-		
-		m_login = new LoginPanel();
+		super(MaterializationConstants.STEP_LOGIN, "Login", "Materialization requires login to " + provider + ".", null);
 	}
 
-	public void createControl(Composite parent)
+	@Override
+	protected void beforeDisplaySetup()
 	{
+		getInstallWizard().setLoginPageRequested(true);
+		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
+		setPageComplete(getCompleteLoginFields());
+	}
+	
+	public void createControl(Composite parent)
+	{		
+		m_login = new LoginPanel(getInstallWizard().getAuthenticatorLoginKeyUserName());
+
 		setPageComplete(false);
 
 		ModifyListener fieldsListener = new ModifyListener()
@@ -66,21 +74,32 @@ public class LoginPage extends InstallWizardPage
 	}
 
 	@Override
+    public boolean isPageComplete()
+	{
+        if(isCurrentPage())
+        {
+        	return super.isPageComplete();
+		}
+
+        return !getInstallWizard().isLoginRequired() || getInstallWizard().isLoggedIn();
+    }
+
+	@Override
 	public void setPageComplete(boolean complete)
 	{
 		super.setPageComplete(!getInstallWizard().isLoginRequired() || complete);
 	}
-
-	@Override
+	
+    @Override
 	public boolean performPageCommit()
 	{
-		if(getInstallWizard().isLoginRequired())
+		if(isCurrentPage())
 		{
 
 			IAuthenticator authenticator;
 
-			String userName;
-			String password;
+			String userName = null;
+			String password = null;
 
 			try
 			{
@@ -91,30 +110,34 @@ public class LoginPage extends InstallWizardPage
 					throw new JNLPException("Authenticator is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 				}
 
-				userName = m_login.getLogin();
-				password = m_login.getPassword();
-
-				if(!m_login.isAlreadyUser())
+				if(m_login.isCurrentUser())
 				{
-					int result = authenticator.register(userName, password, m_login.getEmail());
+					int result = authenticator.relogin(getInstallWizard().getAuthenticatorLoginKey());
 
-					if(result == IAuthenticator.REGISTER_LOGIN_EXISTS)
+					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
+						getInstallWizard().removeAuthenticatorLoginKey();
+
+					if(result != IAuthenticator.LOGIN_OK)
+						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
+				}
+				else
+				{					
+					userName = m_login.getLogin();
+					password = m_login.getPassword();
+	
+					if(!m_login.isAlreadyUser())
 					{
-						// try to login using this login and password
-						if(authenticator.login(userName, password) == IAuthenticator.LOGIN_OK)
-						{
-							return true;
-						}
+						int result = authenticator.register(userName, password, m_login.getEmail());
+	
+						MaterializationUtils.checkRegistrationResponse(result);
 					}
-
-					MaterializationUtils.checkRegistrationResponse(result);
+	
+					if(authenticator.relogin(userName, password) != IAuthenticator.LOGIN_OK)
+					{
+						throw new JNLPException("Cannot login - check username and password and try again", null);
+					}
 				}
-
-				if(authenticator.login(userName, password) != IAuthenticator.LOGIN_OK)
-				{
-					throw new JNLPException("Cannot login - check username and password and try again", null);
-				}
-
+				
 				if(!authenticator.isLoggedIn())
 				{
 					throw new JNLPException("Problem with the remote server - try to login later", null);
@@ -124,6 +147,13 @@ public class LoginPage extends InstallWizardPage
 			{
 				setErrorMessage(e.getMessage());
 				return false;
+			}
+			
+			if(
+				((userName == null) != (getInstallWizard().getAuthenticatorUserName() == null)) ||
+				userName != null && password != null && !(userName.equals(getInstallWizard().getAuthenticatorUserName()) && password.equals(getInstallWizard().getAuthenticatorPassword())))
+			{
+				getInstallWizard().resetMaterializerInitialization();
 			}
 			
 			getInstallWizard().setAuthenticatorUserName(userName);

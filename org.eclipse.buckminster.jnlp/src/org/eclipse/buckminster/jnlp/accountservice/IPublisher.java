@@ -24,6 +24,16 @@ public interface IPublisher extends IAuthenticator
 	public static final int ERROR_SPACE_ACCESS_DENIED = -4;
 	public static final int ERROR_ARTIFACT_ALREADY_EXISTS = -5;
 
+	/**
+	 * Creates a new publisher, that is connected to the same server as the original publisher
+	 * 
+	 * @param login true - the new publisher will be logged in using the same credentials as the original one,
+	 * false - the new publisher will be only initialized
+	 * @return
+	 * @throws Exception
+	 */
+	public IPublisher createDuplicatePublisher(boolean login) throws Exception;
+	
 	public List<String> getSpaceNames() throws Exception;
 	
 	public int publish(String spaceName, String artifactName, String xmlData, boolean replaceExisting) throws Exception;

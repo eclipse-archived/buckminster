@@ -8,46 +8,53 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_PUBLISHER_EXCEPTION;
 
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedTitleAreaDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author Karel Brezina
+ * @author kaja
  *
  */
-public class PublishLoginPage extends PublishWizardPage
+public class LoginDialog extends AdvancedTitleAreaDialog
 {
+	private PublishWizard m_publishWizard;
+	
 	private LoginPanel m_login;
-
-	protected PublishLoginPage(String provider)
+	
+	public LoginDialog(Shell parentShell, PublishWizard publishWizard)
 	{
-		super(MaterializationConstants.STEP_PUBLISH_LOGIN, "Login", "Publishing requires login to " + provider + ".", null);
+		super(
+				parentShell, publishWizard.getWindowImage(), publishWizard.getWindowTitle() + " - Login Dialog",
+				publishWizard.getWizardImage(), "Login", "Publishing requires login to " + publishWizard.getServiceProvider() + ".",
+				publishWizard.getHelpURL());
+		m_publishWizard = publishWizard;
 	}
 
 	@Override
-	protected void beforeDisplaySetup()
+	protected Control createDialogArea(Composite parent)
 	{
-		m_login.setCurrentUserVisible(getPublishWizard().getLoginKey() != null);
-		setPageComplete(getCompleteLoginFields());
-	}
-	
-	public void createControl(Composite parent)
-	{		
-		m_login = new LoginPanel(getPublishWizard().getLoginKeyUserName(), getPublishWizard().getPreferredUserName(), getPublishWizard().getPreferredPassword());
+		m_login = new LoginPanel(m_publishWizard.getLoginKeyUserName(), m_publishWizard.getPreferredUserName(), m_publishWizard.getPreferredPassword());
 
 		ModifyListener fieldsListener = new ModifyListener()
 		{
 			public void modifyText(ModifyEvent e)
 			{
-				setPageComplete(getCompleteLoginFields());
+				enableDisableOkButton();
 			}
 		};
 
@@ -56,23 +63,20 @@ public class PublishLoginPage extends PublishWizardPage
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				setPageComplete(getCompleteLoginFields());
+				enableDisableOkButton();
 			}
 		};
-				
-		setControl(m_login.createControl(parent, fieldsListener, fieldsSwitchListener));
+
+		Composite composite = new Composite((Composite)super.createDialogArea(parent), SWT.NONE);
+		composite.setLayout(new GridLayout(1, false));
+		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		Control control = m_login.createControl(composite, fieldsListener, fieldsSwitchListener);
+		
+		m_login.setCurrentUserVisible(m_publishWizard.getLoginKey() != null);
+
+		return control;
 	}
-
-	@Override
-    public boolean isPageComplete()
-	{
-        if(isCurrentPage())
-        {
-        	return super.isPageComplete();
-		}
-
-        return getPublishWizard().isLoggedIn();
-    }
 
 	private boolean getCompleteLoginFields()
 	{
@@ -83,29 +87,38 @@ public class PublishLoginPage extends PublishWizardPage
 	}
 
 	@Override
-	public boolean performPageCommit()
+	protected void enableDisableOkButton()
 	{
+		boolean enable = getCompleteLoginFields();
+		getButton(IDialogConstants.OK_ID).setEnabled(enable);
+	}
+	
+	@Override
+	protected void buttonPressed(int buttonId)
+	{
+		if(buttonId == IDialogConstants.OK_ID)
+		{
 			IPublisher publisher;
-
+		
 			try
 			{
-				publisher = getPublishWizard().getPublisher();
-
+				publisher = m_publishWizard.getPublisher().createDuplicatePublisher(false);
+		
 				if(publisher == null)
 				{
 					throw new JNLPException("Publisher is not available", ERROR_CODE_NO_PUBLISHER_EXCEPTION);
 				}
-
+		
 				String userName = null;
 				String password = null;
 				
 				if(m_login.isCurrentUser())
 				{
-					int result = publisher.relogin(getPublishWizard().getLoginKey());
-
+					int result = publisher.relogin(m_publishWizard.getLoginKey());
+		
 					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
-						getPublishWizard().removeLoginKey();
-
+						m_publishWizard.removeLoginKey();
+		
 					if(result != IAuthenticator.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
@@ -114,36 +127,38 @@ public class PublishLoginPage extends PublishWizardPage
 				{					
 					userName = m_login.getLogin();
 					password = m_login.getPassword();
-	
+		
 					if(!m_login.isAlreadyUser())
 					{
 						int result = publisher.register(userName, password, m_login.getEmail());
-	
+		
 						MaterializationUtils.checkRegistrationResponse(result);
 					}
-	
+		
 					if(publisher.relogin(userName, password) != IAuthenticator.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - check username and password and try again", null);
 					}
 				}
-
+		
 				if(!publisher.isLoggedIn())
 				{
 					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
-
-				getPublishWizard().setPreferredUserName(userName);
-				getPublishWizard().setPreferredPassword(password);
+		
+				m_publishWizard.getPublisher().releaseConnection();
+				m_publishWizard.setPublisher(publisher);
+				m_publishWizard.setPreferredUserName(userName);
+				m_publishWizard.setPreferredPassword(password);
 			}
 			catch(Throwable e)
 			{
 				setErrorMessage(e.getMessage());
-				return false;
+				return;
 			}
-			
-			setErrorMessage(null);
+		}
 		
-		return true;
+		setReturnCode(buttonId);
+		close();
 	}
 }

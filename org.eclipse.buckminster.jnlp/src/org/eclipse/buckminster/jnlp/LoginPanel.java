@@ -28,6 +28,10 @@ import org.eclipse.swt.widgets.Text;
  */
 public class LoginPanel
 {
+	private Button m_currentUserButton;
+	
+	private Label m_currentUserLabelSeparator;
+
 	private Button m_userButton;
 
 	private Label m_login1Label;
@@ -56,25 +60,45 @@ public class LoginPanel
 
 	private Text m_emailText;
 
+	private String m_loginKeyUserName;
+	
 	private String m_initUserName;
 	
 	private String m_initPassword;
 	
-	public LoginPanel()
+	public LoginPanel(String loginKeyUserName)
 	{
-		m_initUserName = "";
-		m_initPassword = "";
+		this(loginKeyUserName, null, null);
 	}
 	
-	public LoginPanel(String initUserName, String initPassword)
+	public LoginPanel(String loginKeyUserName, String initUserName, String initPassword)
 	{
+		m_loginKeyUserName = loginKeyUserName;
 		m_initUserName = initUserName == null ? "" : initUserName;
 		m_initPassword = initPassword == null ? "" : initPassword;
+	}
+	
+	public boolean isCurrentUser()
+	{
+		if(m_currentUserButton.getSelection())
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean isAlreadyUser()
 	{
 		if(m_userButton.getSelection())
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isNewUser()
+	{
+		if(m_registerButton.getSelection())
 		{
 			return true;
 		}
@@ -115,10 +139,33 @@ public class LoginPanel
 	{
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
+		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		m_currentUserButton = new Button(pageComposite, SWT.RADIO);
+		m_currentUserButton.setText(m_loginKeyUserName == null ? "Current user" : "Current user (" + m_loginKeyUserName + ")");
+		GridData gridData = new GridData();
+		gridData.horizontalSpan = 1;
+		m_currentUserButton.setLayoutData(gridData);
+
+		m_currentUserButton.addSelectionListener(fieldsSwitchListener);
+		m_currentUserButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if(m_currentUserButton.getSelection())
+				{
+					enableLogin1Fields(false);
+					enableLogin2Fields(false);
+				}
+			}
+		});
+
+		m_currentUserLabelSeparator = new Label(pageComposite, SWT.NONE);
 
 		m_userButton = new Button(pageComposite, SWT.RADIO);
 		m_userButton.setText("Already user");
-		GridData gridData = new GridData();
+		gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_userButton.setLayoutData(gridData);
 		m_userButton.setSelection(true);
@@ -129,8 +176,11 @@ public class LoginPanel
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				enableLogin1Fields(true);
-				enableLogin2Fields(false);
+				if(m_userButton.getSelection())
+				{
+					enableLogin1Fields(true);
+					enableLogin2Fields(false);
+				}
 			}
 		});
 
@@ -166,8 +216,11 @@ public class LoginPanel
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				enableLogin1Fields(false);
-				enableLogin2Fields(true);
+				if(m_registerButton.getSelection())
+				{
+					enableLogin1Fields(false);
+					enableLogin2Fields(true);
+				}
 			}
 		});
 
@@ -217,6 +270,24 @@ public class LoginPanel
 		return pageComposite;
 	}
 
+	public void setCurrentUserVisible(boolean visible)
+	{
+		m_currentUserButton.setVisible(visible);
+		m_currentUserButton.setSelection(visible);
+		m_userButton.setSelection(!visible);
+		enableLogin1Fields(!visible);
+		enableLogin2Fields(false);
+
+		// moves invisible m_currentUserButton to the bottom, visible button is displayed at the top
+		if(visible)
+			m_currentUserButton.moveAbove(null);
+		else
+			m_currentUserButton.moveBelow(null);
+
+		m_currentUserLabelSeparator.moveBelow(m_currentUserButton);
+		m_currentUserButton.getParent().layout(true);
+	}
+	
 	private void enableLogin1Fields(boolean enabled)
 	{
 		m_login1Label.setEnabled(enabled);
@@ -239,15 +310,26 @@ public class LoginPanel
 
 	public String checkCompleteLoginFields()
 	{
+		if(isCurrentUser())
+			return null;
+		
 		if(isAlreadyUser())
 		{
 			if(m_login1Text.getText().length() == 0)
 			{
 				return "Login cannot be empty";
 			}
+			if(m_login1Text.getText().length() < 3)
+			{
+				return "Login is too short - length must be between 3 and 25";
+			}
 			if(m_password1Text.getText().length() == 0)
 			{
 				return "Password cannot be empty";
+			}
+			if(m_password1Text.getText().length() < 4)
+			{
+				return "Password is too short - length must be between 4 and 25";
 			}
 		}
 		else
@@ -256,9 +338,17 @@ public class LoginPanel
 			{
 				return "Login cannot be empty";
 			}
+			if(m_login2Text.getText().length() < 3)
+			{
+				return "Login is too short - length must be between 3 and 25";
+			}
 			if(m_password2Text.getText().length() == 0)
 			{
 				return "Password cannot be empty";
+			}
+			if(m_password2Text.getText().length() < 4)
+			{
+				return "Password is too short - length must be between 4 and 25";
 			}
 			if(m_retypePasswordText.getText().length() == 0)
 			{

@@ -50,7 +50,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 
 	protected SimpleDownloadPage()
 	{
-		super("SimpleDownloadLocationStep", "Select a Destination", "Select a target location for materialization.",
+		super(MaterializationConstants.STEP_DOWNLOAD_LOCATION, "Select a Destination", "Select a target location for materialization.",
 				null);
 	}
 
@@ -153,7 +153,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 			{
 				getContainer().run(true, false, new IRunnableWithProgress()
 				{
-
+	
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 					{
 						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
@@ -163,12 +163,12 @@ public class SimpleDownloadPage extends InstallWizardPage
 					}
 				});
 				
-				((SimpleAdvancedPage)getInstallWizard().getPage("SimpleAdvancedSettingsStep")).initializeMSpecTree();
+				((SimpleAdvancedPage)getInstallWizard().getPage(MaterializationConstants.STEP_ADVANCED_SETTINGS)).initializeMSpecTree();
 			}
 			catch(Exception e)
 			{
 				setPageComplete(false);
-
+	
 				if(e instanceof JNLPException)
 				{
 					throw (JNLPException) e;
@@ -176,12 +176,21 @@ public class SimpleDownloadPage extends InstallWizardPage
 				
 				if(e.getCause() != null && e.getCause() instanceof JNLPException)
 				{
-					throw ((JNLPException)e.getCause());
+					JNLPException jnlpException = (JNLPException)e.getCause();
+					
+					// Forbidden - show login page
+					if(MaterializationConstants.ERROR_CODE_403_EXCEPTION.equals(jnlpException.getErrorCode()))
+					{
+						LoginPage loginPage = (LoginPage)getWizard().getPage(MaterializationConstants.STEP_LOGIN);
+						getContainer().showPage(loginPage);
+					}
+					
+					throw jnlpException;
 				}
 				
 				throw new JNLPException(
 						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
-
+	
 			}
 			finally
 			{
@@ -205,6 +214,11 @@ public class SimpleDownloadPage extends InstallWizardPage
 	@Override
 	public boolean isPageComplete()
 	{
+		// disable FINISH button on the two first pages
+		if(getWizard().getContainer().getCurrentPage().equals(getWizard().getPage(MaterializationConstants.STEP_START)) ||
+				getWizard().getContainer().getCurrentPage().equals(getWizard().getPage(MaterializationConstants.STEP_LOGIN)))
+			return false;
+		
 		return getInstallWizard().isMaterializerInitialized();
 	}
 	
@@ -213,7 +227,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 	{
 		if(m_advancedSettingsButton.getSelection())
 		{
-			return getWizard().getPage("SimpleAdvancedSettingsStep");
+			return getWizard().getPage(MaterializationConstants.STEP_ADVANCED_SETTINGS);
 		}
 		return null;
 	}

@@ -12,14 +12,22 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -32,9 +40,11 @@ public class PublishSpacePage extends PublishWizardPage
 	
 	private Text m_artifactName;
 	
+	private Label m_userNameLabel;
+	
 	protected PublishSpacePage()
 	{
-		super(PublishWizard.PUBLISH_STEP, "Publish", "Publish distro to a selected space.", null);
+		super(MaterializationConstants.STEP_PUBLISH, "Publish", "Publish distro to a selected space.", null);
 	}
 
 	public void createControl(Composite parent)
@@ -72,7 +82,54 @@ public class PublishSpacePage extends PublishWizardPage
 			}
 		});
 
+		Composite infoComposite = new Composite(pageComposite, SWT.NONE);
+		GridData data = new GridData(GridData.FILL_BOTH);
+		data.horizontalSpan = 2;
+		infoComposite.setLayoutData(data);
+		infoComposite.setLayout(new GridLayout());
+
+		Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
+		infoGroup.setText("Login Info");
+		RowLayout rowLayout = new RowLayout();
+		rowLayout.marginHeight = rowLayout.marginWidth = 5;
+		rowLayout.spacing = 0;
+		infoGroup.setLayout(rowLayout);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan = 2;
+		infoGroup.setLayoutData(data);
+
+		new Label(infoGroup, SWT.WRAP).setText("You are currently logged in as ");
+		
+		m_userNameLabel = new Label(infoGroup, SWT.NONE);
+		// prepare bold font
+		FontData[] fontDatas = m_userNameLabel.getFont().getFontData();
+		for(FontData fontData : fontDatas)
+			fontData.setStyle(SWT.ITALIC);
+		m_userNameLabel.setFont(new Font(getShell().getDisplay(), fontDatas));
+		
+		new Label(infoGroup, SWT.NONE).setText(", ");
+		Link link = new Link(infoGroup, SWT.WRAP);
+		link.setText("click <a>here</a> to change your identity.");
+		link.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				LoginDialog loginDialog = new LoginDialog(getShell(), getPublishWizard());
+				if(loginDialog.open() == IDialogConstants.OK_ID)
+				{
+					beforeDisplaySetup();
+				}
+			}
+		});
+		
 		setControl(pageComposite);
+	}
+
+	private void updateUserName(String userName)
+	{
+		m_userNameLabel.setText(userName + " "); // needs an extra space otherwise italic text misses the last part
+		m_userNameLabel.getParent().pack();
 	}
 
 	private boolean isComplete()
@@ -93,6 +150,7 @@ public class PublishSpacePage extends PublishWizardPage
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			throw new JNLPException(
 					"Cannot read available spaces", ERROR_CODE_PUBLISHING_EXCEPTION, e);
 		}
@@ -103,6 +161,11 @@ public class PublishSpacePage extends PublishWizardPage
 		
 		m_spaceCombo.setItems(availableSpaces.toArray(new String[0]));
 		m_spaceCombo.select(0);
+		m_spaceCombo.pack();
+		
+		updateUserName(getPublishWizard().getCurrentUserName());
+		
+		((Composite)getControl()).layout();
 	}
 
 	String getSelectedSpace()
@@ -114,5 +177,4 @@ public class PublishSpacePage extends PublishWizardPage
 	{
 		return m_artifactName.getText();
 	}
-
 }

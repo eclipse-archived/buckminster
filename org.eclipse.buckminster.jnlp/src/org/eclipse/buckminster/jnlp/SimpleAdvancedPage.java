@@ -136,7 +136,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			return m_cspec.getShortDesc() == null
 					? (m_cspec.getComponentIdentifier().getName() + (m_cspec.getComponentIdentifier().getComponentTypeID() == null
 							? ""
-							: "/" + m_cspec.getComponentIdentifier().getComponentTypeID()))
+							: "/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID())))
 					: m_cspec.getShortDesc();
 		}
 
@@ -154,7 +154,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			}
 			if(m_cspec.getComponentIdentifier().getComponentTypeID() != null)
 			{
-				smartList.add("Component Type: " + m_cspec.getComponentIdentifier().getComponentTypeID());
+				smartList.add("Meta-Data Extractor: " + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID()));
 			}
 			if(m_cspec.getVersion() != null)
 			{
@@ -183,7 +183,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 
 	protected SimpleAdvancedPage()
 	{
-		super("SimpleAdvancedSettingsStep", "Advanced", "Select components for materialization.", null);
+		super(MaterializationConstants.STEP_ADVANCED_SETTINGS, "Advanced", "Select components for materialization.", null);
 	}
 
 	public void createControl(Composite parent)

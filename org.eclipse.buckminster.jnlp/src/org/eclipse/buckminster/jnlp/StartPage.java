@@ -29,7 +29,7 @@ public class StartPage extends InstallWizardPage
 {
 	protected StartPage()
 	{
-		super("StartStep", "Materialization", "Please verify that what is described below is what you want to materialize.", null);
+		super(MaterializationConstants.STEP_START, "Materialization", "Please verify that what is described below is what you want to materialize.", null);
 	}
 
 	public void createControl(Composite parent)
@@ -74,14 +74,14 @@ public class StartPage extends InstallWizardPage
 		text.setLayoutData(gridData);
 		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		
-		if(getInstallWizard().isLoginRequired())
+		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
 		{
 			Composite infoComposite = new Composite(pageComposite, SWT.NONE);
-			GridData data = new	GridData(GridData.FILL_BOTH);
+			GridData data = new GridData(GridData.FILL_BOTH);
 			data.horizontalSpan = 2;
 			infoComposite.setLayoutData(data);
 			infoComposite.setLayout(new GridLayout());
-	
+
 			Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
 			infoGroup.setText("Info");
 			FillLayout fillLayout = new FillLayout();
@@ -92,16 +92,16 @@ public class StartPage extends InstallWizardPage
 			infoGroup.setLayoutData(data);
 
 			final String message = "Note that, on request of the publisher of this material, you will be asked to log in to ";
-			final String providerURL = getInstallWizard().getAuthenticator().getProviderURL();
-			
+			final String providerURL = null; //getInstallWizard().getServiceProviderHomePageURL();
+
 			if(providerURL == null)
 			{
-				new Label(infoGroup, SWT.WRAP).setText(message + getInstallWizard().getAuthenticator().getProvider());
+				new Label(infoGroup, SWT.WRAP).setText(message + getInstallWizard().getServiceProvider());
 			}
 			else
 			{
 				Link link = new Link(infoGroup, SWT.WRAP);
-				link.setText(message + "<a>" + getInstallWizard().getAuthenticator().getProvider() + "</a>");
+				link.setText(message + "<a>" + getInstallWizard().getServiceProvider() + "</a>");
 				link.addSelectionListener(new SelectionAdapter()
 				{
 					@Override
@@ -119,11 +119,11 @@ public class StartPage extends InstallWizardPage
 	@Override
 	public IWizardPage getNextPage()
 	{
-		if(getInstallWizard().isLoginRequired())
+		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
 		{
-			return getWizard().getPage("LoginStep");
+			return getWizard().getPage(MaterializationConstants.STEP_LOGIN);
 		} 
-		return getWizard().getPage("SimpleDownloadLocationStep");	
+		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);	
 	}
 	
 	@Override

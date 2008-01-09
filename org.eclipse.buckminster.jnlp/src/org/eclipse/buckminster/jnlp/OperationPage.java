@@ -27,7 +27,7 @@ public class OperationPage extends InstallWizardPage
 	
 	protected OperationPage()
 	{
-		super("OperationStep", "Materialization in Progress", "Please wait until materialization finishes.", null);
+		super(MaterializationConstants.STEP_OPERATION, "Materialization in Progress", "Please wait until materialization finishes.", null);
 	}
 
 	public void createControl(Composite parent)
@@ -74,7 +74,7 @@ public class OperationPage extends InstallWizardPage
 	@Override
 	public IWizardPage getNextPage()
 	{
-		return getWizard().getPage("DoneStep");
+		return getWizard().getPage(MaterializationConstants.STEP_DONE);
 	}
 	
 	public ProgressProvider getProgressProvider()
