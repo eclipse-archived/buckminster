@@ -162,7 +162,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		return widgetin;
 	}
 
-	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Object value)
+	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value, Boolean defaultValue)
 	{
 		final Button checkBox = new Button(parent, SWT.CHECK);
 		final IWidgetin widgetin = new WidgetWrapper(checkBox);
@@ -170,7 +170,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, false, false);
 		checkBox.setLayoutData(data);
 
-		Boolean realValue = value == null ? Boolean.FALSE : (Boolean) value;
+		Boolean realValue = value == null ? defaultValue : value;
 
 		checkBox.setSelection(realValue.booleanValue());
 		checkBox.setData(realValue);
@@ -187,6 +187,11 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		});
 
 		return widgetin;		
+	}
+
+	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value)
+	{
+		return getBooleanCheckBoxWidgetin(parent, idx, value, Boolean.FALSE);
 	}
 
 	

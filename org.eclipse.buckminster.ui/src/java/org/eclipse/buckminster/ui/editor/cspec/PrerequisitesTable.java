@@ -99,8 +99,9 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		case 2:
 			return getTextWidgetin(parent, idx, value);
 		case 3:
+			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value, Boolean.TRUE);
 		case 4:
-			return getBooleanCheckBoxWidgetin(parent, idx, value);
+			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value);
 		default:
 			return getTextWidgetin(parent, idx, value);
 		}
