@@ -142,6 +142,7 @@ public class CSpecEditor extends EditorPart
 	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec";
 	
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = CSpecEditorUtils.getCSpecElementComparator();
+	private static Comparator<AttributeBuilder> s_attributeComparator = CSpecEditorUtils.getAttributeComparator();
 
 	private CSpecBuilder m_cspec;
 	
@@ -509,7 +510,7 @@ public class CSpecEditor extends EditorPart
 			if(attributesMap != null)
 			{
 				AttributeBuilder[] builders = attributesMap.values().toArray(new AttributeBuilder[0]);
-				Arrays.sort(builders, s_cspecElementComparator);
+				Arrays.sort(builders, s_attributeComparator);
 				List<ActionArtifactBuilder> tmp_actionArtifactBuilders = new ArrayList<ActionArtifactBuilder>();
 				for(AttributeBuilder attribute : builders)
 				{
