@@ -61,13 +61,14 @@
         id="org.eclipse.buckminster.ui.editors.RMAPEditor"
         name="Buckminster Resource Map Editor"/>
 <editor
-        class="org.eclipse.buckminster.ui.editor.cspec.CSpecEditor"
-        contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-        default="true"
-        extensions="cspec"
-        icon="icons/cspec.png"
-        id="org.eclipse.buckminster.ui.editors.CSPECEditor"
-        name="Buckminster CSPEC Editor"/>
+      class="org.eclipse.buckminster.ui.editor.cspec.CSpecEditor"
+      contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+      default="true"
+      extensions="cspec"
+      icon="icons/cspec.png"
+      id="org.eclipse.buckminster.ui.editors.CSPECEditor"
+      matchingStrategy="org.eclipse.buckminster.ui.editor.cspec.CSpecEditor"
+      name="Buckminster CSPEC Editor"/>
 <editor
         class="org.eclipse.buckminster.ui.editor.rmap.RMAPEditor"
         contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"

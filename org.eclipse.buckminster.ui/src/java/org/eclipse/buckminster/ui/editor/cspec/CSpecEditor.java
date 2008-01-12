@@ -45,6 +45,7 @@ import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.buckminster.ui.IDerivedEditorInput;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.ArtifactType;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -85,6 +86,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorMatchingStrategy;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
@@ -100,7 +104,7 @@ import org.xml.sax.SAXException;
  * @author Karel Brezina
  *
  */
-public class CSpecEditor extends EditorPart
+public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 {
 	@SuppressWarnings("unchecked") // don't need generics here - need just to setDirty
 	class CompoundModifyListener implements ModifyListener, ITableModifyListener, IFieldModifyListener
@@ -482,6 +486,29 @@ public class CSpecEditor extends EditorPart
 		m_compoundModifyListener = new CompoundModifyListener();
 	}
 
+	public boolean matches(IEditorReference editorRef, IEditorInput input)
+	{
+		IEditorPart part = (IEditorPart)editorRef.getPart(false);
+		if (part != null)
+		{
+			IEditorInput editorInput = part.getEditorInput();
+			if(editorInput != null)
+			{
+				if(editorInput.equals(input))
+					return true;
+				
+				if(editorInput instanceof IDerivedEditorInput)
+				{
+					IEditorInput originalEditorInput = ((IDerivedEditorInput)editorInput).getOriginalInput();
+					if(originalEditorInput.equals(input))
+						return true;
+				}
+			}
+		}
+
+		return false;
+	}
+	
 	private void refreshValues()
 	{
 		setDirty(false);

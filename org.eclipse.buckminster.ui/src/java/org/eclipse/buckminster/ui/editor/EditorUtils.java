@@ -19,6 +19,7 @@ import java.util.Comparator;
 
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.ui.DerivedExternalFileEditorInput;
 import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.IPath;
@@ -117,6 +118,6 @@ public class EditorUtils
 			}
 		}
 		
-		return new ExternalFileEditorInput(cspecFile, new Path(uri.getPath()).lastSegment(), uri.toString());
+		return new DerivedExternalFileEditorInput(input, cspecFile, new Path(uri.getPath()).lastSegment(), uri.toString());
 	}
 }
