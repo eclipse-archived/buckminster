@@ -1164,6 +1164,22 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return array;
 	}
 
+	DependencyBuilder getDependencyBuilder(String componentName)
+	{
+		if(componentName == null)
+			return null;
+		
+		for(DependencyBuilder builder : m_dependencyBuilders)
+		{
+			if(componentName.equals(builder.getName()))
+			{
+				return builder;
+			}
+		}
+		
+		return null;
+	}
+	
 	void switchTab(CSpecEditorTab tab)
 	{
 		m_tabFolder.setSelection(tab.getSeqNum());

@@ -9,16 +9,26 @@
 package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.metadata.MissingComponentException;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
 import org.eclipse.buckminster.ui.general.editor.simple.WidgetWrapper;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -52,7 +62,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[] { "Component", "Name", "Alias", "Contributor", "Optional" };
+		return new String[] { "Component", "Attribute", "Alias", "Contributor", "Optional" };
 	}
 
 	public int[] getColumnWeights()
@@ -181,7 +191,30 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		}
 		else
 		{
-			attributeCombo.setItems(new String[] {});
+			DependencyBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
+			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder.getVersionDesignator()); 
+
+			TreeSet<String> prereqAttributes = new TreeSet<String>();
+			Resolution prereqResolution;
+			try
+			{
+				prereqResolution = WorkspaceInfo.getResolution(cr, false);
+				CSpec prereqCSpec = prereqResolution.getCSpec();
+				
+				for(Attribute attribute : prereqCSpec.getAttributes().values())
+					if(attribute.isPublic())
+						prereqAttributes.add(attribute.getName());
+			}
+			catch(MissingComponentException e)
+			{
+				// the component is not found - cannot show attribute names
+			}
+			catch(CoreException e)
+			{
+				ErrorDialog.openError(m_editor.getSite().getShell(), null, "Cannot get attribute names for the selected component", e.getStatus());
+			}
+			
+			attributeCombo.setItems(prereqAttributes.toArray(new String[0]));
 		}
 
 		attributeCombo.setText(currentAttribute);
