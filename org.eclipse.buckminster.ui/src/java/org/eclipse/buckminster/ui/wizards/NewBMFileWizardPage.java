@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.ui.wizards;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -112,6 +113,12 @@ public abstract class NewBMFileWizardPage extends WizardPage
 			if(ssel.size() > 1)
 				return;
 			Object obj = ssel.getFirstElement();
+			
+			if(obj instanceof IProjectNature)
+			{
+				obj = ((IProjectNature)obj).getProject();
+			}
+			
 			if(obj instanceof IResource)
 			{
 				IContainer container;
