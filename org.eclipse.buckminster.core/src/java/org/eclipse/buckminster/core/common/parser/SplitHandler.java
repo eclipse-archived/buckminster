@@ -35,7 +35,7 @@ public class SplitHandler extends ValueFilterHandler
 	{
 		String pattern = this.getStringValue(attrs, AbstractSplit.ATTR_PATTERN);
 		String style = getOptionalStringValue(attrs, AbstractSplit.ATTR_STYLE);
-		if("group".equals(style))
+		if("groups".equals(style))
 			this.setValueHolder(new GroupSplit(pattern));
 		else
 		{
