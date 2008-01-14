@@ -64,7 +64,7 @@ public class MaterializerRunnable implements IRunnableWithProgress
 			input = new BufferedInputStream(url.openStream());
 			IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
 			BillOfMaterials bom = bomParser.parse(url.toString(), input);
-			return new MaterializationContext(bom, m_mspec, null);
+			return new MaterializationContext(bom, m_mspec);
 		}
 		finally
 		{
