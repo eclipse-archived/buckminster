@@ -32,7 +32,6 @@ import org.xml.sax.SAXParseException;
  */
 public class WorkspaceBindingHandler extends PropertyManagerHandler
 {
-	@SuppressWarnings("hiding")
 	public static final String TAG = WorkspaceBinding.TAG;
 
 	private ComponentIdentifier m_cid;

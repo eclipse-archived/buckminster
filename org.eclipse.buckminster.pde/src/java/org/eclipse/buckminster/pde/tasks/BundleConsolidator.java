@@ -34,7 +34,6 @@ import org.osgi.framework.Constants;
  * @author Thomas Hallgren
  *
  */
-@SuppressWarnings("restriction")
 public class BundleConsolidator extends VersionConsolidator
 {
 	private final byte[] m_bytes;

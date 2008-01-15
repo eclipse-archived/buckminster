@@ -73,7 +73,6 @@ public class AllAttributesView extends Composite
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		public String getColumnText(Object element, int columnIndex)
 		{
 			switch(columnIndex)

@@ -27,7 +27,6 @@ import org.eclipse.update.core.SiteManager;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 {
 	@Override

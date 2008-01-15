@@ -295,7 +295,6 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 		return super.getInCheck();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public Object getSecurityContext()
 	{

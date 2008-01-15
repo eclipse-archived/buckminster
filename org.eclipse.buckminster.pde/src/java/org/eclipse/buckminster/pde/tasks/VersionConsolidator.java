@@ -15,7 +15,6 @@ import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 abstract class VersionConsolidator extends VersionQualifierTask
 {
 	private final File m_outputFile;

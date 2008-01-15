@@ -37,7 +37,6 @@ import org.eclipse.update.core.ISiteFeatureReference;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 abstract class AbstractSiteMaterializer extends AbstractMaterializer
 {
 	@SuppressWarnings("serial")

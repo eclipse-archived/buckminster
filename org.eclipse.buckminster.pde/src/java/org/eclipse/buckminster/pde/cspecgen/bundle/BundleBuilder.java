@@ -53,7 +53,6 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstants
 {
-	@SuppressWarnings("serial")
 	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{

@@ -44,7 +44,6 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("serial")
 public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 {
 	private final HashMap<UUID,TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();

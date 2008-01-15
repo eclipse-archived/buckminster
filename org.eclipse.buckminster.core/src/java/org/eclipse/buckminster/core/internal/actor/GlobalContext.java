@@ -23,7 +23,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-@SuppressWarnings("serial")
 public class GlobalContext extends ModelCache implements IGlobalContext
 {
 	private final ArrayList<Integer> m_executedEclipseKinds = new ArrayList<Integer>();

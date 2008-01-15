@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 
 
+@SuppressWarnings("serial")
 public abstract class LocalizedException extends BuckminsterException
 {
 	private final String m_messageFormat;

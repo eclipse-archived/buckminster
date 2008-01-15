@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("serial")
 public class ModelCache implements IModelCache
 {
 	private Map<String,String> m_properties;

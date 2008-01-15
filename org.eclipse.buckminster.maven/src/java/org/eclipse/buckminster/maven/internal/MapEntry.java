@@ -19,7 +19,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 class MapEntry extends GroupAndArtifact
 {
-	@SuppressWarnings("hiding")
 	public static final String TAG = "entry";
 	public static final String ATTR_NAME = "name";
 

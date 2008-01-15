@@ -13,6 +13,7 @@ package org.eclipse.buckminster.pde.internal.imports;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -516,23 +517,23 @@ public class PluginImportOperation extends JarImportOperation
 			throws CoreException
 	{
 		SourceLocationManager manager = PDECore.getDefault().getSourceLocationManager();
-		File location = manager.findSourceFile(model.getPluginBase(), null);
-		File[] children = location == null
-				? null
-				: location.listFiles();
-		ArrayList<File> list = new ArrayList<File>();
-		if(children != null)
-		{
-			for(int i = 0; i < children.length; i++)
-			{
-				String name = children[i].getName();
-				if(!project.exists(new Path(name)) && !"src.zip".equals(name)){ //$NON-NLS-1$
-					list.add(children[i]);
-				}
-			}
+		IPath path = manager.findSourcePath(model.getPluginBase(), null);
+		if(path == null)
+			return Collections.emptyList();
 
-			importContent(location, project.getFullPath(), FileSystemStructureProvider.INSTANCE, list, monitor);
+		File location = path.toFile();
+		File[] children = location.listFiles();
+		if(children == null || children.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<File> list = new ArrayList<File>();
+		for(int i = 0; i < children.length; i++)
+		{
+			String name = children[i].getName();
+			if(!project.exists(new Path(name)) && !"src.zip".equals(name))
+				list.add(children[i]);
 		}
+		importContent(location, project.getFullPath(), FileSystemStructureProvider.INSTANCE, list, monitor);
 		return list;
 	}
 
@@ -741,11 +742,9 @@ public class PluginImportOperation extends JarImportOperation
 		IPath jarPath = new Path(ClasspathUtilCore.expandLibraryName(name));
 		IPath srcPath = new Path(ClasspathUtilCore.getSourceZipName(jarPath.toString()));
 		SourceLocationManager manager = PDECore.getDefault().getSourceLocationManager();
-		File srcFile = manager.findSourceFile(fragment, srcPath);
+		IPath srcFile = manager.findSourcePath(fragment, srcPath);
 		if(srcFile != null)
-		{
-			importArchive(m_project, srcFile, srcPath);
-		}
+			importArchive(m_project, srcFile.toFile(), srcPath);
 	}
 
 	private boolean isExempt()

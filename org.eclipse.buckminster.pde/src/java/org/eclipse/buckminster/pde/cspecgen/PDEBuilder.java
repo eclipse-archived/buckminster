@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * Subclasses must implement {@link #parseFile(IComponentReader reader)}.
  * @author thhal
  */
-@SuppressWarnings("restriction")
 public abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConstants
 {
 	/**

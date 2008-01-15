@@ -209,11 +209,11 @@ public class SimpleJNLPCache
 		File resourceDir = new File(latestFile, "resources");
 		try
 		{
-			m_classLoader.addUrl(resourceDir.toURL());
+			m_classLoader.addUrl(resourceDir.toURI().toURL());
 
 			for(File jarFile : jarDir.listFiles())
 			{
-				m_classLoader.addUrl(jarFile.toURL());
+				m_classLoader.addUrl(jarFile.toURI().toURL());
 			}
 		}
 		catch(MalformedURLException e)

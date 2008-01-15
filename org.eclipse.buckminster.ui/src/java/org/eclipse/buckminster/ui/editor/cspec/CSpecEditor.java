@@ -914,7 +914,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return tabComposite;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Control getActionsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
@@ -933,7 +932,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return tabComposite;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Control getArtifactsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Artifacts");
@@ -950,7 +948,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return tabComposite;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Control getGroupsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Groups");
@@ -967,7 +964,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return tabComposite;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Control getAttributesTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "All Attributes");
