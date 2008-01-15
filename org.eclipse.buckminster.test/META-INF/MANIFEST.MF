@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.buckminster.cmdline,
  org.junit4,
  javax.mail
 Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
