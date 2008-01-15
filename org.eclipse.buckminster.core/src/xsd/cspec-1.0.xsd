@@ -202,7 +202,7 @@
 			type="string"
 			use="optional" />
 		<attribute
-			name="platformFilter"
+			name="filter"
 			type="string"
 			use="optional"/>
 		<attribute

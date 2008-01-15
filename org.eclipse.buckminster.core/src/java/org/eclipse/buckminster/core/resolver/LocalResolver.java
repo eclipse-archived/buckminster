@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -125,7 +126,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		try
 		{
 			NodeQuery query = m_context.getNodeQuery(request);
-			ResolverNode node = deepResolve(m_context, new UnresolvedNode(query.getQualifiedDependency()), null, monitor);
+			ResolverNode node = deepResolve(m_context, new HashMap<ComponentName, ResolverNode>(), new UnresolvedNode(query.getQualifiedDependency()), null, monitor);
 			return createBillOfMaterials(node);
 		}
 		finally
@@ -154,7 +155,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery()))
 					? m_context
 					: new ResolutionContext(cquery, m_context);
-			BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, bom, bom.getTagInfo(), monitor));
+			BillOfMaterials newBom = createBillOfMaterials(deepResolve(context, new HashMap<ComponentName, ResolverNode>(), bom, bom.getTagInfo(), monitor));
 			if(!newBom.contentEqual(bom))
 				bom = newBom;
 			return bom;
@@ -379,10 +380,21 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return new ResolverNode(new NodeQuery(context, qDep), requestorInfo);
 	}
 
-	private ResolverNode deepResolve(ResolutionContext context, DepNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
+	private ResolverNode deepResolve(ResolutionContext context, Map<ComponentName,ResolverNode> visited, DepNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
 	{
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
-		ResolverNode node = getResolverNode(context, qDep, tagInfo);
+		ComponentName key = qDep.getRequest().toPureComponentName();
+		
+		// The visited map is to prevent endless recursion. The LocalResolver needs this since the query is often
+		// created on-the-fly and without a chance to allow circular dependencies.
+		//
+		ResolverNode node = visited.get(key);
+		if(node != null)
+			return node;
+
+		node = getResolverNode(context, qDep, tagInfo);
+		visited.put(key, node);
+
 		if(node.isResolved())
 			return node;
 
@@ -447,7 +459,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 					: new ResolutionContext(cquery, context);
 
 			resolvedChildren[idx] = m_recursiveResolve
-					? deepResolve(childContext, child, childTagInfo, monitor)
+					? deepResolve(childContext, visited, child, childTagInfo, monitor)
 					: getResolverNode(childContext, child.getQualifiedDependency(), childTagInfo);
 		}
 		node.setResolution(res, resolvedChildren);
