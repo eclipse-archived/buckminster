@@ -14,6 +14,7 @@
         <cs:dependency name="org.eclipse.buckminster.subclipse.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.test.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
     </cs:dependencies>
     <cs:artifacts>
         <cs:private name="headless-site.template" path="headless-site.xml"/>
@@ -102,6 +103,7 @@
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.test.headless.feature"/>
         </cs:public>
         <cs:public name="optional.category">
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.cvs.feature"/>
