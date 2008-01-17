@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.4.3
+Bundle-SymbolicName: org.slf4j.extendable;singleton:=true
+Bundle-Name: slf4j-api with extension point implementation
+Bundle-Vendor: Eclipse.org
+Export-Package: org.slf4j;version="1.4.3",
+ org.slf4j.helpers;version="1.4.3",
+ org.slf4j.spi;version="1.4.3"
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ClassPath: slf4j-extendable.jar,
+ lib/slf4j-api-1.4.3.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
