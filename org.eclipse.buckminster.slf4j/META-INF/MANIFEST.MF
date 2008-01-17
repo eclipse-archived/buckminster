@@ -4,7 +4,5 @@ Bundle-Name: Slf4j implementation using the Buckminster logger
 Bundle-SymbolicName: org.eclipse.buckminster.slf4j;singleton:=true
 Bundle-Version: 0.3.0
 Bundle-Vendor: Eclipse.org
-Import-Package: org.slf4j;version="1.4.3",
- org.slf4j.helpers;version="1.4.3",
- org.slf4j.spi;version="1.4.3"
-Require-Bundle: org.eclipse.buckminster.runtime
+Require-Bundle: org.slf4j.extendable;bundle-version="1.4.3",
+ org.eclipse.buckminster.runtime
