@@ -18,5 +18,6 @@ public enum PreferenceType
 	Enum,
 	Directory,
 	File,
-	Path
+	Path,
+	Password
 }
