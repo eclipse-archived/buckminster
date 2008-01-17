@@ -181,6 +181,22 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 					}
 				};
 				break;
+			case Password:
+				editor = new PasswordFieldEditor(name, label, descriptor.getTextWidth(), parent)
+				{
+					@Override
+					protected boolean checkState()
+					{
+						return validator.validate(UiUtils.trimmedValue(getTextControl()));
+					}
+
+					@Override
+					public IPreferenceStore getPreferenceStore()
+					{
+						return nodePrefs;
+					}
+				};
+				break;
 			default:
 				editor = new StringFieldEditor(name, label, descriptor.getTextWidth(), parent)
 				{
