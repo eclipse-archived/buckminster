@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

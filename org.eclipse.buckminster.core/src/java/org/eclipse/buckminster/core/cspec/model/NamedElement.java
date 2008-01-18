@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.helpers.AttributesImpl;
 

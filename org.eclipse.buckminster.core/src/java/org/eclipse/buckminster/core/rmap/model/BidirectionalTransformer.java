@@ -12,7 +12,7 @@ package org.eclipse.buckminster.core.rmap.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;

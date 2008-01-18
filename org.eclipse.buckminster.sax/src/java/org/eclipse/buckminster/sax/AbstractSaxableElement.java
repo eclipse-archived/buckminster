@@ -6,10 +6,8 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.core.common.model;
+package org.eclipse.buckminster.sax;
 
-import org.eclipse.buckminster.sax.ISaxableElement;
-import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;

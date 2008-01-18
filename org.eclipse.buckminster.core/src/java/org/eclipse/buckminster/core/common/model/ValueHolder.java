@@ -12,6 +12,8 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
+
 /**
  * Abstract class for holder of values. The holder will produce either exactly
  * one value (holders such as {@link Format}, {@link Replace}, or

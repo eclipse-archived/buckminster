@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
@@ -25,6 +24,7 @@ import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

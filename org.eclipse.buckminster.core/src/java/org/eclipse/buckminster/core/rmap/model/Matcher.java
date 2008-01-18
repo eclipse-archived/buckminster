@@ -12,8 +12,8 @@ package org.eclipse.buckminster.core.rmap.model;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.SAXException;

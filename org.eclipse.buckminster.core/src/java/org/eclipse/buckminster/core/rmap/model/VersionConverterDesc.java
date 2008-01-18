@@ -10,10 +10,10 @@
 package org.eclipse.buckminster.core.rmap.model;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;

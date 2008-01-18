@@ -9,8 +9,8 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;

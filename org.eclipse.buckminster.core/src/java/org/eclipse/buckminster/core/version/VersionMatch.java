@@ -11,9 +11,9 @@ package org.eclipse.buckminster.core.version;
 
 import java.util.Date;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;

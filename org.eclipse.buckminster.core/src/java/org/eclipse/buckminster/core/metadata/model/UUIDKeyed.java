@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;

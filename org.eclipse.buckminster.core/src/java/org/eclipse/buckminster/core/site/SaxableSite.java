@@ -8,9 +8,9 @@
 
 package org.eclipse.buckminster.core.site;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;

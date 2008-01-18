@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.List;
 
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.helpers.AttributesImpl;

@@ -10,11 +10,11 @@ package org.eclipse.buckminster.core.mspec.model;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;
 import org.xml.sax.ContentHandler;

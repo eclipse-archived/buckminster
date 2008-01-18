@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
@@ -47,6 +46,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
