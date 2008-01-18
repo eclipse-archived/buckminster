@@ -11,28 +11,11 @@
                   value="cloudsmith"/>
          </factory>
       </queryResolver>
-      <queryResolver id="cloudsmith.test">
-         <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
-            <parameter
-                  name="provider"
-                  value="cloudsmith.test"/>
-         </factory>
-      </queryResolver>
       <queryResolver id="cloudsmith.local">
          <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
             <parameter
                   name="provider"
                   value="cloudsmith.local"/>
-         </factory>
-      </queryResolver>
-      <queryResolver
-            id="cloudsmith.local.filip">
-         <factory
-               class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
-            <parameter
-                  name="provider"
-                  value="cloudsmith.local.filip">
-            </parameter>
          </factory>
       </queryResolver>
    </extension>
