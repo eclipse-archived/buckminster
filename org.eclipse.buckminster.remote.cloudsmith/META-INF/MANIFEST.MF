@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Cloudsmith (Incubation)
+Bundle-SymbolicName: org.eclipse.buckminster.remote.cloudsmith;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.buckminster.remote

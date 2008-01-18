@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.buckminster.remote.providers">
+      <provider
+            ID="cloudsmith"
+            hostname="www.cloudsmith.com"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            name="Cloudsmith Production Server"
+            port="8080"
+            protocol="http"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.remote.providers">
+      <provider
+            ID="cloudsmith.test"
+            hostname="test.cloudsmith.com"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            name="Cloudsmith Test Server"
+            port="8080"
+            protocol="http"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.remote.providers">
+      <provider
+            ID="cloudsmith.local"
+            hostname="localhost"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            loginSupport="true"
+            port="8080"
+            protocol="http"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.remote.providers">
+      <provider
+            ID="cloudsmith.local.filip"
+            hostname="192.168.157.199"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            loginSupport="true"
+            port="8080"
+            protocol="http"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+   </extension>
+
+</plugin>
