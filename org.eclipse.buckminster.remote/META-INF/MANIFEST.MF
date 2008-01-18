@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Remote (Incubation)
+Bundle-SymbolicName: org.eclipse.buckminster.remote;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.buckminster.sax,
+ org.eclipse.core.runtime,
+ com.ibm.icu,
+ org.apache.commons.codec,
+ com.ibm.icu.base,
+ org.apache.commons.httpclient,
+ org.apache.commons.logging,
+ org.eclipse.buckminster.slf4j,
+ org.slf4j.extendable
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.buckminster.remote,
+ org.eclipse.buckminster.remote.resolver
+Eclipse-LazyStart: false
+Bundle-ClassPath: .,
+ lib/jabsorb-1.2.2.jar
