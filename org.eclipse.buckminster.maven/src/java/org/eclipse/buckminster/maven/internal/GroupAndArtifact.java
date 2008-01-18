@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;

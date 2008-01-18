@@ -10,7 +10,7 @@
 
 package org.eclipse.buckminster.p4.preferences;
 
-import org.eclipse.buckminster.core.common.model.AbstractSaxableElement;
+import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
