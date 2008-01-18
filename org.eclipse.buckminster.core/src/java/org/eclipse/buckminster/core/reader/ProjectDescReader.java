@@ -16,6 +16,7 @@ import java.io.InputStream;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,9 +57,13 @@ public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
 		{
 			monitor.beginTask(null, 1);
 			monitor.subTask("Loading project description");
-			IProjectDescription pd = ResourcesPlugin.getWorkspace().loadProjectDescription(stream);
-			MonitorUtils.worked(monitor, 1);
-			return pd;
+			IWorkspace ws = ResourcesPlugin.getWorkspace();
+			synchronized(ws)
+			{
+				IProjectDescription pd = ws.loadProjectDescription(stream);
+				MonitorUtils.worked(monitor, 1);
+				return pd;
+			}
 		}
 		finally
 		{
