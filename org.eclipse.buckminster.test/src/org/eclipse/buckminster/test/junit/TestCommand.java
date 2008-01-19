@@ -263,7 +263,7 @@ public class TestCommand extends AbstractCommand
 		 *            the name to check
 		 * @return <code>true</code> if the supplied <code>name</code> is a valid fully qualified Java class name,
 		 *         <code>false</code> otherwise
-		 * @see (a method introduced Java 6) {@link javax.lang.model.SourceVersion#isIdentifier(CharSequence name)}
+		 * @see (a method introduced Java 6) javax.lang.model.SourceVersion.isIdentifier(CharSequence name)
 		 */
 		public static boolean isQualifiedIdentifier(String name)
 		{
