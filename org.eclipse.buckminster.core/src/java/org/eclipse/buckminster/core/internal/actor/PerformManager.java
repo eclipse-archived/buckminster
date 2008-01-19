@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
@@ -27,7 +26,6 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
 import org.eclipse.buckminster.runtime.Logger;
@@ -315,19 +313,20 @@ public class PerformManager implements IPerformManager
 
 	private static List<Action> getOrderedActionList(GlobalContext ctx, List<Attribute> attributes) throws CoreException
 	{
-		Set<Attribute> seen = new HashSet<Attribute>();
+		Set<String> seen = new HashSet<String>();
 		List<Action> ordered = new ArrayList<Action>();
 		for(Attribute attribute : attributes)
-			addAttributeChildren(ctx, attribute, seen, ordered, null);
+			addAttributeChildren(ctx, attribute, seen, ordered);
 
 		for(Attribute attribute : attributes)
 		{
 			if(attribute instanceof ActionArtifact)
 				attribute = ((ActionArtifact)attribute).getAction();
 
-			if(!seen.contains(attribute))
+			String attrId = attribute.toString();
+			if(!seen.contains(attrId))
 			{
-				seen.add(attribute);
+				seen.add(attrId);
 				if(attribute instanceof Action)
 					ordered.add((Action)attribute);
 			}
@@ -335,30 +334,20 @@ public class PerformManager implements IPerformManager
 		return ordered;
 	}
 
-	private static void addAttributeChildren(GlobalContext ctx, Attribute attribute, Set<Attribute> seen, List<Action> ordered, Stack<IAttributeFilter> filters)
+	private static void addAttributeChildren(GlobalContext ctx, Attribute attribute, Set<String> seen, List<Action> ordered)
 	throws CoreException
 	{
 		if(attribute instanceof ActionArtifact)
 			attribute = ((ActionArtifact)attribute).getAction();
 
-		if(!seen.contains(attribute))
+		String attrId = attribute.toString();
+		if(!seen.contains(attrId))
 		{
-			seen.add(attribute);
+			seen.add(attrId);
 			CSpec cspec = attribute.getCSpec();
-			for(Prerequisite preq : attribute.getPrerequisites(filters))
-			{
-				Attribute refAttr = preq.getReferencedAttribute(cspec, ctx);
-				if(preq.isPatternFilter())
-				{
-					if(filters == null)
-						filters = new Stack<IAttributeFilter>();
-					filters.push(preq);
-					addAttributeChildren(ctx, refAttr, seen, ordered, filters);
-					filters.pop();
-				}
-				else
-					addAttributeChildren(ctx, refAttr, seen, ordered, filters);
-			}
+			for(Prerequisite preq : attribute.getPrerequisites())
+				addAttributeChildren(ctx, preq.getReferencedAttribute(cspec, ctx), seen, ordered);
+
 			if(attribute instanceof Action)
 				ordered.add((Action)attribute);
 		}

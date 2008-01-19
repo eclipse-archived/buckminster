@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.actor;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -164,10 +165,14 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 
 	private void loggableProps(StringBuilder sb, Map<String, String> props)
 	{
+		Properties sysProps = System.getProperties();
 		for(Map.Entry<String, String> entry : props.entrySet())
 		{
-			sb.append("\n  ");
-			sb.append(entry.getKey()).append('=').append(entry.getValue());
+			if(sysProps.getProperty(entry.getKey()) == null)
+			{
+				sb.append("\n  ");
+				sb.append(entry.getKey()).append('=').append(entry.getValue());
+			}
 		}
 	}
 

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
@@ -75,8 +76,13 @@ public class PerformContext implements IActionContext
 		
 		ArrayList<PathGroup> existentBases = new ArrayList<PathGroup>();
 		for(PathGroup pathGroup : pathGroups)
-			if(pathGroup.getBase().toFile().exists())
+		{
+			File file = pathGroup.getBase().toFile().getAbsoluteFile();
+			if(file.exists())
 				existentBases.add(pathGroup);
+			else
+				CorePlugin.getLogger().debug("Base: %s: No such file or directory", file);
+		}
 		return existentBases.toArray(new PathGroup[existentBases.size()]);
 	}
 
