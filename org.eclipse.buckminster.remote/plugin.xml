@@ -2,22 +2,5 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="providers" name="Buckminster Service Provider Details" schema="schema/providers.exsd"/>
-   <extension
-         point="org.eclipse.buckminster.core.queryResolvers">
-      <queryResolver id="cloudsmith">
-         <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
-            <parameter
-                  name="provider"
-                  value="cloudsmith"/>
-         </factory>
-      </queryResolver>
-      <queryResolver id="cloudsmith.local">
-         <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
-            <parameter
-                  name="provider"
-                  value="cloudsmith.local"/>
-         </factory>
-      </queryResolver>
-   </extension>
 
 </plugin>

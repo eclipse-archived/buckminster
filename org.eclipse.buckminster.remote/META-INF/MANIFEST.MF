@@ -16,7 +16,9 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.slf4j.extendable
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.buckminster.remote,
- org.eclipse.buckminster.remote.resolver
+ org.eclipse.buckminster.remote.resolver,
+ org.eclipse.buckminster.remote.resolver.jsonrpc,
+ org.eclipse.buckminster.remote.resolver.service
 Eclipse-LazyStart: false
 Bundle-ClassPath: .,
  lib/jabsorb-1.2.2.jar
