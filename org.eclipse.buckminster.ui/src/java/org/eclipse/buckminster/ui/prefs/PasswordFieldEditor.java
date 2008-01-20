@@ -8,7 +8,15 @@
 
 package org.eclipse.buckminster.ui.prefs;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -21,13 +29,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * A field editor for a password type preference.
+ * A field editor for a password type preference. The key ring is used for storing the editor value.
  *
  * @author Karel Brezina
  *
  */
 public class PasswordFieldEditor extends StringFieldEditor
 {
+	//fake URL - need it for saving to the key ring
+	private final static String KEY_RING_URL = "http://pref.buckminster.eclipse.org";
+	
+	private static URL s_keyRingURL;
+	
+	private String m_keyRingRealm;
+	
     /**
      * Old text value.
      */
@@ -60,8 +75,20 @@ public class PasswordFieldEditor extends StringFieldEditor
      * @param parent the parent of the field editor's control
      * @since 2.0
      */
-    public PasswordFieldEditor(String name, String labelText, int width, int strategy, Composite parent) {
+    public PasswordFieldEditor(String name, String labelText, int width, int strategy, Composite parent, String keyRingRealm) {
     	super(name, labelText, width, strategy, parent);
+    	
+    	if(s_keyRingURL == null)
+			try
+			{
+				s_keyRingURL = new URL(KEY_RING_URL);
+			}
+			catch(MalformedURLException e)
+			{
+				throw new RuntimeException("Cannot create URL from string '" + KEY_RING_URL + "'");
+			}
+    	
+    	m_keyRingRealm = keyRingRealm;
     }
     
     /**
@@ -75,8 +102,8 @@ public class PasswordFieldEditor extends StringFieldEditor
      * @param parent the parent of the field editor's control
      */
     public PasswordFieldEditor(String name, String labelText, int width,
-            Composite parent) {
-        this(name, labelText, width, VALIDATE_ON_KEY_STROKE, parent);
+            Composite parent, String keyRingRealm) {
+        this(name, labelText, width, VALIDATE_ON_KEY_STROKE, parent, keyRingRealm);
     }
 
     /**
@@ -87,8 +114,8 @@ public class PasswordFieldEditor extends StringFieldEditor
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
      */
-    public PasswordFieldEditor(String name, String labelText, Composite parent) {
-        this(name, labelText, UNLIMITED, parent);
+    public PasswordFieldEditor(String name, String labelText, Composite parent, String keyRingRealm) {
+        this(name, labelText, UNLIMITED, parent, keyRingRealm);
     }
 
     /* (non-Javadoc)
@@ -97,7 +124,7 @@ public class PasswordFieldEditor extends StringFieldEditor
     @Override
 	protected void doLoad() {
         if (m_textField != null) {
-            String value = getPreferenceStore().getString(getPreferenceName());
+            String value = getPasswordFromKeyRing();
             m_textField.setText(value);
             m_oldValue = value;
         }
@@ -109,8 +136,7 @@ public class PasswordFieldEditor extends StringFieldEditor
     @Override
 	protected void doLoadDefault() {
         if (m_textField != null) {
-            String value = getPreferenceStore().getDefaultString(
-                    getPreferenceName());
+            String value = "";
             m_textField.setText(value);
         }
         valueChanged();
@@ -121,7 +147,7 @@ public class PasswordFieldEditor extends StringFieldEditor
      */
     @Override
 	protected void doStore() {
-        getPreferenceStore().setValue(getPreferenceName(), m_textField.getText());
+    	setPasswordToKeyRing(m_textField.getText());
     }
 
     /**
@@ -135,9 +161,35 @@ public class PasswordFieldEditor extends StringFieldEditor
 			return m_textField.getText();
 		}
         
-        return getPreferenceStore().getString(getPreferenceName());
+        return getPasswordFromKeyRing();
     }
 
+    @SuppressWarnings("unchecked")
+	private String getPasswordFromKeyRing()
+    {
+    	Map<String, String> info = Platform.getAuthorizationInfo(s_keyRingURL, m_keyRingRealm, "");
+ 
+    	String value = null;
+    	if(info != null)
+    		value = info.get(getPreferenceName());
+    	
+    	return value == null ? "" : value;
+    }
+    
+    private void setPasswordToKeyRing(String password)
+    {
+    	Map<String, String> info = new HashMap<String, String>();
+    	info.put(getPreferenceName(), UiUtils.trimmedValue(password));
+    	try
+		{
+			Platform.addAuthorizationInfo(s_keyRingURL, m_keyRingRealm, "", info);
+		}
+		catch(CoreException e)
+		{
+			throw new RuntimeException("Cannot save password", e);
+		}
+    }
+    
     @Override
 	public Text getTextControl(Composite parent) {    	
         if (m_textField == null) {

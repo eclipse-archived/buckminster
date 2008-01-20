@@ -175,6 +175,19 @@ public class UiUtils
 		return value;
 	}
 	
+	public static String trimmedValue(String string)
+	{
+		String value = null;
+		
+		if(string != null)
+		{
+			value = string.trim();
+			if(value.length() == 0)
+				value = null;
+		}
+		return value;
+	}
+
 	public static Object nvl(Object arg0, Object arg1)
 	{
 		return arg0 != null ? arg0 : arg1;
