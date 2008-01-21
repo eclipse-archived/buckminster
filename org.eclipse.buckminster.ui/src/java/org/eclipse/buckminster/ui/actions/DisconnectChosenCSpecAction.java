@@ -29,7 +29,7 @@ public class DisconnectChosenCSpecAction extends AbstractChosenCSpecAction
 		try
 		{
 			ComponentIdentifier wanted = cspec.getComponentIdentifier();
-			for(Resolution res : WorkspaceInfo.getActiveResolutions())
+			for(Resolution res : WorkspaceInfo.getAllResolutions())
 			{
 				ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
 				if(wanted.matches(cid))

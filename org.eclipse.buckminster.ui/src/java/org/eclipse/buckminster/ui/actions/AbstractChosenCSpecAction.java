@@ -7,9 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -175,29 +172,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 		Shell shell = m_window.getShell();
 		try
 		{
-			ArrayList<Resolution> sorted = new ArrayList<Resolution>();
-			for(Resolution cr : WorkspaceInfo.getActiveResolutions())
-				sorted.add(cr);
-			Collections.sort(sorted, new Comparator<Resolution>()
-			{
-				public int compare(Resolution o1, Resolution o2)
-				{
-					int cmp = o1.getName().compareTo(o2.getName());
-					if(cmp == 0)
-					{
-						IVersion v1 = o1.getVersion();
-						IVersion v2 = o2.getVersion();
-						if(v1 == null)
-							cmp = v2 == null ? 0 : -1;
-						else if(v2 == null)
-							cmp = 1;
-						else
-							cmp = v1.compareTo(v2);
-					}
-					return cmp;
-				}
-			});
-			ComponentsDialog dialog = new ComponentsDialog(shell, "Components known to Buckminster", sorted);
+			ComponentsDialog dialog = new ComponentsDialog(shell, "Components known to Buckminster", WorkspaceInfo.getAllResolutions());
 			if(dialog.open() != Window.OK)
 				return;
 

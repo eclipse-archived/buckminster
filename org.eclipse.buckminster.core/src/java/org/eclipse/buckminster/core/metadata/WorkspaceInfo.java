@@ -8,11 +8,16 @@
 package org.eclipse.buckminster.core.metadata;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -300,6 +305,38 @@ public class WorkspaceInfo
 			for(TimestampedKey tsKey : duplicates)
 				result[idx++] = ress.getElement(tsKey.getKey());
 		return result;
+	}
+
+	public static List<Resolution> getAllResolutions() throws CoreException
+	{
+		HashSet<Resolution> bld = new HashSet<Resolution>();
+		for(Resolution cr : WorkspaceInfo.getActiveResolutions())
+			bld.add(cr);
+
+		for(ComponentIdentifier ci : TargetPlatform.getInstance().getComponents())
+			bld.add(getResolution(ci));
+
+		ArrayList<Resolution> sorted = new ArrayList<Resolution>(bld);
+		Collections.sort(sorted, new Comparator<Resolution>()
+		{
+			public int compare(Resolution o1, Resolution o2)
+			{
+				int cmp = o1.getName().compareTo(o2.getName());
+				if(cmp == 0)
+				{
+					IVersion v1 = o1.getVersion();
+					IVersion v2 = o2.getVersion();
+					if(v1 == null)
+						cmp = v2 == null ? 0 : -1;
+					else if(v2 == null)
+						cmp = 1;
+					else
+						cmp = v1.compareTo(v2);
+				}
+				return cmp;
+			}
+		});
+		return sorted;
 	}
 
 	public static ComponentIdentifier getComponentIdentifier(IResource resource)

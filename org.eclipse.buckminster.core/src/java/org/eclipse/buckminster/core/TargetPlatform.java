@@ -9,7 +9,10 @@ package org.eclipse.buckminster.core;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -117,5 +120,10 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 
 		assert ("file".equals(eclipseHome.getProtocol()));
 		return FileUtils.getFile(eclipseHome);
+	}
+
+	public final List<ComponentIdentifier> getComponents() throws CoreException
+	{
+		return Collections.emptyList();
 	}
 }

@@ -8,14 +8,28 @@
 package org.eclipse.buckminster.pde.internal;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.buckminster.core.ITargetPlatform;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.TargetPlatform;
+import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.internal.core.ifeature.IFeature;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class PDETargetPlatform extends AbstractExtension implements ITargetPlatform
 {
 	public String getArch()
@@ -42,5 +56,31 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	{
 		String location = TargetPlatform.getLocation();
 		return (location == null || location.length() == 0) ? null : new File(location);
+	}
+
+	public List<ComponentIdentifier> getComponents() throws CoreException
+	{
+		PDECore pdeCore = PDECore.getDefault();
+		IFeatureModel[] featureModels = pdeCore.getFeatureModelManager().getModels();
+		IPluginModelBase[] pluginModels = pdeCore.getModelManager().getActiveModels();
+		ArrayList<ComponentIdentifier> bld = new ArrayList<ComponentIdentifier>(featureModels.length + pluginModels.length);
+		IVersionType osgiType = VersionFactory.OSGiType;
+
+		for(IFeatureModel featureModel : featureModels)
+		{
+			IFeature feature = featureModel.getFeature();
+			IVersion version = osgiType.fromString(feature.getVersion());
+			bld.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version));
+		}
+		for(IPluginModelBase pluginModel : pluginModels)
+		{
+			BundleDescription desc = pluginModel.getBundleDescription();
+			if(desc != null)
+			{
+				IVersion version = osgiType.coerce(desc.getVersion());
+				bld.add(new ComponentIdentifier(desc.getSymbolicName(), IComponentType.OSGI_BUNDLE, version));
+			}
+		}
+		return bld;
 	}
 }
