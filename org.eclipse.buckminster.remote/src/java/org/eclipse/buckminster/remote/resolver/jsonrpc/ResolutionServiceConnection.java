@@ -50,6 +50,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 {
 	private static final String ENCRYPT_ALGORITHM = "SHA-256";
 	
+	private IServiceProvider m_serviceProvider;
+	
 	private String m_initializationURL;
 	
 	private String m_serviceURL;
@@ -80,6 +82,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 			throw new BuckminsterException("Remote service provider is not set");
 		}
 
+		m_serviceProvider = provider;
 		m_initializationURL = ProviderUtil.getInitializationPoint(provider);
 		m_serviceURL = ProviderUtil.getTargetPoint(provider);
 		m_login = login;
@@ -143,8 +146,14 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		m_isDone = false;
 
 		// login if credentials are provided
-		if(m_login != null)
-			login(m_login, m_password);
+		if(m_login != null && m_login.length() > 0 && m_password != null && m_password.length() > 0)
+		{
+			int result = login(m_login, m_password);
+			if(result == IAuthenticatedConnection.LOGIN_FAILED)
+				throw new RuntimeException(
+						"Login to remote resolution service provided by " + m_serviceProvider.getName() +
+						" failed, check query resolver login and password in Buckminster preferences");
+		}
 	}
 	
 	private void checkInitialization() throws CoreException
