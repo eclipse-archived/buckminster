@@ -72,7 +72,7 @@ public class CSpecFromSource extends CSpecGenerator
 			return true;
 		StringTokenizer tokens = new StringTokenizer(list, ",");
 		while(tokens.hasMoreTokens())
-			if(item.equals(tokens.nextElement()))
+			if("*".equals(item) || item.equals(tokens.nextElement()))
 				return true;
 		return false;
 	}
@@ -228,9 +228,11 @@ public class CSpecFromSource extends CSpecGenerator
 		if(plugins == null || plugins.length == 0)
 			return;
 
-		String os = TargetPlatform.getOS();
-		String ws = TargetPlatform.getWS();
-		String arch = TargetPlatform.getOSArch();
+		Map<String,String> props = getReader().getNodeQuery().getProperties();
+		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
+		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
+		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
+
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
