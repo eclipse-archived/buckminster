@@ -7,7 +7,6 @@
         <cs:dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
-        <cs:dependency name="org.eclipse.buckminster.slf4j" componentType="osgi.bundle"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="build.core.product" actor="ant">
