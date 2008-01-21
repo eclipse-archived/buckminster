@@ -10,6 +10,7 @@
         <cs:dependency name="org.eclipse.buckminster.p4.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.pde.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.remote.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subclipse.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subclipse.headless.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="0.3.0" versionType="OSGi"/>
@@ -92,8 +93,8 @@
         </cs:public>
         <cs:public name="feature.jars">
             <cs:attribute name="core.category"/>
-            <cs:attribute name="optional.category"/>
             <cs:attribute name="headless.category"/>
+            <cs:attribute name="optional.category"/>
         </cs:public>
         <cs:public name="headless.category">
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.core.headless.feature"/>
@@ -112,15 +113,16 @@
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.pde.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subclipse.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subversive.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.remote.feature"/>
         </cs:public>
         <cs:public name="site.features">
             <cs:attribute name="core.category"/>
             <cs:attribute name="optional.category"/>
         </cs:public>
         <cs:public name="site.rootFiles">
-            <cs:attribute name="root.artifacts"/>
-            <cs:attribute name="build.site.xml"/>
             <cs:attribute name="build.headless-site.xml"/>
+            <cs:attribute name="build.site.xml"/>
+            <cs:attribute name="root.artifacts"/>
         </cs:public>
     </cs:groups>
 </cs:cspec>
