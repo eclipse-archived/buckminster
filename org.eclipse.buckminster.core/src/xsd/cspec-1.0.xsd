@@ -397,6 +397,16 @@
 			</annotation>
 		</attribute>
 		<attribute
+			name="filter"
+			type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					LDAP filter controlling if this artifact is enabled or disabled
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute
 			name="path"
 			type="string"
 			use="optional" />
@@ -448,6 +458,16 @@
 					use="required">
 					<annotation>
 						<documentation>The name of the group</documentation>
+					</annotation>
+				</attribute>
+				<attribute
+					name="filter"
+					type="string"
+					use="optional">
+					<annotation>
+						<documentation>
+							LDAP filter controlling if this group is enabled or disabled
+						</documentation>
 					</annotation>
 				</attribute>
 			</extension>

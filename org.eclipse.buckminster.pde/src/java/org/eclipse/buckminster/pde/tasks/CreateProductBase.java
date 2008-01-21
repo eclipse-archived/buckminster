@@ -61,7 +61,6 @@ import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.build.BrandingIron;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.TargetPlatformHelper;
-import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.iproduct.IArgumentsInfo;
 import org.eclipse.pde.internal.core.iproduct.IConfigurationFileInfo;
 import org.eclipse.pde.internal.core.iproduct.ILauncherInfo;
@@ -242,21 +241,6 @@ public class CreateProductBase
 
 	private boolean copyLauncherExecutable(boolean noExe) throws CoreException
 	{
-		if(!noExe)
-		{
-			IFeatureModel deltaPack = PDECore.getDefault().getFeatureModelManager().getDeltaPackFeature();
-			if(deltaPack != null)
-			{
-				// Find the launcher in the delta-pack.
-				//
-				String tmp = deltaPack.getInstallLocation();
-				if(tmp != null)
-				{
-					File deltaPackLocation = new File(tmp);
-				}
-			}
-		}
-
 		boolean exeCopied = false;
 		File homeDir = new File(TargetPlatform.getLocation());
 		File[] rootFiles = homeDir.listFiles();
@@ -392,7 +376,7 @@ public class CreateProductBase
 	{
 		if(m_hints == null)
 			m_hints = new HashMap<String, String>();
-		FeatureBuilder.addRootsPermissions(m_hints, perm, filesAndFolders);
+		FeatureBuilder.addRootsPermissions(m_hints, perm, filesAndFolders, null);
 	}
 
 	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");

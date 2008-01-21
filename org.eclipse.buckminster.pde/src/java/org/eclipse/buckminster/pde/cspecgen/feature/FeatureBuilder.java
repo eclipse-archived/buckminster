@@ -97,7 +97,7 @@ public class FeatureBuilder extends PDEBuilder
 		monitor.done();
 	}
 
-	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders)
+	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders, String[] spec)
 	{
 		StringBuilder bld = new StringBuilder();
 		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
@@ -105,21 +105,24 @@ public class FeatureBuilder extends PDEBuilder
 		{
 			if(bld.length() > 0)
 				bld.append(',');
-
 			bld.append(tokenizer.nextToken().trim());
 			bld.append(':');
 			bld.append(perm);
 		}
 
-		if(perm.length() > 0)
+		if(bld.length() > 0)
 		{
-			String permissions = hints.get(HINT_PERMISSIONS);
+			String key = (spec != null && spec.length >= 3)
+				? String.format("%s/%s.%s.%s", HINT_PERMISSIONS, spec[0], spec[1], spec[2])
+				: HINT_PERMISSIONS;
+
+			String permissions = hints.get(key);
 			if(permissions != null)
 			{
 				bld.append(',');
 				bld.append(permissions);
 			}
-			hints.put(HINT_PERMISSIONS, bld.toString());
+			hints.put(key, bld.toString());
 		}
 	}
 

@@ -13,6 +13,7 @@ import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -23,7 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.build.IBuildEntry;
-import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -39,32 +39,6 @@ public class CSpecFromSource extends CSpecGenerator
 	private static final String ATTRIBUTE_FEATURE_REFS = "feature.references";
 
 	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root";
-
-	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders)
-	{
-		StringBuilder bld = new StringBuilder();
-		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
-		while(tokenizer.hasMoreTokens())
-		{
-			if(bld.length() > 0)
-				bld.append(',');
-
-			bld.append(tokenizer.nextToken().trim());
-			bld.append(':');
-			bld.append(perm);
-		}
-
-		if(perm.length() > 0)
-		{
-			String permissions = hints.get(HINT_PERMISSIONS);
-			if(permissions != null)
-			{
-				bld.append(',');
-				bld.append(permissions);
-			}
-			hints.put(HINT_PERMISSIONS, bld.toString());
-		}
-	}
 
 	private static boolean isListOK(String list, String item)
 	{
@@ -128,14 +102,6 @@ public class CSpecFromSource extends CSpecGenerator
 		if(m_buildProperties != null)
 		{
 			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null, new Path(BUILD_PROPERTIES_FILE));
-			String os = TargetPlatform.getOS();
-			String ws = TargetPlatform.getWS();
-			String arch = TargetPlatform.getOSArch();
-			String triplet = '.' + os + '.' + ws + '.' + arch;
-			String pfRoot = ROOT + triplet;
-			String permRoot = ROOT + PERMISSIONS;
-			String pfPermRoot = pfRoot + PERMISSIONS;
-
 			for(Map.Entry<String, String> entry : m_buildProperties.entrySet())
 			{
 				String key = entry.getKey();
@@ -145,21 +111,37 @@ public class CSpecFromSource extends CSpecGenerator
 					continue;
 				}
 
-				if(ROOT.equals(key) || pfRoot.equals(key))
-				{
-					createRootsArtifact(entry.getValue());
+				if(!key.startsWith(ROOT))
 					continue;
+
+				Filter filter = null;
+				String[] permSpec = null;
+				String permStr = null;
+				if(key.length() > ROOT.length())
+				{
+					if(key.charAt(ROOT.length()) != '.')
+						continue;
+
+					String[] s = TextUtils.split(key.substring(ROOT.length() + 1), ".");
+					switch(s.length)
+					{
+					case 2:	// permissions.digits
+						permStr = s[1];
+						break;
+					case 3: // os.ws.arch
+						filter = FilterUtils.createFilter(s[0], s[1], s[2], null);
+						break;
+					case 5:	// os.ws.arch.permissions.digits
+						permSpec = s;
+						permStr = s[4];
+						break;
+					}
 				}
 
-				int permIndex;
-				if(key.startsWith(permRoot))
-					permIndex = permRoot.length();
-				else if(key.startsWith(pfPermRoot))
-					permIndex = pfPermRoot.length();
+				if(permStr != null)
+					FeatureBuilder.addRootsPermissions(featureRefs.getInstallerHintsForAdd(), permStr, entry.getValue(), permSpec);
 				else
-					continue;
-
-				addRootsPermissions(featureRefs.getInstallerHintsForAdd(), key.substring(permIndex), entry.getValue());
+					createRootsArtifact(entry.getValue(), filter);
 			}
 
 			GroupBuilder productRoots = cspec.getGroup(ATTRIBUTE_INTERNAL_PRODUCT_ROOT);
@@ -357,7 +339,7 @@ public class CSpecFromSource extends CSpecGenerator
 		featureJars.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
 	}
 
-	private void createRootsArtifact(String filesAndFolders) throws CoreException
+	private void createRootsArtifact(String filesAndFolders, Filter filter) throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
 		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
@@ -423,6 +405,7 @@ public class CSpecFromSource extends CSpecGenerator
 			{
 				int n = preqs.size();
 				productRoot = cspec.addArtifact(ATTRIBUTE_INTERNAL_PRODUCT_ROOT + '.' + n, false, null, path);
+				productRoot.setFilter(filter);
 				productRoots.addLocalPrerequisite(productRoot);
 			}
 

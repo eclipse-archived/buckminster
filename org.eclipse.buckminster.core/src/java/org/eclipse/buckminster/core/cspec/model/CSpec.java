@@ -119,7 +119,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		m_documentation = cspecBld.getDocumentation();
 		m_shortDesc = cspecBld.getShortDesc();
 		m_filter = cspecBld.getFilter();
-		m_selfAttribute = new Attribute(SELF_ARTIFACT, true, null, null)
+		m_selfAttribute = new Attribute(SELF_ARTIFACT)
 		{
 			@Override
 			protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)

@@ -50,7 +50,7 @@ public class ArtifactBuilder extends AttributeBuilder
 	@Override
 	public Artifact createAttribute()
 	{
-		return new Artifact(getName(), isPublic(), getInstallerHints(), getDocumentation(), m_type, m_base, m_paths);
+		return new Artifact(this);
 	}
 
 	public IPath getBase()

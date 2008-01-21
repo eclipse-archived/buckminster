@@ -33,7 +33,7 @@ public class ActionArtifactBuilder extends ArtifactBuilder
 	@Override
 	public Artifact createAttribute()
 	{
-		return new ActionArtifact(m_actionName, getName(), isPublic(), getInstallerHints(), getDocumentation(), getType(), getBase(), getPaths());
+		return new ActionArtifact(this);
 	}
 
 	public String getActionName()

@@ -19,6 +19,8 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -27,8 +29,10 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
@@ -44,11 +48,15 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public static final String PRIVATE_TAG = "private";
 
+	public static final String ATTR_FILTER = "filter";
+
 	private final boolean m_public;
 
 	private final Map<String, String> m_installerHints;
 	
 	private final Documentation m_documentation;
+
+	private final Filter m_filter;
 
 	private CSpec m_cspec;
 
@@ -58,14 +66,16 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		m_public = builder.isPublic();
 		m_installerHints = UUIDKeyed.createUnmodifiableProperties(builder.getInstallerHints());
 		m_documentation = builder.getDocumentation();
+		m_filter = builder.getFilter();
 	}
 
-	Attribute(String name, boolean publ, Map<String, String> installerHints, Documentation documentation)
+	Attribute(String name)
 	{
 		super(name);
-		m_public = publ;
-		m_installerHints = UUIDKeyed.createUnmodifiableProperties(installerHints);
-		m_documentation = documentation;
+		m_public = true;
+		m_installerHints = Collections.emptyMap();
+		m_documentation = null;
+		m_filter = null;
 	}
 
 	public void addDynamicProperties(Map<String, String> properties)
@@ -135,6 +145,25 @@ public abstract class Attribute extends NamedElement implements Cloneable
 			int pfLen = INSTALLER_HINT_PREFIX.length();
 			for(Map.Entry<String, String> hint : myHints.entrySet())
 			{
+				// Check for '/' since it indicates a key that is augmented with
+				// a platform specifier in the form os.ws.arch
+				//
+				String key = hint.getKey();
+				int slashIdx = key.lastIndexOf('/');
+				if(slashIdx > 0)
+				{
+					String[] triplet = TextUtils.split(key.substring(slashIdx + 1), ".");
+					if(triplet.length == 3)
+					{
+						Filter filter = FilterUtils.createFilter(triplet[0], triplet[1], triplet[2], null);
+						if(!FilterUtils.isMatch(filter, ctx.getProperties()))
+							//
+							// Not applicable for the current build
+							//
+							continue;
+						key = key.substring(0, slashIdx);
+					}
+				}
 				bld.setLength(pfLen);
 				bld.append(hint.getKey());
 				bld.append('.');
@@ -168,6 +197,11 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public long getFirstModified(IModelCache ctx, int expectedFileCount, int[] fileCount) throws CoreException
@@ -307,7 +341,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		return true;
+		return FilterUtils.isMatch(m_filter, ctx.getProperties());
 	}
 
 	public boolean isProducedByActions(IModelCache cache) throws CoreException
@@ -333,6 +367,14 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		getCSpec().getComponentIdentifier().toString(bld);
 		bld.append('#');
 		bld.append(getName());
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 	}
 
 	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);

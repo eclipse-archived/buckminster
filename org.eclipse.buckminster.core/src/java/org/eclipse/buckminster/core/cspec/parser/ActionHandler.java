@@ -13,14 +13,11 @@ import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.IPath;
-import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -87,18 +84,6 @@ public class ActionHandler extends AttributeHandler
 		ActionBuilder builder = getActionBuilder();
 		builder.setActorName(getOptionalStringValue(attrs, Action.ATTR_ACTOR));
 		builder.setAlways(getOptionalBooleanValue(attrs, Action.ATTR_ALWAYS, Action.ALWAYS_DEFAULT));
-		String filterStr = getOptionalStringValue(attrs, Action.ATTR_FILTER);
-		if(filterStr != null)
-		{
-			try
-			{
-				builder.setFilter(FilterUtils.createFilter(filterStr));
-			}
-			catch(InvalidSyntaxException e)
-			{
-				throw new SAXParseException(e.getMessage(), getDocumentLocator());
-			}
-		}
 		builder.setAssignConsoleSupport(getOptionalBooleanValue(attrs, Action.ATTR_ASSIGN_CONSOLE_SUPPORT,
 				Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT));
 	}

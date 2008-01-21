@@ -151,7 +151,7 @@ public class Group extends Attribute
 		if(!super.isEnabled(ctx))
 			return false;
 
-		// Return true if at least one of the prerequisites is enabled
+		// Return true if at least one of the prerequisites are enabled
 		//
 		CSpec cspec = getCSpec();
 		int idx = m_prerequisites.size();

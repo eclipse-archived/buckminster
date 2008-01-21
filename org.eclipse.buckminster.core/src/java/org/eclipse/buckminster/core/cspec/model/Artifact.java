@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
+import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
@@ -44,17 +44,18 @@ public class Artifact extends Attribute
 
 	private final Set<IPath> m_paths;
 
-	public Artifact(String name, boolean publ, Map<String,String> installerHints, Documentation documentation, String type, IPath base, Set<IPath> paths)
+	public Artifact(ArtifactBuilder builder)
 	{
-		super(name, publ, installerHints, documentation);
-		m_type = type;
+		super(builder);
+		m_type = builder.getType();
+		IPath base = builder.getBase();
 		if(base != null)
 		{
 			if(!base.hasTrailingSeparator())
 				base = base.addTrailingSeparator();
 		}
 		m_base = base;
-		m_paths = UUIDKeyed.createUnmodifiablePaths(paths);
+		m_paths = UUIDKeyed.createUnmodifiablePaths(builder.getPaths());
 	}
 
 	public IPath getBase()

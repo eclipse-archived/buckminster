@@ -13,11 +13,14 @@ import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -76,6 +79,24 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 	public final AttributeBuilder getAttributeBuilder()
 	{
 		return (AttributeBuilder)getBuilder();
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		String filterStr = getOptionalStringValue(attrs, Attribute.ATTR_FILTER);
+		if(filterStr != null)
+		{
+			try
+			{
+				getAttributeBuilder().setFilter(FilterUtils.createFilter(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator());
+			}
+		}
 	}
 
 	@Override

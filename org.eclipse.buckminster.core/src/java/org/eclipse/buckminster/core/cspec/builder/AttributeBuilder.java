@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
@@ -26,6 +27,8 @@ public abstract class AttributeBuilder extends CSpecElementBuilder
 	private ExpandingProperties m_installerHints = null;
 
 	private boolean m_public = false;
+
+	private Filter m_filter = null;
 
 	AttributeBuilder(CSpecBuilder cspecBuilder)
 	{
@@ -80,6 +83,7 @@ public abstract class AttributeBuilder extends CSpecElementBuilder
 		m_installerHints = null;
 		m_public = false;
 		m_documentation = null;
+		m_filter = null;
 	}
 
 	public abstract Attribute createAttribute();
@@ -92,6 +96,11 @@ public abstract class AttributeBuilder extends CSpecElementBuilder
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public ExpandingProperties getInstallerHints()
@@ -115,7 +124,12 @@ public abstract class AttributeBuilder extends CSpecElementBuilder
 	{
 		m_documentation = documentation;
 	}
-	
+
+	public void setFilter(Filter filter)
+	{
+		m_filter = filter;
+	}
+
 	public void setPublic(boolean flag)
 	{
 		m_public = flag;
@@ -129,6 +143,7 @@ public abstract class AttributeBuilder extends CSpecElementBuilder
 		m_installerHints = null;
 		m_public = attribute.isPublic();
 		m_documentation = attribute.getDocumentation();
+		m_filter = attribute.getFilter();
 		addInstallerHints(attribute.getInstallerHints());
 	}
 

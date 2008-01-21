@@ -8,9 +8,8 @@
 package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
@@ -24,10 +23,10 @@ public class ActionArtifact extends Artifact
 {
 	private final String m_actionName;
 
-	public ActionArtifact(String actionName, String name, boolean publ, Map<String,String> installerHints, Documentation documentation, String type, IPath base, Set<IPath> paths)
+	public ActionArtifact(ActionArtifactBuilder builder)
 	{
-		super(name, publ, installerHints, documentation, type, base, paths);
-		m_actionName = actionName;
+		super(builder);
+		m_actionName = builder.getActionName();
 	}
 
 	public final Action getAction() throws MissingAttributeException
