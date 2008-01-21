@@ -475,7 +475,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	private ISiteFeatureReference[] getSiteFeatureReferences(URL location, IProgressMonitor monitor)
 	throws CoreException
 	{
-		ISite site = SiteManager.getSite(location, true, monitor);
+		ISite site;
+		synchronized(SiteManager.class)
+		{
+			site = SiteManager.getSite(location, true, monitor);
+		}
 		if(site == null)
 			throw new OperationCanceledException();
 
@@ -602,7 +606,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(location.getPath().endsWith(".map"))
 			return getMapPluginEntries(location, monitor);
 
-		ISite site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
+		ISite site;
+		synchronized(SiteManager.class)
+		{
+			site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
+		}
 		if(site == null)
 			throw new OperationCanceledException();
 

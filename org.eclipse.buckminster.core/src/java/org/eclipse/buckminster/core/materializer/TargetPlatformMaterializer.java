@@ -40,7 +40,10 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 	{
 		try
 		{
-			return SiteManager.getSite(destination.toURI().toURL(), false, monitor);
+			synchronized(SiteManager.class)
+			{
+				return SiteManager.getSite(destination.toURI().toURL(), false, monitor);
+			}
 		}
 		catch(CoreException e)
 		{
