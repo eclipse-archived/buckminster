@@ -164,8 +164,8 @@
     <archive path="plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar"/>
     <archive path="plugins/org.tigris.subversion.javahl.win32_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.javahl.win32_1.2.4.jar"/>
-    <archive path="plugins/org.polarion.team.svn.client.javahl.win32_1.1.8.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl.win32_1.1.8.jar"/>
-    <archive path="plugins/org.polarion.team.svn.client.javahl_1.1.8.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.client.javahl_1.1.8.jar"/>
-    <archive path="plugins/org.polarion.team.svn.core_1.1.9.jar" url="http://www.polarion.org/projects/subversive/download/1.1/update-site/plugins/org.polarion.team.svn.core_1.1.9.jar"/>
+    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20071221.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site/plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20071221.jar"/>
+    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20071221.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site/plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20071221.jar"/>
+    <archive path="plugins/org.eclipse.team.svn.core_0.7.0.v20071221.jar" url="http://download.eclipse.org/technology/subversive/0.7/update-site/plugins/org.eclipse.team.svn.core_0.7.0.v20071221.jar"/>
     <archive path="plugins/com.ibm.icu.base_3.6.1.v20070906.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/R200709171314/bundles/com.ibm.icu.base_3.6.1.v20070906.jar"/>
 </site>
