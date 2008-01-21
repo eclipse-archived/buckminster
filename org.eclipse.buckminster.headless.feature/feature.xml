@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.headless.feature"
       label="%featureName"
-      version="1.0.0.v20070304-r32x"
+      version="0.3.0.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.buckminster.pde">
 
@@ -136,7 +136,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.svn.headless.feature"
+         id="org.eclipse.buckminster.subversive.headless.feature"
          version="0.0.0"/>
 
 </feature>
