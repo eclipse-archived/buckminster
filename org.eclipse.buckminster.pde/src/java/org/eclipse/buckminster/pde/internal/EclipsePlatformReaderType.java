@@ -28,12 +28,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
-import org.eclipse.pde.core.plugin.ModelEntry;
+import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.core.PDECore;
-import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
+import org.osgi.framework.Version;
 
 /**
  * A Reader type that knows about features and plugins that are part of an Eclipse installation.
@@ -96,15 +97,29 @@ public class EclipsePlatformReaderType extends CatalogReaderType
 
 	public IPluginModelBase getBestPlugin(String componentName, String desiredVersion)
 	{
-		PluginModelManager manager = PDECore.getDefault().getModelManager();
-		ModelEntry entry = manager.findEntry(componentName);
-		if(entry != null)
+		IPluginModelBase unversioned = null;
+		for(IPluginModelBase model : PluginRegistry.getActiveModels())
 		{
-			IPluginModelBase model = entry.getModel();
-			if(desiredVersion == null || desiredVersion.equals(model.getPluginBase().getVersion()))
-				return model;
+			BundleDescription desc = model.getBundleDescription();
+			if(desc == null)
+				continue;
+
+			if(desc.getSymbolicName().equals(componentName))
+			{
+				Version v = desc.getVersion();
+				if(v == null)
+				{
+					if(desiredVersion == null)
+						return model;
+					unversioned = model;
+					continue;
+				}
+
+				if(desiredVersion == null || desiredVersion.equals(v.toString()))
+					return model;
+			}
 		}
-		return null;
+		return unversioned;
 	}
 
 	public List<IFragmentModel> getFragmentsFor(String pluginId)
