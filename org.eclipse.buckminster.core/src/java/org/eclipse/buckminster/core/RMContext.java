@@ -123,9 +123,6 @@ public class RMContext extends ExpandingProperties
 
 		Map<String,String> additions = new HashMap<String,String>(s_staticAdditions.size() + sysProps.size() + vars.length + 6);
 		additions.putAll(s_staticAdditions);
-		additions.putAll(sysProps);
-		for(IValueVariable var : varMgr.getValueVariables())
-			additions.put(var.getName(), var.getValue());
 
 		try
 		{
@@ -140,6 +137,10 @@ public class RMContext extends ExpandingProperties
 		{
 			e.printStackTrace();
 		}
+		for(IValueVariable var : varMgr.getValueVariables())
+			additions.put(var.getName(), var.getValue());
+
+		additions.putAll(sysProps);
 		return additions;
 	}
 
