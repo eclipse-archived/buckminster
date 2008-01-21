@@ -81,7 +81,7 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 		try
 		{
 			input = new BufferedInputStream(new FileInputStream(m_externalFile));
-			this.load(input, true);
+			load(input, true);
 		}
 		catch(FileNotFoundException e)
 		{
@@ -92,8 +92,17 @@ public class ExternalEditableFeatureModel extends ExternalFeatureModel implement
 			IOUtils.close(input);
 		}
 
-		int ctxQualLen = -1; 
-		if(getFeature().getVersion().indexOf('-') > 0)
+		if(feature == null)
+		{
+			// Parsing failed but AbstractFeatureParser silently ignores
+			// SAXExceptions
+			//
+			throw BuckminsterException.fromMessage("Unable to parse feature: " + m_externalFile);
+		}
+
+		int ctxQualLen = -1;
+		String version = feature.getVersion();
+		if(version != null && version.indexOf('-') > 0)
 		{
 			try
 			{
