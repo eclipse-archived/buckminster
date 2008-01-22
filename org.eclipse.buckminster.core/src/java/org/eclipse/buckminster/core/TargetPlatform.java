@@ -67,6 +67,7 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 			if(candidate == null)
 				throw BuckminsterException.fromMessage("No targetPlatformProvider has been registered with the targetPlatformProviders extension point");
 			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class");
+			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass());
 		}
 		return s_instance;
 	}

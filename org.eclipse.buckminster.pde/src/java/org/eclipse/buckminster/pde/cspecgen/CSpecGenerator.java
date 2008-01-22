@@ -233,6 +233,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				createProduct.addLocalPrerequisite(rootFiles);
 
 			ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
+			GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 			if(product.useFeatures())
 			{
 				for(IProductFeature feature : product.getFeatures())
@@ -249,7 +250,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			}
 			else
 			{
-				GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 				for(IProductPlugin plugin : product.getPlugins())
 				{
 					Dependency dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null, null);
@@ -262,17 +262,18 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					}
 				}
 
-				// Ensure that the launcher is present
-				//
-				Dependency dep = createDependency("org.eclipse.equinox.launcher", IComponentType.OSGI_BUNDLE, null, null);
-				if(addDependency(dep))
-					bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
-
 				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 				featureExports.addLocalPrerequisite(createCopyPluginsAction());
 				featureExports.setRebase(OUTPUT_DIR_SITE);
 				createProduct.addLocalPrerequisite(featureExports);
 			}
+
+			// Ensure that the launcher is present
+			//
+			Dependency dep = createDependency("org.eclipse.equinox.launcher", IComponentType.OSGI_BUNDLE, null, null);
+			if(addDependency(dep))
+				bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+
 			createProduct.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			createProduct.setProductAlias(ALIAS_OUTPUT);
 			createProduct.setProductBase(OUTPUT_DIR);
