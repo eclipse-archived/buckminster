@@ -62,6 +62,11 @@ public interface IPDEConstants
 	static final String ATTRIBUTE_BUNDLE_JAR = "bundle.jar";
 
 	/**
+	 * Denotes a fully deployable bundle in jar format plus fragments from the target platform
+	 */
+	static final String ATTRIBUTE_BUNDLE_AND_FRAGMENTS = "bundle.and.fragments";
+
+	/**
 	 * Denotes a fully deployable bundle in jar format imported into a wrapper using import
 	 */
 	static final String ATTRIBUTE_IMPORTED_JAR = "imported.jar";

@@ -77,6 +77,8 @@ public class CSpecFromBinary extends CSpecGenerator
 		CSpecBuilder cspec = getCSpec();
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		GroupBuilder bundleJars = cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
+		GroupBuilder bundleAndFragments = cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS, true);
+		bundleJars.addLocalPrerequisite(bundleAndFragments);
 
 		IPluginModelBase model = m_plugin.getPluginModel();
 		if(!model.isFragmentModel())
@@ -85,7 +87,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
 			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
 			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
-			bundleJars.addLocalPrerequisite(copyTargetFragments);
+			bundleAndFragments.addLocalPrerequisite(copyTargetFragments);
 		}
 
 		// There are two types of binaries. The one that contain jar files (and must be unpacked
@@ -109,7 +111,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			pluginExport.addPath(new Path(buildArtifactName(true)));
 			pluginExport.setBase(parentDir); // we want the site/plugins folder, i.e. the parent of the jar
 			classpath.addLocalPrerequisite(pluginExport);
-			bundleJars.addLocalPrerequisite(pluginExport);
+			bundleAndFragments.addLocalPrerequisite(pluginExport);
 		}
 		else
 		{
@@ -195,7 +197,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			bundleExport.setProductAlias(ALIAS_OUTPUT);
 			bundleExport.setProductBase(OUTPUT_DIR);
 			bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-			bundleJars.addLocalPrerequisite(bundleExport);
+			bundleAndFragments.addLocalPrerequisite(bundleExport);
 			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
 		}
 		monitor.done();

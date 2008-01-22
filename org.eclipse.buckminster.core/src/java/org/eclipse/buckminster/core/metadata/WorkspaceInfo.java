@@ -110,28 +110,43 @@ public class WorkspaceInfo
 	public static void forceRefreshOnAll(IProgressMonitor monitor)
 	{
 		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, "Problems during metadata refresh", null);
+		monitor.beginTask("Refreshing meta-data", 1000);
 		try
 		{
 			clearPersistentPropertyOnAll();
-			MetadataSynchronizer mds = MetadataSynchronizer.getDefault();
-			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-			monitor.beginTask(null, 100 + projects.length * 50);
+			MonitorUtils.worked(monitor, 50);
+
+			Resolution[] resolutions = StorageManager.getDefault().getResolutions().getElements();
+			int ticksPerRefresh = 900 / resolutions.length;
 
 			// Re-resolve all known bundles from the target platform
 			//
-			for(Resolution resolution : getActiveResolutions())
-				if(resolution.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-					resolveLocal(resolution.getRequest());
-			monitor.worked(100);
+			for(Resolution res : resolutions)
+			{
+				if(!IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
+					continue;
+
+				try
+				{
+					resolveLocal(res.getRequest(), false);
+				}
+				catch(CoreException e)
+				{
+					status.add(e.getStatus());
+				}
+				MonitorUtils.worked(monitor, ticksPerRefresh);
+			}
 
 			// Re-resolve all projects
 			//
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			MonitorUtils.worked(monitor, 50);
+			MetadataSynchronizer mds = MetadataSynchronizer.getDefault();
 			for(IProject project : projects)
 			{
-				monitor.subTask("Refreshing " + project.getName());
 				try
 				{
-					mds.refreshProject(project, MonitorUtils.subMonitor(monitor, 50));
+					mds.refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
 				}
 				catch(CoreException e)
 				{
@@ -274,7 +289,8 @@ public class WorkspaceInfo
 				duplicates.add(prevTsKey);
 
 				CorePlugin.getLogger().debug(
-					"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation);
+						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn,
+						currVersion, location, prevVersion, prevLocation);
 				continue;
 			}
 
@@ -327,7 +343,9 @@ public class WorkspaceInfo
 					IVersion v1 = o1.getVersion();
 					IVersion v2 = o2.getVersion();
 					if(v1 == null)
-						cmp = v2 == null ? 0 : -1;
+						cmp = v2 == null
+								? 0
+								: -1;
 					else if(v2 == null)
 						cmp = 1;
 					else
@@ -524,7 +542,7 @@ public class WorkspaceInfo
 				: VersionDesignator.explicit(v);
 		try
 		{
-			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd));
+			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
 		}
 		catch(CoreException e)
 		{
@@ -584,7 +602,7 @@ public class WorkspaceInfo
 
 			try
 			{
-				candidate = resolveLocal(request);
+				candidate = resolveLocal(request, true);
 			}
 			catch(CoreException e)
 			{
@@ -650,7 +668,7 @@ public class WorkspaceInfo
 				: wsRoot.findFilesForLocation(location);
 	}
 
-	public static Resolution resolveLocal(ComponentRequest request) throws CoreException
+	public static Resolution resolveLocal(ComponentRequest request, boolean useWorkspace) throws CoreException
 	{
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
 		qbld.setRootRequest(request);
@@ -674,8 +692,8 @@ public class WorkspaceInfo
 		nodeBld = new AdvisorNodeBuilder();
 		nodeBld.setNamePattern(Pattern.compile(".*"));
 		nodeBld.setUseTargetPlatform(true);
-		nodeBld.setUseWorkspace(true);
-		nodeBld.setUseMaterialization(true);
+		nodeBld.setUseWorkspace(useWorkspace);
+		nodeBld.setUseMaterialization(useWorkspace);
 		nodeBld.setUseRemoteResolution(false);
 		qbld.addAdvisorNode(nodeBld);
 

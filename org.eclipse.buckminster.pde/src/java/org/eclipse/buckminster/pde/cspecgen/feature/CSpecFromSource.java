@@ -236,7 +236,7 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 
 			cspec.addDependency(dep);
-			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JAR);
+			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 		}
 	}

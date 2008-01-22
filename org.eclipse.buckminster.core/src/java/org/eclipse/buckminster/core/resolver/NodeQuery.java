@@ -511,7 +511,7 @@ public class NodeQuery implements Comparator<VersionMatch>
 	 *            The properties that contains the component request.
 	 * @return <code>true</code> if an existing project can be used.
 	 */
-	public boolean useExistingProject()
+	public boolean useWorkspace()
 	{
 		return getComponentQuery().useWorkspace(getComponentRequest());
 	}
@@ -523,7 +523,7 @@ public class NodeQuery implements Comparator<VersionMatch>
 	 * 
 	 * @return <code>true</code> if installed feature or plugin can be used.
 	 */
-	public boolean useInstalledComponent()
+	public boolean useTargetPlatform()
 	{
 		return getComponentQuery().useTargetPlatform(getComponentRequest());
 	}

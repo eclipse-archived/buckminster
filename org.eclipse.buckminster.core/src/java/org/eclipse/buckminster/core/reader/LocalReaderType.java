@@ -80,7 +80,7 @@ public class LocalReaderType extends URLCatalogReaderType
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
-		return nodeQuery.useExistingProject() || nodeQuery.useMaterialization()
+		return nodeQuery.useWorkspace() || nodeQuery.useMaterialization()
 			? new DefaultVersionFinder(provider, ctype, nodeQuery)
 			: s_blindFinder;
 	}

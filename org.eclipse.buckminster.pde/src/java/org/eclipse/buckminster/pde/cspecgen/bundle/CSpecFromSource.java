@@ -446,15 +446,17 @@ public class CSpecFromSource extends CSpecGenerator
 		buildPlugin.setUpToDatePolicy(UpToDatePolicy.COUNT);
 		buildPlugin.setProductFileCount(1);
 
+		GroupBuilder bundleAndFragments = cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS, true);
 		if(!m_plugin.getPluginModel().isFragmentModel())
 		{
 			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
 			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
 			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
-			bundleJars.addLocalPrerequisite(copyTargetFragments);
+			bundleAndFragments.addLocalPrerequisite(copyTargetFragments);
 		}
-		bundleJars.addLocalPrerequisite(buildPlugin);
+		bundleAndFragments.addLocalPrerequisite(buildPlugin);
+		bundleJars.addLocalPrerequisite(bundleAndFragments);
 
 		addProducts(MonitorUtils.subMonitor(monitor, 20));
 		monitor.done();

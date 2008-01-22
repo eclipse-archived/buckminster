@@ -174,7 +174,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	protected DepNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
-		if(query.useMaterialization() || query.useExistingProject())
+		if(query.useMaterialization() || query.useWorkspace())
 		{
 			try
 			{
@@ -183,7 +183,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				{
 					// Resolution is from target platform.
 					//
-					if(!query.useInstalledComponent())
+					if(!query.useTargetPlatform())
 						res = null;
 				}
 				else
@@ -195,7 +195,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 						//
 						res = null;
 					}
-					else if(!query.useExistingProject() && WorkspaceInfo.getProject(mat) != null)
+					else if(!query.useWorkspace() && WorkspaceInfo.getProject(mat) != null)
 					{
 						// This component is bound to the workspace and we
 						// are not allowed to use it when we resolve
@@ -217,7 +217,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		// If we get to this point, we didn't find any existing resolution that
 		// could be used.
 		//
-		if(query.useExistingProject())
+		if(query.useWorkspace())
 		{
 			// Generate the resolution from a project in the workspace
 			//
@@ -249,7 +249,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			}
 		}
 
-		if(query.useInstalledComponent())
+		if(query.useTargetPlatform())
 		{
 			// Generate the resolution from the target platform
 			//
