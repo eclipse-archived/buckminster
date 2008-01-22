@@ -563,11 +563,15 @@ public class CreateProductBase
 
 	private void printBundleList(Writer writer, String bundleList) throws IOException, CoreException
 	{
-		if(m_product.useFeatures())
-		{
-			writer.write(bundleList);
-			return;
-		}
+		Dictionary<String, String> environment = new Hashtable<String, String>(4);
+		environment.put("osgi.os", m_os);
+		environment.put("osgi.ws", m_ws);
+		environment.put("osgi.arch", m_arch);
+		environment.put("osgi.nl", m_nl);
+		List<BundleDescription> pluginModels = getPluginModels();
+		HashSet<String> pluginIDs = new HashSet<String>(pluginModels.size());
+		for(BundleDescription bundle : pluginModels)
+			pluginIDs.add(bundle.getSymbolicName());
 
 		// include only bundles that are actually in this product configuration
 		//
@@ -579,7 +583,7 @@ public class CreateProductBase
 			String id = delimIdx >= 0
 					? token.substring(0, delimIdx)
 					: token;
-			if(!m_product.containsPlugin(id))
+			if(!pluginIDs.contains(id))
 				continue;
 
 			if(!first)
@@ -592,16 +596,11 @@ public class CreateProductBase
 			first = false;
 		}
 
-		if(!m_product.containsPlugin("org.eclipse.update.configurator"))
+		if(!pluginIDs.contains("org.eclipse.update.configurator"))
 		{
 			bundles.add("org.eclipse.osgi");
 
-			Dictionary<String, String> environment = new Hashtable<String, String>(4);
-			environment.put("osgi.os", m_os);
-			environment.put("osgi.ws", m_ws);
-			environment.put("osgi.arch", m_arch);
-			environment.put("osgi.nl", m_nl);
-			for(BundleDescription bundle : getPluginModels())
+			for(BundleDescription bundle : pluginModels)
 			{
 				String filterSpec = bundle.getPlatformFilter();
 				try
