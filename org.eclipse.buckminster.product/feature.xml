@@ -5,18 +5,16 @@
       version="0.3.0.qualifier"
       provider-name="Eclipse.org">
 
-   <description>
+   <description url="http://www.eclipse.org/buckminster">
       This feature includes all features needed for the product. The product then includes only this feature and nothing else.
    </description>
 
-   <copyright>
-      (c) 2004-2008
-Thomas Hallgren, Kenneth Olwing, Mitch Sonies
-Pontus Rydin, Nils Unden, Peer Torngren
+   <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
+      Copyright (c) 2006-2008, Cloudsmith Inc.
 The code, documentation and other materials contained herein have been
-licensed under the Eclipse Public License - v 1.0 by the individual
-copyright holders listed above, as Initial Contributors under such license.
-The text of such license is available at www.eclipse.org.
+licensed under the Eclipse Public License - v 1.0 by the copyright holder
+listed above, as the Initial Contributor under such license. The text of
+such license is available at www.eclipse.org.
    </copyright>
 
    <plugin

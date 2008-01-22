@@ -6,11 +6,11 @@
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.subversive">
 
-   <description url="http://www.example.com/description">
+   <description url="http://www.eclipse.org/buckminster">
       This feature provides Subversion integration for Buckminster using Subversive client from http://www.polarion.org
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
       Copyright (c) 2006-2008, Cloudsmith Inc.
 The code, documentation and other materials contained herein have been
 licensed under the Eclipse Public License - v 1.0 by the copyright holder

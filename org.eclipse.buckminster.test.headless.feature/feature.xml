@@ -5,11 +5,11 @@
       version="0.3.0"
       provider-name="Eclipse.org">
 
-   <description url="http://www.example.com/description">
+   <description url="http://www.eclipse.org/buckminster">
       This feature provides a headless Buckminster JUnit testing command
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
       Copyright (c) 2006-2008, Cloudsmith Inc.
 The code, documentation and other materials contained herein have been
 licensed under the Eclipse Public License - v 1.0 by the copyright holder
