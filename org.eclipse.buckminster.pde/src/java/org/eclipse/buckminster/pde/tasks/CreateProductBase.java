@@ -167,61 +167,72 @@ public class CreateProductBase
 		createConfigIniFile(new File(outputDir, "configuration"), monitor);
 		createEclipseProductFile(outputDir, monitor);
 		createLauncherIniFile(outputDir, monitor);
-		String launcherName = getLauncherName();
-
-		// We have special filename used by headless launchers that doesn't need
-		// a binary launcher with splash screen and all.
-		//
-		createLauncher("_removethisfile".equals(launcherName));
+		createLauncher();
 	}
 
-	private void createLauncher(boolean noExe) throws Exception
+	public static final String MACOSX_LAUNCHER_FOLDER = "Eclipse.app/Contents/MacOS";
+
+	public static final String DEFAULT_LAUNCHER = "launcher";
+
+	public static final String DEFAULT_LAUNCHER_WIN32 = DEFAULT_LAUNCHER + ".exe";
+
+	private void createLauncher() throws Exception
 	{
 		String launcherName = getLauncherName();
-		if(!hasDeltaPackFeature())
+		boolean hasDeltaPack = hasDeltaPackFeature();
+
+		if(hasDeltaPack)
 		{
-			copyLauncherExecutable(noExe);
-			addChmodHint("755", launcherName);
-			if(m_ws.equals(Platform.WS_MOTIF) && m_os.equals(Platform.OS_LINUX))
-				addChmodHint("755", "libXm.so.2");
-			else if(TargetPlatform.getOS().equals("macosx"))
-				addChmodHint("755", "${launcherName}.app/Contents/MacOS/${launcherName}");
+			boolean nameOK = m_os.equals(Platform.OS_WIN32)
+					? DEFAULT_LAUNCHER_WIN32.equalsIgnoreCase(launcherName)
+					: DEFAULT_LAUNCHER.equals(launcherName);
+
+			if(!nameOK && !(m_os.equals(Platform.OS_MACOSX) || m_os.equals(Platform.OS_WIN32)))
+			{
+				// Launcher name will change so we need to add a new chmod
+				// if this isn't on a Windows (in which case it doesn't matter)
+				// or on a MacOS (in which case the BrandingIron will do it
+				// for us).
+				//
+				addChmodHint("755", launcherName);
+			}
+		}
+		else
+		{
+			// Simulate delta pack from the current platform installation
+			//
+			copyLauncherExecutable();
 		}
 
-		File home = m_outputDir.toFile();
-		if(new File(home, "eclipse").isFile()
-		|| new File(home, "eclipse.exe").isFile())
-		{
-			ILauncherInfo info = m_product.getLauncherInfo();
-			if(info == null)
-				return;
+		ILauncherInfo info = m_product.getLauncherInfo();
+		if(info == null)
+			return;
 
-			String images = null;
-			if(Platform.OS_WIN32.equals(m_os))
-			{
-				images = getWin32Images(info);
-			}
-			else if(Platform.OS_SOLARIS.equals(m_os))
-			{
-				images = getSolarisImages(info);
-			}
-			else if(Platform.OS_LINUX.equals(m_os))
-			{
-				images = getExpandedPath(info.getIconPath(ILauncherInfo.LINUX_ICON));
-			}
-			else if(Platform.OS_MACOSX.equals(m_os))
-			{
-				images = getExpandedPath(info.getIconPath(ILauncherInfo.MACOSX_ICON));
-			}
-	
-			BrandingIron bi = new BrandingIron();
-			bi.setName(launcherName);
-			bi.setOS(m_os);
-			bi.setRoot(m_outputDir.toOSString());
-			if(images != null)
-				bi.setIcons(images);
-			bi.brand();
+		String images = null;
+		if(Platform.OS_WIN32.equals(m_os))
+		{
+			images = getWin32Images(info);
 		}
+		else if(Platform.OS_SOLARIS.equals(m_os))
+		{
+			images = getSolarisImages(info);
+		}
+		else if(Platform.OS_LINUX.equals(m_os))
+		{
+			images = getExpandedPath(info.getIconPath(ILauncherInfo.LINUX_ICON));
+		}
+		else if(Platform.OS_MACOSX.equals(m_os))
+		{
+			images = getExpandedPath(info.getIconPath(ILauncherInfo.MACOSX_ICON));
+		}
+
+		BrandingIron bi = new BrandingIron();
+		bi.setName(launcherName);
+		bi.setOS(m_os);
+		bi.setRoot(m_outputDir.toOSString());
+		if(images != null)
+			bi.setIcons(images);
+		bi.brand();
 	}
 
 	private boolean hasDeltaPackFeature()
@@ -239,13 +250,12 @@ public class CreateProductBase
 		return false;
 	}
 
-	private boolean copyLauncherExecutable(boolean noExe) throws CoreException
+	private void copyLauncherExecutable() throws CoreException
 	{
-		boolean exeCopied = false;
 		File homeDir = new File(TargetPlatform.getLocation());
 		File[] rootFiles = homeDir.listFiles();
 		if(rootFiles == null)
-			return exeCopied;
+			return;
 
 		String targetOs = TargetPlatform.getOS();
 		boolean isWin32 = Platform.OS_WIN32.equals(targetOs);
@@ -263,14 +273,19 @@ public class CreateProductBase
 				copyFile = true;
 			else
 			{
-				if(noExe || isMac)
+				if(isMac)
+				{
+					if("Eclipse.app".equals(name))
+						FileUtils.deepCopy(rootFile, new File(dest, name), ConflictResolution.REPLACE, new NullProgressMonitor());
 					continue;
+				}
+
 				if(isWin32)
 				{
 					if("eclipse.exe".equals(name))
 					{
 						copyFile = true;
-						exeCopied = true;
+						name = DEFAULT_LAUNCHER_WIN32;
 					}
 				}
 				else
@@ -278,16 +293,19 @@ public class CreateProductBase
 					if("eclipse".equals(name))
 					{
 						copyFile = true;
-						exeCopied = true;
+						name = DEFAULT_LAUNCHER;
+						addChmodHint("755", getLauncherName());
 					}
-					else if(name.equals("libXm.so") || name.startsWith("libXm.so."))
+					else if(name.startsWith("libXm.so") || name.startsWith("libcairo-swt.so"))
+					{
 						copyFile = true;
+						addChmodHint("755", name);
+					}
 				}
 			}
 			if(copyFile)
-				FileUtils.copyFile(rootFile, dest, rootFile.getName(), monitor);
+				FileUtils.copyFile(rootFile, dest, name, monitor);
 		}
-		return exeCopied;
 	}
 
 	public Map<String, String> getHints()
@@ -628,7 +646,7 @@ public class CreateProductBase
 		// need to place launcher.ini file in special directory for MacOSX (bug 164762)
 		//
 		if(Platform.OS_MACOSX.equals(m_os))
-			outputDir = new File(outputDir, "Eclipse.app/Contents/MacOS");
+			outputDir = new File(outputDir, MACOSX_LAUNCHER_FOLDER);
 
 		FileUtils.prepareDestination(outputDir, ConflictResolution.UPDATE, monitor);
 		String lineDelimiter = getLineDelimiter();
