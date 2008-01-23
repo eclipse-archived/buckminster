@@ -159,27 +159,29 @@ public class PerformContext implements IActionContext
 		for(Prerequisite prereq : prereqs)
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, this);
-			if(ag == null)
-				continue;
-
 			PathGroup[] paths;
-			if(prereq.isPatternFilter())
-			{
-				if(filters == null)
-					filters = new Stack<IAttributeFilter>();
-				filters.push(prereq);
-				paths = ag.getPathGroups(this, filters);
-				filters.pop();
-			}
+			if(ag == null)
+				paths = new PathGroup[0];
 			else
-				paths = ag.getPathGroups(this, filters);
-
-			paths = normalizePathGroups(paths);
-			paths = trimNonExistentBases(paths);
-			if(!prereq.isExternal())
 			{
-				if(prereqRebase != null)
-					paths = Group.rebase(prereqRebase, paths);
+				if(prereq.isPatternFilter())
+				{
+					if(filters == null)
+						filters = new Stack<IAttributeFilter>();
+					filters.push(prereq);
+					paths = ag.getPathGroups(this, filters);
+					filters.pop();
+				}
+				else
+					paths = ag.getPathGroups(this, filters);
+	
+				paths = normalizePathGroups(paths);
+				paths = trimNonExistentBases(paths);
+				if(!prereq.isExternal())
+				{
+					if(prereqRebase != null)
+						paths = Group.rebase(prereqRebase, paths);
+				}
 			}
 			String alias = prereq.getAlias();
 			if(alias != null)
