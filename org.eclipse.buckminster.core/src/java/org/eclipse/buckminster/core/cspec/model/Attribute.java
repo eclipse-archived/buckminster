@@ -19,10 +19,12 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -83,8 +85,29 @@ public abstract class Attribute extends NamedElement implements Cloneable
 	{
 		String actionOutput;
 		CSpec cspec = getCSpec();
+
+		// Create a unique folder name to use as sub-folder in the temporary area
+		// and under the output root
+		//
+		StringBuilder bld = new StringBuilder();
+
+		bld.append(cspec.getName());
+		IVersion version = cspec.getVersion();
+		if(version != null)
+		{
+			bld.append('_');
+			bld.append(version);
+		}
+		String ctype = cspec.getComponentTypeID();
+		if(!IComponentType.UNKNOWN.equals(ctype))
+		{
+			bld.append('-');
+			bld.append(cspec.getComponentTypeID());
+		}
+		String uniqueFolder = bld.toString();
+
 		IPath buckminsterTempRoot = Path.fromOSString(
-				System.getProperty("java.io.tmpdir")).append("buckminster").append(cspec.getName());
+				System.getProperty("java.io.tmpdir")).append("buckminster").append(uniqueFolder);
 
 		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		if(outputRoot != null)
@@ -92,7 +115,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 			// Output root must be qualified with component name to avoid
 			// conflicts
 			//
-			actionOutput = Path.fromOSString(outputRoot).append(cspec.getName()).toPortableString();
+			actionOutput = Path.fromOSString(outputRoot).append(uniqueFolder).toPortableString();
 		}
 		else
 			actionOutput = buckminsterTempRoot.append("build").toPortableString();
@@ -308,7 +331,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public String getQualifiedName()
 	{
-		return getCSpec().getName() + '#' + getName();
+		return getCSpec().getComponentIdentifier().toString() + '#' + getName();
 	}
 
 	public IPath getUniquePath(IPath root, IModelCache modelCtx) throws CoreException

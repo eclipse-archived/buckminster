@@ -681,7 +681,7 @@ public class WorkspaceInfo
 		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$"));
 		nodeBld.setComponentTypeID(request.getComponentTypeID());
 		nodeBld.setUseTargetPlatform(true);
-		nodeBld.setUseWorkspace(true);
+		nodeBld.setUseWorkspace(useWorkspace);
 		nodeBld.setUseMaterialization(false);
 		nodeBld.setUseRemoteResolution(false);
 		qbld.addAdvisorNode(nodeBld);
