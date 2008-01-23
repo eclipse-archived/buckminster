@@ -199,6 +199,9 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		for(Prerequisite child : getPrerequisites(filters))
 		{
 			Attribute refAttr = child.getReferencedAttribute(cspec, ctx);
+			if(refAttr == null)
+				continue;
+
 			if(child.isPatternFilter())
 			{
 				if(filters == null)
@@ -364,7 +367,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 
 	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		return FilterUtils.isMatch(m_filter, ctx.getProperties());
+		return m_filter == null || FilterUtils.isMatch(m_filter, ctx.getProperties());
 	}
 
 	public boolean isProducedByActions(IModelCache cache) throws CoreException

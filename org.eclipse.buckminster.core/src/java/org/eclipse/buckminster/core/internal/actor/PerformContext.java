@@ -159,6 +159,9 @@ public class PerformContext implements IActionContext
 		for(Prerequisite prereq : prereqs)
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, this);
+			if(ag == null)
+				continue;
+
 			PathGroup[] paths;
 			if(prereq.isPatternFilter())
 			{

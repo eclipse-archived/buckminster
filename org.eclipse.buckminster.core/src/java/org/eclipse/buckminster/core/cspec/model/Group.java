@@ -155,6 +155,9 @@ public class Group extends Attribute
 		//
 		CSpec cspec = getCSpec();
 		int idx = m_prerequisites.size();
+		if(idx == 0)
+			return true;
+
 		while(--idx >= 0)
 			if(m_prerequisites.get(idx).isEnabled(ctx, cspec))
 				return true;
@@ -167,8 +170,11 @@ public class Group extends Attribute
 		CSpec cspec = getCSpec();
 		int idx = m_prerequisites.size();
 		while(--idx >= 0)
-			if(m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx).isProducedByActions(ctx))
+		{
+			Attribute attr = m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx);
+			if(attr != null && attr.isProducedByActions(ctx))
 				return true;
+		}
 		return false;
 	}
 
@@ -211,7 +217,11 @@ public class Group extends Attribute
 		ArrayList<PathGroup> bld = new ArrayList<PathGroup>();
 		for(Prerequisite pr : getPrerequisites(filters))
 		{
-			if(!pr.isContributor() || !pr.isEnabled(ctx, cspec))
+			if(!pr.isContributor())
+				continue;
+
+			Attribute ag = pr.getReferencedAttribute(cspec, ctx);
+			if(ag == null)
 				continue;
 
 			PathGroup[] pathGroups;
@@ -220,11 +230,11 @@ public class Group extends Attribute
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();
 				filters.push(pr);
-				pathGroups = pr.getReferencedAttribute(cspec, ctx).getPathGroups(ctx, filters);
+				pathGroups = ag.getPathGroups(ctx, filters);
 				filters.pop();
 			}
 			else
-				pathGroups = pr.getReferencedAttribute(cspec, ctx).getPathGroups(ctx, filters);
+				pathGroups = ag.getPathGroups(ctx, filters);
 
 			if(!pr.isExternal() && prereqRebase != null)
 				pathGroups = rebase(prereqRebase, pathGroups);

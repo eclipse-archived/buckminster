@@ -913,14 +913,25 @@ public class CSpec extends UUIDKeyed implements ISaxable
 	public Attribute getReferencedAttribute(String componentName, String attributeName, IModelCache ctx)
 			throws CoreException
 	{
+		CSpec referencedCSpec;
 		if(componentName == null)
-			return getRequiredAttribute(attributeName);
+			referencedCSpec = this;
+		else
+		{
+			Dependency dep = getDependency(componentName);
+			if(!dep.isEnabled(ctx.getProperties()))
+				return null;
 
-		CSpec referencedCSpec = ctx.findCSpec(this, getDependency(componentName));
+			referencedCSpec = ctx.findCSpec(this, dep);
+		}
+
 		Attribute referencedAttr = referencedCSpec.getRequiredAttribute(attributeName);
-		if(!referencedAttr.isPublic())
-			throw new MissingAttributeException(referencedCSpec.getComponentIdentifier().toString(), attributeName,
-					true);
-		return referencedAttr;
+		if(referencedAttr.isEnabled(ctx))
+		{
+			if(referencedCSpec == this || referencedAttr.isPublic())
+				return referencedAttr;
+			throw new MissingAttributeException(referencedCSpec.getComponentIdentifier().toString(), attributeName, true);
+		}
+		return null;
 	}
 }

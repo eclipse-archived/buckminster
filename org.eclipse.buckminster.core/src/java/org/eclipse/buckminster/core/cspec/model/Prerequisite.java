@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -147,14 +146,9 @@ public class Prerequisite extends NamedElement implements IAttributeFilter
 
 	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException
 	{
-		if(isExternal())
-		{
-			// Omit if the dependency is filtered out
-			//
-			Dependency dep = cspec.getDependency(getComponentName());
-			return FilterUtils.isMatch(dep.getFilter(), cache.getProperties());
-		}
-		return cspec.getAttribute(getAttribute()).isEnabled(cache);
+		return isExternal()
+			? (getReferencedAttribute(cspec, cache) != null)
+			: cspec.getAttribute(getAttribute()).isEnabled(cache);
 	}
 
 	@Override

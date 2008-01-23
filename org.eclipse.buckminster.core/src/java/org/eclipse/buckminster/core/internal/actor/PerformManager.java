@@ -346,7 +346,11 @@ public class PerformManager implements IPerformManager
 			seen.add(attrId);
 			CSpec cspec = attribute.getCSpec();
 			for(Prerequisite preq : attribute.getPrerequisites())
-				addAttributeChildren(ctx, preq.getReferencedAttribute(cspec, ctx), seen, ordered);
+			{
+				Attribute ag = preq.getReferencedAttribute(cspec, ctx);
+				if(ag != null)
+					addAttributeChildren(ctx, ag, seen, ordered);
+			}
 
 			if(attribute instanceof Action)
 				ordered.add((Action)attribute);

@@ -132,6 +132,9 @@ public class Action extends Attribute
 		for(Prerequisite prereq : getPrerequisites(null))
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, ctx);
+			if(ag == null)
+				continue;
+
 			if(prereq.isPatternFilter())
 			{
 				if(filters == null)
@@ -474,7 +477,8 @@ public class Action extends Attribute
 				continue;
 
 			Attribute ag = pq.getReferencedAttribute(cspec, ctx);
-			ag.appendRelativeFiles(ctx, filesAndDates);
+			if(ag != null)
+				ag.appendRelativeFiles(ctx, filesAndDates);
 		}
 		return filesAndDates;
 	}

@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -74,6 +76,11 @@ public class Dependency extends ComponentRequest
 	public Filter getFilter()
 	{
 		return m_filter;
+	}
+
+	public boolean isEnabled(Map<String, String> properties)
+	{
+		return m_filter == null || FilterUtils.isMatch(m_filter, properties);
 	}
 
 	@Override
