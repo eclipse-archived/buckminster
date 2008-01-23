@@ -116,8 +116,11 @@ public class WorkspaceInfo
 			clearPersistentPropertyOnAll();
 			MonitorUtils.worked(monitor, 50);
 
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 			Resolution[] resolutions = StorageManager.getDefault().getResolutions().getElements();
-			int ticksPerRefresh = 900 / resolutions.length;
+			MonitorUtils.worked(monitor, 50);
+
+			int ticksPerRefresh = 900 / (resolutions.length > 0 ? resolutions.length : (projects.length > 0 ? projects.length : 1));
 
 			// Re-resolve all known bundles from the target platform
 			//
@@ -139,8 +142,6 @@ public class WorkspaceInfo
 
 			// Re-resolve all projects
 			//
-			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-			MonitorUtils.worked(monitor, 50);
 			MetadataSynchronizer mds = MetadataSynchronizer.getDefault();
 			for(IProject project : projects)
 			{
