@@ -96,7 +96,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 		if(version != null)
 		{
 			bld.append('_');
-			bld.append(version);
+			bld.append(version.replaceQualifier(null));
 		}
 		String ctype = cspec.getComponentTypeID();
 		if(!IComponentType.UNKNOWN.equals(ctype))
