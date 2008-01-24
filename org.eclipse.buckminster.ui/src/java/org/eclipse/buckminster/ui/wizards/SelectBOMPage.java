@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -29,10 +30,13 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -54,15 +58,47 @@ public class SelectBOMPage extends AbstractQueryPage
 {
 	private Label m_topComponentLabel;
 
+	private Text m_fileNameText;
+
 	private Text m_topComponent;
 
 	private Button m_loadButton;
 
 	private URL m_bomOrMSpecURL;
 
-	public SelectBOMPage()
+	public SelectBOMPage(IStructuredSelection selection)
 	{
 		super("");
+		if(selection != null && selection.size() == 1)
+		{
+			Object selected = selection.getFirstElement();
+			if(selected instanceof IFile)
+			{
+				IPath location = ((IFile)selected).getLocation();
+				if(location != null)
+				{
+					try
+					{
+						m_bomOrMSpecURL = location.toFile().toURI().toURL();
+					}
+					catch(MalformedURLException e)
+					{
+						// ignore
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void pageIsShowing()
+	{
+		QueryWizard qw = getQueryWizard();
+		if(m_bomOrMSpecURL != null && !qw.hasBOM())
+		{
+			loadBomOrMSpec();
+			m_fileNameText.setText(m_bomOrMSpecURL.toString());
+		}
 	}
 
 	@Override
@@ -117,9 +153,9 @@ public class SelectBOMPage extends AbstractQueryPage
 		lbl.setText("Enter a URL of either MSPEC, BOM, or CQUERY (use a URL or a file system path)");
 		lbl.setToolTipText("Enter a URL that appoints either a Materialization Specification, a Bill of Materials, or a Component Query");
 
-		final Text fileName = new Text(composite, SWT.BORDER);
-		fileName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		fileName.addModifyListener(new ModifyListener()
+		m_fileNameText = new Text(composite, SWT.BORDER);
+		m_fileNameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		m_fileNameText.addModifyListener(new ModifyListener()
 		{
 			public void modifyText(ModifyEvent me)
 			{
@@ -136,7 +172,7 @@ public class SelectBOMPage extends AbstractQueryPage
 				dlg.setFilterExtensions(new String[] { "*.mspec", "*.cquery", "*.bom" });
 				String name = dlg.open();
 				if(name != null)
-					fileName.setText(name);
+					m_fileNameText.setText(name);
 			}
 		});
 		browseButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));

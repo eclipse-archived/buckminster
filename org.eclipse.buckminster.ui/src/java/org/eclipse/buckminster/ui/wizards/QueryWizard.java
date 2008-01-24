@@ -28,6 +28,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
@@ -41,6 +42,16 @@ public class QueryWizard extends Wizard implements INewWizard
 	{
 		final QueryWizard wizard = new QueryWizard(context, bom);
 		wizard.init(PlatformUI.getWorkbench(), null);
+		WizardDialog dialog = new WizardDialog(site.getShell(), wizard);
+		dialog.setPageSize(300, 480);
+		dialog.open();
+	}
+
+	public static void openWizard(IWorkbenchPart targetPart, IStructuredSelection selection)
+	{
+		final QueryWizard wizard = new QueryWizard();
+		IWorkbenchPartSite site = targetPart.getSite();
+		wizard.init(site.getWorkbenchWindow().getWorkbench(), selection);
 		WizardDialog dialog = new WizardDialog(site.getShell(), wizard);
 		dialog.setPageSize(300, 480);
 		dialog.open();
@@ -82,7 +93,7 @@ public class QueryWizard extends Wizard implements INewWizard
 		WizardPage page;
 		if(m_bom == null)
 		{
-			page = new SelectBOMPage();
+			page = new SelectBOMPage(selection);
 			page.setTitle(title);
 			addPage(page);
 		}

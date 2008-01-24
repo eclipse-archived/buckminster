@@ -29,6 +29,22 @@
 				enablesFor="1" id="org.eclipse.buckminster.ui.invokeAction"
 				label="%InvokeAction"
 				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec" />
+			<action
+				class="org.eclipse.buckminster.ui.actions.ImportAction"
+				enablesFor="1" id="org.eclipse.buckminster.ui.importAction"
+				label="%ImportAction"
+				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec">
+				 <enablement>
+				  <and>
+				   <objectClass name="org.eclipse.core.resources.IFile"/>
+				   <or>
+				   	<objectState name="extension" value="mspec"/>
+				   	<objectState name="extension" value="bom"/>
+				   	<objectState name="extension" value="cquery"/>
+				   </or>
+				  </and>
+				 </enablement>
+				</action>
 		</objectContribution>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
