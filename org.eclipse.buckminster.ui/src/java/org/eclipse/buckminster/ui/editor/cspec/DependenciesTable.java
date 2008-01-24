@@ -65,24 +65,30 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 
 	class FilterValidator implements IValidator
 	{
-		Filter m_filter;
+		private ValidatorException m_lastFilterException;
 
-		public Filter getFilter()
+		public Filter createFilter(String value)
 		{
-			return m_filter;
+			value = TextUtils.notEmptyString(value);
+			Filter filter = null;
+			m_lastFilterException = null;
+			
+			try
+			{
+				filter = value == null ? null : FilterUtils.createFilter(value);
+			}
+			catch(InvalidSyntaxException e)
+			{
+				m_lastFilterException = new ValidatorException(e.getMessage());
+			}
+			
+			return filter;
 		}
 
 		public void validate(Object... arg) throws ValidatorException
 		{
-			try
-			{
-				m_filter = FilterUtils.createFilter(arg[0].toString());
-			}
-			catch(InvalidSyntaxException e)
-			{
-				m_filter = null;
-				throw new ValidatorException(e.getMessage());
-			}
+			if(m_lastFilterException != null)
+				throw m_lastFilterException;
 		}		
 	}
 
@@ -90,10 +96,13 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 	
 	private VersionDesignatorValidator m_versionDesignatorValidator;
 	
+	private FilterValidator m_filterValidator;
+	
 	public DependenciesTable(List<DependencyBuilder> data, CSpecBuilder cspecBuilder)
 	{
 		super(data);
 		m_cspecBuilder = cspecBuilder;
+		m_filterValidator = new FilterValidator();
 	}
 
 	public String[] getColumnHeaders()
@@ -218,14 +227,8 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 			public void modifyText(ModifyEvent e)
 			{
 				String filterStr = TextUtils.notEmptyTrimmedString(text.getText());
-				if(filterStr == null)
-					widgetin.setData(null);
-				else
-				{
-					FilterValidator validator = (FilterValidator)getFieldValidator(idx);
-					validateFieldInFieldListener(widgetin, validator, filterStr);
-					widgetin.setData(validator.getFilter());
-				}
+				widgetin.setData(m_filterValidator.createFilter(filterStr));
+				validateFieldInFieldListener(widgetin, getFieldValidator(idx), widgetin.getData());
 			}
 		});
 		return widgetin;
@@ -246,6 +249,8 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		new Label(parent, SWT.NONE);
 		
 		widgetins[2] = getWidgetin(parent, 2, fieldValues[2]);
+
+		UiUtils.createGridLabel(parent, getColumnHeaders()[3] + ":", 1, 0, SWT.NONE);
 		widgetins[3] = getWidgetin(parent, 3, fieldValues[3]);
 		
 		return widgetins;
@@ -260,6 +265,8 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 			return SimpleTable.createNotEmptyStringValidator("Dependency name cannot be empty");
 		case 2:
 			return m_versionDesignatorValidator;
+		case 3:
+			return m_filterValidator;
 		default:
 			return SimpleTable.getEmptyValidator();
 		}
