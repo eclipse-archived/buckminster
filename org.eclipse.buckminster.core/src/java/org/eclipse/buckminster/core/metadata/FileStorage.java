@@ -288,7 +288,7 @@ public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 				}
 				catch(CoreException e)
 				{
-					CorePlugin.getLogger().warning("Unable to read " + m_class.getName(), BuckminsterException.unwind(e));
+					CorePlugin.getLogger().warning(BuckminsterException.unwind(e), "Unable to read %s", m_class.getName());
 					if(badKeys == null)
 						badKeys = new HashSet<UUID>();
 					badKeys.add(key);

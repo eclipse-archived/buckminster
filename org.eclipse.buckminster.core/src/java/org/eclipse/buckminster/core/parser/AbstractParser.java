@@ -151,7 +151,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			InputSource source = new InputSource(input);
 			if(systemId != null)
 				source.setSystemId(systemId);
-			this.getXMLReader().parse(source);
+			getXMLReader().parse(source);
 		}
 		catch(SAXParseException e)
 		{
@@ -181,6 +181,10 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		catch(IOException e)
 		{
 			throw new SAXException(e);
+		}
+		finally
+		{
+			getXMLReader().setContentHandler(this);
 		}
 	}
 

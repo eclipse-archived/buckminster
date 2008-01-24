@@ -377,6 +377,9 @@ public class CSpecFromSource extends CSpecGenerator
 			cnt = 0;
 			for(String token : binIncludesEntry.getTokens())
 			{
+				if(token.length() == 0)
+					continue;
+
 				if(BUNDLE_FILE.equalsIgnoreCase(token))
 					//
 					// Handled separately (might be derived)
