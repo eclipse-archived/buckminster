@@ -7,4 +7,8 @@
    </description>
    <category-def name="core.category" label="%BuckminsterCore"/>
    <category-def name="optional.category" label="%BuckminsterOptional"/>
+
+   <archive path="plugins/org.apache.commons.codec_1.3.0.v200706111738.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.codec_1.3.0.v200706111738.jar"/>
+   <archive path="plugins/org.apache.commons.httpclient_3.0.1.v200706111724.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.httpclient_3.0.1.v200706111724.jar"/>
+   <archive path="plugins/org.apache.commons.logging_1.0.4.v200706111724.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.logging_1.0.4.v200706111724.jar"/>
 </site>
