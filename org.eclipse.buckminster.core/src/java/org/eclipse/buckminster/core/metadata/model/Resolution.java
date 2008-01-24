@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.model;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -473,5 +474,10 @@ public class Resolution extends UUIDKeyed implements ISaxable
 	protected String getElementPrefix(String prefix)
 	{
 		return XMLConstants.BM_METADATA_PREFIX;
+	}
+
+	public URI getArtifactURI(RMContext context) throws CoreException
+	{
+		return getProvider().getReaderType().getArtifactURL(this, context);
 	}
 }

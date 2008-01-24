@@ -72,6 +72,11 @@ public class CVSReaderType extends CatalogReaderType
 {
 	public static final String LOCAL_LINE_END = System.getProperty("line.separator");
 
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
+
 	// The constructors of Command.LocalOption are not public
 	//
 	static class MyLocalOption extends Command.LocalOption

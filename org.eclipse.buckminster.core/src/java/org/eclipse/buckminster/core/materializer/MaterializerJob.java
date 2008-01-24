@@ -60,9 +60,9 @@ public class MaterializerJob extends Job implements IJobInfo
 		}
 		catch(CoreException e)
 		{
+			m_context.addException(m_resolutions.get(m_resolutions.size()-1).getRequest(), BuckminsterException.wrap(e).getStatus());
 			if(!m_context.isContinueOnError())
 				return e.getStatus();
-			m_context.addException(m_resolutions.get(m_resolutions.size()-1).getRequest(), BuckminsterException.wrap(e).getStatus());
 		}
 		return Status.OK_STATUS;
 	}

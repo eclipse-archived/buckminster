@@ -41,9 +41,14 @@ public abstract class URLUtils
 		{
 			try
 			{
-				url = new URL(url.toString() + '/');
+				URI u = url.toURI();
+				url = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u.getPort(), u.getPath() + '/', u.getQuery(), u.getFragment()).toURL();
 			}
-			catch(MalformedURLException e)
+			catch(RuntimeException e)
+			{
+				throw e;
+			}
+			catch(Exception e)
 			{
 				// Not very likely since original was a URL.
 				//

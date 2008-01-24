@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -51,23 +52,36 @@ public interface IReaderType extends IBuckminsterExtension
 	public static final String URL_CATALOG = "url.catalog";
 
 	/**
+	 * Returns the <code>URL</code> of the remote artifact for the given <code>resolution</code> or
+	 * <code>null</code> if no such <code>URL</code> can be presented.
+	 * 
+	 * @param resolution
+	 *            The artifact resolution
+	 * @param context
+	 *            The materialization context for the materialization
+	 * @return The <code>URL</code> of the remote artifact or <code>null</code> if no such URL can be presented
+	 * @throws CoreException
+	 */
+	URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException;
+
+	/**
 	 * Returns a suggestion for the leaf artifact (file or folder) for the materialized component.
 	 * 
 	 * @param resolution
 	 *            The resolution for the component that should be materialized.
 	 * @param context
 	 *            The materialization context
-	 * @return The leaf artifact for the materialization in the form of a one element path or null if
-	 * such a path cannot be determined.
+	 * @return The leaf artifact for the materialization in the form of a one element path or null if such a path cannot
+	 *         be determined.
 	 * @throws CoreException
 	 */
 	IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException;
 
 	/**
-	 * Returns the default install location for the materialized component. The returned location is a
-	 * the folder where the leaf artifact will be materialized. The location can be absolute or relative
-	 * to the root location for the materialization context.
-	 *
+	 * Returns the default install location for the materialized component. The returned location is a the folder where
+	 * the leaf artifact will be materialized. The location can be absolute or relative to the root location for the
+	 * materialization context.
+	 * 
 	 * @param resolution
 	 *            The resolution for the component that should be materialized.
 	 * @param context
@@ -121,6 +135,7 @@ public interface IReaderType extends IBuckminsterExtension
 
 	/**
 	 * Returns the materializer that this reader type recommends for materializing
+	 * 
 	 * @return A recommended reader type
 	 */
 	String getRecommendedMaterializer();

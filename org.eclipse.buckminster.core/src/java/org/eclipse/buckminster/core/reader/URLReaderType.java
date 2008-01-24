@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.reader;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
@@ -42,6 +43,18 @@ import org.eclipse.core.runtime.Path;
  */
 public class URLReaderType extends AbstractReaderType
 {
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		try
+		{
+			return new URI(resolution.getRepository());
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
+		}
+	}
+
 	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
 	{
 		return getDirectReader(externalFile, IReaderType.URL, monitor);

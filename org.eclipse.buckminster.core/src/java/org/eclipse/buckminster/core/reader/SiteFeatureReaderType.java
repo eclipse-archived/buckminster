@@ -8,11 +8,14 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -34,6 +37,11 @@ import org.eclipse.update.core.VersionedIdentifier;
  */
 public class SiteFeatureReaderType extends CatalogReaderType
 {
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
+
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		checkComponentType(providerMatch.getProvider());

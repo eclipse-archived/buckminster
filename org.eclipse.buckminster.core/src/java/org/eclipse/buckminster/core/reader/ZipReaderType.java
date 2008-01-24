@@ -10,7 +10,11 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.net.URI;
+
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +25,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class ZipReaderType extends CatalogReaderType
 {
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
+
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);

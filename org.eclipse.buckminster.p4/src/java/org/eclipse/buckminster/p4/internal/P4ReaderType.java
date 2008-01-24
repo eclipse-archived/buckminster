@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.p4.internal;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,11 @@ public class P4ReaderType extends CatalogReaderType
 			m_clients.put(clientName, clientSpec);
 		}
 		return clientSpec;
+	}
+
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
 	}
 
 	@Override

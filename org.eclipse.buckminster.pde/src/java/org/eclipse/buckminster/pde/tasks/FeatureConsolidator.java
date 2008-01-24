@@ -30,7 +30,7 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
-import org.eclipse.buckminster.pde.internal.model.ExternalEditableFeatureModel;
+import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.pde.core.IModelChangedEvent;
@@ -241,7 +241,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 	private final Map<String,Integer> m_contextQualifierLengths = new HashMap<String,Integer>();
 
-	private final ExternalEditableFeatureModel m_featureModel;
+	private final EditableFeatureModel m_featureModel;
 
 	private final Map<String, OSGiVersion[]> m_featureVersions = new HashMap<String, OSGiVersion[]>();
 
@@ -287,7 +287,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 					{
 						IOUtils.close(input);
 						input = getInput(featureOrBundle, FEATURE_FILE);					
-						ctxQualLen = ExternalEditableFeatureModel.getContextQualifierLength(input);
+						ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
 					}
 					m_contextQualifierLengths.put(id, Integer.valueOf(ctxQualLen));
 					addVersion(m_featureVersions, id, version);

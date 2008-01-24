@@ -84,6 +84,16 @@ public class PDEMapProvider extends Provider
 		monitor.beginTask("", 100);
 		try
 		{
+			String providerURI = getURI(query.getProperties());
+			String readerType = getReaderTypeId();
+			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
+			if(score == ProviderScore.REJECTED)
+			{
+				String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+				return null;
+			}
+
 			TypedValue tv = getTypedValue(query, problemCollector, 
 				getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
 
@@ -134,7 +144,7 @@ public class PDEMapProvider extends Provider
 				return delegated.findMatch(query, problemCollector, monitor);
 
 			IComponentType ctype = plugin.getComponentType(ctypeID);
-			ProviderMatch pm = new ProviderMatch(PDEMapProvider.this, ctype, vm, ProviderScore.GOOD, query);
+			ProviderMatch pm = new ProviderMatch(PDEMapProvider.this, ctype, vm, score, query);
 			pm.setProvider(delegated);
 			pm.setComponentType(ctype);
 			return pm;

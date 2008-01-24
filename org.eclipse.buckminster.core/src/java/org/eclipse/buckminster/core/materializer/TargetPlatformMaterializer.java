@@ -9,12 +9,14 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
+import java.net.URI;
 
-import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.update.core.IFeature;
@@ -36,13 +38,27 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 	}
 
 	@Override
-	protected ISite getDestinationSite(RMContext context, File destination, IProgressMonitor monitor) throws CoreException
+	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor) throws CoreException
 	{
+		monitor.beginTask(null, 100);
 		try
 		{
 			synchronized(SiteManager.class)
 			{
-				return SiteManager.getSite(destination.toURI().toURL(), false, monitor);
+				File folder = destination.hasTrailingSeparator()
+					? destination.toFile()
+					: destination.removeLastSegments(1).toFile();
+
+				FileUtils.prepareDestination(folder, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 5));					
+				String destStr = destination.toPortableString();
+				if(!destStr.startsWith("/"))
+					//
+					// An absolute path can start with C:/. Here it must be /C:/
+					//
+					destStr = '/' + destStr;
+
+				URI uri = new URI("file", null, destStr, null);
+				return SiteManager.getSite(uri.toURL(), false, MonitorUtils.subMonitor(monitor, 95));
 			}
 		}
 		catch(CoreException e)
@@ -57,14 +73,18 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			}
 			throw e;
 		}
-		catch(MalformedURLException e)
+		catch(Exception e)
 		{
 			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			monitor.done();
 		}
 	}
 
 	@Override
-	protected void installFeatures(RMContext context, ISite destinationSite, ISite fromSite,
+	protected void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
 			ISiteFeatureReference[] featureRefs, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, featureRefs.length * 100);

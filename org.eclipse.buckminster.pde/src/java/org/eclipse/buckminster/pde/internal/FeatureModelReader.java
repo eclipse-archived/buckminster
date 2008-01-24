@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.pde.internal.model.ExternalEditableFeatureModel;
+import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,9 +30,9 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 @SuppressWarnings("restriction")
 public class FeatureModelReader implements IStreamConsumer<IFeatureModel>
 {
-	public static ExternalEditableFeatureModel readEditableFeatureModel(File featureFile) throws CoreException
+	public static EditableFeatureModel readEditableFeatureModel(File featureFile) throws CoreException
 	{
-		ExternalEditableFeatureModel featureModel = new ExternalEditableFeatureModel(featureFile);
+		EditableFeatureModel featureModel = new EditableFeatureModel(featureFile);
 		featureModel.load();
 		return featureModel;
 	}

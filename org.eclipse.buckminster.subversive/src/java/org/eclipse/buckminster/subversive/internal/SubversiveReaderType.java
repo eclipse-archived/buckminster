@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.subversive.internal;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -38,6 +39,11 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  */
 public class SubversiveReaderType extends CatalogReaderType
 {
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
+
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		return new SubversiveRemoteFileReader(this, providerMatch, monitor);

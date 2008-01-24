@@ -140,6 +140,16 @@ public class Provider extends UUIDKeyed
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
 	throws CoreException
 	{
+		String providerURI = getURI(query.getProperties());
+		String readerType = getReaderTypeId();
+		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
+		if(score == ProviderScore.REJECTED)
+		{
+			String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
+			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+			return null;
+		}
+
 		if(m_uriMatcher != null)
 			return m_uriMatcher.getMatch(this, query, monitor);
 
@@ -150,8 +160,6 @@ public class Provider extends UUIDKeyed
 			Logger logger = CorePlugin.getLogger();
 			ComponentRequest request = query.getComponentRequest();
 			String componentTypeID = request.getComponentTypeID();
-			String providerURI = getURI(query.getProperties());
-			String readerType = getReaderTypeId();
 	
 			// The component request is equipped with a component type. It must
 			// match the types that this provider provides.
@@ -188,14 +196,6 @@ public class Provider extends UUIDKeyed
 				}
 			}
 		
-			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
-			if(score == ProviderScore.REJECTED)
-			{
-				String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
-				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-				return null;
-			}
-
 			VersionMatch candidate = null;
 			IComponentType ctypeUsed = null;
 			CoreException problem = null;

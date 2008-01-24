@@ -130,8 +130,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			String generates = generatorNode.getGenerates();
 			if(!generated.contains(generates))
 			{
-				generateResolution(generatorNode, context, MonitorUtils.subMonitor(monitor, 100));
-				generated.add(generates);
+				if(generateResolution(generatorNode, context, MonitorUtils.subMonitor(monitor, 100)))
+					generated.add(generates);
 			}
 		}
 		else
@@ -170,7 +170,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
 	}
 
-	private void generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		CSpec cspec = generatorNode.getDeclaringCSpec();
 		try
@@ -179,7 +179,10 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			Attribute generatorAttribute = cspec.getReferencedAttribute(
 					generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
 			if(generatorAttribute != null)
+			{
 				performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
+				return true;
+			}
 		}
 		catch(CoreException e)
 		{
@@ -187,6 +190,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				throw e;
 			context.addException(generatorNode.getRequest(), e.getStatus());
 		}
+		return false;
 	}
 
 	public static String[] getMaterializerIDs(boolean includeEmptyEntry)

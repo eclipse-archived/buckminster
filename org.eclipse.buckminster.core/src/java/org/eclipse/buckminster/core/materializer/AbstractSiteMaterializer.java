@@ -17,10 +17,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
+import org.eclipse.buckminster.core.site.ISiteFeatureConverter;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
@@ -119,11 +123,11 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		}
 	}
 
-	protected abstract ISite getDestinationSite(RMContext context, File destination, IProgressMonitor monitor) throws CoreException;
+	protected abstract ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor) throws CoreException;
 
-	protected abstract void installFeatures(RMContext context, ISite destinationSite, ISite fromSite, ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
+	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite, ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
 
-	private void installFeatures(final RMContext context, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
+	private void installFeatures(final MaterializationContext context, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
 	{
 		int count = 0;
 		Set<IPath> destinations = sites.keySet();
@@ -135,8 +139,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		{
 			for (IPath path : destinations)
 			{
-				File destination = path.toFile();
-				ISite mirrorSite = getDestinationSite(context, destination, MonitorUtils.subMonitor(monitor, 100));
+				ISite mirrorSite = getDestinationSite(context, path, MonitorUtils.subMonitor(monitor, 100));
 				for(FeaturesPerSite fps : sites.get(path).values())
 				{
 					final Resolution first = fps.getResolutions()[0];
@@ -184,21 +187,41 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 	private static void collectSites(MaterializationContext context, List<Resolution> resolutions,
 			Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
 	{
+		ArrayList<Resolution> siteFeatures = new ArrayList<Resolution>(resolutions.size());
+		ArrayList<Resolution> plugins = new ArrayList<Resolution>();
+		ArrayList<Resolution> features = new ArrayList<Resolution>();
+
 		for(Resolution resolution : resolutions)
 		{
+			if(IComponentType.ECLIPSE_SITE_FEATURE.equals(resolution.getComponentTypeId()))
+				siteFeatures.add(resolution);
+
+			// This component is not part of the normal update site manager protocol. We
+			// can still install it but we need to get it in another form.
+			//
+			if(IComponentType.OSGI_BUNDLE.equals(resolution.getComponentTypeId()))
+				plugins.add(resolution);
+			else if(IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId()))
+				features.add(resolution);
+		}
+
+		if(!(plugins.isEmpty() && features.isEmpty()))
+		{
+			IReaderType pdeReaderType;
 			try
 			{
-				SiteFeatureReaderType.checkComponentType(resolution.getProvider());
+				pdeReaderType = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_PLATFORM);
 			}
 			catch(CoreException e)
 			{
-				// Ignore this node, i.e. don't consider it to be a site.feature
-				// We are interested of its children anyway.
-				//
-				MonitorUtils.worked(monitor, 100);
-				continue;
+				throw new BuckminsterException("Unable to install plugins and features that do not stem from an update site since PDE is missing");
 			}
+			File tempSite = FileUtils.createTempFolder("bmsite", "tmp");
+			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite, features, plugins));
+		}
 
+		for(Resolution resolution : siteFeatures)
+		{
 			IPath installLocation = context.getInstallLocation(resolution);
 			String siteURL = resolution.getRepository();
 			Map<String, FeaturesPerSite> sitesInLocation = sites.get(installLocation);

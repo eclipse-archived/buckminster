@@ -31,11 +31,13 @@ import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -101,6 +103,30 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		public URL getRemoteLocation()
 		{
 			return m_remoteLocation;
+		}
+	}
+
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		try
+		{
+			URL siteURL = new URL(resolution.getRepository());
+			if(!siteURL.getPath().endsWith("map"))
+				siteURL = URLUtils.appendTrailingSlash(siteURL);
+
+			String subDir = IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId())
+				? FEATURES_FOLDER
+				: PLUGINS_FOLDER;
+
+			return createRemoteComponentURL(siteURL, resolution.getName(), resolution.getVersion(), subDir).toURI();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(URISyntaxException e)
+		{
+			throw BuckminsterException.wrap(e);
 		}
 	}
 
@@ -600,7 +626,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	private IPluginEntry[] getSitePluginEntries(URL location, IProgressMonitor monitor) throws CoreException
+	public IPluginEntry[] getSitePluginEntries(URL location, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		if(location.getPath().endsWith(".map"))

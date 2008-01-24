@@ -43,8 +43,13 @@ public abstract class MaterializationDirective extends AbstractSaxableElement
 	public MaterializationDirective(MaterializationDirectiveBuilder builder)
 	{
 		m_documentation = builder.getDocumentation();
-		m_installLocation = builder.getInstallLocation();
-		m_workspaceLocation = builder.getWorkspaceLocation();
+
+		IPath tmp = builder.getInstallLocation();
+		m_installLocation = (tmp == null) ? null : tmp.addTrailingSeparator();
+
+		tmp = builder.getWorkspaceLocation();
+		m_workspaceLocation = (tmp == null) ? null : tmp.addTrailingSeparator();
+
 		m_materializer = builder.getMaterializer();
 		m_conflictResolution = builder.getConflictResolution();
 		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());

@@ -7,12 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.materializer;
 
-import java.io.File;
-
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -37,13 +35,13 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
 
 	@Override
-	protected ISite getDestinationSite(RMContext context, File destination, IProgressMonitor monitor) throws CoreException
+	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		MirrorSiteFactory factory = new MirrorSiteFactory();
 		MirrorSite mirrorSite;
 		try
 		{
-			mirrorSite = (MirrorSite)factory.createSite(destination);
+			mirrorSite = (MirrorSite)factory.createSite(destination.toFile());
 		}
 		catch(InvalidSiteTypeException e)
 		{
@@ -55,7 +53,7 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 	}
 
 	@Override
-	protected void installFeatures(RMContext context, ISite destinationSite, ISite fromSite,
+	protected void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
 			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException
 	{
 		((MirrorSite)destinationSite).mirrorAndExpose(fromSite, features, null, context.get(MIRROR_SITE_URL_PROPERTY));
