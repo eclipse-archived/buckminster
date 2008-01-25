@@ -10,9 +10,11 @@ package org.eclipse.buckminster.core.actor;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 
 public interface IGlobalContext extends IModelCache
 {
@@ -21,6 +23,19 @@ public interface IGlobalContext extends IModelCache
 	 * @return A cache that various actions can use for arbitrary purposes
 	 */
 	Map<UUID,Object> getInvocationCache();
+
+	/**
+	 * Returns the property set to use when performing <code>attribute</code>.
+	 * @param attribute The attribute for which we need the properties
+	 * @return The properties to use for attribute.
+	 */
+	Map<String,String> getExecutionProperties(Attribute attribute) throws CoreException;
+
+	/**
+	 * Returns the status of the last perform issued using this context
+	 * @return The status of the last perform.
+	 */
+	IStatus getStatus();
 
 	/**
 	 * Schedule the removal of <code>path</code> when the top build invocation

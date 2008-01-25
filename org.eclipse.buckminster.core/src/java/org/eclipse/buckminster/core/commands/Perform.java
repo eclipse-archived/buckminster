@@ -63,9 +63,9 @@ public class Perform extends WorkspaceCommand
 	{
 		if(m_attributes.isEmpty())
 			throw new UsageException("No attributes specified");
-	
+
 		IPerformManager pm = CorePlugin.getPerformManager();
-		IStatus status = pm.perform(m_attributes, m_props, m_forced, monitor);
+		IStatus status = pm.perform(m_attributes, m_props, m_forced, monitor).getStatus();
 
 		if(status.isOK())
 			return 0;

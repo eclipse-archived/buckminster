@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author kolwing
- *
+ * @author Thomas Hallgren
  */
 public interface IPerformManager
 {
-	IStatus perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
+	IGlobalContext perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
 
-	IStatus perform(List<Attribute> attributes, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
+	IGlobalContext perform(List<Attribute> attributes, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
 
 	IStatus perform(List<Attribute> attributes, IGlobalContext globalCtx, IProgressMonitor monitor) throws CoreException;
 }

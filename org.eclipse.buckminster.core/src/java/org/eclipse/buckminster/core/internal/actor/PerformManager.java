@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IActor;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
@@ -59,21 +58,22 @@ public class PerformManager implements IPerformManager
 		return INSTANCE;
 	}
 
-	public IStatus perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced,
+	public IGlobalContext perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
 		return perform(Collections.singletonList(cspec.getRequiredAttribute(attributeName)), props,
 			forced, monitor);
 	}
 
-	public IStatus perform(List<Attribute> attributes, Map<String, String> userProps, boolean forced,
+	public IGlobalContext perform(List<Attribute> attributes, Map<String, String> userProps, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
 		GlobalContext globalCtx = new GlobalContext(userProps, forced);
 		monitor.beginTask(null, 1000);
 		try
 		{
-			return perform(attributes, globalCtx, MonitorUtils.subMonitor(monitor, 900));
+			globalCtx.setStatus(perform(attributes, globalCtx, MonitorUtils.subMonitor(monitor, 900)));
+			return globalCtx;
 		}
 		finally
 		{
@@ -106,11 +106,6 @@ public class PerformManager implements IPerformManager
 			logger.debug(bld.toString());
 		}
 
-		Map<String,String> globalProps = RMContext.getGlobalPropertyAdditions();
-		Map<String,String> userProps = globalCtx.getUserProperties();
-		if(userProps == null)
-			userProps = Collections.emptyMap();
-
 		MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
 		for(Action action : actionList)
 		{
@@ -124,17 +119,6 @@ public class PerformManager implements IPerformManager
 			}
 
 			globalCtx.addPerformedAction(action);
-
-			// We use ExpandingProperties all the way so that the expansion is deferred
-			//
-			Map<String,String> actionProps = action.getProperties();
-			int mapSize = globalProps.size() + actionProps.size() + userProps.size() + 10;
-			ExpandingProperties allProps = new ExpandingProperties(mapSize);
-			allProps.putAll(globalProps, true);
-			allProps.putAll(actionProps, true);
-			allProps.putAll(userProps);
-			action.addDynamicProperties(allProps);
-
 			IActor actor = ActorFactory.getInstance().getActor(action);
 			PrintStream out;
 			PrintStream err;
@@ -151,7 +135,7 @@ public class PerformManager implements IPerformManager
 
 			IProgressMonitor cancellationMonitor = MonitorUtils.subMonitor(monitor, 1);
 			cancellationMonitor.beginTask(null, IProgressMonitor.UNKNOWN);
-			PerformContext ctx = new PerformContext(globalCtx, action, allProps, out, err, cancellationMonitor);
+			PerformContext ctx = new PerformContext(globalCtx, action, out, err, cancellationMonitor);
 			if(!ctx.isForced() && action.isUpToDate(ctx))
 			{
 				cancellationMonitor.done();

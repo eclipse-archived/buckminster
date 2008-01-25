@@ -124,11 +124,11 @@ public class PerformContext implements IActionContext
 
 	private final Map<String, String> m_properties;
 
-	public PerformContext(GlobalContext globalCtx, Action action, Map<String, String> properties, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor) throws CoreException
+	public PerformContext(GlobalContext globalCtx, Action action, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor) throws CoreException
 	{
 		m_globalCtx = globalCtx;
 		m_action = action;
-		m_properties = properties;
+		m_properties = globalCtx.getExecutionProperties(action);
 		m_outputStream = out;
 		m_errorStream = err;
 		m_cancellationMonitor = cancellationMonitor;
