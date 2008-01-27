@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in for the PDE extension
+Bundle-SymbolicName: org.eclipse.buckminster.pde.ui;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.buckminster.ui,
+ org.eclipse.buckminster.core,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.pde.ui,
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

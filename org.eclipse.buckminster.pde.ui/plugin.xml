@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			id="org.eclipse.buckminster.ui.projectaction"
+			objectClass="org.eclipse.pde.core.plugin.IPluginModelBase"
+			adaptable="true">
+			<menu
+         id="org.eclipse.buckminster.pde.ui.popup.menu"
+         label="Buckminster">
+				<separator name="cspec" />
+			</menu>
+			<action
+				class="org.eclipse.buckminster.pde.ui.actions.ViewBundleCSpecAction"
+				enablesFor="1" id="org.eclipse.buckminster.pde.ui.viewCSpec"
+				label="%ViewCSpec"
+				menubarPath="org.eclipse.buckminster.pde.ui.popup.menu/cspec" />
+		</objectContribution>¨
+	</extension>
+</plugin>
