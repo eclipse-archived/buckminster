@@ -112,20 +112,24 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </url>
 
    <requires>
-      <import plugin="org.eclipse.buckminster.core"/>
-      <import plugin="org.eclipse.buckminster.cmdline"/>
-      <import plugin="org.eclipse.buckminster.sax"/>
-      <import plugin="org.eclipse.buckminster.runtime"/>
-      <import plugin="org.eclipse.pde.core"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.pde.build"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.buckminster.ant"/>
+      <import plugin="org.eclipse.buckminster.ant" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.core" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.cmdline" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.sax" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.runtime" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.core" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.build" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.update.core" version="3.2.100" match="greaterOrEqual"/>
+      <import plugin="org.apache.ant" version="1.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ant.core" version="3.1.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.ui"/>
+      <import plugin="org.eclipse.pde.ui"/>
+      <import plugin="org.eclipse.ui"/>
    </requires>
 
    <plugin
@@ -139,5 +143,12 @@ This Agreement is governed by the laws of the State of New York and the intellec
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.buckminster.pde.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

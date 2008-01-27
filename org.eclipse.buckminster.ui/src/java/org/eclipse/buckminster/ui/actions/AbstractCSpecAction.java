@@ -86,4 +86,9 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 			}
 		}
 	}
+
+	protected void setSelectedComponent(CSpec cspec)
+	{
+		m_selectedComponent = cspec;
+	}
 }
