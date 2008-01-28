@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.buckminster.ui,
  org.eclipse.buckminster.core,
  org.eclipse.buckminster.runtime,
  org.eclipse.pde.ui,
+ org.eclipse.jdt.core,
  org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
