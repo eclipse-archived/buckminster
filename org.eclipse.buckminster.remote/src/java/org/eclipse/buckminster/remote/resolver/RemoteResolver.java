@@ -80,6 +80,9 @@ public class RemoteResolver implements IResolver
 			return bom;
 		}
 
+		if(!bom.getQuery().useResolutionService(bom.getRequest()))
+			return bom;
+		
 		BillOfMaterials bomReturned = null;
 
 		try
