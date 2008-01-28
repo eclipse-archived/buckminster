@@ -16,7 +16,9 @@ import java.util.Map;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Karel Brezina
@@ -24,6 +26,16 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
  */
 public class MaterializationUtils
 {
+	/**
+	 * The publishing wizard dialog width
+	 */
+	private static final int PUBLISH_WIZARD_WIDTH = 450;
+
+	/**
+	 * The publishing wizard dialog height
+	 */
+	private static final int PUBLISH_WIZARD_HEIGHT = 500;
+
 	private static final Map<String,String> s_humanReadableComponentTypes;
 	
 	// needs to be synchronized with the server side, new component types need to be added
@@ -124,5 +136,24 @@ public class MaterializationUtils
 		if(hrType == null)
 			hrType = componentType;
 		return hrType;
+	}
+	
+	/**
+	 * Opens publishing wizard dialog
+	 * 
+	 * @param installWizard
+	 * @param parentShell
+	 */
+	public static void startPublishingWizard(InstallWizard installWizard, Shell parentShell)
+	{
+		PublishWizard publishWizard = new PublishWizard(installWizard);
+		
+		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, publishWizard);
+		dialog.create();
+		
+		final Shell shell = dialog.getShell();
+		shell.setSize(Math.max(PUBLISH_WIZARD_WIDTH, shell.getSize().x), Math.max(PUBLISH_WIZARD_HEIGHT, shell.getSize().y));
+		
+		dialog.open();
 	}
 }

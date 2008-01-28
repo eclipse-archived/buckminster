@@ -12,6 +12,9 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.jnlp.ui.UiUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -39,6 +42,10 @@ public class PublishSpacePage extends PublishWizardPage
 	private Combo m_spaceCombo;
 	
 	private Text m_artifactName;
+	
+	private Text m_shortDesc;
+	
+	private Text m_documentation;
 	
 	private Label m_userNameLabel;
 	
@@ -79,6 +86,43 @@ public class PublishSpacePage extends PublishWizardPage
 				}
 				
 				setPageComplete(isComplete());
+			}
+		});
+
+		new Label(pageComposite, SWT.NONE).setText("Short Description:");
+		
+		m_shortDesc = new Text(pageComposite, SWT.BORDER);
+		m_shortDesc.setText(getPublishWizard().getMSpecBuilder().getShortDesc() == null ? "" : getPublishWizard().getMSpecBuilder().getShortDesc());
+		m_shortDesc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		m_shortDesc.addModifyListener(new ModifyListener()
+		{
+			public void modifyText(ModifyEvent e)
+			{
+				getPublishWizard().getMSpecBuilder().setShortDesc(UiUtils.trimmedValue(m_shortDesc));
+			}
+		});
+
+		Label label = new Label(pageComposite, SWT.NONE);
+		label.setText("Documentation:");
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
+		
+		m_documentation = new Text(pageComposite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+		m_documentation.setText(getPublishWizard().getMSpecBuilder().getDocumentation() == null ? "" : getPublishWizard().getMSpecBuilder().getDocumentation().toString());
+		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_documentation.addModifyListener(new ModifyListener()
+		{
+			public void modifyText(ModifyEvent e)
+			{
+				setErrorMessage(null);
+				String doc = UiUtils.trimmedValue(m_documentation);
+				try
+				{
+					getPublishWizard().getMSpecBuilder().setDocumentation(doc == null ? null : Documentation.parse(doc));
+				}
+				catch(CoreException ex)
+				{
+					setErrorMessage("Cannot save documentation: " + ex.getMessage());
+				}
 			}
 		});
 

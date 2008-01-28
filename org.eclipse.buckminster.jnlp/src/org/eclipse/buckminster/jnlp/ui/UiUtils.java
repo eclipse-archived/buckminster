@@ -127,4 +127,40 @@ public class UiUtils
 
 		return combo;
 	}
+
+	public static Combo createGridArrayCombo(Composite parent, int horizontalSpan, int widthHint, String[] values,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
+				style);
+		combo.setItems(values);
+		combo.select(0);
+
+		return combo;
+	}
+	
+	public static String trimmedValue(Text text)
+	{
+		String value = null;
+		if(text != null)
+		{
+			value = text.getText().trim();
+			if(value.length() == 0)
+				value = null;
+		}
+		return value;
+	}
+	
+	public static String trimmedValue(String string)
+	{
+		String value = null;
+		
+		if(string != null)
+		{
+			value = string.trim();
+			if(value.length() == 0)
+				value = null;
+		}
+		return value;
+	}
 }

@@ -40,6 +40,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -173,9 +174,13 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		}
 	}
 
+	private DestinationForm m_destinationForm;
+	
 	private Combo m_conflictCombo;
 
 	private Tree m_tree;
+	
+	private Button m_publishButton;
 	
 	private boolean m_treeInitialized = false;
 
@@ -191,8 +196,11 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		MaterializationSpecBuilder builder = getMaterializationSpecBuilder();
 
 		Composite pageComposite = new Composite(parent, SWT.NONE);
-		pageComposite.setLayout(new GridLayout(2, false));
+		pageComposite.setLayout(new GridLayout(3, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		m_destinationForm = new DestinationForm(getInstallWizard(), builder);
+		m_destinationForm.createControl(pageComposite);
 
 		Label label = new Label(pageComposite, SWT.NONE);
 		label.setText("Conflict Resolution:");
@@ -226,13 +234,16 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		});
 
 		new Label(pageComposite, SWT.NONE);
+
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 
 		Group treeGroup = new Group(pageComposite, SWT.NONE);
 		treeGroup.setText("Components for Materialization");
 		treeGroup.setLayout(new GridLayout());
 		GridData data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan = 2;
+		data.horizontalSpan = 3;
 		treeGroup.setLayoutData(data);
 		
 		m_tree = new Tree(treeGroup, SWT.CHECK | SWT.BORDER);
@@ -276,6 +287,30 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			}
 		});
 		
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+
+		Composite publishComposite = new Composite(pageComposite, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = gridLayout.marginWidth = 0;
+		publishComposite.setLayout(gridLayout);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gridData.horizontalSpan = 3;
+		publishComposite.setLayoutData(gridData);
+		
+		m_publishButton = new Button(publishComposite, SWT.PUSH);
+		m_publishButton.setText("Publish as a Distro");
+		gridData = new GridData(SWT.END, SWT.CENTER, true, false);
+		m_publishButton.setLayoutData(gridData);
+		m_publishButton.addSelectionListener(new SelectionAdapter(){
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				MaterializationUtils.startPublishingWizard(getInstallWizard(), getShell());
+			}});
+		
 		setControl(pageComposite);
 		
 		getInstallWizard().addMSpecChangeListener(new MSpecChangeListener()
@@ -289,6 +324,12 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		});
 	}
 
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		m_destinationForm.setup();
+	}
+	
 	/*
 	 * Initializes tree and creates new MSpec nodes. This has to be called even if the Advanced Page is not needed,
 	 * because it excludes cssite components from materialization.

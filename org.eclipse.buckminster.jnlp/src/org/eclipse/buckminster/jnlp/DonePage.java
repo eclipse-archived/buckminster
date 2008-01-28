@@ -11,7 +11,6 @@ package org.eclipse.buckminster.jnlp;
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
@@ -33,16 +32,6 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class DonePage extends InstallWizardPage
 {
-	/**
-	 * The wizard dialog width
-	 */
-	private static final int PUBLISH_WIZARD_WIDTH = 450;
-
-	/**
-	 * The wizard dialog height
-	 */
-	private static final int PUBLISH_WIZARD_HEIGHT = 500;
-
 	private static final int VERTICAL_SPACING = 10;
 	
 	private static final int HORIZONTAL_INDENT = 50;
@@ -224,15 +213,7 @@ public class DonePage extends InstallWizardPage
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				PublishWizard publishWizard = new PublishWizard(getInstallWizard());
-				
-				AdvancedWizardDialog dialog = new AdvancedWizardDialog(getShell(), publishWizard);
-				dialog.create();
-				
-				final Shell shell = dialog.getShell();
-				shell.setSize(Math.max(PUBLISH_WIZARD_WIDTH, shell.getSize().x), Math.max(PUBLISH_WIZARD_HEIGHT, shell.getSize().y));
-				
-				dialog.open();
+				MaterializationUtils.startPublishingWizard(getInstallWizard(), getShell());
 			}
 		});
 		
