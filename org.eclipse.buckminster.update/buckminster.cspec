@@ -51,7 +51,7 @@
                 <cs:property key="site.name" value="buckminster.archivedsite"/>
             </cs:properties>
             <cs:prerequisites>
-                <cs:attribute name="bundle.jars" alias="plugins" includePattern=".*\.buckminster\..*"/>
+                <cs:attribute name="bundle.jars" alias="plugins" includePattern="(.*\.buckminster|org\.slf4j\.extendable).*"/>
                 <cs:attribute name="feature.jars" alias="features"/>
                 <cs:attribute name="site.rootFiles" alias="rootFiles"/>
                 <cs:attribute name="site.template" alias="template"/>

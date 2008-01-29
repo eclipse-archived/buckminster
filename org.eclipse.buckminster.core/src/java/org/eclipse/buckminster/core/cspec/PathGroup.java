@@ -70,13 +70,14 @@ public class PathGroup
 
 	public void copyTo(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		File destDir = destination.toFile();
-		if(!destDir.isAbsolute())
+		if(!destination.isAbsolute())
 			throw new IllegalArgumentException("destination must be absolute");
 
-		File baseDir = m_base.toFile();
-		if(!baseDir.isAbsolute())
+		if(!m_base.isAbsolute())
 			throw new IllegalArgumentException("source must be absolute");
+
+		File destDir = destination.toFile().getAbsoluteFile();
+		File baseDir = m_base.toFile().getAbsoluteFile();
 
 		int idx = m_paths.length;
 		if(idx == 0)
