@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -45,18 +46,25 @@ public class DestinationForm
 	 
 	private static final String TOOL_TIP_BROWSE_DIRECTORY = "Browse default destination directory for materialization";
 	 
-	private InstallWizard m_installWizard;
-	
+	private static final String TOOL_TIP_CONFLICTS = "How to resolve filesystem conflicts:\nChoises: Fail, Replace, Update, Keep";
+
 	private MaterializationSpecBuilder m_mspec;
+	
+	private boolean m_showConflictResolution;
+	
+	private boolean m_showBrowseButton;
 	
 	private Combo m_destTypeCombo;
 	
 	private Text m_locationText;
 
-	public DestinationForm(InstallWizard installWizard, MaterializationSpecBuilder builder)
+	private Combo m_conflictCombo;
+
+	public DestinationForm(MaterializationSpecBuilder builder, boolean showConflictResolution, boolean showBrowseButton)
 	{
-		m_installWizard = installWizard;
 		m_mspec = builder;
+		m_showConflictResolution = showConflictResolution;
+		m_showBrowseButton = showBrowseButton;
 	}
 
 	public void createControl(Composite parent)
@@ -110,25 +118,94 @@ public class DestinationForm
 			}
 		});
 
-		final Button browseButton = new Button(parent, SWT.PUSH);
-		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		browseButton.setText("Browse");
-		browseButton.setToolTipText(TOOL_TIP_BROWSE_DIRECTORY);
-		browseButton.addSelectionListener(new SelectionAdapter()
+		if(m_showBrowseButton)
 		{
-			@Override
-			public void widgetSelected(SelectionEvent se)
+			final Button browseButton = new Button(parent, SWT.PUSH);
+			browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+			browseButton.setText("Browse");
+			browseButton.setToolTipText(TOOL_TIP_BROWSE_DIRECTORY);
+			browseButton.addSelectionListener(new SelectionAdapter()
 			{
-				DirectoryDialog dlg = new DirectoryDialog(browseButton.getShell());
-				dlg.setFilterPath(m_locationText.getText());
-				String dir = dlg.open();
-
-				if(dir != null)
+				@Override
+				public void widgetSelected(SelectionEvent se)
 				{
-					m_locationText.setText(dir);
+					DirectoryDialog dlg = new DirectoryDialog(browseButton.getShell());
+					dlg.setFilterPath(getKnownPath());
+					String dir = dlg.open();
+	
+					if(dir != null)
+					{
+						m_locationText.setText(dir);
+					}
 				}
+
+				private String getKnownPath()
+				{
+					IPath path = m_mspec.getInstallLocation();
+					
+					if(path == null)
+						return null;
+					
+					File file = null;
+					String pathString = null;
+					do
+					{
+						// second and other runs - remove last segment
+						if(file != null)
+							path = path.removeLastSegments(1);
+							
+						pathString = path.removeTrailingSeparator().toOSString();
+						file = new File(pathString);
+					}
+					while(!file.exists());
+					
+					if(!file.isDirectory())
+						return null;
+					
+					return pathString;
+				}
+			});
+		}
+		else
+		{
+			new Label(parent, SWT.NONE);
+		}
+		
+		if(m_showConflictResolution)
+		{
+			label = new Label(parent, SWT.NONE);
+			label.setText("Conflict Resolution:");
+			label.setToolTipText(TOOL_TIP_CONFLICTS);
+
+			m_conflictCombo = UiUtils.createGridEnumCombo(parent, 0, 0, ConflictResolution.values(), null, null,
+					SWT.READ_ONLY);
+
+			m_conflictCombo.select(m_mspec.getConflictResolution() == null
+					? ConflictResolution.getDefault().ordinal()
+					: m_mspec.getConflictResolution().ordinal());
+			
+			m_conflictCombo.setToolTipText(TOOL_TIP_CONFLICTS);
+
+			for(ConflictResolution cr : ConflictResolution.values())
+			{
+				m_conflictCombo.setData(String.valueOf(cr.ordinal()), cr);
 			}
-		});
+
+			m_mspec.setConflictResolution((ConflictResolution)m_conflictCombo.getData(String.valueOf(m_conflictCombo
+					.getSelectionIndex())));
+			m_conflictCombo.addModifyListener(new ModifyListener()
+			{
+
+				public void modifyText(ModifyEvent e)
+				{
+					m_mspec.setConflictResolution(
+							(ConflictResolution)m_conflictCombo
+									.getData(String.valueOf(m_conflictCombo.getSelectionIndex())));
+				}
+			});
+
+			new Label(parent, SWT.NONE);
+		}
 	}
 	
 	public void setup()
@@ -156,6 +233,12 @@ public class DestinationForm
 			m_locationText.setText(m_mspec.getInstallLocation().removeTrailingSeparator().toOSString());
 		}
 
+		if(m_conflictCombo != null)
+		{
+			m_conflictCombo.select(m_mspec.getConflictResolution() == null
+							? ConflictResolution.getDefault().ordinal()
+							: m_mspec.getConflictResolution().ordinal());
+		}
 	}
 	
 	private String getDefaultDestination() throws JNLPException
@@ -168,8 +251,8 @@ public class DestinationForm
 		{
 			destination = userHome + File.separatorChar + "materializations";
 		
-			if(m_installWizard.getArtifactName() != null)
-				destination += File.separatorChar + m_installWizard.getArtifactName();
+			if(m_mspec.getName() != null)
+				destination += File.separatorChar + m_mspec.getName();
 		}
 		return destination;
 	}

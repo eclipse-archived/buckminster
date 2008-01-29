@@ -46,7 +46,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 		pageComposite.setLayout(new GridLayout(3, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		m_destinationForm = new DestinationForm(getInstallWizard(), getMaterializationSpecBuilder());
+		m_destinationForm = new DestinationForm(getMaterializationSpecBuilder(), false, true);
 		m_destinationForm.createControl(pageComposite);
 
 		m_advancedSettingsButton = new Button(pageComposite, SWT.CHECK);

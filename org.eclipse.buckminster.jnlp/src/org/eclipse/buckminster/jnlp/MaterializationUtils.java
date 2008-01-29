@@ -13,11 +13,18 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -26,6 +33,40 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class MaterializationUtils
 {
+	static class PropertyEntryByLength implements Comparable<PropertyEntryByLength>
+	{
+		private String m_key;
+		
+		private String m_value;
+
+		public PropertyEntryByLength(String key, String value)
+		{
+			m_key = key;
+			m_value = value;
+		}
+				
+		public String getKey()
+		{
+			return m_key;
+		}
+
+		public String getValue()
+		{
+			return m_value;
+		}
+
+		public int compareTo(PropertyEntryByLength o)
+		{
+			return  o.getKey().length() - m_key.length();
+		}	
+	}
+	
+	private static Map<MaterializationSpecBuilder, Map<String, String>> m_expandProperties =
+		new HashMap<MaterializationSpecBuilder, Map<String, String>>();
+	
+	private static Map<MaterializationSpecBuilder, Set<PropertyEntryByLength>> m_generalizeProperties =
+		new HashMap<MaterializationSpecBuilder, Set<PropertyEntryByLength>>();
+	
 	/**
 	 * The publishing wizard dialog width
 	 */
@@ -155,5 +196,77 @@ public class MaterializationUtils
 		shell.setSize(Math.max(PUBLISH_WIZARD_WIDTH, shell.getSize().x), Math.max(PUBLISH_WIZARD_HEIGHT, shell.getSize().y));
 		
 		dialog.open();
+	}
+
+	/**
+	 * Expands <code>IPath</code> that contains properties
+	 * 
+	 * @param mspec
+	 * @param installLocation
+	 * @return
+	 */
+	public static IPath expandPath(MaterializationSpecBuilder mspec, IPath installLocation)
+	{
+		Map<String, String> properties = m_expandProperties.get(mspec);
+		
+		if(properties == null)
+		{
+			properties = new RMContext(mspec.getProperties());
+			m_expandProperties.put(mspec, properties);
+		}
+		
+		return Path.fromOSString(ExpandingProperties.expand(properties, installLocation.toOSString(), 0));
+	}
+
+	/**
+	 * Generalize <code>IPath</code>
+	 * 
+	 * @param mspec
+	 * @param installLocation
+	 * @return
+	 */
+	public static IPath generalizePath(MaterializationSpecBuilder mspec, IPath installLocation)
+	{
+		Set<PropertyEntryByLength> properties = m_generalizeProperties.get(mspec);
+		
+		if(properties == null)
+		{
+			properties = new TreeSet<PropertyEntryByLength>();
+			RMContext context = new RMContext(mspec.getProperties());
+			Path pathValidator = new Path("/");
+			
+			for(String key : context.keySet())
+			{
+				String value = context.get(key);
+				
+				if(value == null || value.length() == 0)
+					continue;
+				
+				// unifying file separators
+				String unifiedValue = new Path(value).removeTrailingSeparator().toString().toLowerCase();
+
+				// changing meaning - key is value, value is key
+				properties.add(new PropertyEntryByLength(unifiedValue, key));				
+			}
+			
+			m_generalizeProperties.put(mspec, properties);
+		}
+
+		String pathToGeneralize = installLocation.toString().toLowerCase();
+		int len = pathToGeneralize.length();
+		
+		for(PropertyEntryByLength entry: properties)
+		{
+			if(entry.getKey().length() > len)
+				continue;
+			
+			if(pathToGeneralize.contains(entry.getKey()))
+			{
+				//TODO check whole segments
+				pathToGeneralize.replace(entry.getKey(), "${" + entry.getValue() + "}");
+			}
+		}
+		
+		return new Path(pathToGeneralize);
 	}
 }

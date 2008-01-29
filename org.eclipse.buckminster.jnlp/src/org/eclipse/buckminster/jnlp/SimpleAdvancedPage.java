@@ -26,13 +26,9 @@ import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
-import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -41,7 +37,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
@@ -55,8 +50,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class SimpleAdvancedPage extends InstallWizardPage
 {
-	private static final String TOOL_TIP_CONFLICTS = "How to resolve filesystem conflicts:\nChoises: Fail, Replace, Update, Keep";
-
 	class MaterializationNodeHandler
 	{
 		private MaterializationNodeBuilder m_node;
@@ -176,8 +169,6 @@ public class SimpleAdvancedPage extends InstallWizardPage
 
 	private DestinationForm m_destinationForm;
 	
-	private Combo m_conflictCombo;
-
 	private Tree m_tree;
 	
 	private Button m_publishButton;
@@ -199,41 +190,8 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		pageComposite.setLayout(new GridLayout(3, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		m_destinationForm = new DestinationForm(getInstallWizard(), builder);
+		m_destinationForm = new DestinationForm(builder, true, true);
 		m_destinationForm.createControl(pageComposite);
-
-		Label label = new Label(pageComposite, SWT.NONE);
-		label.setText("Conflict Resolution:");
-		label.setToolTipText(TOOL_TIP_CONFLICTS);
-
-		m_conflictCombo = UiUtils.createGridEnumCombo(pageComposite, 0, 0, ConflictResolution.values(), null, null,
-				SWT.READ_ONLY);
-
-		m_conflictCombo.select(builder.getConflictResolution() == null
-				? ConflictResolution.getDefault().ordinal()
-				: builder.getConflictResolution().ordinal());
-		
-		m_conflictCombo.setToolTipText(TOOL_TIP_CONFLICTS);
-
-		for(ConflictResolution cr : ConflictResolution.values())
-		{
-			m_conflictCombo.setData(String.valueOf(cr.ordinal()), cr);
-		}
-
-		builder.setConflictResolution((ConflictResolution)m_conflictCombo.getData(String.valueOf(m_conflictCombo
-				.getSelectionIndex())));
-		m_conflictCombo.addModifyListener(new ModifyListener()
-		{
-
-			public void modifyText(ModifyEvent e)
-			{
-				getMaterializationSpecBuilder().setConflictResolution(
-						(ConflictResolution)m_conflictCombo
-								.getData(String.valueOf(m_conflictCombo.getSelectionIndex())));
-			}
-		});
-
-		new Label(pageComposite, SWT.NONE);
 
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
@@ -312,16 +270,6 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			}});
 		
 		setControl(pageComposite);
-		
-		getInstallWizard().addMSpecChangeListener(new MSpecChangeListener()
-		{
-			public void handleMSpecChangeEvent(MSpecChangeEvent event)
-			{
-				m_conflictCombo.select(event.getMSpec().getConflictResolution() == null
-						? ConflictResolution.getDefault().ordinal()
-						: event.getMSpec().getConflictResolution().ordinal());
-			}
-		});
 	}
 
 	@Override

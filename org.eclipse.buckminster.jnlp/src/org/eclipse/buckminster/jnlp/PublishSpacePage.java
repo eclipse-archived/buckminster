@@ -43,6 +43,8 @@ public class PublishSpacePage extends PublishWizardPage
 	
 	private Text m_artifactName;
 	
+	private DestinationForm m_destinationForm;
+	
 	private Text m_shortDesc;
 	
 	private Text m_documentation;
@@ -59,11 +61,13 @@ public class PublishSpacePage extends PublishWizardPage
 		setPageComplete(false); // set to true when the page is shown
 
 		Composite pageComposite = new Composite(parent, SWT.NONE);
-		pageComposite.setLayout(new GridLayout(2, false));
+		pageComposite.setLayout(new GridLayout(3, false));
 
 		new Label(pageComposite, SWT.NONE).setText("Target Space:");
 
 		m_spaceCombo = new Combo(pageComposite, SWT.READ_ONLY);
+		m_spaceCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		new Label(pageComposite, SWT.NONE);
 
 		new Label(pageComposite, SWT.NONE).setText("Distro Name:");
 		
@@ -88,6 +92,18 @@ public class PublishSpacePage extends PublishWizardPage
 				setPageComplete(isComplete());
 			}
 		});
+		new Label(pageComposite, SWT.NONE);
+
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+
+		m_destinationForm = new DestinationForm(getPublishWizard().getMSpecBuilder(), true, false);
+		m_destinationForm.createControl(pageComposite);
+		
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
 
 		new Label(pageComposite, SWT.NONE).setText("Short Description:");
 		
@@ -101,6 +117,7 @@ public class PublishSpacePage extends PublishWizardPage
 				getPublishWizard().getMSpecBuilder().setShortDesc(UiUtils.trimmedValue(m_shortDesc));
 			}
 		});
+		new Label(pageComposite, SWT.NONE);
 
 		Label label = new Label(pageComposite, SWT.NONE);
 		label.setText("Documentation:");
@@ -125,10 +142,11 @@ public class PublishSpacePage extends PublishWizardPage
 				}
 			}
 		});
+		new Label(pageComposite, SWT.NONE);
 
 		Composite infoComposite = new Composite(pageComposite, SWT.NONE);
 		GridData data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan = 2;
+		data.horizontalSpan = 3;
 		infoComposite.setLayoutData(data);
 		infoComposite.setLayout(new GridLayout());
 
@@ -142,6 +160,8 @@ public class PublishSpacePage extends PublishWizardPage
 		data.horizontalSpan = 2;
 		infoGroup.setLayoutData(data);
 
+		new Label(pageComposite, SWT.NONE);
+		
 		new Label(infoGroup, SWT.WRAP).setText("You are currently logged in as ");
 		
 		m_userNameLabel = new Label(infoGroup, SWT.NONE);
@@ -205,7 +225,8 @@ public class PublishSpacePage extends PublishWizardPage
 		
 		m_spaceCombo.setItems(availableSpaces.toArray(new String[0]));
 		m_spaceCombo.select(0);
-		m_spaceCombo.pack();
+		
+		m_destinationForm.setup();
 		
 		updateUserName(getPublishWizard().getCurrentUserName());
 		

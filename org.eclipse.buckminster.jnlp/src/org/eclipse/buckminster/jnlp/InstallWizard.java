@@ -599,6 +599,7 @@ public class InstallWizard extends AdvancedWizard
 						.getMaterializationSpecParser(true);
 
 				m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
+				m_builder.setInstallLocation(MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation()));
 			}
 			catch(URISyntaxException e)
 			{

@@ -42,6 +42,8 @@ public class PublishWizard extends AdvancedWizard
 	
 	private IPublisher m_publisher;
 	
+	private MaterializationSpecBuilder m_mspec;
+	
 	public PublishWizard(InstallWizard installWizard)
 	{
 		setNeedsProgressMonitor(true);
@@ -56,6 +58,10 @@ public class PublishWizard extends AdvancedWizard
 		{
 			throw new JNLPException("Cannot create publisher", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
 		}
+		
+		m_mspec = new MaterializationSpecBuilder();
+		m_mspec.initFrom(installWizard.getMaterializationSpecBuilder().createMaterializationSpec());
+		m_mspec.setInstallLocation(MaterializationUtils.generalizePath(m_mspec, m_mspec.getInstallLocation()));
 	}
 	
 	protected IPublisher createPublisher(String basePathURL)
@@ -200,7 +206,7 @@ public class PublishWizard extends AdvancedWizard
 	
 	MaterializationSpecBuilder getMSpecBuilder()
 	{
-		return m_installWizard.getMaterializationSpecBuilder();
+		return m_mspec;
 	}
 	
 	String getServiceProvider()
