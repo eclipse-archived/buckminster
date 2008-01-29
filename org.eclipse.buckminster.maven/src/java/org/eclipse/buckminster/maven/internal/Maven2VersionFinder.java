@@ -7,13 +7,16 @@
  *****************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -22,6 +25,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,8 +60,9 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		monitor.beginTask(null, 2000);
 		try
 		{
+			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			NodeQuery query = getQuery();
-			for(String version : getVersions(query.getVersionDesignator(), readerType, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
+			for(String version : getVersions(query.getVersionDesignator(), readerType, docBld, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
 			{
 				VersionMatch versionMatch = MavenComponentType.createVersionMatch(version, space, null);
 				if(versionMatch != null && query.isMatch(versionMatch))
@@ -68,10 +73,10 @@ public class Maven2VersionFinder extends MavenVersionFinder
 
 					pbld.append(getMapEntry().getArtifactId());
 					pbld.append('-');
-					if (isSnapshotVersion(version))
-						appendSnapshotIdentifier(pbld, readerType, uri, rootPath, version, monitor);
-					else
+					if (isReleaseVersion(version))
 						pbld.append(version);
+					else
+						appendSnapshotIdentifier(pbld, readerType, docBld, uri, rootPath, version, monitor);
 					pbld.append(".jar");
 
 					fileList.add(readerType.createURL(uri, pbld.toString()));
@@ -79,17 +84,21 @@ public class Maven2VersionFinder extends MavenVersionFinder
 			}
 			return fileList.toArray(new URL[fileList.size()]);
 		}
+		catch(ParserConfigurationException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 		finally
 		{
 			monitor.done();
 		}
 	}
 
-	private List<String> getVersions(IVersionDesignator versionDesignator, Maven2ReaderType readerType, URI uri, String path, IProgressMonitor monitor) throws CoreException
+	private List<String> getVersions(IVersionDesignator versionDesignator, Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
 	{
 		List<String> versionList = null;
 
-		Document doc = getMetadataDocument(readerType, uri, path + "maven-metadata.xml", monitor);
+		Document doc = getMetadataDocument(readerType, docBld, uri, path + "maven-metadata.xml", monitor);
 		if (doc != null)
 		{
 			Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
@@ -103,7 +112,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 					for (int i = 0; i < top; i++)
 					{
 						String version = versions.item(i).getTextContent();
-						if (isSnapshotVersion(versionDesignator) == isSnapshotVersion(version))
+						if(!isReleaseVersion(versionDesignator) || isReleaseVersion(version))
 						{
 							if(versionList == null)
 								versionList = new ArrayList<String>();
@@ -116,9 +125,9 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		return versionList == null ? Collections.<String>emptyList() : versionList;
 	}
 
-	private void appendSnapshotIdentifier(StringBuilder pbld, Maven2ReaderType readerType, URI uri, String rootPath, String version, IProgressMonitor monitor) throws CoreException
+	private void appendSnapshotIdentifier(StringBuilder pbld, Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String rootPath, String version, IProgressMonitor monitor) throws CoreException
 	{
-		Document doc = getMetadataDocument(readerType, uri, rootPath + version + "/" + "maven-metadata.xml", monitor);
+		Document doc = getMetadataDocument(readerType, docBld, uri, rootPath + version + "/" + "maven-metadata.xml", monitor);
 		if(doc != null)
 		{
 			Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
@@ -143,34 +152,42 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		throw BuckminsterException.fromMessage("Unable to read snapshot metadata");
 	}
 
-	private boolean isSnapshotVersion(String version)
+	private boolean isReleaseVersion(String version)
 	{
-		return version.endsWith("SNAPSHOT");
+		return !version.endsWith("SNAPSHOT");
 	}
 
-	private boolean isSnapshotVersion(IVersionDesignator versionDesignator)
+	private boolean isReleaseVersion(IVersionDesignator versionDesignator)
 	{
-		if (versionDesignator != null)
-			return isSnapshotVersion(versionDesignator.getVersion().toString());
-		return false;
+		return (versionDesignator == null)
+			? true
+			: isReleaseVersion(versionDesignator.getVersion().toString());
 	}
 
-	private Document getMetadataDocument(Maven2ReaderType readerType, URI uri, String path, IProgressMonitor monitor) throws CoreException
+	private Document getMetadataDocument(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
 	{
 		URL url = readerType.createURL(uri, path);
 
+		InputStream input = null;
 		Document doc;
 		try
 		{
-			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(CorePlugin.getDefault().openCachedURL(url, monitor));
+			input = CorePlugin.getDefault().openCachedURL(url, monitor);
+			doc = docBld.parse(input);
 		}
 		catch(CoreException e)
 		{
+			docBld.reset();
 			throw e;
 		}
 		catch(Exception e)
 		{
+			docBld.reset();
 			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
 		}
 
 		// Make sure groupId and artifactId in metadata document match map entry
