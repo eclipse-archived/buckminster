@@ -147,7 +147,7 @@
 	<extension point="org.eclipse.buckminster.core.actors">
 		<actor
 			ID="copyTargetFragments"
-			class="org.eclipse.buckminster.pde.internal.FragmentsActor"
+			class="org.eclipse.buckminster.pde.internal.actor.FragmentsActor"
 			name="Copy target platform fragments" />
  </extension>
 </plugin>

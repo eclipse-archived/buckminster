@@ -64,11 +64,11 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			IPath location = WorkspaceInfo.getComponentLocation(cid);
 			IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
 			if(readerType == null)
-				return null;
+				return currentVersion;
 
 			Date lastMod = readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
 			if(lastMod == null)
-				return null;
+				return currentVersion;
 
 			Map<String,String> props = context.getProperties();
 			String format = props.get(FORMAT_PROPERTY);

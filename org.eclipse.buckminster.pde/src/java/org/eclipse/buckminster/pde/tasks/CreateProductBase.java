@@ -32,7 +32,11 @@ import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.actor.AbstractActor;
+import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
@@ -81,6 +85,8 @@ import org.osgi.framework.InvalidSyntaxException;
 @SuppressWarnings("restriction")
 public class CreateProductBase
 {
+	private final IActionContext m_actionContext;
+
 	private final String m_arch;
 
 	private Map<String, String> m_hints;
@@ -101,7 +107,7 @@ public class CreateProductBase
 
 	private final List<File> m_files;
 
-	public CreateProductBase(String os, String ws, String arch, String nl, File productFile, List<File> files,
+	public CreateProductBase(File productFile, List<File> files,
 			IPath outputDir, IPath targetLocation, boolean copyJavaLauncher) throws CoreException
 	{
 		if(outputDir == null)
@@ -116,6 +122,7 @@ public class CreateProductBase
 			throw new IllegalArgumentException("productFile cannot be null");
 
 		m_files = files;
+		m_actionContext = AbstractActor.getActiveContext();
 
 		InputStream pfInput = null;
 		try
@@ -134,18 +141,26 @@ public class CreateProductBase
 			IOUtils.close(pfInput);
 		}
 
-		m_os = os == null
-				? TargetPlatform.getOS()
-				: os;
-		m_ws = ws == null
-				? TargetPlatform.getWS()
-				: ws;
-		m_arch = arch == null
-				? TargetPlatform.getOSArch()
-				: arch;
-		m_nl = nl == null
-				? TargetPlatform.getNL()
-				: nl;
+		Map<String,String> props = m_actionContext.getProperties();
+		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
+		if(os == null || FilterUtils.MATCH_ALL.equals(os))
+			os = TargetPlatform.getOS();
+		m_os = os;
+
+		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
+		if(ws == null || FilterUtils.MATCH_ALL.equals(ws))
+			ws = TargetPlatform.getWS();
+		m_ws = ws;
+
+		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
+		if(arch == null || FilterUtils.MATCH_ALL.equals(arch))
+			arch = TargetPlatform.getOSArch();
+		m_arch = arch;
+
+		String nl = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_NL);
+		if(nl == null || FilterUtils.MATCH_ALL.equals(nl))
+			nl = TargetPlatform.getNL();
+		m_nl = nl;
 
 		m_copyJavaLauncher = copyJavaLauncher;
 	}
@@ -235,17 +250,17 @@ public class CreateProductBase
 		bi.brand();
 	}
 
-	private boolean hasDeltaPackFeature()
+	private boolean hasDeltaPackFeature() throws CoreException
 	{
-		for(File file : m_files)
+		CSpec cspec = m_actionContext.getCSpec();
+		Attribute attr = cspec.getAttribute(IPDEConstants.ATTRIBUTE_PRODUCT_ROOT_FILES);
+		for(Prerequisite pq : attr.getPrerequisites())
 		{
-			File parent = file.getParentFile();
-			if(parent == null || !IPDEConstants.FEATURES_FOLDER.equals(parent.getName()))
-				continue;
-
-			String name = file.getName();
-			if(name.startsWith("org.eclipse.equinox.executable_") || name.startsWith("org.eclipse.platform.launchers_"))
-				return true;
+			if(pq.getComponentName().equals("org.eclipse.equinox.executable")
+			|| pq.getComponentName().equals("org.eclipse.platform.launchers"))
+			{
+				return (pq.getReferencedAttribute(cspec, m_actionContext) != null);
+			}
 		}
 		return false;
 	}

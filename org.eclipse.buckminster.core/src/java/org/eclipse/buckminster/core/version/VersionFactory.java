@@ -11,10 +11,6 @@
 package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
-import org.eclipse.buckminster.core.internal.version.StringVersionType;
-import org.eclipse.buckminster.core.internal.version.TimestampVersionType;
-import org.eclipse.buckminster.core.internal.version.TripletVersionType;
 import org.eclipse.buckminster.core.internal.version.VersionDesignator;
 import org.eclipse.core.runtime.CoreException;
 
@@ -36,10 +32,10 @@ public class VersionFactory
 	{
 		try
 		{
-			OSGiType = CorePlugin.getDefault().getVersionType(OSGiVersionType.ID);
-			TimestampType = CorePlugin.getDefault().getVersionType(TimestampVersionType.ID);
-			StringType = CorePlugin.getDefault().getVersionType(StringVersionType.ID);
-			TripletType = CorePlugin.getDefault().getVersionType(TripletVersionType.ID);
+			OSGiType = CorePlugin.getDefault().getVersionType(IVersionType.OSGI);
+			TimestampType = CorePlugin.getDefault().getVersionType(IVersionType.TIMESTAMP);
+			StringType = CorePlugin.getDefault().getVersionType(IVersionType.STRING);
+			TripletType = CorePlugin.getDefault().getVersionType(IVersionType.TRIPLET);
 		}
 		catch(CoreException e)
 		{

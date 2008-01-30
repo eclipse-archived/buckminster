@@ -23,8 +23,6 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
  */
 public class TimestampVersionType extends AbstractVersionType
 {
-	public static final String ID = "Timestamp";
-
 	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss");
 	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd");
 

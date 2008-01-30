@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.cspec.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
@@ -44,7 +43,7 @@ public class ComponentRequest extends ComponentName
 		{
 			String vdType = properties.get(KeyConstants.VERSION_TYPE);
 			if(vdType == null)
-				vdType = OSGiVersionType.ID;
+				vdType = IVersionType.OSGI;
 			vd = VersionFactory.createDesignator(vdType, vdStr);
 		}
 		return new ComponentRequest(properties.get(KeyConstants.COMPONENT_NAME),

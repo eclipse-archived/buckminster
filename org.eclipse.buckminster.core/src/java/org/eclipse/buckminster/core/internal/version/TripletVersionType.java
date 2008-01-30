@@ -23,8 +23,6 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
  */
 public class TripletVersionType extends AbstractVersionType
 {
-	public static final String ID = "Triplet";
-
 	private static final Pattern s_TripletVersionPattern = Pattern.compile(
 			"^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+))?)?(?:[-.]?([^\\(\\)\\[\\],]+))?([\\)\\],]|$)");
 

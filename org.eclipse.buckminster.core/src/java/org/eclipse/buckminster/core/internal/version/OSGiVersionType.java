@@ -24,9 +24,6 @@ import org.osgi.framework.Version;
 @SuppressWarnings("deprecation")
 public class OSGiVersionType extends TripletVersionType
 {
-	@SuppressWarnings("hiding")
-	public static final String ID = "OSGi";
-
 	// Slight variant of the TripletVersionPattern. This pattern will not
 	// allow a qualifier unless all three numbers precedes it and the only
 	// valid separator between the last digit and the qualifier is the dot.

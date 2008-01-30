@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
@@ -209,7 +209,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
 			cspecBuilder.setComponentTypeID(getComponentTypeID());
-			cspecBuilder.setVersion(pluginBase.getVersion(), VersionFactory.OSGiType.getId());
+			cspecBuilder.setVersion(pluginBase.getVersion(), IVersionType.OSGI);
 			if(forResolutionAidOnly)
 				return;
 

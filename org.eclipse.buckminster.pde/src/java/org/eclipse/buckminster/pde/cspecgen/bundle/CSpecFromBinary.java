@@ -21,9 +21,10 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -53,6 +54,7 @@ import org.osgi.framework.Constants;
 public class CSpecFromBinary extends CSpecGenerator
 {
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi";
+	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE);
 
 	private final IPluginBase m_plugin;
 
@@ -238,12 +240,8 @@ public class CSpecFromBinary extends CSpecGenerator
 			// Just add the mandatory system bundle. It's needed since
 			// that bundle defines the execution environments.
 			//
-			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName())))
-			{
-				Dependency sysDep = new Dependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null, null);
-				if(!query.skipComponent(sysDep))
-					cspec.addDependency(sysDep);
-			}
+			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName()) || query.skipComponent(SYSTEM_BUNDLE_CNAME)))
+				cspec.addDependency(createDependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null, null));
 			return;
 		}
 
@@ -269,8 +267,8 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 			}
 
-			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
-			if(query.skipComponent(dependency) || !addDependency(dependency))
+			DependencyBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			if(skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 
 			String component = dependency.getName();

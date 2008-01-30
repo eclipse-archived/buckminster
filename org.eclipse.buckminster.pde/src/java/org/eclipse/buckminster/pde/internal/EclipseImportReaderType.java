@@ -367,7 +367,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				IPath path = Path.fromPortableString(pluginURL.getPath());
 				String jarName = path.lastSegment();
 				if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip")))
-					throw BuckminsterException.fromMessage("Invalid url for remote import: " + pluginURL);
+					throw BuckminsterException.fromMessage("Invalid url for remote import: %s", pluginURL);
 
 				String vcName = jarName.substring(0, jarName.length() - 4);
 				File tempSite = getTempSite(userCache);
@@ -459,7 +459,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				if(name.equals(vid.getIdentifier()) && version.equalsUnqualified(VersionFactory.OSGiType.coerce(vid.getVersion())))
 					return entry.getRemoteLocation();
 			}
-			throw BuckminsterException.fromMessage("Unable to find " + name + " in map " + remoteLocation);
+			throw BuckminsterException.fromMessage("Unable to find %s in map %s", name, remoteLocation);
 		}
 		return new URL(remoteLocation, subDir + '/' + vName + ".jar");
 	}

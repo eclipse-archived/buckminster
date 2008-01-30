@@ -14,10 +14,10 @@ import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -59,7 +59,7 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 		{
 			String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
 			if(type == null)
-				type = OSGiVersionType.ID;
+				type = IVersionType.OSGI;
 			try
 			{
 				version = VersionFactory.createVersion(type, tmp);

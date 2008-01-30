@@ -32,17 +32,9 @@ public class CreateProductBaseTask extends TargetPlatformTask
 {
 	private boolean m_copyJavaLauncher = true;
 
-	private String m_arch;
-
-	private String m_os;
-
 	private File m_outputDir;
 
 	private File m_productFile;
-
-	private String m_ws;
-
-	private String m_nl;
 
 	private ArrayList<FileSet> m_fileSets;
 
@@ -98,7 +90,7 @@ public class CreateProductBaseTask extends TargetPlatformTask
 			}
 
 			CreateProductBase createProduct = new CreateProductBase(
-					m_os, m_ws, m_arch, m_nl, m_productFile, files, new Path(m_outputDir.toString()), getTargetLocation(), m_copyJavaLauncher);
+					m_productFile, files, new Path(m_outputDir.toString()), getTargetLocation(), m_copyJavaLauncher);
 
 			createProduct.execute();
 			for(Map.Entry<String,String> hint : createProduct.getHints().entrySet())
@@ -110,19 +102,9 @@ public class CreateProductBaseTask extends TargetPlatformTask
 		}
 	}
 
-	public void setArch(String arch)
-	{
-		m_arch = arch;
-	}
-
 	public void setCopyJavaLauncher(boolean flag)
 	{
 		m_copyJavaLauncher = flag;
-	}
-
-	public void setOs(String os)
-	{
-		m_os = os;
 	}
 
 	public void setOutputDir(File outputDir)
@@ -133,15 +115,5 @@ public class CreateProductBaseTask extends TargetPlatformTask
 	public void setProductFile(File productFile)
 	{
 		m_productFile = productFile;
-	}
-
-	public void setWs(String ws)
-	{
-		m_ws = ws;
-	}
-
-	public void setNl(String nl)
-	{
-		m_nl = nl;
 	}
 }

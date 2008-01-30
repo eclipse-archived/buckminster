@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.pde.internal;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -35,14 +36,12 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 {
 	enum InstalledType { FEATURE, PLUGIN }
 
-	private final EclipsePlatformReaderType m_readerType;
 	private final String m_componentName;
 	private final InstalledType m_type;
 
-	public EclipsePlatformVersionFinder(EclipsePlatformReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
+	public EclipsePlatformVersionFinder(IReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
-		m_readerType = readerType;
 		String uri = provider.getURI(query.getProperties());
 		IPath path = new Path(uri);
 		if(path.segmentCount() == 2)
@@ -61,7 +60,7 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 	{
 		if(m_type == InstalledType.PLUGIN)
 		{
-			IPluginModelBase plugin = m_readerType.getBestPlugin(m_componentName, null);
+			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(m_componentName, null);
 			if(plugin != null)
 			{
 				IVersion v = VersionFactory.OSGiType.coerce(plugin.getBundleDescription().getVersion());
@@ -70,7 +69,7 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 		}
 		else
 		{
-			IFeatureModel feature = m_readerType.getBestFeature(m_componentName, null);
+			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(m_componentName, null);
 			if(feature != null)
 			{
 				String version = feature.getFeature().getVersion();

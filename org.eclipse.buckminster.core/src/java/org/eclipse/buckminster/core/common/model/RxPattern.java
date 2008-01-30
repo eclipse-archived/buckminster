@@ -228,7 +228,7 @@ public class RxPattern extends RxPart
 		}
 
 		if(parenDepth != 0)
-			throw BuckminsterException.fromMessage("Unbalanced parenthesis in pattern: " + pattern);
+			throw BuckminsterException.fromMessage("Unbalanced parenthesis in pattern: %s", pattern);
 
 		if(stripOuter)
 		{

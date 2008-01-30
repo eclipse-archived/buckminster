@@ -7,16 +7,16 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
@@ -68,7 +68,7 @@ public class CSpecFromSource extends CSpecGenerator
 	{
 		CSpecBuilder cspec = getCSpec();
 		cspec.setName(m_feature.getId());
-		cspec.setVersion(m_feature.getVersion(), VersionFactory.OSGiType.getId());
+		cspec.setVersion(m_feature.getVersion(), IVersionType.OSGI);
 		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
 		cspec.setFilter(FilterUtils.createFilter(
 			m_feature.getOS(),
@@ -192,8 +192,8 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder productRootFiles = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
 		{
-			Dependency dep = createDependency(feature);
-			if(query.skipComponent(dep))
+			DependencyBuilder dep = createDependency(feature);
+			if(skipComponent(query, dep))
 				continue;
 
 			cspec.addDependency(dep);
@@ -231,8 +231,8 @@ public class CSpecFromSource extends CSpecGenerator
 				if(manager.findEntry(plugin.getId()) == null)
 					continue;
 
-			Dependency dep = createDependency(plugin);
-			if(query.skipComponent(dep))
+			DependencyBuilder dep = createDependency(plugin);
+			if(skipComponent(query, dep))
 				continue;
 
 			cspec.addDependency(dep);
@@ -241,14 +241,14 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 	}
 
-	Dependency createDependency(IFeatureChild feature) throws CoreException
+	DependencyBuilder createDependency(IFeatureChild feature) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
 		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), feature
 				.getMatch(), filter);
 	}
 
-	Dependency createDependency(IFeaturePlugin plugin) throws CoreException
+	DependencyBuilder createDependency(IFeaturePlugin plugin) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
 		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), filter);

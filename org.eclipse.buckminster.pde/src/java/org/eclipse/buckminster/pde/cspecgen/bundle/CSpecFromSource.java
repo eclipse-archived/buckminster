@@ -26,9 +26,9 @@ import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -494,8 +494,8 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 			}
 
-			Dependency dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
-			if(query.skipComponent(dependency) || !addDependency(dependency))
+			DependencyBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			if(skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 
 			String component = dependency.getName();

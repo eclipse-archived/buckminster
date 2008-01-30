@@ -26,7 +26,6 @@ import org.eclipse.buckminster.core.ctype.MissingBuilderException;
 import org.eclipse.buckminster.core.ctype.MissingComponentTypeException;
 import org.eclipse.buckminster.core.helpers.ShortDurationURLCache;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
-import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.materializer.WorkspaceBindingInstallJob;
@@ -354,7 +353,7 @@ public class CorePlugin extends LogAwarePlugin
 		IQualifierGenerator vm = getExecutableExtension(IQualifierGenerator.class, QUALIFIER_GENERATOR_POINT, qualifierGenerator, true);
 		if(vm != null)
 			return vm;
-		throw BuckminsterException.fromMessage("Missing qualifier generator for id " + qualifierGenerator);
+		throw BuckminsterException.fromMessage("Missing qualifier generator for id %s", qualifierGenerator);
 	}
 
 	/**
@@ -405,7 +404,7 @@ public class CorePlugin extends LogAwarePlugin
 	public IVersionType getVersionType(String versionType) throws CoreException
 	{
 		if(versionType == null)
-			versionType = OSGiVersionType.ID;
+			versionType = IVersionType.OSGI;
 
 		IVersionType vm = getExecutableExtension(IVersionType.class, VERSION_TYPES_POINT, versionType, true);
 		if(vm != null)

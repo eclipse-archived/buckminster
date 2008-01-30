@@ -45,11 +45,11 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 			IPath location = WorkspaceInfo.getComponentLocation(cid);
 			IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
 			if(readerType == null)
-				return null;
+				return currentVersion;
 
 			long revision = readerType.getLastRevision(location.toFile(), context.getCancellationMonitor());
 			if(revision == -1)
-				return null;
+				return currentVersion;
 
 			Map<String,String> props = context.getProperties();
 			String format = props.get(FORMAT_PROPERTY);

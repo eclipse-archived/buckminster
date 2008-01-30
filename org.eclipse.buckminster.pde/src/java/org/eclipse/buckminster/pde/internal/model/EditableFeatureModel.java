@@ -145,7 +145,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 			// Parsing failed but AbstractFeatureParser silently ignores
 			// SAXExceptions
 			//
-			throw BuckminsterException.fromMessage("Unable to parse feature: " + m_externalFile);
+			throw BuckminsterException.fromMessage("Unable to parse feature: %s", m_externalFile);
 		}
 
 		int ctxQualLen = -1;

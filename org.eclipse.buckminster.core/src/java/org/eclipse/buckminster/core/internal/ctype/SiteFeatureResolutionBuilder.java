@@ -18,9 +18,9 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
@@ -34,7 +34,6 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverNode;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -55,7 +54,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof SiteFeatureReader))
-			throw BuckminsterException.fromMessage(getId() + " resolution builder can only work with a site.feature reader");
+			throw BuckminsterException.fromMessage("%s resolution builder can only work with a site.feature reader", getId());
 
 		monitor.beginTask(null, 100);
 		try
@@ -121,12 +120,14 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				IIncludedFeatureReference ref = refs[idx];
 				VersionedIdentifier vid = ref.getVersionedIdentifier();
 				IVersion version = VersionFactory.OSGiType.coerce(vid.getVersion());
-				IVersionDesignator vd = (version == null) ? null : VersionFactory.createExplicitDesignator(version);
-
-				Dependency dep = new Dependency(vid.getIdentifier(), getComponentTypeID(), vd, FilterUtils.createFilter(ref.getOS(), ref.getWS(), ref.getOSArch(), ref.getName()));
-				cspecBld.addDependency(dep);
+				DependencyBuilder bld = cspecBld.createDependencyBuilder();
+				bld.setName(vid.getIdentifier());
+				bld.setComponentTypeID(getComponentTypeID());
+				bld.setVersionDesignator((version == null) ? null : VersionFactory.createExplicitDesignator(version));
+				bld.setFilter(FilterUtils.createFilter(ref.getOS(), ref.getWS(), ref.getOSArch(), ref.getName()));
+				cspecBld.addDependency(bld);
 				matches[idx] = new VersionMatch(version, null, provider.getSpace(), -1, null, null);
-				qDeps[idx] = new QualifiedDependency(dep, null);
+				qDeps[idx] = new QualifiedDependency(bld.createDependency(), null);
 			}
 			cspec = cspecBld.createCSpec();
 			String childTagInfo = cspec.getTagInfo(tagInfo);

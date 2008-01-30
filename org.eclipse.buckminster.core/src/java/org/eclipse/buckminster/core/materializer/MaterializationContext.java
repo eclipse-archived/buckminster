@@ -214,8 +214,8 @@ public class MaterializationContext extends RMContext
 				// is illegal.
 				//
 				throw BuckminsterException.fromMessage(
-					String.format("WorkspaceLocation %s in node matching %s cannot be relative unless a main workspace location is present",
-						nodeLocation, ci));
+					"WorkspaceLocation %s in node matching %s cannot be relative unless a main workspace location is present",
+						nodeLocation, ci);
 
 			// Default to location of current workspace
 			//
@@ -241,7 +241,7 @@ public class MaterializationContext extends RMContext
 			IReaderType rd = resolution.getProvider().getReaderType();
 			IPath leaf = rd.getLeafArtifact(resolution, this);
 			if(leaf == null ||leaf.segmentCount() == 0)
-				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of " + cName);
+				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of %s", cName);
 			name = leaf.segment(0);
 		}
 

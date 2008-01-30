@@ -361,7 +361,7 @@ public abstract class Attribute extends NamedElement implements Cloneable
 			}
 		}
 		if(uniquePath == null)
-			throw BuckminsterException.fromMessage("Unable to determine a unique product path for " + this);
+			throw BuckminsterException.fromMessage("Unable to determine a unique product path for %s", this);
 		return uniquePath;
 	}
 

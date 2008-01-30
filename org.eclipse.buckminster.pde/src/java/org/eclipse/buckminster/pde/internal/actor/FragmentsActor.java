@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.pde.internal;
+package org.eclipse.buckminster.pde.internal.actor;
 
 import java.util.Collections;
 import java.util.Map;
@@ -47,7 +47,7 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class FragmentsActor extends AbstractActor
 {
-	public static final String ID = "fragments";
+	public static final String ID = "copyTargetFragments";
 
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException

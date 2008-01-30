@@ -11,12 +11,12 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.internal.version.OSGiVersionType;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -70,7 +70,7 @@ public class MaterializationHandler extends ExtensionAwareHandler
 			{
 				String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
 				if(type == null)
-					type = OSGiVersionType.ID;
+					type = IVersionType.OSGI;
 				try
 				{
 					version = VersionFactory.createVersion(type, tmp);

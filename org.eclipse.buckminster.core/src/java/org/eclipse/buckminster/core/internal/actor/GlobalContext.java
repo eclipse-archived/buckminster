@@ -45,7 +45,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	public GlobalContext(Map<String,String> userProps, boolean forcedExecution)
 	{
 		m_globalProps = RMContext.getGlobalPropertyAdditions();
-		m_userProps = userProps;
+		m_userProps = userProps == null ? Collections.<String,String>emptyMap() : userProps;
 		m_forcedExecution = forcedExecution;
 	}
 
@@ -57,7 +57,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	public Map<String,String> getExecutionProperties(Attribute attribute) throws CoreException
 	{
 		Map<String,String> actionProps = (attribute instanceof Action) ? ((Action)attribute).getProperties() : Collections.<String,String>emptyMap();
-		int mapSize = m_globalProps.size() + actionProps.size() + m_userProps.size() + 10;
+		int mapSize = m_globalProps.size() + actionProps.size() + 10;
 		ExpandingProperties allProps = new ExpandingProperties(mapSize);
 		allProps.putAll(m_globalProps, true);
 		allProps.putAll(actionProps, true);

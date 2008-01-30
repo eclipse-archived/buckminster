@@ -69,7 +69,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			{
 				s = children[0];
 				if(s.getException() instanceof FileNotFoundException && s.getMessage().startsWith("Unable to access"))
-					e = BuckminsterException.fromMessage("No target platform found at: " + destination);
+					e = BuckminsterException.fromMessage("No target platform found at: %s", destination);
 			}
 			throw e;
 		}

@@ -9,13 +9,12 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -34,16 +33,10 @@ public class Dependency extends ComponentRequest
 
 	private final Filter m_filter;
 
-	public Dependency(String name, String componentType, IVersionDesignator versionDesignator, Filter filter)
+	public Dependency(DependencyBuilder bld)
 	{
-		super(name, componentType, versionDesignator);
-		m_filter = filter;
-	}
-
-	public Dependency(String name, String componentType, String versionDesignatorStr, String versionTypeId, String filter)
-	throws CoreException, InvalidSyntaxException
-	{
-		this(name, componentType, versionDesignatorStr, versionTypeId, filter == null ? null : FilterUtils.createFilter(filter));
+		super(bld.getName(), bld.getComponentTypeID(), bld.getVersionDesignator());
+		m_filter = bld.getFilter();
 	}
 
 	public Dependency(String name, String componentType, String versionDesignatorStr, String versionTypeId, Filter filter)

@@ -25,7 +25,7 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -36,7 +36,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -54,6 +54,7 @@ import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.core.plugin.IPluginReference;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
+import org.eclipse.pde.internal.core.iproduct.ILauncherInfo;
 import org.eclipse.pde.internal.core.iproduct.IProduct;
 import org.eclipse.pde.internal.core.iproduct.IProductFeature;
 import org.eclipse.pde.internal.core.iproduct.IProductPlugin;
@@ -238,10 +239,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			{
 				for(IProductFeature feature : product.getFeatures())
 				{
-					Dependency dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), null);
+					DependencyBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), null);
 					if(dep.getName().equals(cspec.getName()))
 						createProduct.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORTS);
-					else if(!query.skipComponent(dep))
+					else if(!skipComponent(query, dep))
 					{
 						addDependency(dep);
 						createProduct.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
@@ -252,10 +253,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			{
 				for(IProductPlugin plugin : product.getPlugins())
 				{
-					Dependency dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null, null);
+					DependencyBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null, null);
 					if(dep.getName().equals(cspec.getName()))
 						continue;
-					else if(!query.skipComponent(dep))
+					else if(!skipComponent(query, dep))
 					{
 						if(addDependency(dep))
 							bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
@@ -270,7 +271,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 			// Ensure that the launcher is present
 			//
-			Dependency dep = createDependency("org.eclipse.equinox.launcher", IComponentType.OSGI_BUNDLE, null, null);
+			DependencyBuilder dep = createDependency("org.eclipse.equinox.launcher", IComponentType.OSGI_BUNDLE, null, null);
 			if(addDependency(dep))
 				bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
 
@@ -279,7 +280,18 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			createProduct.setProductBase(OUTPUT_DIR);
 			String outputFolder = TextUtils.notEmptyTrimmedString(getProductOutputFolder(product.getId()));
 			if(outputFolder == null)
-				outputFolder = "eclipse";
+			{
+				ILauncherInfo launcherInfo = product.getLauncherInfo();
+				if(launcherInfo != null)
+				{
+					outputFolder = launcherInfo.getLauncherName();
+					if(outputFolder != null && outputFolder.endsWith(".exe"))
+						outputFolder = outputFolder.substring(0, outputFolder.length() - 4);
+				}
+				
+				if(outputFolder == null)
+					outputFolder = "eclipse";
+			}
 			createProduct.addProductPath(Path.fromPortableString(outputFolder).addTrailingSeparator());
 		}
 		finally
@@ -298,7 +310,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return action;
 	}
 
-	protected boolean addDependency(Dependency dependency) throws CoreException
+	protected boolean addDependency(DependencyBuilder dependency) throws CoreException
 	{
 		DependencyBuilder old = m_cspecBuilder.getDependency(dependency.getName());
 		if(old == null)
@@ -346,12 +358,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(vd == old.getVersionDesignator() && fl == old.getFilter())
 			return false;
 
-		DependencyBuilder bld = m_cspecBuilder.createDependencyBuilder();
-		bld.initFrom(dependency);
-		bld.setVersionDesignator(vd);
-		bld.setFilter(fl);
-		m_cspecBuilder.removeDependency(dependency.getName());
-		m_cspecBuilder.addDependency(bld);
+		old.setVersionDesignator(vd);
+		old.setFilter(fl);
 		return false;
 	}
 
@@ -368,25 +376,30 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return copyPlugins;
 	}
 
-	protected Dependency createDependency(IPluginReference pluginReference, String category)
+	protected DependencyBuilder createDependency(IPluginReference pluginReference, String category)
 	throws CoreException
 	{
 		return createDependency(pluginReference.getId(), category, pluginReference.getVersion(), pluginReference.getMatch(), null);
 	}
 
-	protected Dependency createDependency(String name, String componentType, String version, Filter filter)
+	protected DependencyBuilder createDependency(String name, String componentType, String versionDesignator, Filter filter)
 	throws CoreException
 	{
-		if(version != null && (version.length() == 0 || version.equals("0.0.0")))
-			version = null;
-		return new Dependency(name, componentType, version, VersionFactory.OSGiType.getId(), filter);
+		if(versionDesignator != null && (versionDesignator.length() == 0 || versionDesignator.equals("0.0.0")))
+			versionDesignator = null;
+
+		DependencyBuilder bld = getCSpec().createDependencyBuilder();
+		bld.setName(name);
+		bld.setComponentTypeID(componentType);
+		bld.setVersionDesignator(versionDesignator, IVersionType.OSGI);
+		bld.setFilter(filter);
+		return bld;
 	}
 
-	protected Dependency createDependency(String name, String componentType, String version, int pdeMatchRule, Filter filter)
+	protected DependencyBuilder createDependency(String name, String componentType, String version, int pdeMatchRule, Filter filter)
 	throws CoreException
 	{
-		return new Dependency(name, componentType, convertMatchRule(pdeMatchRule, version),
-				VersionFactory.OSGiType.getId(), filter);
+		return createDependency(name, componentType, convertMatchRule(pdeMatchRule, version), filter);
 	}
 
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ) throws CoreException
@@ -400,6 +413,11 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		ActionBuilder rmDir = addAntAction(actionName, TASK_DELETE_DIR, publ);
 		rmDir.addProperty(PROP_DELETE_DIR, dirPath.toPortableString(), false);
 		return rmDir;
+	}
+
+	protected boolean skipComponent(ComponentQuery query, DependencyBuilder bld)
+	{
+		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()));
 	}
 
 	protected void setFilter(String filterStr) throws CoreException

@@ -13,6 +13,11 @@ import org.eclipse.buckminster.core.IBuckminsterExtension;
 
 public interface IVersionType extends IBuckminsterExtension
 {
+	public static final String OSGI = "OSGi";
+	public static final String STRING = "String";
+	public static final String TIMESTAMP = "Timestamp";
+	public static final String TRIPLET = "Triplet";
+
 	/**
 	 * Return true if this type can be compared to the other type
 	 */

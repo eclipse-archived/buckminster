@@ -40,7 +40,7 @@ public class DependencyBuilder extends CSpecElementBuilder
 
 	public Dependency createDependency()
 	{
-		return new Dependency(this.getName(), m_componentType, m_versionDesignator, m_filter);
+		return new Dependency(this);
 	}
 
 	public String getComponentTypeID()

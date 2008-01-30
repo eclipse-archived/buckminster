@@ -136,7 +136,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 
 	public IPluginModelBase getPluginModelBase(String pluginId, String version)
 	{
-		return ((EclipsePlatformReaderType)getReaderType()).getBestPlugin(pluginId, version);
+		return EclipsePlatformReaderType.getBestPlugin(pluginId, version);
 	}
 
 	public InstalledType getType()
@@ -278,12 +278,12 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 
 	private IFeatureModel getBestFeature(String desiredVersion)
 	{
-		return ((EclipsePlatformReaderType)getReaderType()).getBestFeature(m_componentName, desiredVersion);
+		return EclipsePlatformReaderType.getBestFeature(m_componentName, desiredVersion);
 	}
 
 	private IPluginModelBase getBestPlugin(String desiredVersion)
 	{
-		return ((EclipsePlatformReaderType)getReaderType()).getBestPlugin(m_componentName, desiredVersion);
+		return EclipsePlatformReaderType.getBestPlugin(m_componentName, desiredVersion);
 	}
 
 	private String getDesiredVersion()

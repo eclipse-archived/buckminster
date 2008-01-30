@@ -62,14 +62,14 @@ public class BuckminsterException extends CoreException
 		deeplyPrint(e, strm, stackTrace, 0);
 	}
 
-	public static CoreException fromMessage(String message)
+	public static CoreException fromMessage(String message, Object...args)
 	{
-		return fromMessage(message, null);
+		return fromMessage(null, message, args);
 	}
 
-	public static CoreException fromMessage(String message, Throwable cause)
+	public static CoreException fromMessage(Throwable cause, String message, Object...args)
 	{
-		return new CoreException(createStatus(message, cause));
+		return new CoreException(createStatus(String.format(message, args), cause));
 	}
 
 	public static Throwable unwind(Throwable t)

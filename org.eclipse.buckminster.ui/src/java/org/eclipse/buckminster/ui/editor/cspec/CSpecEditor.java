@@ -41,7 +41,7 @@ import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -521,7 +521,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			if(version == null)
 			{
 				m_versionString.setText("");
-				m_versionType.select(m_versionType.indexOf(VersionFactory.OSGiType.getId()));
+				m_versionType.select(m_versionType.indexOf(IVersionType.OSGI));
 			}
 			else
 			{

@@ -18,8 +18,6 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
  */
 public class StringVersionType extends AbstractVersionType
 {
-	public static final String ID = "String";
-
 	public IVersion fromString(String versionString, int startPos, int[] endPosRet) throws VersionSyntaxException
 	{
 		if(versionString == null)

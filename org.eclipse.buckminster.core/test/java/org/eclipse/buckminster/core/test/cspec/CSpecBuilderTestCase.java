@@ -28,19 +28,13 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.runtime.CoreException;
 
 public class CSpecBuilderTestCase extends TestCase
 {
-	private static IVersionDesignator createOSGI(String designator) throws CoreException
-	{
-		return VersionFactory.createDesignator(VersionFactory.OSGiType, designator);
-	}
-
 	public void testSaxGenerator()
 	throws Exception
 	{
@@ -51,11 +45,11 @@ public class CSpecBuilderTestCase extends TestCase
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		cspecBld.setName("my.test.project");
 		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3"));
-		Dependency c1 = new Dependency("org.apache.ant", IComponentType.OSGI_BUNDLE, createOSGI("[1.6.2,2.0.0)"), null);
+		Dependency c1 = new Dependency("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", IVersionType.OSGI, null);
 		cspecBld.addDependency(c1);
-		cspecBld.addDependency(new Dependency("se.tada.util.sax", null, null, null));
-		cspecBld.addDependency(new Dependency("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, createOSGI("3.1.0"), null));
-		cspecBld.addDependency(new Dependency("org.junit", null, createOSGI("3.1.8"), null));
+		cspecBld.addDependency(new Dependency("se.tada.util.sax", null, null, null, null));
+		cspecBld.addDependency(new Dependency("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", IVersionType.OSGI, null));
+		cspecBld.addDependency(new Dependency("org.junit", null, "3.1.8", IVersionType.OSGI, null));
 
 		CSpec c = cspecBld.createCSpec();
 

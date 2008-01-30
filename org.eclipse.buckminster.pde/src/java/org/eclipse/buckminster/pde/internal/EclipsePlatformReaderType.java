@@ -246,14 +246,14 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		ComponentRequest rq = cr.getRequest();
 		if(IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID()))
 		{
-			IFeatureModel model = this.getBestFeature(rq.getName(), versionString);
+			IFeatureModel model = getBestFeature(rq.getName(), versionString);
 			if(model == null)
 				return null;
 			location = model.getInstallLocation();
 		}
 		else
 		{
-			IPluginModelBase model = this.getBestPlugin(rq.getName(), versionString);
+			IPluginModelBase model = getBestPlugin(rq.getName(), versionString);
 			if(model == null)
 				return null;
 			location = model.getInstallLocation();
@@ -287,14 +287,14 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		return null;
 	}
 
-	public IFeatureModel getBestFeature(String componentName, String desiredVersion)
+	public static IFeatureModel getBestFeature(String componentName, String desiredVersion)
 	{
 		if(desiredVersion == null)
 			desiredVersion = "0.0.0";
 		return PDECore.getDefault().getFeatureModelManager().findFeatureModel(componentName, desiredVersion);
 	}
 
-	public IPluginModelBase getBestPlugin(String componentName, String desiredVersion)
+	public static IPluginModelBase getBestPlugin(String componentName, String desiredVersion)
 	{
 		IPluginModelBase unversioned = null;
 		for(IPluginModelBase model : PluginRegistry.getActiveModels())
@@ -350,7 +350,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		//
 		URI artifactURI = res.getArtifactURI(context);
 		if(artifactURI == null)
-			throw BuckminsterException.fromMessage("Unable to obtain URI for " + res.getComponentIdentifier());
+			throw BuckminsterException.fromMessage("Unable to obtain URI for %s", res.getComponentIdentifier());
 		try
 		{
 			URL artifactURL = artifactURI.toURL();
@@ -358,7 +358,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		}
 		catch(MalformedURLException e)
 		{
-			throw BuckminsterException.fromMessage("Unable to obtain URL for " + res.getComponentIdentifier(), e);
+			throw BuckminsterException.fromMessage(e, "Unable to obtain URL for %s", res.getComponentIdentifier());
 		}
 	}
 }
