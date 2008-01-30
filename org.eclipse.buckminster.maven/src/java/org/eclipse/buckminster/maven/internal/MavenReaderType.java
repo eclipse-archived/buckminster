@@ -17,7 +17,6 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -152,12 +151,6 @@ public class MavenReaderType extends URLCatalogReaderType
 	{
 		MonitorUtils.complete(monitor);
 		return new MavenReader(this, providerMatch);
-	}
-
-	@Override
-	public String getRecommendedMaterializer()
-	{
-		return IMaterializer.WORKSPACE;
 	}
 
 	@Override
