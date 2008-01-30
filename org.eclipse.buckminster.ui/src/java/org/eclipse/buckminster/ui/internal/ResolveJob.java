@@ -74,8 +74,13 @@ public class ResolveJob extends Job
 			ComponentRequest rootRequest = query.getRootRequest();
 			final BillOfMaterials bom = m_resolver.resolve(rootRequest, resolutionMonitor);
 			IStatus status = ctx.getStatus();
-			if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-				return status;
+			if(!ctx.isContinueOnError())
+			{
+				if(status.getSeverity() == IStatus.ERROR)
+					return status;
+				if(!bom.isFullyResolved(query))
+					throw BuckminsterException.fromMessage("Unable to resolve %s", rootRequest);
+			}
 			CorePlugin.logWarningsAndErrors(status);
 
 			if(!m_materialize)
