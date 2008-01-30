@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -68,12 +67,6 @@ public class LocalReaderType extends URLCatalogReaderType
 	{
 		MonitorUtils.complete(monitor);
 		return new LocalReader(this, providerMatch);
-	}
-
-	@Override
-	public String getRecommendedMaterializer()
-	{
-		return IMaterializer.WORKSPACE;
 	}
 
 	@Override

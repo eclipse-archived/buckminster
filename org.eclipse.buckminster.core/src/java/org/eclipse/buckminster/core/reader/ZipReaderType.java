@@ -13,7 +13,6 @@ package org.eclipse.buckminster.core.reader;
 import java.net.URI;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -34,11 +33,5 @@ public class ZipReaderType extends CatalogReaderType
 	{
 		MonitorUtils.complete(monitor);
 		return new ZipFileReader(this, providerMatch);
-	}
-
-	@Override
-	public String getRecommendedMaterializer()
-	{
-		return IMaterializer.FILE_SYSTEM;
 	}
 }

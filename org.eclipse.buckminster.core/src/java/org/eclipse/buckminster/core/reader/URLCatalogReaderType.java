@@ -34,7 +34,6 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -158,12 +157,6 @@ public class URLCatalogReaderType extends CatalogReaderType
 	public String getRemotePath(String repositoryLocation) throws CoreException
 	{
 		return getURI(repositoryLocation).getPath();
-	}
-
-	@Override
-	public String getRecommendedMaterializer()
-	{
-		return IMaterializer.FILE_SYSTEM;
 	}
 
 	public static IComponentReader getReader(URL catalog, IProgressMonitor monitor) throws CoreException

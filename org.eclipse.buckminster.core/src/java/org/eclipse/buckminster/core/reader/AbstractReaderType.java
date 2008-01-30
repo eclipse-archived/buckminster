@@ -66,7 +66,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 
 	public String getRecommendedMaterializer()
 	{
-		return IMaterializer.FILE_SYSTEM;
+		return IMaterializer.WORKSPACE;
 	}
 
 	public static IReaderType getTypeForResource(IResource resource) throws CoreException
