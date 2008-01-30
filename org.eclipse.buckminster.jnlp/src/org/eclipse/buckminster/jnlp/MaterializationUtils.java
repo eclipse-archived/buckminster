@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.buckminster.core.RMContext;
@@ -233,7 +235,6 @@ public class MaterializationUtils
 		{
 			properties = new TreeSet<PropertyEntryByLength>();
 			RMContext context = new RMContext(mspec.getProperties());
-			Path pathValidator = new Path("/");
 			
 			for(String key : context.keySet())
 			{
@@ -243,7 +244,7 @@ public class MaterializationUtils
 					continue;
 				
 				// unifying file separators
-				String unifiedValue = new Path(value).removeTrailingSeparator().toString().toLowerCase();
+				String unifiedValue = new Path(value).removeTrailingSeparator().toString();
 
 				// changing meaning - key is value, value is key
 				properties.add(new PropertyEntryByLength(unifiedValue, key));				
@@ -252,19 +253,18 @@ public class MaterializationUtils
 			m_generalizeProperties.put(mspec, properties);
 		}
 
-		String pathToGeneralize = installLocation.toString().toLowerCase();
+		String pathToGeneralize = installLocation.addTrailingSeparator().toString();
 		int len = pathToGeneralize.length();
 		
 		for(PropertyEntryByLength entry: properties)
 		{
-			if(entry.getKey().length() > len)
+			String key = entry.getKey();
+			if(key.length() > len)
 				continue;
 			
-			if(pathToGeneralize.contains(entry.getKey()))
-			{
-				//TODO check whole segments
-				pathToGeneralize.replace(entry.getKey(), "${" + entry.getValue() + "}");
-			}
+			Pattern pattern = Pattern.compile("(^|/)(" + Pattern.quote(key) + ")/");
+			Matcher matcher = pattern.matcher(pathToGeneralize);
+			pathToGeneralize = matcher.replaceAll("$1\\${" + entry.getValue() + "}/");
 		}
 		
 		return new Path(pathToGeneralize);

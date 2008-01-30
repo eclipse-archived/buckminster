@@ -84,6 +84,40 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			}
 		}
 
+		public boolean setExcludeAccordingToClonesCheckConflicts()
+		{
+			boolean totalAnd = true;
+			boolean totalOr = true;
+			boolean firstRun = true;
+			
+			for(TreeItem ti : m_cloneItems)
+			{
+				boolean checked = ti.getChecked();
+				
+				if(firstRun)
+				{
+					totalAnd = checked;
+					totalOr = checked;
+					firstRun = false;
+				}
+				else
+				{					
+					totalAnd = totalAnd && checked;
+					totalOr = totalOr || checked;
+				}
+			}
+			
+			// all clones have the same check status
+			if(totalAnd == totalOr)
+			{
+				setExclude(!totalAnd);
+				return false;
+			}
+
+			setExclude(false);
+			return true;
+		}
+
 		public TreeItem createTreeItemClone(final Tree parentTree, final int style)
 		{
 			m_lastClone = null;
@@ -116,6 +150,11 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			});
 			
 			return m_lastClone;
+		}
+
+		public List<TreeItem> getTreeItemClones()
+		{
+			return m_cloneItems;
 		}
 
 		private void setupTreeItem(TreeItem treeItem)
@@ -217,7 +256,42 @@ public class SimpleAdvancedPage extends InstallWizardPage
 			{
 				TreeItem item = (TreeItem)e.item;
 				MaterializationNodeHandler handler = (MaterializationNodeHandler)item.getData();
-				handler.setExclude(!item.getChecked());
+				boolean checked = item.getChecked();
+				handler.setExclude(!checked);				
+				
+				for(TreeItem itemClone : handler.getTreeItemClones())
+					setCheckedSubtree(itemClone, checked);
+
+				for(TreeItem itemClone : handler.getTreeItemClones())
+				{
+					checkAndRepairSubtreeCloneConflicts(itemClone);
+						//	warning - clones repaired
+				}
+			}
+
+			private void setCheckedSubtree(TreeItem item, boolean checked)
+			{
+				item.setChecked(checked);
+				
+				for(TreeItem child : item.getItems())
+					setCheckedSubtree(child, checked);				
+			}
+
+			private boolean checkAndRepairSubtreeCloneConflicts(TreeItem item)
+			{
+				boolean conflict = false;
+				
+				MaterializationNodeHandler handler = (MaterializationNodeHandler)item.getData();
+
+				conflict = conflict || handler.setExcludeAccordingToClonesCheckConflicts();
+				
+				for(TreeItem child : item.getItems())
+				{
+					boolean newConflict = checkAndRepairSubtreeCloneConflicts(child);
+					conflict = conflict || newConflict;
+				}
+				
+				return conflict;
 			}
 		});
 
