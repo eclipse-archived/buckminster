@@ -505,11 +505,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		synchronized(SiteManager.class)
 		{
 			site = SiteManager.getSite(location, true, monitor);
+			if(site == null)
+				throw new OperationCanceledException();
+	
+			return site.getFeatureReferences();
 		}
-		if(site == null)
-			throw new OperationCanceledException();
-
-		return site.getFeatureReferences();
 	}
 
 	private synchronized IFeatureModel[] getSiteFeatures(File location, IProgressMonitor monitor)
@@ -636,43 +636,43 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		synchronized(SiteManager.class)
 		{
 			site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
-		}
-		if(site == null)
-			throw new OperationCanceledException();
-
-		try
-		{
-			IPluginEntry[] entries = site.getPluginEntries();
-			MonitorUtils.worked(monitor, 50);
-			return entries;
-		}
-		catch(UnsupportedOperationException e)
-		{
-			// Damn it! We need to use the slow version.
-			//
-			HashMap<VersionedIdentifier, IPluginEntry> entries = new HashMap<VersionedIdentifier, IPluginEntry>();
-			IFeatureReference[] refs = getSiteFeatureReferences(location,
-				MonitorUtils.subMonitor(monitor, 10));
-			IProgressMonitor itemsMonitor = MonitorUtils.subMonitor(monitor, 40);
-			itemsMonitor.beginTask(null, refs.length * 100);
-			for(IFeatureReference ref : refs)
+			if(site == null)
+				throw new OperationCanceledException();
+	
+			try
 			{
-				// The getFeature() call is not thread-safe. It uses static variables without
-				// synchronization
-				//
-				IFeature feature;
-				synchronized(EclipseImportReaderType.class)
-				{
-					feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
-				}
-				for(IPluginEntry entry : feature.getPluginEntries())
-					entries.put(entry.getVersionedIdentifier(), entry);
+				IPluginEntry[] entries = site.getPluginEntries();
+				MonitorUtils.worked(monitor, 50);
+				return entries;
 			}
-			return entries.values().toArray(new IPluginEntry[entries.size()]);
-		}
-		finally
-		{
-			monitor.done();
+			catch(UnsupportedOperationException e)
+			{
+				// Damn it! We need to use the slow version.
+				//
+				HashMap<VersionedIdentifier, IPluginEntry> entries = new HashMap<VersionedIdentifier, IPluginEntry>();
+				IFeatureReference[] refs = getSiteFeatureReferences(location,
+					MonitorUtils.subMonitor(monitor, 10));
+				IProgressMonitor itemsMonitor = MonitorUtils.subMonitor(monitor, 40);
+				itemsMonitor.beginTask(null, refs.length * 100);
+				for(IFeatureReference ref : refs)
+				{
+					// The getFeature() call is not thread-safe. It uses static variables without
+					// synchronization
+					//
+					IFeature feature;
+					synchronized(EclipseImportReaderType.class)
+					{
+						feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
+					}
+					for(IPluginEntry entry : feature.getPluginEntries())
+						entries.put(entry.getVersionedIdentifier(), entry);
+				}
+				return entries.values().toArray(new IPluginEntry[entries.size()]);
+			}
+			finally
+			{
+				monitor.done();
+			}
 		}
 	}
 
