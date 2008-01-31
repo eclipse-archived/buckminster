@@ -256,8 +256,12 @@ public class CreateProductBase
 		Attribute attr = cspec.getAttribute(IPDEConstants.ATTRIBUTE_PRODUCT_ROOT_FILES);
 		for(Prerequisite pq : attr.getPrerequisites())
 		{
-			if(pq.getComponentName().equals("org.eclipse.equinox.executable")
-			|| pq.getComponentName().equals("org.eclipse.platform.launchers"))
+			String cname = pq.getComponentName();
+			if(cname == null)
+				continue;
+
+			if(cname.equals("org.eclipse.equinox.executable")
+			|| cname.equals("org.eclipse.platform.launchers"))
 			{
 				return (pq.getReferencedAttribute(cspec, m_actionContext) != null);
 			}
