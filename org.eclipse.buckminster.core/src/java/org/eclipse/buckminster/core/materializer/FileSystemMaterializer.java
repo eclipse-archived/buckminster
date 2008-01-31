@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -34,9 +35,11 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
  * Materializes each component to the local filesystem.
@@ -72,6 +75,17 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			int totCount = 0;
 			Map<String, List<Materialization>> perReader = new TreeMap<String, List<Materialization>>();
 			MaterializationSpec mspec = context.getMaterializationSpec();
+
+			// Obtain some locations where we can feel it is OK to remove a subfolder.
+			//
+			IPath filesRoot = mspec.getInstallLocation();
+			IPath workspaceRoot = mspec.getWorkspaceLocation();
+			if(workspaceRoot == null)
+				workspaceRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+
+			IPath userTemp = Path.fromOSString(System.getProperty("java.io.tmpdir"));
+			IPath userHome = Path.fromOSString(System.getProperty("user.home"));
+
 			IProgressMonitor prepMon = MonitorUtils.subMonitor(monitor, 100);
 			prepMon.beginTask(null, resolutions.size() * 10);
 			for(Resolution cr : resolutions)
@@ -106,7 +120,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						mat = new Materialization(artifactLocation, ci);
 						resolutionPerID.put(ci, cr);
 	
-						File file = artifactLocation.toFile();
+						File file = artifactLocation.toFile().getAbsoluteFile();
 						boolean fileExists = file.exists();
 						if(fileExists && conflictRes == ConflictResolution.KEEP)
 						{
@@ -136,8 +150,29 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						{
 							// We are installing into folder
 							//
-							FileUtils.prepareDestination(file, conflictRes, MonitorUtils
-									.subMonitor(prepMon, 10));
+							MaterializationNode node = mspec.getMatchingNode(ci);
+							if(node != null && node.isUnpack())
+							{
+								// An unpack must never clear the folder that it uses as parent for the unpack
+								// unless that parent has been explicitly stated.
+								//
+								if(node.getLeafArtifact() == null)
+									conflictRes = ConflictResolution.UPDATE;									
+							}
+
+							if(conflictRes.equals(ConflictResolution.REPLACE))
+							{
+								// Some precaution is needed here. We don't just remove folders.
+								//
+								int alCount = artifactLocation.segmentCount();
+								if(!((userHome.isPrefixOf(artifactLocation) && userHome.segmentCount() < alCount)
+								|| (userTemp.isPrefixOf(artifactLocation) && userTemp.segmentCount() < alCount)
+								|| (workspaceRoot.isPrefixOf(artifactLocation) && workspaceRoot.segmentCount() < alCount)
+								|| (filesRoot != null && filesRoot.isPrefixOf(artifactLocation) && filesRoot.segmentCount() < alCount)))
+									conflictRes = ConflictResolution.UPDATE;
+							}
+
+							FileUtils.prepareDestination(file, conflictRes, MonitorUtils.subMonitor(prepMon, 10));
 
 							// Make sure the destination is not completely empty.
 							//

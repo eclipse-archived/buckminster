@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
@@ -62,6 +63,10 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 			MonitorUtils.complete(monitor);
 			return m_versionMatch;
 		}
+	}
+
+	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
+	{
 	}
 
 	public String getRecommendedMaterializer()

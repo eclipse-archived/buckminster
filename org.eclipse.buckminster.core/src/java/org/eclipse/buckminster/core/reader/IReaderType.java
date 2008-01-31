@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -50,6 +51,16 @@ public interface IReaderType extends IBuckminsterExtension
 	public static final String URL_ZIPPED = "url.zipped";
 
 	public static final String URL_CATALOG = "url.catalog";
+
+	/**
+	 * Some reader types have characteristics that makes it convenient to create a default
+	 * materialization node. A typical example is the 'url.zipped' that will add a node
+	 * that will unzip the node when it is materialized.
+	 * @param bld The spec builder
+	 * @param res The resolution
+	 * @throws CoreException
+	 */
+	void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException;
 
 	/**
 	 * Returns the <code>URL</code> of the remote artifact for the given <code>resolution</code> or

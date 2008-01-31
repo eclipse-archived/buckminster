@@ -50,8 +50,25 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 	{
 		IPath location = context.getWorkspaceLocation(resolution);
 		IPath leaf = context.getLeafArtifact(resolution);
-		if(leaf != null && !leaf.hasTrailingSeparator())
+		
+		// There are two conditions for putting this into the .buckminster project
+		//
+		// 1. There is a leaf artifact that indicates that what we have here
+		//    is a file.
+		// 2. The leaf artifact is null but the materialization will perform an
+		//    unpack. This normally means that an archive (zip or tar.gz) has a
+		//    root folder that isn't known until the unpack is complete. Such
+		//    a root cannot be used as a project at this point.
+		//
+		if(leaf == null)
+		{
+			if(context.getMaterializationSpec().isUnpack(resolution.getComponentIdentifier()))
+				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);				
+		}
+		else if(!leaf.hasTrailingSeparator())
+		{
 			location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
+		}
 		return location;
 	}
 
@@ -174,7 +191,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		IPath wsRoot = context.getWorkspaceLocation(resolution);
 		IPath wsRelativePath;
 		IPath matLoc = mat.getComponentLocation();
-		if(matLoc.hasTrailingSeparator())
+		IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
+		if(matLoc.hasTrailingSeparator() && !bmProjLoc.isPrefixOf(matLoc))
 		{
 			ComponentIdentifier ci = resolution.getComponentIdentifier();
 			wsRelativePath = context.getMaterializationSpec().getResourcePath(ci);
@@ -187,7 +205,6 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 		else
 		{
-			IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
 			IPath localWsRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 			if(!FileUtils.pathEquals(wsRoot, localWsRoot))
 			{

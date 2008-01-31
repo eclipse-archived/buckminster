@@ -519,14 +519,32 @@ public class WorkspaceInfo
 
 					if(wanted.getVersion() != null)
 					{
+						// This is an exact match
+						//
 						candidate = res;
 						break;
 					}
+					
+					if(candidate == null)
+					{
+						candidate = res;
+						continue;
+					}
 
-					if(candidate != null)
-						throw new AmbigousComponentException(wanted.toString());
-
-					candidate = res;
+					// Both are without version. One must be without type then
+					//
+					ComponentIdentifier candCid = candidate.getCSpec().getComponentIdentifier();
+					if(candCid.getComponentType() == null)
+					{
+						if(cid.getComponentType() == null)
+							throw new AmbigousComponentException(wanted.toString());
+						candidate = res;
+					}
+					else
+					{
+						if(cid.getComponentType() != null)
+							throw new AmbigousComponentException(wanted.toString());
+					}
 				}
 			}
 
@@ -569,7 +587,7 @@ public class WorkspaceInfo
 		Resolution candidate = null;
 		for(Resolution res : getActiveResolutions())
 		{
-			ComponentIdentifier id = res.getComponentIdentifier();
+			ComponentIdentifier id = res.getCSpec().getComponentIdentifier();
 			if(!request.designates(id))
 				continue;
 
@@ -579,10 +597,26 @@ public class WorkspaceInfo
 				//
 				try
 				{
+					ComponentIdentifier candCid = candidate.getCSpec().getComponentIdentifier();
 					int cmp = Trivial
-							.compareAllowNull(id.getVersion(), candidate.getComponentIdentifier().getVersion());
+							.compareAllowNull(id.getVersion(), candCid.getVersion());
 					if(cmp == 0)
-						throw new AmbigousComponentException(id.toString());
+					{
+						// One with a specified component type takes precedence
+						//
+						if(id.getComponentType() == null)
+						{
+							if(candCid.getComponentType() == null)
+								throw new AmbigousComponentException(id.toString());
+							cmp = -1;
+						}
+						else
+						{
+							if(candCid.getComponentType() != null)
+								throw new AmbigousComponentException(id.toString());
+							cmp = 1;
+						}
+					}
 					if(cmp < 0)
 						continue;
 				}

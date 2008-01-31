@@ -179,6 +179,7 @@ public class QueryWizard extends Wizard implements INewWizard
 		if(m_context == null)
 			m_context = new ResolutionContext(bom.getQuery());
 		m_mspec.setName(bom.getViewName());
+		bom.addMaterializationNodes(m_mspec);
 	}
 
 	public void resetBOM()

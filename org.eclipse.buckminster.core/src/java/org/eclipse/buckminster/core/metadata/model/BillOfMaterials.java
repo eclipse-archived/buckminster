@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
@@ -173,6 +174,16 @@ public class BillOfMaterials extends DepNode
 	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
 	{
 		return getTopNode().findAll(skipThese);
+	}
+
+	public void addMaterializationNodes(MaterializationSpecBuilder bld) throws CoreException
+	{
+		for(Resolution res : findAll(null))
+		{
+			if(!res.isMaterializable())
+				continue;
+			res.getProvider().getReaderType().addMaterializationNode(bld, res);
+		}
 	}
 
 	public List<Resolution> findMaterializationCandidates(RMContext context, MaterializationSpec mspec)

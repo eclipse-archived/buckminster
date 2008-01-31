@@ -10,28 +10,24 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.net.URI;
+import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
-public class ZipReaderType extends CatalogReaderType
+public class ZipReaderType extends URLReaderType
 {
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	@Override
+	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
 	{
-		return null;
-	}
-
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new ZipFileReader(this, providerMatch);
+		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
+		node.setNamePattern(Pattern.compile(Pattern.quote(res.getName())));
+		node.setUnpack(true);
+		bld.getNodes().add(node);
 	}
 }
