@@ -52,6 +52,7 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.internal.EclipseImportBase.Key;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -87,8 +88,6 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
-	private static final UUID CACHE_KEY_IMPORT_CACHE = UUID.randomUUID();
-
 	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
 
 	public static class RemotePluginEntry extends PluginEntry
@@ -145,21 +144,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			new File(tempSite, FEATURES_FOLDER).mkdir();
 			siteCache.put(key, tempSite);
 			return tempSite;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Map<EclipseImportBase,EclipseImportBase> getImportCache(Map<UUID,Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<EclipseImportBase, EclipseImportBase> importCache = (Map<EclipseImportBase, EclipseImportBase>)ctxUserCache.get(CACHE_KEY_IMPORT_CACHE);
-			if(importCache == null)
-			{
-				importCache = Collections.synchronizedMap(new HashMap<EclipseImportBase, EclipseImportBase>());
-				ctxUserCache.put(CACHE_KEY_IMPORT_CACHE, importCache);
-			}
-			return importCache;
 		}
 	}
 
@@ -337,8 +321,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
 	throws CoreException
 	{
-		ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
-		EclipseImportBase base = EclipseImportBase.obtain(rInfo.getRepositoryURI(), request);
+		NodeQuery query = rInfo.getNodeQuery();
+		EclipseImportBase base = EclipseImportBase.obtain(query, rInfo.getRepositoryURI());
 		if(base.isLocal())
 			return base;
 
@@ -347,12 +331,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		//
 		synchronized(base)
 		{
-			Map<UUID,Object> userCache = rInfo.getNodeQuery().getContext().getUserCache();
-			Map<EclipseImportBase,EclipseImportBase> importCache = getImportCache(userCache);
-			EclipseImportBase localBase = importCache.get(base);
-			if(localBase != null)
-				return localBase;
-
+			Map<UUID,Object> userCache = query.getContext().getUserCache();
 			String name = base.getComponentName();
 			monitor.beginTask(null, 1000);
 			monitor.subTask("Localizing " + name);
@@ -374,12 +353,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				File subDir = new File(tempSite, typeDir);
 				File jarFile = new File(subDir, jarName);
 				FileUtils.copyFile(pluginURL, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
+				Key remoteKey = base.getKey();
 
-				localBase = EclipseImportBase.obtain(new URI("file", null, tempSite.toURI().getPath(),
-					base.getQuery(), name).toString(), request);
+				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(),
+					base.getQuery(), name).toString());
 
 				boolean unpack = true;
-				if(!localBase.isFeature())
+				if(!base.isFeature())
 				{
 					// Guess unpack based on classpath
 					//
@@ -417,8 +397,12 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					}
 					jarFile.delete();
 				}
-				importCache.put(base, localBase);
-				return localBase;
+
+				// Cache this using the remote key also so that the next time someone asks for it, the local
+				// version is returned
+				//
+				EclipseImportBase.getImportBaseCacheCache(userCache).put(remoteKey, base);
+				return base;
 			}
 			catch(URISyntaxException e)
 			{

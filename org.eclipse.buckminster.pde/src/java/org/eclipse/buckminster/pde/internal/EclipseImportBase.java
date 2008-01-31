@@ -10,18 +10,20 @@
 package org.eclipse.buckminster.pde.internal;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
@@ -96,21 +98,37 @@ final class EclipseImportBase
 
 	private final URL m_remoteLocation;
 
-	private static final Map<Key, WeakReference<EclipseImportBase>> s_singletonCache = new WeakHashMap<Key, WeakReference<EclipseImportBase>>();
+	private static final UUID CACHE_IMPORT_BASE_CACHE = UUID.randomUUID();
 
-	public static EclipseImportBase obtain(String repositoryURI, ComponentRequest request) throws CoreException
+	@SuppressWarnings("unchecked")
+	static Map<Key, EclipseImportBase> getImportBaseCacheCache(Map<UUID, Object> ctxUserCache)
 	{
-		Key key = new Key(repositoryURI, request);
-		WeakReference<EclipseImportBase> existingRef = s_singletonCache.get(key);
-		if(existingRef != null)
+		synchronized(ctxUserCache)
 		{
-			EclipseImportBase existing = existingRef.get();
-			if(existing != null)
-				return existing;
+			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>)ctxUserCache.get(CACHE_IMPORT_BASE_CACHE);
+			if(listCache == null)
+			{
+				listCache = Collections.synchronizedMap(new HashMap<Key, EclipseImportBase>());
+				ctxUserCache.put(CACHE_IMPORT_BASE_CACHE, listCache);
+			}
+			return listCache;
 		}
-		EclipseImportBase base = new EclipseImportBase(key);
-		s_singletonCache.put(key, new WeakReference<EclipseImportBase>(base));
-		return base;
+	}
+
+	public static EclipseImportBase obtain(NodeQuery query, String repositoryURI) throws CoreException
+	{
+		Key key = new Key(repositoryURI, query.getComponentRequest());
+		Map<Key, EclipseImportBase> cache = getImportBaseCacheCache(query.getContext().getUserCache());
+		synchronized(cache)
+		{
+			EclipseImportBase importBase = cache.get(key);
+			if(importBase == null)
+			{
+				importBase = new EclipseImportBase(key);
+				cache.put(key, importBase);
+			}
+			return importBase;
+		}
 	}
 
 	private EclipseImportBase(Key key) throws CoreException
@@ -217,6 +235,11 @@ final class EclipseImportBase
 	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
 	{
 		return readerType.getPluginModels(getLocation(),  getComponentName(), monitor);
+	}
+
+	Key getKey()
+	{
+		return m_key;
 	}
 
 	String getQuery()

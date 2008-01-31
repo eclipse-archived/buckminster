@@ -35,7 +35,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	throws CoreException
 	{
 		super(provider, ctype, query);
-		m_base = EclipseImportBase.obtain(provider.getURI(query.getProperties()), query.getComponentRequest());
+		m_base = EclipseImportBase.obtain(query, provider.getURI(query.getProperties()));
 		m_readerType = readerType;
 	}
 
