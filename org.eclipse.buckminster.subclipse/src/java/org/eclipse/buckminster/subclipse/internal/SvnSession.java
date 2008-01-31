@@ -608,13 +608,16 @@ public class SvnSession
 				String repoProto = repoRoot.getProtocol().toLowerCase();
 				String ourProto = ourRoot.getProtocol().toLowerCase();
 
-				// We let the protocol svn match a repo that uses svn+ssh
+				// We let the protocol svn or http match a repo that uses svn+ssh or https
 				//
-				boolean repoIsSSH = repoProto.equals("svn+ssh");
+				boolean repoIsSSH = repoProto.equals("svn+ssh") || repoProto.equals("https");
 				if(rank > 200 && !repoIsSSH)
 					continue;
 
-				if(!(repoProto.equals(ourProto) || (ourProto.equals("svn") && repoIsSSH)))
+				if(!(repoProto.equals(ourProto)
+				|| (repoProto.equals("svn") && ourProto.equals("http"))
+				|| (repoProto.equals("http") && ourProto.equals("svn"))
+				|| ((ourProto.equals("svn") || ourProto.equals("http")) && repoIsSSH)))
 					continue;
 
 				String[] ourPath = ourRoot.getPathSegments();
