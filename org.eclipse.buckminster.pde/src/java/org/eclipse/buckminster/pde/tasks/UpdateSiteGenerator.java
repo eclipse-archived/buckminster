@@ -135,7 +135,10 @@ public class UpdateSiteGenerator extends VersionConsolidator
 				Utils.serialize(saxableSite, output);
 			}
 
-			return replaceQualifier(cspec.getComponentIdentifier(), deps);
+			ComponentIdentifier ci = cspec.getComponentIdentifier();
+			return generateQualifier
+				? replaceQualifier(cspec.getComponentIdentifier(), deps)
+				: ci.getVersion();
 		}
 		catch(IOException e)
 		{
