@@ -38,7 +38,9 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -55,167 +57,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 @SuppressWarnings("restriction")
 public class MetadataSynchronizer implements IResourceChangeListener
 {
-	private static MetadataSynchronizer s_default = new MetadataSynchronizer();
-
-	private final HashMap<String,Pattern> m_cspecSources = new HashMap<String,Pattern>();
-
-	private final HashMap<String,IPath> m_deletedProjectLocations = new HashMap<String,IPath>();
-
-	private final Set<IProject> m_projectsNeedingUpdate = new HashSet<IProject>();
-
-	private final Set<IPath> m_removedEntries = new HashSet<IPath>();
-
-	private class Visitor implements IResourceDeltaVisitor
-	{
-		public boolean visit(IResourceDelta delta) throws CoreException
-		{
-			int kind = delta.getKind();
-			if(kind == IResourceDelta.REMOVED)
-			{
-				IResource resource = delta.getResource();
-				if(resource == null)
-					return false;
-
-				IPath relPath = resource.getProjectRelativePath();
-				IPath path = resource.getLocation();
-				if(path == null)
-				{
-					// Project is probably removed. If it is, we should have it in our cache
-					//
-					IProject project = resource.getProject();
-					if(project == null)
-						return true;
-
-					IPath projPath = m_deletedProjectLocations.get(project.getName());
-					if(projPath == null)
-						//
-						// No location and not a remove project. We have no clue
-						// what to do with this.
-						//
-						return false;
-
-					path = projPath.append(relPath);
-				}
-
-				if(!(resource instanceof IFile))
-					path = path.addTrailingSeparator();
-
-				synchronized(MetadataSynchronizer.this)
-				{
-					m_removedEntries.add(path);
-					if(isCSpecSource(relPath))
-					{
-						m_projectsNeedingUpdate.add(resource.getProject());
-						return false;
-					}
-					return true;
-				}
-			}
-
-			if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
-			{
-				IResource resource = delta.getResource();
-				IPath path = resource.getProjectRelativePath();
-				if((path.isEmpty() && resource instanceof IProject) || isCSpecSource(path))
-				{
-					synchronized(MetadataSynchronizer.this)
-					{
-						m_projectsNeedingUpdate.add(resource.getProject());
-					}
-					return false;
-				}
-			}
-			return true;
-		}
-	}
-
-	private boolean isCSpecSource(IPath path)
-	{
-		String pathStr = path.toPortableString();
-		for(Pattern pattern : m_cspecSources.values())
-		{
-			Matcher m = pattern.matcher(pathStr);
-			if(m.matches())
-				return true;
-		}
-		return false;
-	}
-
-	public static MetadataSynchronizer getDefault()
-	{
-		return s_default;
-	}
-
-	public void registerCSpecSource(String path)
-	{
-		path = TextUtils.notEmptyTrimmedString(path);
-		if(path == null)
-			return;
-
-		StringBuilder bld = new StringBuilder(path.length() + 10);
-		bld.append('^');
-		int top = path.length();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			char c = path.charAt(idx);
-			switch(c)
-			{
-			case '\\':
-				bld.append('/'); // We compare with path.toPortableString()
-				break;
-			case '.':
-			case '{':
-			case '}':
-			case '[':
-			case ']':
-			case '+':
-			case '^':
-			case '$':
-			case '(':
-			case ')':
-			case '|':
-			case '&':
-				bld.append('\\');
-				bld.append(c);
-				break;
-			case '?':
-				bld.append('.');
-				break;
-			case '*':
-				bld.append(".*");
-				break;
-			default:
-				bld.append(c);
-			}
-		}
-		bld.append('$');
-		int flags = 0;
-		if(FileUtils.CASE_INSENSITIVE_FS)
-			flags = Pattern.CASE_INSENSITIVE;
-
-		m_cspecSources.put(path, Pattern.compile(bld.toString(), flags));
-	}
-
-	synchronized IPath getNextRemovedEntry()
-	{
-		if(m_removedEntries.isEmpty())
-			return null;
-		IPath entry = m_removedEntries.iterator().next();
-		m_removedEntries.remove(entry);
-		return entry;
-	}
-
-	synchronized IProject getNextProjectNeedingUpdate()
-	{
-		if(m_projectsNeedingUpdate.isEmpty())
-			return null;
-		IProject entry = m_projectsNeedingUpdate.iterator().next();
-		m_projectsNeedingUpdate.remove(entry);
-		return entry;
-	}
-
-	private MetadataRefreshJob m_currentRefreshJob;
-
 	class MetadataRefreshJob extends Job
 	{
 		public MetadataRefreshJob()
@@ -304,133 +145,148 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 	}
 
-	public void resourceChanged(IResourceChangeEvent event)
+	static class ResetVisitor implements IResourceVisitor
 	{
-		if(s_default == null)
-			//
-			// We're shutting down so never mind.
-			//
-			return;
+		public boolean visit(IResource resource) throws CoreException
+		{
+			if((resource instanceof IProject) && !((IProject)resource).isOpen())
+				return false;
 
-		if(event.getType() == IResourceChangeEvent.PRE_DELETE)
-		{
-			IResource resource = event.getResource();
-			if(resource instanceof IProject)
-				m_deletedProjectLocations.put(resource.getName(), resource.getLocation());
-			return;
-		}
-
-		try
-		{
-			event.getDelta().accept(new Visitor());
-			m_deletedProjectLocations.clear();
-		}
-		catch(CoreException e)
-		{
-			CorePlugin.getLogger().error(e, e.getMessage());
-		}
-		synchronized(this)
-		{
-			if(m_currentRefreshJob == null && (m_projectsNeedingUpdate.size() > 0 || m_removedEntries.size() > 0))
-			{
-				// Start a refresh job.
-				//
-				m_currentRefreshJob = new MetadataRefreshJob();
-				m_currentRefreshJob.addJobChangeListener(new JobChangeAdapter()
-				{
-					@Override
-	                public void done(IJobChangeEvent ev)
-	                {
-						// I'm about to terminate. First make absolutely sure that there's nothing
-						// left to do
-						//
-						if(s_default == null)
-							//
-							// We're shutting down
-							//
-							return;
-
-						synchronized(MetadataSynchronizer.this)
-						{
-							if(m_removedEntries.isEmpty() && m_projectsNeedingUpdate.isEmpty())
-							{
-								// We're done
-								//
-								m_currentRefreshJob = null;
-							}
-							else
-								m_currentRefreshJob.schedule();
-						}
-	                }
-	            });		 
-				m_currentRefreshJob.schedule();
-			}
+			String cidStr = resource.getPersistentProperty(WorkspaceInfo.PPKEY_COMPONENT_ID);
+			if(cidStr != null)
+				resource.setPersistentProperty(WorkspaceInfo.PPKEY_COMPONENT_ID, null);
+			return true;
 		}
 	}
 
-	public static void setUp()
+	private class Visitor implements IResourceDeltaVisitor
 	{
-		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = exReg.getConfigurationElementsFor(CorePlugin.COMPONENT_TYPE_POINT);
-
-		// The extension file can exist in every project but we use Buckminster component
-		// type as a placeholder.
-		//
-		s_default.registerCSpecSource(CorePlugin.CSPECEXT_FILE);
-
-		for(IConfigurationElement elem : elems)
+		public boolean visit(IResourceDelta delta) throws CoreException
 		{
-			for(IConfigurationElement metaFile : elem.getChildren("metaFile"))
+			int kind = delta.getKind();
+			if(kind == IResourceDelta.REMOVED)
 			{
-				String metaPath = metaFile.getAttribute("path");
-				if(metaPath == null)
-					continue;
-				metaPath = metaPath.trim();
-				if(metaPath.length() > 0)
-					s_default.registerCSpecSource(metaPath);
+				IResource resource = delta.getResource();
+				if(resource == null)
+					return false;
 
-				for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
+				IPath relPath = resource.getProjectRelativePath();
+				IPath path = resource.getLocation();
+				if(path == null)
 				{
-					alias = alias.trim();
-					if(alias.length() > 0)
-						s_default.registerCSpecSource(alias);
-				}
-			}
-		}
-		IWorkspace ws = ResourcesPlugin.getWorkspace();
-		ws.addResourceChangeListener(s_default, IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
-	}
-
-	public static void tearDown()
-	{
-		MetadataSynchronizer mds = s_default;
-		if(mds == null)
-			return;
-
-		s_default = null;
-		IWorkspace ws = ResourcesPlugin.getWorkspace();
-		if(ws != null)
-			ws.removeResourceChangeListener(mds);
-
-		synchronized(mds)
-		{
-			if(mds.m_currentRefreshJob != null)
-			{
-				mds.m_currentRefreshJob.cancel();
-				try
-				{
-					// Give the job some time to cancel
+					// Project is probably removed. If it is, we should have it in our cache
 					//
-					Thread.sleep(500);
+					IProject project = resource.getProject();
+					if(project == null)
+						return true;
+
+					IPath projPath = m_deletedProjectLocations.get(project.getName());
+					if(projPath == null)
+						//
+						// No location and not a remove project. We have no clue
+						// what to do with this.
+						//
+						return false;
+
+					path = projPath.append(relPath);
 				}
-				catch (InterruptedException e)
+
+				if(!(resource instanceof IFile))
+					path = path.addTrailingSeparator();
+
+				synchronized(MetadataSynchronizer.this)
 				{
+					m_removedEntries.add(path);
+					if(isCSpecSource(relPath))
+					{
+						m_projectsNeedingUpdate.add(resource.getProject());
+						return false;
+					}
+					return true;
 				}
 			}
+
+			if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
+			{
+				IResource resource = delta.getResource();
+				IPath path = resource.getProjectRelativePath();
+				if((path.isEmpty() && resource instanceof IProject) || isCSpecSource(path))
+				{
+					synchronized(MetadataSynchronizer.this)
+					{
+						m_projectsNeedingUpdate.add(resource.getProject());
+					}
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 
-	public void refreshProject(IProject project, IProgressMonitor monitor) throws CoreException
+	static class WorkspaceCatchUpJob extends Job
+	{
+		public WorkspaceCatchUpJob()
+		{
+			super("Buckminster workspace catch up");
+			setUser(true);
+
+			// We need very high prio on this since we wait
+			// for it to complete during plug-in activation
+			//
+			setPriority(Job.INTERACTIVE);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor)
+		{
+			monitor.beginTask("Refreshing project meta-data", 1000);
+			try
+			{
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				wsRoot.accept(new ResetVisitor());
+				MonitorUtils.worked(monitor, 50);
+
+				IProject[] projects = wsRoot.getProjects();
+				MonitorUtils.worked(monitor, 50);
+
+				// Re-resolve all projects
+				//
+				if(projects.length > 0)
+				{
+					int ticksPerRefresh = 900 / projects.length;
+					for(IProject project : projects)
+					{
+						try
+						{
+							refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
+						}
+						catch(Throwable e)
+						{
+							CorePlugin.getLogger().warning(e, "Problem during meta-data refresh: %s", e.getMessage());
+						}
+					}
+				}
+			}
+			catch(Throwable e)
+			{
+				CorePlugin.getLogger().warning(e, "Problem during meta-data refresh: %s", e.getMessage());
+			}
+			finally
+			{
+				monitor.done();
+			}
+			return Status.OK_STATUS;
+		}	
+	}
+
+	private static MetadataSynchronizer s_default = new MetadataSynchronizer();
+
+	public static MetadataSynchronizer getDefault()
+	{
+		return s_default;
+	}
+
+	public static void refreshProject(IProject project, IProgressMonitor monitor) throws CoreException
 	{
 		if(project.getName().equals(CorePlugin.BUCKMINSTER_PROJECT) || !project.isAccessible())
 		{
@@ -493,7 +349,70 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 	}
 
-	private void updateProjectReferences(IProject project, CSpec cspec, IProgressMonitor monitor) throws CoreException
+	public static void setUp()
+	{
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = exReg.getConfigurationElementsFor(CorePlugin.COMPONENT_TYPE_POINT);
+
+		// The extension file can exist in every project but we use Buckminster component
+		// type as a placeholder.
+		//
+		s_default.registerCSpecSource(CorePlugin.CSPECEXT_FILE);
+
+		for(IConfigurationElement elem : elems)
+		{
+			for(IConfigurationElement metaFile : elem.getChildren("metaFile"))
+			{
+				String metaPath = metaFile.getAttribute("path");
+				if(metaPath == null)
+					continue;
+				metaPath = metaPath.trim();
+				if(metaPath.length() > 0)
+					s_default.registerCSpecSource(metaPath);
+
+				for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
+				{
+					alias = alias.trim();
+					if(alias.length() > 0)
+						s_default.registerCSpecSource(alias);
+				}
+			}
+		}
+
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		ws.addResourceChangeListener(s_default, IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
+	}
+
+	public static void tearDown()
+	{
+		MetadataSynchronizer mds = s_default;
+		if(mds == null)
+			return;
+
+		s_default = null;
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		if(ws != null)
+			ws.removeResourceChangeListener(mds);
+
+		synchronized(mds)
+		{
+			if(mds.m_currentRefreshJob != null)
+			{
+				mds.m_currentRefreshJob.cancel();
+				try
+				{
+					// Give the job some time to cancel
+					//
+					Thread.sleep(500);
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
+		}
+	}
+
+	private static void updateProjectReferences(IProject project, CSpec cspec, IProgressMonitor monitor) throws CoreException
 	{
 		Collection<Dependency> crefs = cspec.getDependencies().values();
 		if(crefs.size() == 0)
@@ -567,5 +486,159 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			}
 		}
 		monitor.done();
+	}
+
+	private final HashMap<String,Pattern> m_cspecSources = new HashMap<String,Pattern>();
+
+	private MetadataRefreshJob m_currentRefreshJob;
+
+	private final HashMap<String,IPath> m_deletedProjectLocations = new HashMap<String,IPath>();
+
+	private final Set<IProject> m_projectsNeedingUpdate = new HashSet<IProject>();
+
+	private final Set<IPath> m_removedEntries = new HashSet<IPath>();
+
+	public void registerCSpecSource(String path)
+	{
+		path = TextUtils.notEmptyTrimmedString(path);
+		if(path == null)
+			return;
+
+		StringBuilder bld = new StringBuilder(path.length() + 10);
+		bld.append('^');
+		int top = path.length();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = path.charAt(idx);
+			switch(c)
+			{
+			case '\\':
+				bld.append('/'); // We compare with path.toPortableString()
+				break;
+			case '.':
+			case '{':
+			case '}':
+			case '[':
+			case ']':
+			case '+':
+			case '^':
+			case '$':
+			case '(':
+			case ')':
+			case '|':
+			case '&':
+				bld.append('\\');
+				bld.append(c);
+				break;
+			case '?':
+				bld.append('.');
+				break;
+			case '*':
+				bld.append(".*");
+				break;
+			default:
+				bld.append(c);
+			}
+		}
+		bld.append('$');
+		int flags = 0;
+		if(FileUtils.CASE_INSENSITIVE_FS)
+			flags = Pattern.CASE_INSENSITIVE;
+
+		m_cspecSources.put(path, Pattern.compile(bld.toString(), flags));
+	}
+
+	public void resourceChanged(IResourceChangeEvent event)
+	{
+		if(s_default == null)
+			//
+			// We're shutting down so never mind.
+			//
+			return;
+
+		if(event.getType() == IResourceChangeEvent.PRE_DELETE)
+		{
+			IResource resource = event.getResource();
+			if(resource instanceof IProject)
+				m_deletedProjectLocations.put(resource.getName(), resource.getLocation());
+			return;
+		}
+
+		try
+		{
+			event.getDelta().accept(new Visitor());
+			m_deletedProjectLocations.clear();
+		}
+		catch(CoreException e)
+		{
+			CorePlugin.getLogger().error(e, e.getMessage());
+		}
+		synchronized(this)
+		{
+			if(m_currentRefreshJob == null && (m_projectsNeedingUpdate.size() > 0 || m_removedEntries.size() > 0))
+			{
+				// Start a refresh job.
+				//
+				m_currentRefreshJob = new MetadataRefreshJob();
+				m_currentRefreshJob.addJobChangeListener(new JobChangeAdapter()
+				{
+					@Override
+	                public void done(IJobChangeEvent ev)
+	                {
+						// I'm about to terminate. First make absolutely sure that there's nothing
+						// left to do
+						//
+						if(s_default == null)
+							//
+							// We're shutting down
+							//
+							return;
+
+						synchronized(MetadataSynchronizer.this)
+						{
+							if(m_removedEntries.isEmpty() && m_projectsNeedingUpdate.isEmpty())
+							{
+								// We're done
+								//
+								m_currentRefreshJob = null;
+							}
+							else
+								m_currentRefreshJob.schedule();
+						}
+	                }
+	            });		 
+				m_currentRefreshJob.schedule();
+			}
+		}
+	}
+
+	synchronized IProject getNextProjectNeedingUpdate()
+	{
+		if(m_projectsNeedingUpdate.isEmpty())
+			return null;
+		IProject entry = m_projectsNeedingUpdate.iterator().next();
+		m_projectsNeedingUpdate.remove(entry);
+		return entry;
+	}
+
+	synchronized IPath getNextRemovedEntry()
+	{
+		if(m_removedEntries.isEmpty())
+			return null;
+		IPath entry = m_removedEntries.iterator().next();
+		m_removedEntries.remove(entry);
+		return entry;
+	}
+
+	private boolean isCSpecSource(IPath path)
+	{
+		String pathStr = path.toPortableString();
+		for(Pattern pattern : m_cspecSources.values())
+		{
+			Matcher m = pattern.matcher(pathStr);
+			if(m.matches())
+				return true;
+		}
+		return false;
 	}
 }
