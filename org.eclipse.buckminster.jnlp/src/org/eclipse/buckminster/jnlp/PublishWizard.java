@@ -13,6 +13,8 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
@@ -44,6 +46,8 @@ public class PublishWizard extends AdvancedWizard
 	
 	private MaterializationSpecBuilder m_mspec;
 	
+	private BillOfMaterials m_bom;
+	
 	public PublishWizard(InstallWizard installWizard)
 	{
 		setNeedsProgressMonitor(true);
@@ -62,6 +66,13 @@ public class PublishWizard extends AdvancedWizard
 		m_mspec = new MaterializationSpecBuilder();
 		m_mspec.initFrom(installWizard.getMaterializationSpecBuilder().createMaterializationSpec());
 		m_mspec.setInstallLocation(MaterializationUtils.generalizePath(m_mspec, m_mspec.getInstallLocation()));
+		
+		for(MaterializationNodeBuilder builder : m_mspec.getNodes())
+		{
+			builder.setInstallLocation(MaterializationUtils.generalizePath(m_mspec, builder.getInstallLocation()));
+		}
+		
+		m_bom = installWizard.getBOM();
 	}
 	
 	protected IPublisher createPublisher(String basePathURL)
@@ -207,6 +218,11 @@ public class PublishWizard extends AdvancedWizard
 	MaterializationSpecBuilder getMSpecBuilder()
 	{
 		return m_mspec;
+	}
+	
+	BillOfMaterials getBOM()
+	{
+		return m_bom;
 	}
 	
 	String getServiceProvider()

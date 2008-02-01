@@ -9,10 +9,13 @@
 package org.eclipse.buckminster.jnlp;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.buckminster.core.materializer.IMaterializer;
-import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.IPath;
@@ -48,9 +51,17 @@ public class DestinationForm
 	 
 	private static final String TOOL_TIP_CONFLICTS = "How to resolve filesystem conflicts:\nChoises: Fail, Replace, Update, Keep";
 
-	private MaterializationSpecBuilder m_mspec;
+	private MaterializationDirectiveBuilder m_builder;
+	
+	private String m_defaultInstallLocation;
+	
+	private boolean m_showDestinationType;
+	
+	private boolean m_allowEmptyDestinationType;
 	
 	private boolean m_showConflictResolution;
+	
+	private boolean m_allowEmptyConflictResolution;
 	
 	private boolean m_showBrowseButton;
 	
@@ -59,49 +70,84 @@ public class DestinationForm
 	private Text m_locationText;
 
 	private Combo m_conflictCombo;
+	
+	private List<String> m_destinationTypes;
+	
+	private List<String> m_destinationTypesToShow;
+	
+	private int m_defaultDestinationType;
+	
+	private List<ConflictResolution> m_conflictResolutions;
+	
+	private List<String> m_conflictResolutionsToShow;
+	
+	private int m_defaultConflictResolution;
 
-	public DestinationForm(MaterializationSpecBuilder builder, boolean showConflictResolution, boolean showBrowseButton)
+
+	public DestinationForm(
+			MaterializationDirectiveBuilder builder, String defaultInstallLocation,
+			boolean showDestinationType, boolean allowEmptyDestinationType,
+			boolean showConflictResolution, boolean allowEmptyConflictResolution,
+			boolean showBrowseButton)
 	{
-		m_mspec = builder;
+		m_builder = builder == null ? new MaterializationNodeBuilder() : builder;
+		m_defaultInstallLocation = defaultInstallLocation;
+		m_showDestinationType = showDestinationType;
+		m_allowEmptyDestinationType = allowEmptyDestinationType;
 		m_showConflictResolution = showConflictResolution;
+		m_allowEmptyConflictResolution = allowEmptyConflictResolution;
 		m_showBrowseButton = showBrowseButton;
 	}
 
 	public void createControl(Composite parent)
 	{
-		Label label = new Label(parent, SWT.NONE);
-		label.setText("Destination Type:");
-		label.setToolTipText(TOOL_TIP_TYPE);
-
-		m_destTypeCombo = UiUtils.createGridArrayCombo(parent, 0, 0, DESTINATION_TYPES_TO_SHOW, null, null,
-				SWT.READ_ONLY);
-
-		new Label(parent, SWT.NONE);
-		
-		m_destTypeCombo.setToolTipText(TOOL_TIP_TYPE);
-
-		for(int i = 0; i < DESTINATION_TYPES.length; i++)
-			m_destTypeCombo.setData(String.valueOf(i), DESTINATION_TYPES[i]);
-
-		m_destTypeCombo.addModifyListener(new ModifyListener()
+		if(m_showDestinationType)
 		{
-
-			public void modifyText(ModifyEvent e)
+			Label label = new Label(parent, SWT.NONE);
+			label.setText("Destination Type:");
+			label.setToolTipText(TOOL_TIP_TYPE);
+	
+			m_destinationTypes = new ArrayList<String>();
+			m_destinationTypes.addAll(Arrays.asList(DESTINATION_TYPES));
+			m_destinationTypesToShow = new ArrayList<String>();
+			m_destinationTypesToShow.addAll(Arrays.asList(DESTINATION_TYPES_TO_SHOW));
+			m_defaultDestinationType = 0;
+			
+			if(m_allowEmptyDestinationType)
 			{
-				m_mspec.setMaterializer(
-						(String)m_destTypeCombo.getData(String.valueOf(m_destTypeCombo.getSelectionIndex())));
-			}
-		});
+				m_destinationTypes.add(0, null);
+				m_destinationTypesToShow.add(0, "");
+			}			
+			
+			m_destTypeCombo = UiUtils.createGridArrayCombo(parent, 0, 0, m_destinationTypesToShow.toArray(new String[0]), null, null,
+					SWT.READ_ONLY);
+	
+			new Label(parent, SWT.NONE);
+			
+			m_destTypeCombo.setToolTipText(TOOL_TIP_TYPE);
+	
+			for(int i = 0; i < m_destinationTypes.size(); i++)
+				m_destTypeCombo.setData(String.valueOf(i), m_destinationTypes.get(i));
+	
+			m_destTypeCombo.addModifyListener(new ModifyListener()
+			{
+	
+				public void modifyText(ModifyEvent e)
+				{
+					m_builder.setMaterializer(
+							(String)m_destTypeCombo.getData(String.valueOf(m_destTypeCombo.getSelectionIndex())));
+				}
+			});
+		}
 
-
-		label = new Label(parent, SWT.NONE);
+		Label label = new Label(parent, SWT.NONE);
 		label.setText("Destination Address:");
 		label.setToolTipText(TOOL_TIP_DIRECTORY);
 
 		m_locationText = new Text(parent, SWT.BORDER);
-		m_locationText.setText(m_mspec.getInstallLocation() == null
+		m_locationText.setText(m_builder.getInstallLocation() == null
 				? ""
-				: m_mspec.getInstallLocation().removeTrailingSeparator().toOSString());
+				: m_builder.getInstallLocation().removeTrailingSeparator().toOSString());
 		m_locationText.setToolTipText(TOOL_TIP_DIRECTORY);
 		m_locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		m_locationText.addModifyListener(new ModifyListener()
@@ -114,7 +160,7 @@ public class DestinationForm
 						? null
 						: Path.fromOSString(pathStr).addTrailingSeparator();
 
-				m_mspec.setInstallLocation(path);
+				m_builder.setInstallLocation(path);
 			}
 		});
 
@@ -141,7 +187,7 @@ public class DestinationForm
 
 				private String getKnownPath()
 				{
-					IPath path = m_mspec.getInstallLocation();
+					IPath path = m_builder.getInstallLocation();
 					
 					if(path == null)
 						return null;
@@ -177,28 +223,45 @@ public class DestinationForm
 			label.setText("Conflict Resolution:");
 			label.setToolTipText(TOOL_TIP_CONFLICTS);
 
-			m_conflictCombo = UiUtils.createGridEnumCombo(parent, 0, 0, ConflictResolution.values(), null, null,
-					SWT.READ_ONLY);
-
-			m_conflictCombo.select(m_mspec.getConflictResolution() == null
-					? ConflictResolution.getDefault().ordinal()
-					: m_mspec.getConflictResolution().ordinal());
-			
-			m_conflictCombo.setToolTipText(TOOL_TIP_CONFLICTS);
+			m_conflictResolutions = new ArrayList<ConflictResolution>();
+			m_conflictResolutionsToShow = new ArrayList<String>();
+			m_defaultConflictResolution = ConflictResolution.getDefault().ordinal();
 
 			for(ConflictResolution cr : ConflictResolution.values())
 			{
-				m_conflictCombo.setData(String.valueOf(cr.ordinal()), cr);
+				m_conflictResolutions.add(cr);
+				m_conflictResolutionsToShow.add(cr.toString());
+			}	
+			
+			if(m_allowEmptyConflictResolution)
+			{
+				m_conflictResolutions.add(0, null);
+				m_conflictResolutionsToShow.add(0, "");
+				m_defaultConflictResolution = 0;
+			}
+			
+			m_conflictCombo = UiUtils.createGridArrayCombo(parent, 0, 0, m_conflictResolutionsToShow.toArray(new String[0]), null, null,
+					SWT.READ_ONLY);
+
+			m_conflictCombo.select(m_builder.getConflictResolution() == null
+					? m_defaultConflictResolution
+					: m_conflictResolutions.indexOf(m_builder.getConflictResolution()));
+			
+			m_conflictCombo.setToolTipText(TOOL_TIP_CONFLICTS);
+
+			for(int i = 0; i < m_conflictResolutions.size(); i++)
+			{
+				m_conflictCombo.setData(String.valueOf(i), m_conflictResolutions.get(i));
 			}
 
-			m_mspec.setConflictResolution((ConflictResolution)m_conflictCombo.getData(String.valueOf(m_conflictCombo
+			m_builder.setConflictResolution((ConflictResolution)m_conflictCombo.getData(String.valueOf(m_conflictCombo
 					.getSelectionIndex())));
 			m_conflictCombo.addModifyListener(new ModifyListener()
 			{
 
 				public void modifyText(ModifyEvent e)
 				{
-					m_mspec.setConflictResolution(
+					m_builder.setConflictResolution(
 							(ConflictResolution)m_conflictCombo
 									.getData(String.valueOf(m_conflictCombo.getSelectionIndex())));
 				}
@@ -208,52 +271,41 @@ public class DestinationForm
 		}
 	}
 	
-	public void setup()
+	public void setBuilder(MaterializationDirectiveBuilder builder)
 	{
-		int defaultIdx = 0;
-		if(m_mspec.getMaterializer() != null)
-			defaultIdx = Arrays.asList(DESTINATION_TYPES).indexOf(m_mspec.getMaterializer());
-
-		m_destTypeCombo.select(defaultIdx);
-		m_mspec.setMaterializer(DESTINATION_TYPES[defaultIdx]);
-		
-		if(m_mspec.getInstallLocation() == null)
+		m_builder = builder;
+	}
+	
+	public void update()
+	{
+		if(m_destTypeCombo != null)
 		{
-			String defaultDestination = getDefaultDestination();
-			
-			if(defaultDestination != null)
+			int defaultIdx = m_defaultDestinationType;
+			if(m_builder.getMaterializer() != null)
+				defaultIdx = m_destinationTypes.indexOf(m_builder.getMaterializer());
+	
+			m_destTypeCombo.select(defaultIdx);
+			m_builder.setMaterializer(m_destinationTypes.get(defaultIdx));
+		}
+		
+		if(m_builder.getInstallLocation() == null)
+		{
+			if(m_defaultInstallLocation != null)
 			{
-				m_mspec.setInstallLocation(
-							Path.fromOSString(defaultDestination).addTrailingSeparator());
-				m_locationText.setText(defaultDestination);
+				m_builder.setInstallLocation(new Path(m_defaultInstallLocation).addTrailingSeparator());
+				m_locationText.setText(m_defaultInstallLocation);
 			}	
 		}
 		else
 		{
-			m_locationText.setText(m_mspec.getInstallLocation().removeTrailingSeparator().toOSString());
+			m_locationText.setText(m_builder.getInstallLocation().removeTrailingSeparator().toOSString());
 		}
 
 		if(m_conflictCombo != null)
 		{
-			m_conflictCombo.select(m_mspec.getConflictResolution() == null
-							? ConflictResolution.getDefault().ordinal()
-							: m_mspec.getConflictResolution().ordinal());
+			m_conflictCombo.select(m_builder.getConflictResolution() == null
+							? m_defaultConflictResolution
+							: m_conflictResolutions.indexOf(m_builder.getConflictResolution()));
 		}
-	}
-	
-	private String getDefaultDestination() throws JNLPException
-	{
-		String destination = null;
-		
-		String userHome = System.getProperty("user.home");
-
-		if(userHome != null)
-		{
-			destination = userHome + File.separatorChar + "materializations";
-		
-			if(m_mspec.getName() != null)
-				destination += File.separatorChar + m_mspec.getName();
-		}
-		return destination;
 	}
 }

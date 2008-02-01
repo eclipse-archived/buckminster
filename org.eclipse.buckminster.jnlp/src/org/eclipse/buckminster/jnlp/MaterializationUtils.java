@@ -229,6 +229,9 @@ public class MaterializationUtils
 	 */
 	public static IPath generalizePath(MaterializationSpecBuilder mspec, IPath installLocation)
 	{
+		if(installLocation == null)
+			return null;
+		
 		Set<PropertyEntryByLength> properties = m_generalizeProperties.get(mspec);
 		
 		if(properties == null)
@@ -268,5 +271,28 @@ public class MaterializationUtils
 		}
 		
 		return new Path(pathToGeneralize);
+	}
+	
+	/**
+	 * Gets default install location
+	 * 
+	 * @param artifactName
+	 * @return
+	 * @throws JNLPException
+	 */
+	public static String getDefaultDestination(String artifactName) throws JNLPException
+	{
+		String destination = null;
+		
+		String userHome = System.getProperty("user.home");
+
+		if(userHome != null)
+		{
+			destination = userHome + "/materializations";
+		
+			if(artifactName != null)
+				destination += "/" + artifactName;
+		}
+		return destination;
 	}
 }

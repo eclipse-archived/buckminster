@@ -27,7 +27,6 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -112,11 +111,9 @@ public class InstallWizard extends AdvancedWizard
 	
 	private boolean m_loginPageRequested = false;
 	
+	private SimpleAdvancedPage m_advancedPage;
+	
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
-	
-	private final List<MaterializationNodeBuilder> m_originalNodeBuilders = new ArrayList<MaterializationNodeBuilder>();
-	
-	private final List<MaterializationNodeBuilder> m_newNodeBuilders = new ArrayList<MaterializationNodeBuilder>();
 	
 	private final List<MSpecChangeListener> m_mspecListeners = new ArrayList<MSpecChangeListener>();
 	
@@ -233,7 +230,8 @@ public class InstallWizard extends AdvancedWizard
 		{
 			addAdvancedPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : getServiceProvider()));
 			addAdvancedPage(new SimpleDownloadPage());
-			addAdvancedPage(new SimpleAdvancedPage());
+			m_advancedPage = new SimpleAdvancedPage();
+			addAdvancedPage(m_advancedPage);
 			addAdvancedPage(new OperationPage());
 			addAdvancedPage(new DonePage());
 		}
@@ -302,11 +300,6 @@ public class InstallWizard extends AdvancedWizard
     @Override
 	public boolean performFinish()
 	{
-		if(m_newNodeBuilders.size() > 0)
-		{
-			useNewNodes();
-		}
-		
 		WizardPage originalPage = (WizardPage)getContainer().getCurrentPage();
 		
 		URL originalArtifactURL = m_builder.getURL();
@@ -372,28 +365,11 @@ public class InstallWizard extends AdvancedWizard
 		originalPage.setPreviousPage(originalPreviousPage);
 	}
 
-	private void useNewNodes()
-	{
-		List<MaterializationNodeBuilder> nodes = m_builder.getNodes();
-		nodes.clear();
-		nodes.addAll(m_newNodeBuilders);
-	}
-
 	MaterializationSpecBuilder getMaterializationSpecBuilder()
 	{
 		return m_builder;
 	}
 
-	List<MaterializationNodeBuilder> getOriginalMaterializationNodeBuilders()
-	{
-		return m_originalNodeBuilders;
-	}
-	
-	List<MaterializationNodeBuilder> getNewMaterializationNodeBuilders()
-	{
-		return m_newNodeBuilders;
-	}
-	
 	Map<String, String> getProperties()
 	{
 		return m_properties;
@@ -614,8 +590,6 @@ public class InstallWizard extends AdvancedWizard
 					method.releaseConnection();
 			}
 			
-			m_originalNodeBuilders.addAll(m_builder.getNodes());
-
 			Display.getDefault().asyncExec(new Runnable(){
 
 				public void run()
@@ -739,6 +713,11 @@ public class InstallWizard extends AdvancedWizard
 		}
 	
 		return m_cachedBOM;
+	}
+	
+	void initMSpecTree()
+	{
+		m_advancedPage.initializeMSpecTree(getBOM());
 	}
 	
 	void saveBOM(BillOfMaterials bom, File file)

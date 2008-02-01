@@ -17,6 +17,8 @@ import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,11 +45,11 @@ public class PublishSpacePage extends PublishWizardPage
 	
 	private Text m_artifactName;
 	
-	private DestinationForm m_destinationForm;
-	
 	private Text m_shortDesc;
 	
 	private Text m_documentation;
+	
+	private MSpecDetailsPanel m_mspecDetails;
 	
 	private Label m_userNameLabel;
 	
@@ -60,7 +62,21 @@ public class PublishSpacePage extends PublishWizardPage
 	{
 		setPageComplete(false); // set to true when the page is shown
 
-		Composite pageComposite = new Composite(parent, SWT.NONE);
+		Composite topComposite = new Composite(parent, SWT.NONE);
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginHeight = gridLayout.marginWidth = 0;
+		topComposite.setLayout(gridLayout);
+		topComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		CTabFolder tabFolder = new CTabFolder(topComposite, SWT.BORDER);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		CTabItem mainTab = new CTabItem(tabFolder, SWT.NONE);
+		mainTab.setText("Main");
+
+		CTabItem detailsTab = new CTabItem(tabFolder, SWT.NONE);
+		detailsTab.setText("Details");
+		
+		Composite pageComposite = new Composite(tabFolder, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(3, false));
 
 		new Label(pageComposite, SWT.NONE).setText("Target Space:");
@@ -94,13 +110,6 @@ public class PublishSpacePage extends PublishWizardPage
 		});
 		new Label(pageComposite, SWT.NONE);
 
-		new Label(pageComposite, SWT.NONE);
-		new Label(pageComposite, SWT.NONE);
-		new Label(pageComposite, SWT.NONE);
-
-		m_destinationForm = new DestinationForm(getPublishWizard().getMSpecBuilder(), true, false);
-		m_destinationForm.createControl(pageComposite);
-		
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
@@ -144,23 +153,28 @@ public class PublishSpacePage extends PublishWizardPage
 		});
 		new Label(pageComposite, SWT.NONE);
 
-		Composite infoComposite = new Composite(pageComposite, SWT.NONE);
+		mainTab.setControl(pageComposite);
+		tabFolder.setSelection(mainTab);
+
+		m_mspecDetails = new MSpecDetailsPanel(getPublishWizard().getMSpecBuilder(), "", false);
+		detailsTab.setControl(m_mspecDetails.createControl(tabFolder));
+		m_mspecDetails.initializeMSpecTree(getPublishWizard().getBOM());
+		m_mspecDetails.update();
+		
+		// Bottom part
+		Composite infoComposite = new Composite(topComposite, SWT.NONE);
 		GridData data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan = 3;
 		infoComposite.setLayoutData(data);
 		infoComposite.setLayout(new GridLayout());
 
-		Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
+		Group infoGroup = new Group(topComposite, SWT.BOTTOM);
 		infoGroup.setText("Login Info");
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.marginHeight = rowLayout.marginWidth = 5;
 		rowLayout.spacing = 0;
 		infoGroup.setLayout(rowLayout);
 		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 2;
 		infoGroup.setLayoutData(data);
-
-		new Label(pageComposite, SWT.NONE);
 		
 		new Label(infoGroup, SWT.WRAP).setText("You are currently logged in as ");
 		
@@ -187,7 +201,7 @@ public class PublishSpacePage extends PublishWizardPage
 			}
 		});
 		
-		setControl(pageComposite);
+		setControl(topComposite);
 	}
 
 	private void updateUserName(String userName)
@@ -225,8 +239,6 @@ public class PublishSpacePage extends PublishWizardPage
 		
 		m_spaceCombo.setItems(availableSpaces.toArray(new String[0]));
 		m_spaceCombo.select(0);
-		
-		m_destinationForm.setup();
 		
 		updateUserName(getPublishWizard().getCurrentUserName());
 		
