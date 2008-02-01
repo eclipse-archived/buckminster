@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -77,6 +78,7 @@ import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IFeatureReference;
+import org.eclipse.update.core.IIncludedFeatureReference;
 import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -634,6 +636,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				// Damn it! We need to use the slow version.
 				//
 				HashMap<VersionedIdentifier, IPluginEntry> entries = new HashMap<VersionedIdentifier, IPluginEntry>();
+				HashSet<VersionedIdentifier> seenFeatures = new HashSet<VersionedIdentifier>();
 				IFeatureReference[] refs = getSiteFeatureReferences(location,
 					MonitorUtils.subMonitor(monitor, 10));
 				IProgressMonitor itemsMonitor = MonitorUtils.subMonitor(monitor, 40);
@@ -643,19 +646,36 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					// The getFeature() call is not thread-safe. It uses static variables without
 					// synchronization
 					//
-					IFeature feature;
-					synchronized(EclipseImportReaderType.class)
+					VersionedIdentifier vid = ref.getVersionedIdentifier();
+					if(!seenFeatures.contains(vid))
 					{
-						feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
+						seenFeatures.add(vid);
+						IFeature feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
+						addFeaturePluginEntries(entries, seenFeatures, feature);
 					}
-					for(IPluginEntry entry : feature.getPluginEntries())
-						entries.put(entry.getVersionedIdentifier(), entry);
 				}
 				return entries.values().toArray(new IPluginEntry[entries.size()]);
 			}
 			finally
 			{
 				monitor.done();
+			}
+		}
+	}
+
+	private static void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries, HashSet<VersionedIdentifier> seenFeatures, IFeature feature) throws CoreException
+	{
+		for(IPluginEntry entry : feature.getPluginEntries())
+			entries.put(entry.getVersionedIdentifier(), entry);
+
+		IIncludedFeatureReference[] includedFeatures = feature.getIncludedFeatureReferences();
+		for(IIncludedFeatureReference ref : includedFeatures)
+		{
+			VersionedIdentifier vid = ref.getVersionedIdentifier();
+			if(!seenFeatures.contains(vid))
+			{
+				seenFeatures.add(vid);			
+				addFeaturePluginEntries(entries, seenFeatures, ref.getFeature(new NullProgressMonitor()));
 			}
 		}
 	}
