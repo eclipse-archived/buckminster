@@ -35,6 +35,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -224,7 +225,11 @@ public class MSpecDetailsPanel
 	
 	private Tree m_tree;
 	
+	private MaterializationNodeBuilder m_selectedNodeBuilder;
+	
 	private DestinationForm m_detailDestForm;
+	
+	private Button m_unpackCheckBox;
 	
 	private Map<ComponentName, MaterializationNodeHandler> m_componentMap = new HashMap<ComponentName, MaterializationNodeHandler>();
 
@@ -245,7 +250,7 @@ public class MSpecDetailsPanel
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(3, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+		
 		m_destinationForm = new DestinationForm(m_mspec, m_defaultInstallLocation, true, false, true, false, m_showBrowseButtons);
 		m_destinationForm.createControl(pageComposite);
 
@@ -276,8 +281,7 @@ public class MSpecDetailsPanel
 
 				if(e.detail == SWT.NONE)
 				{
-					m_detailDestForm.setBuilder(handler.getNodeBuilder());
-					m_detailDestForm.update();
+					selectNodeBuilder(handler.getNodeBuilder());
 				}
 				else if(e.detail == SWT.CHECK)
 				{
@@ -353,10 +357,37 @@ public class MSpecDetailsPanel
 		detailsComposite.setLayout(gridLayout);
 		detailsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
+		Label headerLabel = new Label(detailsComposite, SWT.BOLD);
+		headerLabel.setText("Override:");
+		headerLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+		GridData gridData = new GridData();
+		gridData.horizontalSpan = 3;
+		headerLabel.setLayoutData(gridData);
+		
 		m_detailDestForm = new DestinationForm(null, "", true, true, true, true, m_showBrowseButtons);
 		m_detailDestForm.createControl(detailsComposite);
 		
+		new Label(detailsComposite, SWT.NONE).setText("Unpack:");
+		m_unpackCheckBox = new Button(detailsComposite, SWT.CHECK);
+		m_unpackCheckBox.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if(m_selectedNodeBuilder != null)
+					m_selectedNodeBuilder.setUnpack(m_unpackCheckBox.getSelection());
+				
+			}});
+		new Label(detailsComposite, SWT.NONE);
+		
 		return pageComposite;
+	}
+
+	private void selectNodeBuilder(MaterializationNodeBuilder nodeBuilder)
+	{
+		m_selectedNodeBuilder = nodeBuilder;
+		m_detailDestForm.setBuilder(m_selectedNodeBuilder);
+		m_detailDestForm.update();
+		m_unpackCheckBox.setSelection(m_selectedNodeBuilder.isUnpack());
 	}
 
 	/*
@@ -375,6 +406,12 @@ public class MSpecDetailsPanel
 		{
 			item.setExpanded(true);
 		}
+		
+		// initially select the top item
+		TreeItem selectedItem = m_tree.getTopItem();
+		m_tree.setSelection(selectedItem);
+		MaterializationNodeHandler handler = (MaterializationNodeHandler)selectedItem.getData();
+		selectNodeBuilder(handler.getNodeBuilder());
 	}
 	
 	private void initializeTree()
