@@ -211,6 +211,8 @@ public class MSpecDetailsPanel
 		}
 	}
 
+	private final static String TOOL_TIP_UNPACK = "Unpack component after materialization";
+	
 	private MaterializationSpecBuilder m_mspec;
 	
 	private BillOfMaterials m_bom;
@@ -367,7 +369,10 @@ public class MSpecDetailsPanel
 		m_detailDestForm = new DestinationForm(null, "", true, true, true, true, m_showBrowseButtons);
 		m_detailDestForm.createControl(detailsComposite);
 		
-		new Label(detailsComposite, SWT.NONE).setText("Unpack:");
+		Label label = new Label(detailsComposite, SWT.NONE);
+		label.setText("Unpack:");
+		label.setToolTipText(TOOL_TIP_UNPACK);
+		
 		m_unpackCheckBox = new Button(detailsComposite, SWT.CHECK);
 		m_unpackCheckBox.addSelectionListener(new SelectionAdapter(){
 			@Override
@@ -377,6 +382,7 @@ public class MSpecDetailsPanel
 					m_selectedNodeBuilder.setUnpack(m_unpackCheckBox.getSelection());
 				
 			}});
+		m_unpackCheckBox.setToolTipText(TOOL_TIP_UNPACK);
 		new Label(detailsComposite, SWT.NONE);
 		
 		return pageComposite;
@@ -492,35 +498,11 @@ public class MSpecDetailsPanel
 			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
 			nodeBuilder.setComponentTypeID(componentType);
 
-			boolean canChangeExclude = true;
-			
-			if(hasCssiteReader(depNode))
-			{
-				nodeBuilder.setExclude(true);
-				canChangeExclude = false;
-			}
-			
-			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, cspec, canChangeExclude);
+			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, cspec, true);
 			m_componentMap.put(resolution.getComponentIdentifier(), handler);
 		}
 
 		return handler;
-	}
-	
-	// Temporary solution - cannot handle CSsite reader component types
-	private boolean hasCssiteReader(DepNode depNode) throws CoreException
-	{
-		Resolution resolution = depNode.getResolution();
-		
-		if(resolution != null)
-		{
-			if("cssite".equals(resolution.getProvider().getReaderTypeId()))
-			{
-				return true;
-			}
-		}
-		
-		return false;
 	}
 
 	private Collection<DepNode> getSortedChildren(DepNode parent) throws CoreException

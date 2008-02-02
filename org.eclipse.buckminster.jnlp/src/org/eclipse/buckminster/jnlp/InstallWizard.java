@@ -21,12 +21,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -36,6 +41,7 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
@@ -302,22 +308,23 @@ public class InstallWizard extends AdvancedWizard
 	{
 		WizardPage originalPage = (WizardPage)getContainer().getCurrentPage();
 		
-		URL originalArtifactURL = m_builder.getURL();
-		
 		originalPage.setErrorMessage(null);
 		try
 		{
+			MaterializationSpecBuilder builderToPerform = new MaterializationSpecBuilder();
+			builderToPerform.initFrom(m_builder.createMaterializationSpec());
+			
 			if(m_cachedBOMURL != null)
-			{
-				m_builder.setURL(m_cachedBOMURL);
-			}
+				builderToPerform.setURL(m_cachedBOMURL);
+
+			excludeCSsiteComponents(builderToPerform, getBOM());
 			
 			OperationPage operationPage = (OperationPage)getPage(MaterializationConstants.STEP_OPERATION);
 			getContainer().showPage(operationPage);
 			IJobManager jobManager = Job.getJobManager();
 			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(true);
 			jobManager.setProgressProvider(operationPage.getProgressProvider());
-			getContainer().run(true, true, new MaterializerRunnable(m_builder.createMaterializationSpec()));
+			getContainer().run(true, true, new MaterializerRunnable(builderToPerform.createMaterializationSpec()));
 			jobManager.setProgressProvider(null);
 			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
 			getContainer().showPage(getPage(MaterializationConstants.STEP_DONE));
@@ -342,14 +349,55 @@ public class InstallWizard extends AdvancedWizard
 					m_errorURL,
 					ERROR_CODE_MATERIALIZATION_EXCEPTION,
 					status);
-		} finally
-		{
-			m_builder.setURL(originalArtifactURL);
 		}
 		
 		return false;
 	}
 	
+    // CSSITE components don't need to be materialized, so they are excluded
+	private void excludeCSsiteComponents(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	{
+		if(hasCSsiteReader(depNode))
+			excludeComponent(mspec, depNode);
+		
+		for(DepNode childDepNode : depNode.getChildren())
+			excludeCSsiteComponents(mspec, childDepNode);
+	}
+
+	private boolean hasCSsiteReader(DepNode depNode) throws CoreException
+	{
+		Resolution resolution = depNode.getResolution();
+		
+		if(resolution != null)
+			if("cssite".equals(resolution.getProvider().getReaderTypeId()))
+				return true;
+		
+		return false;
+	}
+	
+	private void excludeComponent(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	{
+		Resolution resolution = depNode.getResolution();
+
+		if(resolution != null)
+		{
+			CSpec cspec = resolution.getCSpec();
+
+			if(cspec != null)
+			{
+				String componentName = cspec.getName();
+				String componentType = cspec.getComponentTypeID();
+
+				MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
+				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+				nodeBuilder.setComponentTypeID(componentType);
+				nodeBuilder.setExclude(true);
+				
+				mspec.getNodes().add(0, nodeBuilder);
+			}
+		}
+	}
+
 	Image getImage(String imageName)
 	{
 		Class<?> myClass = this.getClass();

@@ -43,11 +43,11 @@ public class DestinationForm
 
 	private final static String[] DESTINATION_TYPES_TO_SHOW = {"Filesystem", "Workspace", "Eclipse Installation"};
 
-	private static final String TOOL_TIP_TYPE = "Default destination type for materialization: Filesystem, Workspace, Eclipse Installation";
+	private static final String TOOL_TIP_TYPE = "Destination type for materialization: Filesystem, Workspace, Eclipse Installation";
 	 
-	private static final String TOOL_TIP_DIRECTORY = "Default destination directory for materialization";
+	private static final String TOOL_TIP_DIRECTORY = "Destination directory for materialization";
 	 
-	private static final String TOOL_TIP_BROWSE_DIRECTORY = "Browse default destination directory for materialization";
+	private static final String TOOL_TIP_BROWSE_DIRECTORY = "Browse destination directory for materialization";
 	 
 	private static final String TOOL_TIP_CONFLICTS = "How to resolve filesystem conflicts:\nChoises: Fail, Replace, Update, Keep";
 
