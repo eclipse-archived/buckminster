@@ -44,21 +44,17 @@
  <extension-point id="decompressors" name="Decompressors" schema="schema/decompressors.exsd"/>
  <extension-point id="targetPlatformProviders" name="%TargetPlatformProviders" schema="schema/targetPlatformProviders.exsd"/>
 	<!-- Declare known versionTypes -->
-	<extension point="org.eclipse.buckminster.core.versionTypes">
-		<versionType
-			class="org.eclipse.buckminster.core.internal.version.OSGiVersionType"
-			id="OSGi" />
-		<versionType
-			class="org.eclipse.buckminster.core.internal.version.StringVersionType"
-			id="String" />
-		<versionType
-			class="org.eclipse.buckminster.core.internal.version.TimestampVersionType"
-			id="Timestamp" />
-  <versionType
-        class="org.eclipse.buckminster.core.internal.version.TripletVersionType"
-        id="Triplet"/>
-	</extension>
-	<!-- Declare known readerTypes -->
+ <extension
+       point="org.eclipse.buckminster.core.qualifierGenerators">
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.RevisionQualifierGenerator"
+          id="lastRevision">
+    </qualifierGenerator>
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.TimestampQualifierGenerator"
+          id="lastModified">
+    </qualifierGenerator>
+ </extension>
 	<extension point="org.eclipse.buckminster.core.readerTypes">
 		<readerType
 			id="url"
@@ -76,8 +72,27 @@
         class="org.eclipse.buckminster.core.reader.SiteFeatureReaderType"
         id="site.feature"/>
 	</extension>
-	<!-- Declare known remoteReaders -->
-	<!-- Declare known componentTypes -->
+	<extension point="org.eclipse.buckminster.core.versionTypes">
+		<versionType
+			class="org.eclipse.buckminster.core.internal.version.OSGiVersionType"
+			id="OSGi" />
+		<versionType
+			class="org.eclipse.buckminster.core.internal.version.StringVersionType"
+			id="String" />
+		<versionType
+			class="org.eclipse.buckminster.core.internal.version.TimestampVersionType"
+			id="Timestamp" />
+  <versionType
+        class="org.eclipse.buckminster.core.internal.version.TripletVersionType"
+        id="Triplet"/>
+	</extension>
+	<!-- Declare known readerTypes -->
+ <extension
+       point="org.eclipse.buckminster.core.queryResolvers">
+    <queryResolver id="rmap">
+       <factory class="org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory"/>
+    </queryResolver>
+ </extension>
 	<extension point="org.eclipse.buckminster.core.componentTypes">
 		<componentType
 			id="jar"
@@ -108,6 +123,49 @@
 			class="org.eclipse.buckminster.core.internal.ctype.DefaultResolutionBuilder"
 			id="default" />
 	</extension>
+	<!-- Declare known remoteReaders -->
+	<!-- Declare known componentTypes -->
+ <extension
+       point="org.eclipse.buckminster.core.expanders">
+    <expander
+          class="org.eclipse.buckminster.core.materializer.ZipExpander"
+          suffixes=".zip">
+    </expander>
+ </extension>
+	<extension point="org.eclipse.buckminster.core.actors">
+		<actor
+			ID="null"
+			class="org.eclipse.buckminster.core.internal.actor.NullActor"
+			name="Null Actor" />
+		<actor
+			ID="simulation"
+			class="org.eclipse.buckminster.core.internal.actor.SimulationActor"
+			name="Simulation Actor" />
+		<actor
+			ID="eclipse.clean"
+			class="org.eclipse.buckminster.core.internal.actor.EclipseCleanActor"
+			name="Eclipse Build Integration Actor (clean)" />
+		<actor
+			ID="eclipse.build"
+			class="org.eclipse.buckminster.core.internal.actor.EclipseBuildActor"
+			name="Eclipse Build Integration Actor (auto/incremental/full)" />
+	</extension>
+	<extension point="org.eclipse.buckminster.core.versionConverters">
+		<converter
+			class="org.eclipse.buckminster.core.internal.version.TagConverter"
+			id="tag" />
+		<converter
+			class="org.eclipse.buckminster.core.internal.version.BranchConverter"
+			id="branch" />
+	</extension>
+	<extension
+		point="org.eclipse.core.resources.builders"
+		id="locationEmitter"
+		name="%locationEmitter">
+		<builder isConfigurable="true">
+			<run class="org.eclipse.buckminster.core.build.LocationEmitter" />
+		</builder>
+	</extension>
 	<extension point="org.eclipse.core.runtime.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.xml"
@@ -130,22 +188,6 @@
 			name="%resourceMapName"
 			priority="high" />
 	</extension>
-	<extension point="org.eclipse.buckminster.core.versionConverters">
-		<converter
-			class="org.eclipse.buckminster.core.internal.version.TagConverter"
-			id="tag" />
-		<converter
-			class="org.eclipse.buckminster.core.internal.version.BranchConverter"
-			id="branch" />
-	</extension>
-	<extension
-		point="org.eclipse.core.resources.builders"
-		id="locationEmitter"
-		name="%locationEmitter">
-		<builder isConfigurable="true">
-			<run class="org.eclipse.buckminster.core.build.LocationEmitter" />
-		</builder>
-	</extension>
 	<extension
 		id="ExternalCommandBuilder"
 		name="%externalCommandBuilder"
@@ -154,24 +196,14 @@
 			<run class="org.eclipse.buckminster.core.build.ExternalCommandBuilder" />
 		</builder>
 	</extension>
-	<extension point="org.eclipse.buckminster.core.actors">
-		<actor
-			ID="null"
-			class="org.eclipse.buckminster.core.internal.actor.NullActor"
-			name="Null Actor" />
-		<actor
-			ID="simulation"
-			class="org.eclipse.buckminster.core.internal.actor.SimulationActor"
-			name="Simulation Actor" />
-		<actor
-			ID="eclipse.clean"
-			class="org.eclipse.buckminster.core.internal.actor.EclipseCleanActor"
-			name="Eclipse Build Integration Actor (clean)" />
-		<actor
-			ID="eclipse.build"
-			class="org.eclipse.buckminster.core.internal.actor.EclipseBuildActor"
-			name="Eclipse Build Integration Actor (auto/incremental/full)" />
-	</extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.prefmappings">
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.MaxParallelMaterializations"
+          description="The maximum number of parallel jobs used for materialisation"
+          name="maxParallelMaterializations">
+    </prefmapping>
+ </extension>
 	<extension point="org.eclipse.buckminster.cmdline.commands">
 		<command
         addhelpflags="true"
@@ -252,12 +284,6 @@
       </command>
 	</extension>
  <extension
-       point="org.eclipse.buckminster.core.queryResolvers">
-    <queryResolver id="rmap">
-       <factory class="org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory"/>
-    </queryResolver>
- </extension>
- <extension
        point="org.eclipse.buckminster.core.materializers">
     <materializer
           class="org.eclipse.buckminster.core.materializer.FileSystemMaterializer"
@@ -272,24 +298,6 @@
           class="org.eclipse.buckminster.core.materializer.TargetPlatformMaterializer"
           id="targetPlatform">
     </materializer>
- </extension>
- <extension
-       point="org.eclipse.buckminster.core.qualifierGenerators">
-    <qualifierGenerator
-          class="org.eclipse.buckminster.core.version.RevisionQualifierGenerator"
-          id="lastRevision">
-    </qualifierGenerator>
-    <qualifierGenerator
-          class="org.eclipse.buckminster.core.version.TimestampQualifierGenerator"
-          id="lastModified">
-    </qualifierGenerator>
- </extension>
- <extension
-       point="org.eclipse.buckminster.core.expanders">
-    <expander
-          class="org.eclipse.buckminster.core.materializer.ZipExpander"
-          suffixes=".zip">
-    </expander>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.decompressors">

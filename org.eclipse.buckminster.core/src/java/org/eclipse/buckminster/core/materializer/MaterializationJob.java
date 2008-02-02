@@ -67,6 +67,12 @@ public class MaterializationJob extends Job
 		return BuckminsterPreferences.getNode().getInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
 	}
 
+	public static void setMaxParallelJobs(int maxJobs)
+	{
+		if(maxJobs > 0 && maxJobs <= 20)
+			BuckminsterPreferences.getNode().putInt(MAX_PARALLEL_JOBS, maxJobs);
+	}
+
 	private final MaterializationContext m_context;
 
 	private final boolean m_waitForInstall;
