@@ -13,13 +13,14 @@ package org.eclipse.buckminster.subclipse;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.Plugin;
+import org.eclipse.buckminster.runtime.LogAwarePlugin;
+import org.eclipse.buckminster.runtime.Logger;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class SvnPlugin extends Plugin
+public class SvnPlugin extends LogAwarePlugin
 {
 	private static SvnPlugin s_plugin;
 
@@ -32,6 +33,11 @@ public class SvnPlugin extends Plugin
 	{
 		super();
 		s_plugin = this;
+	}
+
+	public static Logger getLogger()
+	{
+		return s_plugin.getBundleLogger();
 	}
 
 	/**

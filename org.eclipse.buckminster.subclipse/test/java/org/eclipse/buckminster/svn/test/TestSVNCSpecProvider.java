@@ -10,33 +10,14 @@
 
 package org.eclipse.buckminster.svn.test;
 
+import java.io.File;
 import java.net.URL;
-import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.ProjectDescReader;
-import org.eclipse.buckminster.core.resolver.IResolver;
-import org.eclipse.buckminster.core.resolver.MainResolver;
-import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.test.AbstractTestCase;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelector;
-import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
+import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
+import org.tigris.subversion.svnclientadapter.SVNRevision;
+import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 public class TestSVNCSpecProvider extends AbstractTestCase
 {
@@ -52,6 +33,15 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 		super.setUp();
 	}
 
+	public void testWeirdness() throws Exception
+	{
+		ISVNClientAdapter adapter = SVNProviderPlugin.getPlugin().createSVNClient();
+		SVNUrl url = new SVNUrl("http://dev.eclipse.org/svnroot/stp/org.eclipse.stp.b2j/trunk/features/org.eclipse.stp.b2j.feature");
+		SVNRevision revision = adapter.getInfo(url).getRevision();
+		SVNRevision rev = new SVNRevision.Number(1662);
+		adapter.checkout(url, new File("/home/thhal/tmp/cotest"), revision, true);
+	}
+/*
 	public void testResolutionPriority() throws Exception
 	{
 		IVersionDesignator designator = VersionFactory.createDesignator(VersionFactory.OSGiType, "[0.1.0,0.3.0)") ;
@@ -154,5 +144,5 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 		String[] natures = projDesc.getNatureIds();
 		for(String nature : natures)
 			System.out.println(nature);
-	}
+	} */
 }

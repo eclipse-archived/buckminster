@@ -35,6 +35,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -48,6 +49,7 @@ import org.tigris.subversion.subclipse.core.client.NotificationListener;
 import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
+import org.tigris.subversion.svnclientadapter.ISVNInfo;
 import org.tigris.subversion.svnclientadapter.ISVNPromptUserPassword;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
@@ -756,6 +758,37 @@ public class SvnSession
 		return m_revision;
 	}
 
+	public SVNRevision.Number getRepositoryRevision(IProgressMonitor monitor) throws CoreException
+	{
+		SVNRevision.Number repoRev = null;
+
+		if(m_revision instanceof SVNRevision.Number)
+		{
+			repoRev = (SVNRevision.Number)m_revision;
+			MonitorUtils.complete(monitor);
+		}
+		else
+		{
+			monitor.beginTask(null, 1);
+			try
+			{
+				SVNUrl svnURL = getSVNUrl(null);
+				ISVNInfo info = m_clientAdapter.getInfo(svnURL);
+				if(info == null)
+					return null;
+				repoRev = info.getRevision();
+			}
+			catch(SVNClientException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				monitor.done();
+			}
+		}
+		return repoRev;
+	}
 	@Override
 	public String toString()
 	{

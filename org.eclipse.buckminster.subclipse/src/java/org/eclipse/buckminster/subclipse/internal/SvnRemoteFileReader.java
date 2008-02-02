@@ -32,6 +32,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.subclipse.SvnPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -137,7 +138,10 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			{
 				try
 				{
-					m_session.getClientAdapter().checkout(m_session.getSVNUrl(null), destDir, m_session.getRevision(), true);
+					SVNUrl svnURL = m_session.getSVNUrl(null);
+					SVNRevision svnRev = m_session.getRevision();
+					SvnPlugin.getLogger().debug("Checking out %s using revision %s", svnURL, svnRev);
+					m_session.getClientAdapter().checkout(svnURL, destDir, svnRev, true);
 					resultSlot[0] = Boolean.TRUE;
 				}
 				catch(Throwable e)

@@ -18,9 +18,11 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
+import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 public class VersionFinder extends AbstractSCCSVersionFinder
@@ -55,21 +57,33 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	@Override
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
-		SVNUrl url = m_session.getSVNRootUrl(branches);
-		ISVNDirEntry[] list = m_session.listFolder(url, monitor);
-		if(list.length == 0)
-			return Collections.emptyList();
-
-		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
-		for(ISVNDirEntry e : list)
-			entries.add(new RevisionEntry(e.getPath(), null, e.getLastChangedRevision().getNumber()));
-		return entries;
+		monitor.beginTask(null, 200);
+		try
+		{
+			SVNUrl url = m_session.getSVNRootUrl(branches);
+			SVNRevision.Number repoRev = m_session.getRepositoryRevision(MonitorUtils.subMonitor(monitor, 50));
+			if(repoRev == null)
+				return Collections.emptyList();
+	
+			ISVNDirEntry[] list = m_session.listFolder(url, MonitorUtils.subMonitor(monitor, 150));
+			if(list.length == 0)
+				return Collections.emptyList();
+	
+			ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
+			for(ISVNDirEntry e : list)
+				entries.add(new RevisionEntry(e.getPath(), null, repoRev.getNumber()));
+			return entries;
+		}
+		finally
+		{
+			monitor.done();
+		}
 	}
 
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
-		ISVNDirEntry entry = m_session.getRootEntry(monitor);
-		return entry == null ? null : new RevisionEntry(null, null, entry.getLastChangedRevision().getNumber());
+		SVNRevision.Number repoRev = m_session.getRepositoryRevision(monitor);
+		return repoRev == null ? null : new RevisionEntry(null, null, repoRev.getNumber());
 	}
 }
