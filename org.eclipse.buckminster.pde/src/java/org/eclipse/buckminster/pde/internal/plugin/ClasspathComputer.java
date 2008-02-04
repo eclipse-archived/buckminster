@@ -84,7 +84,7 @@ public class ClasspathComputer {
 		// add pde container
 		result.add(createContainerEntry());
 
-		IClasspathEntry[] entries = (IClasspathEntry[]) result.toArray(new IClasspathEntry[result.size()]);
+		IClasspathEntry[] entries = result.toArray(new IClasspathEntry[result.size()]);
 		IJavaProject javaProject = JavaCore.create(project);
 		IJavaModelStatus validation = 
 			JavaConventions.validateClasspath(
@@ -95,7 +95,7 @@ public class ClasspathComputer {
 			PDECore.logErrorMessage(validation.getMessage());
 			throw new CoreException(validation);
 		}
-		return (IClasspathEntry[])result.toArray(new IClasspathEntry[result.size()]);
+		return result.toArray(new IClasspathEntry[result.size()]);
 	}
 
 	public static void addSourceAndLibraries(IProject project, IPluginModelBase model, IBuild build, boolean clear, List<IClasspathEntry> result) throws CoreException
@@ -298,15 +298,15 @@ public class ClasspathComputer {
 			fSeverityTable.put(JavaCore.ERROR, new Integer(SEVERITY_ERROR));
 		}		
 		// Get the current severity
-		current_string_value = (String)map.get(key);
+		current_string_value = map.get(key);
 		if (current_string_value != null) {
-			current_value = (Integer)fSeverityTable.get(current_string_value);
+			current_value = fSeverityTable.get(current_string_value);
 			if (current_value != null) {
 				current_int_value = current_value.intValue();
 			}
 		}
 		// Get the new severity
-		new_value = (Integer)fSeverityTable.get(value);
+		new_value = fSeverityTable.get(value);
 		if (new_value != null) {
 			new_int_value = new_value.intValue();
 		}
