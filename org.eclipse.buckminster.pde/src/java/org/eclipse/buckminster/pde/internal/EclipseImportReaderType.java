@@ -624,7 +624,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
 			if(site == null)
 				throw new OperationCanceledException();
-	
+
 			try
 			{
 				IPluginEntry[] entries = site.getPluginEntries();
@@ -650,8 +650,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					if(!seenFeatures.contains(vid))
 					{
 						seenFeatures.add(vid);
-						IFeature feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 100));
-						addFeaturePluginEntries(entries, seenFeatures, feature);
+						IFeature feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 50));
+						addFeaturePluginEntries(entries, seenFeatures, feature, MonitorUtils.subMonitor(itemsMonitor, 50));
 					}
 				}
 				return entries.values().toArray(new IPluginEntry[entries.size()]);
@@ -663,21 +663,31 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	private static void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries, HashSet<VersionedIdentifier> seenFeatures, IFeature feature) throws CoreException
+	private static void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries, HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
 	{
 		for(IPluginEntry entry : feature.getPluginEntries())
 			entries.put(entry.getVersionedIdentifier(), entry);
 
 		IIncludedFeatureReference[] includedFeatures = feature.getIncludedFeatureReferences();
+		if(includedFeatures.length == 0)
+		{
+			MonitorUtils.complete(monitor);
+			return;
+		}
+
+		monitor.beginTask(null, includedFeatures.length * 100);
 		for(IIncludedFeatureReference ref : includedFeatures)
 		{
 			VersionedIdentifier vid = ref.getVersionedIdentifier();
-			if(!seenFeatures.contains(vid))
+			if(seenFeatures.contains(vid))
+				MonitorUtils.worked(monitor, 100);
+			else
 			{
 				seenFeatures.add(vid);			
-				addFeaturePluginEntries(entries, seenFeatures, ref.getFeature(new NullProgressMonitor()));
+				addFeaturePluginEntries(entries, seenFeatures, ref.getFeature(MonitorUtils.subMonitor(monitor, 50)), MonitorUtils.subMonitor(monitor, 50));
 			}
 		}
+		monitor.done();
 	}
 
 	private synchronized IPluginModelBase[] getSitePlugins(File location, IProgressMonitor monitor)

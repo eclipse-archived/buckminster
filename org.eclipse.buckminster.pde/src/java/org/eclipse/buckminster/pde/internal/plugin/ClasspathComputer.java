@@ -14,9 +14,12 @@ package org.eclipse.buckminster.pde.internal.plugin;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -51,10 +54,10 @@ import org.eclipse.team.core.RepositoryProvider;
  * Copied from org.eclipse.pde.internal.ui.wizards.plugin since we need this one
  * in headless operations
  */
-@SuppressWarnings({"unchecked", "restriction"})
+@SuppressWarnings("restriction")
 public class ClasspathComputer {
 	
-	private static Hashtable fSeverityTable = null;
+	private static Hashtable<String,Integer> fSeverityTable = null;
 	private static final int SEVERITY_ERROR = 3;
 	private static final int SEVERITY_WARNING = 2;
 	private static final int SEVERITY_IGNORE = 1;
@@ -66,7 +69,7 @@ public class ClasspathComputer {
 	
 	public static IClasspathEntry[] getClasspath(IProject project, IPluginModelBase model, boolean clear) throws CoreException {
 
-		ArrayList result = new ArrayList();
+		ArrayList<IClasspathEntry> result = new ArrayList<IClasspathEntry>();
 				
 		IBuild build = getBuild(project);
 
@@ -95,44 +98,43 @@ public class ClasspathComputer {
 		return (IClasspathEntry[])result.toArray(new IClasspathEntry[result.size()]);
 	}
 
-	public static void addSourceAndLibraries(IProject project, IPluginModelBase model, IBuild build, boolean clear, 
-			ArrayList result) throws CoreException {
-		
-		HashSet paths = new HashSet();
+	public static void addSourceAndLibraries(IProject project, IPluginModelBase model, IBuild build, boolean clear, List<IClasspathEntry> result) throws CoreException
+	{	
+		HashSet<IPath> paths = new HashSet<IPath>();
 
-		// keep existing source folders
-		if (!clear) {
-			IClasspathEntry[] entries = JavaCore.create(project).getRawClasspath();
-			for (int i = 0; i < entries.length; i++) {
-				IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-					if (paths.add(entry.getPath()))
-						result.add(entry);
-				}
-			}
+		if(!clear)
+		{
+			// keep existing source folders
+			//
+			for(IClasspathEntry entry : JavaCore.create(project).getRawClasspath())
+				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && paths.add(entry.getPath()))
+					result.add(entry);
 		}
 
 		IClasspathAttribute[] attrs = getClasspathAttributes(project, model);
 		IPluginLibrary[] libraries = model.getPluginBase().getLibraries();
-		for (int i = 0; i < libraries.length; i++) {
-			IBuildEntry buildEntry = build == null ? null : build.getEntry("source." + libraries[i].getName()); //$NON-NLS-1$
-			if (buildEntry != null) {
+		if (libraries.length == 0)
+		{
+			IBuildEntry buildEntry = build == null ? null : build.getEntry("source..");
+			if (buildEntry != null && hasSourceFolder(buildEntry, project))
 				addSourceFolder(buildEntry, project, paths, result);
-			} else {
-				if (libraries[i].getName().equals(".")) //$NON-NLS-1$
-					addJARdPlugin(project, ClasspathUtilCore.getFilename(model), attrs, result);
-				else
-					addLibraryEntry(project, libraries[i], attrs, result);
-			}
-		}
-		if (libraries.length == 0) {
-			if (build != null) {
-				IBuildEntry buildEntry = build.getEntry("source.."); //$NON-NLS-1$
-				if (buildEntry != null) {
-					addSourceFolder(buildEntry, project, paths, result);
-				}
-			} else if (ClasspathUtilCore.hasBundleStructure(model)) {
+			else if (ClasspathUtilCore.hasBundleStructure(model))
 				addJARdPlugin(project, ClasspathUtilCore.getFilename(model), attrs, result);
+		}
+		else
+		{
+			for (IPluginLibrary library : libraries)
+			{
+				IBuildEntry buildEntry = build == null ? null : build.getEntry("source." + library.getName()); //$NON-NLS-1$
+				if (buildEntry != null && hasSourceFolder(buildEntry, project))
+					addSourceFolder(buildEntry, project, paths, result);
+				else
+				{
+					if (library.getName().equals(".")) //$NON-NLS-1$
+						addJARdPlugin(project, ClasspathUtilCore.getFilename(model), attrs, result);
+					else
+						addLibraryEntry(project, library, attrs, result);
+				}
 			}
 		}
 	}
@@ -149,8 +151,21 @@ public class ClasspathComputer {
 		}
 		return attributes;
 	}
+
+	private static boolean hasSourceFolder(IBuildEntry buildEntry, IProject project) throws CoreException
+	{
+		for(String folderName : buildEntry.getTokens())
+		{
+			IResource folder = project.findMember(folderName);
+			if(folder == null || !(folder instanceof IFolder))
+				continue;
+			if(((IFolder)folder).members().length > 0)
+				return true;
+		}
+		return false;
+	}
 	
-	private static void addSourceFolder(IBuildEntry buildEntry, IProject project, HashSet paths, ArrayList result) throws CoreException {
+	private static void addSourceFolder(IBuildEntry buildEntry, IProject project, Set<IPath> paths, List<IClasspathEntry> result) throws CoreException {
 		String[] folders = buildEntry.getTokens();
 		for (int j = 0; j < folders.length; j++) {
 			String folder = folders[j];
@@ -180,7 +195,7 @@ public class ClasspathComputer {
 		return (buildModel != null) ? buildModel.getBuild() : null;
 	}
 	
-	private static void addLibraryEntry(IProject project, IPluginLibrary library, IClasspathAttribute[] attrs, ArrayList result) throws JavaModelException {
+	private static void addLibraryEntry(IProject project, IPluginLibrary library, IClasspathAttribute[] attrs, List<IClasspathEntry> result) throws JavaModelException {
 		String name = ClasspathUtilCore.expandLibraryName(library.getName());
 		IResource jarFile = project.findMember(name);
 		if (jarFile == null)
@@ -202,7 +217,7 @@ public class ClasspathComputer {
 			result.add(entry);
 	}
 
-	private static void addJARdPlugin(IProject project, String filename, IClasspathAttribute[] attrs, ArrayList result) {		
+	private static void addJARdPlugin(IProject project, String filename, IClasspathAttribute[] attrs, List<IClasspathEntry> result) {		
 		String name = ClasspathUtilCore.expandLibraryName(filename);
 		IResource jarFile = project.findMember(name);
 		if (jarFile != null) {
@@ -228,9 +243,9 @@ public class ClasspathComputer {
 		}
 		return null;
 	}
-	
+
 	public static void setComplianceOptions(IJavaProject project, String compliance) {
-		Map map = project.getOptions(false);		
+		Map<String,String> map = getProjectOptions(project);		
 		if (compliance == null) {
 			if (map.size() > 0) {
 				map.remove(JavaCore.COMPILER_COMPLIANCE);
@@ -269,7 +284,7 @@ public class ClasspathComputer {
 		project.setOptions(map);		
 	}
 	
-	private static void updateSeverityComplianceOption(Map map, String key, String value) {
+	private static void updateSeverityComplianceOption(Map<String,String> map, String key, String value) {
 		Integer current_value = null;
 		Integer new_value = null;
 		String current_string_value = null;
@@ -277,7 +292,7 @@ public class ClasspathComputer {
 		int new_int_value = 0;
 		// Initialize the severity table (only once)
 		if (fSeverityTable == null) {
-			fSeverityTable = new Hashtable(SEVERITY_ERROR);
+			fSeverityTable = new Hashtable<String,Integer>(SEVERITY_ERROR);
 			fSeverityTable.put(JavaCore.IGNORE, new Integer(SEVERITY_IGNORE));
 			fSeverityTable.put(JavaCore.WARNING, new Integer(SEVERITY_WARNING));
 			fSeverityTable.put(JavaCore.ERROR, new Integer(SEVERITY_ERROR));
@@ -319,4 +334,9 @@ public class ClasspathComputer {
 		return JavaCore.newContainerEntry(PDECore.REQUIRED_PLUGINS_CONTAINER_PATH);
 	}
 
+	@SuppressWarnings("unchecked")
+	private static Map<String,String> getProjectOptions(IJavaProject project)
+	{
+		return project.getOptions(false);
+	}
 }
