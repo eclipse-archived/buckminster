@@ -17,7 +17,7 @@
 				dateformat="yyyyMMdd"
 				readerType="svn"
 				versionSelector="@{versionSelector}"
-				repositoryLocation="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/@{component}?moduleAfterTag&amp;moduleAfterBranch"/>
+				repositoryLocation="svn://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/@{component}?moduleAfterTag&amp;moduleAfterBranch"/>
 		</sequential>
 	</macrodef>
 

@@ -7,7 +7,7 @@
 
 	<searchPath name="default">
 		<provider readerType="svn" componentType="eclipse.project" mutable="true" source="true">
-			<uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/{0}">
+			<uri format="svn://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/org.eclipse.buckminster/demo/{0}">
 				<bc:propertyRef key="buckminster.component" />
 			</uri>
 		</provider>

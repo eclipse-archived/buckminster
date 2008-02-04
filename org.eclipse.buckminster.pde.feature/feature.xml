@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.pde.feature"
-      label="Buckminster - PDE support (Incubation)"
-      version="0.3.0.qualifier"
+      label="Buckminster - PDE support"
+      version="1.0.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.pde">
 
@@ -108,15 +108,15 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <url>
-      <update label="Buckminster" url="http://download.eclipse.org/technology/buckminster/updates"/>
+      <update label="Buckminster" url="http://download.eclipse.org/tools/buckminster/updates"/>
    </url>
 
    <requires>
-      <import plugin="org.eclipse.buckminster.ant" version="0.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.buckminster.core" version="0.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.buckminster.cmdline" version="0.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.buckminster.sax" version="0.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.buckminster.runtime" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.ant" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.cmdline" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.sax" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.runtime" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.pde.core" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.core" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.pde.build" version="3.3.0" match="greaterOrEqual"/>

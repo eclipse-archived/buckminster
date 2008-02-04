@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.subversive.feature"
-      label="Buckminster - Subversive support (Incubation)"
-      version="0.3.0.qualifier"
+      label="Buckminster - Subversive support"
+      version="1.0.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.subversive">
 
@@ -218,7 +218,7 @@ litigation.
    </license>
 
    <url>
-      <update label="Buckminster" url="http://download.eclipse.org/technology/buckminster/updates"/>
+      <update label="Buckminster" url="http://download.eclipse.org/tools/buckminster/updates"/>
    </url>
 
    <requires>

@@ -52,7 +52,7 @@
 
 	<target name="build.product">
 		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>
-		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}_incubation.zip"/>
+		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}.zip"/>
 
 		<mkdir dir="${sp:product.output}"/>
 		<buckminster.zip destfile="${zipped.product}">
@@ -62,7 +62,7 @@
 
 	<target name="headless.install">
 		<extractFeatureVersion property="product.version" file="${sp:product.feature.xml}"/>
-		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}_incubation.zip"/>
+		<property name="zipped.product" location="${sp:product.output}/${product.name}-${product.version}.zip"/>
 
 		<mkdir dir="${headless.install}"/>
 		<mkdir dir="${site}"/>

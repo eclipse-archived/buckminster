@@ -6,7 +6,7 @@
 	</tstamp>
 
 	<property name="signing.host" value="build.eclipse.org" />
-	<property name="staging.area" value="/home/data/httpd/download-staging.priv/technology/buckminster" />
+	<property name="staging.area" value="/home/data/httpd/download-staging.priv/tools/buckminster" />
 	<property name="build.timestamp" value="" />
 	<property name="remote.queue.folder" value="${staging.area}" />
 	<property name="remote.output.folder" value="${staging.area}/out${build.timestamp}" />

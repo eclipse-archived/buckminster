@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.product"
-      label="Buckminster Product (Incubation)"
-      version="0.3.0.qualifier"
+      label="Buckminster Product"
+      version="1.0.0.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">

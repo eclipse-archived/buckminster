@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.core.feature"
-      label="Buckminster - Core (Incubation)"
-      version="0.3.0.qualifier"
+      label="Buckminster - Core"
+      version="1.0.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.ui">
 
@@ -112,7 +112,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <url>
-      <update label="Buckminster" url="http://download.eclipse.org/technology/buckminster/updates"/>
+      <update label="Buckminster" url="http://download.eclipse.org/tools/buckminster/updates"/>
    </url>
 
    <requires>
