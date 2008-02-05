@@ -30,6 +30,8 @@ public class MaterializerRunnable implements IRunnableWithProgress
 {
 	private final MaterializationSpec m_mspec;
 	
+	private MaterializationContext m_context;
+	
 	public MaterializerRunnable(MaterializationSpec mspec)
 	{
 		m_mspec = mspec;
@@ -39,9 +41,9 @@ public class MaterializerRunnable implements IRunnableWithProgress
 	{
 		try
 		{
-			MaterializationContext context = createContext();
-			JNLPMaterializationJob.runDelegated(context, monitor);
-			IStatus status = context.getStatus();
+			m_context = createContext();
+			JNLPMaterializationJob.runDelegated(m_context, monitor);
+			IStatus status = m_context.getStatus();
 			if(status.getSeverity() == IStatus.ERROR)
 				throw new CoreException(status);
 		}
@@ -55,6 +57,11 @@ public class MaterializerRunnable implements IRunnableWithProgress
 		}
 	}
 
+	public MaterializationContext getContext()
+	{
+		return m_context;
+	}
+	
 	private MaterializationContext createContext() throws CoreException, IOException, SAXException
 	{
 		URL url = m_mspec.getURL();

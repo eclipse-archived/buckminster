@@ -119,6 +119,10 @@ public class InstallWizard extends AdvancedWizard
 	
 	private SimpleAdvancedPage m_advancedPage;
 	
+	private OperationPage m_operationPage;
+	
+	private DonePage m_donePage;
+	
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
 	
 	private final List<MSpecChangeListener> m_mspecListeners = new ArrayList<MSpecChangeListener>();
@@ -236,10 +240,15 @@ public class InstallWizard extends AdvancedWizard
 		{
 			addAdvancedPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : getServiceProvider()));
 			addAdvancedPage(new SimpleDownloadPage());
+			
 			m_advancedPage = new SimpleAdvancedPage();
 			addAdvancedPage(m_advancedPage);
-			addAdvancedPage(new OperationPage());
-			addAdvancedPage(new DonePage());
+			
+			m_operationPage = new OperationPage();
+			addAdvancedPage(m_operationPage);
+			
+			m_donePage = new DonePage();
+			addAdvancedPage(m_donePage);
 		}
 	}
 	
@@ -319,15 +328,19 @@ public class InstallWizard extends AdvancedWizard
 
 			excludeCSsiteComponents(builderToPerform, getBOM());
 			
-			OperationPage operationPage = (OperationPage)getPage(MaterializationConstants.STEP_OPERATION);
-			getContainer().showPage(operationPage);
+			getContainer().showPage(m_operationPage);
 			IJobManager jobManager = Job.getJobManager();
-			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(true);
-			jobManager.setProgressProvider(operationPage.getProgressProvider());
-			getContainer().run(true, true, new MaterializerRunnable(builderToPerform.createMaterializationSpec()));
+			((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
+			jobManager.setProgressProvider(m_operationPage.getProgressProvider());
+			MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
+			getContainer().run(true, true, mr);
 			jobManager.setProgressProvider(null);
-			((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
-			getContainer().showPage(getPage(MaterializationConstants.STEP_DONE));
+			((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
+			
+			getContainer().showPage(m_donePage);
+			
+			int failed = mr.getContext().getMaterializationStatistics().getFailed();
+			m_donePage.showFailed(failed);
 		}
 		catch(InterruptedException e)
 		{

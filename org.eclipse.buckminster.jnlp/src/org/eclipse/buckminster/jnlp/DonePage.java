@@ -244,6 +244,17 @@ public class DonePage extends InstallWizardPage
 
 	}
 
+	public void showFailed(int failed)
+	{
+		if(failed > 0)
+			if(failed > 1)
+				setErrorMessage("Materialization of " + failed + " components was cancelled");
+			else
+				setErrorMessage("Materialization of 1 component was cancelled");
+		else
+			setErrorMessage(null);
+	}
+	
 	// Last page after materialization - only cancel is enabled
 	@Override
 	public boolean isPageComplete()

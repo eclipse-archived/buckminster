@@ -56,10 +56,18 @@ public class PublishWizard extends AdvancedWizard
 		
 		try
 		{
-			m_publisher = ((IPublisher)installWizard.getAuthenticator()).createDuplicatePublisher(true);
+			IPublisher originalPublisher = (IPublisher)installWizard.getAuthenticator();
+			
+			if(originalPublisher == null)
+				throw new JNLPException("Cannot create publisher - missing plugin", ERROR_CODE_AUTHENTICATOR_EXCEPTION);
+			
+			m_publisher = originalPublisher.createDuplicatePublisher(true);
 		}
 		catch(Throwable e)
 		{
+			if(e instanceof JNLPException)
+				throw (JNLPException)e;
+			
 			throw new JNLPException("Cannot create publisher", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
 		}
 		
