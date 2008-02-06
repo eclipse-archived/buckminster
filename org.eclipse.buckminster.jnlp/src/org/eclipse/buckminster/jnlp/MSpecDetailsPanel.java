@@ -60,28 +60,26 @@ public class MSpecDetailsPanel
 		
 		private TreeItem m_lastClone;
 		
-		private boolean m_canChangeExclude = true;
-
-		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node,
-				CSpec cspec, boolean canChangeExclude)
+		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, CSpec cspec)
 		{
 			m_node = node;
 			nodes.add(node);
 			m_cspec = cspec;
-			m_canChangeExclude = canChangeExclude;
 		}
 
 		public MaterializationNodeBuilder getNodeBuilder()
 		{
 			return m_node;
 		}
+
+		public boolean isExclude()
+		{
+			return m_node.isExclude();
+		}
 		
 		public void setExclude(boolean exclude)
 		{
-			if(m_canChangeExclude)
-			{
-				m_node.setExclude(exclude);
-			}
+			m_node.setExclude(exclude);
 
 			for(TreeItem ti : m_cloneItems)
 			{
@@ -166,7 +164,7 @@ public class MSpecDetailsPanel
 		{
 			treeItem.setText(getComponentShortDescription());
 			treeItem.setData(this);
-			treeItem.setChecked(!m_node.isExclude() || !m_canChangeExclude);
+			treeItem.setChecked(!m_node.isExclude());
 		}
 
 		public String getComponentShortDescription()
@@ -283,7 +281,11 @@ public class MSpecDetailsPanel
 
 				if(e.detail == SWT.NONE)
 				{
-					selectNodeBuilder(handler.getNodeBuilder());
+					m_selectedNodeBuilder = handler.getNodeBuilder();
+					m_detailDestForm.setBuilder(m_selectedNodeBuilder);
+					m_detailDestForm.update();
+					m_unpackCheckBox.setSelection(m_selectedNodeBuilder.isUnpack());
+					setEnableDetails(!handler.isExclude());
 				}
 				else if(e.detail == SWT.CHECK)
 				{
@@ -300,6 +302,9 @@ public class MSpecDetailsPanel
 							//TODO display warning - some components are used in a different subtree - you can uncheck them manually
 							;
 					}
+					
+					if(m_tree.getSelectionCount() == 1 && m_tree.getSelection()[0] == item)
+						setEnableDetails(!handler.isExclude());
 				}
 			}
 
@@ -383,19 +388,20 @@ public class MSpecDetailsPanel
 				
 			}});
 		m_unpackCheckBox.setToolTipText(TOOL_TIP_UNPACK);
+
 		new Label(detailsComposite, SWT.NONE);
+		
+		setEnableDetails(false);
 		
 		return pageComposite;
 	}
 
-	private void selectNodeBuilder(MaterializationNodeBuilder nodeBuilder)
+	private void setEnableDetails(boolean enabled)
 	{
-		m_selectedNodeBuilder = nodeBuilder;
-		m_detailDestForm.setBuilder(m_selectedNodeBuilder);
-		m_detailDestForm.update();
-		m_unpackCheckBox.setSelection(m_selectedNodeBuilder.isUnpack());
+		m_detailDestForm.setEnabled(enabled);
+		m_unpackCheckBox.setEnabled(enabled);
 	}
-
+	
 	/*
 	 * Initializes tree and creates new MSpec nodes. This has to be called even if the Advanced Page is not needed,
 	 * because it excludes cssite components from materialization.
@@ -412,12 +418,6 @@ public class MSpecDetailsPanel
 		{
 			item.setExpanded(true);
 		}
-		
-		// initially select the top item
-		TreeItem selectedItem = m_tree.getTopItem();
-		m_tree.setSelection(selectedItem);
-		MaterializationNodeHandler handler = (MaterializationNodeHandler)selectedItem.getData();
-		selectNodeBuilder(handler.getNodeBuilder());
 	}
 	
 	private void initializeTree()
@@ -498,7 +498,7 @@ public class MSpecDetailsPanel
 			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
 			nodeBuilder.setComponentTypeID(componentType);
 
-			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, cspec, true);
+			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, cspec);
 			m_componentMap.put(resolution.getComponentIdentifier(), handler);
 		}
 

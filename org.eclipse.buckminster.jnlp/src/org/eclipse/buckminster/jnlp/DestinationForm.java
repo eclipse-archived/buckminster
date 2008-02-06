@@ -53,7 +53,7 @@ public class DestinationForm
 
 	private MaterializationDirectiveBuilder m_builder;
 	
-	private String m_defaultInstallLocation;
+	private String m_installLocation;
 	
 	private boolean m_showDestinationType;
 	
@@ -68,6 +68,8 @@ public class DestinationForm
 	private Combo m_destTypeCombo;
 	
 	private Text m_locationText;
+	
+	private Button m_browseButton;
 
 	private Combo m_conflictCombo;
 	
@@ -91,7 +93,7 @@ public class DestinationForm
 			boolean showBrowseButton)
 	{
 		m_builder = builder == null ? new MaterializationNodeBuilder() : builder;
-		m_defaultInstallLocation = defaultInstallLocation;
+		m_installLocation = defaultInstallLocation;
 		m_showDestinationType = showDestinationType;
 		m_allowEmptyDestinationType = allowEmptyDestinationType;
 		m_showConflictResolution = showConflictResolution;
@@ -166,16 +168,16 @@ public class DestinationForm
 
 		if(m_showBrowseButton)
 		{
-			final Button browseButton = new Button(parent, SWT.PUSH);
-			browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-			browseButton.setText("Browse");
-			browseButton.setToolTipText(TOOL_TIP_BROWSE_DIRECTORY);
-			browseButton.addSelectionListener(new SelectionAdapter()
+			m_browseButton = new Button(parent, SWT.PUSH);
+			m_browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+			m_browseButton.setText("Browse");
+			m_browseButton.setToolTipText(TOOL_TIP_BROWSE_DIRECTORY);
+			m_browseButton.addSelectionListener(new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent se)
 				{
-					DirectoryDialog dlg = new DirectoryDialog(browseButton.getShell());
+					DirectoryDialog dlg = new DirectoryDialog(m_browseButton.getShell());
 					dlg.setFilterPath(getKnownPath());
 					String dir = dlg.open();
 	
@@ -290,10 +292,10 @@ public class DestinationForm
 		
 		if(m_builder.getInstallLocation() == null)
 		{
-			if(m_defaultInstallLocation != null)
+			if(m_installLocation != null)
 			{
-				m_builder.setInstallLocation(new Path(m_defaultInstallLocation).addTrailingSeparator());
-				m_locationText.setText(m_defaultInstallLocation);
+				m_builder.setInstallLocation(new Path(m_installLocation).addTrailingSeparator());
+				m_locationText.setText(m_installLocation);
 			}	
 		}
 		else
@@ -307,5 +309,13 @@ public class DestinationForm
 							? m_defaultConflictResolution
 							: m_conflictResolutions.indexOf(m_builder.getConflictResolution()));
 		}
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		m_destTypeCombo.setEnabled(enabled);		
+		m_locationText.setEnabled(enabled);
+		m_browseButton.setEnabled(enabled);
+		m_conflictCombo.setEnabled(enabled);
 	}
 }
