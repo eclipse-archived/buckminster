@@ -339,7 +339,7 @@ public class InstallWizard extends AdvancedWizard
 			
 			getContainer().showPage(m_donePage);
 			
-			int failed = mr.getContext().getMaterializationStatistics().getFailed();
+			int failed = mr.getContext().getMaterializationStatistics().getFailed().size();
 			m_donePage.showFailed(failed);
 		}
 		catch(InterruptedException e)
