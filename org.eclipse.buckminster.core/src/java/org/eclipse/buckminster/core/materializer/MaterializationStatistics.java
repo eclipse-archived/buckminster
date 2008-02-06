@@ -8,73 +8,73 @@
 
 package org.eclipse.buckminster.core.materializer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+
 /**
  * @author Thomas Hallgren
  * 
  */
 public class MaterializationStatistics
 {
-	private int m_failed = 0;
+	private List<ComponentIdentifier> m_failed = new ArrayList<ComponentIdentifier>();
 
-	private int m_kept = 0;
+	private List<ComponentIdentifier> m_kept = new ArrayList<ComponentIdentifier>();
 
-	private int m_replaced = 0;
+	private List<ComponentIdentifier> m_replaced = new ArrayList<ComponentIdentifier>();
 
-	private int m_skipped = 0;
+	private List<ComponentIdentifier> m_skipped = new ArrayList<ComponentIdentifier>();
 
-	private int m_updated = 0;
-
-	public void addFailed()
+	private List<ComponentIdentifier> m_updated = new ArrayList<ComponentIdentifier>();
+	
+	public void addFailed(ComponentIdentifier ci)
 	{
-		m_failed++;
+		m_failed.add(ci);
 	}
 
-	public void addKept()
+	public void addKept(ComponentIdentifier ci)
 	{
-		m_kept++;
+		m_kept.add(ci);
 	}
 
-	public void addReplaced()
+	public void addReplaced(ComponentIdentifier ci)
 	{
-		m_replaced++;
+		m_replaced.add(ci);
 	}
 
-	public void addSkipped()
+	public void addSkipped(ComponentIdentifier ci)
 	{
-		m_skipped++;
+		m_skipped.add(ci);
 	}
 
-	public void addUpdated()
+	public void addUpdated(ComponentIdentifier ci)
 	{
-		m_updated++;
+		m_updated.add(ci);
 	}
 
-	public int getFailed()
+	public List<ComponentIdentifier> getFailed()
 	{
 		return m_failed;
 	}
 
-	public int getKept()
+	public List<ComponentIdentifier> getKept()
 	{
 		return m_kept;
 	}
 
-	public int getReplaced()
+	public List<ComponentIdentifier> getReplaced()
 	{
 		return m_replaced;
 	}
 
-	public int getSkipped()
+	public List<ComponentIdentifier> getSkipped()
 	{
 		return m_skipped;
 	}
 
-	public int getTotal()
-	{
-		return m_failed + m_kept + m_replaced + m_skipped + m_updated;
-	}
-
-	public int getUpdated()
+	public List<ComponentIdentifier> getUpdated()
 	{
 		return m_updated;
 	}

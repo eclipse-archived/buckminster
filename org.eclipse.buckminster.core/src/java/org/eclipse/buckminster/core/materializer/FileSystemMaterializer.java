@@ -90,10 +90,12 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			prepMon.beginTask(null, resolutions.size() * 10);
 			for(Resolution cr : resolutions)
 			{
+				ComponentIdentifier ci = null;
+
 				try
 				{
 					cr.store(sm);
-					ComponentIdentifier ci = cr.getComponentIdentifier();
+					ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
 					IPath artifactLocation = context.getArtifactLocation(cr);
 					String syncLock = artifactLocation.toOSString().intern();
@@ -109,7 +111,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 									// The same component (name, version, and type) is already materialized to
 									// the same location.
 									//
-									statistics.addKept();
+									statistics.addKept(ci);
 									adjustedMinfos.add(mat);
 									continue;
 								}
@@ -134,7 +136,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							// Don't materialize this one. Instead, pretend that we
 							// just did.
 							//
-							statistics.addKept();
+							statistics.addKept(ci);
 							logger.info("Skipping materialization of %s. Instead reusing what's already at %s", ci, artifactLocation);
 	
 							mat.store(sm);
@@ -220,9 +222,12 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				}
 				catch(CoreException e)
 				{
-					statistics.addFailed();
+					if(ci != null)
+						statistics.addFailed(ci);
+					
 					if(!context.isContinueOnError())
 						throw e;
+					
 					context.addException(cr.getRequest(), e.getStatus());
 				}
 			}
@@ -284,13 +289,13 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						if(success)
 						{
 							if(updateCandidates.contains(ci))
-								statistics.addUpdated();
+								statistics.addUpdated(ci);
 							else
-								statistics.addReplaced();
+								statistics.addReplaced(ci);
 						}
 						else
 						{
-							statistics.addFailed();
+							statistics.addFailed(ci);
 							mi.remove(sm);
 						}
 					}
