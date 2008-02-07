@@ -96,6 +96,7 @@ public class WorkspaceInfo
 	{
 		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, "Problems during metadata refresh", null);
 		monitor.beginTask("Refreshing meta-data", 1000);
+		s_hasBeenActivated = true;
 		try
 		{
 			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
