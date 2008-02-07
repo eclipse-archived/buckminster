@@ -90,24 +90,17 @@ public class MSpecDetailsPanel
 		public boolean setExcludeAccordingToClonesCheckConflicts()
 		{
 			boolean totalAnd = true;
-			boolean totalOr = true;
-			boolean firstRun = true;
+			boolean totalOr = false;
 			
 			for(TreeItem ti : m_cloneItems)
 			{
 				boolean checked = ti.getChecked();
 				
-				if(firstRun)
-				{
-					totalAnd = checked;
-					totalOr = checked;
-					firstRun = false;
-				}
-				else
-				{					
-					totalAnd = totalAnd && checked;
-					totalOr = totalOr || checked;
-				}
+				totalAnd = totalAnd && checked;
+				totalOr = totalOr || checked;
+				
+				if(totalAnd != totalOr)
+					break;
 			}
 			
 			// all clones have the same check status
@@ -295,13 +288,13 @@ public class MSpecDetailsPanel
 					for(TreeItem itemClone : handler.getTreeItemClones())
 						setCheckedSubtree(itemClone, checked);
 	
-					for(TreeItem itemClone : handler.getTreeItemClones())
-					{
-						if(checkAndRepairSubtreeCloneConflicts(itemClone))
-							if(!checked)
-							//TODO display warning - some components are used in a different subtree - you can uncheck them manually
+					// the second run is just for one clone - they are identical
+					TreeItem itemClone = handler.getTreeItemClones().get(0);
+					
+					if(itemClone != null && checkAndRepairSubtreeCloneConflicts(itemClone))
+						if(!checked)
+							// TODO display warning - some components are used in a different subtree - you can uncheck them manually
 							;
-					}
 					
 					if(m_tree.getSelectionCount() == 1 && m_tree.getSelection()[0] == item)
 						setEnableDetails(!handler.isExclude());

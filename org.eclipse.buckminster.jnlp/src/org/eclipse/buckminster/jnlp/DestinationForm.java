@@ -313,9 +313,15 @@ public class DestinationForm
 
 	public void setEnabled(boolean enabled)
 	{
-		m_destTypeCombo.setEnabled(enabled);		
+		if(m_destTypeCombo != null)
+			m_destTypeCombo.setEnabled(enabled);
+
 		m_locationText.setEnabled(enabled);
-		m_browseButton.setEnabled(enabled);
+		
+		if(m_browseButton != null)
+			m_browseButton.setEnabled(enabled);
+		
+		if(m_conflictCombo != null)
 		m_conflictCombo.setEnabled(enabled);
 	}
 }

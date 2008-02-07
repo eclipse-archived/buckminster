@@ -11,16 +11,19 @@ package org.eclipse.buckminster.jnlp;
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.MessageBox;
@@ -51,6 +54,8 @@ public class DonePage extends InstallWizardPage
 	//private static final String ICON_LOCAL_FOLDER = "workset_wiz.png";
 	
 	private static final String ICON_PUBLISH = "xhtml_wiz.png";
+	
+	private ComponentListPanel m_componentListPanel;
 	
 	protected DonePage()
 	{
@@ -101,100 +106,7 @@ public class DonePage extends InstallWizardPage
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		label.setLayoutData(layoutData);
-/*
-		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_LOCAL_FOLDER));
-		layoutData = new GridData();
-		layoutData.horizontalIndent = HORIZONTAL_INDENT;
-		layoutData.verticalSpan = 2;
-		layoutData.verticalAlignment = GridData.CENTER;
-		label.setLayoutData(layoutData);
-		
-		Link saveBOMLink = new Link(pageComposite, SWT.NONE);
-		saveBOMLink.setText("<a>Save BOM</a>");
-		layoutData = new GridData();
-		layoutData.horizontalIndent = HORIZONTAL_INDENT;
-		layoutData.widthHint = BUTTON_WIDTH;
-		saveBOMLink.setLayoutData(layoutData);
-		saveBOMLink.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				SafeSaveDialog dlg = new SafeSaveDialog(getInstallWizard().getShell());
-				dlg.setFileName(getMaterializationSpecBuilder().getName());
-				dlg.setFilterNames(BOM_FILTER_NAMES);
-				dlg.setFilterExtensions(BOM_FILTER_EXTS);
-				String fn = dlg.open();
-				if(fn != null)
-				{
-					try
-					{
-						getInstallWizard().saveBOM(getInstallWizard().getBOM(), new File(fn));
-					}
-					catch(JNLPException e1)
-					{
-						IStatus status = BuckminsterException.wrap(e1.getCause()).getStatus();
-						CorePlugin.logWarningsAndErrors(status);
-						HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-								e1.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-								getInstallWizard().getErrorURL(), e1.getErrorCode(), status);
-					}
-				}
-			}
-		});
-		
-		Link saveMSPECLink = new Link(pageComposite, SWT.NONE);
-		saveMSPECLink.setText("<a>Save MSPEC</a>");
-		layoutData = new GridData();
-		layoutData.horizontalIndent = HORIZONTAL_INDENT;
-		layoutData.widthHint = BUTTON_WIDTH;
-		saveMSPECLink.setLayoutData(layoutData);
-		saveMSPECLink.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				SafeSaveDialog dlg = new SafeSaveDialog(getInstallWizard().getShell());
-				dlg.setFileName(getMaterializationSpecBuilder().getName());
-				dlg.setFilterNames(MSPEC_FILTER_NAMES);
-				dlg.setFilterExtensions(MSPEC_FILTER_EXTS);
-				String fn = dlg.open();
-				if(fn != null)
-				{
-					try
-					{
-						try
-						{
-							FileOutputStream os = new FileOutputStream(fn);
-							Utils.serialize(getMaterializationSpecBuilder().createMaterializationSpec(), os);
-							os.close();
-						}
-						catch(FileNotFoundException e1)
-						{
-							throw new JNLPException("File cannot be opened or created", MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION, e1);
-						}
-						catch(SAXException e1)
-						{
-							throw new JNLPException("Unable to read materialization specification", MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e1);
-						}
-						catch(IOException e1)
-						{
-							throw new JNLPException("Cannot write to file", MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION, e1);
-						}
-					}
-					catch(JNLPException e1)
-					{
-						IStatus status = BuckminsterException.wrap(e1.getCause()).getStatus();
-						CorePlugin.logWarningsAndErrors(status);
-						HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-								e1.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-								getInstallWizard().getErrorURL(), e1.getErrorCode(), status);
-					}
-				}
-			}
-		});
-*/
+
 		label = new Label(pageComposite, SWT.NONE);
 		label.setImage(getInstallWizard().getImage(ICON_PUBLISH));
 		layoutData = new GridData();
@@ -216,6 +128,21 @@ public class DonePage extends InstallWizardPage
 				MaterializationUtils.startPublishingWizard(getInstallWizard(), getShell());
 			}
 		});
+		
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+		
+		Group listGroup = new Group(pageComposite, SWT.NONE);
+		listGroup.setText("Materialized Components");
+		FillLayout fillLayout = new FillLayout();
+		fillLayout.marginHeight = fillLayout.marginWidth = 5;
+		listGroup.setLayout(fillLayout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.horizontalSpan = 2;
+		listGroup.setLayoutData(gridData);
+		
+		m_componentListPanel = new ComponentListPanel();
+		m_componentListPanel.createControl(listGroup);
 		
 		setControl(pageComposite);
 	}
@@ -244,7 +171,13 @@ public class DonePage extends InstallWizardPage
 
 	}
 
-	public void showFailed(int failed)
+	public void update(MaterializationStatistics ms)
+	{
+		showFailed(ms.getFailed().size());
+		m_componentListPanel.update(ms);
+	}
+	
+	private void showFailed(int failed)
 	{
 		if(failed > 0)
 			if(failed > 1)
