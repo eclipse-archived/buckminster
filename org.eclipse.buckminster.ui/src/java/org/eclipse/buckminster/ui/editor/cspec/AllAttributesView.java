@@ -17,8 +17,8 @@ import java.util.Map;
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.editor.cspec.CSpecEditor.CSpecEditorTab;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -78,17 +78,17 @@ public class AllAttributesView extends Composite
 			switch(columnIndex)
 			{
 				case 0:
-					return ((AttributeBuilder)element).getName();
+					return ((TopLevelAttributeBuilder)element).getName();
 				case 1:
-					return getAttributeType((AttributeBuilder)element);
+					return getAttributeType((TopLevelAttributeBuilder)element);
 				case 2:
-					return Boolean.valueOf(((AttributeBuilder)element).isPublic()).toString();
+					return Boolean.valueOf(((TopLevelAttributeBuilder)element).isPublic()).toString();
 				default:
 					return "";
 			}
 		}
 
-		private String getAttributeType(AttributeBuilder builder)
+		private String getAttributeType(TopLevelAttributeBuilder builder)
 		{
 			if (builder instanceof ActionBuilder)
 				return "Action";
@@ -111,7 +111,7 @@ public class AllAttributesView extends Composite
 	
 	private TableViewer m_tableViewer;
 	
-	private List<AttributeBuilder> m_table = new ArrayList<AttributeBuilder>();
+	private List<TopLevelAttributeBuilder> m_table = new ArrayList<TopLevelAttributeBuilder>();
 	
 	private Map<ActionArtifactBuilder, ActionBuilder> m_aaMap = new HashMap<ActionArtifactBuilder, ActionBuilder>();
 	
@@ -245,7 +245,7 @@ public class AllAttributesView extends Composite
 	}
 
 
-	private void show(AttributeBuilder builder)
+	private void show(TopLevelAttributeBuilder builder)
 	{
 		if(builder instanceof ActionBuilder)
 		{			

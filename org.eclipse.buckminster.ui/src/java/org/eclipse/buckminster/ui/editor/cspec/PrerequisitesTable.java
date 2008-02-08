@@ -11,9 +11,9 @@ package org.eclipse.buckminster.ui.editor.cspec;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -45,14 +45,14 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	private AttributesTable<?> m_parentAttributesTable;
 
-	private AttributeBuilder m_attributeBuilder;
+	private TopLevelAttributeBuilder m_attributeBuilder;
 
 	private IWidgetin m_componentWidgetin = null;
 
 	private IWidgetin m_attributeWidgetin = null;
 
 	public PrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable,
-			List<PrerequisiteBuilder> data, AttributeBuilder attributeBuilder)
+			List<PrerequisiteBuilder> data, TopLevelAttributeBuilder attributeBuilder)
 	{
 		super(data);
 		m_editor = editor;

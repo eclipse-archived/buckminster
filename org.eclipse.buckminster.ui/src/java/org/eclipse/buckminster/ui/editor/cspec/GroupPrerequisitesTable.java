@@ -10,8 +10,8 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.List;
 
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
@@ -27,7 +27,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 {
 
 	public GroupPrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable,
-			List<PrerequisiteBuilder> data, AttributeBuilder attributeBuilder)
+			List<PrerequisiteBuilder> data, TopLevelAttributeBuilder attributeBuilder)
 	{
 		super(editor, parentAttributesTable, data, attributeBuilder);
 	}

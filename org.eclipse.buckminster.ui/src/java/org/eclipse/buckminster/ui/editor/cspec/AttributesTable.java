@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Karel Brezina
  *
  */
-public abstract class AttributesTable<T extends AttributeBuilder> extends StructuredTable<T>
+public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extends StructuredTable<T>
 {
 	private static final String ERROR_MESSAGE_EMPTY_NAME = "Name can not be empty";
 
