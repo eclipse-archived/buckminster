@@ -10,6 +10,8 @@ package org.eclipse.buckminster.core.cspec.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
@@ -17,6 +19,7 @@ import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.Filter;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -35,30 +38,33 @@ public class ComponentRequest extends ComponentName
 
 	static public final String ATTR_VERSION_TYPE = "versionType";
 
-	public static ComponentRequest fromProperties(Map<String, String> properties) throws CoreException
-	{
-		IVersionDesignator vd = null;
-		String vdStr = properties.get(KeyConstants.VERSION_DESIGNATOR);
-		if(vdStr != null)
-		{
-			String vdType = properties.get(KeyConstants.VERSION_TYPE);
-			if(vdType == null)
-				vdType = IVersionType.OSGI;
-			vd = VersionFactory.createDesignator(vdType, vdStr);
-		}
-		return new ComponentRequest(properties.get(KeyConstants.COMPONENT_NAME),
-			properties.get(KeyConstants.COMPONENT_TYPE), vd);
-	}
+	public static final String ATTR_FILTER = "filter";
 
 	private final IVersionDesignator m_versionDesignator;
+
+	private final Filter m_filter;
 
 	public ComponentRequest(String name, String componentType, IVersionDesignator versionDesignator)
 	{
 		super(name, componentType);
 		m_versionDesignator = versionDesignator;
+		m_filter = null;
 	}
 
 	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId)
+	throws CoreException
+	{
+		this(name, componentType, versionDesignatorStr, versionTypeId, null);
+	}
+
+	public ComponentRequest(DependencyBuilder bld)
+	{
+		super(bld.getName(), bld.getComponentTypeID());
+		m_versionDesignator = bld.getVersionDesignator();
+		m_filter = bld.getFilter();
+	}
+
+	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId, Filter filter)
 	throws CoreException
 	{
 		super(name, componentType);
@@ -66,11 +72,12 @@ public class ComponentRequest extends ComponentName
 		if(versionDesignatorStr != null)
 			versionDesignator = VersionFactory.createDesignator(versionTypeId, versionDesignatorStr);
 		m_versionDesignator = versionDesignator;
+		m_filter = filter;
 	}
 
 	public boolean designates(ComponentIdentifier id)
 	{
-		return getName().equals(id.getName())
+		return Trivial.equalsAllowNull(getName(), id.getName())
 			&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))
 			&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
 	}
@@ -86,7 +93,8 @@ public class ComponentRequest extends ComponentName
 			return true;
 
 		return super.equals(o)
-			&& Trivial.equalsAllowNull(m_versionDesignator, ((ComponentRequest)o).m_versionDesignator);
+			&& Trivial.equalsAllowNull(m_versionDesignator, ((ComponentRequest)o).m_versionDesignator)
+			&& Trivial.equalsAllowNull(m_filter, ((ComponentRequest)o).m_filter);
 	}
 
 	@Override
@@ -128,6 +136,8 @@ public class ComponentRequest extends ComponentName
 			bld.append(':');
 			bld.append(componentType);
 		}
+		if(m_filter != null)
+			bld.append(m_filter);
 	}
 
 	/**
@@ -137,12 +147,13 @@ public class ComponentRequest extends ComponentName
 	public int hashCode()
 	{
 		int hash = super.hashCode();
-		return 31 * hash + (m_versionDesignator == null ? 0 : m_versionDesignator.hashCode());
+		hash = 31 * hash + (m_versionDesignator == null ? 0 : m_versionDesignator.hashCode());
+		return 31 * hash + (m_filter == null ? 0 : m_filter.hashCode());
 	}
 
 	public ComponentRequest mergeDesignator(ComponentRequest that) throws CoreException
 	{
-		if(!getName().equals(that.getName()))
+		if(!Trivial.equalsAllowNull(getName(), that.getName()))
 			throw new ComponentRequestConflictException(this, that);
 
 		String thisCType = getComponentTypeID();
@@ -187,6 +198,8 @@ public class ComponentRequest extends ComponentName
 			bld.append('#');
 			bld.append(m_versionDesignator.getVersion().getType().getId());
 		}
+		if(m_filter != null)
+			bld.append(m_filter);
 	}
 
 	@Override
@@ -204,5 +217,17 @@ public class ComponentRequest extends ComponentName
 					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
 			}
 		}
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
+	}
+
+	public boolean isEnabled(Map<String, String> properties)
+	{
+		return m_filter == null || FilterUtils.isMatch(m_filter, properties);
 	}
 }

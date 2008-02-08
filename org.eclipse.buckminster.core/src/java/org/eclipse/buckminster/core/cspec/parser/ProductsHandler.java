@@ -11,11 +11,12 @@ import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -49,9 +50,9 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		}
 
 		@Override
-		protected AttributeBuilder createAttributeBuilder()
+		protected TopLevelAttributeBuilder createAttributeBuilder()
 		{
-			return this.getCSpecBuilder().createActionArtifactBuilder();
+			return getCSpecBuilder().createActionArtifactBuilder();
 		}
 	}
 
@@ -81,9 +82,9 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		ChildHandler ch = null;
 		if(PathHandler.TAG.equals(localName))
 			ch = m_pathHandler;
-		else if(Attribute.PUBLIC_TAG.equals(localName))
+		else if(TopLevelAttribute.PUBLIC_TAG.equals(localName))
 			ch = m_publicHandler;
-		else if(Attribute.PRIVATE_TAG.equals(localName))
+		else if(TopLevelAttribute.PRIVATE_TAG.equals(localName))
 			ch = m_privateHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
@@ -130,7 +131,7 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		}
 	}
 
-	public AttributeBuilder getAttributeBuilder()
+	public TopLevelAttributeBuilder getAttributeBuilder()
 	{
 		return ((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
 	}

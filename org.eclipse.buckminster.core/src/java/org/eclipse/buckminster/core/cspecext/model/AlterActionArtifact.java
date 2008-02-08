@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +30,7 @@ public class AlterActionArtifact extends AlterArtifact
 	}
 
 	@Override
-	public void alterAttribute(AttributeBuilder original) throws CoreException
+	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
 	{
 		Artifact base = getBase();
 		ActionArtifactBuilder aaBld = (ActionArtifactBuilder)original;

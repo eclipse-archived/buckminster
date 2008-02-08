@@ -15,7 +15,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
@@ -81,7 +81,7 @@ public class CSpecBuilder
 		m_attributes.put(name, attribute);
 	}
 
-	public void addDependency(Dependency dependency) throws DependencyAlreadyDefinedException
+	public void addDependency(ComponentRequest dependency) throws DependencyAlreadyDefinedException
 	{
 		DependencyBuilder bld = createDependencyBuilder();
 		bld.initFrom(dependency);
@@ -158,6 +158,11 @@ public class CSpecBuilder
 	public ArtifactBuilder createArtifactBuilder()
 	{
 		return new ArtifactBuilder(this);
+	}
+
+	public AttributeBuilder createAttributeBuilder()
+	{
+		return new AttributeBuilder(this);
 	}
 
 	public CSpec createCSpec() throws CoreException
@@ -323,11 +328,11 @@ public class CSpecBuilder
 		else
 			m_attributes = null;
 
-		Map<String,Dependency> deps = cspec.getDependencies();
+		Map<String,ComponentRequest> deps = cspec.getDependencies();
 		if(deps.size() > 0)
 		{
 			m_dependencies = new HashMap<String, DependencyBuilder>(deps.size());
-			for(Dependency dep : deps.values())
+			for(ComponentRequest dep : deps.values())
 			{
 				DependencyBuilder db = createDependencyBuilder();
 				db.initFrom(dep);

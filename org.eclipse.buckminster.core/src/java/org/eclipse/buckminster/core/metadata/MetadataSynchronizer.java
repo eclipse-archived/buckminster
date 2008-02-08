@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -414,7 +413,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 	private static void updateProjectReferences(IProject project, CSpec cspec, IProgressMonitor monitor) throws CoreException
 	{
-		Collection<Dependency> crefs = cspec.getDependencies().values();
+		Collection<ComponentRequest> crefs = cspec.getDependencies().values();
 		if(crefs.size() == 0)
 		{
 			// No use continuing. Project doesn't have any references.
@@ -434,7 +433,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 50 + crefs.size() * 10);
 		ArrayList<IProject> refdProjs = null;
-		for(Dependency cref : crefs)
+		for(ComponentRequest cref : crefs)
 		{
 			for(IResource resource : WorkspaceInfo.getResources(cref))
 			{

@@ -7,8 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.parser;
 
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.cspecext.builder.AlterAttributeBuilder;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -43,9 +43,9 @@ abstract class AlterAttributesHandler extends AlterHandler
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
-		if(Attribute.PUBLIC_TAG.equals(localName))
+		if(TopLevelAttribute.PUBLIC_TAG.equals(localName))
 			ch = m_publicHandler;
-		else if(Attribute.PRIVATE_TAG.equals(localName))
+		else if(TopLevelAttribute.PRIVATE_TAG.equals(localName))
 			ch = m_privateHandler;
 		else if(m_removeHandler.getTAG().equals(localName))
 			ch = m_removeHandler;

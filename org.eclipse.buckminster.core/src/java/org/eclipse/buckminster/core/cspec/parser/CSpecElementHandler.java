@@ -7,10 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.builder.NamedElementBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -29,9 +29,9 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 		super(parent);
 	}
 
-	public AttributeBuilder getAttributeBuilder()
+	public TopLevelAttributeBuilder getAttributeBuilder()
 	{
-		return ((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
+		return ((IAttributeBuilderSupport)getParentHandler()).getAttributeBuilder();
 	}
 
 	public NamedElementBuilder getBuilder()
@@ -41,7 +41,7 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 
 	public CSpecBuilder getCSpecBuilder()
 	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+		return ((ICSpecBuilderSupport)getParentHandler()).getCSpecBuilder();
 	}
 
 	@Override

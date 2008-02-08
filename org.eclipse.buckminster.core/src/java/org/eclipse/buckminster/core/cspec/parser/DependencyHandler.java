@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.NamedElementBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -49,7 +48,7 @@ public class DependencyHandler extends CSpecElementHandler
 		{
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
-		String filter = getOptionalStringValue(attrs, Dependency.ATTR_FILTER);
+		String filter = getOptionalStringValue(attrs, ComponentRequest.ATTR_FILTER);
 		if(filter != null)
 		{
 			try

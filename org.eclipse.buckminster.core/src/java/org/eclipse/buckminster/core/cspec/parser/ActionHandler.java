@@ -10,7 +10,7 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ActionHandler extends AttributeHandler
+public class ActionHandler extends TopLevelAttributeHandler
 {
 	private final PropertyManagerHandler m_actorPropsHandler;
 
@@ -114,7 +114,7 @@ public class ActionHandler extends AttributeHandler
 	}
 
 	@Override
-	protected AttributeBuilder createAttributeBuilder()
+	protected TopLevelAttributeBuilder createAttributeBuilder()
 	{
 		return getCSpecBuilder().createActionBuilder();
 	}

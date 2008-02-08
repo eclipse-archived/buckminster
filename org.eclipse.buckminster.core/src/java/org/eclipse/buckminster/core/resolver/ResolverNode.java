@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.CircularDependencyException;
@@ -148,7 +149,7 @@ public class ResolverNode
 							for(Prerequisite pq : attr.getPrerequisites())
 							{
 								if(depName.equals(pq.getComponentName()))
-									bld.getAttribute(attr.getName()).removePrerequisite(pq);
+									((TopLevelAttributeBuilder)bld.getAttribute(attr.getName())).removePrerequisite(pq);
 							}
 						}
 						bld.removeDependency(depName);

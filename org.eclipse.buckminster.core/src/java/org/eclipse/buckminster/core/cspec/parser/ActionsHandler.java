@@ -23,7 +23,7 @@ class ActionsHandler extends AttributesHandler
 	}
 
 	@Override
-	AttributeHandler createAttributeHandler(boolean publ)
+	TopLevelAttributeHandler createAttributeHandler(boolean publ)
 	{
 		return new ActionHandler(this, publ);
 	}

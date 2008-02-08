@@ -41,7 +41,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Action extends Attribute
+public class Action extends TopLevelAttribute
 {
 	public static final String ATTR_ACTOR = "actor";
 
@@ -132,7 +132,7 @@ public class Action extends Attribute
 		for(Prerequisite prereq : getPrerequisites(null))
 		{
 			Attribute ag = prereq.getReferencedAttribute(cspec, ctx);
-			if(ag == null)
+			if(!(ag instanceof TopLevelAttribute))
 				continue;
 
 			if(prereq.isPatternFilter())
@@ -140,11 +140,11 @@ public class Action extends Attribute
 				if(filters == null)
 					filters = new Stack<IAttributeFilter>();
 				filters.push(prereq);
-				ag.getDeepInstallerHints(ctx, installerHints, filters);
+				((TopLevelAttribute)ag).getDeepInstallerHints(ctx, installerHints, filters);
 				filters.pop();
 			}
 			else
-				ag.getDeepInstallerHints(ctx, installerHints, filters);
+				((TopLevelAttribute)ag).getDeepInstallerHints(ctx, installerHints, filters);
 		}
 	}
 
@@ -477,8 +477,8 @@ public class Action extends Attribute
 				continue;
 
 			Attribute ag = pq.getReferencedAttribute(cspec, ctx);
-			if(ag != null)
-				ag.appendRelativeFiles(ctx, filesAndDates);
+			if(ag instanceof TopLevelAttribute)
+				((TopLevelAttribute)ag).appendRelativeFiles(ctx, filesAndDates);
 		}
 		return filesAndDates;
 	}

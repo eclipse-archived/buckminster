@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
@@ -38,9 +38,9 @@ public class DependencyBuilder extends CSpecElementBuilder
 		m_filter = null;
 	}
 
-	public Dependency createDependency()
+	public ComponentRequest createDependency()
 	{
-		return new Dependency(this);
+		return new ComponentRequest(this);
 	}
 
 	public String getComponentTypeID()
@@ -72,7 +72,7 @@ public class DependencyBuilder extends CSpecElementBuilder
 	public void initFrom(NamedElement depElem)
 	{
 		super.initFrom(depElem);
-		Dependency dependency = (Dependency)depElem;
+		ComponentRequest dependency = (ComponentRequest)depElem;
 		m_componentType = dependency.getComponentTypeID();
 		m_versionDesignator = dependency.getVersionDesignator();
 		m_filter = dependency.getFilter();

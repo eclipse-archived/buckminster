@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -463,7 +464,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		{
 			IPerformManager performManager = CorePlugin.getPerformManager();
 			Attribute bindEntryPoint = cspec.getBindEntryPoint();
-			if(bindEntryPoint == null)
+			if(!(bindEntryPoint instanceof TopLevelAttribute))
 			{
 				Attribute prebindAttr = cspec.getPrebind();
 				if(prebindAttr != null)
@@ -474,7 +475,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			}
 
 			Map<String, String> props = context.getProperties(resolution.getRequest());
-			IPath productPath = bindEntryPoint.getUniquePath(mat.getComponentLocation(), new ModelCache(props));
+			IPath productPath = ((TopLevelAttribute)bindEntryPoint).getUniquePath(mat.getComponentLocation(), new ModelCache(props));
 			String bindingName = context.getBindingName(resolution, props);
 
 			performManager.perform(cspec, bindEntryPoint.getName(), props, false, monitor);

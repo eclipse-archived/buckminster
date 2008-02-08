@@ -30,7 +30,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Artifact extends Attribute
+public class Artifact extends TopLevelAttribute
 {
 	public static final String ATTR_PATH = "path";
 

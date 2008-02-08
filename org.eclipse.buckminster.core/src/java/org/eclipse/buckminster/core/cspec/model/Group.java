@@ -31,7 +31,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Group extends Attribute
+public class Group extends TopLevelAttribute
 {
 	public static final String ATTR_REBASE = "rebase";
 

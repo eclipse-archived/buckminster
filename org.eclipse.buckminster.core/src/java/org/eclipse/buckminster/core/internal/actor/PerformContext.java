@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -37,8 +38,8 @@ import org.eclipse.core.runtime.SubProgressMonitor;
  */
 public class PerformContext implements IActionContext
 {
-	final static String PRODUCT_PREFIX = Attribute.PROPERTY_PREFIX + "product.";
-	final static String REQUIREMENT_PREFIX = Attribute.PROPERTY_PREFIX + "requirement.";
+	final static String PRODUCT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "product.";
+	final static String REQUIREMENT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "requirement.";
 
 	private static PathGroup[] normalizePathGroups(PathGroup[] pathGroups) throws CoreException
 	{
@@ -174,7 +175,7 @@ public class PerformContext implements IActionContext
 				}
 				else
 					paths = ag.getPathGroups(this, filters);
-	
+
 				paths = normalizePathGroups(paths);
 				paths = trimNonExistentBases(paths);
 				if(!prereq.isExternal())

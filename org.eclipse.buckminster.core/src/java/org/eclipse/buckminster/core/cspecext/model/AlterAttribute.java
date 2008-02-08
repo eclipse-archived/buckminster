@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.MissingPathException;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.PropertyAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.PropertyAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AlterAttribute<T extends Attribute>
+public abstract class AlterAttribute<T extends TopLevelAttribute>
 {
 	public static final String ELEM_ALTER_INSTALLER_HINTS = "alterInstallerHints";
 	private final T m_base;
@@ -43,7 +43,7 @@ public abstract class AlterAttribute<T extends Attribute>
 	 * @param name The original attribute.
 	 * @throws CoreException
 	 */
-	public abstract void alterAttribute(AttributeBuilder attrBld) throws CoreException;
+	public abstract void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException;
 
 	/**
 	 * Returns the name of this alteration. The name must correspond to the attribute
@@ -61,12 +61,12 @@ public abstract class AlterAttribute<T extends Attribute>
 	 * @param originalAttribute The attribute to check
 	 * @return true if the type is conformant.
 	 */
-	public boolean isTypeConformant(Attribute origAttr)
+	public boolean isTypeConformant(TopLevelAttribute origAttr)
 	{
 		return origAttr.getClass().equals(m_base.getClass());
 	}
 
-	public void alterInstallerHints(AttributeBuilder original) throws CoreException
+	public void alterInstallerHints(TopLevelAttributeBuilder original) throws CoreException
 	{
 		// Assert that all hints to remove really exists
 		//
@@ -76,7 +76,7 @@ public abstract class AlterAttribute<T extends Attribute>
 				m_base.getInstallerHints(), m_removedHints);
 	}
 
-	public void alterDocumentation(AttributeBuilder original)
+	public void alterDocumentation(TopLevelAttributeBuilder original)
 	{
 		Documentation origDoc = original.getDocumentation();
 		Documentation baseDoc = m_base.getDocumentation();

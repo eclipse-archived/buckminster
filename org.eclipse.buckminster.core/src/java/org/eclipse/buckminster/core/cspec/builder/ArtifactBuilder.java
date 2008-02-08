@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class ArtifactBuilder extends AttributeBuilder
+public class ArtifactBuilder extends TopLevelAttributeBuilder
 {
 	private final HashSet<IPath> m_paths = new HashSet<IPath>();
 

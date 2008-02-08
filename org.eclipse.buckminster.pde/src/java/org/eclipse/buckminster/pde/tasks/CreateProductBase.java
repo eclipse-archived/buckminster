@@ -37,6 +37,7 @@ import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
@@ -334,8 +335,8 @@ public class CreateProductBase
 
 		Map<String, String> hints = new HashMap<String, String>();
 		StringBuilder bld = new StringBuilder(100);
-		bld.append(Attribute.INSTALLER_HINT_PREFIX);
-		int pfLen = Attribute.INSTALLER_HINT_PREFIX.length();
+		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
+		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
 		for(Map.Entry<String, String> hint : m_hints.entrySet())
 		{
 			bld.setLength(pfLen);

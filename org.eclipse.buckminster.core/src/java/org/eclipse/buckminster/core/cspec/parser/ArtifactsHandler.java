@@ -24,7 +24,7 @@ class ArtifactsHandler extends AttributesHandler
 	}
 
 	@Override
-	AttributeHandler createAttributeHandler(boolean publ)
+	TopLevelAttributeHandler createAttributeHandler(boolean publ)
 	{
 		return new ArtifactHandler(this, publ);
 	}

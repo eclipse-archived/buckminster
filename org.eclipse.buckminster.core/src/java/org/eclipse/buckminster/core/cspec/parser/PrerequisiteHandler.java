@@ -50,7 +50,7 @@ public class PrerequisiteHandler extends CSpecElementHandler
 	@Override
 	protected NamedElementBuilder createBuilder()
 	{
-		return this.getAttributeBuilder().createPrerequisiteBuilder();
+		return getAttributeBuilder().createPrerequisiteBuilder();
 	}
 
 	@Override

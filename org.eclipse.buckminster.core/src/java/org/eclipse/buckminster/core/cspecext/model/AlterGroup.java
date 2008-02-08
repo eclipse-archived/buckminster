@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
@@ -41,7 +41,7 @@ public class AlterGroup extends AlterAttribute<Group>
 	}
 
 	@Override
-	public void alterAttribute(AttributeBuilder original) throws CoreException
+	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
 	{
 		Group base = getBase();
 		GroupBuilder gBld = (GroupBuilder)original;

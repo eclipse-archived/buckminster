@@ -7,9 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -23,7 +23,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class GroupHandler extends AttributeHandler implements ChildPoppedListener
+public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppedListener
 {
 	private final PrerequisiteHandler m_prerequisiteHandler = new PrerequisiteHandler(this);
 
@@ -79,7 +79,7 @@ public class GroupHandler extends AttributeHandler implements ChildPoppedListene
 	}
 
 	@Override
-	protected AttributeBuilder createAttributeBuilder()
+	protected TopLevelAttributeBuilder createAttributeBuilder()
 	{
 		return this.getCSpecBuilder().createGroupBuilder();
 	}

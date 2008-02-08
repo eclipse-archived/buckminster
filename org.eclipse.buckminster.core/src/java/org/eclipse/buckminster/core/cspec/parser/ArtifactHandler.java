@@ -8,12 +8,11 @@
 package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
-import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.Path;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -23,7 +22,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class ArtifactHandler extends AttributeHandler implements ChildPoppedListener
+public class ArtifactHandler extends TopLevelAttributeHandler
 {
 	private final PathHandler m_pathHandler = new PathHandler(this);
 
@@ -91,8 +90,8 @@ public class ArtifactHandler extends AttributeHandler implements ChildPoppedList
 	}
 
 	@Override
-	protected AttributeBuilder createAttributeBuilder()
+	protected TopLevelAttributeBuilder createAttributeBuilder()
 	{
-		return this.getCSpecBuilder().createArtifactBuilder();
+		return getCSpecBuilder().createArtifactBuilder();
 	}
 }

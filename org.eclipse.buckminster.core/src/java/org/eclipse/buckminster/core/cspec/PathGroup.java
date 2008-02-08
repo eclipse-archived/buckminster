@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class PathGroup
 {
+	public static final PathGroup[] EMPTY_ARRAY = new PathGroup[0];
+
 	private final IPath m_base;
 	private final IPath[] m_paths;
 	

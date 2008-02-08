@@ -8,7 +8,7 @@
 package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
-import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.Prerequisites;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -36,9 +36,9 @@ class PrerequisitesHandler extends GroupHandler
 	}
 
 	@Override
-	protected AttributeBuilder createAttributeBuilder()
+	protected TopLevelAttributeBuilder createAttributeBuilder()
 	{
-		return this.getActionBuilder().getPrerequisitesBuilder();
+		return getActionBuilder().getPrerequisitesBuilder();
 	}
 
 	private ActionBuilder getActionBuilder()

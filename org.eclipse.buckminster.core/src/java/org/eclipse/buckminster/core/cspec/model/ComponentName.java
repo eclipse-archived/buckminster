@@ -54,7 +54,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 			return false;
 
 		ComponentName that = (ComponentName)o;
-		return this.getName().equals(that.getName())
+		return Trivial.equalsAllowNull(getName(), that.getName())
 			&& Trivial.equalsAllowNull(m_componentType, that.m_componentType);
 	}
 
@@ -73,7 +73,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 		String name = getName();
 
 		IComponentType ctype = getComponentType();
-		if(ctype == null)
+		if(name == null || ctype == null)
 			//
 			// No component type.
 			//
@@ -105,7 +105,8 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	public Map<String,String> getProperties()
 	{
 		HashMap<String,String> p = new HashMap<String,String>();
-		p.put(KeyConstants.COMPONENT_NAME, this.getName());
+		if(getName() != null)
+			p.put(KeyConstants.COMPONENT_NAME, getName());
 		if(m_componentType != null)
 			p.put(KeyConstants.COMPONENT_TYPE, m_componentType);
 		return p;
@@ -119,7 +120,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	@Override
 	public int hashCode()
 	{
-		int hc = this.getName().hashCode();
+		int hc = getName() == null ? 31 : getName().hashCode();
 		if(m_componentType != null)
 		{
 			hc *= 37;
@@ -140,7 +141,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	 */
 	public boolean matches(ComponentName o)
 	{
-		return this.getName().equals(o.getName())
+		return Trivial.equalsAllowNull(getName(), o.getName())
 			&& (m_componentType == null || o.m_componentType == null || m_componentType.equals(o.m_componentType));
 	}
 
@@ -159,13 +160,13 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	public final String toString()
 	{
 		StringBuilder bld = new StringBuilder();
-		this.toString(bld);
+		toString(bld);
 		return bld.toString();
 	}
 
 	public void toString(StringBuilder bld)
 	{
-		bld.append(this.getName());
+		bld.append(getName());
 		if(m_componentType != null)
 		{
 			bld.append(':');
@@ -175,7 +176,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 
 	public int compareTo(ComponentName o)
 	{
-		int cmp = this.getName().compareTo(o.getName());
+		int cmp = Trivial.compareAllowNull(getName(), o.getName());
 		if(cmp == 0)
 			cmp = Trivial.compareAllowNull(m_componentType, o.m_componentType);
 		return cmp;

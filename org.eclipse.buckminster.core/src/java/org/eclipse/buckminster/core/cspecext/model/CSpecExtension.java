@@ -14,13 +14,15 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.core.runtime.CoreException;
@@ -46,13 +48,13 @@ public class CSpecExtension
 
 	private final Set<String> m_removedAttributes;
 
-	private final Map<String, AlterAttribute<? extends Attribute>> m_alteredAttributes;
+	private final Map<String, AlterAttribute<? extends TopLevelAttribute>> m_alteredAttributes;
 
 	private final Map<String, AlterDependency> m_alteredDependencies;
 
 	public CSpecExtension(CSpec base, Set<String> removedDependencies,
 			Map<String, AlterDependency> alteredDependencies, Set<String> removedAttributes,
-			Map<String, AlterAttribute<? extends Attribute>> alteredAttributes)
+			Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes)
 	{
 		m_base = base;
 		m_removedDependencies = UUIDKeyed.createUnmodifiableSet(removedDependencies);
@@ -115,8 +117,8 @@ public class CSpecExtension
 		for(AlterDependency alterDep : m_alteredDependencies.values())
 			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName()));
 
-		Map<String, Dependency> addedDeps = m_base.getDependencies();
-		for(Dependency addedDep : addedDeps.values())
+		Map<String, ComponentRequest> addedDeps = m_base.getDependencies();
+		for(ComponentRequest addedDep : addedDeps.values())
 			cspecBuilder.addDependency(addedDep);
 
 		Map<String,Generator> addedGenerators = m_base.getGenerators();
@@ -134,7 +136,7 @@ public class CSpecExtension
 		}
 
 		for(AlterAttribute<?> alterAttr : m_alteredAttributes.values())
-			alterAttr.alterAttribute(cspecBuilder.getRequiredAttribute(alterAttr.getName()));
+			alterAttr.alterAttribute((TopLevelAttributeBuilder)cspecBuilder.getRequiredAttribute(alterAttr.getName()));
 
 		Map<String, Attribute> addedAttrs = m_base.getAttributes();
 		for(Attribute addedAttr : addedAttrs.values())

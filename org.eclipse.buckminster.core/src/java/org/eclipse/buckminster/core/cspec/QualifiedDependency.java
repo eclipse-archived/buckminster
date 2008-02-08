@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
@@ -27,13 +26,6 @@ public class QualifiedDependency
 
 	public QualifiedDependency(ComponentRequest request, Collection<String> attributes)
 	{
-		if(request instanceof Dependency)
-			//
-			// We don't want the filter at this point
-			//
-			request = new ComponentRequest(request.getName(), request.getComponentTypeID(), request
-					.getVersionDesignator());
-
 		m_request = request;
 		m_attributes = UUIDKeyed.createUnmodifiableSet(attributes);
 	}

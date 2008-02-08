@@ -9,7 +9,8 @@ package org.eclipse.buckminster.core.cspecext.parser;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.cspec.parser.AttributeHandler;
 import org.eclipse.buckminster.core.cspec.parser.IAttributeBuilderSupport;
 import org.eclipse.buckminster.core.cspecext.builder.AlterAttributeBuilder;
@@ -67,7 +68,7 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 		return ch;
 	}
 
-	public AttributeBuilder getAttributeBuilder()
+	public TopLevelAttributeBuilder getAttributeBuilder()
 	{
 		return m_baseHandler.getAttributeBuilder();
 	}
@@ -83,7 +84,7 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 
 	abstract AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder);
 
-	AlterAttribute<? extends Attribute> getAlterAttribute()
+	AlterAttribute<? extends TopLevelAttribute> getAlterAttribute()
 	{
 		return m_builder.createAlterAttribute();
 	}

@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
  */
 public class Prerequisites extends Group
 {
+	@SuppressWarnings("hiding")
 	public static final String TAG = "prerequisites";
 	public static final String ATTR_ALIAS = "alias";
 	private final Action m_owner;

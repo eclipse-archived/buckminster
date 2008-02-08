@@ -24,7 +24,7 @@ class GroupsHandler extends AttributesHandler
 	}
 
 	@Override
-	AttributeHandler createAttributeHandler(boolean publ)
+	TopLevelAttributeHandler createAttributeHandler(boolean publ)
 	{
 		return new GroupHandler(this, publ);
 	}

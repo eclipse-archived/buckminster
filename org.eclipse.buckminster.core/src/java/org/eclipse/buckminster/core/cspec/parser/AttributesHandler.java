@@ -9,8 +9,8 @@ package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -24,30 +24,30 @@ import org.xml.sax.SAXParseException;
  */
 abstract class AttributesHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport
 {
-	private AttributeHandler m_publicHandler;
-	private AttributeHandler m_privateHandler;
+	private TopLevelAttributeHandler m_publicHandler;
+	private TopLevelAttributeHandler m_privateHandler;
 
 	AttributesHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}
 
-	abstract AttributeHandler createAttributeHandler(boolean publ);
+	abstract TopLevelAttributeHandler createAttributeHandler(boolean publ);
 
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
-		if(Attribute.PUBLIC_TAG.equals(localName))
+		if(TopLevelAttribute.PUBLIC_TAG.equals(localName))
 		{
 			if(m_publicHandler == null)
-				m_publicHandler = this.createAttributeHandler(true);
+				m_publicHandler = createAttributeHandler(true);
 			ch = m_publicHandler;
 		}
-		else if(Attribute.PRIVATE_TAG.equals(localName))
+		else if(TopLevelAttribute.PRIVATE_TAG.equals(localName))
 		{
 			if(m_privateHandler == null)
-				m_privateHandler = this.createAttributeHandler(false);
+				m_privateHandler = createAttributeHandler(false);
 			ch = m_privateHandler;
 		}
 		else

@@ -7,9 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
-import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -28,22 +26,17 @@ import org.xml.sax.SAXParseException;
  */
 public abstract class AttributeHandler extends CSpecElementHandler implements ChildPoppedListener
 {
-	private final boolean m_public;
-
 	private DocumentationHandler m_documentationHandler;
 
-	private PropertyManagerHandler m_installerHintsHandler;
-
-	public AttributeHandler(AbstractHandler parent, boolean publ)
+	public AttributeHandler(AbstractHandler parent)
 	{
 		super(parent);
-		m_public = publ;
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_documentationHandler)
-			this.getAttributeBuilder().setDocumentation(m_documentationHandler.createDocumentation());
+			((AttributeBuilder)getBuilder()).setDocumentation(m_documentationHandler.createDocumentation());
 	}
 
 	@Override
@@ -51,20 +44,7 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 	throws SAXException
 	{
 		ChildHandler ch;
-		if(Attribute.ELEM_INSTALLER_HINTS.equals(localName))
-		{
-			if(m_installerHintsHandler == null)
-				m_installerHintsHandler = new PropertyManagerHandler(this, Attribute.ELEM_INSTALLER_HINTS)
-				{
-					@Override
-					public ExpandingProperties getProperties()
-					{
-						return ((AttributeBuilder)getBuilder()).getInstallerHintsForAdd();
-					}
-				};
-			ch = m_installerHintsHandler;
-		}
-		else if(DocumentationHandler.TAG.equals(localName))
+		if(DocumentationHandler.TAG.equals(localName))
 		{
 			if(m_documentationHandler == null)
 				m_documentationHandler = new DocumentationHandler(this);
@@ -73,12 +53,6 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	@Override
-	public final AttributeBuilder getAttributeBuilder()
-	{
-		return (AttributeBuilder)getBuilder();
 	}
 
 	@Override
@@ -102,10 +76,6 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 	@Override
 	protected CSpecElementBuilder createBuilder()
 	{
-		AttributeBuilder bld = this.createAttributeBuilder();
-		bld.setPublic(m_public);
-		return bld;
+		return getCSpecBuilder().createAttributeBuilder();
 	}
-
-	protected abstract AttributeBuilder createAttributeBuilder();
 }

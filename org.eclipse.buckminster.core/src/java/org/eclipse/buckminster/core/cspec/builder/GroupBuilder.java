@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class GroupBuilder extends AttributeBuilder
+public class GroupBuilder extends TopLevelAttributeBuilder
 {
 	private final ArrayList<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 	

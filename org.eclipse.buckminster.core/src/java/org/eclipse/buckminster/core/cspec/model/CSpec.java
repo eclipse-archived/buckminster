@@ -98,7 +98,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 
 	private final ComponentIdentifier m_componentIdentifier;
 
-	private final Map<String, Dependency> m_dependencies;
+	private final Map<String, ComponentRequest> m_dependencies;
 
 	private final Map<String, Generator> m_generators;
 
@@ -119,7 +119,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		m_documentation = cspecBld.getDocumentation();
 		m_shortDesc = cspecBld.getShortDesc();
 		m_filter = cspecBld.getFilter();
-		m_selfAttribute = new Attribute(SELF_ARTIFACT)
+		m_selfAttribute = new TopLevelAttribute(SELF_ARTIFACT)
 		{
 			@Override
 			protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
@@ -184,7 +184,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 			m_dependencies = Collections.emptyMap();
 		else
 		{
-			Map<String, Dependency> map;
+			Map<String, ComponentRequest> map;
 			Collection<DependencyBuilder> values = dependencies.values();
 			if(top == 1)
 			{
@@ -196,7 +196,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 				// We use a TreeMap to assert that the dependencies will be
 				// written in the exact same order at all times
 				//
-				map = new TreeMap<String, Dependency>();
+				map = new TreeMap<String, ComponentRequest>();
 				for(DependencyBuilder bld : values)
 					map.put(bld.getName(), bld.createDependency());
 			}
@@ -294,7 +294,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		return TAG;
 	}
 
-	public Map<String, Dependency> getDependencies()
+	public Map<String, ComponentRequest> getDependencies()
 	{
 		return m_dependencies;
 	}
@@ -309,9 +309,9 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		return m_generators;
 	}
 
-	public Dependency getDependency(String dependencyName) throws MissingDependencyException
+	public ComponentRequest getDependency(String dependencyName) throws MissingDependencyException
 	{
-		Dependency dependency = m_dependencies.get(dependencyName);
+		ComponentRequest dependency = m_dependencies.get(dependencyName);
 		if(dependency == null)
 			throw new MissingDependencyException(m_componentIdentifier.toString(), dependencyName);
 		return dependency;
@@ -415,7 +415,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 					continue;
 				}
 
-				Dependency dep = getDependency(component);
+				ComponentRequest dep = getDependency(component);
 				Set<String> attrs = deps.get(dep);
 				if(attrs == null)
 				{
@@ -588,8 +588,8 @@ public class CSpec extends UUIDKeyed implements ISaxable
 	public boolean isPruned(Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
 	{
 		Dictionary<String,String> propsDict = null;
-		Collection<Dependency> deps = getDependencies().values();
-		for(Dependency dep : deps)
+		Collection<ComponentRequest> deps = getDependencies().values();
+		for(ComponentRequest dep : deps)
 		{
 			Filter filter = dep.getFilter();
 			if(filter == null)
@@ -655,7 +655,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		// Find all truly referenced dependencies. A dependency can
 		// be referenced from an attribute or from a generator
 		//
-		Set<Dependency> referencedDeps = new HashSet<Dependency>();
+		Set<ComponentRequest> referencedDeps = new HashSet<ComponentRequest>();
 		Set<String> referencedAttrs = new HashSet<String>();
 		for(String attrName : attrNames)
 		{
@@ -677,7 +677,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		// that match to the new cspec
 		//
 		Dictionary<String,String> propsDict = null;
-		for(Dependency dep : referencedDeps)
+		for(ComponentRequest dep : referencedDeps)
 		{
 			Filter filter = dep.getFilter();
 			if(filter != null)
@@ -758,7 +758,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		return true;
 	}
 
-	private void addReferencedDependencies(Set<Dependency> dependencies, Set<String> attrNames, Attribute attr, Stack<IAttributeFilter> filters) throws CoreException
+	private void addReferencedDependencies(Set<ComponentRequest> dependencies, Set<String> attrNames, Attribute attr, Stack<IAttributeFilter> filters) throws CoreException
 	{
 		if(attrNames.contains(attr.getName()))
 			return;
@@ -918,7 +918,7 @@ public class CSpec extends UUIDKeyed implements ISaxable
 			referencedCSpec = this;
 		else
 		{
-			Dependency dep = getDependency(componentName);
+			ComponentRequest dep = getDependency(componentName);
 			if(!dep.isEnabled(ctx.getProperties()))
 				return null;
 

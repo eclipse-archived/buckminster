@@ -12,9 +12,9 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
 import org.eclipse.buckminster.core.cspecext.model.AlterDependency;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
@@ -49,7 +49,7 @@ public class AlterCSpecBuilder
 
 	public CSpecExtension createAlteredCSpec() throws CoreException
 	{
-		HashMap<String,AlterAttribute<? extends Attribute>> alterAttributes = new HashMap<String, AlterAttribute<? extends Attribute>>(m_alteredAttributes.size());
+		HashMap<String,AlterAttribute<? extends TopLevelAttribute>> alterAttributes = new HashMap<String, AlterAttribute<? extends TopLevelAttribute>>(m_alteredAttributes.size());
 		for(Map.Entry<String,AlterAttributeBuilder> entry : m_alteredAttributes.entrySet())
 			alterAttributes.put(entry.getKey(), entry.getValue().createAlterAttribute());
 		

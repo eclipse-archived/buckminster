@@ -33,7 +33,6 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -106,7 +105,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			// to the pluginNames set.
 			//
 			CSpec cspec = res.getCSpec();
-			for(Dependency dep : cspec.getDependencies().values())
+			for(ComponentRequest dep : cspec.getDependencies().values())
 			{
 				if(IComponentType.OSGI_BUNDLE.equals(dep.getComponentTypeID()))
 					pluginNames.add(dep.getName());

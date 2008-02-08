@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class ActionBuilder extends AttributeBuilder
+public class ActionBuilder extends TopLevelAttributeBuilder
 {
 	private String m_actorName;
 

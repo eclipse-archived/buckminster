@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Dependency;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -45,11 +44,11 @@ public class CSpecBuilderTestCase extends TestCase
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		cspecBld.setName("my.test.project");
 		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3"));
-		Dependency c1 = new Dependency("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", IVersionType.OSGI, null);
+		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", IVersionType.OSGI, null);
 		cspecBld.addDependency(c1);
-		cspecBld.addDependency(new Dependency("se.tada.util.sax", null, null, null, null));
-		cspecBld.addDependency(new Dependency("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", IVersionType.OSGI, null));
-		cspecBld.addDependency(new Dependency("org.junit", null, "3.1.8", IVersionType.OSGI, null));
+		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null, null, null));
+		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", IVersionType.OSGI, null));
+		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", IVersionType.OSGI, null));
 
 		CSpec c = cspecBld.createCSpec();
 
