@@ -54,8 +54,10 @@ import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.build.IBuildModel;
+import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginImport;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.bundle.BundlePlugin;
@@ -260,6 +262,8 @@ public class CSpecFromSource extends CSpecGenerator
 		{
 			IBundle bundle = ((BundlePlugin)m_plugin).getBundle();
 			setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
+			
+			cspec.setShortDesc(expand(bundle.getHeader(Constants.BUNDLE_NAME)));
 			bundleClassPath = bundle.getHeader(Constants.BUNDLE_CLASSPATH);
 			if(bundleClassPath != null)
 			{
@@ -450,7 +454,10 @@ public class CSpecFromSource extends CSpecGenerator
 		buildPlugin.setProductFileCount(1);
 
 		GroupBuilder bundleAndFragments = cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS, true);
-		if(!m_plugin.getPluginModel().isFragmentModel())
+		IPluginModelBase model = m_plugin.getPluginModel();
+		if(model instanceof IFragmentModel)
+			addBundleHostDependency((IFragmentModel)model);
+		else
 		{
 			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
@@ -519,6 +526,12 @@ public class CSpecFromSource extends CSpecGenerator
 				return tokens[0];
 		}
 		return null;
+	}
+
+	@Override
+	protected String getPropertyFileName()
+	{
+		return PLUGIN_PROPERTIES_FILE;
 	}
 
 	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)

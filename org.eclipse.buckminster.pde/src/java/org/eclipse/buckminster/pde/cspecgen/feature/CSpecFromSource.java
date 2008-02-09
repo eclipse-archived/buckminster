@@ -178,6 +178,12 @@ public class CSpecFromSource extends CSpecGenerator
 			: m_buildProperties.get(productId + TOP_FOLDER_SUFFIX);
 	}
 
+	@Override
+	protected String getPropertyFileName()
+	{
+		return FEATURE_PROPERTIES_FILE;
+	}
+
 	void addFeatures() throws CoreException
 	{
 		IFeatureChild[] features = m_feature.getIncludedFeatures();

@@ -123,6 +123,8 @@ public interface IPDEConstants
 
 	static final String FEATURE_FILE = "feature.xml";
 
+	static final String FEATURE_PROPERTIES_FILE = "feature.properties";
+
 	static final String FEATURE_NATURE = "org.eclipse.pde.FeatureNature";
 
 	static final String FEATURES_FOLDER = IPDEBuildConstants.DEFAULT_FEATURE_LOCATION;
@@ -136,6 +138,8 @@ public interface IPDEConstants
 	static final IPath OUTPUT_DIR = new Path(KeyConstants.ACTION_OUTPUT_REF + '/');
 
 	static final String PLUGIN_FILE = "plugin.xml";
+
+	static final String PLUGIN_PROPERTIES_FILE = "plugin.properties";
 
 	static final String PLUGIN_NATURE = "org.eclipse.pde.PluginNature";
 

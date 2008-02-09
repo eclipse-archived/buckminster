@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -83,7 +84,9 @@ public class CSpecFromBinary extends CSpecGenerator
 		bundleJars.addLocalPrerequisite(bundleAndFragments);
 
 		IPluginModelBase model = m_plugin.getPluginModel();
-		if(!model.isFragmentModel())
+		if(model instanceof IFragmentModel)
+			addBundleHostDependency((IFragmentModel)model);
+		else
 		{
 			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
@@ -102,6 +105,8 @@ public class CSpecFromBinary extends CSpecGenerator
 		String location = model.getInstallLocation();
 		File locationFile = (location != null) ? new File(location) : null;
 		boolean isFile = (locationFile != null) && locationFile.isFile();
+
+		cspec.setShortDesc(expand(m_plugin.getName()));
 
 		if(isFile)
 		{
@@ -209,6 +214,12 @@ public class CSpecFromBinary extends CSpecGenerator
 	protected String getProductOutputFolder(String productId)
 	{
 		return null;
+	}
+
+	@Override
+	protected String getPropertyFileName()
+	{
+		return PLUGIN_PROPERTIES_FILE;
 	}
 
 	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
