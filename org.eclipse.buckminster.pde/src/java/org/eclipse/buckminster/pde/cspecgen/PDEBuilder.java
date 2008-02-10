@@ -18,6 +18,8 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IFileReader;
+import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -47,7 +49,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof ICatalogReader))
-			throw new IllegalArgumentException("PDE builders can only work with catalog readers");
+			reader = new ZipArchiveReader((IFileReader)reader);
 
 		monitor.beginTask(null, 2000);
 		monitor.subTask("Generating cspec from PDE artifacts");
