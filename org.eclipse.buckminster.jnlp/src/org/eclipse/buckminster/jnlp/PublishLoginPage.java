@@ -27,6 +27,10 @@ public class PublishLoginPage extends PublishWizardPage
 {
 	private LoginPanel m_login;
 
+	private String m_lastRegisteredUserName;
+
+	private String m_lastRegisteredPassword;
+
 	protected PublishLoginPage(String provider)
 	{
 		super(MaterializationConstants.STEP_PUBLISH_LOGIN, "Login", "Publishing requires login to " + provider + ".", null);
@@ -119,7 +123,19 @@ public class PublishLoginPage extends PublishWizardPage
 					{
 						int result = publisher.register(userName, password, m_login.getEmail());
 	
-						MaterializationUtils.checkRegistrationResponse(result);
+						if(result == IAuthenticator.REGISTER_LOGIN_EXISTS &&
+								m_lastRegisteredUserName != null && m_lastRegisteredUserName.equals(userName) &&
+								m_lastRegisteredPassword != null && m_lastRegisteredPassword.equals(password))
+							
+							// OK - user has already registered this login, don't force him to rewrite login & password to "Already User" section
+							;
+						else
+						{					
+							MaterializationUtils.checkRegistrationResponse(result);
+							
+							m_lastRegisteredUserName = userName;
+							m_lastRegisteredPassword = password;
+						}
 					}
 	
 					if(publisher.relogin(userName, password) != IAuthenticator.LOGIN_OK)

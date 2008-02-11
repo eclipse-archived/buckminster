@@ -26,6 +26,10 @@ public class LoginPage extends InstallWizardPage
 {
 	private LoginPanel m_login;
 
+	private String m_lastRegisteredUserName;
+
+	private String m_lastRegisteredPassword;
+
 	protected LoginPage(String provider)
 	{
 		super(MaterializationConstants.STEP_LOGIN, "Login", "Materialization requires login to " + provider + ".", null);
@@ -36,6 +40,7 @@ public class LoginPage extends InstallWizardPage
 	{
 		getInstallWizard().setLoginPageRequested(true);
 		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
+		
 		setPageComplete(getCompleteLoginFields());
 	}
 	
@@ -129,7 +134,19 @@ public class LoginPage extends InstallWizardPage
 					{
 						int result = authenticator.register(userName, password, m_login.getEmail());
 	
-						MaterializationUtils.checkRegistrationResponse(result);
+						if(result == IAuthenticator.REGISTER_LOGIN_EXISTS &&
+								m_lastRegisteredUserName != null && m_lastRegisteredUserName.equals(userName) &&
+								m_lastRegisteredPassword != null && m_lastRegisteredPassword.equals(password))
+							
+							// OK - user has already registered this login, don't force him to rewrite login & password to "Already User" section
+							;
+						else
+						{					
+							MaterializationUtils.checkRegistrationResponse(result);
+							
+							m_lastRegisteredUserName = userName;
+							m_lastRegisteredPassword = password;
+						}
 					}
 	
 					if(authenticator.relogin(userName, password) != IAuthenticator.LOGIN_OK)

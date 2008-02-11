@@ -168,7 +168,6 @@ public class LoginPanel
 		gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_userButton.setLayoutData(gridData);
-		m_userButton.setSelection(true);
 		
 		m_userButton.addSelectionListener(fieldsSwitchListener);
 		m_userButton.addSelectionListener(new SelectionAdapter()
@@ -267,17 +266,18 @@ public class LoginPanel
 		m_retypePasswordText.addModifyListener(fieldsListener);
 		m_emailText.addModifyListener(fieldsListener);
 		
+		initRadio();
+		
 		return pageComposite;
 	}
 
 	public void setCurrentUserVisible(boolean visible)
 	{
+		if(m_currentUserButton.getVisible() == visible)
+			return;
+		
 		m_currentUserButton.setVisible(visible);
-		m_currentUserButton.setSelection(visible);
-		m_userButton.setSelection(!visible);
-		enableLogin1Fields(!visible);
-		enableLogin2Fields(false);
-
+		
 		// moves invisible m_currentUserButton to the bottom, visible button is displayed at the top
 		if(visible)
 			m_currentUserButton.moveAbove(null);
@@ -286,6 +286,19 @@ public class LoginPanel
 
 		m_currentUserLabelSeparator.moveBelow(m_currentUserButton);
 		m_currentUserButton.getParent().layout(true);
+		
+		initRadio();
+	}
+	
+	private void initRadio()
+	{
+		boolean currentVisible = m_currentUserButton.getVisible();
+		
+		m_currentUserButton.setSelection(currentVisible);
+		m_userButton.setSelection(!currentVisible);
+		m_registerButton.setSelection(false);
+		enableLogin1Fields(!currentVisible);
+		enableLogin2Fields(false);
 	}
 	
 	private void enableLogin1Fields(boolean enabled)
