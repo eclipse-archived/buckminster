@@ -72,7 +72,7 @@ public class RemoteResolver implements IResolver
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
 		if (bom == null)
-			throw new BuckminsterException("Null BOM resolution request");
+			throw BuckminsterException.fromMessage("Null BOM resolution request");
 		
 		if(bom.isFullyResolved())
 		{

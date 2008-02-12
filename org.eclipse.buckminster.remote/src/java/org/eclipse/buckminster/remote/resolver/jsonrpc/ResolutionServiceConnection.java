@@ -79,7 +79,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	{
 		if(provider == null)
 		{
-			throw new BuckminsterException("Remote service provider is not set");
+			throw BuckminsterException.fromMessage("Remote service provider is not set");
 		}
 
 		m_serviceProvider = provider;
@@ -96,7 +96,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	{
 		if(providerID == null || providerID.length() == 0)
 		{
-			throw new BuckminsterException("Remote service provider is not set");
+			throw BuckminsterException.fromMessage("Remote service provider is not set");
 		}
 
 		return ProviderUtil.findProvider(providerID);
@@ -116,7 +116,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 			method = new GetMethod(m_initializationURL);
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
-				throw new BuckminsterException("Setup did not succeed - make sure the RemoteResolutionServiceServlet servlet is running on " + m_serviceURL);
+				throw BuckminsterException.fromMessage("Setup did not succeed - make sure the RemoteResolutionServiceServlet servlet is running on %s", m_serviceURL);
 		}
 		catch(Exception e)
 		{
@@ -159,7 +159,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	private void checkInitialization() throws CoreException
 	{
 		if(m_remoteResolutionService == null)
-			throw new BuckminsterException("Remote resolution service is not initialized");
+			throw BuckminsterException.fromMessage("Remote resolution service is not initialized");
 	}
 	
 	public HttpClient getHttpClient()
@@ -188,7 +188,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - login operation failed", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - login operation failed");
 		}
 			
 		if(result == IRemoteResolutionService.LOGIN_OK)
@@ -207,7 +207,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - logout operation failed", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - logout operation failed");
 		}
 		finally
 		{
@@ -227,7 +227,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - cannot get login info", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cannot get login info");
 		}
 
 		return result;
@@ -258,7 +258,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - BOM resolution failed", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - BOM resolution failed");
 		}
 		finally
 		{
@@ -278,7 +278,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - cannot get resolution results", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cannot get resolution results");
 		}
 		finally
 		{
@@ -314,7 +314,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - cancel operation failed", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cancel operation failed");
 		}
 		finally
 		{
@@ -335,7 +335,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw new BuckminsterException("Remote resolution service error - cannot get progress info", e);
+			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cannot get progress info");
 		}
 		finally
 		{

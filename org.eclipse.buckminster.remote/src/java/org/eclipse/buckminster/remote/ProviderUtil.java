@@ -34,7 +34,7 @@ public class ProviderUtil
 		if (s_serviceCache.get(provider.getId()) == null)
 			s_serviceCache.put(provider.getId(), provider);
 		else
-			throw new BuckminsterException("A provider with ID " + provider.getId() + " is already registered");
+			throw BuckminsterException.fromMessage("A provider with ID %s is already registered", provider.getId());
 	}
 
 	/**
