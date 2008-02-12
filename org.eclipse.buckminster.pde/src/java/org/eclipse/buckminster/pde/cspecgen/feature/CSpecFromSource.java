@@ -364,8 +364,7 @@ public class CSpecFromSource extends CSpecGenerator
 				// make it hopelessly dependent on install location. Not good. We don't permit
 				// it here.
 				//
-				throw new BuckminsterException("Component " + getCSpec().getName()
-						+ " contains absolute paths in build.properties");
+				throw BuckminsterException.fromMessage("Component %s contains absolute paths in build.properties", getCSpec().getName());
 
 			IPath path;
 			boolean isFile = token.startsWith("file:");

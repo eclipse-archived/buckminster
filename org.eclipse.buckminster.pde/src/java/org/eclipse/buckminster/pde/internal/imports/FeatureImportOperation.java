@@ -103,7 +103,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				switch(conflictResolution)
 				{
 				case FAIL:
-					throw new BuckminsterException("Project " + projectName + " already exists");
+					throw BuckminsterException.fromMessage("Project %s already exists", projectName);
 				case KEEP:
 					return;
 				default:

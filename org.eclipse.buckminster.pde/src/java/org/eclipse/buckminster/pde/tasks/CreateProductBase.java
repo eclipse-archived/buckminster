@@ -135,7 +135,7 @@ public class CreateProductBase
 		}
 		catch(IOException e)
 		{
-			throw new BuckminsterException("Unable to read file " + productFile);
+			throw BuckminsterException.fromMessage("Unable to read file %s", productFile);
 		}
 		finally
 		{
@@ -172,7 +172,7 @@ public class CreateProductBase
 
 		File outputDir = m_outputDir.toFile();
 		if(!outputDir.isDirectory())
-			throw new BuckminsterException(outputDir + "is not a directory");
+			throw BuckminsterException.fromMessage("%s is not a directory", outputDir);
 
 		if(m_copyJavaLauncher)
 			copyJavaLauncherToRoot();

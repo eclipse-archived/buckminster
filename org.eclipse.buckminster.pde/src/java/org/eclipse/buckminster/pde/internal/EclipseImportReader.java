@@ -63,7 +63,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 			version, new NullProgressMonitor());
 
 		if(m_model == null)
-			throw new BuckminsterException("Unable to load model for " + m_base.getComponentName());
+			throw BuckminsterException.fromMessage("Unable to load model for %s", m_base.getComponentName());
 	}
 
 	public List<IFragmentModel> getFragmentsFor(String pluginId) throws CoreException
@@ -97,7 +97,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 		IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 50);
 		m_model = isPlugin ? getPluginModel(version, subMon) : getFeatureModel(version, subMon);
 		if(m_model == null)
-			throw new BuckminsterException("Unable to load localized model for " + m_base.getComponentName());
+			throw BuckminsterException.fromMessage("Unable to load localized model for %s", m_base.getComponentName());
 		monitor.done();
 	}
 

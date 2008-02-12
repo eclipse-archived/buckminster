@@ -140,7 +140,7 @@ final class EclipseImportBase
 		}
 		catch(URISyntaxException e)
 		{
-			throw new BuckminsterException(e.getMessage());
+			throw BuckminsterException.fromMessage(e.getMessage());
 		}
 
 		String scheme = uri.getScheme();
@@ -168,7 +168,7 @@ final class EclipseImportBase
 			}
 			catch(MalformedURLException e)
 			{
-				throw new BuckminsterException(e.getMessage());
+				throw BuckminsterException.fromMessage(e.getMessage());
 			}
 		}
 
@@ -189,7 +189,7 @@ final class EclipseImportBase
 		else if(IMPORT_TYPE_SOURCE.equalsIgnoreCase(importType))
 			m_type = PluginImportOperation.IMPORT_WITH_SOURCE;
 		else
-			throw new BuckminsterException("Invalid import type: " + importType);
+			throw BuckminsterException.fromMessage("Invalid import type: %s", importType);
 
 	}
 
@@ -223,7 +223,7 @@ final class EclipseImportBase
 	final File getLocation() throws CoreException
 	{
 		if(m_location == null && !m_platform)
-			throw new BuckminsterException("site is not local");
+			throw BuckminsterException.fromMessage("site is not local");
 		return m_location;
 	}
 
