@@ -176,7 +176,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		}
 		catch(InterruptedException e)
 		{
-			throw new BuckminsterException("SVN checkout timed out");
+			throw BuckminsterException.fromMessage("SVN checkout timed out");
 		}
 		finally
 		{

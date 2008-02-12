@@ -136,6 +136,29 @@ public class SvnReaderType extends CatalogReaderType
 	}
 
 	@Override
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 1);
+		try
+		{
+			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
+					.getInfoFromWorkingCopy(workingCopy);
+			return (info == null)
+					? null
+					: info.getCopyUrl().toString();
+		}
+		catch(SVNClientException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			MonitorUtils.worked(monitor, 1);
+			monitor.done();
+		}
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
 			IProgressMonitor monitor) throws CoreException
 	{
