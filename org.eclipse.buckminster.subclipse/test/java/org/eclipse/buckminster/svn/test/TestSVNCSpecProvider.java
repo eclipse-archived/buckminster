@@ -38,7 +38,6 @@ public class TestSVNCSpecProvider extends AbstractTestCase
 		ISVNClientAdapter adapter = SVNProviderPlugin.getPlugin().createSVNClient();
 		SVNUrl url = new SVNUrl("http://dev.eclipse.org/svnroot/stp/org.eclipse.stp.b2j/trunk/features/org.eclipse.stp.b2j.feature");
 		SVNRevision revision = adapter.getInfo(url).getRevision();
-		SVNRevision rev = new SVNRevision.Number(1662);
 		adapter.checkout(url, new File("/home/thhal/tmp/cotest"), revision, true);
 	}
 /*

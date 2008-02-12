@@ -192,7 +192,7 @@ public class CVSTest extends TestCase
 				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, false, false, null, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));
-		cq.setResourceMapURL(this.getClass().getResource("test.rmap"));
+		cq.setResourceMapURL(this.getClass().getResource("test.rmap").toString());
 		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
 		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(), new NullProgressMonitor());
 		try

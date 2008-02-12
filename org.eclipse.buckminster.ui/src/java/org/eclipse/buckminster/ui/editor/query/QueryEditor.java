@@ -29,7 +29,6 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -527,11 +526,8 @@ public class QueryEditor extends EditorPart
 			}
 			else
 			{
-				String systemId = file.toString();
 				stream = new FileInputStream(file);
-				IParser<ComponentQuery> parser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
-						true);
-				m_componentQuery.initFrom(parser.parse(systemId, stream));
+				m_componentQuery.initFrom(ComponentQuery.fromStream(file.toURI().toURL(), stream, true));
 			}
 			m_needsRefresh = true;
 			if(m_componentName != null)
@@ -580,20 +576,8 @@ public class QueryEditor extends EditorPart
 			if(!saveLastNode())
 				return false;		
 
-		try
-		{
-			String tmp = UiUtils.trimmedValue(m_requestURL);
-			m_componentQuery.setResourceMapURL(URLUtils.normalizeToURL(tmp));
-
-			tmp = UiUtils.trimmedValue(m_propertyURL);
-			m_componentQuery.setPropertiesURL(URLUtils.normalizeToURL(tmp));
-		}
-		catch(MalformedURLException e)
-		{
-			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
-			return false;
-		}
-
+		m_componentQuery.setResourceMapURL(UiUtils.trimmedValue(m_requestURL));
+		m_componentQuery.setPropertiesURL(UiUtils.trimmedValue(m_propertyURL));
 		m_properties.fillProperties(m_componentQuery.getProperties());
 		
 		String doc = UiUtils.trimmedValue(m_shortDesc);

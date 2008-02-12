@@ -121,7 +121,7 @@ public class Resolve extends WorkspaceInitCommand
 			{
 				monitor.beginTask(null, m_resolveOnly ? 40 : 100);
 
-				ComponentQuery query = ComponentQuery.fromURL(m_url, MonitorUtils.subMonitor(monitor, 5));
+				ComponentQuery query = ComponentQuery.fromURL(m_url, true, MonitorUtils.subMonitor(monitor, 5));
 				ResolutionContext context = new ResolutionContext(query);
 				MainResolver resolver = new MainResolver(context);
 				context.setContinueOnError(continueOnError);

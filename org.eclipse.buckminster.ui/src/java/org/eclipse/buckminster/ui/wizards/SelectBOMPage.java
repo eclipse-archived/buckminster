@@ -257,7 +257,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						ComponentQuery cquery;
 						try
 						{
-							cquery = pf.getComponentQueryParser(true).parse(urlToParse.toString(), input);
+							cquery = ComponentQuery.fromStream(urlToParse, input, true);
 						}
 						catch(CoreException e)
 						{

@@ -32,9 +32,11 @@ public class ComponentQueryBuilder
 
 	private Map<String, String> m_properties;
 
-	private URL m_propertiesURL;
+	private URL m_contextURL;
 
-	private URL m_resourceMapURL;
+	private String m_propertiesURL;
+
+	private String m_resourceMapURL;
 
 	private ComponentRequest m_rootRequest;
 
@@ -53,6 +55,7 @@ public class ComponentQueryBuilder
 	public void clear()
 	{
 		m_advisorNodes.clear();
+		m_contextURL = null;
 		m_properties = null;
 		m_propertiesURL = null;
 		m_resourceMapURL = null;
@@ -63,17 +66,17 @@ public class ComponentQueryBuilder
 
 	public ComponentQuery createComponentQuery()
 	{
-		ArrayList<AdvisorNode> nodes = new ArrayList<AdvisorNode>(m_advisorNodes.size());
-		for(AdvisorNodeBuilder bld : m_advisorNodes)
-			nodes.add(bld.create());
-
-		return new ComponentQuery(m_documentation, m_shortDesc, nodes, m_properties, m_propertiesURL, m_resourceMapURL,
-				m_rootRequest);
+		return new ComponentQuery(this);
 	}
 
 	public List<AdvisorNodeBuilder> getAdvisoryNodeList()
 	{
 		return m_advisorNodes;
+	}
+
+	public URL getContextURL()
+	{
+		return m_contextURL;
 	}
 
 	public Documentation getDocumentation()
@@ -97,12 +100,12 @@ public class ComponentQueryBuilder
 		return m_properties;
 	}
 
-	public URL getPropertiesURL()
+	public String getPropertiesURL()
 	{
 		return m_propertiesURL;
 	}
 
-	public URL getResourceMapURL()
+	public String getResourceMapURL()
 	{
 		return m_resourceMapURL;
 	}
@@ -131,6 +134,7 @@ public class ComponentQueryBuilder
 		if(props.size() > 0)
 			m_properties = new HashMap<String,String>(props);
 
+		m_contextURL = query.getContextURL();
 		m_propertiesURL = query.getPropertiesURL();
 		m_resourceMapURL = query.getResourceMapURL();
 		m_rootRequest = query.getRootRequest();
@@ -141,6 +145,11 @@ public class ComponentQueryBuilder
 	public void removeAdvisorNode(AdvisorNodeBuilder node)
 	{
 		m_advisorNodes.remove(node);
+	}
+
+	public final void setContextURL(URL parentURL)
+	{
+		m_contextURL = parentURL;
 	}
 
 	public void setDocumentation(Documentation documentation)
@@ -171,12 +180,12 @@ public class ComponentQueryBuilder
 		}
 	}
 
-	public final void setPropertiesURL(URL propertiesURL)
+	public final void setPropertiesURL(String propertiesURL)
 	{
 		m_propertiesURL = propertiesURL;
 	}
 
-	public final void setResourceMapURL(URL resourceMapURL)
+	public final void setResourceMapURL(String resourceMapURL)
 	{
 		m_resourceMapURL = resourceMapURL;
 	}

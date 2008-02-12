@@ -16,6 +16,7 @@ import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_PREFIX;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,8 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
+import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
@@ -68,13 +71,13 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 
 	public static final String TAG = "componentQuery";
 
-	public static ComponentQuery fromStream(String systemId, InputStream stream) throws CoreException
+	public static ComponentQuery fromStream(URL url, InputStream stream, boolean validating) throws CoreException
 	{
 		try
 		{
 			IParserFactory pf = CorePlugin.getDefault().getParserFactory();
 			IParser<ComponentQuery> parser = pf.getComponentQueryParser(false);
-			return parser.parse(systemId, stream);
+			return parser.parse(url.toString(), stream);
 		}
 		catch(Exception e)
 		{
@@ -82,13 +85,13 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 		}
 	}
 
-	public static ComponentQuery fromURL(URL url, IProgressMonitor monitor) throws CoreException
+	public static ComponentQuery fromURL(URL url, boolean validating, IProgressMonitor monitor) throws CoreException
 	{
 		InputStream stream = null;
 		try
 		{
 			stream = URLUtils.openStream(url, monitor);
-			return fromStream(url.toString(), stream);
+			return fromStream(url, stream, validating);
 		}
 		catch(IOException e)
 		{
@@ -108,31 +111,42 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 
 	private final Map<String, String> m_properties;
 
-	private final URL m_propertiesURL;
+	private final URL m_contextURL;
 
-	private final URL m_resourceMapURL;
+	private final String m_propertiesURL;
+
+	private final String m_resourceMapURL;
 
 	private final ComponentRequest m_rootRequest;
 
 	private final String m_shortDesc;
 
-	public ComponentQuery(Documentation documentation, String shortDesc, List<AdvisorNode> advisorNodes, Map<String,String> properties, URL propertiesURL, URL resourceMapURL, ComponentRequest rootRequest)
+	public ComponentQuery(ComponentQueryBuilder bld)
 	{
-		m_documentation = documentation;
-		m_shortDesc = shortDesc;
-		m_propertiesURL = propertiesURL;
-		m_resourceMapURL = resourceMapURL;
-		m_rootRequest = rootRequest;
+		m_documentation = bld.getDocumentation();
+		m_shortDesc = bld.getShortDesc();
+		m_propertiesURL = bld.getPropertiesURL();
+		m_resourceMapURL = bld.getResourceMapURL();
+		m_rootRequest = bld.getRootRequest();
 
-		if(advisorNodes == null || advisorNodes.size() == 0)
+		List<AdvisorNodeBuilder> advisorNodeBuilders = bld.getAdvisoryNodeList();
+		if(advisorNodeBuilders.size() == 0)
 			m_advisorNodes = Collections.emptyList();
 		else
-			m_advisorNodes = Collections.unmodifiableList(new ArrayList<AdvisorNode>(advisorNodes));
-		
+		{
+			ArrayList<AdvisorNode> advisorNodes = new ArrayList<AdvisorNode>(advisorNodeBuilders.size());
+			for(AdvisorNodeBuilder nodeBld : advisorNodeBuilders)
+				advisorNodes.add(nodeBld.create());
+			m_advisorNodes = Collections.unmodifiableList(advisorNodes);
+		}
+
+		Map<String,String> properties = bld.getProperties();
 		if(properties == null || properties.size() == 0)
 			m_properties = Collections.emptyMap();
 		else
 			m_properties = Collections.unmodifiableMap(new ExpandingProperties(properties));
+		
+		m_contextURL = bld.getContextURL();
 	}
 
 	public boolean allowCircularDependency(ComponentName cName)
@@ -183,10 +197,11 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 
 		if(m_propertiesURL != null)
 		{
+			URL propsURL = getResolvedPropertiesURL();
 			InputStream input = null;
 			try
 			{
-				input = new BufferedInputStream(URLUtils.openStream(m_propertiesURL, null));
+				input = new BufferedInputStream(URLUtils.openStream(propsURL, null));
 				Map<String,String> urlProps = new BMProperties(input);
 				if(urlProps.size() > 0)
 				{
@@ -198,7 +213,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 			{
 				// We allow missing properties but we log it nevertheless
 				//
-				CorePlugin.getLogger().info("Unable to read property file '%s' : %s", m_propertiesURL, e.toString());
+				CorePlugin.getLogger().info("Unable to read property file '%s' : %s", propsURL, e.toString());
 			}
 			finally
 			{
@@ -245,9 +260,29 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 		return node == null ? null : node.getOverlayFolder();
 	}
 
-	public URL getPropertiesURL()
+	public URL getContextURL()
+	{
+		return m_contextURL;
+	}
+
+	public String getPropertiesURL()
 	{
 		return m_propertiesURL;
+	}
+
+	public String getResourceMapURL()
+	{
+		return m_resourceMapURL;
+	}
+
+	public URL getResolvedPropertiesURL()
+	{
+		return resolveURL(m_propertiesURL);
+	}
+
+	public URL getResolvedResourceMapURL()
+	{
+		return resolveURL(m_resourceMapURL);
 	}
 
 	public ProviderScore getProviderScore(ComponentName cName, boolean mutable, boolean source)
@@ -300,11 +335,6 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 	{
 		AdvisorNode node = getMatchingNode(cName);
 		return node == null ? AdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
-	}
-
-	public URL getResourceMapURL()
-	{
-		return m_resourceMapURL;
 	}
 
 	public long getRevision(ComponentName cName)
@@ -365,6 +395,16 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 	public void removeAdvisorNode(AdvisorNode node)
 	{
 		m_advisorNodes.remove(node);
+	}
+
+	public ComponentQuery resolve()
+	{
+		ComponentQueryBuilder bld = new ComponentQueryBuilder();
+		bld.initFrom(this);
+		bld.setPropertiesURL(getResolvedPropertiesURL().toString());
+		bld.setResourceMapURL(getResolvedResourceMapURL().toString());
+		bld.setContextURL(null);
+		return bld.createComponentQuery();
 	}
 
 	public boolean skipComponent(ComponentName cName)
@@ -451,5 +491,22 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 	protected String getElementPrefix(String prefix)
 	{
 		return BM_CQUERY_PREFIX;
+	}
+
+	private URL resolveURL(String url)
+	{
+		if(url == null)
+			return null;
+
+		try
+		{
+			if(m_contextURL == null)
+				return URLUtils.normalizeToURL(url);
+			return new URL(m_contextURL, url);
+		}
+		catch(MalformedURLException e)
+		{
+			return null;
+		}
 	}
 }

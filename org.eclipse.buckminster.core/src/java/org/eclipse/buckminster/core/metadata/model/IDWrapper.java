@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.metadata.model;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -72,6 +73,13 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 	{
 		if(m_wrapped instanceof BillOfMaterials)
 			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
+		else if(m_wrapped instanceof ComponentQuery)
+		{
+			// Relative paths must be resolved prior to inclusion
+			//
+			ComponentQuery query = ((ComponentQuery)m_wrapped).resolve();
+			query.toSax(receiver, namespace, prefix, query.getDefaultTag());
+		}
 		else
 			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
 	}

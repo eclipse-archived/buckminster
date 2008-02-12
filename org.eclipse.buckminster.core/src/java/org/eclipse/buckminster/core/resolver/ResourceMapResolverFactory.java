@@ -90,7 +90,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 			url = getResourceMapURL();
 		else
 		{
-			url = query.getResourceMapURL();
+			url = query.getResolvedResourceMapURL();
 			if(url == null)
 				url = getResourceMapURL();
 		}

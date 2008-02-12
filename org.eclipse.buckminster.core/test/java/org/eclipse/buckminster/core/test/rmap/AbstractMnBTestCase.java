@@ -39,7 +39,7 @@ public abstract class AbstractMnBTestCase extends AbstractTestCase
 		IProgressMonitor nullMon = new NullProgressMonitor();
 		ComponentQueryBuilder bld = new ComponentQueryBuilder();
 		bld.setRootRequest(new ComponentRequest(componentName, null, null));
-		bld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap"));
+		bld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap").toString());
 		m_query = bld.createComponentQuery();
 		IResolver resolver = new MainResolver(new ResolutionContext(m_query));
 		m_bom = resolver.resolve(nullMon);

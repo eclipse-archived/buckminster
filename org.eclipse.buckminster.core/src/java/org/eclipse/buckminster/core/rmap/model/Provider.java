@@ -102,16 +102,19 @@ public class Provider extends UUIDKeyed
 	}
 
 	/**
-	 * @param searchPath The owner searchPath
-	 * @param remoteReaderType The id of a remote reader type.
-	 * @param componentType The id of a component type.
-	 * @param managedCategories Categories managed by the provider.
-	 * @param versionConverterType The id of a version converter type.
-	 * @param uri The holder that will produce the type specific string.
-	 * @param space The space that provides the components
-	 * @param mutable Set to <code>true</code> if this provider should provide content that can be
-	 *            modified and commited back.
-	 * @param source Set to <code>true</code> if this provider will provide source.
+	 * Creates a new fully initialized Provider
+	 * @param searchPath The search path that this provider belongs to.
+	 * @param remoteReaderType The reader type used by the provider
+	 * @param componentTypeIDs An array of component types supported by this provider
+	 * @param versionConverterDesc The description of the version converter or <code>null</code> if not applicable.
+	 * @param uri The URI used by the reader type.
+	 * @param digest The digest URI or <code>null</code> if not applicable
+	 * @param digestAlgorithm The digest algorithm or <code>null</code> if not applicable
+	 * @param space The naming authority
+	 * @param mutable <code>true</code> if this provider delivers source from an SCM with read/write access. Should be false if not.
+	 * @param source <code>true</code> if this provider delivers source.
+	 * @param uriMatcher The URI matcher for the provider or <code>null</code> if not applicable.
+	 * @param documentation Documentation in xhtml format.
 	 */
 	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
 		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, String space, boolean mutable, boolean source,

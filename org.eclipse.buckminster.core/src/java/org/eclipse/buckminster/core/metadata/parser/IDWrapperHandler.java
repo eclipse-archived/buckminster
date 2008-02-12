@@ -33,7 +33,7 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 	private final ResolvedNodeHandler m_resolvedNodeHandler = new ResolvedNodeHandler(this);
 	private final UnresolvedNodeHandler m_unresolvedNodeHandler = new UnresolvedNodeHandler(this);
 	private final GeneratorNodeHandler m_generatorNodeHandler = new GeneratorNodeHandler(this);
-	private final ComponentQueryHandler m_componentQueryHandler = new ComponentQueryHandler(this);
+	private final ComponentQueryHandler m_componentQueryHandler = new ComponentQueryHandler(this, null);
 	private BillOfMaterialsHandler m_billOfMaterialsHandler;
 
 	private UUID m_id;

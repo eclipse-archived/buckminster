@@ -40,7 +40,7 @@ public class GetConfiguration extends WorkspaceCommand
 		monitor.beginTask(null, 3);
 		try
 		{
-			ComponentQuery query = ComponentQuery.fromURL(m_url, MonitorUtils.subMonitor(monitor, 1));
+			ComponentQuery query = ComponentQuery.fromURL(m_url, true, MonitorUtils.subMonitor(monitor, 1));
 			ResolutionContext context = new ResolutionContext(query);
 			MainResolver resolver = new MainResolver(context);
 			BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 1));

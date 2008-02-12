@@ -9,6 +9,8 @@ package org.eclipse.buckminster.core.ctype;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,6 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNodeException;
-import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -31,6 +32,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -43,9 +45,16 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream,
 		IProgressMonitor monitor) throws CoreException
 	{
-		IParser<ComponentQuery> queryParser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
-			true);
-		return queryParser.parse(streamName, stream);
+		URL url;
+		try
+		{
+			url = URLUtils.normalizeToURL(streamName);
+		}
+		catch(MalformedURLException e)
+		{
+			url = null;
+		}
+		return ComponentQuery.fromStream(url, stream, true);
 	}
 
 	private static final UUID CACHE_KEY_BOM_CACHE = UUID.randomUUID();

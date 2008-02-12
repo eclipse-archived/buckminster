@@ -11,6 +11,8 @@
 package org.eclipse.buckminster.core.query.parser;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.buckminster.core.XMLConstants;
@@ -18,6 +20,7 @@ import org.eclipse.buckminster.core.parser.AbstractParser;
 import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
@@ -30,6 +33,7 @@ import org.xml.sax.SAXException;
 public class ComponentQueryParser extends AbstractParser<ComponentQuery> implements ChildPoppedListener
 {
 	private ComponentQuery m_componentQuery;
+	private URL m_contextURL;
 
 	public ComponentQueryParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
 	throws CoreException
@@ -56,7 +60,7 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 	{
 		if(ComponentQuery.TAG.equals(localName))
 		{
-			ComponentQueryHandler rmh = new ComponentQueryHandler(this);
+			ComponentQueryHandler rmh = new ComponentQueryHandler(this, m_contextURL);
 			this.pushHandler(rmh, attrs);
 		}
 		else
@@ -65,6 +69,14 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 
 	public ComponentQuery parse(String systemId, InputStream input) throws CoreException
 	{
+		try
+		{
+			m_contextURL = URLUtils.normalizeToURL(systemId);
+		}
+		catch(MalformedURLException e)
+		{
+			m_contextURL = null;
+		}
 		this.parseInput(systemId, input);
 		return m_componentQuery;
 	}

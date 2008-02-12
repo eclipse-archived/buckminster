@@ -15,11 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.ui.UiPlugin;
@@ -1008,11 +1006,8 @@ public class BuckminsterView extends ViewPart
 			{
 				try
 				{
-					String systemId = file.toString();
 					stream = new FileInputStream(file);
-					IParser<ComponentQuery> parser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
-							true);
-					componentQuery.initFrom(parser.parse(systemId, stream));
+					componentQuery.initFrom(ComponentQuery.fromStream(file.toURI().toURL(), stream, true));
 				}
 				catch(Exception e)
 				{

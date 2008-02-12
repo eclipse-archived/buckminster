@@ -57,7 +57,7 @@ public abstract class AbstractTestCase extends TestCase
 		ComponentRequest request = new ComponentRequest(componentName, componentType, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
-		queryBld.setResourceMapURL(getRMAP());
+		queryBld.setResourceMapURL(getRMAP().toString());
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
 		node.setNamePattern(Pattern.compile("(subclipse)|(buckminster)"));
 		node.setUseTargetPlatform(false);

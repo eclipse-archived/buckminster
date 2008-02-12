@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.query.parser;
 
+import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.XMLConstants;
@@ -30,14 +31,16 @@ import org.xml.sax.SAXParseException;
 public class ComponentQueryHandler extends PropertyManagerHandler
 {
 	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this);
+	private final URL m_contextURL;
 	private DocumentationHandler m_documentationHandler;
 	private AdvisorNodeHandler m_advisorNodeHandler;
 
 	private final ComponentQueryBuilder m_builder = new ComponentQueryBuilder();
 
-	public ComponentQueryHandler(AbstractHandler parent)
+	public ComponentQueryHandler(AbstractHandler parent, URL contextURL)
 	{
 		super(parent, ComponentQuery.TAG);
+		m_contextURL = contextURL;
 	}
 
 	@Override
@@ -97,8 +100,9 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	throws SAXException
 	{
 		m_builder.clear();
-		m_builder.setPropertiesURL(getOptionalURLValue(attrs, ComponentQuery.ATTR_PROPERTIES));
-		m_builder.setResourceMapURL(getOptionalURLValue(attrs, ComponentQuery.ATTR_RESOURCE_MAP));
+		m_builder.setContextURL(m_contextURL);
+		m_builder.setPropertiesURL(getOptionalStringValue(attrs, ComponentQuery.ATTR_PROPERTIES));
+		m_builder.setResourceMapURL(getOptionalStringValue(attrs, ComponentQuery.ATTR_RESOURCE_MAP));
 		m_builder.setShortDesc(getOptionalStringValue(attrs, ComponentQuery.ATTR_SHORT_DESC));
 	}
 }

@@ -58,7 +58,7 @@ public class RMapTestCase extends AbstractTestCase
 		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null));
 		URL rmapURL = getClass().getResource("local_main.rmap");
 		URL parentURL = URLUtils.getParentURL(rmapURL);
-		queryBld.setResourceMapURL(rmapURL);
+		queryBld.setResourceMapURL(rmapURL.toString());
 		queryBld.getProperties().put("rmaps", parentURL.toString());
 		ComponentQuery query = queryBld.createComponentQuery();
 		ResolutionContext ctx = new ResolutionContext(query);
@@ -72,7 +72,7 @@ public class RMapTestCase extends AbstractTestCase
 		//
 		URL queryURL = new URL("http://www.eclipse.org/buckminster/samples/queries/actor_a.cquery");
 		InputStream input = queryURL.openStream();
-		ComponentQuery query = ComponentQuery.fromStream(queryURL.toString(), input);
+		ComponentQuery query = ComponentQuery.fromStream(queryURL, input, true);
 		input.close();
 
 		// Create a resolver that uses the RMAP from the query regardless, i.e.
