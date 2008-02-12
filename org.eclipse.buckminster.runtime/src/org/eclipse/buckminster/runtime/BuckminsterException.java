@@ -27,8 +27,13 @@ import org.xml.sax.SAXParseException;
  *
  * @author Thomas Hallgren
  */
-public class BuckminsterException extends CoreException
+public abstract class BuckminsterException extends CoreException
 {
+	protected BuckminsterException(IStatus status)
+	{
+		super(status);
+	}
+
 	private static final long serialVersionUID = -3152601911941317801L;
 
 	// Special class that gives us access to the setMessage
@@ -52,6 +57,11 @@ public class BuckminsterException extends CoreException
 		return new BMStatus(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, message, cause);
 	}
 
+	public static void setMessageStatus(IStatus status, String message, Object...args)
+	{
+		((BMStatus)status).setMessage(String.format(message, args));
+	}
+
 	public static void deeplyPrint(IStatus status, PrintStream strm, boolean stackTrace, boolean includeWarnings)
 	{
 		deeplyPrint(status, strm, stackTrace, includeWarnings, 0);
@@ -69,7 +79,10 @@ public class BuckminsterException extends CoreException
 
 	public static CoreException fromMessage(Throwable cause, String message, Object...args)
 	{
-		return new CoreException(createStatus(String.format(message, args), cause));
+		CoreException ce = new CoreException(createStatus(String.format(message, args), cause));
+		if(cause != null)
+			ce.initCause(cause);
+		return ce;
 	}
 
 	public static Throwable unwind(Throwable t)
@@ -111,6 +124,15 @@ public class BuckminsterException extends CoreException
 		return exception;
 	}
 
+	public static CoreException wrap(IStatus status)
+	{
+		CoreException e = new CoreException(status);
+		Throwable t = status.getException();
+		if(t != null)
+			e.initCause(t);
+		return e;
+	}
+
 	public static CoreException wrap(Throwable t)
 	{
 		t = unwind(t);
@@ -133,8 +155,7 @@ public class BuckminsterException extends CoreException
 			bld.append(se.getColumnNumber());
 			msg = bld.toString();
 		}
-		
-		return new BuckminsterException(msg, t);
+		return fromMessage(t, msg);
 	}
 
 	private static void appendLevelString(PrintStream strm, int level)
@@ -213,26 +234,4 @@ public class BuckminsterException extends CoreException
 			}
 		}
 	}
-
-	public BuckminsterException()
-	{
-		super(createStatus(null, null));
-	}
-
-	public BuckminsterException(String message)
-	{
-		super(createStatus(message, null));
-	}
-
-	public BuckminsterException(String message, Throwable cause)
-	{
-		super(createStatus(message, cause));
-		this.initCause(cause);
-	}
-
-	protected void setMessage(String message)
-	{
-		((BMStatus)this.getStatus()).setMessage(message);
-	}
-
 }
