@@ -145,7 +145,7 @@ public class SvnReaderType extends CatalogReaderType
 					.getInfoFromWorkingCopy(workingCopy);
 			return (info == null)
 					? null
-					: info.getCopyUrl().toString();
+					: info.getUrl().toString();
 		}
 		catch(SVNClientException e)
 		{

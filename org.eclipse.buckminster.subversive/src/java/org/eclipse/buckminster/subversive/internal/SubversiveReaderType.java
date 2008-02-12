@@ -85,7 +85,7 @@ public class SubversiveReaderType extends CatalogReaderType
 		MonitorUtils.complete(monitor);
 		return info == null
 				? null
-				: info.copyFromUrl;
+				: info.url;
 	}
 
 	@Override
