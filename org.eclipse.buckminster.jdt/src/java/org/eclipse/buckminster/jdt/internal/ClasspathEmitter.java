@@ -345,7 +345,7 @@ public class ClasspathEmitter extends PropertiesEmitter
 				appendPaths(model, conProject, null, path, seenPaths, seenProjects, false);
 				continue;
 			default:
-				throw new BuckminsterException("Unexpected classpath entry kind");
+				throw BuckminsterException.fromMessage("Unexpected classpath entry kind");
 			}
 
 			IResource folder = ResourcesPlugin.getWorkspace().getRoot().findMember(entryPath);
