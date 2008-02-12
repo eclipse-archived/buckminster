@@ -130,7 +130,7 @@ public class P4Preferences
 	 */
 	private static final Pattern rxPattern = Pattern.compile("^(P4[A-Z]+)=(.+?)(?:\\s+\\(set[^\\)]*\\))?+$");
 	public Server configureDefaultServer(Map<String,String> scope, boolean overwrite)
-	throws BackingStoreException, BuckminsterException
+	throws BackingStoreException, CoreException
 	{
 		BufferedReader reader = null;
 		Map<String, String> p4Properties;
@@ -158,7 +158,7 @@ public class P4Preferences
 
 		String p4Port = p4Properties.get("P4PORT");
 		if(p4Port == null)
-			throw new BuckminsterException("Missing environment P4PORT");
+			throw BuckminsterException.fromMessage("Missing environment P4PORT");
 
 		String p4User = p4Properties.get("P4USER");
 		if(p4User == null)
@@ -166,7 +166,7 @@ public class P4Preferences
 
 		String p4Client = p4Properties.get("P4CLIENT");
 		if(p4Client == null)
-			throw new BuckminsterException("Missing environment P4CLIENT");
+			throw BuckminsterException.fromMessage("Missing environment P4CLIENT");
 
 		Server server = this.getServer(p4Port);
 		if(server == null)
@@ -174,7 +174,7 @@ public class P4Preferences
 		else
 		{
 			if(!overwrite)
-				throw new BuckminsterException("Server " + p4Port + " already exists");
+				throw BuckminsterException.fromMessage("Server %s already exists", p4Port);
 			server.clear();
 		}
 

@@ -90,24 +90,24 @@ public class ClientSpec extends DepotObject
 	 * @return <code>true</code> if the location was added to the view, <code>false</code> if it was already
 	 *         present.
 	 */
-	public boolean addLocation(IPath depotPath, IPath localPath) throws BuckminsterException
+	public boolean addLocation(IPath depotPath, IPath localPath) throws CoreException
 	{
-		if(this.entriesContainsMapping(this.getView(), depotPath, localPath))
+		if(entriesContainsMapping(getView(), depotPath, localPath))
 			return false;
 
-		ViewEntry[] entries = this.getView();
+		ViewEntry[] entries = getView();
 		List<ViewEntry> newEntries = new ArrayList<ViewEntry>(entries.length + 1);
 		for(ViewEntry entry : entries)
 		{
 			if(DepotURI.pathEquals(depotPath, entry.getDepotPath()))
-				throw new BuckminsterException("Depot path " + depotPath + " is already mapped to "
-						+ entry.getLocalPath() + " in client " + this.getClient());
+				throw BuckminsterException.fromMessage("Depot path %s is already mapped to %s in client %s",
+						depotPath, entry.getLocalPath(), getClient());
 
 			newEntries.add(entry);
 		}
 
-		IPath root = this.getRoot();
-		IPath clientRoot = new Path("//" + this.getClient());
+		IPath root = getRoot();
+		IPath clientRoot = new Path("//" + getClient());
 		IPath clientPath = null;
 		if(root == null)
 			clientPath = clientRoot.append(localPath.makeRelative());
@@ -117,7 +117,7 @@ public class ClientSpec extends DepotObject
 				clientPath = clientRoot.append(localPath.removeFirstSegments(root.segmentCount()));
 			else
 			{
-				for(IPath altPath : this.getAltRoots())
+				for(IPath altPath : getAltRoots())
 				{
 					if(altPath.isPrefixOf(localPath))
 					{
@@ -129,11 +129,10 @@ public class ClientSpec extends DepotObject
 		}
 
 		if(clientPath == null)
-			throw new BuckminsterException("Local path " + localPath + " is not a root or altroot of client "
-					+ this.getClient());
+			throw BuckminsterException.fromMessage("Local path %s is not a root or altroot of client %s", localPath, getClient());
 
 		newEntries.add(new ViewEntry(depotPath.append("..."), clientPath.append("...")));
-		this.setView(newEntries.toArray(new ViewEntry[newEntries.size()]));
+		setView(newEntries.toArray(new ViewEntry[newEntries.size()]));
 		return true;
 	}
 
@@ -146,7 +145,7 @@ public class ClientSpec extends DepotObject
 	{
 		if(m_dirty)
 		{
-			this.getConnection().setClientSpec(this.getInfo());
+			getConnection().setClientSpec(getInfo());
 			m_dirty = false;
 		}
 	}
@@ -162,7 +161,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean containsMapping(IPath depotPath, IPath localPath)
 	{
-		return this.entriesContainsMapping(this.getView(), depotPath, localPath);
+		return entriesContainsMapping(getView(), depotPath, localPath);
 	}
 
 	/**
@@ -170,7 +169,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public Date getAccess() throws CoreException
 	{
-		return this.getParsedDate("Access");
+		return getParsedDate("Access");
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class ClientSpec extends DepotObject
 	public IPath[] getAltRoots()
 	{
 		IPath[] altRoots;
-		String ars = this.get("AltRoots");
+		String ars = get("AltRoots");
 		if(ars == null)
 			return Trivial.EMPTY_PATH_ARRAY;
 
@@ -200,7 +199,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getClient()
 	{
-		return this.get("Client");
+		return get("Client");
 	}
 
 	/**
@@ -210,7 +209,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getDescription()
 	{
-		return this.get("Description");
+		return get("Description");
 	}
 
 	/**
@@ -221,7 +220,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getHost()
 	{
-		return this.get("Host");
+		return get("Host");
 	}
 
 	/**
@@ -231,7 +230,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public LineEnd getLineEnd()
 	{
-		return LineEnd.valueOf(this.get("LineEnd"));
+		return LineEnd.valueOf(get("LineEnd"));
 	}
 
 	/**
@@ -242,10 +241,10 @@ public class ClientSpec extends DepotObject
 	 */
 	public IPath[] getLocalAltRoots(IPath clientPath)
 	{
-		IPath[] altRoots = this.getAltRoots();
+		IPath[] altRoots = getAltRoots();
 		int top = altRoots.length;
 		for(int idx = 0; idx < top; ++idx)
-			altRoots[idx] = this.resolveClientPath(clientPath, altRoots[idx]);
+			altRoots[idx] = resolveClientPath(clientPath, altRoots[idx]);
 		return altRoots;
 	}
 
@@ -257,7 +256,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public IPath getLocalRoot(IPath clientPath)
 	{
-		return this.resolveClientPath(clientPath, this.getRoot());
+		return resolveClientPath(clientPath, getRoot());
 	}
 
 	/**
@@ -267,7 +266,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getOwner()
 	{
-		return this.get("Owner");
+		return get("Owner");
 	}
 
 	/**
@@ -278,7 +277,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public IPath getRoot()
 	{
-		String root = this.get("Root");
+		String root = get("Root");
 		return (root == null || root.equals("null"))
 				? null
 				: new Path(root);
@@ -289,7 +288,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public Date getUpdate() throws CoreException
 	{
-		return this.getParsedDate("Update");
+		return getParsedDate("Update");
 	}
 
 	/**
@@ -299,7 +298,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public ViewEntry[] getView()
 	{
-		return this.getViewSpec();
+		return getViewSpec();
 	}
 
 	/**
@@ -310,7 +309,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isAllWrite()
 	{
-		return this.isOption("allwrite");
+		return isOption("allwrite");
 	}
 
 	/**
@@ -321,7 +320,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isClobber()
 	{
-		return this.isOption("clobber");
+		return isOption("clobber");
 	}
 
 	/**
@@ -332,7 +331,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isCompress()
 	{
-		return this.isOption("compress");
+		return isOption("compress");
 	}
 
 	/**
@@ -343,7 +342,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isLocked()
 	{
-		return this.isOption("locked");
+		return isOption("locked");
 	}
 
 	/**
@@ -354,7 +353,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isModTime()
 	{
-		return this.isOption("modtime");
+		return isOption("modtime");
 	}
 
 	/**
@@ -365,7 +364,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isRmDir()
 	{
-		return this.isOption("rmdir");
+		return isOption("rmdir");
 	}
 
 	/**
@@ -376,7 +375,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setAllWrite(boolean flag)
 	{
-		this.setOption("allwrite", "noallwrite", flag);
+		setOption("allwrite", "noallwrite", flag);
 	}
 
 	/**
@@ -395,7 +394,7 @@ public class ClientSpec extends DepotObject
 	{
 		if(altRoots == null || altRoots.length == 0)
 		{
-			m_dirty = (this.remove("AltRoots") != null);
+			m_dirty = (remove("AltRoots") != null);
 			return;
 		}
 		if(altRoots.length > 2)
@@ -421,7 +420,7 @@ public class ClientSpec extends DepotObject
 				bld.append(path);
 		}
 		String newRoots = bld.toString();
-		m_dirty = !newRoots.equals(this.put("AltRoots", newRoots));
+		m_dirty = !newRoots.equals(put("AltRoots", newRoots));
 	}
 
 	/**
@@ -433,7 +432,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setClobber(boolean flag)
 	{
-		this.setOption("clobber", "noclobber", flag);
+		setOption("clobber", "noclobber", flag);
 	}
 
 	/**
@@ -444,7 +443,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setCompress(boolean flag)
 	{
-		this.setOption("compress", "nocompress", flag);
+		setOption("compress", "nocompress", flag);
 	}
 
 	/**
@@ -456,9 +455,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setDescription(String description)
 	{
 		if(description == null || description.length() == 0)
-			m_dirty = (this.remove("Description") != null);
+			m_dirty = (remove("Description") != null);
 		else
-			m_dirty = !description.equals(this.put("Description", description));
+			m_dirty = !description.equals(put("Description", description));
 	}
 
 	/**
@@ -474,9 +473,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setHost(String host)
 	{
 		if(host == null || host.length() == 0)
-			m_dirty = (this.remove("Host") != null);
+			m_dirty = (remove("Host") != null);
 		else
-			m_dirty = !host.equals(this.put("Host", host));
+			m_dirty = !host.equals(put("Host", host));
 	}
 
 	/**
@@ -488,7 +487,7 @@ public class ClientSpec extends DepotObject
 	{
 		if(lineEnd == null)
 			lineEnd = LineEnd.local;
-		m_dirty = !lineEnd.name().equals(this.put("LineEnd", lineEnd.name()));
+		m_dirty = !lineEnd.name().equals(put("LineEnd", lineEnd.name()));
 	}
 
 	/**
@@ -502,7 +501,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setLocked(boolean flag)
 	{
-		this.setOption("locked", "unlocked", flag);
+		setOption("locked", "unlocked", flag);
 	}
 
 	/**
@@ -521,7 +520,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setModTime(boolean flag)
 	{
-		this.setOption("modtime", "nomodtime", flag);
+		setOption("modtime", "nomodtime", flag);
 	}
 
 	/**
@@ -531,9 +530,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setOwner(String owner)
 	{
 		if(owner == null || owner.length() == 0)
-			m_dirty = (this.remove("Owner") != null);
+			m_dirty = (remove("Owner") != null);
 		else
-			m_dirty = !owner.equals(this.put("Owner", owner));
+			m_dirty = !owner.equals(put("Owner", owner));
 	}
 
 	/**
@@ -544,7 +543,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setRmDir(boolean flag)
 	{
-		this.setOption("rmdir", "normdir", flag);
+		setOption("rmdir", "normdir", flag);
 	}
 
 	/**
@@ -558,7 +557,7 @@ public class ClientSpec extends DepotObject
 		if(root == null || !root.isAbsolute())
 			throw new IllegalArgumentException("root cannot be null or relative");
 		String osName = root.toOSString();
-		m_dirty = !osName.equals(this.put("Root", osName));
+		m_dirty = !osName.equals(put("Root", osName));
 	}
 
 	/**
@@ -574,13 +573,13 @@ public class ClientSpec extends DepotObject
 		while(idx < top)
 		{
 			String newView = view[idx].toString();
-			String oldView = this.put("View" + Integer.toString(idx), newView);
+			String oldView = put("View" + Integer.toString(idx), newView);
 			if(!m_dirty && !newView.equals(oldView))
 				m_dirty = true;
 			++idx;
 		}
 
-		while(this.remove("View" + Integer.toString(idx)) != null)
+		while(remove("View" + Integer.toString(idx)) != null)
 		{
 			m_dirty = true;
 			++idx;
@@ -593,12 +592,12 @@ public class ClientSpec extends DepotObject
 		{
 			if(DepotURI.pathEquals(depotPath, entry.getDepotPath()))
 			{
-				if(DepotURI.pathEquals(this.getLocalRoot(entry.getLocalPath()), localPath))
+				if(DepotURI.pathEquals(getLocalRoot(entry.getLocalPath()), localPath))
 					return true;
 
 				// Try AltRoots also.
 				//
-				for(IPath altPath : this.getLocalAltRoots(entry.getLocalPath()))
+				for(IPath altPath : getLocalAltRoots(entry.getLocalPath()))
 					if(DepotURI.pathEquals(altPath, localPath))
 						return true;
 			}
@@ -608,12 +607,12 @@ public class ClientSpec extends DepotObject
 
 	private String[] getSplitOptions()
 	{
-		return this.get("Options").split("\\s+");
+		return get("Options").split("\\s+");
 	}
 
 	private boolean isOption(String enabled)
 	{
-		for(String option : this.getSplitOptions())
+		for(String option : getSplitOptions())
 			if(enabled.equals(option))
 				return true;
 		return false;
@@ -628,7 +627,7 @@ public class ClientSpec extends DepotObject
 			//
 			return null;
 
-		if(!clientPath.segment(0).equals(this.getClient()))
+		if(!clientPath.segment(0).equals(getClient()))
 			//
 			// Client path does belong to this client.
 			//
@@ -646,7 +645,7 @@ public class ClientSpec extends DepotObject
 	{
 		boolean found = false;
 		boolean changed = false;
-		String[] options = this.getSplitOptions();
+		String[] options = getSplitOptions();
 		int top = options.length;
 		for(int idx = 0; idx < top; ++idx)
 		{
@@ -685,7 +684,7 @@ public class ClientSpec extends DepotObject
 				bld.append(' ');
 				bld.append(options[idx]);
 			}
-			this.put("Options", bld.toString());
+			put("Options", bld.toString());
 		}
 		m_dirty = changed;
 	}

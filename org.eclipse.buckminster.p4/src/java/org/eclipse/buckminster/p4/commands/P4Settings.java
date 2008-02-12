@@ -217,7 +217,7 @@ public class P4Settings extends AbstractCommand
 		P4Preferences prefs = P4Preferences.getInstance();
 		Server server = prefs.getServer(m_serverName);
 		if(server == null)
-			throw new BuckminsterException("No such P4 server: " + m_serverName);
+			throw BuckminsterException.fromMessage("No such P4 server: %s", m_serverName);
 		return server;
 	}
 

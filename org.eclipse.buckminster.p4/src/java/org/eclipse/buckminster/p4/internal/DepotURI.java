@@ -95,10 +95,10 @@ public class DepotURI extends PropertyScope
 		super(properties);
 		String scheme = uri.getScheme();
 		if(!(scheme == null || "p4".equals(scheme)))
-			throw new BuckminsterException("Invalid URI: " + uri.toString() + ", Scheme is not p4");
+			throw BuckminsterException.fromMessage("Invalid URI: %s, Scheme is not p4", uri.toString());
 
 		if(uri.getUserInfo() != null)
-			throw new BuckminsterException("Invalid URI: " + uri.toString() + ", P4 URI cannot contain user info");
+			throw BuckminsterException.fromMessage("Invalid URI: %s, P4 URI cannot contain user info", uri.toString());
 
 		String defaultBranch = null;
 		String clientName = null;
@@ -176,14 +176,13 @@ public class DepotURI extends PropertyScope
 			{
 				client = server.getClient(clientName);
 				if(client == null)
-					throw new BuckminsterException("No preferences for P4 client " +
-						clientName + " for server " + server.getName());
+					throw BuckminsterException.fromMessage("No preferences for P4 client %s for server %s", clientName, server.getName());
 			}
 			return client;
 		}
 		catch(BackingStoreException e)
 		{
-			throw new BuckminsterException(e.getMessage());
+			throw BuckminsterException.wrap(e);
 		}
 	}
 	public static URI createURI(String uriString) throws CoreException
@@ -194,7 +193,7 @@ public class DepotURI extends PropertyScope
 		}
 		catch(URISyntaxException e)
 		{
-			throw new BuckminsterException("Invalid URL used for P4 provider: " + uriString, e);
+			throw BuckminsterException.fromMessage(e, "Invalid URL used for P4 provider: %s", uriString);
 		}
 	}
 
@@ -215,7 +214,7 @@ public class DepotURI extends PropertyScope
 			{
 				server = prefs.getServer(address);
 				if(server == null)
-					throw new BuckminsterException("No P4 server with address " + address + " has been configured");
+					throw BuckminsterException.fromMessage("No P4 server with address %s has been configured", address);
 			}
 			return server;
 		}

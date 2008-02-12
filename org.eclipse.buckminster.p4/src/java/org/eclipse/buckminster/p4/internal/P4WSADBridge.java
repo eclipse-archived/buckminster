@@ -70,7 +70,7 @@ public abstract class P4WSADBridge
 	throws CoreException
 	{
 		if(!isPresent())
-			throw new BuckminsterException("p4wsad plugin is not present");
+			throw BuckminsterException.fromMessage("p4wsad plugin is not present");
 
 		StringBuilder bld = new StringBuilder();
 		bld.append("P4PORT ");

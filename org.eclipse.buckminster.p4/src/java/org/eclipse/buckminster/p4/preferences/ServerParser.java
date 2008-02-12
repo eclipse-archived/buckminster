@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.parser.AbstractParser;
 import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -38,7 +39,7 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 
 	private final IAskReplaceOK m_askReplaceOK;
 
-	public ServerParser(IAskReplaceOK askReplaceOK) throws SAXException
+	public ServerParser(IAskReplaceOK askReplaceOK) throws CoreException
 	{
 		super(null, new String[]
    		{
@@ -50,7 +51,7 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 		m_askReplaceOK = askReplaceOK;
 	}
 
-	public Server parse(String systemId, InputStream stream) throws SAXException
+	public Server parse(String systemId, InputStream stream) throws CoreException
 	{
 		this.parseInput(systemId, stream);
 		return m_server;

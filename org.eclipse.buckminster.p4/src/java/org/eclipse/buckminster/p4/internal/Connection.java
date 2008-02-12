@@ -217,7 +217,7 @@ public class Connection extends PropertyScope
 			}
 			catch(IOException e)
 			{
-				throw new BuckminsterException(e.getMessage());
+				throw BuckminsterException.wrap(e);
 			}
 			finally
 			{
@@ -237,7 +237,7 @@ public class Connection extends PropertyScope
 	{
 		List<Map<String,String>> info = this.exec("info");
 		if(info.size() != 1)
-			throw new BuckminsterException("p4 info failed");
+			throw BuckminsterException.fromMessage("p4 info failed");
 		Map<String,String> clientInfo = info.get(0);
 
 		ClientSpec clientSpec = new ClientSpec(this, this.exec("client", new String[] { "-o" }).get(0));
@@ -274,7 +274,7 @@ public class Connection extends PropertyScope
 					}
 					catch (BackingStoreException e)
 					{
-						throw new BuckminsterException(e.getMessage());
+						throw BuckminsterException.wrap(e);
 					}
 				}
 				// Compare as files since the Path.equals is case sensitive on all platforms
@@ -522,11 +522,11 @@ public class Connection extends PropertyScope
 			//
 			int second = data.indexOf("//", 2);
 			if(second < 0)
-				throw new BuckminsterException("weird respons from p4 where: " + data);
+				throw BuckminsterException.fromMessage("weird respons from p4 where: %s", data);
 
 			int secondEnd = data.indexOf(' ', second);
 			if(secondEnd < 0)
-				throw new BuckminsterException("weird respons from p4 where: " + data);
+				throw BuckminsterException.fromMessage("weird respons from p4 where: %s", data);
 
 			int third = secondEnd + 1;
 			while(Character.isWhitespace(data.charAt(third)))
@@ -664,11 +664,11 @@ public class Connection extends PropertyScope
 			inThread.join();
 			errThread.join();
 			if(inThreadException[0] != null)
-				throw new BuckminsterException(inThreadException[0]);
+				throw BuckminsterException.fromMessage(inThreadException[0]);
 		}
 		catch(InterruptedException e)
 		{
-			throw new BuckminsterException(e.getMessage());
+			throw BuckminsterException.wrap(e);
 		}
 
 		if(exitCode != 0)
@@ -676,14 +676,14 @@ public class Connection extends PropertyScope
 			for(Map<String, String> result : results)
 			{
 				if("error".equals(result.get("code")))
-					throw new BuckminsterException(result.get("data").toString());
+					throw BuckminsterException.fromMessage(result.get("data").toString());
 			}
 
 			String error = errorBuilder.toString();
 			if(error.length() == 0)
-				throw new BuckminsterException("Process died with exit code " + exitCode);
+				throw BuckminsterException.fromMessage("Process died with exit code %s", Integer.valueOf(exitCode));
 
-			throw new BuckminsterException(error);
+			throw BuckminsterException.fromMessage(error);
 		}
 		return results;
 	}
