@@ -34,6 +34,12 @@ public interface IAuthenticator
 	public static final int REGISTER_EMAIL_ALREADY_VALIDATED = -7;
 	public static final int REGISTER_FAIL = -99;
 	
+	public static final int SPACE_ACCESS_OK = 1;
+	public static final int SPACE_ACCESS_FORBIDDEN = -1;
+	public static final int SPACE_ACCESS_SPACE_NOT_FOUND = -2;
+	public static final int SPACE_ACCESS_INVITATION_EXISTS = -3;
+	public static final int SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
+	
 	public void initialize(String serviceURL) throws Exception;
 	
 	/**
@@ -96,4 +102,6 @@ public interface IAuthenticator
 	public boolean isLoggedIn() throws Exception;
 	
 	public int register(String userName, String password, String email) throws Exception;
+	
+	public int checkSpaceReadAccess(final String spaceName) throws Exception;
 }
