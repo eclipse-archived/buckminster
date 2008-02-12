@@ -401,8 +401,12 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 	{
 		ComponentQueryBuilder bld = new ComponentQueryBuilder();
 		bld.initFrom(this);
-		bld.setPropertiesURL(getResolvedPropertiesURL().toString());
-		bld.setResourceMapURL(getResolvedResourceMapURL().toString());
+		URL tmp = getResolvedPropertiesURL();
+		if(tmp != null)
+			bld.setPropertiesURL(tmp.toString());
+		tmp = getResolvedResourceMapURL();
+		if(tmp != null)
+			bld.setResourceMapURL(tmp.toString());
 		bld.setContextURL(null);
 		return bld.createComponentQuery();
 	}
