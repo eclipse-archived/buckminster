@@ -79,6 +79,16 @@ public class SubversiveReaderType extends CatalogReaderType
 	}
 
 	@Override
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
+		MonitorUtils.complete(monitor);
+		return info == null
+				? null
+				: info.copyFromUrl;
+	}
+
+	@Override
 	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -140,11 +150,11 @@ public class SubversiveReaderType extends CatalogReaderType
 				SVNTeamProjectMapper.map(project, resource);
 			}
 			else
-				throw new BuckminsterException("Could not create repository resource");
+				throw BuckminsterException.fromMessage("Could not create repository resource");
 		}
 		catch(Exception ex)
 		{
-			throw new BuckminsterException(ex.getMessage());
+			throw BuckminsterException.wrap(ex);
 		}
 		finally
 		{
