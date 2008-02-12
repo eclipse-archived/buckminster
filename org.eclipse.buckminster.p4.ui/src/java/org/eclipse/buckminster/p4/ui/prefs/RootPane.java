@@ -22,6 +22,7 @@ import org.eclipse.buckminster.p4.preferences.ServerParser;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -209,9 +210,10 @@ public class RootPane extends NodeListPrefPane
 			m_serverPane.assignRenamedServer(parser.parse(name, input));
 			this.updateAndSelect();
 		}
-		catch(ServerParser.ReplaceDeniedException e)
+		catch(CoreException e)
 		{
-			return;
+			if(e.getCause() instanceof ServerParser.ReplaceDeniedException)
+				return;
 		}
 		catch(Exception e)
 		{
