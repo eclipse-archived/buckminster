@@ -10,7 +10,6 @@ package org.eclipse.buckminster.ui.views;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +92,6 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
-import org.xml.sax.SAXException;
 
 /**
  * @author kaja
@@ -1016,13 +1014,9 @@ public class BuckminsterView extends ViewPart
 							true);
 					componentQuery.initFrom(parser.parse(systemId, stream));
 				}
-				catch(FileNotFoundException e)
+				catch(Exception e)
 				{
-					UiUtils.openError(getViewSite().getShell(), "File not found", e);
-				}
-				catch(SAXException e)
-				{
-					UiUtils.openError(getViewSite().getShell(), "Parse error", e);
+					UiUtils.openError(getViewSite().getShell(), "Unable to read query", e);
 				}
 			}
 

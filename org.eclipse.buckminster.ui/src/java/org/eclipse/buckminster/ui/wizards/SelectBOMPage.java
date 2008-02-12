@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -230,7 +229,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						{
 							mspec = pf.getMaterializationSpecParser(true).parse(urlToParse.toString(), input);
 						}
-						catch(SAXException e)
+						catch(CoreException e)
 						{
 							// Assume this was not an mspec
 							//
@@ -260,7 +259,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						{
 							cquery = pf.getComponentQueryParser(true).parse(urlToParse.toString(), input);
 						}
-						catch(SAXException e)
+						catch(CoreException e)
 						{
 							// Assume this was not a cquery, restart input
 							//

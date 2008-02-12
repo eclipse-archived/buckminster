@@ -16,6 +16,7 @@ import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.dialogs.Property;
 import org.eclipse.buckminster.ui.dialogs.PropertyDialog;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -174,14 +175,14 @@ public class Properties extends Composite
 			{
 				addProperty(newProp);
 			}
-			catch(BuckminsterException e)
+			catch(CoreException e)
 			{
 				addPropertyErrorDialog(e);
 			}
 		}
 	}
 
-	private void addProperty(Property newProp) throws BuckminsterException
+	private void addProperty(Property newProp) throws CoreException
 	{
 		String key = newProp.getKey();
 
@@ -191,7 +192,7 @@ public class Properties extends Composite
 		{
 			if(prop.getKey().compareTo(key) == 0)
 			{
-				throw new BuckminsterException("Duplicity of key '" + key + "'");
+				throw BuckminsterException.fromMessage("Duplicity of key '%s'", key);
 			}
 			if(prop.getKey().compareTo(key) > 0)
 			{
@@ -335,7 +336,7 @@ public class Properties extends Composite
 				notifyListeners();
 				refreshList();
 			}
-			catch(BuckminsterException e)
+			catch(CoreException e)
 			{
 				addPropertyErrorDialog(e);
 			}

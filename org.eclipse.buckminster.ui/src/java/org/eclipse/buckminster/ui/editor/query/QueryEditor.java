@@ -11,7 +11,6 @@ package org.eclipse.buckminster.ui.editor.query;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -111,7 +110,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.part.EditorPart;
-import org.xml.sax.SAXException;
 
 /**
  * @author Karel Brezina
@@ -543,13 +541,9 @@ public class QueryEditor extends EditorPart
 			setInputWithNotify(input);
 			setPartName(input.getName());
 		}
-		catch(SAXException e)
+		catch(Exception e)
 		{
 			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new PartInitException(e.getMessage());
 		}
 		finally
 		{
