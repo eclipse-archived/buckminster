@@ -159,7 +159,7 @@ public class MavenProvider extends Provider
 		return getDefaultName(groupId, artifactId);
 	}
 
-	MapEntry getGroupAndArtifact(String name) throws BuckminsterException
+	MapEntry getGroupAndArtifact(String name) throws CoreException
 	{
 		MapEntry entry = m_mappings.get(name);
 		if(entry != null)
@@ -178,8 +178,7 @@ public class MavenProvider extends Provider
 
 		int slashPos = transformed.indexOf('/');
 		if(slashPos < 0)
-			throw new BuckminsterException("The result of applying a match rule had no separator slash: "
-				+ transformed);
+			throw BuckminsterException.fromMessage("The result of applying a match rule had no separator slash: %s", transformed);
 
 		return new MapEntry(name, transformed.substring(0, slashPos), transformed.substring(slashPos + 1), null);
 	}

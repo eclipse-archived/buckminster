@@ -102,7 +102,7 @@ public class MavenReaderType extends URLCatalogReaderType
 		}
 	}
 
-	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws BuckminsterException
+	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws CoreException
 	{
 		String name = request.getName();
 		return (provider instanceof MavenProvider)
