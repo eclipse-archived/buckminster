@@ -58,15 +58,16 @@ public class AntActor extends AbstractActor
 		if(buildFile == null)
 		{
 			if(buildFileId == null)
-				throw new BuckminsterException("Property not set: " + AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE);
+				throw BuckminsterException.fromMessage("Property not set: %s", AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE);
 
 			buildFileId = ExpandingProperties.expand(ctx.getProperties(), buildFileId, 0);
 			return this.getBuildFileExtension(buildFileId);
 		}
 
 		if(buildFileId != null)
-			throw new BuckminsterException("Properties " + AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE + " and "
-				+ AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + " are mutually exclusive");
+			throw BuckminsterException.fromMessage("Properties %s and %s are mutually exclusive",
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE,
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID);
 
 		buildFile = ExpandingProperties.expand(ctx.getProperties(), buildFile, 0);
 		IPath buildFilePath = new Path(buildFile);
@@ -205,21 +206,20 @@ public class AntActor extends AbstractActor
 		}
 
 		if(resourceElem == null)
-			throw new BuckminsterException("No extension found defines "
-				+ AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + ": " + buildFileId);
+			throw BuckminsterException.fromMessage("No extension found defines %s: %s",
+				AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
 
 		// The resource must be loaded by the bundle that contributes it
 		//
 		String contributor = resourceElem.getContributor().getName();
 		Bundle contributorBundle = Platform.getBundle(contributor);
 		if(contributorBundle == null)
-			throw new BuckminsterException("Unable to load bundle " + contributor);
+			throw BuckminsterException.fromMessage("Unable to load bundle %s", contributor);
 
 		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
 		if(rsURL == null)
-			throw new BuckminsterException("Extension found using "
-				+ AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID + " " + buildFileId
-				+ " appoints a non existing resource");
+			throw BuckminsterException.fromMessage("Extension found using %s: %s appoints a non existing resource",
+				AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
 
 		try
 		{
@@ -232,9 +232,9 @@ public class AntActor extends AbstractActor
 
 		if(!"file".equalsIgnoreCase(rsURL.getProtocol()))
 			//
-			// This should never happen. It's a resource in an active plugin right?
+			// This should never happen. It's a resource in an active plug-in right?
 			//
-			throw new BuckminsterException("Unexpected protolol");
+			throw BuckminsterException.fromMessage("Unexpected protocol: %s", rsURL.getProtocol());
 
 		return FileUtils.getFileAsPath(rsURL);
 	}

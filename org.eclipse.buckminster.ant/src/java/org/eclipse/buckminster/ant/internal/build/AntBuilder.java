@@ -113,11 +113,9 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 				scriptFile = DEFAULT_SCRIPT_FILE;
 			IPath relativeScriptFilePath = new Path(scriptFile);
 			if(relativeScriptFilePath.isAbsolute())
-				throw new BuckminsterException("The script file name must be relative to the project root: "
-					+ scriptFile);
+				throw BuckminsterException.fromMessage("The script file name must be relative to the project root: %s", scriptFile);
 			m_scriptFile = getProject().getFile(relativeScriptFilePath);
 			notifyOnChangedResources(new IResource[] { m_scriptFile });
-
 		}
 		return m_scriptFile;
 	}
