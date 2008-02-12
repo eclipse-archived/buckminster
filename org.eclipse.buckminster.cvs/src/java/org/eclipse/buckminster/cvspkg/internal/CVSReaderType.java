@@ -35,6 +35,9 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -52,6 +55,7 @@ import org.eclipse.team.internal.ccvs.core.CVSStatus;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
+import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.core.client.ConsoleListeners;
@@ -61,6 +65,7 @@ import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
+import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
 
@@ -98,7 +103,7 @@ public class CVSReaderType extends CatalogReaderType
 		//
 		String[] parts = fetchFactoryLocator.split(",");
 		if(parts.length < 1)
-			throw new BuckminsterException("Illegal fetch factory locator");
+			throw BuckminsterException.fromMessage("Illegal fetch factory locator");
 		StringBuilder locator = new StringBuilder(parts[0]);
 
 		locator.append(',');
@@ -459,6 +464,28 @@ public class CVSReaderType extends CatalogReaderType
 			monitor.done();
 		}
 		return youngest;
+	}
+
+	@Override
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IPath location = Path.fromOSString(workingCopy.toString());
+		IResource resource = wsRoot.getContainerForLocation(location);
+		if(resource == null)
+			resource = wsRoot.getFileForLocation(location);
+
+		if(resource == null)
+			//
+			// We only support workspace resources at this time
+			//
+			return null;
+
+		ICVSRemoteResource cvsResource = CVSWorkspaceRoot.getRemoteResourceFor(resource);
+		if(cvsResource == null)
+			return null;
+		
+		return cvsResource.getRepository().getLocation(false) + ',' + cvsResource.getRepositoryRelativePath();
 	}
 
 	@Override

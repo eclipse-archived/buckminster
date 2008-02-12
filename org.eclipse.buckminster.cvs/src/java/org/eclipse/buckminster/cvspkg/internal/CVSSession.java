@@ -49,7 +49,7 @@ public class CVSSession
 		}
 		catch(NoSuchElementException e)
 		{
-			throw new BuckminsterException("Repository URI not in <cvs root>,<module> format");
+			throw BuckminsterException.fromMessage("Repository URI not in <cvs root>,<module> format");
 		}
 	}
 
