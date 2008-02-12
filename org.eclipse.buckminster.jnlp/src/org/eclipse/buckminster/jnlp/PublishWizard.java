@@ -165,7 +165,7 @@ public class PublishWizard extends AdvancedWizard
 		}
 		catch(SAXException e)
 		{
-			throw new JNLPException("Unable to read materialization specification", MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+			throw new JNLPException("Unable to read materialization specification", MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION, e);
 		}
 
 		int result;

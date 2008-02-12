@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_SAX_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
 
 import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -122,7 +122,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 				}
 				
 				throw new JNLPException(
-						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_SAX_EXCEPTION, e);
+						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_EXCEPTION, e);
 	
 			}
 			finally

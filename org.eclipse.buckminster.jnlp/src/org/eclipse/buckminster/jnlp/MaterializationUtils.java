@@ -131,9 +131,8 @@ public class MaterializationUtils
 				break;
 			}
 
-			throw new JNLPException("Cannot read materialization specification", errorCode, new BuckminsterException(
-					originalURL + " - " + HttpStatus.getStatusText(status)));
-
+			throw new JNLPException("Cannot read materialization specification", errorCode, BuckminsterException.fromMessage(
+					"%s - %s", originalURL, HttpStatus.getStatusText(status)));
 		}
 	}
 	

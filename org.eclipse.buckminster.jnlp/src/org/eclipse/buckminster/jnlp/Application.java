@@ -146,7 +146,7 @@ public class Application implements IApplication
 			if(!Platform.getInstanceLocation().lock())
 			{
 				errorCode = MaterializationConstants.ERROR_CODE_ALREADY_RUNNING_EXCEPTION;
-				throw new BuckminsterException("Materializer is already running");
+				throw BuckminsterException.fromMessage("Materializer is already running");
 			}
 
 			BuckminsterPreferences.setLogLevelConsole(Logger.SILENT);
@@ -155,7 +155,7 @@ public class Application implements IApplication
 			if(configUrl == null)
 			{
 				errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
-				throw new BuckminsterException("Missing required argument -configURL <URL to config properties>");
+				throw BuckminsterException.fromMessage("Missing required argument -configURL <URL to config properties>");
 			}
 
 			Map<String, String> properties = new HashMap<String, String>();
@@ -177,7 +177,7 @@ public class Application implements IApplication
 			catch(IOException e)
 			{
 				errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
-				throw new BuckminsterException("Can not read materialization information", e);
+				throw BuckminsterException.fromMessage(e, "Can not read materialization information");
 			}
 			finally
 			{
