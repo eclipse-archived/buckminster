@@ -81,10 +81,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 			IParser<ResourceMap> rmapParser = pf.getResourceMapParser(true);
 			return rmapParser.parse(url.toString(), new BufferedInputStream(input));
 		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
 		catch(IOException e)
 		{
 			throw BuckminsterException.wrap(e);
@@ -146,6 +142,11 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 	public Collection<SearchPath> getSearchPaths()
 	{
 		return m_searchPaths.values();
+	}
+
+	public void removeMatcher(Matcher matcher)
+	{
+		m_matchers.remove(matcher);
 	}
 
 	public DepNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException

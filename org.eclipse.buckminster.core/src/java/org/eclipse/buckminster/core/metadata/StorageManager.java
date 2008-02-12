@@ -16,10 +16,8 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -46,27 +44,20 @@ public class StorageManager
 		// NOTE: The order in which these entries are created and cleared
 		// in case of changes is important. It is in depencency order.
 		//
-		try
-		{
-			m_providers = new FileStorage<Provider>(new File(baseLocation, Provider.TAG),
-				pf.getProviderParser(false), Provider.class, Provider.SEQUENCE_NUMBER);
-	
-			m_cspecs = new FileStorage<CSpec>(new File(baseLocation, CSpec.TAG), pf.getCSpecParser(false),
-				CSpec.class, CSpec.SEQUENCE_NUMBER);
-	
-			m_resolutions = new FileStorage<Resolution>(new File(baseLocation, Resolution.TAG),
-				pf.getResolutionParser(), Resolution.class, Resolution.SEQUENCE_NUMBER);
-	
-			m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
-				pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
-	
-			m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
-				pf.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		m_providers = new FileStorage<Provider>(new File(baseLocation, Provider.TAG),
+			pf.getProviderParser(false), Provider.class, Provider.SEQUENCE_NUMBER);
+
+		m_cspecs = new FileStorage<CSpec>(new File(baseLocation, CSpec.TAG), pf.getCSpecParser(false),
+			CSpec.class, CSpec.SEQUENCE_NUMBER);
+
+		m_resolutions = new FileStorage<Resolution>(new File(baseLocation, Resolution.TAG),
+			pf.getResolutionParser(), Resolution.class, Resolution.SEQUENCE_NUMBER);
+
+		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
+			pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
+
+		m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
+			pf.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
 	}
 
 	public static synchronized StorageManager getDefault() throws CoreException

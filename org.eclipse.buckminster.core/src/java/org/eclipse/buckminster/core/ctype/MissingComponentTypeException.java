@@ -1,12 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.core.ctype;
 
@@ -18,20 +16,12 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
  */
 public class MissingComponentTypeException extends LocalizedException
 {
-	private static final long serialVersionUID = 5205293667258691771L;
-	private final String m_componentTypeId;
+	private static final long serialVersionUID = 7787687621140649046L;
 
 	public MissingComponentTypeException(String componentTypeId)
 	{
-		super("No component type with id {0} has been registered with extension-point {1}");
-		m_componentTypeId = componentTypeId;
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_componentTypeId, CorePlugin.COMPONENT_TYPE_POINT };
+		super("No component type with id %s has been registered with extension-point %s",
+				componentTypeId, CorePlugin.COMPONENT_TYPE_POINT);
 	}
 }
 

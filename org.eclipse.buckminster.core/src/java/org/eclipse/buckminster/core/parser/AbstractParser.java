@@ -13,7 +13,6 @@ package org.eclipse.buckminster.core.parser;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
@@ -53,10 +52,22 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 	private final List<ParserFactory.ParserExtension> m_parserExtensions;
 	private HashSet<String> m_printedWarnings;
 
-	protected AbstractParser(List<ParserFactory.ParserExtension> parserExtensions, String[] namespaces, String[] schemaLocations, boolean validating)
-	throws SAXException
+	public static XMLReader createXMLReader(boolean validating, boolean withNamespace) throws CoreException
 	{
-		super(Utils.createXMLReader(validating, true));
+		try
+		{
+			return Utils.createXMLReader(validating, withNamespace);
+		}
+		catch(SAXException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	protected AbstractParser(List<ParserFactory.ParserExtension> parserExtensions, String[] namespaces, String[] schemaLocations, boolean validating)
+	throws CoreException
+	{
+		super(createXMLReader(validating, true));
 
 		m_validating = validating;
 		int top = namespaces.length;
@@ -68,9 +79,9 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		{
 			String namespace = namespaces[idx];
 			String schemaFile = schemaLocations[idx];
-			URL schemaURL = this.getClass().getResource(schemaFile);
+			URL schemaURL = getClass().getResource(schemaFile);
 			if(schemaURL == null)
-				throw new SAXException("Unable to find XMLSchema for namespace " + namespace);
+				throw BuckminsterException.fromMessage("Unable to find XMLSchema for namespace %s", namespace);
 			if(idx > 0)
 				namespaceLocations.append(' ');
 			namespaceLocations.append(namespace);
@@ -91,14 +102,14 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 		m_parserExtensions = parserExtensions;
 		m_namespaceLocations = namespaceLocations.toString();
-		this.setNamespaceAware(true);
-		this.setErrorHandler(this);
+		setNamespaceAware(true);
+		setErrorHandler(this);
 	}
 
 	protected void init()
 	throws SAXException
 	{
-		XMLReader reader = this.getXMLReader();
+		XMLReader reader = getXMLReader();
 		if(m_validating)
 		{
 			reader.setFeature("http://apache.org/xml/features/validation/schema", true);
@@ -127,7 +138,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 
 	private static Pattern s_saxParseCleaner = Pattern.compile("^cvc-[^:]+:(.*)$");
 
-	protected void parseInput(String systemId, InputStream input) throws SAXException
+	protected void parseInput(String systemId, InputStream input) throws CoreException
 	{
 		// If the systemId is represented as a resource in the workspace, then remove
 		// all problem markers from it.
@@ -145,7 +156,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 
 		try
 		{
-			this.init();
+			init();
 			if(!(input instanceof BufferedInputStream || input instanceof ByteArrayInputStream))
 				input = new BufferedInputStream(input);
 			InputSource source = new InputSource(input);
@@ -176,11 +187,11 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			{
 				// Ignore
 			}
-			throw e;
+			throw BuckminsterException.wrap(e);
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
-			throw new SAXException(e);
+			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{
@@ -200,9 +211,9 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 				if(colonIndex > 0)
 				{
 					String prefix = xsiType.substring(0, colonIndex);
-					ns = this.getPrefixMapping(prefix);
+					ns = getPrefixMapping(prefix);
 					if(ns == null)
-						throw new SAXParseException("Unknown namespace prefix: " + prefix, this.getDocumentLocator());
+						throw new SAXParseException("Unknown namespace prefix: " + prefix, getDocumentLocator());
 					xsiType = xsiType.substring(colonIndex + 1);
 				}
 				else
@@ -226,7 +237,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 		catch(Exception e)
 		{
-			throw new SAXParseException("Unable to create extension handler " + namespace + ':' + xsiType, this.getDocumentLocator(), e);
+			throw new SAXParseException("Unable to create extension handler " + namespace + ':' + xsiType, getDocumentLocator(), e);
 		}
 	}
 

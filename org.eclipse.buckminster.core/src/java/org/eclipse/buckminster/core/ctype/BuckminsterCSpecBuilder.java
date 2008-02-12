@@ -27,26 +27,17 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.xml.sax.SAXException;
-
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<CSpec>
 {
 	public CSpec consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
 	throws CoreException
 	{
-		try
-		{
-			IParser<CSpec> cspecParser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
-			return cspecParser.parse(streamName, stream);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		IParser<CSpec> cspecParser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
+		return cspecParser.parse(streamName, stream);
 	}
 
 	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)

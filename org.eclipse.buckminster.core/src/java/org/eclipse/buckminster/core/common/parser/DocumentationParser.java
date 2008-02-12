@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -26,7 +27,7 @@ import org.xml.sax.SAXException;
 public class DocumentationParser extends AbstractParser<Documentation> implements ChildPoppedListener
 {
 	public DocumentationParser()
-	throws SAXException
+	throws CoreException
 	{
 		super(Collections.<ParserFactory.ParserExtension>emptyList(),
 			new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS },
@@ -48,7 +49,7 @@ public class DocumentationParser extends AbstractParser<Documentation> implement
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public Documentation parse(String systemID, InputStream input) throws SAXException
+	public Documentation parse(String systemID, InputStream input) throws CoreException
 	{
 		this.parseInput(systemID, input);
 		return m_documentation;

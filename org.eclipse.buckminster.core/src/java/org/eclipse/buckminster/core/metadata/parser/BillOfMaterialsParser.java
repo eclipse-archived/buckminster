@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -23,7 +24,7 @@ import org.xml.sax.SAXException;
 public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
 {
 	public BillOfMaterialsParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions, validating);
 	}
@@ -39,7 +40,7 @@ public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public BillOfMaterials parse(String systemID, InputStream input) throws SAXException
+	public BillOfMaterials parse(String systemID, InputStream input) throws CoreException
 	{
 		this.parseInput(systemID, input);
 		return m_resolution;

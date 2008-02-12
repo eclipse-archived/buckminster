@@ -214,7 +214,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			}
 			catch(CoreException e)
 			{
-				throw new BuckminsterException("Unable to install plugins and features that do not stem from an update site since PDE is missing");
+				throw BuckminsterException.fromMessage("Unable to install plugins and features that do not stem from an update site since PDE is missing");
 			}
 			File tempSite = FileUtils.createTempFolder("bmsite", "tmp");
 			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite, features, plugins));

@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -25,7 +26,7 @@ public class DepNodeParser extends MetaDataParser<DepNode>
 	private DepNode m_resolvedNode;
 
 	public DepNodeParser(List<ParserFactory.ParserExtension> parserExtensions)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions);
 	}
@@ -57,7 +58,7 @@ public class DepNodeParser extends MetaDataParser<DepNode>
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public DepNode parse(String systemID, InputStream input) throws SAXException
+	public DepNode parse(String systemID, InputStream input) throws CoreException
 	{
 		this.parseInput(systemID, input);
 		return m_resolvedNode;

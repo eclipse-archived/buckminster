@@ -8,24 +8,16 @@
 package org.eclipse.buckminster.core.reader;
 
 import org.eclipse.buckminster.core.helpers.LocalizedException;
-import org.eclipse.buckminster.runtime.Trivial;
 
 /**
  * @author Thomas Hallgren
  */
 public class IllegalOverlayException extends LocalizedException
 {
-	private static final long serialVersionUID = -4820969561462830483L;
+	private static final long serialVersionUID = -999186541971422731L;
 
-	protected IllegalOverlayException(String defaultMessageFormat)
+	protected IllegalOverlayException(String message)
 	{
-		super(defaultMessageFormat);
+		super(message);
 	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return Trivial.EMPTY_STRING_ARRAY;
-	}
-
 }

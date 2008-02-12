@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -28,7 +29,7 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 	private MaterializationSpec m_materializationSpec;
 
 	public MaterializationSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions, validating);
 	}
@@ -45,7 +46,7 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public MaterializationSpec parse(String systemId, InputStream input) throws SAXException
+	public MaterializationSpec parse(String systemId, InputStream input) throws CoreException
 	{
 		this.parseInput(systemId, input);
 		return m_materializationSpec;

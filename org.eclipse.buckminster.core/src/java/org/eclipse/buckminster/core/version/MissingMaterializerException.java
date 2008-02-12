@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -15,20 +15,12 @@ import org.eclipse.buckminster.core.materializer.IMaterializer;
  */
 public class MissingMaterializerException extends LocalizedException
 {
-	private static final long serialVersionUID = -1363518852613277665L;
-	private final String m_argument;
+	private static final long serialVersionUID = 5491355041991362604L;
 
-	public MissingMaterializerException(String matcherId)
+	public MissingMaterializerException(String materializerId)
 	{
-		super("No materializer with id {0} has been registered with extension-point {1}");
-		m_argument = matcherId;
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_argument, IMaterializer.MATERIALIZERS_POINT };
+		super("No materializer with id %s has been registered with extension-point %s",
+			materializerId, IMaterializer.MATERIALIZERS_POINT);
 	}
 }
 

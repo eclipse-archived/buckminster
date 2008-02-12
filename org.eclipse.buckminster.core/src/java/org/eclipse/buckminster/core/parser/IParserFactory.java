@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
-import org.xml.sax.SAXException;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * A Factory for the SAX parsers used in Buckminster
@@ -33,108 +33,108 @@ public interface IParserFactory
 	 * Creates a SAX parser that can parse a BillOfMaterial.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a BillOfMaterial parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a ComponentQuery.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a ComponentQuery parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<ComponentQuery> getComponentQueryParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a Materializations.
 	 * @return a Materializations parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<Materialization> getMaterializationParser()
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a Materialization specifications.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a MaterializationSpec parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a CSpec.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a CSpec parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<CSpec> getCSpecParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 
 	/**
 	 * Creates a SAX parser that can parse a DepNode.
 	 * @return a DepNode parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<DepNode> getDepNodeParser()
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a CSpecExtension.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a CSpecExtension parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<CSpecExtension> getAlterCSpecParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a Resolution.
 	 * @return a Resolution parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<Resolution> getResolutionParser()
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a CSpec.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a CSpec parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<ResourceMap> getResourceMapParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a IProvider.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a IProvider parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<Provider> getProviderParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a WorkspaceBinding.
 	 * @param validating <code>true</code> if a validating parser is desired
 	 * @return a IProvider parser.
-	 * @throws SAXException if the Java Runtime cannot support
+	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
 	IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating)
-	throws SAXException;
+	throws CoreException;
 }
 

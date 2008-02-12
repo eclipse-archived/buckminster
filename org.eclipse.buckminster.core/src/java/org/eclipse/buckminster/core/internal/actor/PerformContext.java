@@ -149,7 +149,7 @@ public class PerformContext implements IActionContext
 		{
 			prereqRebase = PerformManager.expandPath(properties, prereqRebase);
 			if(prereqRebase.isAbsolute())
-				throw new BuckminsterException("Action prerequisite base can not be absolute");
+				throw BuckminsterException.fromMessage("Action prerequisite base can not be absolute");
 			prereqRebase = cspec.getComponentLocation().append(prereqRebase);
 		}
 

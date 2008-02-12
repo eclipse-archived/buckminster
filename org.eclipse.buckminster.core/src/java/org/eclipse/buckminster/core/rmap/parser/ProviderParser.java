@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -32,7 +33,7 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 	private Provider m_provider;
 
 	public ProviderParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions, new String[]
 		{
@@ -63,7 +64,7 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public Provider parse(String systemID, InputStream input) throws SAXException
+	public Provider parse(String systemID, InputStream input) throws CoreException
 	{
 		parseInput(systemID, input);
 		return m_provider;

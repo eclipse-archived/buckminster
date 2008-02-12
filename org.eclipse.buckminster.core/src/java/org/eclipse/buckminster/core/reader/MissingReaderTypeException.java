@@ -1,40 +1,26 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
-
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.core.reader;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 
 /**
- * @author thhal
+ * @author Thomas Hallgren
  */
 public class MissingReaderTypeException extends LocalizedException
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7064755637275007019L;
-	private final String m_remoteReaderId;
+	private static final long serialVersionUID = -132466746071544427L;
 
 	public MissingReaderTypeException(String remoteReaderId)
 	{
-		super("No reader type with id {0} has been registered with extension-point {1}");
-		m_remoteReaderId = remoteReaderId;
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_remoteReaderId, CorePlugin.READER_TYPE_POINT };
+		super("No reader type with id %s has been registered with extension-point %s",
+				remoteReaderId, CorePlugin.READER_TYPE_POINT);
 	}
 }
 

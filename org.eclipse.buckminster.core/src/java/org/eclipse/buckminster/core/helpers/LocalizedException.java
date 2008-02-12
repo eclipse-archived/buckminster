@@ -10,19 +10,17 @@
 
 package org.eclipse.buckminster.core.helpers;
 
-import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.core.runtime.CoreException;
 
 
 @SuppressWarnings("serial")
-public abstract class LocalizedException extends BuckminsterException
+public abstract class LocalizedException extends CoreException
 {
-	private final String m_messageFormat;
-
 	private static String getLocalizedFormat(Class<?> c, String defaultMessageFormat)
 	{
 		ResourceBundle bundle = CorePlugin.getDefault().getResourceBundle();
@@ -57,47 +55,25 @@ public abstract class LocalizedException extends BuckminsterException
 		}
 	}
 
-	protected LocalizedException(String defaultMessageFormat)
+	private final String m_defaultMessageFormat;
+	private final Object[] m_arguments;
+
+	protected LocalizedException(String defaultMessageFormat, Object...args)
 	{
-		super(defaultMessageFormat);
-		m_messageFormat = getLocalizedFormat(this.getClass(), defaultMessageFormat);
+		this(null, defaultMessageFormat, args);
 	}
 
-	protected LocalizedException(String defaultMessageFormat, Throwable cause)
+	protected LocalizedException(Throwable cause, String defaultMessageFormat, Object...args)
 	{
-		super(defaultMessageFormat, cause);
-		m_messageFormat = getLocalizedFormat(this.getClass(), defaultMessageFormat);
-	}
-
-	@Override
-	public String getMessage()
-	{
-		return this.formatMessage(super.getMessage());
+		super(BuckminsterException.createStatus(String.format(defaultMessageFormat, args), null));
+		m_defaultMessageFormat = defaultMessageFormat;
+		m_arguments = args;
 	}
 
 	@Override
 	public String getLocalizedMessage()
 	{
-		return this.formatMessage(m_messageFormat);
+		return String.format(getLocalizedFormat(getClass(), m_defaultMessageFormat), m_arguments);
 	}
-
-	protected void assignMessage()
-	{
-		this.setMessage(this.formatMessage(super.getMessage()));
-	}
-
-	protected String formatMessage(String format)
-	{
-		try
-		{
-			return MessageFormat.format(format, (Object[])this.getArguments());
-		}
-		catch(Throwable t)
-		{
-			return format;
-		}
-	}
-
-	protected abstract String[] getArguments();
 }
 

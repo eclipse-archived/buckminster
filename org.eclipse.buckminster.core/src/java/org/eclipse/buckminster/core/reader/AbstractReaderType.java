@@ -128,6 +128,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return -1;
 	}
 
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		return null;
+	}
+
 	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 	}

@@ -1,45 +1,27 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
-
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.core.rmap.model;
 
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 
 /**
  * @author Thomas Hallgren
- * 
  */
 public class TransformerMismatchException extends LocalizedException
 {
-	private static final long serialVersionUID = -3941245237432861824L;
+	private static final long serialVersionUID = -4031798723194792558L;
 
-	private final String[] m_arguments;
-
-	/**
-	 * @param defaultMessageFormat
-	 */
 	public TransformerMismatchException(BidirectionalTransformer invalid)
 	{
-		super("The substitution {0} -> {1} is not reversed by {2} -> {3}");
-		m_arguments = new String[] {
+		super("The substitution %s -> %s is not reversed by %s -> %s",
 			invalid.getFromPattern().toString(),
 			invalid.getFromReplacement(),
 			invalid.getToPattern().toString(),
-			invalid.getToReplacement()
-			};
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return m_arguments;
+			invalid.getToReplacement());
 	}
 }

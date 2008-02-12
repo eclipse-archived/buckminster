@@ -317,7 +317,16 @@ public class Provider extends UUIDKeyed
 	}
 
 	/**
-	 * @return Returns the File or Repository URI.
+	 * @return Returns the possibly parameterized <code>Format</code> instance that represents
+	 * File or Repository URI.
+	 */
+	public final Format getURI()
+	{
+		return m_uri;
+	}
+
+	/**
+	 * @return Returns expanded the File or Repository URI.
 	 */
 	public final String getURI(Map<String, String> properties)
 	{

@@ -39,7 +39,6 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -257,10 +256,6 @@ public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 		catch(FileNotFoundException e)
 		{
 			throw new ElementNotFoundException(this, elementId);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{
@@ -501,7 +496,7 @@ public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
 				}
 			}
 		}
-		throw new BuckminsterException("No such foreign key: " + keyName);
+		throw BuckminsterException.fromMessage("No such foreign key: %s", keyName);
 	}
 
 	private void persistImage(UUID elementId, byte[] image) throws CoreException

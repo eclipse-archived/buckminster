@@ -13,7 +13,7 @@ import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.parser.AbstractParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
-import org.xml.sax.SAXException;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Thomas Hallgren
@@ -21,13 +21,13 @@ import org.xml.sax.SAXException;
 public abstract class MetaDataParser<T> extends AbstractParser<T> implements ChildPoppedListener
 {
 	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions)
-	throws SAXException
+	throws CoreException
 	{
 		this(parserExtensions, false);
 	}
 
 	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions, new String[]
   		{

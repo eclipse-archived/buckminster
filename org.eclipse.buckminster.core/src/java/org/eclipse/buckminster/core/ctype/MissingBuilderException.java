@@ -1,12 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.core.ctype;
 
@@ -18,20 +16,12 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
  */
 public class MissingBuilderException extends LocalizedException
 {
-	private static final long serialVersionUID = 7752898568820712216L;
-	private final String m_argument;
+	private static final long serialVersionUID = -7398224237506596350L;
 
 	public MissingBuilderException(String builderId)
 	{
-		super("No Component Specification (cspec) builder with id {0} has been registered with extension-point {1}");
-		m_argument = builderId;
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_argument, CorePlugin.CSPEC_BUILDER_POINT };
+		super("No Component Specification (cspec) builder with id %s has been registered with extension-point %s",
+			builderId, CorePlugin.CSPEC_BUILDER_POINT);
 	}
 }
 

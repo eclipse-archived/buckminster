@@ -1,13 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
-
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.core.materializer;
 
 import org.eclipse.buckminster.core.helpers.LocalizedException;
@@ -17,26 +14,11 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
  */
 public class ProjectNameMismatchException extends LocalizedException
 {
-	private static final long serialVersionUID = 6405574395014251751L;
-	private final String m_wantedName;
-	private final String m_existingName;
+	private static final long serialVersionUID = -2168949402426015793L;
 
-	/**
-	 * @param defaultMessageFormat
-	 */
 	public ProjectNameMismatchException(String wantedName, String existingName)
 	{
-		super("ProjectBinding name conflict. Bind information indicates {0} for project named {1}");
-		m_wantedName = wantedName;
-		m_existingName = existingName;
-		this.assignMessage();
+		super("ProjectBinding name conflict. Bind information indicates %s for project named %s", wantedName, existingName);
 	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_wantedName, m_existingName };
-	}
-
 }
 

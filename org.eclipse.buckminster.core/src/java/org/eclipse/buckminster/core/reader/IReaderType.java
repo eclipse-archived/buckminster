@@ -311,6 +311,15 @@ public interface IReaderType extends IBuckminsterExtension
 	long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Returns the remote location of the workin copy or null if that cannot be determined
+	 * @param workingCopy
+	 * @param monitor
+	 * @return
+	 * @throws CoreException
+	 */
+	String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * Attempts to extract the closest resemblance to a path to the remote file from the repositoryLocation. For some
 	 * repository locations this is not possible (such as for cgi scripts taking a numeric id).
 	 * 

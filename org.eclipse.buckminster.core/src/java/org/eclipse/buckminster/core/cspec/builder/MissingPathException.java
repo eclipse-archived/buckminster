@@ -15,24 +15,11 @@ import org.eclipse.core.runtime.IPath;
 
 public class MissingPathException extends LocalizedException
 {
-	private static final long serialVersionUID = -6916638511968899141L;
-	private final String m_name;
-	private final String m_attribute;
-	private final IPath m_path;
+	private static final long serialVersionUID = 3228454630316889796L;
 
 	public MissingPathException(String name, String attribute, IPath path)
 	{
-		super("CSpec {0}, attribute {1} does not define path {2}");
-		m_name = name;
-		m_attribute = attribute;
-		m_path = path;
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_name, m_attribute, m_path.toPortableString() };
+		super("CSpec {0}, attribute {1} does not define path {2}", name, attribute, path);
 	}
 }
 

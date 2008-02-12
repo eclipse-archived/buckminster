@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -31,7 +32,7 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 	private ComponentQuery m_componentQuery;
 
 	public ComponentQueryParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions, new String[]
  		{
@@ -62,7 +63,7 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public ComponentQuery parse(String systemId, InputStream input) throws SAXException
+	public ComponentQuery parse(String systemId, InputStream input) throws CoreException
 	{
 		this.parseInput(systemId, input);
 		return m_componentQuery;

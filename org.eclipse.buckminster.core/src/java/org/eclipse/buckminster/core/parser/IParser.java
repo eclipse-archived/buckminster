@@ -12,7 +12,7 @@ package org.eclipse.buckminster.core.parser;
 
 import java.io.InputStream;
 
-import org.xml.sax.SAXException;
+import org.eclipse.core.runtime.CoreException;
 
 public interface IParser<T>
 {
@@ -21,9 +21,10 @@ public interface IParser<T>
 	 * @param systemId The \"name\" of the input stream
 	 * @param stream The stream that provides the input
 	 * @return The internalized model
+	 * @throws CoreException parsing failed for some reason.
 	 */
 	T parse(String systemId, InputStream stream)
-	throws SAXException;
+	throws CoreException;
 
 	/**
 	 * Sometimes its desirable to produce a model from

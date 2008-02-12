@@ -32,7 +32,7 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 	private CSpec m_cSpec;
 
 	public CSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions, new String[]
  		{
@@ -61,7 +61,7 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public CSpec parse(String systemId, InputStream input) throws SAXException
+	public CSpec parse(String systemId, InputStream input) throws CoreException
 	{
 		this.parseInput(systemId, input);
 		return m_cSpec;

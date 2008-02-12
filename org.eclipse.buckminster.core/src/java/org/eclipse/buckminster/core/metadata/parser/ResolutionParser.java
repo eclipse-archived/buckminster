@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -23,7 +24,7 @@ import org.xml.sax.SAXException;
 public class ResolutionParser extends MetaDataParser<Resolution>
 {
 	public ResolutionParser(List<ParserFactory.ParserExtension> parserExtensions)
-	throws SAXException
+	throws CoreException
 	{
 		super(parserExtensions);
 	}
@@ -42,7 +43,7 @@ public class ResolutionParser extends MetaDataParser<Resolution>
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public Resolution parse(String systemID, InputStream input) throws SAXException
+	public Resolution parse(String systemID, InputStream input) throws CoreException
 	{
 		this.parseInput(systemID, input);
 		return m_resolution;

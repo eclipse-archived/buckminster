@@ -33,7 +33,6 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -44,16 +43,9 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream,
 		IProgressMonitor monitor) throws CoreException
 	{
-		try
-		{
-			IParser<ComponentQuery> queryParser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
-				true);
-			return queryParser.parse(streamName, stream);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		IParser<ComponentQuery> queryParser = CorePlugin.getDefault().getParserFactory().getComponentQueryParser(
+			true);
+		return queryParser.parse(streamName, stream);
 	}
 
 	private static final UUID CACHE_KEY_BOM_CACHE = UUID.randomUUID();

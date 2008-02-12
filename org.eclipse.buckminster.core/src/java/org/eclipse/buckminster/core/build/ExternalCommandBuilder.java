@@ -52,7 +52,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		String fullCommandLine = getCommandLine(launcherDefinitions, defToUse, addArgs, this.getProject(), kind);
 
 		if (fullCommandLine == null)
-			throw new BuckminsterException("Couldn't resolve to a command line");
+			throw BuckminsterException.fromMessage("Couldn't resolve to a command line");
 
 		Logger logger = CorePlugin.getLogger();
 		logger.info("Command line: '%s'", fullCommandLine);
@@ -77,7 +77,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			thrStdOut.join();
 			int exitValue = p.waitFor();
 			if (exitValue != 0)
-				throw new BuckminsterException("External command '" + fullCommandLine + "' exited with " + exitValue);
+				throw BuckminsterException.fromMessage("External command '%s' exited with %d", fullCommandLine, Integer.valueOf(exitValue));
 		}
 		catch (Exception e)
 		{
@@ -97,8 +97,8 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		//
 		IPath relativePath = new Path(launcherDefinitionsFile);
 		if (relativePath.isAbsolute())
-			throw new BuckminsterException("The launcher definitions file name must be relative to the project root: "
-					+ launcherDefinitionsFile);
+			throw BuckminsterException.fromMessage("The launcher definitions file name must be relative to the project root: %s",
+					launcherDefinitionsFile);
 		IPath fullPath = project.getLocation().append(relativePath);
 
 		return fullPath.toFile();
@@ -162,7 +162,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			try
 			{
 				if (defToUse == null || defToUse.length() == 0)
-					throw new BuckminsterException("Missing value for 'definition to use'");
+					throw BuckminsterException.fromMessage("Missing value for 'definition to use'");
 
 				String resolvedDefsToUse = svm.performStringSubstitution(defToUse);
 

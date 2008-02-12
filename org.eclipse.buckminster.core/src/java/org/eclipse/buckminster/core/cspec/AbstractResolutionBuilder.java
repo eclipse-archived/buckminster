@@ -28,7 +28,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -93,25 +92,18 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 				public CSpecExtension consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor mon)
 					throws CoreException
 				{
+					mon.beginTask(null, 1);
+					mon.subTask(streamName);
 					try
 					{
-						mon.beginTask(null, 1);
-						mon.subTask(streamName);
-						try
-						{
-							IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(true);
-							CSpecExtension ce = cspecExtParser.parse(streamName, stream);
-							MonitorUtils.worked(mon, 1);
-							return ce;
-						}
-						finally
-						{
-							mon.done();
-						}
+						IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(true);
+						CSpecExtension ce = cspecExtParser.parse(streamName, stream);
+						MonitorUtils.worked(mon, 1);
+						return ce;
 					}
-					catch(SAXException e)
+					finally
 					{
-						throw BuckminsterException.wrap(e);
+						mon.done();
 					}
 				}
 			}, monitor);

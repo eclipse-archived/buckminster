@@ -90,7 +90,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 		String repTo = ctype.getNameSubstitution();
 
 		if(repFrom == null || repTo == null)
-			throw new BuckminsterException("Component type: " + m_componentType + " defines desiredNamePattern but no substitution");
+			throw BuckminsterException.fromMessage("Component type %s defines desiredNamePattern but no substitution", m_componentType);
 
 		Matcher matcher = repFrom.matcher(name);
 		if(matcher.matches())

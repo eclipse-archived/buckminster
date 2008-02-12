@@ -1,13 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
-
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.core.rmap.model;
 
 import org.eclipse.buckminster.core.helpers.LocalizedException;
@@ -17,23 +14,11 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
  */
 public class SearchPathNotFoundException extends LocalizedException
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6454414549521244436L;
-	private final String m_name;
+	private static final long serialVersionUID = 6638732630104642555L;
 
 	public SearchPathNotFoundException(String name)
 	{
-		super("Unable to find a searchPath for {0}");
-		m_name = name;
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return new String[] { m_name };
+		super("Unable to find a searchPath for %s", name);
 	}
 }
 

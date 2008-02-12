@@ -25,7 +25,6 @@ import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -36,15 +35,8 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 	public BillOfMaterials consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
 	throws CoreException
 	{
-		try
-		{
-			IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-			return bomParser.parse(streamName, stream);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
+		return bomParser.parse(streamName, stream);
 	}
 
 	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)

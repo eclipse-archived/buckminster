@@ -90,24 +90,12 @@ public abstract class FileUtils
 
 	public static class CopyOntoSelfException extends LocalizedException
 	{
-		private static final long serialVersionUID = -1533727619065375203L;
-
-		private final String m_source;
-
-		private final String m_destination;
+		private static final long serialVersionUID = 379621474603864267L;
 
 		public CopyOntoSelfException(File source, File destination)
 		{
-			super("Cannot copy {0} to {1} since the destination is equal to, or contained in, the source");
-			m_source = source.toString();
-			m_destination = destination.toString();
-			assignMessage();
-		}
-
-		@Override
-		protected String[] getArguments()
-		{
-			return new String[] { m_source, m_destination };
+			super("Cannot copy %s to %s since the destination is equal to, or contained in, the source",
+				source, destination);
 		}
 	}
 
@@ -128,32 +116,17 @@ public abstract class FileUtils
 
 	public static class DestinationNotEmptyException extends LocalizedException
 	{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 5459338589093100050L;
-
-		private final String m_destination;
+		private static final long serialVersionUID = -4126568695654461634L;
 
 		public DestinationNotEmptyException(File destination)
 		{
-			super("Unable to use {0} as a destination for copy since it is not empty");
-			m_destination = destination.toString();
-			assignMessage();
-		}
-
-		@Override
-		protected String[] getArguments()
-		{
-			return new String[] { m_destination };
+			super("Unable to use %s as a destination for copy since it is not empty", destination);
 		}
 	}
 
 	public static class DeleteException extends LocalizedException
 	{
-		private static final long serialVersionUID = 7937022594722296252L;
-
-		private final String m_file;
+		private static final long serialVersionUID = -8216112755038789300L;
 
 		public DeleteException(File file)
 		{
@@ -162,26 +135,13 @@ public abstract class FileUtils
 
 		public DeleteException(File file, Throwable e)
 		{
-			super("Unable to delete: {0}", e);
-			m_file = file.toString();
-			assignMessage();
-		}
-
-		@Override
-		protected String[] getArguments()
-		{
-			return new String[] { m_file };
+			super(e, "Unable to delete: %s", file);
 		}
 	}
 
 	public static class MkdirException extends LocalizedException
 	{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 2249707149761032461L;
-
-		private final String m_directory;
+		private static final long serialVersionUID = -1919074286465177750L;
 
 		public MkdirException(File directory)
 		{
@@ -190,15 +150,7 @@ public abstract class FileUtils
 
 		public MkdirException(File directory, Throwable e)
 		{
-			super("Unable to create directory {0}", e);
-			m_directory = directory.toString();
-			assignMessage();
-		}
-
-		@Override
-		protected String[] getArguments()
-		{
-			return new String[] { m_directory };
+			super(e, "Unable to create directory %s", directory);
 		}
 	}
 
@@ -215,7 +167,7 @@ public abstract class FileUtils
 	 * @throws BuckminsterException
 	 */
 	public static void checkCopyConditions(File sourceFile, File destination, ConflictResolution strategy,
-			IProgressMonitor monitor) throws BuckminsterException
+			IProgressMonitor monitor) throws CoreException
 	{
 		// Assert that the destination is different from source and not a
 		// subdirectory inside
@@ -243,7 +195,7 @@ public abstract class FileUtils
 	 * @throws BuckminsterException
 	 */
 	public static void prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)
-			throws BuckminsterException
+			throws CoreException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 200);

@@ -16,19 +16,11 @@ import org.eclipse.core.runtime.IPath;
  */
 public class DestinationChangeException extends LocalizedException
 {
-	private static final long serialVersionUID = 2183675159512733191L;
-	private final String[] m_args;
+	private static final long serialVersionUID = -7739997792455938561L;
 
 	public DestinationChangeException(IPath fixedDest, IPath wantedDest)
 	{
-		super("An attempt was made to change the fixed materialization location {0} to {1}");
-		m_args = new String[] { fixedDest.toPortableString(), wantedDest.toPortableString() };
-		assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return m_args;
+		super("An attempt was made to change the fixed materialization location %s to %s",
+			fixedDest.toPortableString(), wantedDest.toPortableString());
 	}
 }

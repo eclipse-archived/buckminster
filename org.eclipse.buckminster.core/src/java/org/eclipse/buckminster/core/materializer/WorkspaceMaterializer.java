@@ -265,8 +265,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				if(relSegs == 1)
 					useLink = true;
 				else
-					throw new BuckminsterException("Unable to determine project root when binding " + locationPath
-							+ " to <workspace>/" + wsRelativePath);
+					throw BuckminsterException.fromMessage("Unable to determine project root when binding %s to <workspace>/%s", locationPath, wsRelativePath);
 			}
 
 			IProject projectForBinding = wsRoot.getProject(projName);
@@ -298,9 +297,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					if(folder.exists())
 					{
 						if(!(folder.isLinked() && FileUtils.pathEquals(folder.getRawLocation(), locationPath)))
-							throw new BuckminsterException("Unable to create a folder link from <workspace>/"
-									+ wsRelativePath + " to " + locationPath + ", the link origin '" + projRelativePath
-									+ "' is already in use");
+							throw BuckminsterException.fromMessage(
+								"Unable to create a folder link from <workspace>/%s to %s, the link origin '%s' is already in use",
+									wsRelativePath, locationPath, projRelativePath);
 
 						MonitorUtils.worked(monitor, 50);
 					}
@@ -313,9 +312,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					if(ifile.exists())
 					{
 						if(!(ifile.isLinked() && FileUtils.pathEquals(ifile.getRawLocation(), locationPath)))
-							throw new BuckminsterException("Unable to create a file link from <workspace>/"
-									+ wsRelativePath + " to " + locationPath + ", the link origin: " + projRelativePath
-									+ " is already in use");
+							throw BuckminsterException.fromMessage(
+								"Unable to create a file link from <workspace>/%s to %s, the link origin: %s is already in use",
+									wsRelativePath, locationPath, projRelativePath);
 						MonitorUtils.worked(monitor, 50);
 					}
 					else

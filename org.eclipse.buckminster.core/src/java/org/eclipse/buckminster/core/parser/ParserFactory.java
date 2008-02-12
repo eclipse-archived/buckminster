@@ -49,7 +49,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
 
 public class ParserFactory implements IParserFactory
 {
@@ -107,65 +106,65 @@ public class ParserFactory implements IParserFactory
 	private Map<String, List<ParserExtension>> m_parserExtensions;
 
 	public IParser<CSpecExtension> getAlterCSpecParser(boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		return new AlterCSpecParser(getParserExtensions(CSpec.TAG, CSpecExtension.TAG), validating);
 	}
 
 	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG, DepNode.TAG), validating);
 	}
 
-	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws SAXException
+	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException
 	{
 		return new ComponentQueryParser(getParserExtensions(ComponentQuery.TAG), validating);
 	}
 
 	public IParser<CSpec> getCSpecParser(boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		return new CSpecParser(getParserExtensions(CSpec.TAG), validating);
 	}
 
 	public IParser<DepNode> getDepNodeParser()
-	throws SAXException
+	throws CoreException
 	{
 		return new DepNodeParser(getParserExtensions(Resolution.TAG, DepNode.TAG));
 	}
 
 	public IParser<Materialization> getMaterializationParser()
-	throws SAXException
+	throws CoreException
 	{
 		return new MaterializationParser(getParserExtensions(Materialization.TAG));
 	}
 
 	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		return new MaterializationSpecParser(getParserExtensions(MaterializationSpec.TAG), validating);
 	}
 
-	public IParser<Provider> getProviderParser(boolean validating) throws SAXException
+	public IParser<Provider> getProviderParser(boolean validating) throws CoreException
 	{
 		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
 	}
 
 	public IParser<Resolution> getResolutionParser()
-	throws SAXException
+	throws CoreException
 	{
 		return new ResolutionParser(getParserExtensions(Resolution.TAG));
 	}
 
 	public IParser<ResourceMap> getResourceMapParser(boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
 	}
 
 	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating)
-	throws SAXException
+	throws CoreException
 	{
 		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
 	}

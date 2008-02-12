@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -11,24 +11,14 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
 
 /**
  * @author Thomas Hallgren
- * 
  */
 public class ReferentialIntegrityException extends LocalizedException
 {
-	private static final long serialVersionUID = 4272444003054478928L;
-	private final String[] m_arguments;
+	private static final long serialVersionUID = 7053885060385428942L;
 
 	public ReferentialIntegrityException(IUUIDKeyed instance, String operation, String reason)
 	{
-		super("Unable to {0} the {1} with id {2}: {3}");
-		m_arguments = new String[] { operation, instance.getClass().getName(), instance.getId().toString(),
-				reason };
-		this.assignMessage();
-	}
-
-	@Override
-	protected String[] getArguments()
-	{
-		return m_arguments;
+		super("Unable to %s the %s with id %s: %s",
+			operation, instance.getClass().getName(), instance.getId(), reason);
 	}
 }

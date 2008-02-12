@@ -91,7 +91,9 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		}
 		catch(CoreException e)
 		{
-			throw new CoreException(BuckminsterException.createStatus("Unable to obtain site from: " + siteURLStr, e));
+			CoreException ew = new CoreException(BuckminsterException.createStatus("Unable to obtain site from: " + siteURLStr, e));
+			ew.initCause(e);
+			throw ew;
 		}
 	}
 
