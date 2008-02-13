@@ -188,7 +188,7 @@ public class Application implements IApplication
 			{
 				// Create the wizard dialog and resize it.
 				//
-				InstallWizard installWizard = new InstallWizard(properties);
+				final InstallWizard installWizard = new InstallWizard(properties);
 				m_errorURL = installWizard.getErrorURL();
 				
 				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard, ~SWT.APPLICATION_MODAL);
@@ -215,13 +215,14 @@ public class Application implements IApplication
 						if(t instanceof JNLPException)
 						{
 							JNLPException je = (JNLPException)t;
-							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE, je
+
+							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE, je
 									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
 									m_errorURL, je.getErrorCode(), status);
 						}
 						else
 						{
-							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
+							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
 									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
 									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
 						}
