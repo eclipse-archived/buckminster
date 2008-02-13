@@ -527,7 +527,19 @@ public class QueryEditor extends EditorPart
 			else
 			{
 				stream = new FileInputStream(file);
-				m_componentQuery.initFrom(ComponentQuery.fromStream(file.toURI().toURL(), stream, true));
+				URL contextURL;
+				try
+				{
+					// The context URL is normally passed on as the tooltip text
+					//
+					contextURL = URLUtils.normalizeToURL(input.getToolTipText());
+				}
+				catch(MalformedURLException e)
+				{
+					contextURL = file.toURI().toURL();
+				}
+				m_componentQuery.initFrom(ComponentQuery.fromStream(contextURL, stream, true));
+				CorePlugin.getLogger().debug("CQUERY Context URL set to %s", m_componentQuery.getContextURL());
 			}
 			m_needsRefresh = true;
 			if(m_componentName != null)

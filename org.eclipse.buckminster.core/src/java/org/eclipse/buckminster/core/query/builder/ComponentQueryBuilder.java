@@ -147,9 +147,9 @@ public class ComponentQueryBuilder
 		m_advisorNodes.remove(node);
 	}
 
-	public final void setContextURL(URL parentURL)
+	public final void setContextURL(URL contextURL)
 	{
-		m_contextURL = parentURL;
+		m_contextURL = contextURL;
 	}
 
 	public void setDocumentation(Documentation documentation)

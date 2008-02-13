@@ -118,6 +118,6 @@ public class EditorUtils
 			}
 		}
 		
-		return new DerivedExternalFileEditorInput(input, cspecFile, new Path(uri.getPath()).lastSegment(), uri.toString());
+		return new DerivedExternalFileEditorInput(input, cspecFile, new Path(uri.getPath()).lastSegment(), url.toString());
 	}
 }

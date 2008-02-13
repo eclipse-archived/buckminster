@@ -286,6 +286,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 			for(int idx = 0; idx < top; ++idx)
 			{
 				IResolverFactory factory = factories[idx];
+				factory.initDefaultPreferences();
 				String factoryId = factory.getId();
 				NestedFieldEditor nfe = new NestedFieldEditor(factoryId, m_resolversParent);
 				Composite nfeComp = nfe.getControl();
