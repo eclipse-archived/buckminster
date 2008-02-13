@@ -18,6 +18,8 @@ public interface MaterializationConstants
 	
 	public static final String STEP_LOGIN = "LoginStep";
 	
+	public static final String STEP_RESTRICTION = "SpaceRestrictionStep";
+	
 	public static final String STEP_DOWNLOAD_LOCATION = "SimpleDownloadLocationStep";
 	
 	public static final String STEP_ADVANCED_SETTINGS = "SimpleAdvancedSettingsStep";
