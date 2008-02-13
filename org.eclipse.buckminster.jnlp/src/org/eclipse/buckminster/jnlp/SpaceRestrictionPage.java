@@ -9,12 +9,17 @@
 package org.eclipse.buckminster.jnlp;
 
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 
 /**
  * @author Karel Brezina
@@ -90,7 +95,17 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
+		Link link = new Link(m_solutionEmailAndInvitationComposite, SWT.WRAP);
+		link.setText("Login to <a>" + getInstallWizard().getServiceProvider() + "</a> and accept the invitation");
+		link.addSelectionListener(new SelectionAdapter()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Program.launch(getInstallWizard().getServiceProviderHomePageURL());
+			}
+		});
 		
 		m_solutionInvitationComposite = new Composite(m_stackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -104,7 +119,17 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionInvitationComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
+		link = new Link(m_solutionInvitationComposite, SWT.WRAP);
+		link.setText("Login to <a>" + getInstallWizard().getServiceProvider() + "</a> and accept the invitation");
+		link.addSelectionListener(new SelectionAdapter()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Program.launch(getInstallWizard().getServiceProviderHomePageURL());
+			}
+		});
 		
 		m_solutionForbiddenComposite = new Composite(m_stackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
@@ -126,8 +151,18 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
-		
+		link = new Link(m_solutionForbiddenComposite, SWT.WRAP);
+		link.setText("Login to <a>" + getInstallWizard().getServiceProvider() + "</a> and accept the invitation");
+		link.addSelectionListener(new SelectionAdapter()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Program.launch(getInstallWizard().getServiceProviderHomePageURL());
+			}
+		});
+				
 		Composite fillerComposite = new Composite(pageComposite, SWT.NONE);
 		fillerComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -180,5 +215,11 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		m_stackComposite.layout();
 		
 		setErrorMessage(null);
+	}
+    
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);
 	}
 }

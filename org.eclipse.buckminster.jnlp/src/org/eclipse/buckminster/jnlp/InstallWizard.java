@@ -662,10 +662,11 @@ public class InstallWizard extends AdvancedWizard
 			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN ||
 					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS ||
 					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
-				
+			{	
 				m_spaceRestrictionPage.setStatus(result);
 				
 				return m_spaceRestrictionPage;
+			}
 		}
 		catch(Exception e1)
 		{

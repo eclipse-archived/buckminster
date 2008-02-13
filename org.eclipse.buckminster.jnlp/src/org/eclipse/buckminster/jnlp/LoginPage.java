@@ -30,7 +30,9 @@ public class LoginPage extends InstallWizardPage
 	private String m_lastRegisteredUserName;
 
 	private String m_lastRegisteredPassword;
-
+	
+	private boolean m_pageCommitted;
+	
 	protected LoginPage(String provider)
 	{
 		super(MaterializationConstants.STEP_LOGIN, "Login", "Materialization requires login to " + provider + ".", null);
@@ -43,6 +45,8 @@ public class LoginPage extends InstallWizardPage
 		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
 		
 		setPageComplete(getCompleteLoginFields());
+		
+		m_pageCommitted = false;
 	}
 	
 	public void createControl(Composite parent)
@@ -176,6 +180,8 @@ public class LoginPage extends InstallWizardPage
 			
 			getInstallWizard().setAuthenticatorUserName(userName);
 			getInstallWizard().setAuthenticatorPassword(password);
+			
+			m_pageCommitted = true;
 		}
 		
 		return true;
@@ -184,6 +190,9 @@ public class LoginPage extends InstallWizardPage
 	@Override
 	public IWizardPage getNextPage()
 	{
-		return getInstallWizard().getDownloadPage();	
+		if(m_pageCommitted)
+			return getInstallWizard().getDownloadPage();
+		
+		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);
 	}
 }
