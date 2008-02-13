@@ -39,19 +39,7 @@ public class DonePage extends InstallWizardPage
 	
 	private static final int HORIZONTAL_INDENT = 50;
 	
-	//private static final int BUTTON_WIDTH = 100;
-	
-	//private static final String[] BOM_FILTER_NAMES = {"Bill Of Materials (*.bom)"};
-
-	//private static final String[] BOM_FILTER_EXTS = { "*.bom"};
-
-	//private static final String[] MSPEC_FILTER_NAMES = {"Materialization Specification (*.mspec)"};
-
-	//private static final String[] MSPEC_FILTER_EXTS = { "*.mspec"};
-
 	private static final String ICON_LEARN = "library_wiz.png";
-	
-	//private static final String ICON_LOCAL_FOLDER = "workset_wiz.png";
 	
 	private static final String ICON_PUBLISH = "xhtml_wiz.png";
 	
