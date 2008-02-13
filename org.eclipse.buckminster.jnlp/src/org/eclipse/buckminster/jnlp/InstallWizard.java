@@ -37,6 +37,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_R
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_MATERIALIZATION_IMAGE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SERVICE_PROVIDER;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SPACE_NAME;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
@@ -143,11 +144,19 @@ public class InstallWizard extends AdvancedWizard
 	
 	private String m_serviceProvider;
 	
+	private String m_spaceName;
+	
 	private String m_loginKey;
 	
 	private String m_loginKeyUserName;
 	
 	private boolean m_loginPageRequested = false;
+	
+	private LoginPage m_loginPage;
+	
+	private SpaceRestrictionPage m_spaceRestrictionPage;
+
+	private SimpleDownloadPage m_downloadPage;
 	
 	private SimpleAdvancedPage m_advancedPage;
 	
@@ -270,11 +279,18 @@ public class InstallWizard extends AdvancedWizard
 
 		if(!m_problemInProperties)
 		{
-			addAdvancedPage(new LoginPage(m_authenticator == null ? "Virtual Distro Provider" : getServiceProvider()));
-			addAdvancedPage(new SimpleDownloadPage());
+			m_loginPage = new LoginPage(
+						m_authenticator == null ? "Virtual Distro Provider" : getServiceProvider());
+			addAdvancedPage(m_loginPage);
+
+			m_downloadPage = new SimpleDownloadPage();
+			addAdvancedPage(m_downloadPage);
 			
 			m_advancedPage = new SimpleAdvancedPage();
 			addAdvancedPage(m_advancedPage);
+			
+			m_spaceRestrictionPage = new SpaceRestrictionPage();
+			addAdvancedPage(m_spaceRestrictionPage);
 			
 			m_operationPage = new OperationPage();
 			addAdvancedPage(m_operationPage);
@@ -567,6 +583,11 @@ public class InstallWizard extends AdvancedWizard
 		return m_serviceProvider;
 	}
 	
+	String getSpaceName()
+	{
+		return m_spaceName;
+	}
+	
 	String[] getMaterializers()
 	{
 		return MATERIALIZERS;
@@ -621,6 +642,37 @@ public class InstallWizard extends AdvancedWizard
 	boolean isProblemInProperties()
 	{
 		return m_problemInProperties;
+	}
+	
+
+	int checkSpaceReadAccess() throws Exception
+	{
+		if(m_authenticator == null || m_spaceName == null)
+			return IAuthenticator.SPACE_ACCESS_FORBIDDEN;
+		
+		return m_authenticator.checkSpaceReadAccess(m_spaceName);
+	}	
+
+	IWizardPage getDownloadPage()
+	{
+		try
+		{
+			int result = checkSpaceReadAccess();
+
+			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN ||
+					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS ||
+					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+				
+				m_spaceRestrictionPage.setStatus(result);
+				
+				return m_spaceRestrictionPage;
+		}
+		catch(Exception e1)
+		{
+			// no information - try to get the artifact
+		}
+
+		return m_downloadPage;
 	}
 	
 	boolean isMaterializerInitialized()
@@ -1003,6 +1055,8 @@ public class InstallWizard extends AdvancedWizard
 		
 		m_serviceProvider = properties.get(PROP_SERVICE_PROVIDER);
 
+		m_spaceName = properties.get(PROP_SPACE_NAME);
+
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;
@@ -1130,7 +1184,6 @@ public class InstallWizard extends AdvancedWizard
 	{
 		m_mspecListeners.remove(listener);
 	}
-	
 }
 
 class LearnMoreItem

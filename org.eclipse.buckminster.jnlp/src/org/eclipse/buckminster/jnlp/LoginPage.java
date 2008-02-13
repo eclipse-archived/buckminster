@@ -11,6 +11,7 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
 
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -178,5 +179,11 @@ public class LoginPage extends InstallWizardPage
 		}
 		
 		return true;
+	}
+    
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return getInstallWizard().getDownloadPage();	
 	}
 }

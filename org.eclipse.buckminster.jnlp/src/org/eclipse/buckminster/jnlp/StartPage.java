@@ -123,7 +123,7 @@ public class StartPage extends InstallWizardPage
 		{
 			return getWizard().getPage(MaterializationConstants.STEP_LOGIN);
 		} 
-		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);	
+		return getInstallWizard().getDownloadPage();	
 	}
 	
 	@Override

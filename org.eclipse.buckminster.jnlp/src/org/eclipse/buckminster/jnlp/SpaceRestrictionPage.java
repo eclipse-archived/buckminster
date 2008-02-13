@@ -8,12 +8,11 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -29,8 +28,16 @@ public class SpaceRestrictionPage extends InstallWizardPage
 
 	private static final String ICON_DOT = "brkp_obj.gif";
 
-	private Button m_acceptedButton;
-
+	private Composite m_stackComposite;
+	
+	private StackLayout m_stackLayout;
+	
+	private Composite m_solutionEmailAndInvitationComposite;
+	
+	private Composite m_solutionInvitationComposite;
+	
+	private Composite m_solutionForbiddenComposite;
+	
 	protected SpaceRestrictionPage()
 	{
 		super(MaterializationConstants.STEP_RESTRICTION, "Space Restriction", "Materialization space has a restrictive access.",
@@ -59,41 +66,70 @@ public class SpaceRestrictionPage extends InstallWizardPage
 
 		new Label(pageComposite, SWT.NONE).setText("Solution:");
 
-		Composite solutionComposite = new Composite(pageComposite, SWT.NONE);
+		m_stackComposite = new Composite(pageComposite, SWT.NONE);
+		m_stackLayout = new StackLayout();
+		m_stackComposite.setLayout(m_stackLayout);
+		
+		m_solutionEmailAndInvitationComposite = new Composite(m_stackComposite, SWT.NONE);
 		layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
-		solutionComposite.setLayout(layout);
-		solutionComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		m_solutionEmailAndInvitationComposite.setLayout(layout);
+		m_solutionEmailAndInvitationComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		label = new Label(solutionComposite, SWT.NONE);
+		label = new Label(m_solutionEmailAndInvitationComposite, SWT.NONE);
 		label.setImage(getInstallWizard().getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(solutionComposite, SWT.WRAP).setText("Confirm email Verifycation");
+		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Confirm email Verifycation");
 		
-		label = new Label(solutionComposite, SWT.NONE);
+		label = new Label(m_solutionEmailAndInvitationComposite, SWT.NONE);
 		label.setImage(getInstallWizard().getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(solutionComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
+		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
+		
+		m_solutionInvitationComposite = new Composite(m_stackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		m_solutionInvitationComposite.setLayout(layout);
+		m_solutionInvitationComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		label = new Label(m_solutionInvitationComposite, SWT.NONE);
+		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		layoutData = new GridData();
+		layoutData.verticalAlignment = GridData.CENTER;
+		label.setLayoutData(layoutData);
+
+		new Label(m_solutionInvitationComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
+		
+		m_solutionForbiddenComposite = new Composite(m_stackComposite, SWT.NONE);
+		layout = new GridLayout(2, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		m_solutionForbiddenComposite.setLayout(layout);
+		m_solutionForbiddenComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		label = new Label(m_solutionForbiddenComposite, SWT.NONE);
+		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		layoutData = new GridData();
+		layoutData.verticalAlignment = GridData.CENTER;
+		label.setLayoutData(layoutData);
+
+		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Ask the space owner to invite you to the materialization space");
+		
+		label = new Label(m_solutionForbiddenComposite, SWT.NONE);
+		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		layoutData = new GridData();
+		layoutData.verticalAlignment = GridData.CENTER;
+		label.setLayoutData(layoutData);
+
+		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Login to " + getInstallWizard().getServiceProvider() + " and accept the invitation");
 		
 		Composite fillerComposite = new Composite(pageComposite, SWT.NONE);
 		fillerComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		m_acceptedButton = new Button(pageComposite, SWT.CHECK);
-		m_acceptedButton.setText("I have accepted the invitation at " + getInstallWizard().getServiceProvider());
-		m_acceptedButton.addSelectionListener(new SelectionAdapter(){
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				getContainer().updateButtons();
-			}
-		});
 
 		setControl(pageComposite);
 	}
@@ -101,7 +137,48 @@ public class SpaceRestrictionPage extends InstallWizardPage
 	@Override
 	public boolean isPageComplete()
 	{
-		return m_acceptedButton.getSelection();
+		return true;
 	}
 
+    @Override
+	public boolean performPageCommit()
+	{
+		try
+		{
+			int result = getInstallWizard().checkSpaceReadAccess();
+
+			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN ||
+					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS ||
+					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+			{
+				setErrorMessage("Aceess forbidden - the invitation is not accepted");
+				return false;
+			}
+		}
+		catch(Exception e1)
+		{
+			// no information - try to get the artifact
+		}
+
+		return true;
+	}
+
+	public void setStatus(int result)
+	{
+		switch(result)
+		{
+		case IAuthenticator.SPACE_ACCESS_FORBIDDEN:
+			m_stackLayout.topControl = m_solutionForbiddenComposite;
+			break;
+		case IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS:
+			m_stackLayout.topControl = m_solutionInvitationComposite;
+			break;
+		default:
+			m_stackLayout.topControl = m_solutionEmailAndInvitationComposite;
+		}
+		
+		m_stackComposite.layout();
+		
+		setErrorMessage(null);
+	}
 }
