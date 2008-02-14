@@ -7,6 +7,11 @@
         <cs:dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
+        <cs:dependency name="org.eclipse.buckminster.core.test" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.cvs.test" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.maven.test" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.p4.test" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.pde.test" componentType="osgi.bundle"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="build.core.product" actor="ant">
