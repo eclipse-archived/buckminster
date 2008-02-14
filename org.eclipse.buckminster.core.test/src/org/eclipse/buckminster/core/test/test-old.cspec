@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec name="buckminster.test_a"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<cs:requirement name="default">
+		<cs:component name="org.apache.ant" versionSelector="1.6.2">
+			<cs:target name="ant.jar"/>
+		</cs:component>
+		<cs:component name="se.tada.util.sax"/>
+		<cs:component name="org.eclipse.team.core" versionSelector="3.1.0"/>
+	</cs:requirement>
+
+	<cs:target name="buckminster.jar" requires="default"/>
+
+</cs:cspec>
