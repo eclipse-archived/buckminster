@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Fragment for Buckminster CVS support
+Bundle-SymbolicName: org.eclipse.buckminster.cvs.test
+Bundle-Version: 1.0.0
+Bundle-Vendor: Eclipse.org
+Fragment-Host: org.eclipse.buckminster.cvs;bundle-version="0.0.0"
+Require-Bundle: org.junit4
