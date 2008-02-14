@@ -88,33 +88,33 @@ public class Handler extends AbstractURLStreamHandlerService
 				if(host == null)
 					throw new MalformedURLException("The host of a cvs URL cannot be empty");
 
-				String module = uri.getPath();
-				if(module == null)
+				String rootStr = uri.getPath();
+				if(rootStr == null)
 					throw new MalformedURLException("The path of a cvs URL cannot be empty");
 
-				IPath modulePath = new Path(module);
-				if(!modulePath.isAbsolute())
+				IPath rootPath = new Path(rootStr);
+				if(!rootPath.isAbsolute())
 					throw new MalformedURLException("The path of a cvs URL must be absolute");
-				if(modulePath.segmentCount() < 1)
-					throw new MalformedURLException("The path of a cvs URL must have at least 1 segments");
-				if(modulePath.hasTrailingSeparator())
+				if(rootPath.segmentCount() < 1)
+					throw new MalformedURLException("The path of a cvs URL must have at least 1 segment");
+				if(rootPath.hasTrailingSeparator())
 					throw new MalformedURLException(
 						"The path of a cvs URL must not have a trailing separator");
 
-				String repository = params.get("repository");
-				if(repository == null)
+				String moduleStr = uri.getFragment();
+				if(moduleStr == null)
 					throw new MalformedURLException(
-						"A cvs URL must have a repository=<repository path> parameter");
+						"A cvs URL must end with #<module path>");
 
-				IPath repoPath = new Path(repository);
-				if(!repoPath.isAbsolute())
-					throw new MalformedURLException("The repository of a cvs URL must be an absolute path");
-				if(repoPath.segmentCount() < 1)
+				IPath modulePath = new Path(moduleStr);
+				if(!modulePath.isAbsolute())
+					throw new MalformedURLException("The module of a cvs URL must be an absolute path");
+				if(modulePath.segmentCount() < 1)
 					throw new MalformedURLException(
-						"The repository of a cvs URL must have at least 1 segment");
-				if(repoPath.hasTrailingSeparator())
+						"The module of a cvs URL must have at least 1 segment");
+				if(modulePath.hasTrailingSeparator())
 					throw new MalformedURLException(
-						"The repository of a cvs URL must not have a trailing separator");
+						"The module of a cvs URL must not have a trailing separator");
 
 				String user = uri.getUserInfo();
 				if(user == null)
@@ -134,13 +134,12 @@ public class Handler extends AbstractURLStreamHandlerService
 				bld.append('@');
 				bld.append(host);
 				bld.append(':');
-				bld.append(repoPath.toPortableString());
+				bld.append(rootPath.toPortableString());
 				if(modulePath.segmentCount() > 0)
 				{
 					bld.append(',');
 					bld.append(modulePath.toPortableString());
 				}
-
 
 				CorePlugin plugin = CorePlugin.getDefault();
 				String versionSelector = uri.getFragment();
