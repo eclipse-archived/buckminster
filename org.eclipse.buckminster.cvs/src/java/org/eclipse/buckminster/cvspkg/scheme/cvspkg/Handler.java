@@ -142,7 +142,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				}
 
 				CorePlugin plugin = CorePlugin.getDefault();
-				String versionSelector = uri.getFragment();
+				String versionSelector = params.get("version");
 				IReaderType cvsReaderType = plugin.getReaderType("cvs");
 				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), null, -1, null, null);
 				IProgressMonitor nullMon = new NullProgressMonitor();
@@ -158,7 +158,15 @@ public class Handler extends AbstractURLStreamHandlerService
 			{
 				throw new MalformedURLException(e.getMessage());
 			}
-			catch(CoreException e)
+			catch(IllegalArgumentException e)
+			{
+				throw new MalformedURLException(e.getMessage());
+			}
+			catch(IOException e)
+			{
+				throw e;
+			}
+			catch(Exception e)
 			{
 				Throwable t = e.getCause();
 				if(t instanceof IOException)
