@@ -13,6 +13,7 @@ package org.eclipse.buckminster.ui;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.internal.GUICertificateTrustInquiry;
@@ -65,6 +66,10 @@ public class UiPlugin extends AbstractUIPlugin
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
+		// Force activation of the core bundle
+		//
+		CorePlugin.getLogger();
+
 		URLUtils.setTrustInquiry(new GUICertificateTrustInquiry());
 		super.start(context);
 	}
