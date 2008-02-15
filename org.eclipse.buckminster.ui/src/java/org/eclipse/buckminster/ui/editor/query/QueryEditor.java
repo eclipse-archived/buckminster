@@ -1551,7 +1551,7 @@ public class QueryEditor extends EditorPart
 			string = TextUtils.notNullString(m_componentQuery.getResourceMapURL());
 			m_requestURL.setText(string);
 			m_requestURLCheckbox.setSelection(string.length() > 0);
-			m_propertyURLCheckbox.notifyListeners(SWT.Selection, new Event());
+			m_requestURLCheckbox.notifyListeners(SWT.Selection, new Event());
 			m_properties.setProperties(m_componentQuery.getProperties());
 			m_shortDesc.setText(TextUtils.notNullString(m_componentQuery.getShortDesc()));
 			Documentation doc = m_componentQuery.getDocumentation();
