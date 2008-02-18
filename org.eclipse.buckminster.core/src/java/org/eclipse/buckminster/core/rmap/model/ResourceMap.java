@@ -233,6 +233,16 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		}
 	}
 
+	public SearchPath getLocalSearchPath(String componentName) throws CoreException
+	{
+		for(Matcher matcher : m_matchers)
+		{
+			if(matcher instanceof Locator && matcher.matches(componentName))
+				return matcher.getSearchPath(null);
+		}
+		return null;
+	}
+
 	public SearchPath getSearchPath(NodeQuery query) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
