@@ -71,7 +71,7 @@ class ResolverNodeWithJob extends ResolverNode
 
 	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
-		super(new NodeQuery(context, qDep), requestorInfo);
+		super(context.getNodeQuery(qDep), requestorInfo);
 		m_job = new NodeResolutionJob(qDep.getRequest().toString());
 		m_resolver = resolver;
 	}

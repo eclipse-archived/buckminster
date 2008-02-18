@@ -10,11 +10,13 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.Closeable;
+
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.resolver.IResolverBackchannel;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -23,18 +25,12 @@ import org.eclipse.core.runtime.CoreException;
  * @see IReaderType
  * @author thhal
  */
-public interface IComponentReader
+public interface IComponentReader extends IResolverBackchannel, Closeable
 {
 	/**
 	 * Returns <code>true</code> if this reader is capable of materializing components.
 	 */
 	boolean canMaterialize();
-
-	/**
-	 * Free resources used by this connection
-	 * @throws BuckminsterException
-	 */
-	void close();
 
 	/**
 	 * Returns the component type

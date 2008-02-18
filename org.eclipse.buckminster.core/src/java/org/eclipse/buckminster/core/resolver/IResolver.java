@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public interface IResolver
+public interface IResolver extends IResolverBackchannel
 {
 	/**
 	 * Returns the context associated with this resolver

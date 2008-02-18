@@ -33,12 +33,12 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * The <code>NodeQuery</code> combines the {@link IComponentQuery} with one
- * specific {@link IComponentRequest} during recursive resolvement of a
+ * specific {@link IComponentRequest} during recursive resolution of a
  * dependency tree.
  * 
  * @author Thomas Hallgren
  */
-public class NodeQuery implements Comparator<VersionMatch>
+public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 {
 	private final RMContext m_context;
 
@@ -69,7 +69,7 @@ public class NodeQuery implements Comparator<VersionMatch>
 	public NodeQuery addDependencyQualification(QualifiedDependency newQDep) throws CoreException
 	{
 		QualifiedDependency qDep = m_qDep.mergeDependency(newQDep);
-		return qDep == m_qDep ? this : new NodeQuery(m_context, qDep);
+		return qDep == m_qDep ? this : m_context.getNodeQuery(qDep);
 	}
 
 	/**
@@ -465,16 +465,26 @@ public class NodeQuery implements Comparator<VersionMatch>
 	{
 		VersionSelector[] branchTagPath = getBranchTagPath();
 		if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
+		{
+			logDecision(branchOrTag.getType() == VersionSelector.BRANCH
+				? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED,
+						branchOrTag, "not in path '%s'", VersionSelector.toString(branchTagPath));
 			return false;
+		}
 
 		String[] spacePath = getSpacePath();
 		if(spacePath.length > 0 && TextUtils.indexOf(spacePath, space) < 0)
+		{
+			logDecision(ResolverDecisionType.SPACE_REJECTED, "not in path '%s'", TextUtils.concat(spacePath, ","));
 			return false;
+		}
 
 		IVersionDesignator designator = getVersionDesignator();
 		if(designator != null && !designator.designates(version))
+		{
+			logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("Not designated by %s", designator));
 			return false;
-
+		}
 		return true;
 	}
 
@@ -490,6 +500,16 @@ public class NodeQuery implements Comparator<VersionMatch>
 	public boolean isPrune()
 	{
 		return getComponentQuery().isPrune(getComponentRequest());
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return getResolutionContext().logDecision(getComponentRequest(), decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	{
+		return getResolutionContext().logDecision(request, decisionType, args);
 	}
 
 	/**

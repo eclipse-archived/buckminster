@@ -16,6 +16,8 @@ import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.core.resolver.ResolverDecision;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -53,6 +55,16 @@ public class RemoteResolver implements IResolver
 	public boolean isRecursiveResolve()
 	{
 		return m_recursive;
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(request, decisionType, args);
 	}
 
 	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException

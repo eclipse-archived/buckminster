@@ -42,6 +42,16 @@ public class MainResolver implements IResolver
 		return m_recursiveResolve;
 	}
 
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(request, decisionType, args);
+	}
+
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query = m_context.getNodeQuery(request);

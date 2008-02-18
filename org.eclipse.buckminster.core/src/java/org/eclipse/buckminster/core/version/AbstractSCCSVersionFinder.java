@@ -13,6 +13,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -26,7 +27,9 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 	protected static class RevisionEntry
 	{
 		private final String m_entryName;
+
 		private final long m_revision;
+
 		private final Date m_timestamp;
 
 		public RevisionEntry(String entryName, Date timestamp, long revision)
@@ -87,6 +90,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				// We are using a versionConverter. This rules out anything found
 				// on the trunk.
 				//
+				logDecision(ResolverDecisionType.USING_VERSION_CONVERTER, versionConverter.getId());
+
 				trunk = false;
 
 				// Exactly one of the tags or branches must be valid
@@ -113,11 +118,20 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 
 			int ticks = 0;
 			if(trunk)
+			{
+				logDecision(ResolverDecisionType.SEARCHING_TRUNK);
 				ticks += 10;
+			}
 			if(branches)
+			{
+				logDecision(ResolverDecisionType.SEARCHING_BRANCHES);
 				ticks += 10;
+			}
 			if(tags)
+			{
+				logDecision(ResolverDecisionType.SEARCHING_TAGS);
 				ticks += 10;
+			}
 
 			monitor.beginTask(null, ticks);
 			VersionMatch best = null;
@@ -127,15 +141,25 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			if(tags)
 			{
 				VersionMatch match = getBestBranchOrTagMatch(false, MonitorUtils.subMonitor(monitor, 10));
-				if(match != null && (best == null || query.compare(match, best) > 0))
+				if(best == null)
 					best = match;
+				else if(match != null && query.compare(match, best) > 0)
+				{
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					best = match;
+				}
 			}
 
 			if(trunk)
 			{
 				VersionMatch match = getBestTrunkMatch(MonitorUtils.subMonitor(monitor, 10));
-				if(match != null && (best == null || query.compare(match, best) > 0))
+				if(best == null)
 					best = match;
+				else if(match != null && query.compare(match, best) > 0)
+				{
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					best = match;
+				}
 			}
 			return best;
 		}
@@ -159,20 +183,30 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		}
 	}
 
-	protected VersionMatch getBestBranchOrTagMatch(boolean branches, List<RevisionEntry> entries, IProgressMonitor monitor) throws CoreException
+	protected VersionMatch getBestBranchOrTagMatch(boolean branches, List<RevisionEntry> entries,
+			IProgressMonitor monitor) throws CoreException
 	{
 		int top = entries.size();
 		if(top == 0)
 		{
+			logDecision(branches
+					? ResolverDecisionType.NO_BRANCHES_FOUND
+					: ResolverDecisionType.NO_TAGS_FOUND);
 			MonitorUtils.complete(monitor);
 			return null;
 		}
 
 		IVersionConverter vConverter = getProvider().getVersionConverter();
-		if(vConverter != null && vConverter.getSelectorType() != (branches ? VersionSelector.BRANCH : VersionSelector.TAG))
+		if(vConverter != null && vConverter.getSelectorType() != (branches
+				? VersionSelector.BRANCH
+				: VersionSelector.TAG))
 		{
 			// Version converter not for the desired type so we will not find anything
 			//
+			if(branches)
+				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "tags", "branches");
+			else
+				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "branches", "tags");
 			MonitorUtils.complete(monitor);
 			return null;
 		}
@@ -190,7 +224,10 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			// Rule out anything that is above a given revision
 			//
 			if(revision != -1 && entry.getRevision() > revision)
+			{
+				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high");
 				continue;
+			}
 
 			// Rule out anything that is later then a given time
 			//
@@ -198,16 +235,26 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			{
 				Date entryTs = entry.getTimestamp();
 				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
+				{
+					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young");
 					continue;
+				}
 			}
 
 			String name = entry.getEntryName();
-			VersionSelector branchOrTag = branches ? VersionSelector.branch(name) : VersionSelector.tag(name);
+			VersionSelector branchOrTag = branches
+					? VersionSelector.branch(name)
+					: VersionSelector.tag(name);
 			if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
-				//
+			{
 				// This one will be discriminated anyway so there's no need to include it
 				//
+				logDecision(branches
+						? ResolverDecisionType.BRANCH_REJECTED
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, String.format("not in path '%s'",
+						VersionSelector.toString(branchTagPath)));
 				continue;
+			}
 
 			IVersion version;
 			VersionMatch match = null;
@@ -218,6 +265,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				{
 					// Converter could not make sense of this tag. Skip it
 					//
+					logDecision(ResolverDecisionType.VERSION_REJECTED, version, "versionSelector cannot make sense of it");
 					MonitorUtils.worked(monitor, 10);
 					continue;
 				}
@@ -227,27 +275,37 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				//
 				match = new VersionMatch(version, branchOrTag, space, entry.getRevision(), entry.getTimestamp(), null);
 				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
+				{
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "no component was found");
 					continue;
+				}
 			}
 			else
 			{
 				try
 				{
-					version = getVersionFromArtifacts(branchOrTag, MonitorUtils.subMonitor(monitor, 10));					
+					version = getVersionFromArtifacts(branchOrTag, MonitorUtils.subMonitor(monitor, 10));
 				}
 				catch(CoreException e)
 				{
 					// Something is not right with this entry. Skip it.
 					//
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, e.getMessage());
 					continue;
 				}
 			}
 
 			if(!(versionDesignator == null || versionDesignator.designates(version)))
-				//
+			{
 				// Discriminated by our designator
 				//
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));
 				continue;
+			}
 
 			if(match == null)
 				match = new VersionMatch(version, branchOrTag, space, entry.getRevision(), entry.getTimestamp(), null);
@@ -276,8 +334,9 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			if(entry == null)
 				return null;
 
-			IVersion version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));				
-			return new VersionMatch(version, null, getProvider().getSpace(), entry.getRevision(), entry.getTimestamp(), null);
+			IVersion version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
+			return new VersionMatch(version, null, getProvider().getSpace(), entry.getRevision(), entry.getTimestamp(),
+					null);
 		}
 		finally
 		{
@@ -285,7 +344,11 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		}
 	}
 
-	protected abstract boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException;
-	protected abstract List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException;
+	protected abstract boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor)
+			throws CoreException;
+
+	protected abstract List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor)
+			throws CoreException;
+
 	protected abstract RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException;
 }

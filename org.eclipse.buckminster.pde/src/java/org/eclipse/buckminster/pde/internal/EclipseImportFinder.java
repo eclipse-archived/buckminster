@@ -11,6 +11,7 @@ package org.eclipse.buckminster.pde.internal;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -79,8 +80,16 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		for(IPluginModelBase model : m_base.getPluginModels(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getBundleDescription().getVersion().toString());
-			if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
-				bestFit = version;
+			if(getQuery().isMatch(version, null, space))
+			{
+				if(bestFit == null)
+					bestFit = version;
+				else if(version.compareTo(bestFit) > 0)
+				{
+					logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("%s is higher", version));
+					bestFit = version;					
+				}
+			}
 		}
 		if(bestFit == null)
 			return null;
@@ -109,8 +118,16 @@ public class EclipseImportFinder extends AbstractVersionFinder
 			{
 				IFeature feature = model.getFeature(MonitorUtils.subMonitor(monitor, 5));
 				IVersion version = VersionFactory.OSGiType.fromString(feature.getVersionedIdentifier().getVersion().toString());
-				if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
-					bestFit = version;
+				if(getQuery().isMatch(version, null, space))
+				{
+					if(bestFit == null)
+						bestFit = version;
+					else if(version.compareTo(bestFit) > 0)
+					{
+						logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("%s is higher", version));
+						bestFit = version;					
+					}
+				}
 			}
 			if(bestFit == null)
 				return null;
@@ -130,8 +147,16 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion().toString());
-			if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
-				bestFit = version;
+			if(getQuery().isMatch(version, null, space))
+			{
+				if(bestFit == null)
+					bestFit = version;
+				else if(version.compareTo(bestFit) > 0)
+				{
+					logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("%s is higher", version));
+					bestFit = version;					
+				}
+			}
 		}
 		if(bestFit == null)
 			return null;

@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.cvspkg.internal;
 
+import java.io.Closeable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -29,7 +30,7 @@ import org.eclipse.team.internal.ccvs.core.resources.RemoteFolderSandbox;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSSession
+public class CVSSession implements Closeable
 {
 	private final ICVSRepositoryLocation m_location;
 	private final String m_moduleName;

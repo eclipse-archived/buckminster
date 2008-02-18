@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
@@ -282,9 +283,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		}
 		finally
 		{
-			if(reader[0] != null)
-				reader[0].close();
-			monitor.done();
+			IOUtils.close(reader[0]);
 		}
 	}
 }

@@ -33,6 +33,7 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -281,7 +282,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					}
 					finally
 					{
-						reader.close();
+						IOUtils.close(reader);
 						IPath location = mi.getComponentLocation();
 						if(location.hasTrailingSeparator())
 							location.append(".mtlock").toFile().delete();

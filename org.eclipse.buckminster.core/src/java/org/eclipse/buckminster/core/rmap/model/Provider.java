@@ -28,11 +28,11 @@ import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecision;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
@@ -143,13 +143,12 @@ public class Provider extends UUIDKeyed
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
 	throws CoreException
 	{
-		String providerURI = getURI(query.getProperties());
 		String readerType = getReaderTypeId();
 		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 		if(score == ProviderScore.REJECTED)
 		{
-			String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
-			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(), "Score is below threshold");
+			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
 		}
 
@@ -160,7 +159,6 @@ public class Provider extends UUIDKeyed
 		monitor.beginTask(null, 120);
 		try
 		{
-			Logger logger = CorePlugin.getLogger();
 			ComponentRequest request = query.getComponentRequest();
 			String componentTypeID = request.getComponentTypeID();
 	
@@ -191,9 +189,9 @@ public class Provider extends UUIDKeyed
 					//
 					if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 					{
-						String msg = String.format("Provider %s(%s): does not provide components of type %s",
-								readerType, providerURI, componentTypeID);
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
+							String.format("Components of type %s are not supported", componentTypeID));
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 					}
 					return null;
 				}
@@ -226,31 +224,14 @@ public class Provider extends UUIDKeyed
 				problem = e;
 			}
 	
-			String componentName = request.getName();
-			IVersionDesignator desiredVersion = query.getVersionDesignator();
 			if(candidate == null)
 			{
-				String msg;
-				if(desiredVersion == null)
-					msg = String.format("Provider %s(%s): No match found for component %s", readerType,
-						providerURI, componentName);
-				else
-					msg = String.format(
-						"Provider %s(%s): No match found for component %s using version designator %s",
-						readerType, providerURI, componentName, desiredVersion);
-				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, problem));
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
+						"No component match was found");
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem));
 				return null;
 			}
-
-			if(logger.isDebugEnabled())
-			{
-				if(desiredVersion == null)
-					logger.debug("Provider %s(%s): Found a match for component %s, %s",
-						readerType, providerURI, componentName, candidate);
-				else
-					logger.debug("Provider %s(%s): Found a match for %s using version designator %s, %s",
-						readerType, providerURI, componentName, desiredVersion, candidate);
-			}
+			query.logDecision(ResolverDecisionType.MATCH_FOUND, candidate);
 			return versionFinder.getProviderMatch(candidate, ctypeUsed, score);
 		}
 		finally

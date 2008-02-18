@@ -215,7 +215,7 @@ public class ResolverNode
 		}
 
 		if(context != originalContext)
-			m_query = new NodeQuery(context, m_query.getQualifiedDependency());
+			m_query = context.getNodeQuery(m_query.getQualifiedDependency());
 		return context;
 	}
 

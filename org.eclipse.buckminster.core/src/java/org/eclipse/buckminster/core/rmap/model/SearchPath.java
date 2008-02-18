@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -99,6 +100,7 @@ public class SearchPath extends AbstractSaxableElement
 				if(noGoodList.contains(provider))
 					continue;
 
+				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, provider.getReaderTypeId(), provider.getURI());
 				ProviderMatch match = provider.findMatch(query, problemCollector, MonitorUtils.subMonitor(monitor, 1000));
 				if(match == null)
 				{
@@ -121,14 +123,33 @@ public class SearchPath extends AbstractSaxableElement
 
 				if(bestMatch == null || match.compareTo(bestMatch) > 0)
 				{
+					if(bestMatch != null)
+					{
+						Provider rejected = bestMatch.getOriginalProvider();
+						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
+							rejected.getReaderTypeId(), rejected.getURI(),
+							String.format("%s(%s) is producing a better match", provider.getReaderTypeId(), provider.getURI()));
+					}
 					bestMatch = match;
 					continue;
+				}
+
+				if(bestMatch != null)
+				{
+					Provider best = bestMatch.getOriginalProvider();
+					query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
+							provider.getReaderTypeId(), provider.getURI(),
+							String.format("%s(%s) is producing a better match", best.getReaderTypeId(), best.getURI()));
 				}
 			}
 			if(bestMatch == null)
 			{
+				query.logDecision(ResolverDecisionType.PROVIDER_NOT_FOUND);
 				throw new CoreException(problemCollector);
 			}
+
+			Provider best = bestMatch.getOriginalProvider();
+			query.logDecision(ResolverDecisionType.USING_PROVIDER, best.getReaderTypeId(), best.getURI());
 			return bestMatch;
 		}
 		finally

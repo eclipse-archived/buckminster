@@ -272,7 +272,7 @@ public class Resolution extends UUIDKeyed implements ISaxable
 	{
 		ProviderMatch pm = new ProviderMatch(
 			m_provider, getComponentType(), getVersionMatch(),
-			new NodeQuery(context, getQualifiedDependency()));
+			context.getNodeQuery(getQualifiedDependency()));
 		pm.setRepositoryURI(m_repository);
 		return pm;
 	}

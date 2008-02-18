@@ -13,9 +13,9 @@ package org.eclipse.buckminster.core.rmap.model;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -46,7 +46,7 @@ public class Redirect extends Matcher
 		try
 		{
 			URL url = new URL(ExpandingProperties.expand(getOwner().getProperties(query.getProperties()), m_url, 0));
-			CorePlugin.getLogger().debug("Redirecting request for %s to %s", query.getComponentRequest().getName(), url);
+			query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
 			return ResourceMap.fromURL(url).getSearchPath(query);
 		}
 		catch(MalformedURLException e)

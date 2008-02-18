@@ -245,7 +245,7 @@ public class PDEMapProvider extends Provider
 				}
 				finally
 				{
-					reader.close();
+					IOUtils.close(reader);
 				}
 
 				map = new HashMap<ComponentName, TypedValue>();

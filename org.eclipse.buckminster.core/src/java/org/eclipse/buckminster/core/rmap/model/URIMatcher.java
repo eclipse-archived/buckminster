@@ -227,7 +227,7 @@ public class URIMatcher extends RxAssembly
 		if(candidate == null)
 			return null;
 
-		query = new NodeQuery(query.getContext(), query.getQualifiedDependency());
+		query = query.getContext().getNodeQuery(query.getQualifiedDependency());
 		query.getProperties().putAll(candidateMap);
 		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN), candidate, query);
 		pm.setMatcherMap(candidateMap);

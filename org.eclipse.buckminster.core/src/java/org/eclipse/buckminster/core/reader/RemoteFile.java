@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 import org.eclipse.buckminster.core.helpers.FileHandle;
@@ -19,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author thhal
  */
-public class RemoteFile
+public class RemoteFile implements Closeable
 {
 	private final ICatalogReader m_reader;
 	private final String m_fileName;
@@ -41,7 +42,7 @@ public class RemoteFile
 		return m_reader.getContents(m_fileName, monitor);
 	}
 	
-	public void close()
+	public void close() throws IOException
 	{
 		m_reader.close();
 	}

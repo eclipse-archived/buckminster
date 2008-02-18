@@ -56,6 +56,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -118,6 +119,16 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public boolean isRecursiveResolve()
 	{
 		return m_recursiveResolve;
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(request, decisionType, args);
 	}
 
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
@@ -273,8 +284,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor, 10)) };
 				DepNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
 						MonitorUtils.subMonitor(monitor, 10));
-				if(reader[0] != null)
-					reader[0].close();
+				IOUtils.close(reader[0]);
 
 				Resolution res = node.getResolution();
 				if(FilterUtils.isMatch(res.getCSpec().getFilter(), query.getProperties()))
@@ -377,7 +387,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
-		return new ResolverNode(new NodeQuery(context, qDep), requestorInfo);
+		return new ResolverNode(context.getNodeQuery(qDep), requestorInfo);
 	}
 
 	private ResolverNode deepResolve(ResolutionContext context, Map<ComponentName,ResolverNode> visited, DepNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException

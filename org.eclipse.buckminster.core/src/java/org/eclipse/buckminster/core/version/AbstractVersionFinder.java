@@ -7,9 +7,12 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecision;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.core.runtime.CoreException;
@@ -53,6 +56,16 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 	public NodeQuery getQuery()
 	{
 		return m_query;
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object...args)
+	{
+		return m_query.logDecision(decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object...args)
+	{
+		return m_query.logDecision(decisionType, args);
 	}
 
 	protected IVersion getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor) throws CoreException

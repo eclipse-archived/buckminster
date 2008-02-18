@@ -13,8 +13,11 @@ package org.eclipse.buckminster.core.reader;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecision;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
@@ -41,6 +44,15 @@ public abstract class AbstractReader implements IComponentReader
 		return true;
 	}
 
+	public void close()
+	{
+	}
+
+	public IComponentType getComponentType()
+	{
+		return m_providerMatch.getComponentType();
+	}
+
 	public NodeQuery getNodeQuery()
 	{
 		return m_providerMatch.getNodeQuery();
@@ -56,18 +68,19 @@ public abstract class AbstractReader implements IComponentReader
 		return m_readerType;
 	}
 
-	public IComponentType getComponentType()
-	{
-		return m_providerMatch.getComponentType();
-	}
-
-	public void close()
-	{
-	}
-
 	public IVersionConverter getVersionConverter() throws CoreException
 	{
 		return this.getProviderMatch().getVersionConverter();
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return getNodeQuery().logDecision(decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	{
+		return getNodeQuery().logDecision(request, decisionType, args);
 	}
 
 	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException

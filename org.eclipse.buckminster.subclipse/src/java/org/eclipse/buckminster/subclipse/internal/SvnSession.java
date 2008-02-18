@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.subclipse.internal;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
@@ -76,7 +77,7 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  * 
  * @author Thomas Hallgren
  */
-public class SvnSession
+public class SvnSession implements Closeable
 {
 	private static class RepositoryAccess
 	{

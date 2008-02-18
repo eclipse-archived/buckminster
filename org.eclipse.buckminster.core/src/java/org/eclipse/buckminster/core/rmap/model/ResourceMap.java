@@ -37,13 +37,14 @@ import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecision;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
@@ -179,11 +180,10 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 					//
 					if(!FilterUtils.isMatch(cspec.getFilter(), query.getProperties()))
 					{
-						String msg = String.format("Provider %s(%s): CSPEC rejected: filter %s does not match current environment",
-								provider.getReaderTypeId(), providerMatch.getRepositoryURI(), cspec.getFilter());
-							noGoodList.add(providerMatch.getOriginalProvider());
-							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-							continue;
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, cspec.getFilter());						
+						noGoodList.add(providerMatch.getOriginalProvider());
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+						continue;
 					}
 
 					// Assert that the cspec can handle required actions and
@@ -198,10 +198,9 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 						//
 						if(!versionDesignator.designates(version))
 						{
-							String msg = String.format("Provider %s(%s): CSPEC rejected: %s does not designate %s",
-								provider.getReaderTypeId(), providerMatch.getRepositoryURI(), versionDesignator, version);
+							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("not designated by %s", versionDesignator));						
 							noGoodList.add(providerMatch.getOriginalProvider());
-							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 							continue;
 						}
 					}
@@ -222,8 +221,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 				}
 				catch(CoreException e)
 				{
-					String msg = String.format("Provider %s(%s): Resolve failed: %s", provider.getReaderTypeId(), providerMatch.getRepositoryURI(), e.getMessage());
-					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());						
+					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), e));
 					noGoodList.add(providerMatch.getOriginalProvider());
 				}
 			}
@@ -236,7 +235,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 	public SearchPath getSearchPath(NodeQuery query) throws CoreException
 	{
-		Logger logger = CorePlugin.getLogger();
 		ComponentRequest request = query.getComponentRequest();
 		String componentName = request.getName();
 		for(Matcher matcher : m_matchers)
@@ -244,10 +242,11 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 			if(matcher.matches(componentName))
 			{
 				SearchPath sp = matcher.getSearchPath(query);
-				logger.debug("Found searchPath %s for component %s", sp.getName(), componentName);
+				query.logDecision(ResolverDecisionType.USING_SEARCH_PATH, sp.getName());
 				return sp;
 			}
 		}
+		query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object)null);
 		throw new SearchPathNotFoundException("component " + componentName);
 	}
 

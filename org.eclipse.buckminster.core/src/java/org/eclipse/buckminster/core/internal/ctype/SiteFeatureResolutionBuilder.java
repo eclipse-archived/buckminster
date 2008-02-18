@@ -37,6 +37,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -135,7 +136,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			for(int idx = 0; idx < numChildren; ++idx)
 			{
 				QualifiedDependency qdep = qDeps[idx];
-				NodeQuery childQuery = new NodeQuery(context, qdep);
+				NodeQuery childQuery = context.getNodeQuery(qdep);
 				IFeature refFeature = refs[idx].getFeature(MonitorUtils.subMonitor(monitor, 4));
 				IComponentReader childReader = reader.getReaderType().getReader(provider, ctype, childQuery, matches[idx], MonitorUtils.subMonitor(monitor, 1));
 				try
@@ -144,7 +145,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				}
 				finally
 				{
-					childReader.close();
+					IOUtils.close(childReader);
 				}
 			}
 			children = childArr.toArray(new ResolverNode[childArr.size()]);
@@ -172,7 +173,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			infant = (nr == null);
 			if(infant)
 			{
-				nr = new ResolverNode(new NodeQuery(context, qDep), tagInfo);
+				nr = new ResolverNode(context.getNodeQuery(qDep), tagInfo);
 				nodes.put(key, nr);
 			}
 		}

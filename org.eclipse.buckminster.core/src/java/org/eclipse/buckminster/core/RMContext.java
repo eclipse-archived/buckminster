@@ -53,6 +53,8 @@ public class RMContext extends ExpandingProperties
 
 	private final Map<String,TagInfo> m_knownTagInfos = new HashMap<String,TagInfo>();
 
+	private final Map<QualifiedDependency,NodeQuery> m_nodeQueries = new HashMap<QualifiedDependency,NodeQuery>();
+
 	public class TagInfo
 	{
 		private final String m_tagId;
@@ -343,9 +345,15 @@ public class RMContext extends ExpandingProperties
 		return getNodeQuery(new QualifiedDependency(request, getComponentQuery().getAttributes(request)));
 	}
 
-	public NodeQuery getNodeQuery(QualifiedDependency qualifiedDependency)
+	public synchronized NodeQuery getNodeQuery(QualifiedDependency qualifiedDependency)
 	{
-		return new NodeQuery(this, qualifiedDependency);
+		NodeQuery query = m_nodeQueries.get(qualifiedDependency);
+		if(query == null)
+		{
+			query = new NodeQuery(this, qualifiedDependency);
+			m_nodeQueries.put(qualifiedDependency, query);
+		}
+		return query;
 	}
 
 	public Map<String, String> getProperties(ComponentName cName)

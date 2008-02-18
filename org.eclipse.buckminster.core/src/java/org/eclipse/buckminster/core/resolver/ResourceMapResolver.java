@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.resolver;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -237,7 +238,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 			if(node == null && query.useResolutionService())
 			{
-				ResourceMap rmap = m_factory.getResourceMap(getContext(), query.getComponentQuery().getResolvedResourceMapURL());
+				URL rmapURL = query.getComponentQuery().getResolvedResourceMapURL();
+				ResourceMap rmap = m_factory.getResourceMap(getContext(), rmapURL);
+				query.logDecision(ResolverDecisionType.USING_RESOURCE_MAP, rmapURL);
 				node = rmap.resolve(query, MonitorUtils.subMonitor(monitor, 95));
 			}
 			else

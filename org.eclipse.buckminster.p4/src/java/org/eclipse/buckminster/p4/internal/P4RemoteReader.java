@@ -87,11 +87,6 @@ public class P4RemoteReader extends AbstractRemoteReader
 		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), branchNameBin[0], providerMatch.getNodeQuery().getProperties());
 	}
 
-	@Override
-	public void close()
-	{
-	}
-
 	public void dropClientEntry(IProgressMonitor monitor)
 	throws CoreException
 	{

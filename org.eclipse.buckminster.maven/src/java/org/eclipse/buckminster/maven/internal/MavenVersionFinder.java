@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -31,11 +32,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
- * The URL used by the MavenReader denotes the group directory within one
- * specific repository. The format must be <br/>
- * <code>[&lt;schema&gt;][//&lt;authority&gt;]&lt;path to group&gt;#&lt;artifact&gt;</code><br/>
- * The ability to search trhough multiple repositories is obtained by using the
- * <code>SearchPath</code> or the <code>ResourceMap</code>. The
+ * The URL used by the MavenReader denotes the group directory within one specific repository. The format must be <br/>
+ * <code>[&lt;schema&gt;][//&lt;authority&gt;]&lt;path to group&gt;#&lt;artifact&gt;</code><br/> The ability to
+ * search trhough multiple repositories is obtained by using the <code>SearchPath</code> or the
+ * <code>ResourceMap</code>. The
  * 
  * @author Thomas Hallgren
  */
@@ -51,7 +51,8 @@ public class MavenVersionFinder extends AbstractVersionFinder
 
 	private URL[] m_fileList;
 
-	public MavenVersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
+	public MavenVersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
+			throws CoreException
 	{
 		super(provider, ctype, query);
 		m_readerType = readerType;
@@ -78,7 +79,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		StringBuilder pbld = new StringBuilder();
 		m_readerType.appendFolder(pbld, m_uri.getPath());
 		m_readerType.appendFolder(pbld, m_mapEntry.getGroupId());
-		m_readerType.appendFolder(pbld,  "jars");
+		m_readerType.appendFolder(pbld, "jars");
 		URL jarsURL = m_readerType.createURL(m_uri, pbld.toString());
 		return URLCatalogReaderType.list(jarsURL, monitor);
 	}
@@ -87,39 +88,81 @@ public class MavenVersionFinder extends AbstractVersionFinder
 	{
 		if(a == null)
 			return b;
-		
+
 		if(b == null)
 			return a;
 
 		IVersion av = a.getVersion();
 		IVersion bv = b.getVersion();
+		VersionMatch selected;
+		VersionMatch rejected;
+
+		String msgFormat = "%s has no version";
 		if(av == null)
-			return b;
-		
-		if(bv == null)
-			return a;
+		{
+			if(bv == null)
+				return a;
 
-		IVersionType at = av.getType();
-		IVersionType bt = bv.getType();
-		if(at.isComparableTo(bt))
-			return getQuery().compare(a, b) > 0 ? a : b;
-
-		// We only deal with triplets, timestamps, and snapshots here. The
-		// order of precedence is triplet, timestamp, snapshot
-		//
-		if(at.equals(VersionFactory.TripletType))
-			return a;
-
-		if(bt.equals(VersionFactory.TripletType))
-			return b;
-
-		if(at.equals(VersionFactory.TimestampType))
-			return a;
-
-		// at is a snapshot and since they are not comparable, bt has to be a timestamp
-		// type at this point
-		//
-		return b;
+			rejected = a;
+			selected = b;
+		}
+		else if(bv == null)
+		{
+			rejected = b;
+			selected = a;
+		}
+		else
+		{
+			IVersionType at = av.getType();
+			IVersionType bt = bv.getType();
+			if(at.isComparableTo(bt))
+			{
+				msgFormat = "%s is a better match";
+				if(getQuery().compare(a, b) > 0)
+				{
+					rejected = b;
+					selected = a;
+				}
+				else
+				{
+					rejected = a;
+					selected = b;
+				}
+			}
+			else
+			{
+				// We only deal with triplets, timestamps, and snapshots here. The
+				// order of precedence is triplet, timestamp, snapshot
+				//
+				msgFormat = "only %s is a triplet";
+				if(at.equals(VersionFactory.TripletType))
+				{
+					rejected = b;
+					selected = a;
+				}
+				else if(bt.equals(VersionFactory.TripletType))
+				{
+					rejected = a;
+					selected = b;
+				}
+				else
+				{
+					msgFormat = "timestamp %s is more strict";
+					if(at.equals(VersionFactory.TimestampType))
+					{
+						rejected = b;
+						selected = a;
+					}
+					else
+					{
+						selected = a;
+						rejected = b;
+					}
+				}
+			}
+		}
+		logDecision(ResolverDecisionType.MATCH_REJECTED, rejected, msgFormat, selected);
+		return selected;
 	}
 
 	/**
@@ -165,13 +208,14 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				{
 					extension = allowedExtension;
 					break;
-				}	
+				}
 			}
 			if(extension == null)
 				continue;
 
 			String versionStr = fileName.substring(artifactLen, fileName.length() - extension.length());
-			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, space, fileName + '/' + versionStr);
+			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, space, fileName + '/'
+					+ versionStr);
 			if(versionMatch != null && query.isMatch(versionMatch))
 				versions.add(versionMatch);
 		}

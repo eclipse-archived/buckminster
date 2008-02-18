@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.subversive.internal;
 
+import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -68,7 +69,7 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  * 
  * @author Thomas Hallgren
  */
-public class SubversiveSession
+public class SubversiveSession implements Closeable
 {
 	private static class RepositoryAccess
 	{
