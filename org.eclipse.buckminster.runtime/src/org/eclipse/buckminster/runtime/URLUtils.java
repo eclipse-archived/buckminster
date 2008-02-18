@@ -98,6 +98,7 @@ public abstract class URLUtils
 					if(!urlPath.endsWith("/"))
 						bld.append('/');
 					bld.append(path.toPortableString());
+					urlPath = bld.toString();
 				}
 			}
 			url = new URI(u.getScheme(), u.getAuthority(), urlPath, u.getQuery(), u.getFragment()).toURL();
