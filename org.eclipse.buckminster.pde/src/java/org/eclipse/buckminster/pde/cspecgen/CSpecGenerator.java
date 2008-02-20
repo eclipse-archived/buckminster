@@ -234,8 +234,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			CSpecBuilder cspec = getCSpec();
 
 			ActionBuilder createProduct = addAntAction("create." + product.getId(), TASK_CREATE_ECLIPSE_PRODUCT, true);
-			boolean headless = "_removethisfile".equalsIgnoreCase(product.getLauncherInfo().getLauncherName());
-			if(headless)
+			ILauncherInfo info = product.getLauncherInfo();
+			if(info != null && "_removethisfile".equalsIgnoreCase(info.getLauncherName()))
 				createProduct.addProperty(PROP_DELETE_UILAUNCHER, "true", false);
 			createProduct.addProperty(PROP_PRODUCT_FILE, productConfig.getName(), false);
 
