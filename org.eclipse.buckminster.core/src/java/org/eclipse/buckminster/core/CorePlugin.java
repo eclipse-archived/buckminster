@@ -62,12 +62,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.update.core.Utilities;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
+ * 
  * @author Thomas Hallgren
  */
 public class CorePlugin extends LogAwarePlugin
@@ -104,8 +107,8 @@ public class CorePlugin extends LogAwarePlugin
 
 	public static final String BUCKMINSTER_PROJECT = ".buckminster";
 
-	private static final IPath BUCKMINSTER_PROJECT_DEFAULT_LOCATION = ResourcesPlugin.getWorkspace().getRoot().getLocation().append(
-		CorePlugin.BUCKMINSTER_PROJECT);
+	private static final IPath BUCKMINSTER_PROJECT_DEFAULT_LOCATION = ResourcesPlugin.getWorkspace().getRoot()
+			.getLocation().append(CorePlugin.BUCKMINSTER_PROJECT);
 
 	private static CorePlugin s_plugin;
 
@@ -129,6 +132,7 @@ public class CorePlugin extends LogAwarePlugin
 
 	/**
 	 * Returns the perform manager that coordinates all perform activity in the current workspace
+	 * 
 	 * @return the perform manager for the workspace
 	 */
 	public static IPerformManager getPerformManager() throws CoreException
@@ -144,7 +148,9 @@ public class CorePlugin extends LogAwarePlugin
 		ResourceBundle bundle = CorePlugin.getDefault().getResourceBundle();
 		try
 		{
-			return (bundle != null) ? bundle.getString(key) : key;
+			return (bundle != null)
+					? bundle.getString(key)
+					: key;
 		}
 		catch(MissingResourceException e)
 		{
@@ -188,8 +194,9 @@ public class CorePlugin extends LogAwarePlugin
 	}
 
 	/**
-	 * Generate a new UUID. We keep this in a separate method in case we'd like to change to type 1
-	 * at some point. For now, a random type 4 UUID is used.
+	 * Generate a new UUID. We keep this in a separate method in case we'd like to change to type 1 at some point. For
+	 * now, a random type 4 UUID is used.
+	 * 
 	 * @return A randomly generated type 4 UUID.
 	 */
 	public UUID createUUID()
@@ -198,17 +205,18 @@ public class CorePlugin extends LogAwarePlugin
 	}
 
 	/**
-	 * Returns the special project <code>.buckminster</code> that acts as a placeholder for all
-	 * artifacts that are not otherwise mapped into the workspace. The project will be created if
-	 * the <code>createIfMissing</code> flag is <code>true</code> and opened if it was not so
-	 * already.
-	 * @param createIfMissing Set to true if the project should be created when its missing.
-	 * @param monitor The progress monitor
-	 * @return The .buckminster project or <code>null</code> if its missing and the
-	 *         <code>createIfMissing</code> parameter was false.
+	 * Returns the special project <code>.buckminster</code> that acts as a placeholder for all artifacts that are not
+	 * otherwise mapped into the workspace. The project will be created if the <code>createIfMissing</code> flag is
+	 * <code>true</code> and opened if it was not so already.
+	 * 
+	 * @param createIfMissing
+	 *            Set to true if the project should be created when its missing.
+	 * @param monitor
+	 *            The progress monitor
+	 * @return The .buckminster project or <code>null</code> if its missing and the <code>createIfMissing</code>
+	 *         parameter was false.
 	 */
-	public IProject getBuckminsterProject(boolean createIfMissing, IProgressMonitor monitor)
-	throws CoreException
+	public IProject getBuckminsterProject(boolean createIfMissing, IProgressMonitor monitor) throws CoreException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		IProject bmProject = ResourcesPlugin.getWorkspace().getRoot().getProject(BUCKMINSTER_PROJECT);
@@ -230,8 +238,7 @@ public class CorePlugin extends LogAwarePlugin
 		IPath path = getBuckminsterProjectLocation();
 		if(!path.equals(BUCKMINSTER_PROJECT_DEFAULT_LOCATION))
 		{
-			IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription(
-				BUCKMINSTER_PROJECT);
+			IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription(BUCKMINSTER_PROJECT);
 			desc.setLocation(path);
 			bmProject.create(desc, MonitorUtils.subMonitor(monitor, 1000));
 		}
@@ -244,8 +251,9 @@ public class CorePlugin extends LogAwarePlugin
 	}
 
 	/**
-	 * Returns the absolute path in the local filesystem for the <code>.buckminster</code> project
-	 * The project need not exist.
+	 * Returns the absolute path in the local filesystem for the <code>.buckminster</code> project The project need
+	 * not exist.
+	 * 
 	 * @return The location of the .buckminster project.
 	 */
 	public IPath getBuckminsterProjectLocation()
@@ -262,26 +270,29 @@ public class CorePlugin extends LogAwarePlugin
 
 	public IComponentType getComponentType(String componentType) throws CoreException
 	{
-		IComponentType cType = getExecutableExtension(IComponentType.class, COMPONENT_TYPE_POINT,
-			componentType, true);
+		IComponentType cType = getExecutableExtension(IComponentType.class, COMPONENT_TYPE_POINT, componentType, true);
 		if(cType != null)
 			return cType;
 		throw new MissingComponentTypeException(componentType);
 	}
 
 	/**
-	 * Obtain a executable extension from the platform extension registry. A cache is utilized to
-	 * ensure a singleton pattern.
-	 * @param instanceClass The class of the executable extension.
-	 * @param extensionPoint The extension point id.
-	 * @param instanceId The instance id.
-	 * @param useSingelton Set to true if the instance should be cached and returned on subsequent
-	 *            calls.
+	 * Obtain a executable extension from the platform extension registry. A cache is utilized to ensure a singleton
+	 * pattern.
+	 * 
+	 * @param instanceClass
+	 *            The class of the executable extension.
+	 * @param extensionPoint
+	 *            The extension point id.
+	 * @param instanceId
+	 *            The instance id.
+	 * @param useSingelton
+	 *            Set to true if the instance should be cached and returned on subsequent calls.
 	 * @return A singleton instance that corresponds to the extension.
 	 * @throws CoreException
 	 */
 	public <T extends Object> T getExecutableExtension(Class<T> instanceClass, String extensionPoint,
-		String instanceId, boolean useSingleton) throws CoreException
+			String instanceId, boolean useSingleton) throws CoreException
 	{
 		Object extension = null;
 		Map<String, Object> singletonCache = null;
@@ -321,6 +332,7 @@ public class CorePlugin extends LogAwarePlugin
 
 	/**
 	 * Returns the known ids for the given extension point
+	 * 
 	 * @param extensionPoint
 	 * @return
 	 */
@@ -350,7 +362,8 @@ public class CorePlugin extends LogAwarePlugin
 
 	public IQualifierGenerator getQualifierGenerator(String qualifierGenerator) throws CoreException
 	{
-		IQualifierGenerator vm = getExecutableExtension(IQualifierGenerator.class, QUALIFIER_GENERATOR_POINT, qualifierGenerator, true);
+		IQualifierGenerator vm = getExecutableExtension(IQualifierGenerator.class, QUALIFIER_GENERATOR_POINT,
+				qualifierGenerator, true);
 		if(vm != null)
 			return vm;
 		throw BuckminsterException.fromMessage("Missing qualifier generator for id %s", qualifierGenerator);
@@ -358,15 +371,16 @@ public class CorePlugin extends LogAwarePlugin
 
 	/**
 	 * Locates the extension {@link #CSPEC_BUILDER_POINT} and creates a resolution builder.
-	 * @param id The id of the desired builder
+	 * 
+	 * @param id
+	 *            The id of the desired builder
 	 * @return A resolution builder.
-	 * @throws CoreException if no builder can be found with the given id or if something goes wrong
-	 *             when instantiating it.
+	 * @throws CoreException
+	 *             if no builder can be found with the given id or if something goes wrong when instantiating it.
 	 */
 	public IResolutionBuilder getResolutionBuilder(String id) throws CoreException
 	{
-		IResolutionBuilder builder = getExecutableExtension(IResolutionBuilder.class, CSPEC_BUILDER_POINT,
-			id, false);
+		IResolutionBuilder builder = getExecutableExtension(IResolutionBuilder.class, CSPEC_BUILDER_POINT, id, false);
 		if(builder != null)
 			return builder;
 		throw new MissingBuilderException(id);
@@ -395,7 +409,7 @@ public class CorePlugin extends LogAwarePlugin
 			versionConverter = "tag";
 
 		IVersionConverter vc = getExecutableExtension(IVersionConverter.class, VERSION_CONVERTERS_POINT,
-			versionConverter, false);
+				versionConverter, false);
 		if(vc != null)
 			return vc;
 		throw new MissingVersionConverterException(versionConverter);
@@ -417,7 +431,8 @@ public class CorePlugin extends LogAwarePlugin
 		if(materializerId == null)
 			materializerId = IMaterializer.WORKSPACE;
 
-		IMaterializer mat = getExecutableExtension(IMaterializer.class, IMaterializer.MATERIALIZERS_POINT, materializerId, true);
+		IMaterializer mat = getExecutableExtension(IMaterializer.class, IMaterializer.MATERIALIZERS_POINT,
+				materializerId, true);
 		if(mat != null)
 			return mat;
 		throw new MissingMaterializerException(materializerId);
@@ -425,19 +440,21 @@ public class CorePlugin extends LogAwarePlugin
 
 	/**
 	 * Opens a remote file using the short duration cache maintained by this plugin.
-	 * @param remoteFile the file to open
+	 * 
+	 * @param remoteFile
+	 *            the file to open
 	 * @return An opened stream to the cached entry.
 	 * @throws IOException
 	 */
 	public InputStream openCachedRemoteFile(ICatalogReader reader, String fileName, IProgressMonitor monitor)
-	throws IOException,
-		CoreException
+			throws IOException, CoreException
 	{
 		return m_remoteFileCache.openRemoteFile(new RemoteFile(reader, fileName), monitor);
 	}
 
 	/**
 	 * Opens a url using the short duration cache maintained by this plugin.
+	 * 
 	 * @param url
 	 * @return input stream for the url
 	 * @throws IOException
@@ -449,14 +466,19 @@ public class CorePlugin extends LogAwarePlugin
 
 	/**
 	 * Opens a url using the short duration cache maintained by this plugin and sets the file info (if available)
-	 * @param url URL to open
-	 * @param monitor progress monitor
-	 * @param fileInfo file info to be retreived from the URL
+	 * 
+	 * @param url
+	 *            URL to open
+	 * @param monitor
+	 *            progress monitor
+	 * @param fileInfo
+	 *            file info to be retreived from the URL
 	 * 
 	 * @return input stream for the url
 	 * @throws IOException
 	 */
-	public InputStream openCachedURL(URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException
+	public InputStream openCachedURL(URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException,
+			CoreException
 	{
 		return m_urlCache.openURL(url, monitor, fileInfo);
 	}
@@ -507,20 +529,33 @@ public class CorePlugin extends LogAwarePlugin
 
 	private void performForcedActivations()
 	{
-		for(IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(
-			FORCED_ACTIVATIONS_POINT))
+		Job forcedActivationJob = new Job("Forced activation starter")
 		{
-			String pluginId = elem.getAttribute("pluginId");
-			try
+			@Override
+			public IStatus run(IProgressMonitor monitor)
 			{
-				Bundle bundle = Platform.getBundle(pluginId);
-				bundle.loadClass(elem.getAttribute("class"));
+				IConfigurationElement[] forcedActivations = Platform.getExtensionRegistry()
+						.getConfigurationElementsFor(FORCED_ACTIVATIONS_POINT);
+				monitor.beginTask(null, forcedActivations.length);
+				for(IConfigurationElement elem : forcedActivations)
+				{
+					String pluginId = elem.getAttribute("pluginId");
+					try
+					{
+						Bundle bundle = Platform.getBundle(pluginId);
+						bundle.loadClass(elem.getAttribute("class"));
+					}
+					catch(Exception e)
+					{
+						getLogger().warning(e, "Unable to activate bundle %s", pluginId);
+					}
+					monitor.worked(1);
+				}
+				monitor.done();
+				return Status.OK_STATUS;
 			}
-			catch(Exception e)
-			{
-				getLogger().warning(e, "Unable to activate bundle %s", pluginId);
-			}
-		}
+		};
+		forcedActivationJob.schedule(10);
 	}
 
 	public static void logWarningsAndErrors(IStatus status)
@@ -540,7 +575,7 @@ public class CorePlugin extends LogAwarePlugin
 			line.setLength(0);
 			for(int idx = 0; idx < indent; ++idx)
 				line.append(' ');
-			
+
 			String msg = status.getMessage();
 			if(msg != null)
 				line.append(msg);
