@@ -7,12 +7,9 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.buckminster.runtime,
  org.eclipse.buckminster.sax,
  org.eclipse.core.runtime,
- com.ibm.icu,
  org.apache.commons.codec,
- com.ibm.icu.base,
  org.apache.commons.httpclient,
  org.apache.commons.logging,
- org.eclipse.buckminster.slf4j,
  org.slf4j.extendable
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.buckminster.remote,
