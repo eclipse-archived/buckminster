@@ -127,12 +127,12 @@ public class FragmentsActor extends AbstractActor
 				// (if it indeed is an action)
 				//
 				CSpec cspec = res.getCSpec();
-				Attribute bundleJars = cspec.getAttribute(IPDEConstants.ATTRIBUTE_BUNDLE_JARS);
-				performManager.perform(Collections.singletonList(bundleJars), ctx.getGlobalContext(), MonitorUtils.subMonitor(monitor, 70));
+				Attribute bundleJar = cspec.getAttribute(IPDEConstants.ATTRIBUTE_BUNDLE_JAR);
+				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(), MonitorUtils.subMonitor(monitor, 70));
 
 				// Copy the path groups to the given destination
 				//
-				PathGroup[] groups = bundleJars.getPathGroups(ctx, null);
+				PathGroup[] groups = bundleJar.getPathGroups(ctx, null);
 				IProgressMonitor copyMon = MonitorUtils.subMonitor(monitor, 30);
 				copyMon.beginTask(null, groups.length * 100);
 				for(PathGroup pathGroup : groups)
