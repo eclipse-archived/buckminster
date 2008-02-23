@@ -161,9 +161,15 @@
     <archive path="plugins/org.junit4_4.3.1.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.junit4_4.3.1.jar"/>
     <archive path="plugins/org.junit_3.8.2.v200706111738.jar" url="http://update.eclipse.org/updates/3.3/plugins/org.junit_3.8.2.v200706111738.jar"/>
 
-    <archive path="plugins/org.apache.commons.codec_1.3.0.v200706111738.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.codec_1.3.0.v200706111738.jar"/>
-    <archive path="plugins/org.apache.commons.httpclient_3.0.1.v200706111724.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.httpclient_3.0.1.v200706111724.jar"/>
-    <archive path="plugins/org.apache.commons.logging_1.0.4.v200706111724.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.logging_1.0.4.v200706111724.jar"/>
+   <archive path="plugins/org.apache.commons.codec_1.3.0.v200706111738.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.codec_1.3.0.v200706111738.jar"/>
+   <archive path="plugins/org.apache.commons.codec_1.2.0.v200711021015.jar" url="http://download.eclipse.org/releases/ganymede/plugins/org.apache.commons.codec_1.2.0.v200711021015.jar"/>
+   <archive path="plugins/org.apache.commons.codec_1.3.0.v200711021030.jar" url="http://download.eclipse.org/releases/ganymede/plugins/org.apache.commons.codec_1.3.0.v200711021030.jar"/>
+
+   <archive path="plugins/org.apache.commons.httpclient_3.0.1.v200706111724.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.httpclient_3.0.1.v200706111724.jar"/>
+   <archive path="plugins/org.apache.commons.httpclient_3.1.0.v200712051435.jar" url="http://download.eclipse.org/releases/ganymede/plugins/org.apache.commons.httpclient_3.1.0.v200712051435.jar"/>
+
+   <archive path="plugins/org.apache.commons.logging_1.0.4.v200706111724.jar" url="http://download.eclipse.org/releases/europa/plugins/org.apache.commons.logging_1.0.4.v200706111724.jar"/>
+   <archive path="plugins/org.apache.commons.logging_1.0.4.v200711021015.jar" url="http://download.eclipse.org/releases/ganymede/plugins/org.apache.commons.logging_1.0.4.v200711021015.jar"/>
 
     <archive path="plugins/org.tigris.subversion.subclipse.core_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.core_1.2.4.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar"/>
