@@ -71,13 +71,16 @@ public class MetaDataCollector extends CommandOutputListener
 
 	private final String m_folderRoot;
 
+	private final Pattern m_moduleNamePattern;
+
 	private Date m_lastModificationTime;
 
 	private int m_state = BEGIN;
 
-	MetaDataCollector(String folderRoot)
+	MetaDataCollector(String folderRoot, String moduleName)
 	{
 		m_folderRoot = folderRoot;
+		m_moduleNamePattern = Pattern.compile(".*\\Q/" + moduleName + "/\\E(.*)");
 	}
 
 	@Override
@@ -219,10 +222,30 @@ public class MetaDataCollector extends CommandOutputListener
 		Matcher matcher = s_rcsFileExpr.matcher(line);
 		if(matcher.matches())
 		{
+			IPath path = null;
+			// server path to the file from the RCS line info
 			String file = matcher.group(1);
+
+			// Since m_folderRoot includes both cvs repository root +	module, 
+			// try to match the complete path to get the desired file
+			
 			if(file.startsWith(m_folderRoot))
 			{
-				IPath path = new Path(file.substring(m_folderRoot.length()));
+				path = new Path(file.substring(m_folderRoot.length()));
+			}
+			else
+			{
+				// if cvs repository root on server contains symlinks, above will fail,
+				// so fall back to ignoring that part and match on module name alone.
+				// Less conclusive match, but hopefully still valid
+				Matcher m = m_moduleNamePattern.matcher(file);
+				if(m.matches())
+					path = new Path(m.group(1));
+			}
+
+			// should have RCS file now, check for attic and add
+			if(null != path)
+			{
 				int numSegs = path.segmentCount();
 				for(int idx = 0; idx < numSegs; ++idx)
 				{

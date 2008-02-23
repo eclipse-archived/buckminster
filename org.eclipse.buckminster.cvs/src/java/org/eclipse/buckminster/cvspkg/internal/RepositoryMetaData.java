@@ -210,7 +210,7 @@ public class RepositoryMetaData implements Serializable
 			}
 
 			String[] args = new String[] { cvsSession.getModuleName() };
-			MetaDataCollector collector = new MetaDataCollector(cvsSession.getFilePrefix());
+			MetaDataCollector collector = new MetaDataCollector(cvsSession.getFilePrefix(), cvsSession.getModuleName());
 			IStatus status = new RLog().execute(session, Command.NO_GLOBAL_OPTIONS, opts.toArray(new Command.LocalOption[opts.size()]), args, collector,
 					new SubProgressMonitor(monitor, 90, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 
