@@ -160,6 +160,9 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				m_componentTypes = expanded.toArray(new String[expanded.size()]);
 			}
 		}
+		else if(IComponentType.ECLIPSE_PROJECT.equals(tmp))
+			tmp = IComponentType.OSGI_BUNDLE + ',' + IComponentType.ECLIPSE_FEATURE + ',' + IComponentType.BUCKMINSTER;
+
 		if(m_componentTypes == null)
 			m_componentTypes = TextUtils.split(tmp, ",");
 

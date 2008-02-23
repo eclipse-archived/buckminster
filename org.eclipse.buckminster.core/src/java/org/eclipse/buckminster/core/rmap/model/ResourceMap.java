@@ -198,7 +198,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 						//
 						if(!versionDesignator.designates(version))
 						{
-							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("not designated by %s", versionDesignator));						
+							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));						
 							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 							continue;

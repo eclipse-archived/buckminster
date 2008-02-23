@@ -468,14 +468,14 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		{
 			logDecision(branchOrTag.getType() == VersionSelector.BRANCH
 				? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED,
-						branchOrTag, "not in path '%s'", VersionSelector.toString(branchTagPath));
+						branchOrTag, String.format("not in path '%s'", VersionSelector.toString(branchTagPath)));
 			return false;
 		}
 
 		String[] spacePath = getSpacePath();
 		if(spacePath.length > 0 && TextUtils.indexOf(spacePath, space) < 0)
 		{
-			logDecision(ResolverDecisionType.SPACE_REJECTED, "not in path '%s'", TextUtils.concat(spacePath, ","));
+			logDecision(ResolverDecisionType.SPACE_REJECTED, space, String.format("not in path '%s'", TextUtils.concat(spacePath, ",")));
 			return false;
 		}
 

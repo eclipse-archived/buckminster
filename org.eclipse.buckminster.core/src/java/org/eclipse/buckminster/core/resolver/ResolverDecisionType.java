@@ -14,15 +14,6 @@ package org.eclipse.buckminster.core.resolver;
  */
 public enum ResolverDecisionType
 {
-	BRANCH_NOT_FOUND
-	{
-		@Override
-		public String toString()
-		{
-			return "Branch %s not found";
-		}
-	},
-
 	BRANCH_REJECTED
 	{
 		@Override
@@ -74,24 +65,6 @@ public enum ResolverDecisionType
 		public String toString()
 		{
 			return "Match %s was rejected: %s";
-		}
-	},
-
-	META_DATA_NOT_FOUND
-	{
-		@Override
-		public String toString()
-		{
-			return "No meta-data was found";
-		}
-	},
-
-	NAME_MISMATCH
-	{
-		@Override
-		public String toString()
-		{
-			return "Name %s does not match";
 		}
 	},
 
@@ -185,33 +158,12 @@ public enum ResolverDecisionType
 		}
 	},
 
-	/**
-	 * The provider does not provide components with source
-	 */
-	SOURCE_NOT_PROVIDED
-	{
-		@Override
-		public String toString()
-		{
-			return "Required source is not supported by provider %s";
-		}
-	},
-
 	SPACE_REJECTED
 	{
 		@Override
 		public String toString()
 		{
 			return "Space %s rejected: %s";
-		}
-	},
-
-	TAG_NOT_FOUND
-	{
-		@Override
-		public String toString()
-		{
-			return "Tag %s not found";
 		}
 	},
 
@@ -239,19 +191,6 @@ public enum ResolverDecisionType
 		public String toString()
 		{
 			return "Trying provider %s(%s)";
-		}
-	},
-
-	/**
-	 * The provider does not provide components of the requested
-	 * type.
-	 */
-	UNSUPPORTED_COMPONENT_TYPE
-	{
-		@Override
-		public String toString()
-		{
-			return "Component type is not supported by provider %s";
 		}
 	},
 

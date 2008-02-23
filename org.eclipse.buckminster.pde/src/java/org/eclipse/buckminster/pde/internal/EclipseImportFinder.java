@@ -86,7 +86,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("%s is higher", version));
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
 					bestFit = version;					
 				}
 			}
@@ -124,7 +124,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 						bestFit = version;
 					else if(version.compareTo(bestFit) > 0)
 					{
-						logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("%s is higher", version));
+						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
 						bestFit = version;					
 					}
 				}
@@ -153,7 +153,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, String.format("%s is higher", version));
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
 					bestFit = version;					
 				}
 			}
