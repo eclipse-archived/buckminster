@@ -13,12 +13,15 @@ package org.eclipse.buckminster.cvspkg;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
@@ -38,20 +41,22 @@ import org.eclipse.buckminster.cvspkg.internal.FileSystemCopier;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRemoteFile;
-import org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
+import org.eclipse.team.internal.ccvs.core.ICVSResource;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
-import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
-import org.eclipse.team.internal.ccvs.core.resources.RemoteFolderSandbox;
 import org.eclipse.team.internal.ccvs.core.resources.UpdateContentCachingService;
 
 /**
@@ -60,21 +65,35 @@ import org.eclipse.team.internal.ccvs.core.resources.UpdateContentCachingService
 @SuppressWarnings("restriction")
 public class CVSTest extends TestCase
 {
-	private static String DEAD_FILE = "LICENSE.cvsclient.txt";
+	private static String DEAD_FILE = "make/build.xml";
 
 	private static String EXISTING_FILE = "META-INF/MANIFEST.MF";
 
 	private static String NON_EXISTING_FILE = "foobar.txt";
 
 	private static String REPO_LOCATION = ":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.dash/org.eclipse.dash.siteassembler";
-	private CVSSession m_session;
+	private final CVSSession m_session;
 
-	@Override
-	public void setUp() throws Exception
+	public CVSTest(String methodName, CVSSession session)
+	{
+		super(methodName);
+		m_session = session;
+	}
+
+	public static Test suite() throws Exception
 	{
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
-		m_session = new CVSSession(REPO_LOCATION);
+		CVSSession session = new CVSSession(REPO_LOCATION);
+
+		TestSuite suite = new TestSuite();
+		suite.addTest(new CVSTest("testRepositories", session));
+		suite.addTest(new CVSTest("testGetFile", session));
+		suite.addTest(new CVSTest("testCheckOut", session));
+		suite.addTest(new CVSTest("testNonExistentFile", session));
+		suite.addTest(new CVSTest("testDeadFile", session));
+		// suite.addTest(new CVSTest("testTags", session));
+		return suite;
 	}
 
 	public void testCheckOut() throws Exception
@@ -119,32 +138,51 @@ public class CVSTest extends TestCase
 
 	public void testGetFile() throws Exception
 	{
-		this.readFile(EXISTING_FILE);
+		readFile(EXISTING_FILE);
 	}
 
-	private void readFile(String fileName) throws Exception
+	private void readFile(String fileName)
+	throws CoreException,
+		IOException
 	{
-		IProgressMonitor monitor = new NullProgressMonitor();
-		ICVSRemoteFolder root = new RemoteFolderSandbox(null, m_session.getLocation(), m_session.getModuleName(), null);
-		ICVSRemoteFile cvsFile = (ICVSRemoteFile)root.getFile(fileName);
+		// Build the local options
+		//
+		IProgressMonitor nullMon = new NullProgressMonitor();
+		IPath filePath = Path.fromPortableString(fileName);
 		InputStream in = null;
 		OutputStream out = null;
+		File tempFile = null;
 		try
 		{
-			in = cvsFile.getContents(monitor);
+			CVSTag tag = CVSTag.DEFAULT;
+			IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
+			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
+			RemoteFolder folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), tag);
+			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, tag, IResource.DEPTH_ONE, nullMon);
+
+			ICVSResource cvsFile;
+			try
+			{
+				cvsFile = folder.getChild(filePath.lastSegment());
+			}
+			catch(CVSException e)
+			{
+				throw new FileNotFoundException(e.getMessage());
+			}
+
+			if(!(cvsFile instanceof ICVSRemoteFile))
+				throw new FileNotFoundException(fileName + " appears to be a folder");
+
+			in = ((ICVSRemoteFile)cvsFile).getContents(MonitorUtils.subMonitor(nullMon, 50));
 			out = new ByteArrayOutputStream();
-			if(FileUtils.copyFile(in, out, monitor) == 0)
-				if(cvsFile.getLogEntry(monitor) == null)
-					throw new FileNotFoundException();
-		}
-		catch(CVSServerException e)
-		{
-			throw new FileNotFoundException();
+			IOUtils.copy(in, out);
 		}
 		finally
 		{
-			IOUtils.close(in);
 			IOUtils.close(out);
+			IOUtils.close(in);
+			if(tempFile != null)
+				tempFile.delete();
 		}
 	}
 
@@ -152,7 +190,7 @@ public class CVSTest extends TestCase
 	{
 		try
 		{
-			this.readFile(DEAD_FILE);
+			readFile(DEAD_FILE);
 			assertTrue("Found dead file", false);
 		}
 		catch(FileNotFoundException e)
@@ -164,7 +202,7 @@ public class CVSTest extends TestCase
 	{
 		try
 		{
-			this.readFile(NON_EXISTING_FILE);
+			readFile(NON_EXISTING_FILE);
 			assertTrue("Found non existing file", false);
 		}
 		catch(FileNotFoundException e)
@@ -192,7 +230,7 @@ public class CVSTest extends TestCase
 				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, false, false, null, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));
-		cq.setResourceMapURL(this.getClass().getResource("test.rmap").toString());
+		cq.setResourceMapURL(getClass().getResource("test.rmap").toString());
 		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
 		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(), new NullProgressMonitor());
 		try
