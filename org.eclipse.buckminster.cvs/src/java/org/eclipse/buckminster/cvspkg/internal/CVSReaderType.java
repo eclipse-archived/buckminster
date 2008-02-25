@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.util.Date;
@@ -41,30 +40,16 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSMessages;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
-import org.eclipse.team.internal.ccvs.core.CVSStatus;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
-import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.ConsoleListeners;
-import org.eclipse.team.internal.ccvs.core.client.MTHandler;
-import org.eclipse.team.internal.ccvs.core.client.ResponseHandler;
-import org.eclipse.team.internal.ccvs.core.client.Session;
-import org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
-import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
@@ -170,215 +155,6 @@ public class CVSReaderType extends CatalogReaderType
 		}
 		KnownRepositories.getInstance().addRepository(wanted, true);
 		return wanted;
-	}
-
-	/**
-	 * Executes a request and processes the responses.
-	 * 
-	 * @param session
-	 *            the open CVS session
-	 * @param listener
-	 *            the command output listener, or null to discard all messages
-	 * @param monitor
-	 *            the progress monitor
-	 * @return a status code indicating success or failure of the operation
-	 */
-	public static IStatus executeRequest(Session session, String requestId, final Writer out, final Writer err,
-			IProgressMonitor monitor) throws CVSException
-	{
-		return executeRequest(session, requestId, new ICommandOutputListener()
-		{
-			public IStatus messageLine(String line, ICVSRepositoryLocation loc, ICVSFolder cRoot, IProgressMonitor m)
-			{
-				return writeLine(line, out);
-			}
-
-			public IStatus errorLine(String line, ICVSRepositoryLocation loc, ICVSFolder cRoot, IProgressMonitor m)
-			{
-				return writeLine(line, err);
-			}
-		}, monitor);
-
-	}
-
-	/**
-	 * Executes a request and processes the responses.
-	 * 
-	 * @param session
-	 *            the open CVS session
-	 * @param listener
-	 *            the command output listener, or null to discard all messages
-	 * @param monitor
-	 *            the progress monitor
-	 * @return a status code indicating success or failure of the operation
-	 */
-	public static IStatus executeRequest(Session session, String requestId, ICommandOutputListener listener,
-			IProgressMonitor monitor) throws CVSException
-	{
-		// send request
-		//
-		session.sendRequest(requestId);
-
-		// This number can be tweaked if the monitor is judged to move too
-		// quickly or too slowly. After some experimentation this is a good
-		// number for both large projects (it doesn't move so quickly as to
-		// give a false sense of speed) and smaller projects (it actually does
-		// move some rather than remaining still and then jumping to 100).
-		//
-		final int TOTAL_WORK = 3000;
-		monitor.beginTask(CVSMessages.Command_receivingResponses, TOTAL_WORK);
-		monitor.subTask(CVSMessages.Command_receivingResponses);
-		int halfWay = TOTAL_WORK / 2;
-		int currentIncrement = 4;
-		int nextProgress = currentIncrement;
-		int worked = 0;
-
-		// If the session is connected to a CVSNT server (1.11.1.1), we'll need
-		// to do some special handling for
-		// some errors. Unfortunately, CVSNT 1.11.1.1 will drop the connection
-		// after so some functionality is
-		// still effected
-		//
-		boolean isCVSNT = session.isCVSNT();
-
-		session.clearErrors();
-		for(;;)
-		{
-			// update monitor work amount
-			if(--nextProgress <= 0)
-			{
-				MonitorUtils.worked(monitor, 1);
-				worked++;
-				if(worked >= halfWay)
-				{
-					// we have passed the current halfway point, so double the
-					// increment and reset the halfway point.
-					//
-					currentIncrement *= 2;
-					halfWay += (TOTAL_WORK - halfWay) / 2;
-				}
-				// reset the progress counter to another full increment
-				//
-				nextProgress = currentIncrement;
-			}
-
-			// retrieve a response line
-			//
-			String response = session.readLine();
-			int spacePos = response.indexOf(' ');
-			String argument;
-			if(spacePos != -1)
-			{
-				argument = response.substring(spacePos + 1);
-				response = response.substring(0, spacePos);
-			}
-			else
-				argument = ""; //$NON-NLS-1$
-
-			// handle completion responses
-			//
-			if(response.equals("ok"))
-				break;
-
-			if(response.equals("error") || (isCVSNT && response.equals("")))
-			{
-				argument = argument.trim();
-				boolean serious = false;
-				if(argument.length() == 0)
-				{
-					argument = requestId;
-				}
-				else
-				{
-					argument = NLS.bind(CVSMessages.Command_seriousServerError, new String[] { argument });
-					if(!session.hasErrors())
-						session
-								.addError(new CVSStatus(IStatus.ERROR, CVSStatus.SERVER_ERROR, argument,
-										(Throwable)null));
-					serious = true;
-				}
-
-				if(!session.hasErrors())
-				{
-					session.addError(new CVSStatus(IStatus.ERROR, CVSStatus.SERVER_ERROR,
-							CVSMessages.Command_noMoreInfoAvailable, (Throwable)null));
-				}
-				IStatus status = new MultiStatus(CVSProviderPlugin.ID, CVSStatus.SERVER_ERROR, session.getErrors(),
-						argument, null);
-				if(serious)
-					throw new CVSServerException(status);
-
-				// look for particularly bad errors in the accumulated
-				// statii
-				IStatus[] errors = session.getErrors();
-				for(int i = 0; i < errors.length; i++)
-				{
-					IStatus s = errors[i];
-					if(s.getCode() == CVSStatus.PROTOCOL_ERROR)
-					{
-						throw new CVSServerException(status);
-					}
-				}
-				return status;
-			}
-
-			if(response.equals("MT"))
-			{
-				// Handle the MT response
-				//
-				MTHandler handler = (MTHandler)session.getResponseHandler(response);
-				if(handler == null)
-					throw new CVSException(new org.eclipse.core.runtime.Status(IStatus.ERROR, CVSProviderPlugin.ID,
-							TeamException.IO_FAILED, NLS.bind(CVSMessages.Command_unsupportedResponse, new String[] {
-									response, argument }), null));
-				handler.handle(session, argument, monitor);
-
-				// If a line is available, pass it on to the message listener
-				// and console as if it were an M response
-				//
-				if(handler.isLineAvailable())
-				{
-					String line = handler.getLine();
-					IStatus status = listener.messageLine(line, session.getCVSRepositoryLocation(), session
-							.getLocalRoot(), monitor);
-					session.addError(status); // The session ignores OK status
-					ConsoleListeners.getInstance().messageLineReceived(session, line, status);
-
-				}
-				continue;
-			}
-
-			if(response.equals("M"))
-			{
-				IStatus status = listener.messageLine(argument, session.getCVSRepositoryLocation(), session
-						.getLocalRoot(), monitor);
-				session.addError(status); // The session ignores OK status
-				ConsoleListeners.getInstance().messageLineReceived(session, argument, status);
-				continue;
-			}
-
-			if(response.equals("E"))
-			{
-				IStatus status = listener.errorLine(argument, session.getCVSRepositoryLocation(), session
-						.getLocalRoot(), monitor);
-				session.addError(status); // The session ignores OK status
-				ConsoleListeners.getInstance().errorLineReceived(session, argument, status);
-				continue;
-			}
-
-			// handle other responses
-			//
-			ResponseHandler handler = session.getResponseHandler(response);
-			if(handler == null)
-				throw new CVSException(new Status(IStatus.ERROR, CVSProviderPlugin.ID, TeamException.IO_FAILED, NLS
-						.bind(CVSMessages.Command_unsupportedResponse, new String[] { response, argument }), null));
-			handler.handle(session, argument, monitor);
-		}
-		if(!session.hasErrors())
-			return ICommandOutputListener.OK;
-
-		return new MultiStatus(CVSProviderPlugin.ID, IStatus.INFO, session.getErrors(), NLS.bind(
-				CVSMessages.Command_warnings, new String[] { requestId }), null);
 	}
 
 	@Override
@@ -500,20 +276,6 @@ public class CVSReaderType extends CatalogReaderType
 	{
 		MonitorUtils.complete(monitor);
 		return new CVSReader(this, providerMatch);
-	}
-
-	private static IStatus writeLine(String line, Writer out)
-	{
-		try
-		{
-			out.write(line);
-			out.write(LOCAL_LINE_END);
-			return ICommandOutputListener.OK;
-		}
-		catch(IOException e)
-		{
-			return new Status(IStatus.ERROR, CVSProviderPlugin.ID, TeamException.IO_FAILED, e.getMessage(), e);
-		}
 	}
 
 	@Override

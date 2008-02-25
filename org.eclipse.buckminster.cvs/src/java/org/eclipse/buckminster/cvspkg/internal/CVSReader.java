@@ -1,22 +1,20 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
-
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.cvspkg.internal;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -31,12 +29,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
-import org.eclipse.team.internal.ccvs.core.client.Session;
-import org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener;
+import org.eclipse.team.internal.ccvs.core.ICVSRemoteFile;
+import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
+import org.eclipse.team.internal.ccvs.core.ICVSResource;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
 import org.eclipse.team.internal.ccvs.core.resources.UpdateContentCachingService;
@@ -113,6 +112,83 @@ public class CVSReader extends AbstractRemoteReader
 		}
 	}
 
+	private RemoteFolder m_flatRoot;
+
+	private void getFlatRoot(IProgressMonitor monitor) throws CoreException
+	{
+		if(m_flatRoot == null)
+		{
+			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
+			RemoteFolder root = new RemoteFolder(null, cvsLocation, m_session.getModuleName(), m_fixed);
+			m_flatRoot = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, m_fixed,
+					IResource.DEPTH_ONE, monitor);
+		}
+		else
+			MonitorUtils.complete(monitor);
+	}
+
+	@Override
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor)
+	throws CoreException,
+		IOException
+	{
+		// Build the local options
+		//
+		IPath filePath = Path.fromPortableString(fileName);
+		monitor.beginTask(null, filePath.segmentCount() > 1 || m_flatRoot == null ? 1500 : 1000);
+		monitor.subTask("Retrieving " + fileName);
+
+		InputStream in = null;
+		OutputStream out = null;
+		File tempFile = null;
+		try
+		{
+			RemoteFolder folder = m_flatRoot;
+			if(filePath.segmentCount() > 1)
+			{
+				IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
+				CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
+				folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), m_fixed);
+				folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, m_fixed, IResource.DEPTH_ONE, MonitorUtils.subMonitor(monitor, 500));
+			}
+			else
+			{
+				if(m_flatRoot == null)
+					getFlatRoot(MonitorUtils.subMonitor(monitor, 500));
+				folder = m_flatRoot;
+			}
+
+			ICVSResource cvsFile;
+			try
+			{
+				cvsFile = folder.getChild(filePath.lastSegment());
+			}
+			catch(CVSException e)
+			{
+				throw new FileNotFoundException(e.getMessage());
+			}
+
+			if(!(cvsFile instanceof ICVSRemoteFile))
+				throw new FileNotFoundException(fileName + " appears to be a folder");
+
+			in = ((ICVSRemoteFile)cvsFile).getContents(MonitorUtils.subMonitor(monitor, 50));
+			tempFile = createTempFile();
+			out = new BufferedOutputStream(new FileOutputStream(tempFile));
+			IOUtils.copy(in, out);
+			FileHandle fh = new FileHandle(fileName, tempFile, true);
+			tempFile = null;
+			return fh;
+		}
+		finally
+		{
+			IOUtils.close(out);
+			IOUtils.close(in);
+			if(tempFile != null)
+				tempFile.delete();
+			monitor.done();
+		}
+	}
+
 	@Override
 	public String toString()
 	{
@@ -123,120 +199,32 @@ public class CVSReader extends AbstractRemoteReader
 	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
 	throws CoreException, IOException
 	{
-		monitor.beginTask(null, 2000);
-		RepositoryMetaData metaData = getMetaData(MonitorUtils.subMonitor(monitor, 200));
-		String[] fileNames = metaData.getMatchingFiles(pattern);
-		if(fileNames.length == 0)
-			return;
-
-		int ticksPerFile = 1800 / fileNames.length;
-		for(String fileName : fileNames)
-		{
-			try
-			{
-				files.add(innerGetContents(fileName, MonitorUtils.subMonitor(monitor, ticksPerFile)));
-			}
-			catch(FileNotFoundException e)
-			{
-				// This is OK since meta data returns deleted files as well
-			}
-		}
-	}
-
-	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor)
-	throws CoreException,
-		IOException
-	{
-		// Build the local options
-		//
-		monitor.beginTask(null, 2000);
-		monitor.subTask("Retrieving " + fileName);
-		Session session = m_session.getReaderSession(new SubProgressMonitor(monitor, 800,
-			SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
-
-		Writer out = null;
-		File tempFile = null;
+		monitor.beginTask(null, 1000 + (m_flatRoot == null ? 500 : 0));
 		try
 		{
-			RepositoryMetaData metaData = getMetaData(MonitorUtils.subMonitor(monitor, 200));
-			if(!metaData.hasMetaEntry(fileName))
-				//
-				// The repository has never seen this file
-				//
-				throw new FileNotFoundException(fileName);
+			if(m_flatRoot == null)
+				getFlatRoot(MonitorUtils.subMonitor(monitor, 500));
 
-			CVSTag tag = m_fixed;
-			if(tag.getType() == CVSTag.DATE && metaData.getLastModification().compareTo(getTagDate(tag)) <= 0)
-				tag = null;
-
-
-			// Append correct tag unless it's CVSTag.DEFAULT
-			//
-			if(tag != null)
+			ArrayList<String> matching = null;
+			for(ICVSRemoteResource child : m_flatRoot.getChildren())
 			{
-				switch(tag.getType())
+				String name = child.getName();
+				if(pattern.matcher(name).matches())
 				{
-				case CVSTag.DATE:
-					session.sendArgument("-D");
-					session.sendArgument(tag.getName());
-					break;
-				default:
-					session.sendArgument("-r");
-					session.sendArgument(tag.getName());
-					break;
+					if(matching == null)
+						matching = new ArrayList<String>();
+					matching.add(name);
 				}
-			}
-			session.sendArgument("-p");
+			}	
+			if(matching == null)
+				return;
 
-			String fullName = m_session.getModuleName() + '/' + fileName;
-			session.sendArgument(fullName);
-
-			tempFile = createTempFile();
-			out = new BufferedWriter(new FileWriter(tempFile));
-
-			StringWriter err = new StringWriter();
-			IStatus outcome = CVSReaderType.executeRequest(session, "co", out, err, new SubProgressMonitor(
-				monitor, 1000, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
-
-			if(ICommandOutputListener.OK != outcome)
-			{
-				// All serious errors yield an exception. Not finding a file is not
-				// serious according to CVS. It is to us though and that's what we think
-				// happened here.
-				//
-				StringBuffer errBuff = err.getBuffer();
-
-				// Strip trailing whitespace
-				//
-				int last = errBuff.length() - 1;
-				while(last >= 0 && Character.isWhitespace(errBuff.charAt(last)))
-					--last;
-				++last;
-				throw new FileNotFoundException(errBuff.substring(0, last));
-			}
-
-			if(tempFile.length() == 0)
-			{
-				// Empty file. That's suspicious since a CVS co -p will give us that
-				// for files that are in the attic.
-				//
-				if(metaData.seenInAttic(fileName))
-				{
-					// Assume that this version is indeed in the attic.
-					//
-					throw new FileNotFoundException(fileName);
-				}
-			}
-			FileHandle fh = new FileHandle(fileName, tempFile, true);
-			tempFile = null;
-			return fh;
+			int ticksPerMatch = 1000 / matching.size();
+			for(String name : matching)
+				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, ticksPerMatch)));
 		}
 		finally
 		{
-			IOUtils.close(out);
-			if(tempFile != null)
-				tempFile.delete();
 			monitor.done();
 		}
 	}

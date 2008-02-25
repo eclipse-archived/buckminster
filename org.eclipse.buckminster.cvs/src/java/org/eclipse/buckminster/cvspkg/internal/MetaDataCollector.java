@@ -18,10 +18,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSMessages;
 import org.eclipse.team.internal.ccvs.core.CVSStatus;
@@ -57,8 +55,6 @@ public class MetaDataCollector extends CommandOutputListener
 	//
 	private static final String NOTHING_KNOWN_ABOUT = "nothing known about "; //$NON-NLS-1$
 
-	private static final Pattern s_rcsFileExpr = Pattern.compile("^rcs file:\\s*(/.+),v\\s*$", Pattern.CASE_INSENSITIVE);
-
 	private static final Pattern s_revDataExpr = Pattern.compile("^date:\\s*([^;]+);\\s*author:[^;]+;\\s*state:\\s*([^;]+);.*$", Pattern.CASE_INSENSITIVE);
 
 	private static final int SYMBOLIC_NAMES = 2;
@@ -67,21 +63,9 @@ public class MetaDataCollector extends CommandOutputListener
 
 	private final HashSet<String> m_tags = new HashSet<String>();
 
-	private final HashSet<String> m_knownFiles = new HashSet<String>();
-
-	private final String m_folderRoot;
-
-	private final Pattern m_moduleNamePattern;
-
 	private Date m_lastModificationTime;
 
 	private int m_state = BEGIN;
-
-	MetaDataCollector(String folderRoot, String moduleName)
-	{
-		m_folderRoot = folderRoot;
-		m_moduleNamePattern = Pattern.compile(".*\\Q/" + moduleName + "/\\E(.*)");
-	}
 
 	@Override
 	public IStatus errorLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
@@ -106,16 +90,6 @@ public class MetaDataCollector extends CommandOutputListener
 		return m_branches;
 	}
 
-	/**
-	 * Returns a set of all files that has been seen in the meta-data. Note
-	 * that this list will include files that has been removed.
-	 * @return All files with a meta-data entry (includes removed files).
-	 */
-	public Set<String> getKnownFiles()
-	{
-		return m_knownFiles;
-	}
-
 	public Date getLastModificationTime()
 	{
 		return m_lastModificationTime;
@@ -138,12 +112,12 @@ public class MetaDataCollector extends CommandOutputListener
 		{
 		case BEGIN:
 			if(line.startsWith("RCS file:"))
-				this.beginNewFile(line);
+				m_state = HEADER;
 			break;
 		case NEXT_REV_OR_BEGIN:
 		case HEADER:
 			if(line.startsWith("RCS file:"))
-				this.beginNewFile(line);
+				m_state = HEADER;
 			else if(line.startsWith("revision "))
 				m_state = REVISION;
 			else if(line.startsWith("symbolic names:"))
@@ -215,55 +189,6 @@ public class MetaDataCollector extends CommandOutputListener
 		// If not, check if the second lat segment is a zero
 		//
 		return tagName.charAt(lastDot - 1) == '0' && tagName.charAt(lastDot - 2) == '.';
-	}
-
-	private void beginNewFile(String line)
-	{
-		Matcher matcher = s_rcsFileExpr.matcher(line);
-		if(matcher.matches())
-		{
-			IPath path = null;
-			// server path to the file from the RCS line info
-			String file = matcher.group(1);
-
-			// Since m_folderRoot includes both cvs repository root +	module, 
-			// try to match the complete path to get the desired file
-			
-			if(file.startsWith(m_folderRoot))
-			{
-				path = new Path(file.substring(m_folderRoot.length()));
-			}
-			else
-			{
-				// if cvs repository root on server contains symlinks, above will fail,
-				// so fall back to ignoring that part and match on module name alone.
-				// Less conclusive match, but hopefully still valid
-				Matcher m = m_moduleNamePattern.matcher(file);
-				if(m.matches())
-					path = new Path(m.group(1));
-			}
-
-			// should have RCS file now, check for attic and add
-			if(null != path)
-			{
-				int numSegs = path.segmentCount();
-				for(int idx = 0; idx < numSegs; ++idx)
-				{
-					if(path.segment(idx).equalsIgnoreCase("attic"))
-					{
-						IPath withoutAttic;
-						if(idx > 0)
-							withoutAttic = path.removeLastSegments(numSegs - idx).append(path.removeFirstSegments(idx + 1));
-						else
-							withoutAttic = path.removeFirstSegments(1);
-						m_knownFiles.add(withoutAttic.toPortableString());
-						break;
-					}
-				}
-				m_knownFiles.add(path.toPortableString());
-			}
-		}
-		m_state = HEADER;
 	}
 
 	private void revision(String line, ICVSRepositoryLocation location)

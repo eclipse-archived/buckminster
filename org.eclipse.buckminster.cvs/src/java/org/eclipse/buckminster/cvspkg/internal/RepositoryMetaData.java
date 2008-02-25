@@ -25,14 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.cvspkg.CVSPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -52,7 +50,6 @@ public class RepositoryMetaData implements Serializable
 
 	private final String[] m_branchNames;
 	private final String[] m_tagNames;
-	private final Set<String> m_knownFiles;
 	private final Date m_lastModification;
 	private final Date m_timestamp;
 
@@ -65,13 +62,6 @@ public class RepositoryMetaData implements Serializable
 		return result;
 	}
 
-	private static Set<String> concat(Set<String> names, Set<String> moreNames)
-	{
-		HashSet<String> result = new HashSet<String>(names);
-		result.addAll(moreNames);
-		return result;
-	}
-
 	private static String[] orderedArray(Set<String> names)
 	{
 		String[] ordered = names.toArray(new String[names.size()]);
@@ -79,18 +69,17 @@ public class RepositoryMetaData implements Serializable
 		return ordered;
 	}
 
-	private RepositoryMetaData(Set<String> branches, Set<String> tags, Set<String> knownFiles, Date lastModification, Date timestamp)
+	private RepositoryMetaData(Set<String> branches, Set<String> tags, Date lastModification, Date timestamp)
 	{
 		m_branchNames = orderedArray(branches);
 		m_tagNames = orderedArray(tags);
-		m_knownFiles = knownFiles;
 		m_lastModification = lastModification;
 		m_timestamp = timestamp;
 	}
 
 	public RepositoryMetaData(MetaDataCollector collector, Date timestamp)
 	{
-		this(collector.getBranchNames(), collector.getTagNames(), collector.getKnownFiles(), collector.getLastModificationTime(), timestamp);
+		this(collector.getBranchNames(), collector.getTagNames(), collector.getLastModificationTime(), timestamp);
 	}
 
 	public RepositoryMetaData merge(MetaDataCollector collector, Date timestamp)
@@ -102,33 +91,12 @@ public class RepositoryMetaData implements Serializable
 		return new RepositoryMetaData(
 			concat(m_branchNames, collector.getBranchNames()),
 			concat(m_tagNames, collector.getTagNames()),
-			concat(m_knownFiles, collector.getKnownFiles()),
 			lastModTime, timestamp);
-	}
-
-	public final boolean hasMetaEntry(String fileName)
-	{
-		return m_knownFiles.contains(fileName);
 	}
 
 	public final String[] getBranchNames()
 	{
 		return m_branchNames;
-	}
-
-	public final String[] getMatchingFiles(Pattern pattern)
-	{
-		ArrayList<String> matching = null;
-		for(String knownFile : m_knownFiles)
-		{
-			if(pattern.matcher(knownFile).matches())
-			{
-				if(matching == null)
-					matching = new ArrayList<String>();
-				matching.add(knownFile);
-			}
-		}
-		return matching == null ? Trivial.EMPTY_STRING_ARRAY : matching.toArray(new String[matching.size()]);
 	}
 
 	public final String[] getTagNames()
@@ -210,7 +178,7 @@ public class RepositoryMetaData implements Serializable
 			}
 
 			String[] args = new String[] { cvsSession.getModuleName() };
-			MetaDataCollector collector = new MetaDataCollector(cvsSession.getFilePrefix(), cvsSession.getModuleName());
+			MetaDataCollector collector = new MetaDataCollector();
 			IStatus status = new RLog().execute(session, Command.NO_GLOBAL_OPTIONS, opts.toArray(new Command.LocalOption[opts.size()]), args, collector,
 					new SubProgressMonitor(monitor, 90, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 
@@ -305,19 +273,5 @@ public class RepositoryMetaData implements Serializable
 	private static File getStateFile(UUID id)
 	{
 		return CVSPlugin.getDefault().getStateLocation().append(id.toString()).toFile();
-	}
-
-	public boolean seenInAttic(String fileName)
-	{
-		int lastSlash = fileName.lastIndexOf('/');
-		StringBuilder atticName = new StringBuilder();
-		if(lastSlash >= 0)
-		{
-			atticName.append(fileName.substring(0, lastSlash+1));
-			fileName = fileName.substring(lastSlash+1);
-		}
-		atticName.append("Attic/");
-		atticName.append(fileName);
-		return hasMetaEntry(atticName.toString());
 	}
 }
