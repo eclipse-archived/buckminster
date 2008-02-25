@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -106,7 +105,6 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		for(IResolverFactory factory : allFactories)
 			factoriesById.put(factory.getId(), factory);
 
-		Logger logger = CorePlugin.getLogger();
 		String[] sortOrder = BuckminsterPreferences.getQueryResolverSortOrder();
 		int numFactories = sortOrder.length;
 
@@ -114,58 +112,8 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		for(String factoryName : sortOrder)
 		{
 			IResolverFactory factory = factoriesById.remove(factoryName);
-			if(factory == null)
-			{
-				logger.warning("Resolver factory %s"
-						+ " defined in the Query Resolver Sort Order preference was skipped"
-						+ " since it has not been registered by any extension point.", factoryName);
-				continue;
-			}
-			factories.add(factory);
-		}
-		int numNotInSortOrder = factoriesById.size();
-		if(numNotInSortOrder > 0)
-		{
-			Iterator<String> keys = factoriesById.keySet().iterator();
-			StringBuilder bld = new StringBuilder();
-			bld.append("Resolver factor");
-			boolean first = true;
-			boolean plural = false;
-			for(boolean hasNext = true; hasNext;)
-			{
-				String factoryName = keys.next();
-				hasNext = keys.hasNext();
-				if(first)
-				{
-					if(hasNext)
-						bld.append("ies ");
-					else
-						bld.append("y ");
-					first = false;
-				}
-				else
-				{
-					if(!hasNext)
-					{
-						if(plural)
-							bld.append(',');
-						bld.append(" and ");
-					}
-					else
-						bld.append(", ");
-					plural = true;
-				}
-				bld.append(factoryName);
-			}
-			bld.append(plural
-					? " were"
-					: " was");
-			bld.append(" skipped since ");
-			bld.append(plural
-					? "they were"
-					: "it was");
-			bld.append(" not included in the Query Resolver Sort Order preference");
-			logger.info(bld.toString());
+			if(factory != null)
+				factories.add(factory);
 		}
 		return factories.toArray(new IResolverFactory[factories.size()]);
 	}

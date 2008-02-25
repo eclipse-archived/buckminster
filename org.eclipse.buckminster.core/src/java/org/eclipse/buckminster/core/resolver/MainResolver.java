@@ -73,10 +73,13 @@ public class MainResolver implements IResolver
 		IResolverFactory[] resolverFactories = ResolverFactoryMaintainer.getInstance().getActiveResolverFactories();
 		int numFactories = resolverFactories.length;
 		if(numFactories == 1)
-			//
+		{
 			// Only one factory? Just delegate to it.
 			//
-			return resolverFactories[0].createResolver(m_context).resolveRemaining(bom, monitor);
+			IResolverFactory factory = resolverFactories[0];
+			logDecision(ResolverDecisionType.USING_RESOLVER, factory.getId());
+			return factory.createResolver(m_context).resolveRemaining(bom, monitor);
+		}
 
 		monitor.beginTask(null, numFactories * 100);
 
@@ -99,6 +102,7 @@ public class MainResolver implements IResolver
 				for(int idx = 0; idx < numFactories; ++idx)
 				{
 					IResolver resolver = resolvers[idx];
+					logDecision(ResolverDecisionType.USING_RESOLVER, resolverFactories[idx].getId());
 					resolver.setRecursiveResolve(m_recursiveResolve);
 					BillOfMaterials newBom = resolver.resolveRemaining(bom, MonitorUtils.subMonitor(monitor, 100));
 					if(bom.equals(newBom))
