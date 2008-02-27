@@ -48,6 +48,8 @@ public class PublishWizard extends AdvancedWizard
 	
 	private BillOfMaterials m_bom;
 	
+	private String m_originalSpaceName;
+	
 	public PublishWizard(InstallWizard installWizard)
 	{
 		setNeedsProgressMonitor(true);
@@ -81,6 +83,7 @@ public class PublishWizard extends AdvancedWizard
 		}
 		
 		m_bom = installWizard.getBOM();
+		m_originalSpaceName = installWizard.getSpaceName();
 	}
 	
 	protected IPublisher createPublisher(String basePathURL)
@@ -120,7 +123,7 @@ public class PublishWizard extends AdvancedWizard
 	{
 		PublishSpacePage spacePage = (PublishSpacePage)getPage(STEP_PUBLISH);
 		final String selectedSpace = spacePage.getSelectedSpace();
-		final String artifactName = spacePage.getArtifactName();
+		final String artifactName = m_mspec.getName();
 		
 		try
 		{
@@ -172,7 +175,7 @@ public class PublishWizard extends AdvancedWizard
 		try
 		{
 			String xmlData = out.toString("UTF-8");
-			result = getPublisher().publish(selectedSpace, artifactName, xmlData, true);
+			result = getPublisher().publish(m_originalSpaceName, selectedSpace, artifactName, xmlData, true);
 		}
 		catch(Exception e)
 		{

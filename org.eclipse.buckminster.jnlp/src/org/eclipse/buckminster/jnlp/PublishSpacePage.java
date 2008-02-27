@@ -43,8 +43,6 @@ public class PublishSpacePage extends PublishWizardPage
 {
 	private Combo m_spaceCombo;
 	
-	private Text m_artifactName;
-	
 	private Text m_shortDesc;
 	
 	private Text m_documentation;
@@ -83,31 +81,6 @@ public class PublishSpacePage extends PublishWizardPage
 
 		m_spaceCombo = new Combo(pageComposite, SWT.READ_ONLY);
 		m_spaceCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		new Label(pageComposite, SWT.NONE);
-
-		new Label(pageComposite, SWT.NONE).setText("Distro Name:");
-		
-		m_artifactName = new Text(pageComposite, SWT.BORDER);
-		m_artifactName.setText(getPublishWizard().getMSpecBuilder().getName() == null ? "" : getPublishWizard().getMSpecBuilder().getName());
-		m_artifactName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		m_artifactName.addModifyListener(new ModifyListener()
-		{
-
-			public void modifyText(ModifyEvent e)
-			{
-				if(m_artifactName.getText().length() == 0)
-				{
-					setErrorMessage("Distro Name cannot be empty");
-				} else
-				{
-					setErrorMessage(null);
-					
-					getPublishWizard().getMSpecBuilder().setName(m_artifactName.getText());
-				}
-				
-				setPageComplete(isComplete());
-			}
-		});
 		new Label(pageComposite, SWT.NONE);
 
 		new Label(pageComposite, SWT.NONE);
@@ -210,15 +183,10 @@ public class PublishSpacePage extends PublishWizardPage
 		m_userNameLabel.getParent().pack();
 	}
 
-	private boolean isComplete()
-	{
-		return m_artifactName.getText().length() != 0;
-	}
-	
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		setPageComplete(isComplete());
+		setPageComplete(true);
 		
 		List<String> availableSpaces;
 		
@@ -248,10 +216,5 @@ public class PublishSpacePage extends PublishWizardPage
 	String getSelectedSpace()
 	{
 		return m_spaceCombo.getText();
-	}
-
-	String getArtifactName()
-	{
-		return m_artifactName.getText();
 	}
 }
