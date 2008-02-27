@@ -190,6 +190,8 @@ public class PublishWizard extends AdvancedWizard
 				throw new JNLPException("Publishing was not successful - login again and repeat publishing", MaterializationConstants.ERROR_CODE_PUBLISHING_EXCEPTION);
 			case IPublisher.ERROR_SPACE_ACCESS_DENIED:
 				throw new JNLPException("Publishing was not successful - the selected space has restricted access", MaterializationConstants.ERROR_CODE_PUBLISHING_EXCEPTION);
+			case IPublisher.ERROR_ARTIFACT_ALREADY_EXISTS:
+				throw new JNLPException("Publishing was not successful - the distro already exists in the selected space", MaterializationConstants.ERROR_CODE_PUBLISHING_EXCEPTION);
 			default:
 				throw new JNLPException("Publishing was not successful", MaterializationConstants.ERROR_CODE_PUBLISHING_EXCEPTION);
 			}
