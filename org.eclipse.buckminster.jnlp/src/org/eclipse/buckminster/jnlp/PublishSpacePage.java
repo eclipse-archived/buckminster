@@ -87,11 +87,14 @@ public class PublishSpacePage extends PublishWizardPage
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 
-		new Label(pageComposite, SWT.NONE).setText("Short Description:");
+		Label label = new Label(pageComposite, SWT.NONE);
+		label.setText("Short Description:");
+		label.setEnabled(getPublishWizard().isCSsiteTopComponent());
 		
 		m_shortDesc = new Text(pageComposite, SWT.BORDER);
 		m_shortDesc.setText(getPublishWizard().getMSpecBuilder().getShortDesc() == null ? "" : getPublishWizard().getMSpecBuilder().getShortDesc());
 		m_shortDesc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		m_shortDesc.setEnabled(getPublishWizard().isCSsiteTopComponent());
 		m_shortDesc.addModifyListener(new ModifyListener()
 		{
 			public void modifyText(ModifyEvent e)
@@ -101,13 +104,15 @@ public class PublishSpacePage extends PublishWizardPage
 		});
 		new Label(pageComposite, SWT.NONE);
 
-		Label label = new Label(pageComposite, SWT.NONE);
+		label = new Label(pageComposite, SWT.NONE);
 		label.setText("Documentation:");
+		label.setEnabled(getPublishWizard().isCSsiteTopComponent());
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
 		
 		m_documentation = new Text(pageComposite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		m_documentation.setText(getPublishWizard().getMSpecBuilder().getDocumentation() == null ? "" : getPublishWizard().getMSpecBuilder().getDocumentation().toString());
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_documentation.setEnabled(getPublishWizard().isCSsiteTopComponent());
 		m_documentation.addModifyListener(new ModifyListener()
 		{
 			public void modifyText(ModifyEvent e)

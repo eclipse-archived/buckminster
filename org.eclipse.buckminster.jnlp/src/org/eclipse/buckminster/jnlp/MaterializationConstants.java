@@ -82,6 +82,8 @@ public interface MaterializationConstants
 
 	public static final String WINDOW_TITLE_UNKNOWN = "Materialization Wizard";
 
+	public static final String READER_TYPE_CSSITE = "cssite";
+	
 	public static final String ERROR_WINDOW_TITLE = "Materialization Error";
 
 	public static final String ERROR_HELP_TITLE = "troubleshooting your materialization";

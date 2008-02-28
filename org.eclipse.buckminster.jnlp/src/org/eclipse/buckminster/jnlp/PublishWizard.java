@@ -48,6 +48,8 @@ public class PublishWizard extends AdvancedWizard
 	
 	private BillOfMaterials m_bom;
 	
+	private boolean m_cssiteTopComponent;
+	
 	private String m_originalSpaceName;
 	
 	public PublishWizard(InstallWizard installWizard)
@@ -83,6 +85,11 @@ public class PublishWizard extends AdvancedWizard
 		}
 		
 		m_bom = installWizard.getBOM();
+		
+		m_cssiteTopComponent = false;
+		if(MaterializationConstants.READER_TYPE_CSSITE.equals(m_bom.getResolution().getProvider().getReaderTypeId()))
+			m_cssiteTopComponent = true;
+		
 		m_originalSpaceName = installWizard.getSpaceName();
 	}
 	
@@ -236,6 +243,11 @@ public class PublishWizard extends AdvancedWizard
 	BillOfMaterials getBOM()
 	{
 		return m_bom;
+	}
+	
+	boolean isCSsiteTopComponent()
+	{
+		return m_cssiteTopComponent;
 	}
 	
 	String getServiceProvider()

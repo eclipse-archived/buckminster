@@ -428,7 +428,7 @@ public class InstallWizard extends AdvancedWizard
 		Resolution resolution = depNode.getResolution();
 		
 		if(resolution != null)
-			if("cssite".equals(resolution.getProvider().getReaderTypeId()))
+			if(MaterializationConstants.READER_TYPE_CSSITE.equals(resolution.getProvider().getReaderTypeId()))
 				return true;
 		
 		return false;
