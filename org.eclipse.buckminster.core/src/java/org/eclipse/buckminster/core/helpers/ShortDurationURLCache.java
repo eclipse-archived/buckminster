@@ -67,7 +67,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 				InputStream input = null;
 				try
 				{
-					MonitorUtils.ensureNotNull(mon);
+					mon = MonitorUtils.ensureNotNull(mon);
 					mon.beginTask(null, 1000);
 					mon.subTask("Reading from " + url);
 
