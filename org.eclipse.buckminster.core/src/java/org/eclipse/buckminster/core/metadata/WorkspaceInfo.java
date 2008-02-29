@@ -466,6 +466,7 @@ public class WorkspaceInfo
 		// possible deadlock.
 		//
 		StorageManager.getDefault();
+		checkFirstUse();
 
 		synchronized(s_resolutionCache)
 		{
