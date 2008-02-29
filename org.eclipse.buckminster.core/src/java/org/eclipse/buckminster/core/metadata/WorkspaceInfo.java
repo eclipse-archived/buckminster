@@ -152,137 +152,13 @@ public class WorkspaceInfo
 		CorePlugin.logWarningsAndErrors(status);
 	}
 
-	public static Resolution[] getActiveResolutions() throws CoreException
-	{
-		// Add the newest version of each known resolution
-		//
-		checkFirstUse();
-		StorageManager sm = StorageManager.getDefault();
-		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
-		ArrayList<TimestampedKey> duplicates = null;
-		ISaxableStorage<Resolution> ress = sm.getResolutions();
-		ISaxableStorage<Materialization> mats = sm.getMaterializations();
-		for(Resolution res : ress.getElements())
-		{
-			UUID resId = res.getId();
-			ComponentIdentifier ci = res.getComponentIdentifier();
-
-			IPath location = getResolutionLocation(mats, res);
-			if(location == null)
-				continue;
-
-			ComponentName cn = ci.toPureComponentName();
-			TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
-			TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
-			if(prevTsKey == null)
-				continue;
-
-			// Check real existence of locations. For performance reasons we only do
-			// this when ambiguities arise.
-			//
-			Resolution prevRes = ress.getElement(prevTsKey.getKey());
-			IPath prevLocation = getResolutionLocation(mats, prevRes);
-			if(prevLocation == null)
-				continue;
-
-			if(location.toFile().exists())
-			{
-				if(location.equals(prevLocation))
-				{
-					// Discriminate using timestamp
-					//
-					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
-					{
-						// We just replaced a newer entry. Put it back!
-						//
-						resolutionKeys.put(cn, prevTsKey);
-					}
-					continue;
-				}
-
-				if(!prevLocation.toFile().exists())
-					continue;
-
-				// A resolution towards the target platform will always have a lower
-				// precedence.
-				//
-				if(prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-				{
-					if(!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-						continue;
-				}
-				else
-				{
-					if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-					{
-						resolutionKeys.put(cn, prevTsKey);
-						continue;
-					}
-				}
-
-				boolean versionEqual = false;
-				IVersion currVersion = ci.getVersion();
-				IVersion prevVersion = prevRes.getComponentIdentifier().getVersion();
-				if(currVersion == null)
-					versionEqual = (prevVersion == null);
-				else if(prevVersion != null)
-					versionEqual = currVersion.equalsUnqualified(prevVersion);
-
-				if(versionEqual)
-				{
-					// Discriminate using timestamp
-					//
-					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
-						resolutionKeys.put(cn, prevTsKey);
-					continue;
-				}
-
-				// Apparently we have both locations present so we cannot
-				// discriminate one of them
-				//
-				if(duplicates == null)
-					duplicates = new ArrayList<TimestampedKey>();
-				duplicates.add(prevTsKey);
-
-				CorePlugin.getLogger().debug(
-						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn,
-						currVersion, location, prevVersion, prevLocation);
-				continue;
-			}
-
-			if(prevLocation.toFile().exists())
-			{
-				// New entry is bogus and old entry is valid
-				//
-				resolutionKeys.put(cn, prevTsKey);
-			}
-			else
-			{
-				// None of the entries were valid. Simply remove the entry
-				//
-				resolutionKeys.remove(cn);
-			}
-		}
-
-		int top = resolutionKeys.size();
-		if(duplicates != null)
-			top += duplicates.size();
-
-		Resolution[] result = new Resolution[top];
-		int idx = 0;
-		for(TimestampedKey tsKey : resolutionKeys.values())
-			result[idx++] = ress.getElement(tsKey.getKey());
-
-		if(duplicates != null)
-			for(TimestampedKey tsKey : duplicates)
-				result[idx++] = ress.getElement(tsKey.getKey());
-		return result;
-	}
-
 	public static List<Resolution> getAllResolutions() throws CoreException
 	{
+		StorageManager sm = StorageManager.getDefault();
+		checkFirstUse();
+
 		HashSet<Resolution> bld = new HashSet<Resolution>();
-		for(Resolution cr : WorkspaceInfo.getActiveResolutions())
+		for(Resolution cr : getActiveResolutions(sm))
 			bld.add(cr);
 
 		for(ComponentIdentifier ci : TargetPlatform.getInstance().getComponents())
@@ -465,7 +341,7 @@ public class WorkspaceInfo
 		// Obtain the storage manager outside of the synchronization to avoid
 		// possible deadlock.
 		//
-		StorageManager.getDefault();
+		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
 		synchronized(s_resolutionCache)
@@ -473,7 +349,7 @@ public class WorkspaceInfo
 			Resolution candidate = s_resolutionCache.get(wanted);
 			if(candidate == null)
 			{
-				for(Resolution res : getActiveResolutions())
+				for(Resolution res : getActiveResolutions(sm))
 				{
 					ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
 					if(!wanted.matches(cid))
@@ -546,8 +422,11 @@ public class WorkspaceInfo
 	 */
 	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException
 	{
+		StorageManager sm = StorageManager.getDefault();
+		checkFirstUse();
+
 		Resolution candidate = null;
-		for(Resolution res : getActiveResolutions())
+		for(Resolution res : getActiveResolutions(sm))
 		{
 			ComponentIdentifier id = res.getCSpec().getComponentIdentifier();
 			if(!request.designates(id))
@@ -763,6 +642,131 @@ public class WorkspaceInfo
 			}
 		}
 		return null;
+	}
+
+	private static Resolution[] getActiveResolutions(StorageManager sm) throws CoreException
+	{
+		// Add the newest version of each known resolution
+		//
+		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
+		ArrayList<TimestampedKey> duplicates = null;
+		ISaxableStorage<Resolution> ress = sm.getResolutions();
+		ISaxableStorage<Materialization> mats = sm.getMaterializations();
+		for(Resolution res : ress.getElements())
+		{
+			UUID resId = res.getId();
+			ComponentIdentifier ci = res.getComponentIdentifier();
+
+			IPath location = getResolutionLocation(mats, res);
+			if(location == null)
+				continue;
+
+			ComponentName cn = ci.toPureComponentName();
+			TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
+			TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
+			if(prevTsKey == null)
+				continue;
+
+			// Check real existence of locations. For performance reasons we only do
+			// this when ambiguities arise.
+			//
+			Resolution prevRes = ress.getElement(prevTsKey.getKey());
+			IPath prevLocation = getResolutionLocation(mats, prevRes);
+			if(prevLocation == null)
+				continue;
+
+			if(location.toFile().exists())
+			{
+				if(location.equals(prevLocation))
+				{
+					// Discriminate using timestamp
+					//
+					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+					{
+						// We just replaced a newer entry. Put it back!
+						//
+						resolutionKeys.put(cn, prevTsKey);
+					}
+					continue;
+				}
+
+				if(!prevLocation.toFile().exists())
+					continue;
+
+				// A resolution towards the target platform will always have a lower
+				// precedence.
+				//
+				if(prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+				{
+					if(!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+						continue;
+				}
+				else
+				{
+					if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					{
+						resolutionKeys.put(cn, prevTsKey);
+						continue;
+					}
+				}
+
+				boolean versionEqual = false;
+				IVersion currVersion = ci.getVersion();
+				IVersion prevVersion = prevRes.getComponentIdentifier().getVersion();
+				if(currVersion == null)
+					versionEqual = (prevVersion == null);
+				else if(prevVersion != null)
+					versionEqual = currVersion.equalsUnqualified(prevVersion);
+
+				if(versionEqual)
+				{
+					// Discriminate using timestamp
+					//
+					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+						resolutionKeys.put(cn, prevTsKey);
+					continue;
+				}
+
+				// Apparently we have both locations present so we cannot
+				// discriminate one of them
+				//
+				if(duplicates == null)
+					duplicates = new ArrayList<TimestampedKey>();
+				duplicates.add(prevTsKey);
+
+				CorePlugin.getLogger().debug(
+						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn,
+						currVersion, location, prevVersion, prevLocation);
+				continue;
+			}
+
+			if(prevLocation.toFile().exists())
+			{
+				// New entry is bogus and old entry is valid
+				//
+				resolutionKeys.put(cn, prevTsKey);
+			}
+			else
+			{
+				// None of the entries were valid. Simply remove the entry
+				//
+				resolutionKeys.remove(cn);
+			}
+		}
+
+		int top = resolutionKeys.size();
+		if(duplicates != null)
+			top += duplicates.size();
+
+		Resolution[] result = new Resolution[top];
+		int idx = 0;
+		for(TimestampedKey tsKey : resolutionKeys.values())
+			result[idx++] = ress.getElement(tsKey.getKey());
+
+		if(duplicates != null)
+			for(TimestampedKey tsKey : duplicates)
+				result[idx++] = ress.getElement(tsKey.getKey());
+		return result;
 	}
 
 	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res)
