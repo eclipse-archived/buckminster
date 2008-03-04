@@ -100,7 +100,7 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		catch(CoreException e)
 		{
-			m_resolver.getContext().addException(getQuery().getComponentRequest(), e.getStatus());
+			m_resolver.getContext().addRequestStatus(getQuery().getComponentRequest(), e.getStatus());
 		}
 		catch(OperationCanceledException e)
 		{
@@ -109,7 +109,7 @@ class ResolverNodeWithJob extends ResolverNode
 		catch(Throwable e)
 		{
 			CorePlugin.getLogger().warning(e, e.toString());
-			m_resolver.getContext().addException(getQuery().getComponentRequest(), BuckminsterException.wrap(e).getStatus());
+			m_resolver.getContext().addRequestStatus(getQuery().getComponentRequest(), BuckminsterException.wrap(e).getStatus());
 		}
 		finally
 		{

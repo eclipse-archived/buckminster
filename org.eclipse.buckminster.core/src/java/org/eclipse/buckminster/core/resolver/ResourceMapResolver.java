@@ -252,7 +252,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			RMContext context = getContext();
 			if(!context.isContinueOnError())
 				throw e;
-			context.addException(query.getComponentRequest(), e.getStatus());
+			context.addRequestStatus(query.getComponentRequest(), e.getStatus());
 			return null;
 		}
 		finally

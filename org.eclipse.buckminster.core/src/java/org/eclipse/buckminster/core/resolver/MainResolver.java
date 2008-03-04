@@ -89,7 +89,9 @@ public class MainResolver implements IResolver
 		// fail.
 		//
 		boolean continueOnError = m_context.isContinueOnError();
+		boolean silentStatus = m_context.isSilentStatus();
 		m_context.setContinueOnError(true);
+		m_context.setSilentStatus(true);
 		try
 		{
 			IResolver[] resolvers = new IResolver[numFactories];
@@ -126,7 +128,9 @@ public class MainResolver implements IResolver
 					break;
 			}
 
-			if(!continueOnError)
+			if(bom.isFullyResolved())
+				m_context.clearStatus();
+			else if(!continueOnError)
 			{
 				IStatus status = m_context.getStatus();
 				if(status.getSeverity() == IStatus.ERROR)
@@ -140,6 +144,7 @@ public class MainResolver implements IResolver
 		finally
 		{
 			m_context.setContinueOnError(continueOnError);
+			m_context.setSilentStatus(silentStatus);
 			monitor.done();
 		}
 	}

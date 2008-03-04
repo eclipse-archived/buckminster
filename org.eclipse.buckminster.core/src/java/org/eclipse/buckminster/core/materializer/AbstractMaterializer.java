@@ -188,7 +188,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		{
 			if(!context.isContinueOnError())
 				throw e;
-			context.addException(generatorNode.getRequest(), e.getStatus());
+			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
 		}
 		return false;
 	}

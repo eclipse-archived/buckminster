@@ -470,7 +470,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			RMContext ctx = query.getContext();
 			if(!ctx.isContinueOnError())
 				throw new CoreException(status);
-			ctx.addException(query.getComponentRequest(), status);
+			ctx.addRequestStatus(query.getComponentRequest(), status);
 		}
 	}
 

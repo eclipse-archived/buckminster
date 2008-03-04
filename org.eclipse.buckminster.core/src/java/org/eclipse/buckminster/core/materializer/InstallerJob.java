@@ -94,7 +94,7 @@ public class InstallerJob extends WorkspaceJob
 		{
 			if(!m_context.isContinueOnError())
 				throw e;
-			m_context.addException(bom.getRequest(), e.getStatus());
+			m_context.addRequestStatus(bom.getRequest(), e.getStatus());
 		}
 		finally
 		{

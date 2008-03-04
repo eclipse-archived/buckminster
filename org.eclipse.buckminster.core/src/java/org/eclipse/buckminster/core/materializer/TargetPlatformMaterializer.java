@@ -9,9 +9,12 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -19,6 +22,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -31,6 +36,42 @@ import org.eclipse.update.core.SiteManager;
  */
 public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 {
+	private static IPath getDefaultInstallRoot() throws CoreException
+	{
+		try
+		{
+			return Path.fromOSString(TargetPlatform.getPlatformInstallLocation().getCanonicalPath());
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	private static ISite getDefaultInstallSite() throws CoreException
+	{
+		IConfiguredSite installSite = null;		
+		IConfiguredSite[] configuredSites = SiteManager.getLocalSite().getCurrentConfiguration().getConfiguredSites();
+		for(int idx = 0; idx < configuredSites.length; ++idx)
+		{
+			IConfiguredSite configuredSite = configuredSites[idx];
+			if (configuredSite.isProductSite() && configuredSite.isUpdatable())
+			{
+				installSite = configuredSite;
+				break;
+			}
+		}
+		if (installSite == null)
+			throw BuckminsterException.fromMessage("Could not find a site to install to");
+		return installSite.getSite();
+	}
+
+	@Override
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
+	{
+		return getDefaultInstallRoot();
+	}
+
 	@Override
 	public String getMaterializerRootDir()
 	{
@@ -45,6 +86,9 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		{
 			synchronized(SiteManager.class)
 			{
+				if(destination.equals(getDefaultInstallRoot()))
+					return getDefaultInstallSite();
+
 				File folder = destination.hasTrailingSeparator()
 					? destination.toFile()
 					: destination.removeLastSegments(1).toFile();

@@ -51,12 +51,12 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public synchronized void addException(ComponentRequest request, IStatus resolveStatus)
+	public synchronized void addRequestStatus(ComponentRequest request, IStatus resolveStatus)
 	{
 		if(m_parentContext != null)
-			m_parentContext.addException(request, resolveStatus);
+			m_parentContext.addRequestStatus(request, resolveStatus);
 		else
-			super.addException(request, resolveStatus);
+			super.addRequestStatus(request, resolveStatus);
 	}
 
 	@Override

@@ -152,7 +152,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 							case IStatus.WARNING:
 							case IStatus.ERROR:
 								Platform.removeLogListener(this);
-								context.addException(first.getRequest(), status);
+								context.addRequestStatus(first.getRequest(), status);
 								Platform.addLogListener(this);
 							}
 						}	
@@ -161,18 +161,18 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 
 					try
 					{
-						context.addException(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "Start mirroring"));
+						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "Start mirroring"));
 						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils.subMonitor(monitor, 100));
 					}
 					catch(CoreException e)
 					{
 						if(!context.isContinueOnError())
 							throw e;
-						context.addException(first.getRequest(), e.getStatus());
+						context.addRequestStatus(first.getRequest(), e.getStatus());
 					}
 					finally
 					{
-						context.addException(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "End mirroring"));
+						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "End mirroring"));
 						Platform.removeLogListener(listener);
 					}
 				}

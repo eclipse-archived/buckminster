@@ -155,6 +155,8 @@ public class RMContext extends ExpandingProperties
 
 	private MultiStatus m_status;
 
+	private boolean m_silentStatus;
+
 	public RMContext(Map<String, String> properties)
 	{
 		this(properties, null);
@@ -179,22 +181,25 @@ public class RMContext extends ExpandingProperties
 	 * @param resolveStatus
 	 *            A status that indicates an error during processing.
 	 */
-	public synchronized void addException(ComponentRequest request, IStatus status)
+	public synchronized void addRequestStatus(ComponentRequest request, IStatus status)
 	{
 		Logger logger = CorePlugin.getLogger();
 		if(logger.isInfoEnabled())
 			status = addTagId(getTagId(request), status);
 
-		switch(status.getSeverity())
+		if(!isSilentStatus())
 		{
-		case IStatus.ERROR:
-			logger.error(formatStatus(status));
-			break;
-		case IStatus.WARNING:
-			logger.warning(formatStatus(status));
-			break;
-		case IStatus.INFO:
-			logger.info(formatStatus(status));
+			switch(status.getSeverity())
+			{
+			case IStatus.ERROR:
+				logger.error(formatStatus(status));
+				break;
+			case IStatus.WARNING:
+				logger.warning(formatStatus(status));
+				break;
+			case IStatus.INFO:
+				logger.info(formatStatus(status));
+			}
 		}
 
 		if(m_status == null)
@@ -445,13 +450,23 @@ public class RMContext extends ExpandingProperties
 		return m_userCache;
 	}
 
-	public synchronized boolean isContinueOnError()
+	public boolean isContinueOnError()
 	{
 		return m_continueOnError;
+	}
+
+	public boolean isSilentStatus()
+	{
+		return m_silentStatus;
 	}
 
 	public void setContinueOnError(boolean flag)
 	{
 		m_continueOnError = flag;
+	}
+
+	public void setSilentStatus(boolean flag)
+	{
+		m_silentStatus = flag;
 	}
 }

@@ -103,7 +103,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		{
 			if(!context.isContinueOnError())
 				throw e;
-			context.addException(resolution.getRequest(), e.getStatus());
+			context.addRequestStatus(resolution.getRequest(), e.getStatus());
 		}
 	}
 
@@ -491,7 +491,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		{
 			if(!context.isContinueOnError())
 				throw e;
-			context.addException(resolution.getRequest(), e.getStatus());
+			context.addRequestStatus(resolution.getRequest(), e.getStatus());
 			return wb;
 		}
 	}
