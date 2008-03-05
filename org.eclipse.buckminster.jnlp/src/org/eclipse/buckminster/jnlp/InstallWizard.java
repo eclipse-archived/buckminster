@@ -41,6 +41,10 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SPACE_N
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_NAME;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_TYPE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 
 import java.io.File;
@@ -149,6 +153,14 @@ public class InstallWizard extends AdvancedWizard
 	private String m_loginKey;
 	
 	private String m_loginKeyUserName;
+	
+	private String m_cspecName;
+	
+	private String m_cspecType;
+	
+	private String m_cspecVersionString;
+	
+	private String m_cspecVersionType;
 	
 	private boolean m_loginPageRequested = false;
 	
@@ -586,6 +598,26 @@ public class InstallWizard extends AdvancedWizard
 	String getSpaceName()
 	{
 		return m_spaceName;
+	}
+	
+	String getCSpecName()
+	{
+		return m_cspecName;
+	}
+	
+	String getCSpecType()
+	{
+		return m_cspecType;
+	}
+	
+	String getCSpecVersionString()
+	{
+		return m_cspecVersionString;
+	}
+	
+	String getCSpecVersionType()
+	{
+		return m_cspecVersionType;
 	}
 	
 	String[] getMaterializers()
@@ -1057,6 +1089,34 @@ public class InstallWizard extends AdvancedWizard
 		m_serviceProvider = properties.get(PROP_SERVICE_PROVIDER);
 
 		m_spaceName = properties.get(PROP_SPACE_NAME);
+
+		m_cspecName = properties.get(PROP_CSPEC_NAME);
+		if(m_cspecName == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_NAME);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+		
+		m_cspecType = properties.get(PROP_CSPEC_TYPE);
+		if(m_cspecType == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_TYPE);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+		
+		m_cspecVersionString = properties.get(PROP_CSPEC_VERSION_STRING);
+		if(m_cspecVersionString == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_STRING);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+		
+		m_cspecVersionType = properties.get(PROP_CSPEC_VERSION_TYPE);
+		if(m_cspecVersionType == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_TYPE);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
 
 		if(errorList.size() > 0)
 		{

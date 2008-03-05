@@ -182,7 +182,10 @@ public class PublishWizard extends AdvancedWizard
 		try
 		{
 			String xmlData = out.toString("UTF-8");
-			result = getPublisher().publish(m_originalSpaceName, selectedSpace, artifactName, xmlData, true);
+			result = getPublisher().publish(
+					m_originalSpaceName, m_installWizard.getCSpecName(), m_installWizard.getCSpecType(),
+					m_installWizard.getCSpecVersionString(), m_installWizard.getCSpecVersionType(), 
+					selectedSpace, artifactName, xmlData, true);
 		}
 		catch(Exception e)
 		{
@@ -319,5 +322,10 @@ public class PublishWizard extends AdvancedWizard
 	void setPreferredPassword(String password)
 	{
 		m_installWizard.setAuthenticatorPassword(password);
+	}
+	
+	String getOriginalSpaceName()
+	{
+		return m_originalSpaceName;
 	}
 }

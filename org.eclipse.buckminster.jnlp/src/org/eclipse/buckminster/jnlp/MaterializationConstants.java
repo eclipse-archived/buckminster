@@ -71,6 +71,14 @@ public interface MaterializationConstants
 	public static final String PROP_SERVICE_PROVIDER = "serviceProvider";
 
 	public static final String PROP_LOGIN_KEY = "loginKey";
+	
+	public static final String PROP_CSPEC_NAME = "cspecName";
+	
+	public static final String PROP_CSPEC_TYPE = "cspecType";
+	
+	public static final String PROP_CSPEC_VERSION_STRING = "cspecVersionString";
+	
+	public static final String PROP_CSPEC_VERSION_TYPE = "cspecVersionType";
 
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
 

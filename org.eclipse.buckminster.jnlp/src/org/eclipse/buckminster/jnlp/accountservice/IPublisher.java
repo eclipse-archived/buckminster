@@ -36,5 +36,7 @@ public interface IPublisher extends IAuthenticator
 	
 	public List<String> getSpaceNames() throws Exception;
 	
-	public int publish(String originalSpaceName, String spaceName, String artifactName, String xmlData, boolean replaceExisting) throws Exception;
+	public int publish(
+			String originalSpaceName, String cspecName, String cspecType, String cspecVersionString, String cspecVersionType,
+			String targetSpaceName, String artifactName, String xmlData, boolean replaceExisting) throws Exception;
 }
