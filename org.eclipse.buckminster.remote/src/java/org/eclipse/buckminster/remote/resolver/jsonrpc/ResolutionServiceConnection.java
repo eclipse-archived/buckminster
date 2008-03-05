@@ -362,7 +362,9 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	{
 		if(m_connectionUsed)
 		{
-			logout();
+			if(m_remoteResolutionService != null)
+				logout();
+			
 			initialize();
 		}
 	}
