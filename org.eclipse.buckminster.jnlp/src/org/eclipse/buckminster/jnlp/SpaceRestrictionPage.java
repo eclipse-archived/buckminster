@@ -87,7 +87,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Confirm email Verifycation");
+		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Confirm email Validation");
 		
 		label = new Label(m_solutionEmailAndInvitationComposite, SWT.NONE);
 		label.setImage(getInstallWizard().getImage(ICON_DOT));

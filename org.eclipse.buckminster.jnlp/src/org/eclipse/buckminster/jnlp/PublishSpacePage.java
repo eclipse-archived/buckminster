@@ -211,7 +211,12 @@ public class PublishSpacePage extends PublishWizardPage
 					"Cannot read available spaces", ERROR_CODE_PUBLISHING_EXCEPTION);
 		
 		m_spaceCombo.setItems(availableSpaces.toArray(new String[0]));
-		m_spaceCombo.select(0);
+		int idx = availableSpaces.indexOf(getPublishWizard().getOriginalSpaceName());
+		
+		if(idx == -1)
+			idx = 0;
+			
+		m_spaceCombo.select(idx);
 		
 		updateUserName(getPublishWizard().getCurrentUserName());
 		

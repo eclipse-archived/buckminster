@@ -48,12 +48,14 @@ public class Application implements IApplication
 	/**
 	 * The wizard dialog width
 	 */
-	private static final int WIZARD_WIDTH = 550;
+	private static final int WIZARD_MIN_WIDTH = 550;
+	private static final int WIZARD_MAX_WIDTH = 850;
 
 	/**
 	 * The wizard dialog height
 	 */
-	private static final int WIZARD_HEIGHT = 550;
+	private static final int WIZARD_MIN_HEIGHT = 550;
+	private static final int WIZARD_MAX_HEIGHT = 750;
 
 	/**
 	 * String for synchronization with the bootstrap
@@ -232,7 +234,9 @@ public class Application implements IApplication
 				});
 
 				final Shell shell = dialog.getShell();
-				shell.setSize(WIZARD_WIDTH, WIZARD_HEIGHT);
+				shell.setSize(
+						Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH),
+						Math.min(Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
 
 				// when the shell is not started "ON TOP", it starts blinking
 				shell.addShellListener(new ShellAdapter()
