@@ -2,12 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="false"/>
-   </extension>
-   <extension
          point="org.eclipse.buckminster.core.readerTypes">
       <readerType
             class="org.eclipse.buckminster.subversive.internal.SubversiveReaderType"
