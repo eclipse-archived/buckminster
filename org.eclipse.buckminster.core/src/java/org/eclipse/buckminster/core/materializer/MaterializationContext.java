@@ -47,6 +47,7 @@ public class MaterializationContext extends RMContext
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
 	private final MaterializationStatistics m_statistics = new MaterializationStatistics();
+	private boolean m_rebootNeeded = false;
 
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec)
 	{
@@ -227,6 +228,17 @@ public class MaterializationContext extends RMContext
 			: rootLocation.append(nodeLocation));
 	}
 
+	/**
+	 * If the target platform materializer installs things into the current
+	 * runtime, this flag will be set to <code>true</code>.
+	 * 
+	 * @return <code>true</code> if a materializer altered the current runtime platform.
+	 */
+	public boolean isRebootNeeded()
+	{
+		return m_rebootNeeded;
+	}
+
 	public void processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
 	throws CoreException
 	{
@@ -334,6 +346,17 @@ public class MaterializationContext extends RMContext
 		}
 		else
 			throw BuckminsterException.fromMessage("Unable find expander for " + cName);
+	}
+
+	/**
+	 * Set by the target platform materializer when it installs new features into the
+	 * default target platform (the one currently in use).
+	 *
+	 * @param flag
+	 */
+	public void setRebootNeeded(boolean flag)
+	{
+		m_rebootNeeded = flag;
 	}
 
 	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException

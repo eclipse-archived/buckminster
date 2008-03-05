@@ -134,6 +134,9 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		monitor.beginTask(null, featureRefs.length * 100);
 		try
 		{
+			if(destinationSite == getDefaultInstallSite())
+				context.setRebootNeeded(true);
+
 			for(ISiteFeatureReference featureRef : featureRefs)
 			{
 				IFeature feature = featureRef.getFeature(MonitorUtils.subMonitor(monitor, 50));
