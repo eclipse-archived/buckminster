@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.remote.resolver.jsonrpc;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.remote.IAuthenticatedConnection;
@@ -242,7 +243,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		{
 			bout = new ByteArrayOutputStream();
 			GZIPOutputStream gout = new GZIPOutputStream(bout);
-			Utils.serialize(bom, gout);
+			Utils.serializeUgly(bom, gout);
 			gout.close();
 		}
 		catch(Exception e)
