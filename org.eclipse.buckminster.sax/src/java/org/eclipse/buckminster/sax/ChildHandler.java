@@ -85,6 +85,11 @@ public abstract class ChildHandler extends AbstractHandler
 			((ChildPoppedListener)parent).childPopped(this);
 	}
 
+	public final AbstractHandler getParentHandler()
+	{
+		return m_parentHandler;
+	}
+
 	@Override
 	public String getPrefixMapping(String prefix)
 	{
@@ -135,11 +140,6 @@ public abstract class ChildHandler extends AbstractHandler
 	protected final Locator getDocumentLocator()
 	{
 		return m_parentHandler.getDocumentLocator();
-	}
-
-	protected final AbstractHandler getParentHandler()
-	{
-		return m_parentHandler;
 	}
 
 	/**
