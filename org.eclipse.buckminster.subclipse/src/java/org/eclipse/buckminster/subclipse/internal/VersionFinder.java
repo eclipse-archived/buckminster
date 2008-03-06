@@ -60,6 +60,9 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 		monitor.beginTask(null, 200);
 		try
 		{
+			if(!m_session.hasTrunkStructure())
+				return Collections.emptyList();
+				
 			SVNUrl url = m_session.getSVNRootUrl(branches);
 			SVNRevision.Number repoRev = m_session.getRepositoryRevision(MonitorUtils.subMonitor(monitor, 50));
 			if(repoRev == null)

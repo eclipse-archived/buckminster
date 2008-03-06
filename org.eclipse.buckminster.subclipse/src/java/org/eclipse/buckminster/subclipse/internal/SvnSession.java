@@ -57,12 +57,15 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 /**
- * The SVN repository reader assumes that any repository contains the three recommended directories <code>trunk</code>,
- * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is interpreted as no
- * <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. The URL used as the
- * repository identifier must contain the path element trunk. Anything that follows the <code>trunk</code> element in
- * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in
- * turn may have four different flags:
+ * <p>The SVN repository will be able to use reader checks if a repository contains the three recommended directories
+ * <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is
+ * interpreted as no <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. In
+ * order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must
+ * contain the path element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path
+ * will be considered a <code>module</code> path. If no <code>trunk</code> element is present in the path, the
+ * last element will be considered the <code>module</code></p>
+ * <p>The repository URL may also contain a query part that in turn may
+ * have four different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
  * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
@@ -72,7 +75,7 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
- * </dl>
+ * </dl></p>
  * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
@@ -82,7 +85,9 @@ public class SvnSession implements Closeable
 	private static class RepositoryAccess
 	{
 		private final SVNUrl m_svnURL;
+
 		private final String m_user;
+
 		private final String m_password;
 
 		public RepositoryAccess(String str) throws MalformedURLException
@@ -112,6 +117,7 @@ public class SvnSession implements Closeable
 			m_user = user;
 			m_password = password;
 		}
+
 		@Override
 		public boolean equals(Object o)
 		{
@@ -120,22 +126,25 @@ public class SvnSession implements Closeable
 			if(!(o instanceof RepositoryAccess))
 				return false;
 			RepositoryAccess that = (RepositoryAccess)o;
-			return m_svnURL.equals(that.m_svnURL)
-				&& Trivial.equalsAllowNull(m_user, that.m_user)
-				&& Trivial.equalsAllowNull(m_password, that.m_password);
+			return m_svnURL.equals(that.m_svnURL) && Trivial.equalsAllowNull(m_user, that.m_user)
+					&& Trivial.equalsAllowNull(m_password, that.m_password);
 		}
+
 		public SVNUrl getSvnURL()
 		{
 			return m_svnURL;
 		}
+
 		public String getUser()
 		{
 			return m_user;
 		}
+
 		public String getPassword()
 		{
 			return m_password;
 		}
+
 		@Override
 		public int hashCode()
 		{
@@ -146,6 +155,7 @@ public class SvnSession implements Closeable
 				hash = hash * 31 + m_password.hashCode();
 			return hash;
 		}
+
 		@Override
 		public String toString()
 		{
@@ -336,6 +346,8 @@ public class SvnSession implements Closeable
 
 	private final boolean m_moduleBeforeTag;
 
+	private final boolean m_trunkStructure;
+
 	private final String m_password;
 
 	private final SVNRevision m_revision;
@@ -366,7 +378,7 @@ public class SvnSession implements Closeable
 
 	private static final String UNKNOWN_ROOT_PREFIX = SvnSession.class.getPackage().getName() + ".root.";
 
-	private static void addUnknownRoot(Map<String,String> properties, RepositoryAccess ra)
+	private static void addUnknownRoot(Map<String, String> properties, RepositoryAccess ra)
 	{
 		synchronized(properties)
 		{
@@ -380,7 +392,7 @@ public class SvnSession implements Closeable
 					int lastDot = key.lastIndexOf('.');
 					if(lastDot < 0)
 						continue;
-					
+
 					try
 					{
 						int keyNum = Integer.parseInt(key.substring(lastDot + 1));
@@ -397,12 +409,12 @@ public class SvnSession implements Closeable
 						//
 						return;
 				}
-			}	
+			}
 			properties.put(UNKNOWN_ROOT_PREFIX + (maxNum + 1), raStr);
 		}
 	}
 
-	private static void clearUnknownRoots(Map<String,String> properties)
+	private static void clearUnknownRoots(Map<String, String> properties)
 	{
 		synchronized(properties)
 		{
@@ -416,7 +428,7 @@ public class SvnSession implements Closeable
 		}
 	}
 
-	private static List<RepositoryAccess> getUnknownRoots(Map<String,String> properties)
+	private static List<RepositoryAccess> getUnknownRoots(Map<String, String> properties)
 	{
 		synchronized(properties)
 		{
@@ -514,16 +526,28 @@ public class SvnSession implements Closeable
 			// Find the repository root, i.e. the point just above 'trunk'.
 			//
 			IPath fullPath = new Path(uri.getPath());
-			String[] pathSegements = fullPath.segments();
-			int idx = pathSegements.length;
+			String[] pathSegments = fullPath.segments();
+			int idx = pathSegments.length;
 			while(--idx >= 0)
-				if(pathSegements[idx].equalsIgnoreCase("trunk"))
+				if(pathSegments[idx].equals("trunk"))
 					break;
 
-			if(idx < 0)
-				throw new MalformedURLException("The SVN URL must contain the path segment 'trunk'");
+			if(idx >= 0)
+				m_trunkStructure = true;
+			else
+			{
+				m_trunkStructure = false;
+				idx = pathSegments.length - 1; // Last element is considered the module name
+			}
 
-			int relPathLen = pathSegements.length - idx;
+			if(m_branchOrTag != null && !m_trunkStructure)
+				//
+				// No use continuing with this session since there's no hope finding
+				// the desired branch or tag.
+				//
+				throw BuckminsterException.fromMessage("Branch or tag %s not found", m_branchOrTag);
+
+			int relPathLen = pathSegments.length - idx;
 
 			StringBuilder bld = new StringBuilder();
 			String scheme = uri.getScheme();
@@ -565,8 +589,13 @@ public class SvnSession implements Closeable
 			// will be used when finding branches and tags.
 			//
 			IPath modulePath = null;
-			if(relPathLen > 1)
-				modulePath = fullPath.removeFirstSegments(idx + 1);
+			if(m_trunkStructure)
+			{
+				if(relPathLen > 1)
+					modulePath = fullPath.removeFirstSegments(idx + 1);
+			}
+			else
+				modulePath = Path.fromPortableString(fullPath.lastSegment());
 			m_module = modulePath;
 
 			String tmp = uri.getFragment();
@@ -579,16 +608,19 @@ public class SvnSession implements Closeable
 			boolean moduleAfterTag = false;
 			boolean moduleBeforeBranch = false;
 			boolean moduleAfterBranch = false;
-			for(String entry : TextUtils.decodeToQueryPairs(uri.getQuery()))
+			if(m_trunkStructure)
 			{
-				if(entry.equalsIgnoreCase("moduleBeforeTag"))
-					moduleBeforeTag = true;
-				else if(entry.equalsIgnoreCase("moduleAfterTag"))
-					moduleAfterTag = true;
-				else if(entry.equalsIgnoreCase("moduleBeforeBranch"))
-					moduleBeforeBranch = true;
-				else if(entry.equalsIgnoreCase("moduleAfterBranch"))
-					moduleAfterBranch = true;
+				for(String entry : TextUtils.decodeToQueryPairs(uri.getQuery()))
+				{
+					if(entry.equalsIgnoreCase("moduleBeforeTag"))
+						moduleBeforeTag = true;
+					else if(entry.equalsIgnoreCase("moduleAfterTag"))
+						moduleAfterTag = true;
+					else if(entry.equalsIgnoreCase("moduleBeforeBranch"))
+						moduleBeforeBranch = true;
+					else if(entry.equalsIgnoreCase("moduleAfterBranch"))
+						moduleAfterBranch = true;
+				}
 			}
 			m_moduleBeforeTag = moduleBeforeTag;
 			m_moduleAfterTag = moduleAfterTag;
@@ -617,10 +649,9 @@ public class SvnSession implements Closeable
 				if(rank > 200 && !repoIsSSH)
 					continue;
 
-				if(!(repoProto.equals(ourProto)
-				|| (repoProto.equals("svn") && ourProto.equals("http"))
-				|| (repoProto.equals("http") && ourProto.equals("svn"))
-				|| ((ourProto.equals("svn") || ourProto.equals("http")) && repoIsSSH)))
+				if(!(repoProto.equals(ourProto) || (repoProto.equals("svn") && ourProto.equals("http"))
+						|| (repoProto.equals("http") && ourProto.equals("svn")) || ((ourProto.equals("svn") || ourProto
+						.equals("http")) && repoIsSSH)))
 					continue;
 
 				String[] ourPath = ourRoot.getPathSegments();
@@ -678,7 +709,8 @@ public class SvnSession implements Closeable
 				if(bestMatch == null)
 				{
 					m_clientAdapter = svnPlugin.createSVNClient();
-					addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username, m_password));
+					addUnknownRoot(context.getBindingProperties(),
+							new RepositoryAccess(ourRoot, m_username, m_password));
 				}
 				else
 				{
@@ -759,6 +791,11 @@ public class SvnSession implements Closeable
 		return m_revision;
 	}
 
+	public boolean hasTrunkStructure()
+	{
+		return m_trunkStructure;
+	}
+
 	public SVNRevision.Number getRepositoryRevision(IProgressMonitor monitor) throws CoreException
 	{
 		SVNRevision.Number repoRev = null;
@@ -790,6 +827,7 @@ public class SvnSession implements Closeable
 		}
 		return repoRev;
 	}
+
 	@Override
 	public String toString()
 	{
@@ -856,7 +894,9 @@ public class SvnSession implements Closeable
 
 		if(m_branchOrTag == null)
 		{
-			bld.append("/trunk");
+			if(m_trunkStructure)
+				bld.append("/trunk");
+
 			if(m_module != null)
 			{
 				bld.append('/');
@@ -1087,7 +1127,7 @@ public class SvnSession implements Closeable
 			String password = root.getPassword();
 			if(password != null)
 				configuration.setProperty("password", password);
-			
+
 			try
 			{
 				repos.addOrUpdateRepository(repos.createRepository(configuration));
@@ -1100,7 +1140,8 @@ public class SvnSession implements Closeable
 		clearUnknownRoots(context.getBindingProperties());
 	}
 
-	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source) throws CoreException
+	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source)
+			throws CoreException
 	{
 		Collection<RepositoryAccess> commonRoots = null;
 		for(RepositoryAccess repoAccess : source)
@@ -1111,10 +1152,9 @@ public class SvnSession implements Closeable
 				if(repoAccess == repoAccessCmp)
 					continue;
 
-				SVNUrl cmp = repoAccessCmp.getSvnURL();				
-				if(!(url.getHost().equals(cmp.getHost())
-				&& url.getProtocol().equals(cmp.getProtocol())
-				&& url.getPort() == cmp.getPort()))
+				SVNUrl cmp = repoAccessCmp.getSvnURL();
+				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url
+						.getPort() == cmp.getPort()))
 					continue;
 
 				String[] urlSegs = url.getPathSegments();
@@ -1127,7 +1167,7 @@ public class SvnSession implements Closeable
 				for(idx = 0; idx < maxSegs; ++idx)
 					if(!urlSegs[idx].equals(cmpSegs[idx]))
 						break;
-	
+
 				if(idx < 1)
 					continue;
 
@@ -1201,9 +1241,8 @@ public class SvnSession implements Closeable
 			for(RepositoryAccess repoAccessCmp : commonRoots)
 			{
 				SVNUrl cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost())
-				&& url.getProtocol().equals(cmp.getProtocol())
-				&& url.getPort() == cmp.getPort()))
+				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url
+						.getPort() == cmp.getPort()))
 					continue;
 
 				String[] urlSegs = url.getPathSegments();
@@ -1216,7 +1255,7 @@ public class SvnSession implements Closeable
 				for(idx = 0; idx < maxSegs; ++idx)
 					if(!urlSegs[idx].equals(cmpSegs[idx]))
 						break;
-				
+
 				if(idx < maxSegs)
 					continue;
 
