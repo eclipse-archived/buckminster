@@ -91,7 +91,17 @@ public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppe
 	{
 		IDWrapper wrapper = m_wrapperMap.get(id);
 		if(wrapper == null)
+		{
+			AbstractHandler parent = getParentHandler();
+			while(parent != null)
+			{
+				if(parent instanceof BillOfMaterialsHandler)
+					return ((BillOfMaterialsHandler)parent).getWrapped(id);
+				if(parent instanceof ChildHandler)
+					parent = ((ChildHandler)parent).getParentHandler();
+			}
 			throw new SAXParseException("id " + id + " appoints a non existing wrapper", getDocumentLocator());
+		}
 		return wrapper.getWrapped();
 	}
 
