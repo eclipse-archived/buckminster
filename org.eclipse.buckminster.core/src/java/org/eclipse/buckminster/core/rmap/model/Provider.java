@@ -33,6 +33,7 @@ import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
@@ -223,12 +224,12 @@ public class Provider extends UUIDKeyed
 			{
 				problem = e;
 			}
-	
+
 			if(candidate == null)
 			{
 				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
 						"No component match was found");
-				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem));
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem == null ? null : BuckminsterException.unwind(problem)));
 				return null;
 			}
 			query.logDecision(ResolverDecisionType.MATCH_FOUND, candidate);
