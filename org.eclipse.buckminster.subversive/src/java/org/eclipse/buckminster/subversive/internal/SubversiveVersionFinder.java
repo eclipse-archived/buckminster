@@ -55,6 +55,9 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 	@Override
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
+		if(!m_session.hasTrunkStructure())
+			return Collections.emptyList();
+			
 		URI url = m_session.getSVNRootUrl(branches);
 		SVNEntry[] list = m_session.listFolder(url, monitor);
 		if(list.length == 0)
