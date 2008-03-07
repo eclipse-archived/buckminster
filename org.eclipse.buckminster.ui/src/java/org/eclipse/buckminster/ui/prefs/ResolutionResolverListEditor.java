@@ -168,7 +168,8 @@ public class ResolutionResolverListEditor extends FieldEditor
 	@Override
 	protected void doLoadDefault()
 	{
-		loadLists(getPreferenceStore().getDefaultString(getPreferenceName()));
+		ResolverFactoryMaintainer.getInstance().setDefaultResolutionOrder();
+		loadLists(getPreferenceStore().getString(getPreferenceName()));
 	}
 
 	@Override
@@ -181,9 +182,18 @@ public class ResolutionResolverListEditor extends FieldEditor
 		IPreferenceStore store = getPreferenceStore();
 		String prefName = getPreferenceName();
 		if(value == null)
+		{
 			store.setToDefault(prefName);
+			BuckminsterPreferences.setCustomQueryResolverSortOrder(false);
+		}
 		else
+		{
+			if(value.equals(store.getString(prefName)))
+				return;
+
 			store.setValue(prefName, value);
+			BuckminsterPreferences.setCustomQueryResolverSortOrder(true);
+		}
 	}
 
 	void addResolver()
