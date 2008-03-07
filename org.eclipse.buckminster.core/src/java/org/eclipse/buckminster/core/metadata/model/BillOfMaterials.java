@@ -167,7 +167,7 @@ public class BillOfMaterials extends DepNode
 	 */
 	public boolean contentEqual(BillOfMaterials other)
 	{
-		return other != null && m_query.equals(other.m_query) && m_topNode.equals(other.m_topNode);
+		return other != null && m_topNode.equals(other.m_topNode);
 	}
 
 	@Override
