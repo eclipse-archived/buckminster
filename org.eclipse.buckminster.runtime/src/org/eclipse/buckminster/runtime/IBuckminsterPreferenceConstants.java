@@ -36,4 +36,6 @@ public interface IBuckminsterPreferenceConstants
 	public static final String QUERY_RESOLVER_SORT_ORDER = "queryResolverSortOrder";
 	
 	public static final String QUERY_RESOLVER_SORT_ORDER_DEFAULT = "rmap";
+	
+	public static final String CUSTOM_QUERY_RESOLVER_SORT_ORDER = "customQueryResolverSort";
 }

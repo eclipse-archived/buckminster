@@ -89,6 +89,11 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		return s_prefsNode.getBoolean(LOG_ECLIPSE_TO_CONSOLE, LOG_ECLIPSE_TO_CONSOLE_DEFAULT);
 	}
 
+	public static boolean isCustomQuerySortOrder()
+	{
+		return s_prefsNode.getBoolean(CUSTOM_QUERY_RESOLVER_SORT_ORDER, false);
+	}
+
 	public static String[] getQueryResolverSortOrder()
 	{
 		String qrso = s_prefsNode.get(QUERY_RESOLVER_SORT_ORDER, QUERY_RESOLVER_SORT_ORDER_DEFAULT);
@@ -131,6 +136,11 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static void setEclipseLoggerToConsole(boolean flag)
 	{
 		s_prefsNode.putBoolean(LOG_ECLIPSE_TO_CONSOLE, flag);
+	}
+
+	public static void setCustomQueryResolverSortOrder(boolean flag)
+	{
+		s_prefsNode.putBoolean(CUSTOM_QUERY_RESOLVER_SORT_ORDER, flag);
 	}
 
 	public static String createQueryResolverSortOrder(String[] sortOrder)
