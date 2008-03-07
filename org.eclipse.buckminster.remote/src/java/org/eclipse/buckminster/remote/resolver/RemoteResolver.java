@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
+import org.eclipse.buckminster.remote.IProgressInfo;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -129,8 +130,9 @@ public class RemoteResolver implements IResolver
 				{
 				}
 
-				String message = m_remoteService.getProgressInfo().getMessage();
-				int worked = m_remoteService.getProgressInfo().getWorked() * 100;
+				IProgressInfo progressInfo = m_remoteService.getProgressInfo();
+				String message = progressInfo.getMessage();
+				int worked = progressInfo.getWorked() * 100;
 
 				monitor.subTask(message);
 				monitor.worked(worked - lastWorked);
@@ -142,10 +144,9 @@ public class RemoteResolver implements IResolver
 					logger.debug("Starting cancel service...");
 					m_remoteService.cancel();
 					logger.debug("Cancel service started...");
+					throw new OperationCanceledException();
 				}
 			}
-
-			Throwable finalException = null;
 
 			try
 			{
@@ -160,17 +161,7 @@ public class RemoteResolver implements IResolver
 			}
 			catch(Exception e)
 			{
-				finalException = e;
-			}
-
-			if(finalException != null)
-			{
-				if(monitor.isCanceled())
-				{
-					throw new OperationCanceledException();
-				}
-
-				throw BuckminsterException.wrap(finalException);
+				throw BuckminsterException.wrap(e);
 			}
 		}
 		finally

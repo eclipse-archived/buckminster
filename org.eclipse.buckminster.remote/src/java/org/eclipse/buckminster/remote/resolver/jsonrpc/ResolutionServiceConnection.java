@@ -21,6 +21,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.DefaultHttpParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -38,7 +40,6 @@ import org.jabsorb.client.ErrorResponse;
 import org.jabsorb.client.HTTPSession;
 import org.jabsorb.client.TransportRegistry;
 
-
 /**
  * Connection to a remote resolution server using JABSORB
  * 
@@ -48,6 +49,8 @@ import org.jabsorb.client.TransportRegistry;
 public class ResolutionServiceConnection implements IResolutionServiceConnection, IAuthenticatedConnection
 {
 	private static final String ENCRYPT_ALGORITHM = "SHA-256";
+	
+	private static final int DEFAULT_TIMEOUT = 60000;
 	
 	private IServiceProvider m_serviceProvider;
 	
@@ -69,12 +72,19 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	
 	private boolean m_isDone;
 	
+	private int m_timeout;
+	
 	public ResolutionServiceConnection(String providerID, String login, String password) throws CoreException
 	{
 		this(getProvider(providerID), login, password);
 	}
 	
 	public ResolutionServiceConnection(IServiceProvider provider, String login, String password) throws CoreException
+	{
+		this(provider, login, password, DEFAULT_TIMEOUT);
+	}
+
+	public ResolutionServiceConnection(IServiceProvider provider, String login, String password, int timeout) throws CoreException
 	{
 		if(provider == null)
 		{
@@ -87,6 +97,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		m_login = login;
 		m_password = password;
 		m_connectionUsed = false;
+		m_timeout = timeout;
 		
 		initialize();
 	}
@@ -107,6 +118,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		m_httpClient = new HttpClient();
 		HttpState httpState = new HttpState();
 		m_httpClient.setState(httpState);
+		DefaultHttpParams.getDefaultParams().setParameter(HttpMethodParams.SO_TIMEOUT, Integer.valueOf(m_timeout));
 		
 		GetMethod method = null;
 		
