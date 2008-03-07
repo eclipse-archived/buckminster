@@ -9,6 +9,8 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -57,7 +59,15 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 	public synchronized IResolverFactory[] getResolverFactories()
 	{
 		if(m_resolverFactories == null)
-			m_resolverFactories = createFactoriesByExtension();
+		{
+			IResolverFactory[] fcs = createFactoriesByExtension();
+			m_resolverFactories = fcs;
+			if(!BuckminsterPreferences.isCustomQuerySortOrder())
+			{
+				setDefaultResolutionOrder();
+				m_resolverFactories = fcs; // Restore since they are cleared by the pref change
+			}
+		}
 		return m_resolverFactories;
 	}
 
@@ -77,6 +87,19 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		return factoryIDs;
 	}
 
+	public void setDefaultResolutionOrder()
+	{
+		Map<Integer,String> activeFactories = new TreeMap<Integer, String>();
+		for(IResolverFactory factory : getResolverFactories())
+		{
+			int prio = factory.getResolutionPriority();
+			if(prio >= 0)
+				activeFactories.put(new Integer(prio), factory.getId());
+		}
+		BuckminsterPreferences.setQueryResolverSortOrder(activeFactories.values().toArray(new String[activeFactories.size()]));
+		BuckminsterPreferences.setCustomQueryResolverSortOrder(false);
+	}
+
 	private static IResolverFactory[] createFactoriesByExtension()
 	{
 		Logger logger = CorePlugin.getLogger();
@@ -88,7 +111,8 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		{
 			try
 			{
-				factories.add((IResolverFactory)elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM));
+				IResolverFactory factory = (IResolverFactory)elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
+				factories.add(factory);
 			}
 			catch(CoreException e)
 			{

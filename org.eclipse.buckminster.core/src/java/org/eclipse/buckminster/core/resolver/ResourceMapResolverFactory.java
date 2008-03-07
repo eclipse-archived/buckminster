@@ -249,4 +249,9 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 			defaultNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
 		}
 	}
+
+	public int getResolutionPriority()
+	{
+		return 0;
+	}
 }

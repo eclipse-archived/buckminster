@@ -55,6 +55,13 @@ will normally come with one local service that is based on a Resource Map&lt;/p&
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="priority" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
