@@ -176,6 +176,21 @@ public class BillOfMaterials extends DepNode
 		return getTopNode().findAll(skipThese);
 	}
 
+	public List<ComponentRequest> getUnresolvedList()
+	{
+		ArrayList<ComponentRequest> unresolved = new ArrayList<ComponentRequest>();
+		m_topNode.addUnresolved(unresolved, new HashSet<Resolution>());
+		return unresolved;
+	}
+
+	public BillOfMaterials switchContent(BillOfMaterials other)
+	{
+		if(m_topNode.equals(other.getTopNode()))
+			return this;
+		
+		return new BillOfMaterials(other.getTopNode(), m_query, new Date());
+	}
+
 	public void addMaterializationNodes(MaterializationSpecBuilder bld) throws CoreException
 	{
 		for(Resolution res : findAll(null))

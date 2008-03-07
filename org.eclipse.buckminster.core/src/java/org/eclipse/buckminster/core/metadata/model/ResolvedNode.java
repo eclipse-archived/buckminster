@@ -95,6 +95,16 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
+	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
+	{
+		if(skipThese.add(getResolution()))
+		{
+			for(DepNode child : getChildren())
+				child.addUnresolved(unresolved, skipThese);
+		}
+	}
+
+	@Override
 	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
 	{
 		HashSet<Resolution> notThese = new HashSet<Resolution>();
@@ -217,10 +227,8 @@ public class ResolvedNode extends DepNode
 			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
 
 		Resolution resolution = getResolution();
-		if(!perused.contains(resolution))
+		if(perused.add(resolution))
 		{
-			perused.add(resolution);
-			
 			ComponentIdentifier ci = resolution.getComponentIdentifier();
 			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
 				resolutions.add(resolution);
@@ -231,17 +239,16 @@ public class ResolvedNode extends DepNode
 	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
 	{
 		Resolution resolution = getResolution();
-		if(notThese.contains(resolution))
-			return;
-		notThese.add(resolution);
-
-		// It's rather important that we do depth first here and store
-		// the child before its parent since they need to be materialized
-		// and bound in that order.
-		//
-		for(DepNode child : getChildren())
-			child.collectAll(notThese, all);
-		all.add(getResolution());
+		if(notThese.add(resolution))
+		{
+			// It's rather important that we do depth first here and store
+			// the child before its parent since they need to be materialized
+			// and bound in that order.
+			//
+			for(DepNode child : getChildren())
+				child.collectAll(notThese, all);
+			all.add(getResolution());
+		}
 	}
 
 	@Override

@@ -8,9 +8,12 @@
 package org.eclipse.buckminster.core.resolver;
 
 
+import java.util.List;
+
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -107,8 +110,15 @@ public class MainResolver implements IResolver
 					logDecision(ResolverDecisionType.USING_RESOLVER, resolverFactories[idx].getId());
 					resolver.setRecursiveResolve(m_recursiveResolve);
 					BillOfMaterials newBom = resolver.resolveRemaining(bom, MonitorUtils.subMonitor(monitor, 100));
-					if(bom.equals(newBom))
+					if(bom.contentEqual(newBom))
 						continue;
+
+					if(idx == 0)
+						//
+						// There is no reason to reiterate if the only iteration that changed
+						// the bom was the first.
+						//
+						bomAtIterationStart = bom;
 
 					bom = newBom;
 					if(!m_recursiveResolve || bom.isFullyResolved())
@@ -136,7 +146,21 @@ public class MainResolver implements IResolver
 				if(status.getSeverity() == IStatus.ERROR)
 				{
 					m_context.clearStatus();
-					throw new CoreException(status);
+					List<ComponentRequest> unresolvedList = bom.getUnresolvedList();
+					int top = unresolvedList.size();
+					if(top == 0)
+						throw new CoreException(status);
+					
+					StringBuilder bld = new StringBuilder();
+					bld.append("Unable to resolve: ");
+					
+					for(int idx = 0; idx < top; ++idx)
+					{
+						if(idx > 0)
+							bld.append(", ");
+						unresolvedList.get(idx).toString(bld);
+					}
+					throw BuckminsterException.fromMessage(bld.toString());
 				}
 			}
 			return bom;

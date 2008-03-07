@@ -40,6 +40,12 @@ public class UnresolvedNode extends DepNode
 		m_dependency = dependency;
 	}
 
+	@Override
+	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
+	{
+		unresolved.add(m_dependency.getRequest());
+	}
+
 	public String getDefaultTag()
 	{
 		return TAG;

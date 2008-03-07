@@ -35,6 +35,10 @@ public abstract class DepNode extends UUIDKeyed implements ISaxable
 
 	public static final String TAG = "depnode";
 
+	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
+	{
+	}
+
 	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
 	{
 		return Collections.emptyList();

@@ -169,8 +169,7 @@ public class RemoteResolver implements IResolver
 			monitor.done();
 			m_remoteService.releaseConnection();
 		}
-
-		return bom.contentEqual(bomReturned) ? bom : bomReturned;
+		return bom.switchContent(bomReturned);
 	}
 
 	public void setRecursiveResolve(boolean recursive)
