@@ -25,6 +25,7 @@ import org.eclipse.buckminster.remote.NoSuchProviderException;
 import org.eclipse.buckminster.remote.ProviderUtil;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
@@ -50,6 +51,8 @@ public abstract class AbstractRemoteResolverFactory extends AbstractExtension im
 
 	public static final String PROVIDER_PARAM = "provider";
 
+	public static final String PRIORITY_ATTRIBUTE = "priority";
+
 	public static final String LOGIN_PARAM = "login";
 
 	public static final String PASSWORD_PARAM = "password";
@@ -67,6 +70,8 @@ public abstract class AbstractRemoteResolverFactory extends AbstractExtension im
 
 	private String m_providerID;
 
+	private int m_priority = -1;
+
 	public IResolver createResolver(ResolutionContext context) throws CoreException
 	{
 		Map<String, Object> properties = new HashMap<String, Object>();
@@ -83,11 +88,31 @@ public abstract class AbstractRemoteResolverFactory extends AbstractExtension im
 	public void setExtensionParameter(String key, String value) throws CoreException
 	{
 		if(PROVIDER_PARAM.equalsIgnoreCase(key))
-		{
 			m_providerID = value;
-		}
 		else
 			throw new IllegalParameterException(ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT, this.getId(), key);
+	}
+
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
+	{
+		super.setInitializationData(config, propertyName, data);
+		String prio = config.getAttribute(PRIORITY_ATTRIBUTE);
+		if(prio != null)
+		{
+			try
+			{
+				m_priority = Integer.parseInt(prio);
+			}
+			catch(NumberFormatException e)
+			{
+			}
+		}
+	}
+
+	public int getResolutionPriority()
+	{
+		return m_priority;
 	}
 
 	public IPreferenceDescriptor[] getPreferenceDescriptors()
