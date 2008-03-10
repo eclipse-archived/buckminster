@@ -213,7 +213,10 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			if(forResolutionAidOnly)
 				return;
 
-			IBuildModel buildModel = pluginBase.getPluginModel().getBuildModel();
+			IPluginModelBase model = pluginBase.getPluginModel();
+			setModel(model);
+
+			IBuildModel buildModel = model.getBuildModel();
 			boolean fromProject = (buildModel != null);
 			CSpecGenerator generator;
 			if(fromProject)

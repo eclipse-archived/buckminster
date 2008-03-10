@@ -70,6 +70,7 @@ public class FeatureBuilder extends PDEBuilder
 			}
 			if(model == null)
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
+			setModel(model);
 			feature = model.getFeature();
 		}
 		catch(IOException e)

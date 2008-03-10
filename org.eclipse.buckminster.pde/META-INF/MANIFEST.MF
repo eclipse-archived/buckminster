@@ -7,6 +7,9 @@ Bundle-Activator: org.eclipse.buckminster.pde.PDEPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: pde.jar
 Export-Package: org.eclipse.buckminster.pde,
+ org.eclipse.buckminster.pde.cspecgen,
+ org.eclipse.buckminster.pde.cspecgen.bundle,
+ org.eclipse.buckminster.pde.cspecgen.feature,
  org.eclipse.buckminster.pde.internal,
  org.eclipse.buckminster.pde.mapprovider
 Require-Bundle: org.eclipse.buckminster.jdt;bundle-version="1.0.0",

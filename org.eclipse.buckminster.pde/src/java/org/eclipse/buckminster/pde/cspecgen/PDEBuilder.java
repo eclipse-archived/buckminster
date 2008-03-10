@@ -25,6 +25,7 @@ import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.pde.core.IModel;
 
 /**
  * This abstract builder contains all functionality that is common to the PDE Cspec builders.
@@ -44,6 +45,8 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 	public static final String OPTIONAL_TARGET = "optional";
 
 	private boolean m_usingInstalledReader;
+
+	private IModel m_model;
 
 	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
@@ -68,10 +71,20 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		}
 	}
 
+	public IModel getModel()
+	{
+		return m_model;
+	}
+
 	protected boolean isUsingInstalledReader()
 	{
 		return m_usingInstalledReader;
 	}
 
 	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException;
+	
+	protected void setModel(IModel model)
+	{
+		m_model = model;
+	}
 }
