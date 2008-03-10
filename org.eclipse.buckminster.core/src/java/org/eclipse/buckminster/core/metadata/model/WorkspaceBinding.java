@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -32,11 +33,13 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	public static final String ATTR_WS_RELATIVE_PATH = "workspaceRelativePath";
 	public static final String ATTR_WS_LOCATION = "workspaceLocation";
 	public static final String ATTR_TIMESTAMP = "timestamp";
+	public static final String ATTR_RESOLUTION_ID = "resolutionId";
 
 	private final long m_timestamp;
 	private final IPath m_workspaceRoot;
 	private final IPath m_workspaceRelativePath;
 	private final Map<String,String> m_properties;
+	private final UUID m_resolutionId;
 
 	private static long s_lastTS = System.currentTimeMillis();
 
@@ -59,14 +62,15 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		return now;
 	}
 
-	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties)
+	public WorkspaceBinding(IPath componentLocation, Resolution res, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties)
 	{
-		this(componentLocation, cid, workspaceRoot, workspaceRelativePath, properties, getNextTimestamp());
+		this(componentLocation, res.getComponentIdentifier(), res.getId(), workspaceRoot, workspaceRelativePath, properties, getNextTimestamp());
 	}
 
-	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties, long timestamp)
+	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, UUID resId, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties, long timestamp)
 	{
 		super(componentLocation, cid);
+		m_resolutionId = resId;
 		m_timestamp = timestamp;
 		m_workspaceRoot = workspaceRoot;
 		m_workspaceRelativePath = workspaceRelativePath;
@@ -82,6 +86,11 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	public String getDefaultTag()
 	{
 		return TAG;
+	}
+
+	public Resolution getResolution(StorageManager sm) throws CoreException
+	{
+		return sm.getResolutions().getElement(m_resolutionId);
 	}
 
 	public Materialization getMaterialization()
@@ -129,6 +138,7 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
 		Utils.addAttribute(attrs, ATTR_WS_LOCATION, m_workspaceRoot.toPortableString());
 		Utils.addAttribute(attrs, ATTR_TIMESTAMP, Long.toString(m_timestamp));
+		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
 	}
 
 	@Override

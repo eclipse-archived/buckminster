@@ -87,7 +87,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 		else if(!leaf.hasTrailingSeparator())
 		{
-			location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
+			IReaderType readerType = getMaterializationReaderType(resolution);
+			if(!IReaderType.ECLIPSE_IMPORT.equals(readerType.getId()))
+				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
 		}
 		return location;
 	}
@@ -169,9 +171,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 95);
 			IPath wsRelativePath = wb.getWorkspaceRelativePath();
 			if(wsRelativePath.segmentCount() == 1)
-				createProjectBinding(wsRelativePath.segment(0), mat, context, subMonitor);
+				createProjectBinding(wsRelativePath.segment(0), wb, context, subMonitor);
 			else
-				createExternalBinding(wsRelativePath, mat, subMonitor);
+				createExternalBinding(wsRelativePath, wb, subMonitor);
 		}
 		catch(IOException e)
 		{
@@ -200,6 +202,24 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 		IReaderType localReaderType = CorePlugin.getDefault().getReaderType(readerTypeName);
 		return new Materialization(localReaderType.getFixedLocation(resolution), resolution.getComponentIdentifier());
+	}
+
+	@Override
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
+	{
+		IPath installLocation = context.getInstallLocation(resolution);
+		IPath leafArtifact = context.getLeafArtifact(resolution);
+		if(leafArtifact == null)
+			installLocation = installLocation.addTrailingSeparator();
+		else
+		{
+			IReaderType readerType = getMaterializationReaderType(resolution);
+			if(IReaderType.ECLIPSE_IMPORT.equals(readerType.getId()))
+				installLocation = installLocation.append(resolution.getName()).addTrailingSeparator();
+			else
+				installLocation = installLocation.append(leafArtifact);
+		}
+		return installLocation;
 	}
 
 	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context) throws CoreException
@@ -246,10 +266,10 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			if(matLoc.hasTrailingSeparator())
 				wsRelativePath = wsRelativePath.addTrailingSeparator();
 		}
-		return new WorkspaceBinding(matLoc, mat.getComponentIdentifier(), wsRoot, wsRelativePath, context.getBindingProperties());
+		return new WorkspaceBinding(matLoc, resolution, wsRoot, wsRelativePath, context.getBindingProperties());
 	}
 
-	private void createExternalBinding(IPath wsRelativePath, Materialization mat, IProgressMonitor monitor)
+	private void createExternalBinding(IPath wsRelativePath, WorkspaceBinding mat, IProgressMonitor monitor)
 			throws CoreException, IOException
 	{
 		IPath locationPath = mat.getComponentLocation();
@@ -346,6 +366,11 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			// This resource now resides within the project but a refresh is needed
 			//
 			projectForBinding.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
+			IResource resource = projectForBinding.findMember(projRelativePath);
+			if(resource == null)
+				throw BuckminsterException.fromMessage(
+						"Unable to obtain resource %s from <workspace>/%s", wsRelativePath, projRelativePath);
+
 			WorkspaceInfo.setComponentIdentifier(projectForBinding.findMember(projRelativePath), mat
 					.getComponentIdentifier());
 		}
@@ -355,16 +380,15 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private void createProjectBinding(String projName, Materialization mat, RMContext context,
+	private void createProjectBinding(String projName, WorkspaceBinding wb, RMContext context,
 			IProgressMonitor monitor) throws CoreException, IOException
 	{
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot wsRoot = workspace.getRoot();
-		IProject project = wsRoot.getProject(projName);
 
 		// Get the absolute path for the ProjectBinding
 		//
-		IPath locationPath = mat.getComponentLocation();
+		IPath locationPath = wb.getComponentLocation();
 
 		// Check that the source directory is present.
 		//
@@ -387,7 +411,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 		try
 		{
-			if(project.exists())
+			try
 			{
 				description = workspace.loadProjectDescription(locationPath.append(".project"));
 
@@ -398,7 +422,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					throw new ProjectNameMismatchException(projName, description.getName());
 				MonitorUtils.worked(monitor, 50);
 			}
-			else
+			catch(CoreException e)
 			{
 				if(isRootedInWorkspace)
 				{
@@ -412,7 +436,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 						// Eclipse stipulates that the name *has* to be the same name as the folder
 						// at this point. So we start over here...
 						//
-						createProjectBinding(forcedName, mat, context, MonitorUtils.subMonitor(monitor, 150));
+						createProjectBinding(forcedName, wb, context, MonitorUtils.subMonitor(monitor, 150));
 						return;
 					}
 				}
@@ -421,12 +445,15 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					description = workspace.newProjectDescription(projName);
 					description.setLocation(locationPath);
 				}
-				project.create(description, MonitorUtils.subMonitor(monitor, 50));
 			}
 
+			IProject project = wsRoot.getProject(projName);
+			if(!project.exists())
+				project.create(description, MonitorUtils.subMonitor(monitor, 50));
+
 			project.open(0, MonitorUtils.subMonitor(monitor, 20));
-			Resolution cr = mat.getResolution();
-			IReaderType readerType = cr.getProvider().getReaderType();
+			Resolution cr = wb.getResolution(StorageManager.getDefault());
+			IReaderType readerType = getMaterializationReaderType(cr);
 			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 50));
 			WorkspaceInfo.setComponentIdentifier(project, cr.getCSpec().getComponentIdentifier());
 			MonitorUtils.worked(monitor, 30);
@@ -475,8 +502,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			IProgressMonitor monitor) throws CoreException
 	{
 		StorageManager sm = StorageManager.getDefault();
-		Materialization mat = wb.getMaterialization();
-		Resolution resolution = mat.getResolution();
+		Resolution resolution = wb.getResolution(StorageManager.getDefault());
 		CSpec cspec = resolution.getCSpec();
 		try
 		{
@@ -493,7 +519,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			}
 
 			Map<String, String> props = context.getProperties(resolution.getRequest());
-			IPath productPath = ((TopLevelAttribute)bindEntryPoint).getUniquePath(mat.getComponentLocation(), new ModelCache(props));
+			IPath productPath = ((TopLevelAttribute)bindEntryPoint).getUniquePath(wb.getComponentLocation(), new ModelCache(props));
 			String bindingName = context.getBindingName(resolution, props);
 
 			performManager.perform(cspec, bindEntryPoint.getName(), props, false, monitor);
@@ -504,7 +530,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), cspec
 					.getComponentIdentifier());
 			newMat.store(sm);
-			return new WorkspaceBinding(newMat.getComponentLocation(), newMat.getComponentIdentifier(), wb.getWorkspaceRoot(), new Path(bindingName), null);
+			return new WorkspaceBinding(newMat.getComponentLocation(), resolution, wb.getWorkspaceRoot(), new Path(bindingName), null);
 		}
 		catch(CoreException e)
 		{

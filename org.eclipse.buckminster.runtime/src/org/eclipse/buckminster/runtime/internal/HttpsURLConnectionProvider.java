@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.InvalidAlgorithmParameterException;
@@ -142,10 +143,28 @@ public class HttpsURLConnectionProvider implements IURLConnectionProvider
 			// 
 			SSLContext sc = SSLContext.getInstance("SSL");
 			sc.init(null, promptUserTrustManager, null);
-			HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
-			conn.setSSLSocketFactory(sc.getSocketFactory());
+			for(int idx = 0;;)
+			{
+				try
+				{
+					HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
+					conn.setSSLSocketFactory(sc.getSocketFactory());
+					return conn;				
+				}
+				catch(ConnectException e)
+				{
+					if(++idx == MAX_CONNECTION_ATTEMPTS)
+						throw e;
 
-			return conn;
+					try
+					{
+						Thread.sleep(MILLISECS_BETWEEN_RETRIES);
+					}
+					catch(InterruptedException e1)
+					{
+					}
+				}
+			}
 		}
 		catch(Throwable t)
 		{

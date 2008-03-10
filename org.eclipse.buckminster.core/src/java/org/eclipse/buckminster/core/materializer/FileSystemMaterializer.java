@@ -98,7 +98,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 					cr.store(sm);
 					ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
-					IPath artifactLocation = context.getArtifactLocation(cr);
+					IPath artifactLocation = getArtifactLocation(context, cr);
 					String syncLock = artifactLocation.toOSString().intern();
 					synchronized(syncLock)
 					{
@@ -309,5 +309,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 		{
 			monitor.done();
 		}
+	}
+
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
+	{
+		return context.getArtifactLocation(resolution);
 	}
 }

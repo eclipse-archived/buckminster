@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.runtime;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -28,6 +29,25 @@ public final class DefaultURLConnectionProvider implements IURLConnectionProvide
 
 	public URLConnection openConnection(URL url) throws IOException
 	{
-		return url.openConnection();
+		for(int idx = 0;;)
+		{
+			try
+			{
+				return url.openConnection();				
+			}
+			catch(ConnectException e)
+			{
+				if(++idx == MAX_CONNECTION_ATTEMPTS)
+					throw e;
+
+				try
+				{
+					Thread.sleep(MILLISECS_BETWEEN_RETRIES);
+				}
+				catch(InterruptedException e1)
+				{
+				}
+			}
+		}
 	}
 }

@@ -19,6 +19,10 @@ import java.net.URLConnection;
  */
 public interface IURLConnectionProvider
 {
+
+	public static final int MAX_CONNECTION_ATTEMPTS = 3;
+	public static final int MILLISECS_BETWEEN_RETRIES = 3000;
+
 	public static final String URL_CONNECTION_PROVIDERS_POINT = Buckminster.PLUGIN_ID
 	+ ".URLConnectionProviders";
 

@@ -112,7 +112,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		try
 		{
 			URL siteURL = new URL(resolution.getRepository());
-			if(!siteURL.getPath().endsWith("map"))
+			String sitePath = siteURL.getPath();
+			if(!(sitePath.endsWith(".map") || sitePath.endsWith(".xml") || sitePath.endsWith(".jar")));
 				siteURL = URLUtils.appendTrailingSlash(siteURL);
 
 			String subDir = IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId())

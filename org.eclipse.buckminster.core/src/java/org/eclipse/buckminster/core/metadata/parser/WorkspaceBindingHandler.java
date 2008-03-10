@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -35,6 +36,7 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 	public static final String TAG = WorkspaceBinding.TAG;
 
 	private ComponentIdentifier m_cid;
+	private UUID m_resolutionId;
 	private IPath m_location;
 	private IPath m_wsRoot;
 	private IPath m_wsRelativePath;
@@ -75,11 +77,12 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 		m_wsRoot = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_LOCATION));
 		m_wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));
 		m_timestamp = getLongValue(attrs, WorkspaceBinding.ATTR_TIMESTAMP);
+		m_resolutionId = UUID.fromString(this.getStringValue(attrs, WorkspaceBinding.ATTR_RESOLUTION_ID));
 	}
 
 	WorkspaceBinding getWorkspaceBinding() throws SAXException
 	{
-		return new WorkspaceBinding(m_location, m_cid, m_wsRoot, m_wsRelativePath, m_properties, m_timestamp);
+		return new WorkspaceBinding(m_location, m_cid, m_resolutionId, m_wsRoot, m_wsRelativePath, m_properties, m_timestamp);
 	}
 
 	@Override

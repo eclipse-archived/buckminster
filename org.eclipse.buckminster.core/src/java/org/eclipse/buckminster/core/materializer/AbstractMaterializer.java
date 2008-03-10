@@ -72,7 +72,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			for(Resolution res : perused)
 			{
 				if(!mspec.isExcluded(res.getComponentIdentifier()))
-					readerTypes.add(res.getProvider().getReaderTypeId());
+					readerTypes.add(mspec.getMaterializer(res).getMaterializationReaderType(res).getId());
 			}
 
 			CorePlugin plugin = CorePlugin.getDefault();

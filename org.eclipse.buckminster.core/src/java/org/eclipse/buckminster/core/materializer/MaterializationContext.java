@@ -134,7 +134,7 @@ public class MaterializationContext extends RMContext
 			return leaf;
 		}
 
-		IReaderType rd = resolution.getProvider().getReaderType();
+		IReaderType rd = mspec.getMaterializer(resolution).getMaterializationReaderType(resolution);
 		if(isExpand)
 			//
 			// We only name files, not expanded folders
@@ -371,7 +371,7 @@ public class MaterializationContext extends RMContext
 				return location;
 		}
 
-		IReaderType rd = resolution.getProvider().getReaderType();
+		IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
 		location = rd.getInstallLocation(resolution, this);
 		IComponentType cType = resolution.getComponentType();
 		if(cType != null)
