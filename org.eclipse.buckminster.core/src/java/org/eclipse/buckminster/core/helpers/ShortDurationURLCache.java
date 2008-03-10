@@ -65,13 +65,15 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 
 				OutputStream output = null;
 				InputStream input = null;
+				File tempFile = null;
+				boolean success = false;
 				try
 				{
 					mon = MonitorUtils.ensureNotNull(mon);
 					mon.beginTask(null, 1000);
 					mon.subTask("Reading from " + url);
 
-					File tempFile = File.createTempFile("bmurl", ".cache");
+					tempFile = File.createTempFile("bmurl", ".cache");
 					input = URLUtils.openStream(url, MonitorUtils.subMonitor(mon, 100), info);
 					output = new FileOutputStream(tempFile);
 					byte[] buf = new byte[0x2000];
@@ -113,12 +115,15 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 					{
 						writeMonitor.done();
 					}
+					success = true;
 					return new FileHandle(url.toString(), tempFile, true);
 				}
 				finally
 				{
 					IOUtils.close(input);
 					IOUtils.close(output);
+					if(!success && tempFile != null)
+						tempFile.delete();
 					MonitorUtils.complete(mon);
 				}
 			}
