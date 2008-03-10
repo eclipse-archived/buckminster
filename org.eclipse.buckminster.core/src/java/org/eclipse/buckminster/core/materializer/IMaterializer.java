@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,6 +48,13 @@ public interface IMaterializer
 	 * @return The default root. It can never be <code>null</code>
 	 */
 	IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException;
+
+	/**
+	 * Returns the reader type to use for the materialization. This might differ from the
+	 * type used for the resolution.
+	 * @return The reader type to use for materialization
+	 */
+	IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException;
 
 	/**
 	 * Materialize all resolutions from the bill of materials <code>bom</code>.

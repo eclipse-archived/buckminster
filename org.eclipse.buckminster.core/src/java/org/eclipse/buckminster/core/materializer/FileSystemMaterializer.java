@@ -210,12 +210,12 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						if(fileExists && conflictRes == ConflictResolution.UPDATE)
 							updateCandidates.add(ci);
 
-						String readerType = cr.getProvider().getReaderTypeId();
-						List<Materialization> readerGroup = perReader.get(readerType);
+						IReaderType readerType = getMaterializationReaderType(cr);
+						List<Materialization> readerGroup = perReader.get(readerType.getId());
 						if(readerGroup == null)
 						{
 							readerGroup = new ArrayList<Materialization>();
-							perReader.put(readerType, readerGroup);
+							perReader.put(readerType.getId(), readerGroup);
 						}
 						readerGroup.add(mat);
 						totCount++;

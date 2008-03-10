@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -27,6 +28,7 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -46,6 +48,23 @@ import org.eclipse.core.runtime.Path;
 
 public class WorkspaceMaterializer extends FileSystemMaterializer
 {
+	@Override
+	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException
+	{
+		// If this is a OSGi bundle in binary form, we must use the "eclipse.import"
+		// reader in order to materialize
+		//
+		IReaderType rt = super.getMaterializationReaderType(resolution);
+		if(rt instanceof CatalogReaderType)
+			return rt;
+
+		String ctId = resolution.getComponentTypeId();
+		if(IComponentType.OSGI_BUNDLE.equals(ctId) || IComponentType.ECLIPSE_FEATURE.equals(ctId))
+			rt = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_IMPORT);
+
+		return rt;
+	}
+
 	@Override
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
 	{

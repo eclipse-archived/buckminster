@@ -46,6 +46,11 @@ import org.eclipse.osgi.service.datalocation.Location;
  */
 public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer
 {
+	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException
+	{
+		return resolution.getProvider().getReaderType();
+	}
+
 	public static void performInstallActions(BillOfMaterials bom, MaterializationContext context,
 			IProgressMonitor monitor) throws CoreException
 	{

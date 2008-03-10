@@ -436,7 +436,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	static URL createRemoteComponentURL(URL remoteLocation, String name, IVersion version, String subDir)
 	throws MalformedURLException, CoreException
 	{
-		String vName = name + '_' + version;
+		if(remoteLocation.getPath().endsWith(".jar"))
+			return remoteLocation;
+
 		if(remoteLocation.getPath().endsWith(".map"))
 		{
 			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, new NullProgressMonitor()))
@@ -447,7 +449,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			}
 			throw BuckminsterException.fromMessage("Unable to find %s in map %s", name, remoteLocation);
 		}
-		return new URL(remoteLocation, subDir + '/' + vName + ".jar");
+		return new URL(remoteLocation, subDir + '/' + name + '_' + version + ".jar");
 	}
 
 	@SuppressWarnings("deprecation")
