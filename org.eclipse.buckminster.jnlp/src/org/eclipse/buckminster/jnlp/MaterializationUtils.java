@@ -59,7 +59,12 @@ public class MaterializationUtils
 
 		public int compareTo(PropertyEntryByLength o)
 		{
-			return  o.getKey().length() - m_key.length();
+			int result = o.getKey().length() - m_key.length();
+			
+			if(result != 0)
+				return result;
+			
+			return m_key.compareTo(o.getKey());
 		}	
 	}
 	
