@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.RMContext;
@@ -258,7 +259,7 @@ public interface IReaderType extends IBuckminsterExtension
 	 * @return The locator in team repository format.
 	 * @throws CoreException
 	 */
-	String convertFetchFactoryLocator(String fetchFactoryLocator, String componentName) throws CoreException;
+	String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName) throws CoreException;
 
 	/**
 	 * Returns the last modification date for the repository or null if that cannot be determined.

@@ -52,6 +52,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -106,9 +107,6 @@ public class CorePlugin extends LogAwarePlugin
 	public static final String INTERNAL_ACTORS_POINT = CORE_NAMESPACE + ".internalActors";
 
 	public static final String BUCKMINSTER_PROJECT = ".buckminster";
-
-	private static final IPath BUCKMINSTER_PROJECT_DEFAULT_LOCATION = ResourcesPlugin.getWorkspace().getRoot()
-			.getLocation().append(CorePlugin.BUCKMINSTER_PROJECT);
 
 	private static CorePlugin s_plugin;
 
@@ -219,7 +217,8 @@ public class CorePlugin extends LogAwarePlugin
 	public IProject getBuckminsterProject(boolean createIfMissing, IProgressMonitor monitor) throws CoreException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
-		IProject bmProject = ResourcesPlugin.getWorkspace().getRoot().getProject(BUCKMINSTER_PROJECT);
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject bmProject = wsRoot.getProject(BUCKMINSTER_PROJECT);
 		boolean exists = bmProject.exists();
 		if(exists)
 		{
@@ -236,7 +235,9 @@ public class CorePlugin extends LogAwarePlugin
 		monitor.beginTask(null, 2000);
 		monitor.subTask("Creating .buckminster project");
 		IPath path = getBuckminsterProjectLocation();
-		if(!path.equals(BUCKMINSTER_PROJECT_DEFAULT_LOCATION))
+		IPath defaultLocation = wsRoot.getLocation().append(CorePlugin.BUCKMINSTER_PROJECT);
+
+		if(!path.equals(defaultLocation))
 		{
 			IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription(BUCKMINSTER_PROJECT);
 			desc.setLocation(path);
@@ -258,13 +259,14 @@ public class CorePlugin extends LogAwarePlugin
 	 */
 	public IPath getBuckminsterProjectLocation()
 	{
-		IProject bmProject = ResourcesPlugin.getWorkspace().getRoot().getProject(BUCKMINSTER_PROJECT);
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject bmProject = wsRoot.getProject(BUCKMINSTER_PROJECT);
 		if(bmProject.exists())
 			return bmProject.getLocation();
 
 		IPath path = BuckminsterPreferences.getBuckminterProjectContents();
 		if(path == null)
-			path = BUCKMINSTER_PROJECT_DEFAULT_LOCATION;
+			path = wsRoot.getLocation().append(CorePlugin.BUCKMINSTER_PROJECT);
 		return path;
 	}
 

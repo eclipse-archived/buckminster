@@ -55,6 +55,13 @@ public class URLReaderType extends AbstractReaderType
 		}
 	}
 
+	@Override
+	public String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName)
+	throws CoreException
+	{
+		return fetchFactoryLocator.get("src");
+	}
+
 	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
 	{
 		return getDirectReader(externalFile, IReaderType.URL, monitor);

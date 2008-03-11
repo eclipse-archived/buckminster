@@ -14,6 +14,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
@@ -102,10 +103,10 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
-	public String convertFetchFactoryLocator(String fetchFactoryLocator, String componentName)
+	public String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName)
 	throws CoreException
 	{
-		return fetchFactoryLocator + '/' + componentName;
+		throw new UnsupportedOperationException("ReaderType " + getId() + " cannot handle fetchFactory data");
 	}
 
 	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException

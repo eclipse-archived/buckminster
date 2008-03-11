@@ -9,13 +9,11 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,10 +27,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -42,6 +39,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -55,6 +53,8 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportBase.Key;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
+import org.eclipse.buckminster.pde.mapfile.MapFile;
+import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -562,46 +562,45 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
-	private static final Pattern s_mapPattern = Pattern.compile("^([^@]+)@([^,]+),([^=]+)=GET,([^,]+)(,unpack=true)?$");
-
 	private static RemotePluginEntry[] getMapPluginEntries(URL location, IProgressMonitor monitor) throws CoreException
 	{
-		BufferedReader input;
+		InputStream input;
 		try
 		{
-			input = new BufferedReader(new InputStreamReader(URLUtils.openStream(location, monitor)));
-			String line;
+			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
+			input = URLUtils.openStream(location, monitor);
+			MapFile.parse(input, location.toString(), mapEntries);
 			ArrayList<RemotePluginEntry> entries = new ArrayList<RemotePluginEntry>();
-			while((line = input.readLine()) != null)
+			for(MapFileEntry entry : mapEntries)
 			{
-				Matcher m = s_mapPattern.matcher(line);
-				if(m.matches() && "plugin".equals(m.group(1)))
-				{
-					RemotePluginEntry pluginEntry;
-					try
-					{
-						pluginEntry = new RemotePluginEntry(new URL(m.group(4)));
-					}
-					catch(MalformedURLException e)
-					{
-						continue;
-					}
-					String identifier = m.group(2);
-					pluginEntry.setPluginIdentifier(identifier);
-					
-					IPath path = Path.fromPortableString(pluginEntry.getRemoteLocation().getPath());
-					String fileName = path.lastSegment();
-					if(!(fileName.endsWith(".jar") || fileName.endsWith(".zip")))
-						continue;
+				ComponentIdentifier cid = entry.getComponentIdentifier();
+				if(!IComponentType.OSGI_BUNDLE.equals(cid.getComponentTypeID()))
+					continue;
 
-					String vcName = fileName.substring(0, fileName.length() - 4);
-					if(vcName.startsWith(identifier + '_'))
-						pluginEntry.setPluginVersion(vcName.substring(identifier.length() + 1));
-					else
-						pluginEntry.setPluginVersion(m.group(3));
-					pluginEntry.setUnpack(m.group(5) != null);
-					entries.add(pluginEntry);
+				if(!IReaderType.URL.equals(entry.getReaderType().getId()))
+					continue;
+
+				Map<String,String> props = entry.getProperties();
+				String src = props.get("src");
+				if(src == null || !(src.endsWith(".jar") || src.endsWith(".zip")))
+					continue;
+
+				RemotePluginEntry pluginEntry;
+				try
+				{
+					pluginEntry = new RemotePluginEntry(new URL(src));
 				}
+				catch(MalformedURLException e)
+				{
+					continue;
+				}
+
+				pluginEntry.setPluginIdentifier(cid.getName());
+				if(cid.getVersion() != null)
+					pluginEntry.setPluginVersion(cid.getVersion().toString());
+
+				pluginEntry.setUnpack(Boolean.parseBoolean(props.get("unpack")));
+				entries.add(pluginEntry);
 			}
 			return entries.toArray(new RemotePluginEntry[entries.size()]);
 		}

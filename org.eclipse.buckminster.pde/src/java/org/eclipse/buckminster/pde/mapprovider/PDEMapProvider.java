@@ -8,25 +8,21 @@
 package org.eclipse.buckminster.pde.mapprovider;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.LineNumberReader;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -45,12 +41,12 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.pde.PDEPlugin;
-import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
+import org.eclipse.buckminster.pde.mapfile.MapFile;
+import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -94,7 +90,7 @@ public class PDEMapProvider extends Provider
 				return null;
 			}
 
-			TypedValue tv = getTypedValue(query, problemCollector, 
+			MapFileEntry tv = getMapFileEntry(query, problemCollector, 
 				getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
 
 			if(tv == null)
@@ -103,8 +99,9 @@ public class PDEMapProvider extends Provider
 				//
 				return null;
 
+			Map<String,String> properties = tv.getProperties();
 			IVersion v = null;
-			String tag = tv.getTag();
+			String tag = properties.get("tag");
 			VersionSelector vs = (tag == null) ? null : VersionSelector.tag(tag);
 			ComponentRequest rq = query.getComponentRequest();
 			IVersionConverter vc = getVersionConverter();
@@ -120,21 +117,8 @@ public class PDEMapProvider extends Provider
 			}
 
 			VersionMatch vm = new VersionMatch(v, vs, getSpace(), -1, null, null);
-			CorePlugin plugin = CorePlugin.getDefault();
-			IReaderType rt = plugin.getReaderType(tv.getType().toLowerCase());
-
-			String repoLocator = rt.convertFetchFactoryLocator(tv.getValue(), rq.getName());
-			URL repoURL = rt.convertToURL(repoLocator, vm);
-			if(repoURL != null)
-			{
-				String path = repoURL.getPath();
-				if(path.endsWith(".jar") || path.endsWith(".zip"))
-				{
-					repoLocator = copyToLocalSite(repoURL, query, monitor);
-					rt = plugin.getReaderType(IReaderType.ECLIPSE_IMPORT);
-				}
-			}
-
+			IReaderType rt = tv.getReaderType();
+			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
 			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getSpace(), isMutable(),
 					hasSource(), null, null);
@@ -143,7 +127,7 @@ public class PDEMapProvider extends Provider
 			if(ctypeID == null)
 				return delegated.findMatch(query, problemCollector, monitor);
 
-			IComponentType ctype = plugin.getComponentType(ctypeID);
+			IComponentType ctype = tv.getComponentIdentifier().getComponentType();
 			ProviderMatch pm = new ProviderMatch(PDEMapProvider.this, ctype, vm, score, query);
 			pm.setProvider(delegated);
 			pm.setComponentType(ctype);
@@ -155,59 +139,54 @@ public class PDEMapProvider extends Provider
 		}
 	}
 
-	private String copyToLocalSite(URL repoURL, NodeQuery query, IProgressMonitor monitor) throws CoreException
-	{
-		// Use the import reader for this.
-		//
-		InputStream input = null;
-		try
-		{
-			ComponentRequest rq = query.getComponentRequest();
-			File tempSite = EclipseImportReaderType.getTempSite(query.getContext().getUserCache());	
-			File destDir = new File(tempSite, rq.getComponentTypeID() + 's');
-
-			input = URLUtils.openStream(repoURL, MonitorUtils.subMonitor(monitor, 45));
-			FileUtils.copyFile(input, destDir, new Path(repoURL.toURI().getPath()).lastSegment(), MonitorUtils.subMonitor(monitor, 5));
-			return tempSite.toURI().toURL().toExternalForm();
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(URISyntaxException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	private TypedValue getTypedValue(NodeQuery query, MultiStatus problemCollector, Map<ComponentName, TypedValue> map)
+	private MapFileEntry getMapFileEntry(NodeQuery query, MultiStatus problemCollector, Map<ComponentIdentifier, MapFileEntry> map)
 	{
 		if(map == null)
 			return null;
 
-		ComponentName wanted = query.getComponentRequest();
+		ComponentRequest wanted = query.getComponentRequest();
 		String name = wanted.getName();
 		String ctype = wanted.getComponentTypeID();
+		IVersionDesignator vd = wanted.getVersionDesignator();
 
-		for(Map.Entry<ComponentName, TypedValue> entry : map.entrySet())
+		ComponentIdentifier candidate = null;
+		MapFileEntry candidateEntry = null;
+		for(Map.Entry<ComponentIdentifier, MapFileEntry> entry : map.entrySet())
 		{
-			ComponentName cn = entry.getKey();
+			ComponentIdentifier cn = entry.getKey();
 			if(cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID()))
-				return entry.getValue();
+			{
+				IVersion v = cn.getVersion();
+				if(vd != null)
+				{
+					if(!(v == null || vd.designates(v)))
+						continue;
+				}
+				
+				if(candidate != null)
+				{
+					if(v == null)
+						continue;
+					
+					if(candidate.getVersion() != null && candidate.getVersion().compareTo(v) > 0)
+						continue;
+				}			
+				candidate = cn;
+				candidateEntry = entry.getValue();
+			}
 		}
 
-		String msg = String.format("PDEMapProvider %s(%s): Unable to find %s in map",
-			getReaderTypeId(),
-			getURI(query.getProperties()),
-			wanted);
-
-		problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-		PDEPlugin.getLogger().debug(msg);
-		return null;
+		if(candidateEntry == null)
+		{
+			String msg = String.format("PDEMapProvider %s(%s): Unable to find %s in map",
+				getReaderTypeId(),
+				getURI(query.getProperties()),
+				wanted);
+	
+			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+			PDEPlugin.getLogger().debug(msg);
+		}
+		return candidateEntry;
 	}
 
 	/**
@@ -219,24 +198,25 @@ public class PDEMapProvider extends Provider
 	 * 
 	 * @return
 	 */
-	public Map<ComponentName, TypedValue> getMap(NodeQuery query, MultiStatus problemCollector,
+	public Map<ComponentIdentifier, MapFileEntry> getMap(NodeQuery query, MultiStatus problemCollector,
 		IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask("", 1000);
+		monitor.beginTask(null, 700);
 		Map<UUID, Object> userCache = query.getContext().getUserCache();
 		synchronized(userCache)
 		{
-			Map<ComponentName, TypedValue> map = getCachedMap(userCache);
+			Map<ComponentIdentifier, MapFileEntry> map = getCachedMap(userCache);
 			if(map != null)
 				return map;
 
+			File tempFolder = null;
 			try
 			{
 				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
 					new VersionMatch(null, null, getSpace(), -1, new Date(),null), 
 					ProviderScore.GOOD, query);
 
-				File tempFolder = FileUtils.createTempFolder("bucky", ".tmp");
+				tempFolder = FileUtils.createTempFolder("bucky", ".tmp");
 				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
 				try
 				{
@@ -248,14 +228,14 @@ public class PDEMapProvider extends Provider
 					IOUtils.close(reader);
 				}
 
-				map = new HashMap<ComponentName, TypedValue>();
+				map = new HashMap<ComponentIdentifier, MapFileEntry>();
 				String[] mapFiles = tempFolder.list();
 				if(mapFiles == null || mapFiles.length == 0)
 					return null;
 
-				MonitorUtils.worked(monitor, 100);
+				MonitorUtils.worked(monitor, 50);
 
-				int amountPerFile = 400 / mapFiles.length;
+				int amountPerFile = 100 / mapFiles.length;
 				for(String file : mapFiles)
 				{
 					if(file.endsWith(".map"))
@@ -274,8 +254,27 @@ public class PDEMapProvider extends Provider
 			}
 			finally
 			{
+				if(tempFolder != null)
+					FileUtils.deleteRecursive(tempFolder, MonitorUtils.subMonitor(monitor, 50));
 				monitor.done();
 			}
+		}
+	}
+
+	private static void collectEntries(File mapFile, Map<ComponentIdentifier,MapFileEntry> map) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			input = new FileInputStream(mapFile);
+			ArrayList<MapFileEntry> list = new ArrayList<MapFileEntry>();
+			MapFile.parse(input, mapFile.getCanonicalPath(), list);
+			for(MapFileEntry entry : list)
+				map.put(entry.getComponentIdentifier(), entry);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
 		}
 	}
 
@@ -294,113 +293,14 @@ public class PDEMapProvider extends Provider
 			"CDATA", BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider");
 	}
 
-	static class TypedValue
-	{
-		private final String m_type;
-
-		private final String m_tag;
-
-		private final String m_value;
-
-		TypedValue(String type, String tag, String value)
-		{
-			m_type = type;
-			m_tag = tag;
-			m_value = value;
-		}
-
-		String getType()
-		{
-			return m_type;
-		}
-
-		String getTag()
-		{
-			return m_tag;
-		}
-
-		String getValue()
-		{
-			return m_value;
-		}
-	}
-
-	private static final Pattern s_mapEntryPattern = Pattern.compile("^"
-		+ "\\s*([a-zA-Z_][a-zA-Z0-9_.-]*)\\s*@\\s*([a-zA-Z_][a-zA-Z0-9_.-]*)\\s*="
-		+ "\\s*([a-zA-Z_@][a-zA-Z0-9_.-@]*)\\s*,\\s*(.*?)\\s*$");
-
-	private void collectEntries(File mapFile, Map<ComponentName, TypedValue> map) throws CoreException
-	{
-		LineNumberReader input = null;
-		try
-		{
-			input = new LineNumberReader(new FileReader(mapFile));
-			String line;
-			while((line = input.readLine()) != null)
-			{
-				Matcher matcher = s_mapEntryPattern.matcher(line);
-				if(matcher.matches())
-				{
-					// The first entry might be either a repository type id or the tag. If
-					// we find a repository using that id, we assume it indeed is a repository.
-					// If not, we have to assume it's a tag.
-					//
-					String readerTypeId;
-					String tag;
-					String theRest = matcher.group(4);
-					int cPos = theRest.indexOf(',');
-					if(cPos < 0)
-						continue;
-
-					try
-					{
-						String testReaderTypeId = matcher.group(3).toLowerCase();
-						if(testReaderTypeId.equals("@cvstag@"))
-						{
-							readerTypeId = "cvs";
-							tag = null;	// From some property
-						}
-						else
-						{
-							CorePlugin.getDefault().getReaderType(testReaderTypeId);
-							readerTypeId = testReaderTypeId;
-							tag = theRest.substring(0, cPos);
-							theRest = theRest.substring(cPos + 1);
-						}
-					}
-					catch(CoreException e)
-					{
-						readerTypeId = "cvs";
-						tag = matcher.group(3);
-					}
-					String ctype = matcher.group(1);
-					if("plugin".equals(ctype))
-						ctype = IComponentType.OSGI_BUNDLE;
-					else if("feature".equals(ctype))
-						ctype = IComponentType.ECLIPSE_FEATURE;
-					map.put(new ComponentName(matcher.group(2), ctype), new TypedValue(
-						readerTypeId, tag, theRest));
-				}
-			}
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentName, TypedValue> map)
+	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map)
 	{
 		userCache.put(getId(), map);
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<ComponentName, TypedValue> getCachedMap(Map<UUID, Object> userCache)
+	private Map<ComponentIdentifier, MapFileEntry> getCachedMap(Map<UUID, Object> userCache)
 	{
-		return (Map<ComponentName, TypedValue>)userCache.get(getId());
+		return (Map<ComponentIdentifier, MapFileEntry>)userCache.get(getId());
 	}
 }

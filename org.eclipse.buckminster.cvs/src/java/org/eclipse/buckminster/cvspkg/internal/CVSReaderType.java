@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Date;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -80,20 +81,17 @@ public class CVSReaderType extends CatalogReaderType
 	public static final Command.LocalOption STDOUT = new MyLocalOption("-p");
 
 	@Override
-	public String convertFetchFactoryLocator(String fetchFactoryLocator, String componentName) throws CoreException
+	public String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName) throws CoreException
 	{
-		// The fetchFactoryLocator is in the form <CVSROOT>[,<PASSWORD>[,<PATH>[,<CVSPASSFILE>]]]
-		//
-		// The team repository expects <CVSROOT>[,<PATH>[,<PROJECT>[,<BRANCH>]]]
-		//
-		String[] parts = fetchFactoryLocator.split(",");
-		if(parts.length < 1)
+		String cvsRoot = fetchFactoryLocator.get("cvsRoot");
+		if(cvsRoot == null)
 			throw BuckminsterException.fromMessage("Illegal fetch factory locator");
-		StringBuilder locator = new StringBuilder(parts[0]);
 
+		StringBuilder locator = new StringBuilder(cvsRoot);
+		String path = fetchFactoryLocator.get("path");
 		locator.append(',');
-		if(parts.length >= 3 && parts[2].length() > 0)
-			locator.append(parts[2]);
+		if(path != null)
+			locator.append(path);
 		else
 			locator.append(componentName);
 		return locator.toString();
@@ -107,17 +105,20 @@ public class CVSReaderType extends CatalogReaderType
 			VersionSelector versionSelector = versionMatch.getBranchOrTag();
 			CVSSession session = new CVSSession(repositoryLocator);
 			ICVSRepositoryLocation location = session.getLocation();
-			String fragment = versionSelector == null
-					? null
-					: versionSelector.toString();
+			
 			StringBuilder query = new StringBuilder();
-			query.append("repository=");
-			query.append(location.getRootDirectory());
 			String method = location.getMethod().getName();
 			if(!method.equals("pserver"))
 			{
-				query.append(",method=");
+				query.append("method=");
 				query.append(method);
+			}
+			if(versionSelector != null)
+			{
+				if(query.length() > 0)
+					query.append('&');
+				query.append("version");
+				query.append(versionSelector.toString());
 			}
 
 			String user = location.getUsername();
@@ -125,8 +126,8 @@ public class CVSReaderType extends CatalogReaderType
 				user = null;
 
 			IPath modulePath = new Path(session.getModuleName()).makeAbsolute();
-			URI uri = new URI("cvs", user, location.getHost(), -1, modulePath.toPortableString(), query.toString(),
-					fragment);
+			URI uri = new URI("cvs", user, location.getHost(), -1, location.getRootDirectory(), query.toString(),
+					modulePath.toPortableString());
 			return uri.toURL();
 		}
 		catch(Exception e)
