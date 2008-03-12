@@ -368,7 +368,7 @@ public class MSpecDetailsPanel
 		m_detailDestForm.createControl(detailsComposite);
 		
 		Label label = new Label(detailsComposite, SWT.NONE);
-		label.setText("Unpack:");
+		label.setText("Unpack Component:");
 		label.setToolTipText(TOOL_TIP_UNPACK);
 		
 		m_unpackCheckBox = new Button(detailsComposite, SWT.CHECK);
