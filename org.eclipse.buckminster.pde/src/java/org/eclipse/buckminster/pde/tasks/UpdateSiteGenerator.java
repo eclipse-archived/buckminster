@@ -65,7 +65,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 {
 	private final List<File> m_features;
 	private final IActionContext m_actionContext;
-	private final Site m_site;
+	private final SaxableSite m_saxableSite;
 
 	public UpdateSiteGenerator(List<File> features, File template, File outputFile, File propertiesFile, String qualifier) throws CoreException, IOException
 	{
@@ -73,9 +73,9 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		m_features = features;
 		m_actionContext = AbstractActor.getActiveContext();
 		if(template != null)
-			m_site = SiteReader.getSite(template, null);
+			m_saxableSite = SiteReader.getSite(template, null);
 		else
-			m_site = new ExtendedSite();
+			m_saxableSite = new SaxableSite(new ExtendedSite());
 	}
 
 	public IVersion run(boolean generateQualifier) throws CoreException
@@ -130,10 +130,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 			}
 
 			if(outputFile != null)
-			{
-				SaxableSite saxableSite = new SaxableSite(m_site);
-				Utils.serialize(saxableSite, output);
-			}
+				Utils.serialize(m_saxableSite, output);
 
 			ComponentIdentifier ci = cspec.getComponentIdentifier();
 			return generateQualifier
@@ -180,7 +177,8 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		if(verStr == null || verStr.length() == 0)
 			verStr = "0.0.0";
 		SiteFeatureReferenceModel model = null;
-		for(SiteFeatureReferenceModel oldModel : m_site.getFeatureReferenceModels())
+		Site site = m_saxableSite.getSite();
+		for(SiteFeatureReferenceModel oldModel : site.getFeatureReferenceModels())
 		{
 			if(featureName.equals(oldModel.getFeatureIdentifier()))
 			{
@@ -199,7 +197,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		//
 		if(model == null)
 		{
-			CategoryModel[] categories = m_site.getCategoryModels();
+			CategoryModel[] categories = site.getCategoryModels();
 			Collection<Attribute> attributes = cspec.getAttributes().values();
 	
 			model = new UpdateSiteFeatureReference();
@@ -223,10 +221,10 @@ public class UpdateSiteGenerator extends VersionConsolidator
 					break;
 				}
 			}
-			m_site.addFeatureReferenceModel(model);
+			site.addFeatureReferenceModel(model);
 		}
 		model.setURLString(urlBuilder.toString());
 		model.setFeatureVersion(verStr);
-		model.setSiteModel(m_site);
+		model.setSiteModel(site);
 	}
 }

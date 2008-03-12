@@ -32,17 +32,34 @@ import org.xml.sax.helpers.AttributesImpl;
 public class SaxableSite extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "site";
+	public static final String ATTR_ASSOCIATE_SITES_URL = "associateSitesURL";
+	public static final String ATTR_MIRRORS_URL = "mirrorsURL";
 
 	private final Site m_site;
 
+	private final String m_mirrorsURL;
+	private final String m_associateSitesURL;
+
 	public SaxableSite(Site site)
 	{
+		this(site, null, null);
+	}
+
+	public SaxableSite(Site site, String mirrorsURL, String associateSitesURL)
+	{
 		m_site = site;
+		m_mirrorsURL = mirrorsURL;
+		m_associateSitesURL = associateSitesURL;
 	}
 
 	public String getDefaultTag()
 	{
 		return TAG;
+	}
+
+	public Site getSite()
+	{
+		return m_site;
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException
@@ -62,6 +79,12 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		String urlStr = m_site.getLocationURLString();
 		if(urlStr != null)
 			Utils.addAttribute(attrs, "url", urlStr);
+
+		if(m_mirrorsURL != null)
+			Utils.addAttribute(attrs, ATTR_MIRRORS_URL, m_mirrorsURL);
+
+		if(m_associateSitesURL != null)
+			Utils.addAttribute(attrs, ATTR_ASSOCIATE_SITES_URL, m_associateSitesURL);
 
 		if(m_site instanceof ExtendedSite)
 		{

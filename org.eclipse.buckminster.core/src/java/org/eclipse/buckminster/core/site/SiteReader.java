@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -29,6 +30,7 @@ import org.eclipse.update.core.SiteContentProvider;
 import org.eclipse.update.core.model.DefaultSiteParser;
 import org.eclipse.update.internal.core.ExtendedSiteURLFactory;
 import org.eclipse.update.internal.core.SiteFileContentProvider;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 
@@ -39,9 +41,9 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class SiteReader implements IStreamConsumer<Site>
+public class SiteReader implements IStreamConsumer<SaxableSite>
 {
-	public static Site getSite(URL siteURL, IProgressMonitor monitor) throws CoreException, IOException
+	public static SaxableSite getSite(URL siteURL, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1);
@@ -49,7 +51,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		try
 		{
 			input = new BufferedInputStream(URLUtils.openStream(siteURL, monitor));
-			Site site = parseSite(input, siteURL);
+			SaxableSite site = parseSite(input, siteURL);
 			MonitorUtils.worked(monitor, 1);
 			return site;
 		}
@@ -60,7 +62,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		}
 	}
 
-	public static Site getSite(File siteFile, IProgressMonitor monitor) throws CoreException, IOException
+	public static SaxableSite getSite(File siteFile, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1);
@@ -68,7 +70,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		try
 		{
 			input = new BufferedInputStream(new FileInputStream(siteFile));
-			Site site = parseSite(input, siteFile.toURI().toURL());
+			SaxableSite site = parseSite(input, siteFile.toURI().toURL());
 			MonitorUtils.worked(monitor, 1);
 			return site;
 		}
@@ -79,7 +81,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		}
 	}
 
-	public Site consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
+	public SaxableSite consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
 	throws CoreException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
@@ -87,7 +89,7 @@ public class SiteReader implements IStreamConsumer<Site>
 		try
 		{
 			monitor.subTask("Loading site definition");
-			Site site = parseSite(stream, URLUtils.normalizeToURL(streamName));
+			SaxableSite site = parseSite(stream, URLUtils.normalizeToURL(streamName));
 			MonitorUtils.worked(monitor, 1);
 			return site;
 		}
@@ -101,13 +103,42 @@ public class SiteReader implements IStreamConsumer<Site>
 		}
 	}
 
-	private static Site parseSite(InputStream input, URL url) throws CoreException, IOException
+	static class ExtendedDefaultSiteParser extends DefaultSiteParser
+	{
+		private boolean m_atTop = true;
+		private String m_mirrorsURL;
+		private String m_associateSitesURL;
+
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+		{
+			super.startElement(uri, localName, qName, attributes);
+			if(m_atTop)
+			{
+				m_mirrorsURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_MIRRORS_URL));
+				m_associateSitesURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_ASSOCIATE_SITES_URL));
+				m_atTop = false;
+			}
+		}
+
+		String getAssociateSitesURL()
+		{
+			return m_associateSitesURL;
+		}
+
+		String getMirrorsURL()
+		{
+			return m_mirrorsURL;
+		}
+	}
+
+	private static SaxableSite parseSite(InputStream input, URL url) throws CoreException, IOException
 	{
 		try
 		{
 			SiteContentProvider contentProvider = new SiteFileContentProvider(url);
 			ExtendedSiteURLFactory factory = new ExtendedSiteURLFactory();
-			DefaultSiteParser parser = new DefaultSiteParser();
+			ExtendedDefaultSiteParser parser = new ExtendedDefaultSiteParser();
 			parser.init(factory);
 			Site site = (Site)parser.parse(input);
 			IStatus status = parser.getStatus();
@@ -116,7 +147,7 @@ public class SiteReader implements IStreamConsumer<Site>
 			site.setSiteContentProvider(contentProvider);
 			contentProvider.setSite(site);
 			site.resolve(url, url);
-			return site;
+			return new SaxableSite(site, parser.getMirrorsURL(), parser.getAssociateSitesURL());
 		}
 		catch(SAXException e)
 		{
