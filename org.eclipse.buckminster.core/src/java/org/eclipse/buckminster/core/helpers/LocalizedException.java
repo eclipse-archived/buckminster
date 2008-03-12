@@ -23,7 +23,11 @@ public abstract class LocalizedException extends CoreException
 {
 	private static String getLocalizedFormat(Class<?> c, String defaultMessageFormat)
 	{
-		ResourceBundle bundle = CorePlugin.getDefault().getResourceBundle();
+		CorePlugin core = CorePlugin.getDefault();
+		if(core == null)
+			return defaultMessageFormat;
+
+		ResourceBundle bundle = core.getResourceBundle();
 		if(bundle == null)
 			return defaultMessageFormat;
 
