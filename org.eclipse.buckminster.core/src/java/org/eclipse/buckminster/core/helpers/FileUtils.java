@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.helpers;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -252,6 +253,68 @@ public abstract class FileUtils
 		{
 			monitor.done();
 		}
+	}
+
+	/**
+	 * Substitute parameters in the form &lt;dc&gt;&lt;paramName&gt;&lt;dc&gt; where
+	 * &lt;dc&gt; is the <code>delim</code> character and &lt;paramName&gt; is a
+	 * parameter that is found in <code>substitutions</code>. An unmatched parameter
+	 * substitution string is replaced with an empty string
+	 * @param input The input stream to read from
+	 * @param output The output to write to
+	 * @param delim The character that starts and ends a parameter substitution
+	 * @param substitutions The map containing valid substitutions
+	 * @throws IOException
+	 */
+	public static void substituteParameters(InputStream input, OutputStream output, char delim, Map<String,String> substitutions) throws IOException
+	{
+		BufferedInputStream bufferedInput = new BufferedInputStream(input);
+		BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);
+
+		int c;
+		parseName: while((c = bufferedInput.read()) >= 0)
+		{
+			if(c != delim)
+			{
+				bufferedOutput.write((byte)c);
+				continue;
+			}
+
+			bufferedInput.mark(Integer.MAX_VALUE);
+			c = bufferedInput.read();
+			if(c == delim)
+			{
+				bufferedOutput.write(delim);
+				continue;
+			}
+
+			StringBuilder nameBuilder = new StringBuilder();
+			nameBuilder.append((char)c);
+
+			while((c = bufferedInput.read()) >= 0)
+			{
+				if(c == delim)
+					break;
+
+				if(Character.isJavaIdentifierPart((char)c))
+				{
+					nameBuilder.append((char)c);
+					continue;
+				}
+
+				// Not a valid parameter substitution
+				//
+				bufferedOutput.write(delim);
+				bufferedInput.reset();
+				continue parseName;
+			}
+
+			String paramName = nameBuilder.toString();
+			String param = substitutions.get(paramName);
+			if(param != null)
+				bufferedOutput.write(param.getBytes());
+		}
+		bufferedOutput.flush();
 	}
 
 	/**

@@ -276,6 +276,10 @@ public class PDEMapProvider extends Provider
 		{
 			throw BuckminsterException.wrap(e);
 		}
+		finally
+		{
+			IOUtils.close(input);
+		}
 	}
 
 	@Override

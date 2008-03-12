@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -40,7 +43,7 @@ public class MapFile
 			+ "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle, feature, plugin, or fragment
 			+ "\\s*([^@,=\\s]+)\\s*" // Element ID
 			+ "(?:,\\s*([^@,=\\s]+)\\s*)?=" // Optional version
-			+ "(?:\\s*([A-Z]{1,10})\\s*,)?\\s*" // Optional fetch type specifier (default is CVS)
+			+ "(?:\\s*([A-Za-z_][A-Za-z0-9_-]*)\\s*,)?\\s*" // Optional fetch type specifier (default is CVS)
 			+ "\\s*([^\\s]+)\\s*$"); // Fetch type specific field
 
 	private static FetchTaskFactoriesRegistry s_fetchTaskFactories;
@@ -53,10 +56,18 @@ public class MapFile
 
 		if(s_fetchTaskFactories == null)
 			s_fetchTaskFactories = new FetchTaskFactoriesRegistry();
-		BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
+		AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream();
+		FileUtils.substituteParameters(inputStream, buffer, '@', Collections.singletonMap("CVSTag", "HEAD"));
+		BufferedReader input = new BufferedReader(new InputStreamReader(buffer.getInputStream()));
 		String line;
 		while((line = input.readLine()) != null)
 		{
+			if(line.startsWith("#"))
+				//
+				// Comment
+				//
+				continue;
+
 			Matcher m = s_pattern.matcher(line);
 			if(!m.matches())
 			{
@@ -67,6 +78,7 @@ public class MapFile
 			}
 
 			String fetchType = m.group(4);
+			String fetchTypeSpecific = m.group(5);
 			if(fetchType == null)
 				fetchType = "CVS";
 			else if(fetchType.equals("COPY"))
@@ -74,6 +86,24 @@ public class MapFile
 				logger.warning("Fetch type COPY is not supported. Map file %s", streamName);
 				continue;
 			}
+
+			IFetchFactory ff = s_fetchTaskFactories.getFactory(fetchType);
+			if(ff == null)
+			{
+				// Assume that the fetchType that we encountered is part of the
+				// fetchTypeSpecific string and that the real fetchType is CVS.
+				//
+				fetchTypeSpecific = fetchType + ',' + fetchTypeSpecific;
+				fetchType = "CVS";
+
+				ff = s_fetchTaskFactories.getFactory(fetchType);
+				if(ff == null)
+				{
+					logger.warning("No fetch factory found for id '%s' in PDE map file %s", fetchType, streamName);
+					continue;
+				}
+			}
+
 
 			String type = m.group(1);
 			String ctypeId;
@@ -107,14 +137,6 @@ public class MapFile
 
 			String identifier = m.group(2);
 
-			IFetchFactory ff = s_fetchTaskFactories.getFactory(fetchType);
-			if(ff == null)
-			{
-				logger.warning("No fetch factory found for id '%s' in PDE map file %s", fetchType, streamName);
-				continue;
-			}
-
-			String fetchTypeSpecific = m.group(5);
 			Map<String, String> props = new HashMap<String,String>();
 			try
 			{
