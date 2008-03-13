@@ -151,7 +151,6 @@ public class CVSTest extends TestCase
 		IPath filePath = Path.fromPortableString(fileName);
 		InputStream in = null;
 		OutputStream out = null;
-		File tempFile = null;
 		try
 		{
 			CVSTag tag = CVSTag.DEFAULT;
@@ -181,8 +180,6 @@ public class CVSTest extends TestCase
 		{
 			IOUtils.close(out);
 			IOUtils.close(in);
-			if(tempFile != null)
-				tempFile.delete();
 		}
 	}
 

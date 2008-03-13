@@ -10,7 +10,7 @@ package org.eclipse.buckminster.core.materializer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
+import java.net.URL;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -101,8 +101,12 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 					//
 					destStr = '/' + destStr;
 
-				URI uri = new URI("file", null, destStr, null);
-				return SiteManager.getSite(uri.toURL(), false, MonitorUtils.subMonitor(monitor, 95));
+				// Note. We really WANT an incorrect URL here in case the path contains
+				// spaces. If we create a correctly escaped one by passing it through a
+				// URI, the SiteManager will puke.
+				//
+				URL url = new URL("file", null, destStr);
+				return SiteManager.getSite(url, false, MonitorUtils.subMonitor(monitor, 95));
 			}
 		}
 		catch(CoreException e)
@@ -134,8 +138,21 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		monitor.beginTask(null, featureRefs.length * 100);
 		try
 		{
-			if(destinationSite == getDefaultInstallSite())
-				context.setRebootNeeded(true);
+			URL url = destinationSite.getURL();
+			if("file".equals(url.getProtocol()))
+			{
+				try
+				{
+					File a = Path.fromPortableString(url.getPath()).toFile().getCanonicalFile();
+					File b = getDefaultInstallRoot().toFile().getCanonicalFile();
+					if(a.equals(b))
+						context.setRebootNeeded(true);
+				}
+				catch(IOException e)
+				{
+					// Ignore since this won't happen with the default install root
+				}
+			}
 
 			for(ISiteFeatureReference featureRef : featureRefs)
 			{

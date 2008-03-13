@@ -134,13 +134,10 @@ public class SearchPath extends AbstractSaxableElement
 					continue;
 				}
 
-				if(bestMatch != null)
-				{
-					Provider best = bestMatch.getOriginalProvider();
-					query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
-							provider.getReaderTypeId(), provider.getURI(),
-							String.format("%s(%s) is producing a better match", best.getReaderTypeId(), best.getURI()));
-				}
+				Provider best = bestMatch.getOriginalProvider();
+				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
+						provider.getReaderTypeId(), provider.getURI(),
+						String.format("%s(%s) is producing a better match", best.getReaderTypeId(), best.getURI()));
 			}
 			if(bestMatch == null)
 			{
