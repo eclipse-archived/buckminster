@@ -103,6 +103,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
+		Set<ComponentIdentifier> allInstalled = new HashSet<ComponentIdentifier>();
+		Set<ComponentIdentifier> installDelta = null;
 		try
 		{
 			Map<IPath, Map<String, FeaturesPerSite>> sites = new HashMap<IPath, Map<String, FeaturesPerSite>>();
@@ -118,16 +120,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 				siteCollectorMon.done();
 			}
 
-			Set<ComponentIdentifier> installDelta = installFeatures(context, sites, MonitorUtils.subMonitor(monitor, 50));
-			MaterializationStatistics statistics = context.getMaterializationStatistics();
-			for(Resolution res : resolutions)
-			{
-				ComponentIdentifier ci = res.getComponentIdentifier();
-				if(installDelta.contains(ci))
-					statistics.addReplaced(ci);
-				else
-					statistics.addKept(ci);
-			}
+			installDelta = installFeatures(context, allInstalled, sites, MonitorUtils.subMonitor(monitor, 50));
 
 			// Not supposed to be further perused
 			//
@@ -135,6 +128,17 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		}
 		finally
 		{
+			MaterializationStatistics statistics = context.getMaterializationStatistics();
+			for(Resolution res : resolutions)
+			{
+				ComponentIdentifier ci = res.getComponentIdentifier();
+				if(installDelta != null && installDelta.contains(ci))
+					statistics.addReplaced(ci);
+				else if(allInstalled.contains(ci))
+					statistics.addKept(ci);
+				else
+					statistics.addFailed(ci);
+			}
 			monitor.done();
 		}
 	}
@@ -143,7 +147,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 
 	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite, ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
 
-	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
+	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context, Set<ComponentIdentifier> allInstalled, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
 	{
 		int count = 0;
 		Set<IPath> destinations = sites.keySet();
@@ -186,6 +190,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 						// Create the delta that represents the installed components and add it to the
 						// complete delta for all site installations.
 						//
+						allInstalled.addAll(afterInstall);
 						afterInstall.removeAll(beforeInstall);
 						installDelta.addAll(afterInstall);
 					}
