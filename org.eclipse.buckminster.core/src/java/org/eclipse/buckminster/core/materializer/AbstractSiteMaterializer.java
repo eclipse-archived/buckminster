@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -24,6 +25,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
 import org.eclipse.buckminster.core.site.ISiteFeatureConverter;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -33,8 +35,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.update.core.IFeature;
+import org.eclipse.update.core.IIncludedFeatureReference;
+import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
+import org.eclipse.update.core.VersionedIdentifier;
 
 /**
  * Materializes each component to the local filesystem.
@@ -111,7 +117,17 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			{
 				siteCollectorMon.done();
 			}
-			installFeatures(context, sites, MonitorUtils.subMonitor(monitor, 50));
+
+			Set<ComponentIdentifier> installDelta = installFeatures(context, sites, MonitorUtils.subMonitor(monitor, 50));
+			MaterializationStatistics statistics = context.getMaterializationStatistics();
+			for(Resolution res : resolutions)
+			{
+				ComponentIdentifier ci = res.getComponentIdentifier();
+				if(installDelta.contains(ci))
+					statistics.addReplaced(ci);
+				else
+					statistics.addKept(ci);
+			}
 
 			// Not supposed to be further perused
 			//
@@ -127,13 +143,14 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 
 	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite, ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
 
-	private void installFeatures(final MaterializationContext context, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
+	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
 	{
 		int count = 0;
 		Set<IPath> destinations = sites.keySet();
 		for (IPath path : destinations)
 			count += sites.get(path).size();
 
+		HashSet<ComponentIdentifier> installDelta = new HashSet<ComponentIdentifier>();
 		monitor.beginTask(null, destinations.size() * 100 + count * 100);
 		try
 		{
@@ -162,7 +179,15 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					try
 					{
 						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "Start mirroring"));
-						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils.subMonitor(monitor, 100));
+						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(monitor, 5));
+						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils.subMonitor(monitor, 90));
+						Set<ComponentIdentifier> afterInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(monitor, 5));
+
+						// Create the delta that represents the installed components and add it to the
+						// complete delta for all site installations.
+						//
+						afterInstall.removeAll(beforeInstall);
+						installDelta.addAll(afterInstall);
 					}
 					catch(CoreException e)
 					{
@@ -177,11 +202,57 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					}
 				}
 			}
+			return installDelta;
 		}
 		finally
 		{
 			monitor.done();
 		}
+	}
+
+	private static Set<ComponentIdentifier> getSiteComponents(ISite site, IProgressMonitor monitor) throws CoreException
+	{
+		ISiteFeatureReference[] refs = site.getRawFeatureReferences();
+		monitor.beginTask(null, refs.length * 100);
+		HashSet<ComponentIdentifier> components = new HashSet<ComponentIdentifier>();
+		for(ISiteFeatureReference ref : refs)
+		{
+			VersionedIdentifier vi = ref.getVersionedIdentifier();
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE, VersionFactory.OSGiType.coerce(vi.getVersion()));
+			if(components.add(ci))
+			{
+				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
+				addFeatureComponents(feature, components, MonitorUtils.subMonitor(monitor, 50));
+			}
+			else
+				monitor.worked(100);
+		}
+		monitor.done();
+		return components;
+	}
+
+	private static void addFeatureComponents(IFeature feature, Set<ComponentIdentifier> components, IProgressMonitor monitor) throws CoreException
+	{
+		IIncludedFeatureReference[] refs = feature.getRawIncludedFeatureReferences();
+		monitor.beginTask(null, refs.length * 100);
+		for(IIncludedFeatureReference ref : refs)
+		{
+			VersionedIdentifier vi = ref.getVersionedIdentifier();
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE, VersionFactory.OSGiType.coerce(vi.getVersion()));
+			if(components.add(ci))
+			{
+				IFeature incFeature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
+				addFeatureComponents(incFeature, components, MonitorUtils.subMonitor(monitor, 50));
+			}
+		}
+
+		for(IPluginEntry plugin : feature.getRawPluginEntries())
+		{
+			VersionedIdentifier vi = plugin.getVersionedIdentifier();
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.OSGI_BUNDLE, VersionFactory.OSGiType.coerce(vi.getVersion()));
+			components.add(ci);
+		}
+		monitor.done();
 	}
 
 	private static void collectSites(MaterializationContext context, List<Resolution> resolutions,
