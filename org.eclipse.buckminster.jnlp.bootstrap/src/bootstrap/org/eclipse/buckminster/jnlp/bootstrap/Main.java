@@ -84,7 +84,7 @@ public class Main
 
 	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout";
 
-	public static final int DEFAULT_STARTUP_TIMEOUT = 30000;
+	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
 
 	private File m_applicationData;
 
