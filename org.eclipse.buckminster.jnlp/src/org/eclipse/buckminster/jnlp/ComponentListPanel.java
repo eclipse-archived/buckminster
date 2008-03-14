@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.jnlp.ui.DynamicTableLayout;
@@ -159,8 +160,10 @@ public class ComponentListPanel
 		Program.launch(componentPath.getPath().toOSString());
 	}
 	
-	public void update(MaterializationStatistics ms)
+	public void update(MaterializationContext context)
 	{
+		MaterializationStatistics ms = context.getMaterializationStatistics();
+		
 		m_data.clear();
 		
 		Set<ComponentIdentifier> identifiers = new HashSet<ComponentIdentifier>();

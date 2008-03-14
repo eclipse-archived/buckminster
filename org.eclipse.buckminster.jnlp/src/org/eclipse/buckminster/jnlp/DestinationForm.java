@@ -270,7 +270,33 @@ public class DestinationForm
 			});
 
 			new Label(parent, SWT.NONE);
+			
+			if(m_destTypeCombo != null)
+			{
+				m_destTypeCombo.addModifyListener(new ModifyListener()
+				{
+		
+					public void modifyText(ModifyEvent e)
+					{
+						setEnabledConflictResolution();
+					}
+				});
+			}
 		}
+	}
+
+	private void setEnabledConflictResolution()
+	{
+		if(m_conflictCombo != null && m_destTypeCombo != null)
+			if(IMaterializer.TARGET_PLATFORM.equals(m_destTypeCombo.getData(String.valueOf(m_destTypeCombo.getSelectionIndex()))))
+			{
+				m_conflictCombo.setEnabled(false);
+				m_conflictCombo.select(m_conflictResolutions.indexOf(ConflictResolution.KEEP));
+			}
+			else
+			{
+				m_conflictCombo.setEnabled(true);
+			}
 	}
 	
 	public void setBuilder(MaterializationDirectiveBuilder builder)
@@ -309,6 +335,8 @@ public class DestinationForm
 							? m_defaultConflictResolution
 							: m_conflictResolutions.indexOf(m_builder.getConflictResolution()));
 		}
+		
+		setEnabledConflictResolution();
 	}
 
 	public void setEnabled(boolean enabled)
@@ -323,5 +351,8 @@ public class DestinationForm
 		
 		if(m_conflictCombo != null)
 		m_conflictCombo.setEnabled(enabled);
+		
+		if(enabled)
+			setEnabledConflictResolution();
 	}
 }

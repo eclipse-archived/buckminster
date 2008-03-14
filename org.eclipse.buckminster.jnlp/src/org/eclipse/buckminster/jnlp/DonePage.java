@@ -11,6 +11,7 @@ package org.eclipse.buckminster.jnlp;
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -159,10 +160,11 @@ public class DonePage extends InstallWizardPage
 
 	}
 
-	public void update(MaterializationStatistics ms)
+	public void update(MaterializationContext context)
 	{
+		MaterializationStatistics ms = context.getMaterializationStatistics();
 		showFailed(ms.getFailed().size());
-		m_componentListPanel.update(ms);
+		m_componentListPanel.update(context);
 	}
 	
 	private void showFailed(int failed)

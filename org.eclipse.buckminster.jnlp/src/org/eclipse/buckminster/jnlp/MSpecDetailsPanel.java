@@ -290,12 +290,12 @@ public class MSpecDetailsPanel
 	
 					// the second run is just for one clone - they are identical
 					TreeItem itemClone = handler.getTreeItemClones().get(0);
-					
+
 					if(itemClone != null && checkAndRepairSubtreeCloneConflicts(itemClone))
 						if(!checked)
 							// TODO display warning - some components are used in a different subtree - you can uncheck them manually
 							;
-					
+
 					if(m_tree.getSelectionCount() == 1 && m_tree.getSelection()[0] == item)
 						setEnableDetails(!handler.isExclude());
 				}

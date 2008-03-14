@@ -398,7 +398,7 @@ public class InstallWizard extends AdvancedWizard
 			((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
 			
 			getContainer().showPage(m_donePage);
-			m_donePage.update(mr.getContext().getMaterializationStatistics());
+			m_donePage.update(mr.getContext());
 		}
 		catch(InterruptedException e)
 		{
