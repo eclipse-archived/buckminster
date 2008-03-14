@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -129,15 +130,24 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		finally
 		{
 			MaterializationStatistics statistics = context.getMaterializationStatistics();
+			StorageManager sm = StorageManager.getDefault();
 			for(Resolution res : resolutions)
 			{
 				ComponentIdentifier ci = res.getComponentIdentifier();
+				if(!allInstalled.contains(ci))
+				{
+					statistics.addFailed(ci);
+					continue;
+				}
+				IPath installLocation = context.getInstallLocation(res);
+				Materialization mat = new Materialization(installLocation, ci);
+				res.store(sm);
+				mat.store(sm);
+
 				if(installDelta != null && installDelta.contains(ci))
 					statistics.addReplaced(ci);
-				else if(allInstalled.contains(ci))
-					statistics.addKept(ci);
 				else
-					statistics.addFailed(ci);
+					statistics.addKept(ci);
 			}
 			monitor.done();
 		}
