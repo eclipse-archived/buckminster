@@ -27,18 +27,23 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
@@ -50,15 +55,148 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class MSpecDetailsPanel
 {
+	private Map<MaterializationNodeHandler, Map<MaterializationNodeHandler, TreeNode>> m_treeNodeCache =
+					new HashMap<MaterializationNodeHandler, Map<MaterializationNodeHandler, TreeNode>>();
+	
+	class TreeNode
+	{
+		private MaterializationNodeHandler m_handler;
+
+		private TreeNode m_parent;
+		
+		private List<TreeNode> m_children = new ArrayList<TreeNode>();
+		
+		private boolean m_checked;
+		
+		public TreeNode(MaterializationNodeHandler handler, TreeNode parentTreeNode, boolean checked)
+		{
+			m_handler = handler;
+			m_parent = parentTreeNode;
+			m_checked = checked;
+			
+			if(m_parent != null)
+				m_parent.addChild(this);
+		}
+		
+		public TreeNode getParent()
+		{
+			return m_parent;
+		}
+
+		public List<TreeNode> getChildren()
+		{
+			return m_children;
+		}
+
+		public void addChild(TreeNode node)
+		{
+			m_children.add(node);
+		}
+		
+		public boolean isChecked()
+		{
+			return m_checked;
+		}
+
+		public void setChecked(boolean checked)
+		{
+			m_checked = checked;
+		}
+		
+		public MaterializationNodeHandler getHandler()
+		{
+			return m_handler;
+		}
+		
+	}
+	
+	class TreeContentProvider implements ITreeContentProvider
+	{
+
+		public Object[] getChildren(Object parentElement)
+		{
+			TreeNode treeNode = (TreeNode)parentElement;
+			return treeNode.getChildren().toArray();
+		}
+
+		public Object getParent(Object element)
+		{
+			TreeNode treeNode = (TreeNode)element;
+			return treeNode.getParent();
+		}
+
+		public boolean hasChildren(Object element)
+		{
+			TreeNode treeNode = (TreeNode)element;
+			return treeNode.getChildren().size() > 0;
+		}
+
+		public Object[] getElements(Object inputElement)
+		{
+			// TODO not sure
+			return getChildren(inputElement);
+		}
+
+		public void dispose()
+		{
+			// nothing
+		}
+
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+		{
+			// TODO Auto-generated method stub
+		}
+	}
+	
+	class LabelProvider implements ILabelProvider
+	{
+		List<ILabelProviderListener> m_listeners = new ArrayList<ILabelProviderListener>();
+
+		public Image getImage(Object element)
+		{
+			return null;
+		}
+
+		public String getText(Object element)
+		{
+			TreeNode treeNode = (TreeNode)element;
+			
+			// TODO
+			m_treeViewer.setChecked(treeNode, treeNode.isChecked());
+			
+			return treeNode.getHandler().getComponentShortDescription();
+		}
+
+		public void addListener(ILabelProviderListener listener)
+		{
+			m_listeners.add(listener);
+		}
+
+		public void dispose()
+		{
+			// nothing
+		}
+
+		public boolean isLabelProperty(Object element, String property)
+		{
+			return false;
+		}
+
+		public void removeListener(ILabelProviderListener listener)
+		{
+			m_listeners.remove(listener);
+		}
+	}
+	
 	class MaterializationNodeHandler
 	{
 		private MaterializationNodeBuilder m_node;
 
 		private CSpec m_cspec;
 
-		private List<TreeItem> m_cloneItems = new ArrayList<TreeItem>();
+		private List<TreeNode> m_cloneItems = new ArrayList<TreeNode>();
 		
-		private TreeItem m_lastClone;
+		private TreeNode m_lastClone;
 		
 		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, CSpec cspec)
 		{
@@ -81,9 +219,9 @@ public class MSpecDetailsPanel
 		{
 			m_node.setExclude(exclude);
 
-			for(TreeItem ti : m_cloneItems)
+			for(TreeNode tn : m_cloneItems)
 			{
-				ti.setChecked(!exclude);
+				tn.setChecked(!exclude);
 			}
 		}
 
@@ -92,9 +230,9 @@ public class MSpecDetailsPanel
 			boolean totalAnd = true;
 			boolean totalOr = false;
 			
-			for(TreeItem ti : m_cloneItems)
+			for(TreeNode tn : m_cloneItems)
 			{
-				boolean checked = ti.getChecked();
+				boolean checked = tn.isChecked();
 				
 				totalAnd = totalAnd && checked;
 				totalOr = totalOr || checked;
@@ -114,59 +252,48 @@ public class MSpecDetailsPanel
 			return true;
 		}
 
-		public TreeItem createTreeItemClone(final Tree parentTree, final int style)
+		public TreeNode createTreeNodeClone(final TreeNode parentTreeNode)
 		{
-			m_lastClone = null;
+			TreeNode treeNode = null;
 			
-			Display.getDefault().syncExec(new Runnable()
+			Map<MaterializationNodeHandler, TreeNode> map = m_treeNodeCache.get(this);
+			
+			if(map != null && parentTreeNode.getHandler() != null)
 			{
-				public void run()
+				treeNode = map.get(parentTreeNode.getHandler());
+			}
+				
+			if(treeNode == null)
+			{
+				treeNode = new TreeNode(this, parentTreeNode, !m_node.isExclude());
+				if(parentTreeNode.getHandler() != null)
 				{
-					m_lastClone = new TreeItem(parentTree, style);
-					setupTreeItem(m_lastClone);
-					m_cloneItems.add(m_lastClone);					
+					if(map == null)
+					{
+						map = new HashMap<MaterializationNodeHandler, TreeNode>();
+						m_treeNodeCache.put(this, map);
+					}
+					map.put(parentTreeNode.getHandler(), treeNode);
 				}
-			});
+			}
 			
+			m_lastClone = treeNode;
+			m_cloneItems.add(m_lastClone);					
+
 			return m_lastClone;
 		}
 
-		public TreeItem createTreeItemClone(final TreeItem parentTreeItem, final int style)
-		{
-			m_lastClone = null;
-			
-			Display.getDefault().syncExec(new Runnable()
-			{
-				public void run()
-				{
-					m_lastClone = new TreeItem(parentTreeItem, style);
-					setupTreeItem(m_lastClone);
-					m_cloneItems.add(m_lastClone);					
-				}
-			});
-			
-			return m_lastClone;
-		}
-
-		public List<TreeItem> getTreeItemClones()
+		public List<TreeNode> getTreeNodeClones()
 		{
 			return m_cloneItems;
 		}
 
-		private void setupTreeItem(TreeItem treeItem)
-		{
-			treeItem.setText(getComponentShortDescription());
-			treeItem.setData(this);
-			treeItem.setChecked(!m_node.isExclude());
-		}
-
 		public String getComponentShortDescription()
 		{
-			return m_cspec.getShortDesc() == null
-					? (m_cspec.getComponentIdentifier().getName() + (m_cspec.getComponentIdentifier().getComponentTypeID() == null
+			return (m_cspec.getShortDesc() == null ? m_cspec.getComponentIdentifier().getName() : m_cspec.getShortDesc()) +
+					(m_cspec.getComponentIdentifier().getComponentTypeID() == null
 							? ""
-							: "/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID())))
-					: m_cspec.getShortDesc();
+							: "/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID()));
 		}
 
 		public String getComponentDescription()
@@ -216,7 +343,9 @@ public class MSpecDetailsPanel
 	
 	private boolean m_showBrowseButtons;
 	
-	private Tree m_tree;
+	private CheckboxTreeViewer m_treeViewer;
+	
+	private TreeNode m_treeRoot;
 	
 	private MaterializationNodeBuilder m_selectedNodeBuilder;
 	
@@ -236,6 +365,18 @@ public class MSpecDetailsPanel
 	public void update()
 	{
 		m_destinationForm.update();
+		
+		if(m_treeViewer.getInput() == null)
+		{
+			m_treeViewer.setInput(m_treeRoot);
+			m_treeViewer.setExpandedElements(m_treeRoot.getChildren().toArray());
+			
+			// TODO
+			for(TreeNode node : m_treeRoot.getChildren())
+			{
+				m_treeViewer.setChecked(node, node.isChecked());
+			}
+		}
 	}
 	
 	public Control createControl(Composite parent)
@@ -258,19 +399,24 @@ public class MSpecDetailsPanel
 		data.horizontalSpan = 3;
 		treeGroup.setLayoutData(data);
 		
-		m_tree = new Tree(treeGroup, SWT.CHECK | SWT.BORDER);
+		m_treeViewer = new CheckboxTreeViewer(treeGroup, SWT.BORDER);
+		final Tree tree = m_treeViewer.getTree();
 		data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 1;
-		m_tree.setLayoutData(data);
+		tree.setLayoutData(data);
+		
+		m_treeViewer.setContentProvider(new TreeContentProvider());
+		m_treeViewer.setLabelProvider(new LabelProvider());
+		m_treeViewer.setInput(null);
 
-	    m_tree.addSelectionListener(new SelectionAdapter()
+	    tree.addSelectionListener(new SelectionAdapter()
 		{
 
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				TreeItem item = (TreeItem)e.item;
-				MaterializationNodeHandler handler = (MaterializationNodeHandler)item.getData();
+				TreeNode node = (TreeNode)e.item.getData();
+				MaterializationNodeHandler handler = node.getHandler();
 
 				if(e.detail == SWT.NONE)
 				{
@@ -282,42 +428,55 @@ public class MSpecDetailsPanel
 				}
 				else if(e.detail == SWT.CHECK)
 				{
-					boolean checked = item.getChecked();
+					boolean checked = !node.isChecked();
 					handler.setExclude(!checked);				
 					
-					for(TreeItem itemClone : handler.getTreeItemClones())
-						setCheckedSubtree(itemClone, checked);
+					for(TreeNode nodeClone : handler.getTreeNodeClones())
+						setCheckedSubtree(nodeClone, checked);
 	
 					// the second run is just for one clone - they are identical
-					TreeItem itemClone = handler.getTreeItemClones().get(0);
+					TreeNode nodeClone = handler.getTreeNodeClones().get(0);
 
-					if(itemClone != null && checkAndRepairSubtreeCloneConflicts(itemClone))
+					if(nodeClone != null && checkAndRepairSubtreeCloneConflicts(nodeClone))
 						if(!checked)
 							// TODO display warning - some components are used in a different subtree - you can uncheck them manually
 							;
 
-					if(m_tree.getSelectionCount() == 1 && m_tree.getSelection()[0] == item)
-						setEnableDetails(!handler.isExclude());
+					//TODO
+					List<TreeNode> elements = new ArrayList<TreeNode>();
+					for(Object o : m_treeViewer.getVisibleExpandedElements())
+					{
+						TreeNode tn = (TreeNode)o;
+						elements.add(tn);
+						elements.addAll(tn.getChildren());
+					}
+						
+					m_treeViewer.update(elements.toArray(), null);
+					//m_treeViewer.setInput(m_treeRoot);
+					
+					// enable / disable details for current selection
+					if(m_treeViewer.getTree().getSelectionCount() == 1)
+						setEnableDetails(!((TreeNode)m_treeViewer.getTree().getSelection()[0].getData()).getHandler().isExclude());
 				}
 			}
 
-			private void setCheckedSubtree(TreeItem item, boolean checked)
+			private void setCheckedSubtree(TreeNode node, boolean checked)
 			{
-				item.setChecked(checked);
+				node.setChecked(checked);
 				
-				for(TreeItem child : item.getItems())
+				for(TreeNode child : node.getChildren())
 					setCheckedSubtree(child, checked);				
 			}
 
-			private boolean checkAndRepairSubtreeCloneConflicts(TreeItem item)
+			private boolean checkAndRepairSubtreeCloneConflicts(TreeNode node)
 			{
 				boolean conflict = false;
 				
-				MaterializationNodeHandler handler = (MaterializationNodeHandler)item.getData();
+				MaterializationNodeHandler handler = node.getHandler();
 
 				conflict = conflict || handler.setExcludeAccordingToClonesCheckConflicts();
 				
-				for(TreeItem child : item.getItems())
+				for(TreeNode child : node.getChildren())
 				{
 					boolean newConflict = checkAndRepairSubtreeCloneConflicts(child);
 					conflict = conflict || newConflict;
@@ -327,27 +486,27 @@ public class MSpecDetailsPanel
 			}
 		});
 
-		m_tree.addMouseTrackListener(new MouseTrackAdapter()
+		tree.addMouseTrackListener(new MouseTrackAdapter()
 		{
 
 			@Override
 			public void mouseExit(MouseEvent e)
 			{
-				m_tree.setToolTipText(null);
+				tree.setToolTipText(null);
 			}
 
 			@Override
 			public void mouseHover(MouseEvent e)
 			{
-				TreeItem item = m_tree.getItem(new Point(e.x, e.y));
+				TreeItem item = tree.getItem(new Point(e.x, e.y));
 				String toolTipText = null;
 
 				if(item != null)
 				{
-					toolTipText = ((MaterializationNodeHandler)item.getData()).getComponentDescription();
+					toolTipText = ((TreeNode)item.getData()).getHandler().getComponentDescription();
 				}
 
-				m_tree.setToolTipText(toolTipText);
+				tree.setToolTipText(toolTipText);
 			}
 		});
 		
@@ -405,29 +564,23 @@ public class MSpecDetailsPanel
 		m_originalNodeBuilders = new ArrayList<MaterializationNodeBuilder>();
 		m_originalNodeBuilders.addAll(m_mspec.getNodes());
 		
-		initializeTree();
-
-		for(TreeItem item : m_tree.getItems())
-		{
-			item.setExpanded(true);
-		}
+		initializeTree();		
 	}
 	
 	private void initializeTree()
 	{
 		m_mspec.getNodes().clear();
 		m_componentMap.clear();
+		m_treeRoot = new TreeNode(null, null, false);
 		
-		m_tree.removeAll();
-
 		try
 		{
 			MaterializationNodeHandler handler = getHandler(m_bom);
 
 			if(handler != null)
 			{
-				final TreeItem treeItem = handler.createTreeItemClone(m_tree, SWT.NONE);
-				addChildrenItems(treeItem, m_bom);
+				TreeNode treeNode = handler.createTreeNodeClone(m_treeRoot);
+				addChildrenItems(treeNode, m_bom);
 			}
 
 		}
@@ -438,7 +591,7 @@ public class MSpecDetailsPanel
 		}
 	}
 
-	private void addChildrenItems(TreeItem parentTI, DepNode parentDN) throws CoreException
+	private void addChildrenItems(TreeNode parentTN, DepNode parentDN) throws CoreException
 	{
 		for(DepNode depNode : getSortedChildren(parentDN))
 		{
@@ -446,8 +599,8 @@ public class MSpecDetailsPanel
 
 			if(handler != null)
 			{
-				TreeItem treeItem = handler.createTreeItemClone(parentTI, SWT.NONE);
-				addChildrenItems(treeItem, depNode);
+				TreeNode treeNode = handler.createTreeNodeClone(parentTN);
+				addChildrenItems(treeNode, depNode);
 			}
 		}
 	}

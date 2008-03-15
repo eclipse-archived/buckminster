@@ -92,11 +92,10 @@ public class SimpleDownloadPage extends InstallWizardPage
 						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 						monitor.subTask("Retrieving materialization specification");
 						getInstallWizard().initializeMaterializer();
+						getInstallWizard().initMSpecTree();
 						monitor.done();
 					}
 				});
-				
-				getInstallWizard().initMSpecTree();
 			}
 			catch(Exception e)
 			{
