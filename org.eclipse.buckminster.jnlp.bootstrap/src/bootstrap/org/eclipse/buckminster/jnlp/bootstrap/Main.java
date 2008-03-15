@@ -767,6 +767,7 @@ public class Main
 
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(javaExe.toString());
+		allArgs.add("-Xmx512m");
 		allArgs.add("-jar");
 		allArgs.add(launcherFile.toString());
 
