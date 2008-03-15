@@ -22,15 +22,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -67,6 +68,7 @@ import org.eclipse.pde.internal.core.feature.FeaturePlugin;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
+import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.core.model.ArchiveReferenceModel;
 import org.eclipse.update.internal.core.ExtendedSite;
@@ -85,36 +87,59 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	public List<Resolution> convertToSiteFeatures(RMContext context, File siteFolder, List<Resolution> features, List<Resolution> plugins)
 			throws CoreException
 	{
-		File featureFolder = new File(siteFolder, "features");
-		featureFolder.mkdir();
-		ExtendedSite site = new ExtendedSite();
-		site.setSupportsPack200(true);
+		HashSet<ComponentIdentifier> pluginNames = new HashSet<ComponentIdentifier>();
 
-		HashSet<String> pluginNames = new HashSet<String>();
+		HashMap<String,List<Resolution>> siteAndFeatures = new HashMap<String, List<Resolution>>();
 		for(Resolution res : features)
 		{
-			ComponentIdentifier ci = res.getComponentIdentifier();
-			IVersion v = ci.getVersion();
-			SiteFeatureReferenceModel model = new SiteFeatureReferenceModel();
-			model.setFeatureIdentifier(ci.getName());
-			model.setFeatureVersion(v == null ? "0.0.0" : v.toString());
-			model.setURLString(getArtifactURLString(context, res));
-			site.addFeatureReferenceModel(model);
+			String urlString = getArtifactURLString(context, res);
+			int idx = urlString.indexOf("/features/");
+			if(idx < 0)
+				continue;
 
-			// Add all plug-ins that are included in the features
-			// to the pluginNames set.
-			//
-			CSpec cspec = res.getCSpec();
-			for(ComponentRequest dep : cspec.getDependencies().values())
+			String siteURL = urlString.substring(0, idx);
+			List<Resolution> featuresOnSite = siteAndFeatures.get(siteURL);
+			if(featuresOnSite == null)
 			{
-				if(IComponentType.OSGI_BUNDLE.equals(dep.getComponentTypeID()))
-					pluginNames.add(dep.getName());
+				featuresOnSite = new ArrayList<Resolution>();
+				siteAndFeatures.put(siteURL, featuresOnSite);
 			}
+			featuresOnSite.add(res);
+			for(ComponentRequest dep : res.getCSpec().getDependencies().values())
+			{
+				if(!IComponentType.OSGI_BUNDLE.equals(dep.getComponentTypeID()))
+					continue;
+
+				// A feature reference is always explicit
+				//
+				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, dep.getVersionDesignator().getVersion()));
+			}
+		}
+
+		ArrayList<Resolution> siteFeatureResolutions = new ArrayList<Resolution>();
+		for(Map.Entry<String,List<Resolution>> entry : siteAndFeatures.entrySet())
+		{
+			String siteURL = entry.getKey();
+			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
+			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE, new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null,
+					new Format(siteURL), null, null, null, false, false, null, null);
+
+			for(Resolution res : entry.getValue())
+			{
+				ProviderMatch orig = res.getProviderMatch(context);
+				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(), res.getVersionDesignator()), null);
+				ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, orig.getVersionMatch(), nq);
+				DepNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
+				Resolution siteFeatureResolution = node.getResolution();
+				if(siteFeatureResolution != null)
+					siteFeatureResolutions.add(siteFeatureResolution);
+			}			
 		}
 
 		EditableFeatureModel generatedFeatureModel = null;
 		IFeature generatedFeature = null;
 		String generatedFeatureJar = null;
+		ExtendedSite site = null;
 		for(Resolution res : plugins)
 		{
 			ComponentIdentifier ci = res.getComponentIdentifier();
@@ -122,15 +147,21 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			IVersion v = ci.getVersion();
 			String vStr = (v == null) ? "0.0.0" : v.toString();
 
+			if(pluginNames.contains(ci))
+				continue;
+
+			if(site == null)
+			{
+				site = new ExtendedSite();
+				site.setSupportsPack200(true);
+			}
 			// This plug-in is not here. It's in a remote location
 			//
 			ArchiveReferenceModel arf = new ArchiveReferenceModel();
 			arf.setPath("plugins/" + id + '_' + vStr + ".jar");
 			arf.setURLString(getArtifactURLString(context, res));
 			site.addArchiveReferenceModel(arf);
-
-			if(pluginNames.contains(id))
-				continue;
+			pluginNames.add(ci);
 
 			if(generatedFeature == null)
 			{
@@ -154,36 +185,44 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			generatedFeature.addPlugins(new IFeaturePlugin[] { plugin });
 		}
 
-		if(generatedFeatureModel != null)
+		if(site == null)
+			//
+			// No free standing plugins were found
+			//
+			return siteFeatureResolutions;
+
+		JarOutputStream featureOutput = null;
+		try
 		{
-			JarOutputStream output = null;
-			try
-			{
-				output = new JarOutputStream(new FileOutputStream(new File(featureFolder, generatedFeatureJar)));
-				output.putNextEntry(new JarEntry("feature.xml"));
-				generatedFeatureModel.save(output);
-				output.closeEntry();
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				IOUtils.close(output);
-			}
-			SiteFeatureReferenceModel model = new SiteFeatureReferenceModel();
-			model.setFeatureIdentifier(generatedFeature.getId());
-			model.setFeatureVersion(generatedFeature.getVersion());
-			model.setLabel(generatedFeature.getLabel());
-			model.setURLString("features/" + generatedFeatureJar);
-			site.addFeatureReferenceModel(model);
+			File featureFolder = new File(siteFolder, "features");
+			featureFolder.mkdir();
+			featureOutput = new JarOutputStream(new FileOutputStream(new File(featureFolder, generatedFeatureJar)));
+			featureOutput.putNextEntry(new JarEntry("feature.xml"));
+			generatedFeatureModel.save(featureOutput);
+			featureOutput.closeEntry();
 		}
-		
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(featureOutput);
+		}
+
+		SiteFeatureReferenceModel model = new SiteFeatureReferenceModel();
+		model.setSiteModel(site);
+		model.setFeatureIdentifier(generatedFeature.getId());
+		model.setFeatureVersion(generatedFeature.getVersion());
+		model.setLabel(generatedFeature.getLabel());
+		model.setURLString("features/" + generatedFeatureJar);
+		model.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
+		site.addFeatureReferenceModel(model);
+
 		// Save the site.xml
 		//
-		OutputStream output = null;
 		SaxableSite saxSite = new SaxableSite(site);
+		OutputStream output = null;
 		try
 		{
 			output = new BufferedOutputStream(new FileOutputStream(new File(siteFolder, "site.xml")));
@@ -198,36 +237,21 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			IOUtils.close(output);
 		}
 
-		ArrayList<Resolution> siteFeatureResolutions = new ArrayList<Resolution>();
 		try
 		{
 			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
 			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE, new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null,
 					new Format(siteFolder.toURI().toURL().toString()), null, null, null, false, false, null, null);
 
-			for(Resolution res : features)
-			{
-				ProviderMatch orig = res.getProviderMatch(context);
-				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(), res.getVersionDesignator()), null);
-				ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, orig.getVersionMatch(), nq);
-				DepNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
-				Resolution siteFeatureResolution = node.getResolution();
-				if(siteFeatureResolution != null)
-					siteFeatureResolutions.add(siteFeatureResolution);
-			}
-			
-			if(generatedFeature != null)
-			{
-				IVersion version = VersionFactory.OSGiType.fromString(generatedFeature.getVersion());
-				VersionMatch vm = new VersionMatch(version, null, null, -1, null, null);
-				ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(), VersionFactory.createExplicitDesignator(version));
-				NodeQuery nq = new NodeQuery(context, cr, null);
-				ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, vm, nq);
-				DepNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
-				Resolution siteFeatureResolution = node.getResolution();
-				if(siteFeatureResolution != null)
-					siteFeatureResolutions.add(siteFeatureResolution);
-			}
+			IVersion version = VersionFactory.OSGiType.fromString(generatedFeature.getVersion());
+			VersionMatch vm = new VersionMatch(version, null, null, -1, null, null);
+			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(), VersionFactory.createExplicitDesignator(version));
+			NodeQuery nq = new NodeQuery(context, cr, null);
+			ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, vm, nq);
+			DepNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
+			Resolution siteFeatureResolution = node.getResolution();
+			if(siteFeatureResolution != null)
+				siteFeatureResolutions.add(siteFeatureResolution);
 		}
 		catch(MalformedURLException e)
 		{

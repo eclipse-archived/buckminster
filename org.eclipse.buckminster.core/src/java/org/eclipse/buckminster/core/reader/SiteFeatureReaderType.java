@@ -26,6 +26,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -83,6 +84,8 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		try
 		{
 			siteURL = URLUtils.normalizeToURL(siteURLStr);
+			if(siteURL.getPath().endsWith("/"))
+				siteURL = URLUtils.appendPath(siteURL, Path.fromPortableString("site.xml"));
 			return SiteManager.getSite(siteURL, monitor);
 		}
 		catch(MalformedURLException e)
