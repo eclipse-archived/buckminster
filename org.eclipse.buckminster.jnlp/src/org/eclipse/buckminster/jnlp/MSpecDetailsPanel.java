@@ -237,17 +237,17 @@ public class MSpecDetailsPanel
 			}
 		}
 
-		public boolean setExcludeAccordingToClonesCheckConflicts()
+		public boolean setExcludeAccordingToClonesCheckConflicts(boolean checked)
 		{
 			boolean totalAnd = true;
 			boolean totalOr = false;
 			
 			for(TreeNode tn : m_cloneItems)
 			{
-				boolean checked = tn.isChecked();
+				boolean nodeChecked = tn.isChecked();
 				
-				totalAnd = totalAnd && checked;
-				totalOr = totalOr || checked;
+				totalAnd = totalAnd && nodeChecked;
+				totalOr = totalOr || nodeChecked;
 				
 				if(totalAnd != totalOr)
 					break;
@@ -260,14 +260,16 @@ public class MSpecDetailsPanel
 				return false;
 			}
 
-			rollbackChecked();
+			setExclude(false);
+
+			if(!checked)
+				rollbackChecked(); // subtree needs to be rollbacked
+			
 			return true;
 		}
 
 		private void rollbackChecked()
 		{
-			setExclude(false);
-
 			Set<TreeNode> visitedNodes = new HashSet<TreeNode>();
 			
 			for(TreeNode nodeClone : m_cloneItems)
@@ -492,7 +494,7 @@ public class MSpecDetailsPanel
 					TreeNode nodeClone = handler.getTreeNodeClones().get(0);
 
 					visitedNodes = new HashSet<TreeNode>();
-					if(nodeClone != null && checkAndRepairSubtreeCloneConflicts(nodeClone, visitedNodes))
+					if(nodeClone != null && checkAndRepairSubtreeCloneConflicts(nodeClone, visitedNodes, checked))
 						if(!checked)
 							// TODO display warning - some components are used in a different subtree - you can uncheck them manually
 							;
@@ -518,7 +520,7 @@ public class MSpecDetailsPanel
 					setCheckedSubtree(child, checked, visitedNodes);				
 			}
 
-			private boolean checkAndRepairSubtreeCloneConflicts(TreeNode node, Set<TreeNode> visitedNodes)
+			private boolean checkAndRepairSubtreeCloneConflicts(TreeNode node, Set<TreeNode> visitedNodes, boolean checked)
 			{
 				if(visitedNodes.contains(node))
 					return false; // don't care about the original conflict status - if it was originally TRUE, TRUE gets to the top anyway
@@ -529,11 +531,11 @@ public class MSpecDetailsPanel
 				
 				MaterializationNodeHandler handler = node.getHandler();
 
-				conflict = conflict || handler.setExcludeAccordingToClonesCheckConflicts();
+				conflict = conflict || handler.setExcludeAccordingToClonesCheckConflicts(checked);
 				
 				for(TreeNode child : node.getChildren())
 				{
-					boolean newConflict = checkAndRepairSubtreeCloneConflicts(child, visitedNodes);
+					boolean newConflict = checkAndRepairSubtreeCloneConflicts(child, visitedNodes, checked);
 					conflict = conflict || newConflict;
 				}
 				
