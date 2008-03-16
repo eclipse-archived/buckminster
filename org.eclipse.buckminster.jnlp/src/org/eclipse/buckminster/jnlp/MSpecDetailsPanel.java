@@ -11,10 +11,13 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_BOM_IO_EXCEPTION;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -37,6 +40,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -90,7 +95,8 @@ public class MSpecDetailsPanel
 
 		public void addChild(TreeNode node)
 		{
-			m_children.add(node);
+			if(!m_children.contains(node))
+				m_children.add(node);
 		}
 		
 		public boolean isChecked()
@@ -133,7 +139,6 @@ public class MSpecDetailsPanel
 
 		public Object[] getElements(Object inputElement)
 		{
-			// TODO not sure
 			return getChildren(inputElement);
 		}
 
@@ -144,7 +149,7 @@ public class MSpecDetailsPanel
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 		{
-			// TODO Auto-generated method stub
+			// nothing
 		}
 	}
 	
@@ -160,10 +165,6 @@ public class MSpecDetailsPanel
 		public String getText(Object element)
 		{
 			TreeNode treeNode = (TreeNode)element;
-			
-			// TODO
-			m_treeViewer.setChecked(treeNode, treeNode.isChecked());
-			
 			return treeNode.getHandler().getComponentShortDescription();
 		}
 
@@ -195,8 +196,6 @@ public class MSpecDetailsPanel
 		private CSpec m_cspec;
 
 		private List<TreeNode> m_cloneItems = new ArrayList<TreeNode>();
-		
-		private TreeNode m_lastClone;
 		
 		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, CSpec cspec)
 		{
@@ -275,12 +274,15 @@ public class MSpecDetailsPanel
 					}
 					map.put(parentTreeNode.getHandler(), treeNode);
 				}
+				
+				m_cloneItems.add(treeNode);					
+			}
+			else
+			{
+				parentTreeNode.addChild(treeNode);
 			}
 			
-			m_lastClone = treeNode;
-			m_cloneItems.add(m_lastClone);					
-
-			return m_lastClone;
+			return treeNode;
 		}
 
 		public List<TreeNode> getTreeNodeClones()
@@ -347,6 +349,8 @@ public class MSpecDetailsPanel
 	
 	private TreeNode m_treeRoot;
 	
+	private Set<TreeItem> m_expandedTreeItems = new HashSet<TreeItem>();
+	
 	private MaterializationNodeBuilder m_selectedNodeBuilder;
 	
 	private DestinationForm m_detailDestForm;
@@ -370,12 +374,25 @@ public class MSpecDetailsPanel
 		{
 			m_treeViewer.setInput(m_treeRoot);
 			m_treeViewer.setExpandedElements(m_treeRoot.getChildren().toArray());
+			// add the root TreeItem
+			m_expandedTreeItems.add(m_treeViewer.getTree().getTopItem());
 			
-			// TODO
-			for(TreeNode node : m_treeRoot.getChildren())
-			{
-				m_treeViewer.setChecked(node, node.isChecked());
-			}
+			setupVisibleCheckboxes();
+		}
+	}
+	
+	private void setupVisibleCheckboxes()
+	{
+		Set<TreeItem> elements = new HashSet<TreeItem>();
+		for(TreeItem item : m_expandedTreeItems)
+		{
+			elements.add(item);
+			elements.addAll(Arrays.asList(item.getItems()));
+		}
+
+		for(TreeItem item : elements)
+		{
+			item.setChecked(((TreeNode)item.getData()).isChecked());
 		}
 	}
 	
@@ -431,45 +448,46 @@ public class MSpecDetailsPanel
 					boolean checked = !node.isChecked();
 					handler.setExclude(!checked);				
 					
+					Set<TreeNode> visitedNodes = new HashSet<TreeNode>();
 					for(TreeNode nodeClone : handler.getTreeNodeClones())
-						setCheckedSubtree(nodeClone, checked);
+						setCheckedSubtree(nodeClone, checked, visitedNodes);
 	
 					// the second run is just for one clone - they are identical
 					TreeNode nodeClone = handler.getTreeNodeClones().get(0);
 
-					if(nodeClone != null && checkAndRepairSubtreeCloneConflicts(nodeClone))
+					visitedNodes = new HashSet<TreeNode>();
+					if(nodeClone != null && checkAndRepairSubtreeCloneConflicts(nodeClone, visitedNodes))
 						if(!checked)
 							// TODO display warning - some components are used in a different subtree - you can uncheck them manually
 							;
 
-					//TODO
-					List<TreeNode> elements = new ArrayList<TreeNode>();
-					for(Object o : m_treeViewer.getVisibleExpandedElements())
-					{
-						TreeNode tn = (TreeNode)o;
-						elements.add(tn);
-						elements.addAll(tn.getChildren());
-					}
-						
-					m_treeViewer.update(elements.toArray(), null);
-					//m_treeViewer.setInput(m_treeRoot);
-					
+					setupVisibleCheckboxes();
+
 					// enable / disable details for current selection
 					if(m_treeViewer.getTree().getSelectionCount() == 1)
 						setEnableDetails(!((TreeNode)m_treeViewer.getTree().getSelection()[0].getData()).getHandler().isExclude());
 				}
 			}
 
-			private void setCheckedSubtree(TreeNode node, boolean checked)
+		    private void setCheckedSubtree(TreeNode node, boolean checked, Set<TreeNode> visitedNodes)
 			{
+				if(visitedNodes.contains(node))
+					return;
+				
 				node.setChecked(checked);
+				visitedNodes.add(node);
 				
 				for(TreeNode child : node.getChildren())
-					setCheckedSubtree(child, checked);				
+					setCheckedSubtree(child, checked, visitedNodes);				
 			}
 
-			private boolean checkAndRepairSubtreeCloneConflicts(TreeNode node)
+			private boolean checkAndRepairSubtreeCloneConflicts(TreeNode node, Set<TreeNode> visitedNodes)
 			{
+				if(visitedNodes.contains(node))
+					return false; // don't care about the original conflict status - if it was originally TRUE, TRUE gets to the top anyway
+				
+				visitedNodes.add(node);
+				
 				boolean conflict = false;
 				
 				MaterializationNodeHandler handler = node.getHandler();
@@ -478,7 +496,7 @@ public class MSpecDetailsPanel
 				
 				for(TreeNode child : node.getChildren())
 				{
-					boolean newConflict = checkAndRepairSubtreeCloneConflicts(child);
+					boolean newConflict = checkAndRepairSubtreeCloneConflicts(child, visitedNodes);
 					conflict = conflict || newConflict;
 				}
 				
@@ -510,6 +528,20 @@ public class MSpecDetailsPanel
 			}
 		});
 		
+	    tree.addTreeListener(new TreeListener()
+		{
+			public void treeExpanded(TreeEvent e)
+			{
+				m_expandedTreeItems.add((TreeItem)e.item);
+				setupVisibleCheckboxes();
+			}
+
+			public void treeCollapsed(TreeEvent e)
+			{
+				m_expandedTreeItems.remove(e.item);
+			}
+		});
+	    
 		Composite detailsComposite = new Composite(treeGroup, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
