@@ -72,12 +72,15 @@ public class MSpecDetailsPanel
 		private List<TreeNode> m_children = new ArrayList<TreeNode>();
 		
 		private boolean m_checked;
-		
+
+		private boolean m_oldChecked;
+
 		public TreeNode(MaterializationNodeHandler handler, TreeNode parentTreeNode, boolean checked)
 		{
 			m_handler = handler;
 			m_parent = parentTreeNode;
 			m_checked = checked;
+			m_oldChecked = false;
 			
 			if(m_parent != null)
 				m_parent.addChild(this);
@@ -107,6 +110,16 @@ public class MSpecDetailsPanel
 		public void setChecked(boolean checked)
 		{
 			m_checked = checked;
+		}
+		
+		public boolean isOldChecked()
+		{
+			return m_oldChecked;
+		}
+
+		public void setOldChecked(boolean checked)
+		{
+			m_oldChecked = checked;
 		}
 		
 		public MaterializationNodeHandler getHandler()
@@ -247,10 +260,33 @@ public class MSpecDetailsPanel
 				return false;
 			}
 
-			setExclude(false);
+			rollbackChecked();
 			return true;
 		}
 
+		private void rollbackChecked()
+		{
+			setExclude(false);
+
+			Set<TreeNode> visitedNodes = new HashSet<TreeNode>();
+			
+			for(TreeNode nodeClone : m_cloneItems)
+				for(TreeNode childClone : nodeClone.getChildren())
+					rollbackSubtreeChecked(childClone, visitedNodes);
+		}
+
+	    private void rollbackSubtreeChecked(TreeNode node, Set<TreeNode> visitedNodes)
+		{
+			if(visitedNodes.contains(node))
+				return;
+			
+			node.setChecked(node.isOldChecked());
+			visitedNodes.add(node);
+			
+			for(TreeNode child : node.getChildren())
+				rollbackSubtreeChecked(child, visitedNodes);				
+		}
+		
 		public TreeNode createTreeNodeClone(final TreeNode parentTreeNode)
 		{
 			TreeNode treeNode = null;
@@ -474,6 +510,7 @@ public class MSpecDetailsPanel
 				if(visitedNodes.contains(node))
 					return;
 				
+				node.setOldChecked(node.isChecked());
 				node.setChecked(checked);
 				visitedNodes.add(node);
 				
@@ -674,6 +711,8 @@ public class MSpecDetailsPanel
 			}
 
 			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+			if(nodeBuilder.getInstallLocation() != null)
+				nodeBuilder.setInstallLocation(MaterializationUtils.expandPath(m_mspec, nodeBuilder.getInstallLocation()));
 			nodeBuilder.setComponentTypeID(componentType);
 
 			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, cspec);
