@@ -22,8 +22,8 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.util.DateUtil;
 import org.eclipse.buckminster.cache.ICache;
+import org.eclipse.buckminster.cache.Installer;
 import org.eclipse.buckminster.cache.download.FileReader;
-import org.eclipse.buckminster.cache.unpack.Installer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -90,7 +90,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 
 			try
 			{
-				Installer.getInstaller(fileName).validate(tempFile, MonitorUtils.subMonitor(monitor, 100));
+				Installer.getInstaller(fileName, true).validate(tempFile, MonitorUtils.subMonitor(monitor, 100));
 			}
 			catch(CoreException e)
 			{

@@ -23,11 +23,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class Cache implements ICache
+public class CacheImpl implements ICache
 {
 	private final File m_location;
 
-	public Cache(File location) throws CoreException
+	public CacheImpl(File location) throws CoreException
 	{
 		m_location = location;
 		if(!(m_location.isDirectory() || m_location.mkdirs()))
@@ -38,6 +38,7 @@ public class Cache implements ICache
 	{
 		return m_location;
 	}
+
 	public boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor)
 	throws CoreException
 	{

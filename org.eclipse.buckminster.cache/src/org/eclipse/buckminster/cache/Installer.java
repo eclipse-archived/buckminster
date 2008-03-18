@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.unpack;
+package org.eclipse.buckminster.cache;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,12 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.cache.Activator;
-import org.eclipse.buckminster.cache.IDecompressor;
-import org.eclipse.buckminster.cache.IExpander;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -40,6 +38,8 @@ import org.eclipse.ecf.core.util.StringUtils;
  */
 public class Installer
 {
+	private static final HashMap<String, Installer> s_decompressorCache = new HashMap<String, Installer>();
+
 	private static final HashMap<String, Installer> s_installerCache = new HashMap<String, Installer>();
 
 	private static final Installer s_plainInstaller = new Installer(null, null);
@@ -56,11 +56,17 @@ public class Installer
 		m_expander = expander;
 	}
 
-	public static Installer getInstaller(final String fileName) throws CoreException
+	public static Installer getPlainInstaller()
+	{
+		return s_plainInstaller;
+	}
+
+	public static Installer getInstaller(final String fileName, boolean expand) throws CoreException
 	{
 		synchronized(s_installerCache)
 		{
-			for(Map.Entry<String,Installer> entry : s_installerCache.entrySet())
+			Map<String, Installer> cache = expand ? s_installerCache : s_decompressorCache;
+			for(Map.Entry<String,Installer> entry : cache.entrySet())
 			{
 				if(fileName.endsWith(entry.getKey()))
 					return entry.getValue();
@@ -108,35 +114,38 @@ public class Installer
 				chewedName = chewedName.substring(0, chewedName.length() - matchLen);
 			}
 
-			elems = extRegistry.getConfigurationElementsFor(Activator.EXPANDERS_POINT);
-			idx = elems.length;
-			suffixes = new String[idx][];
-			while(--idx >= 0)
-				suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ',');
-
-			// Find the suffix that matches the most characters at the
-			// end of the path
-			//
 			IExpander expander = null;
-			int matchIdx = -1;
-			int matchLen = -1;
-			idx = elems.length;
-			while(--idx >= 0)
+			if(expand)
 			{
-				for(String suffix : suffixes[idx])
+				elems = extRegistry.getConfigurationElementsFor(Activator.EXPANDERS_POINT);
+				idx = elems.length;
+				suffixes = new String[idx][];
+				while(--idx >= 0)
+					suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ',');
+	
+				// Find the suffix that matches the most characters at the
+				// end of the path
+				//
+				int matchIdx = -1;
+				int matchLen = -1;
+				idx = elems.length;
+				while(--idx >= 0)
 				{
-					if(suffix.length() > matchLen && chewedName.endsWith(suffix))
+					for(String suffix : suffixes[idx])
 					{
-						matchLen = suffix.length();
-						matchIdx = idx;
+						if(suffix.length() > matchLen && chewedName.endsWith(suffix))
+						{
+							matchLen = suffix.length();
+							matchIdx = idx;
+						}
 					}
 				}
-			}
-
-			if(matchIdx >= 0)
-			{
-				chewedName = chewedName.substring(0, chewedName.length() - matchLen);
-				expander = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class"));
+	
+				if(matchIdx >= 0)
+				{
+					chewedName = chewedName.substring(0, chewedName.length() - matchLen);
+					expander = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class"));
+				}
 			}
 
 			if(decompressorList == null && expander == null)
@@ -147,14 +156,14 @@ public class Installer
 					// Assume that this suffix will never render anything
 					// but the plain installer from now on
 					//
-					s_installerCache.put(fileName.substring(lastDot), s_plainInstaller);
+					cache.put(fileName.substring(lastDot), s_plainInstaller);
 
 				return s_plainInstaller;
 			}
 
 			String fullSuffixMatch = fileName.substring(chewedName.length());
 			Installer validator = new Installer(decompressorList, expander);
-			s_installerCache.put(fullSuffixMatch, validator);
+			cache.put(fullSuffixMatch, validator);
 			return validator;
 		}
 	}

@@ -20,6 +20,7 @@ import org.eclipse.buckminster.cache.IExpander;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
