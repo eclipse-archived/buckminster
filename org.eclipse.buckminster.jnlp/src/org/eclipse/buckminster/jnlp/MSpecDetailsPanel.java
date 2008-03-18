@@ -412,8 +412,15 @@ public class MSpecDetailsPanel
 		{
 			m_treeViewer.setInput(m_treeRoot);
 			m_treeViewer.setExpandedElements(m_treeRoot.getChildren().toArray());
+
+			TreeItem topItem = m_treeViewer.getTree().getTopItem();
+			
+			if(topItem == null)
+				topItem = m_treeViewer.getTree().getItem(0);
+				
 			// add the root TreeItem
-			m_expandedTreeItems.add(m_treeViewer.getTree().getTopItem());
+			if(topItem != null)
+				m_expandedTreeItems.add(topItem);
 			
 			setupVisibleCheckboxes();
 		}
