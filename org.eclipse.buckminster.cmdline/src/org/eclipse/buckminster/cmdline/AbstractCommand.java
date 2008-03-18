@@ -150,7 +150,7 @@ abstract public class AbstractCommand
 				System.out.print("Help text for ");
 				System.out.print(this.getFullName());
 				System.out.println(":");
-				IOUtils.copy(helpStream, System.out);
+				IOUtils.copy(helpStream, System.out, null);
 			}
 			finally
 			{

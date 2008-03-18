@@ -14,6 +14,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 /**
  * Class containing some trivial IO tasks that we don't want to duplicate everywhere. Keep this class small. It's not
  * supposed to be a general purpose can do it all sort of thing.
@@ -31,12 +33,23 @@ public class IOUtils
 	 *            The stream to copy to
 	 * @throws IOException
 	 */
-	public static final void copy(InputStream in, OutputStream out) throws IOException
+	public static final void copy(InputStream in, OutputStream out, IProgressMonitor monitor) throws IOException
 	{
-		byte[] buffer = new byte[2048];
-		int len;
-		while((len = in.read(buffer)) > 0)
-			out.write(buffer, 0, len);
+		MonitorUtils.begin(monitor, IProgressMonitor.UNKNOWN);
+		try
+		{
+			byte[] buffer = new byte[2048];
+			int len;
+			while((len = in.read(buffer)) > 0)
+			{
+				MonitorUtils.worked(monitor, 1);
+				out.write(buffer, 0, len);
+			}
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
 	}
 
 	/**
@@ -48,16 +61,28 @@ public class IOUtils
 	 *            The stream to copy to
 	 * @throws IOException
 	 */
-	public static final void copy(Reader in, Writer out) throws IOException
+	public static final void copy(Reader in, Writer out, IProgressMonitor monitor) throws IOException
 	{
-		char[] buffer = new char[1024];
-		int len;
-		while((len = in.read(buffer)) > 0)
-			out.write(buffer, 0, len);
+		MonitorUtils.begin(monitor, IProgressMonitor.UNKNOWN);
+		try
+		{
+			char[] buffer = new char[1024];
+			int len;
+			while((len = in.read(buffer)) > 0)
+			{
+				MonitorUtils.worked(monitor, 1);
+				out.write(buffer, 0, len);
+			}
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
 	}
 
 	/**
 	 * Close but no cigar, sorry no Exception...
+	 * 
 	 * @param stream
 	 */
 	public static void close(Closeable stream)

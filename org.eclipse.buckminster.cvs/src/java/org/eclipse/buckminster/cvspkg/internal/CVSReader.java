@@ -174,7 +174,7 @@ public class CVSReader extends AbstractRemoteReader
 			in = ((ICVSRemoteFile)cvsFile).getContents(MonitorUtils.subMonitor(monitor, 50));
 			tempFile = createTempFile();
 			out = new BufferedOutputStream(new FileOutputStream(tempFile));
-			IOUtils.copy(in, out);
+			IOUtils.copy(in, out, null);
 			FileHandle fh = new FileHandle(fileName, tempFile, true);
 			tempFile = null;
 			return fh;

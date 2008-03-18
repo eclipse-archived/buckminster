@@ -174,7 +174,7 @@ public class CVSTest extends TestCase
 
 			in = ((ICVSRemoteFile)cvsFile).getContents(MonitorUtils.subMonitor(nullMon, 50));
 			out = new ByteArrayOutputStream();
-			IOUtils.copy(in, out);
+			IOUtils.copy(in, out, null);
 		}
 		finally
 		{

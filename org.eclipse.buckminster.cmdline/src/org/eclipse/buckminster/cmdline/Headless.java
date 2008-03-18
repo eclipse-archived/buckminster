@@ -293,7 +293,7 @@ public class Headless implements IApplication, OptionValueType
 			out.println("Help text for buckminster:");
 			try
 			{
-				IOUtils.copy(is, out);
+				IOUtils.copy(is, out, null);
 				out.flush();
 			}
 			finally

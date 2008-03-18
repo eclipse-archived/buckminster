@@ -19,12 +19,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
- *
  */
 public class ZipExpander extends AbstractExtension implements IExpander
 {
 	public void expand(InputStream input, IPath finalLocation, IProgressMonitor monitor) throws CoreException
 	{
-		FileUtils.unzip(input, null, finalLocation.toFile(), ConflictResolution.UPDATE, monitor);
+		FileUtils.unzip(input, null, finalLocation == null ? null : finalLocation.toFile(), ConflictResolution.UPDATE, monitor);
 	}
 }

@@ -103,7 +103,7 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 			{
 				input = URLUtils.openStream(url, null);
 				output = new FileOutputStream(tempFile);
-				IOUtils.copy(input, output);
+				IOUtils.copy(input, output, null);
 			}
 			finally
 			{

@@ -109,7 +109,7 @@ public class EditorUtils
 			{
 				is = URLUtils.openStream(url, null);
 				os = new FileOutputStream(cspecFile);
-				IOUtils.copy(is, os);
+				IOUtils.copy(is, os, null);
 			}
 			finally
 			{

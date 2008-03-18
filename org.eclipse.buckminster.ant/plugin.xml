@@ -113,5 +113,9 @@
           class="org.eclipse.buckminster.ant.materializer.TarExpander"
           suffixes=".tar">
     </expander>
+    <expander
+          class="org.eclipse.buckminster.ant.materializer.TGZExpander"
+          suffixes=".tgz">
+    </expander>
  </extension>
 </plugin>

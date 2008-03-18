@@ -198,8 +198,7 @@ public abstract class FileUtils
 	public static void prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)
 			throws CoreException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 200);
+		MonitorUtils.begin(monitor, 200);
 		try
 		{
 			File[] list = destination.listFiles();
@@ -228,7 +227,7 @@ public abstract class FileUtils
 				if(numFiles > 0)
 				{
 					IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 170);
-					subMonitor.beginTask(null, numFiles * 100);
+					MonitorUtils.begin(subMonitor, numFiles * 100);
 					try
 					{
 						if(strategy == ConflictResolution.FAIL)
@@ -242,7 +241,7 @@ public abstract class FileUtils
 					}
 					finally
 					{
-						subMonitor.done();
+						MonitorUtils.done(subMonitor);
 					}
 				}
 				else
@@ -251,7 +250,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -332,8 +331,7 @@ public abstract class FileUtils
 	public static void deepCopy(File sourceDirectory, File destinationDirectory, ConflictResolution strategy,
 			IProgressMonitor monitor) throws CoreException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 1000);
+		MonitorUtils.begin(monitor, 1000);
 		try
 		{
 			checkCopyConditions(sourceDirectory, destinationDirectory, strategy, MonitorUtils.subMonitor(monitor, 100));
@@ -341,7 +339,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -365,7 +363,7 @@ public abstract class FileUtils
 	public static void unzip(URL source, String sourceRelPath, File dest, ConflictResolution strategy, IProgressMonitor monitor)
 			throws CoreException
 	{
-		monitor.beginTask(null, 1000);
+		MonitorUtils.begin(monitor, 1000);
 		InputStream input = null;
 		try
 		{
@@ -379,7 +377,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 			IOUtils.close(input);
 		}
 	}
@@ -389,9 +387,10 @@ public abstract class FileUtils
 	{
 		ZipEntry entry;
 		ZipInputStream input = null;
-		monitor.beginTask(null, 600);
-		IProgressMonitor nullMon = null;
-		prepareDestination(dest, strategy, MonitorUtils.subMonitor(monitor, 100));
+		MonitorUtils.begin(monitor, 600);
+		if(dest != null)
+			prepareDestination(dest, strategy, MonitorUtils.subMonitor(monitor, 100));
+
 		try
 		{
 			int ticksLeft = 500;
@@ -417,14 +416,13 @@ public abstract class FileUtils
 				}
 				else
 				{
-					if(nullMon == null)
-						nullMon = new NullProgressMonitor();
-					subMonitor = nullMon;
+					subMonitor = null;
 				}
 
 				if(entry.isDirectory())
 				{
-					createDirectory(new File(dest, name), subMonitor);
+					if(dest != null)
+						createDirectory(new File(dest, name), subMonitor);
 					continue;
 				}
 				copyFile(input, dest, name, subMonitor);
@@ -438,7 +436,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -516,19 +514,24 @@ public abstract class FileUtils
 			throws CoreException
 	{
 		OutputStream output = null;
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 1000);
+		MonitorUtils.begin(monitor, 1000);
 		try
 		{
-			File destFile = new File(destDir, destName);
-			destDir = destFile.getParentFile(); // destName might have many
-			// components
-			if(destDir != null && !destDir.exists())
-				createDirectory(destDir, MonitorUtils.subMonitor(monitor, 100));
-			MonitorUtils.worked(monitor, 100);
+			if(destDir != null)
+			{
+				File destFile = new File(destDir, destName);
+				destDir = destFile.getParentFile(); // destName might have many
+				// components
+				if(destDir != null && !destDir.exists())
+					createDirectory(destDir, MonitorUtils.subMonitor(monitor, 100));
+				else
+					MonitorUtils.worked(monitor, 100);
+				output = new FileOutputStream(destFile);
+				MonitorUtils.worked(monitor, 100);
+			}
+			else
+				output = NullOutputStream.INSTANCE;
 
-			output = new FileOutputStream(destFile);
-			MonitorUtils.worked(monitor, 100);
 			return copyFile(input, output, MonitorUtils.subMonitor(monitor, 700));
 		}
 		catch(IOException e)
@@ -538,7 +541,7 @@ public abstract class FileUtils
 		finally
 		{
 			IOUtils.close(output);
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -551,10 +554,9 @@ public abstract class FileUtils
 			throws IOException
 	{
 		long total = 0;
-		monitor = MonitorUtils.ensureNotNull(monitor);
+		MonitorUtils.begin(monitor, IProgressMonitor.UNKNOWN);
 		try
 		{
-			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			int count;
 			while((count = input.read(buf)) > 0)
 			{
@@ -566,7 +568,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -595,9 +597,7 @@ public abstract class FileUtils
 
 	public static synchronized void createDirectory(File file, IProgressMonitor monitor) throws MkdirException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-
-		monitor.beginTask(null, 1);
+		MonitorUtils.begin(monitor, 1);
 		try
 		{
 			if(!(file.mkdirs() || file.isDirectory()))
@@ -610,14 +610,13 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
 	public static void deleteRecursive(File file, IProgressMonitor monitor) throws DeleteException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 1000);
+		MonitorUtils.begin(monitor, 1000);
 		try
 		{
 			if(file == null)
@@ -628,7 +627,7 @@ public abstract class FileUtils
 			if(count > 0)
 			{
 				IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 900);
-				subMon.beginTask(null, count * 100);
+				MonitorUtils.begin(subMon, count * 100);
 				try
 				{
 					if(s_foldersToRemove != null)
@@ -639,7 +638,7 @@ public abstract class FileUtils
 				}
 				finally
 				{
-					subMon.done();
+					MonitorUtils.done(subMon);
 				}
 			}
 			else
@@ -655,7 +654,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -693,7 +692,7 @@ public abstract class FileUtils
 			createFolder(folder.getParent());
 			folder.refreshLocal(IResource.DEPTH_ZERO, nullMonitor);
 			if(!folder.exists())
-				folder.create(false, true, new NullProgressMonitor());
+				folder.create(false, true, nullMonitor);
 		}
 	}
 
@@ -759,7 +758,7 @@ public abstract class FileUtils
 			}
 		}
 
-		monitor.beginTask(null, 10 + files.length * 100);
+		MonitorUtils.begin(monitor, 10 + files.length * 100);
 		try
 		{
 			createDirectory(dest, MonitorUtils.subMonitor(monitor, 10));
@@ -780,7 +779,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -845,8 +844,6 @@ public abstract class FileUtils
 				@Override
 				public void run()
 				{
-					NullProgressMonitor nullMonitor = new NullProgressMonitor();
-
 					// Prevent that s_foldersToRemove is updated during the remove
 					//
 					HashSet<File> folders = new HashSet<File>(s_foldersToRemove);
@@ -855,7 +852,7 @@ public abstract class FileUtils
 					{
 						try
 						{
-							deleteRecursive(folder, nullMonitor);
+							deleteRecursive(folder, null);
 						}
 						catch(Exception e)
 						{
@@ -1065,7 +1062,7 @@ public abstract class FileUtils
 		// for always getting the same digest
 		//
 		File names[] = from.listFiles();
-		monitor.beginTask(null, names.length * 100);
+		MonitorUtils.begin(monitor, names.length * 100);
 		try
 		{
 			Arrays.sort(names);
@@ -1097,7 +1094,7 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 

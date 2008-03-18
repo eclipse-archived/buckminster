@@ -46,7 +46,7 @@ public class BundleConsolidator extends VersionConsolidator
 		InputStream input = new FileInputStream(inputFile);
 		try
 		{
-			IOUtils.copy(input, output);
+			IOUtils.copy(input, output, null);
 		}
 		finally
 		{

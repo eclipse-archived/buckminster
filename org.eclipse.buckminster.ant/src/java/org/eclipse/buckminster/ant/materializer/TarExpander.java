@@ -15,7 +15,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class TarExpander extends AbstractExtension implements IExpander
 {
@@ -23,10 +22,15 @@ public class TarExpander extends AbstractExtension implements IExpander
 	{
 		TarEntry entry;
 		TarInputStream input = null;
-		monitor.beginTask(null, 600);
-		IProgressMonitor nullMon = null;
-		File dest = finalLocation.toFile();
-		FileUtils.prepareDestination(dest, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 100));
+
+		MonitorUtils.begin(monitor, 600);
+		File dest = null;
+		if(finalLocation != null)
+		{
+			dest = finalLocation.toFile();
+			FileUtils.prepareDestination(dest, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 100));
+		}
+
 		try
 		{
 			int ticksLeft = 500;
@@ -42,15 +46,12 @@ public class TarExpander extends AbstractExtension implements IExpander
 					ticksLeft -= 10;
 				}
 				else
-				{
-					if(nullMon == null)
-						nullMon = new NullProgressMonitor();
-					subMonitor = nullMon;
-				}
+					subMonitor = null;
 
 				if(entry.isDirectory())
 				{
-					FileUtils.createDirectory(new File(dest, name), subMonitor);
+					if(dest != null)
+						FileUtils.createDirectory(new File(dest, name), subMonitor);
 					continue;
 				}
 				FileUtils.copyFile(input, dest, name, subMonitor);
@@ -64,7 +65,7 @@ public class TarExpander extends AbstractExtension implements IExpander
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 }
