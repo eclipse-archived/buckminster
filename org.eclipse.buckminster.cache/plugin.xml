@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+ <extension-point id="expanders" name="Expanders" schema="schema/expanders.exsd"/>
+ <extension-point id="decompressors" name="Decompressors" schema="schema/decompressors.exsd"/>
+ <extension
+       point="org.eclipse.buckminster.cache.decompressors">
+    <decompressor
+          class="org.eclipse.buckminster.cache.unpack.GZIPDecompressor"
+          suffixes=".gz,.gzip">
+    </decompressor>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.cache.expanders">
+    <expander
+          class="org.eclipse.buckminster.cache.unpack.ZipExpander"
+          suffixes=".zip,.jar,.war,.ear">
+    </expander>
+ </extension>
+</plugin>
