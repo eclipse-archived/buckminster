@@ -62,6 +62,7 @@ public class Materialization extends UUIDKeyed implements ISaxable
 
 	public Resolution getResolution() throws CoreException
 	{
+		store(StorageManager.getDefault());
 		return WorkspaceInfo.getResolution(m_componentIdentifier);
 	}
 

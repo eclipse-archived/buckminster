@@ -203,7 +203,7 @@ public class DepotURI extends PropertyScope
 		{
 			P4Preferences prefs = P4Preferences.getInstance();
 			String address = uri.getHost();
-			Server server;
+			Server server = null;
 			if(address == null)
 			{
 				server = prefs.getDefaultServer();
@@ -212,6 +212,10 @@ public class DepotURI extends PropertyScope
 			}
 			else
 			{
+				int port = uri.getPort();
+				if(port != -1)
+					address = address + ':' + port;
+
 				server = prefs.getServer(address);
 				if(server == null)
 					throw BuckminsterException.fromMessage("No P4 server with address %s has been configured", address);

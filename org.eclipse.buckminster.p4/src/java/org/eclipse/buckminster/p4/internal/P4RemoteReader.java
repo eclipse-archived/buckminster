@@ -58,14 +58,14 @@ public class P4RemoteReader extends AbstractRemoteReader
 		Date timestamp = vm.getTimestamp();
 		if(changeNumber != -1)
 		{
-			if(rev == null && timestamp == null)
+			if(rev == FileSpec.HEAD && timestamp == null)
 				rev = new FileSpec.ChangeNumber((int)changeNumber);
 			else
 				specifierConflict = true;
 		}
 		else if(timestamp != null)
 		{
-			if(rev == null)
+			if(rev == FileSpec.HEAD)
 				rev = new FileSpec.Timestamp(timestamp.getTime(), connection.getConnectionInfo().getTimeZone());
 			else
 				specifierConflict = true;
@@ -83,8 +83,8 @@ public class P4RemoteReader extends AbstractRemoteReader
 
 		VersionMatch vm = providerMatch.getVersionMatch();
 		String[] branchNameBin = new String[1];
-		m_revision = getSpecifier(vm, getConnection(), branchNameBin);
 		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), branchNameBin[0], providerMatch.getNodeQuery().getProperties());
+		m_revision = getSpecifier(vm, getConnection(), branchNameBin);
 	}
 
 	public void dropClientEntry(IProgressMonitor monitor)

@@ -1,0 +1,14 @@
+<rmap
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
+ xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
+  <searchPath name="default">
+    <provider readerType="p4" componentTypes="unknown" mutable="false" source="true">
+      <uri format="p4://public.perforce.com:1666/public/{0}">
+      	<bc:propertyRef key="buckminster.component"/>
+      </uri>
+    </provider>
+  </searchPath>
+  <locator searchPathRef="default" pattern=".*" />
+</rmap>
+ 

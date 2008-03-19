@@ -10,11 +10,33 @@
 
 package org.eclipse.buckminster.p4.test;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.Map;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.p4.internal.ClientSpec;
 import org.eclipse.buckminster.p4.internal.Connection;
 import org.eclipse.buckminster.p4.internal.ConnectionInfo;
@@ -25,27 +47,65 @@ import org.eclipse.buckminster.p4.internal.Label;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
 import org.eclipse.buckminster.p4.preferences.Server;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
+import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-
 
 public class P4Test extends TestCase
 {
-	Connection m_connection;
+	private final Connection m_connection;
+	private final File m_tempDir;
+
 	Map<String, String> m_env;
 
-	@Override
-	protected void setUp() throws Exception
+	public P4Test(String name, Connection connection, File tempDir)
 	{
+		super(name);
+		m_connection = connection;
+		m_tempDir = tempDir;
+	}
+
+	public static Test suite() throws Exception
+	{
+		final File tempDir = FileUtils.createTempFolder("p4-", ".test");
+		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		Map<String,String> scope = RMContext.getGlobalPropertyAdditions();
 		P4Preferences prefs = P4Preferences.getInstance();
-		Server server = prefs.getDefaultServer();
-		if(server == null)
-			server = prefs.configureDefaultServer(scope, false);
+		Server server = prefs.addServer("public.perforce.com:1666");
+		Client client = server.addClient("buckminster");
+		server.save();
 
-		Client client = server.getDefaultClient();
-		m_connection = new Connection(scope, client, server.getName());
-		super.setUp();
+		Connection connection = new Connection(scope, client, server.getName());
+		ClientSpec clientSpec = connection.getClientSpec();
+		clientSpec.setRoot(Path.fromOSString(tempDir.toString()));
+		clientSpec.commitChanges();
+
+		client.setLocalRoot(tempDir.getAbsolutePath());
+		client.save();
+
+		TestSuite suite = new TestSuite()
+		{
+			@Override
+			public void run(TestResult result)
+			{
+				super.run(result);
+				delete(tempDir);
+			}
+		};
+/*		suite.addTest(new P4Test("testInfo", connection, tempDir));
+		suite.addTest(new P4Test("testClientSpec", connection, tempDir));
+		suite.addTest(new P4Test("testDepots", connection, tempDir));
+		suite.addTest(new P4Test("testFolders", connection, tempDir));
+		suite.addTest(new P4Test("testLabels", connection, tempDir));
+		suite.addTest(new P4Test("testDepotFile", connection, tempDir));
+		suite.addTest(new P4Test("testLastChange", connection, tempDir)); */
+		suite.addTest(new P4Test("testResolve", connection, tempDir));
+		suite.addTest(new P4Test("testMaterialize", connection, tempDir));
+		return suite;
 	}
 
 	public void testInfo()
@@ -119,5 +179,46 @@ public class P4Test extends TestCase
 		long number = m_connection.getLastChangeNumber(path, null);
 		assertTrue(number > 0);
 	}
+
+	public void testResolve() throws Exception
+	{
+		IProgressMonitor nullMon = new NullProgressMonitor();
+		URL cqueryURL = getClass().getResource("jam.cquery");
+		ResolutionContext ctx = new ResolutionContext(ComponentQuery.fromURL(cqueryURL, true, nullMon));
+		MainResolver resolver = new MainResolver(ctx);
+		BillOfMaterials bom = resolver.resolve(nullMon);
+		assertTrue(bom.isFullyResolved());
+
+		OutputStream bomFile = new BufferedOutputStream(new FileOutputStream(new File(m_tempDir, "jam.bom")));
+		Utils.serialize(bom, bomFile);
+		bomFile.close();
+	}
+
+	public void testMaterialize() throws Exception
+	{
+		IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
+		File bomFile = new File(m_tempDir, "jam.bom");
+		InputStream input = new BufferedInputStream(new FileInputStream(bomFile));
+		BillOfMaterials bom = bomParser.parse(bomFile.getAbsolutePath(), input);
+		input.close();
+
+		MaterializationSpecBuilder mspecBld = new MaterializationSpecBuilder();
+		mspecBld.setName(bom.getViewName());
+		mspecBld.setURL(bomFile.toURI().toURL());
+		mspecBld.setMaterializer(IMaterializer.FILE_SYSTEM);
+		MaterializationContext ctx = new MaterializationContext(bom, mspecBld.createMaterializationSpec());
+		MaterializationJob.run(ctx, true);
+		assertTrue(ctx.getStatus().isOK());
+	}
+
+	static void delete(File file)
+	{
+		File[] files = file.listFiles();
+		if(files != null)
+			for(File child : files)
+				delete(child);
+		file.delete();
+	}
+
 }
 
