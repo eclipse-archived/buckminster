@@ -315,7 +315,7 @@ public class CSpecFromSource extends CSpecGenerator
 			// Add the build.properties artifact. We want to manage that separately since it
 			// is one of the requirements for expanding the bundle version
 			//
-			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null, new Path(BUILD_PROPERTIES_FILE));
+			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
 
 			// Add the action that will create the manifest copy with the version expanded
 			//

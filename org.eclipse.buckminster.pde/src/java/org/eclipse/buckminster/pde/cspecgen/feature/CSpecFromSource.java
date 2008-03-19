@@ -101,7 +101,7 @@ public class CSpecFromSource extends CSpecGenerator
 
 		if(m_buildProperties != null)
 		{
-			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null, new Path(BUILD_PROPERTIES_FILE));
+			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
 			for(Map.Entry<String, String> entry : m_buildProperties.entrySet())
 			{
 				String key = entry.getKey();
