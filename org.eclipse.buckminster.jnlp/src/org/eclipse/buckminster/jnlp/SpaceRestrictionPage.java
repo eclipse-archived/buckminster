@@ -61,7 +61,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		warningComposite.setLayout(layout);
 		
 		Label label = new Label(warningComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_WARNING));
+		label.setImage(MaterializationUtils.getImage(ICON_WARNING));
 		GridData layoutData = new GridData();
 
 		label = new Label(warningComposite, SWT.WRAP);
@@ -82,7 +82,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		m_solutionEmailAndInvitationComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		label = new Label(m_solutionEmailAndInvitationComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		label.setImage(MaterializationUtils.getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
@@ -90,7 +90,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Confirm email Validation");
 		
 		label = new Label(m_solutionEmailAndInvitationComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		label.setImage(MaterializationUtils.getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
@@ -114,7 +114,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		m_solutionInvitationComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		label = new Label(m_solutionInvitationComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		label.setImage(MaterializationUtils.getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
@@ -138,7 +138,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		m_solutionForbiddenComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		label = new Label(m_solutionForbiddenComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		label.setImage(MaterializationUtils.getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
@@ -146,7 +146,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Ask the space owner to invite you to the materialization space");
 		
 		label = new Label(m_solutionForbiddenComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_DOT));
+		label.setImage(MaterializationUtils.getImage(ICON_DOT));
 		layoutData = new GridData();
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);

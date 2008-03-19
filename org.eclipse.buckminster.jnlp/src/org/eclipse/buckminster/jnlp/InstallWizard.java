@@ -469,14 +469,6 @@ public class InstallWizard extends AdvancedWizard
 		}
 	}
 
-	Image getImage(String imageName)
-	{
-		Class<?> myClass = this.getClass();
-		String imageResource = "/icons/" + imageName;
-		URL imageUrl = myClass.getResource(imageResource);
-		return ImageDescriptor.createFromURL(imageUrl).createImage();
-	}
-	
 	private void showOriginalPage(IWizardPage originalPage)
 	{
 		WizardPage originalPreviousPage = (WizardPage)originalPage.getPreviousPage();

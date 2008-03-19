@@ -68,7 +68,7 @@ public class DonePage extends InstallWizardPage
 		List<LearnMoreItem> learnMores = getInstallWizard().getLearnMores();
 		
 		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_LEARN));
+		label.setImage(MaterializationUtils.getImage(ICON_LEARN));
 		GridData learnMoreIconlayoutData = new GridData();
 		learnMoreIconlayoutData.horizontalIndent = HORIZONTAL_INDENT;
 		
@@ -97,7 +97,7 @@ public class DonePage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(getInstallWizard().getImage(ICON_PUBLISH));
+		label.setImage(MaterializationUtils.getImage(ICON_PUBLISH));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.verticalAlignment = GridData.CENTER;

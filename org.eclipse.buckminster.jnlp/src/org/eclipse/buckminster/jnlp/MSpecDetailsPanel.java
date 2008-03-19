@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.SmartArrayList;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -59,9 +60,14 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  */
 public class MSpecDetailsPanel
-{
+{	
 	private Map<MaterializationNodeHandler, Map<MaterializationNodeHandler, TreeNode>> m_treeNodeCache =
 					new HashMap<MaterializationNodeHandler, Map<MaterializationNodeHandler, TreeNode>>();
+
+	private enum ResolveStatus
+	{
+		RESOLVED, UNRESOLVED, UNRESOLVED_CHILD
+	}
 	
 	class TreeNode
 	{
@@ -69,6 +75,8 @@ public class MSpecDetailsPanel
 
 		private TreeNode m_parent;
 		
+		private Set<TreeNode> m_uncles = new HashSet<TreeNode>();	// secondary parents
+
 		private List<TreeNode> m_children = new ArrayList<TreeNode>();
 		
 		private boolean m_checked;
@@ -102,6 +110,11 @@ public class MSpecDetailsPanel
 				m_children.add(node);
 		}
 		
+		public void addUncle(TreeNode parentTreeNode)
+		{
+			m_uncles.add(parentTreeNode);		
+		}
+		
 		public boolean isChecked()
 		{
 			return m_checked;
@@ -126,7 +139,6 @@ public class MSpecDetailsPanel
 		{
 			return m_handler;
 		}
-		
 	}
 	
 	class TreeContentProvider implements ITreeContentProvider
@@ -169,10 +181,33 @@ public class MSpecDetailsPanel
 	class LabelProvider implements ILabelProvider
 	{
 		List<ILabelProviderListener> m_listeners = new ArrayList<ILabelProviderListener>();
+		
+		private static final String ICON_RESOLVED = "node.resolved.gif";
+		
+		private static final String ICON_UNRESOLVED = "node.unresolved.gif";
+		
+		private static final String ICON_UNRESOLVED_CHILD = "node.resolved_warning.gif";
+		
+		private final Image m_iconResolved = MaterializationUtils.getImage(ICON_RESOLVED);
 
+		private final Image m_iconUnresolved = MaterializationUtils.getImage(ICON_UNRESOLVED);
+
+		private final Image m_iconUnresolvedChild = MaterializationUtils.getImage(ICON_UNRESOLVED_CHILD);
+		
 		public Image getImage(Object element)
 		{
-			return null;
+			TreeNode treeNode = (TreeNode)element;
+			switch(treeNode.getHandler().getResolveStatus())
+			{
+			case RESOLVED:
+				return m_iconResolved;
+			case UNRESOLVED:
+				return m_iconUnresolved;
+			case UNRESOLVED_CHILD:
+				return m_iconUnresolvedChild;
+			default:
+				return null;
+			}
 		}
 
 		public String getText(Object element)
@@ -206,15 +241,26 @@ public class MSpecDetailsPanel
 	{
 		private MaterializationNodeBuilder m_node;
 
+		private ComponentRequest m_request;
+		
 		private CSpec m_cspec;
 
 		private List<TreeNode> m_cloneItems = new ArrayList<TreeNode>();
 		
-		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, CSpec cspec)
+		private ResolveStatus m_resolveStatus;
+		
+		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, ComponentRequest request, CSpec cspec, boolean resolved)
 		{
 			m_node = node;
 			nodes.add(node);
+			m_request = request;
 			m_cspec = cspec;
+			if(resolved)
+				m_resolveStatus = ResolveStatus.RESOLVED;
+			else
+			{
+				m_resolveStatus = ResolveStatus.UNRESOLVED;
+			}
 		}
 
 		public MaterializationNodeBuilder getNodeBuilder()
@@ -289,7 +335,7 @@ public class MSpecDetailsPanel
 				rollbackSubtreeChecked(child, visitedNodes);				
 		}
 		
-		public TreeNode createTreeNodeClone(final TreeNode parentTreeNode)
+		public TreeNode createTreeNodeClone(TreeNode parentTreeNode)
 		{
 			TreeNode treeNode = null;
 			
@@ -318,9 +364,39 @@ public class MSpecDetailsPanel
 			else
 			{
 				parentTreeNode.addChild(treeNode);
+				treeNode.addUncle(parentTreeNode);
+			}
+			
+			if(m_resolveStatus == ResolveStatus.UNRESOLVED || m_resolveStatus == ResolveStatus.UNRESOLVED_CHILD)
+			{
+				Set<TreeNode> visitedNodes = new HashSet<TreeNode>();
+				setParentToUnresolvedChild(parentTreeNode, visitedNodes);
 			}
 			
 			return treeNode;
+		}
+
+		private void setParentToUnresolvedChild(TreeNode treeNode, Set<TreeNode> visitedNodes)
+		{
+			if(visitedNodes.contains(treeNode))
+				return;
+			
+			visitedNodes.add(treeNode);
+			
+			MaterializationNodeHandler handler = treeNode.getHandler();
+			
+			if(handler == null)
+				return;
+			
+			if(handler.getResolveStatus() == ResolveStatus.UNRESOLVED || handler.getResolveStatus() == ResolveStatus.UNRESOLVED_CHILD)
+				return;
+			
+			handler.setUnresolvedChild();
+			
+			for(TreeNode clone : handler.getTreeNodeClones())
+			{
+				setParentToUnresolvedChild(clone.getParent(), visitedNodes);
+			}
 		}
 
 		public List<TreeNode> getTreeNodeClones()
@@ -328,41 +404,69 @@ public class MSpecDetailsPanel
 			return m_cloneItems;
 		}
 
+		public ResolveStatus getResolveStatus()
+		{
+			return m_resolveStatus;
+		}
+		
+		public void setUnresolvedChild()
+		{
+			if(m_resolveStatus != ResolveStatus.UNRESOLVED)				
+				m_resolveStatus = ResolveStatus.UNRESOLVED_CHILD;
+		}
+		
 		public String getComponentShortDescription()
 		{
+			if(m_cspec == null)
+				return m_request.getName() + "/" + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID());
+				
 			return (m_cspec.getShortDesc() == null ? m_cspec.getComponentIdentifier().getName() : m_cspec.getShortDesc()) +
-					(m_cspec.getComponentIdentifier().getComponentTypeID() == null
-							? ""
-							: "/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID()));
+			 		"/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID());
 		}
 
 		public String getComponentDescription()
 		{
 			SmartArrayList<String> smartList = new SmartArrayList<String>();
 			
-			if(m_cspec.getShortDesc() != null)
+			if(m_cspec != null)
 			{
-				smartList.add("Description: " + m_cspec.getShortDesc());
+				if(m_resolveStatus == ResolveStatus.UNRESOLVED_CHILD)
+					smartList.add("*** DEPENDS ON AN UNRESOLVED COMPONENT ***");
+					
+				if(m_cspec.getShortDesc() != null)
+				{
+					smartList.add("Description: " + m_cspec.getShortDesc());
+				}
+				if(m_cspec.getComponentIdentifier().getName() != null)
+				{
+					smartList.add("Name: " + m_cspec.getComponentIdentifier().getName());
+				}
+				if(m_cspec.getComponentIdentifier().getComponentTypeID() != null)
+				{
+					smartList.add("Meta-Data Extractor: "
+							+ MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier()
+									.getComponentTypeID()));
+				}
+				if(m_cspec.getVersion() != null)
+				{
+					smartList.add("Version: " + m_cspec.getVersion());
+				}
+				if(m_node.getInstallLocation() != null)
+				{
+					smartList.add("Destination Address: "
+							+ m_node.getInstallLocation().removeTrailingSeparator().toOSString());
+				}
+				if(m_node.getConflictResolution() != null)
+				{
+					smartList.add("Conflict Resolution: " + m_node.getConflictResolution());
+				}
 			}
-			if(m_cspec.getComponentIdentifier().getName() != null)
+			else
 			{
-				smartList.add("Name: " + m_cspec.getComponentIdentifier().getName());
-			}
-			if(m_cspec.getComponentIdentifier().getComponentTypeID() != null)
-			{
-				smartList.add("Meta-Data Extractor: " + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID()));
-			}
-			if(m_cspec.getVersion() != null)
-			{
-				smartList.add("Version: " + m_cspec.getVersion());
-			}
-			if(m_node.getInstallLocation() != null)
-			{
-				smartList.add("Destination Address: " + m_node.getInstallLocation().removeTrailingSeparator().toOSString());
-			}
-			if(m_node.getConflictResolution() != null)
-			{
-				smartList.add("Conflict Resolution: " + m_node.getConflictResolution());
+				smartList.add("*** UNRESOLVED COMPONENT ***");
+				smartList.add("Requested Name: " + m_request.getName());
+				smartList.add("Requested Meta-data extractor: " + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID()));
+				smartList.add("Requested Version: " + (m_request.getVersionDesignator() == null ? "Any" : m_request.getVersionDesignator()));
 			}
 			
 			return smartList.toString("\n");
@@ -413,14 +517,8 @@ public class MSpecDetailsPanel
 			m_treeViewer.setInput(m_treeRoot);
 			m_treeViewer.setExpandedElements(m_treeRoot.getChildren().toArray());
 
-			TreeItem topItem = m_treeViewer.getTree().getTopItem();
-			
-			if(topItem == null)
-				topItem = m_treeViewer.getTree().getItem(0);
-				
-			// add the root TreeItem
-			if(topItem != null)
-				m_expandedTreeItems.add(topItem);
+			// add the root TreeItems
+			m_expandedTreeItems.addAll(Arrays.asList(m_treeViewer.getTree().getItems()));
 			
 			setupVisibleCheckboxes();
 		}
@@ -659,14 +757,38 @@ public class MSpecDetailsPanel
 			{
 				TreeNode treeNode = handler.createTreeNodeClone(m_treeRoot);
 				addChildrenItems(treeNode, m_bom);
+				
+				// set unresolved child nodes
+				Set<TreeNode> visitedNodes = new HashSet<TreeNode>();
+				hasUnresolvedChild(m_treeRoot, visitedNodes);
 			}
-
 		}
 		catch(CoreException e)
 		{
 			throw new JNLPException("Error while reading artifact specification -\n\tbill of materials can not be read",
 					ERROR_CODE_BOM_IO_EXCEPTION, e);
 		}
+	}
+
+	private boolean hasUnresolvedChild(TreeNode node, Set<TreeNode> visitedNodes)
+	{
+		if(visitedNodes.contains(node))
+			return false;
+		
+		visitedNodes.add(node);
+		
+		boolean unresolvedChild = false;
+		
+		for(TreeNode child : node.getChildren())
+		{
+			if(hasUnresolvedChild(child, visitedNodes))
+			{
+				unresolvedChild = true;
+				child.getHandler().setUnresolvedChild();
+			}
+		}
+		
+		return unresolvedChild;
 	}
 
 	private void addChildrenItems(TreeNode parentTN, DepNode parentDN) throws CoreException
@@ -687,24 +809,33 @@ public class MSpecDetailsPanel
 	{
 		Resolution resolution = depNode.getResolution();
 
+		ComponentName componentNameId;		
 		if(resolution == null)
-		{
-			return null;
-		}
-
-		MaterializationNodeHandler handler = m_componentMap.get(resolution.getComponentIdentifier());
+			componentNameId = depNode.getRequest();
+		else
+			componentNameId = resolution.getComponentIdentifier();
+		
+		MaterializationNodeHandler handler = m_componentMap.get(componentNameId);
 
 		if(handler == null)
 		{
-			CSpec cspec = resolution.getCSpec();
-
-			if(cspec == null)
+			CSpec cspec = null;
+			if(resolution != null)
+				cspec = resolution.getCSpec();
+			
+			String componentName;
+			String componentType;
+			
+			if(cspec != null)
 			{
-				return null;
+				componentName = cspec.getName();
+				componentType = cspec.getComponentTypeID();
 			}
-
-			String componentName = cspec.getName();
-			String componentType = cspec.getComponentTypeID();
+			else
+			{
+				componentName = depNode.getRequest().getName();
+				componentType = depNode.getRequest().getComponentTypeID();
+			}
 
 			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
 
@@ -722,10 +853,11 @@ public class MSpecDetailsPanel
 			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
 			if(nodeBuilder.getInstallLocation() != null)
 				nodeBuilder.setInstallLocation(MaterializationUtils.expandPath(m_mspec, nodeBuilder.getInstallLocation()));
-			nodeBuilder.setComponentTypeID(componentType);
+			if(componentType != null)
+				nodeBuilder.setComponentTypeID(componentType);
 
-			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, cspec);
-			m_componentMap.put(resolution.getComponentIdentifier(), handler);
+			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, depNode.getRequest(), cspec, depNode.getResolution() != null);
+			m_componentMap.put(componentNameId, handler);
 		}
 
 		return handler;
@@ -741,13 +873,16 @@ public class MSpecDetailsPanel
 			{
 				Resolution resolution = child.getResolution();
 				
+				String componentId;
 				if (resolution != null)
-					sortedMap.put(resolution.getComponentIdentifier().toString(), child);
+					componentId = resolution.getComponentIdentifier().toString();
+				else
+					componentId = child.getRequest().toString();					
+					
+				sortedMap.put(componentId, child);
 			}
 			children = sortedMap.values();
 		}
 		return children;
 	}
-
-
 }

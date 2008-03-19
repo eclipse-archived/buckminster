@@ -11,6 +11,7 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,8 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -92,6 +95,7 @@ public class MaterializationUtils
 	static
 	{
 		s_humanReadableComponentTypes = new HashMap<String,String>();
+		s_humanReadableComponentTypes.put(null, "Any");
 		s_humanReadableComponentTypes.put("unknown", "None");
 		s_humanReadableComponentTypes.put("cssite", "Cloudsmith");
 		s_humanReadableComponentTypes.put("osgi.bundle", "OSGi Bundle");
@@ -302,5 +306,13 @@ public class MaterializationUtils
 				destination += "/" + artifactName;
 		}
 		return destination;
+	}
+	
+	public static Image getImage(String imageName)
+	{
+		Class<?> myClass = MaterializationUtils.class;
+		String imageResource = "/icons/" + imageName;
+		URL imageUrl = myClass.getResource(imageResource);
+		return ImageDescriptor.createFromURL(imageUrl).createImage();
 	}
 }
