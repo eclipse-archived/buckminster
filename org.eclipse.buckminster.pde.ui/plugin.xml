@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution
-			id="org.eclipse.buckminster.ui.projectaction"
+			id="org.eclipse.buckminster.pde.ui.projectaction1"
 			objectClass="org.eclipse.pde.core.plugin.IPluginModelBase"
 			adaptable="true">
 			<menu
@@ -23,7 +23,7 @@
 				menubarPath="org.eclipse.buckminster.pde.ui.popup.menu/cspec" />
 		</objectContribution>¨
 		<objectContribution
-			id="org.eclipse.buckminster.ui.projectaction"
+			id="org.eclipse.buckminster.pde.ui.projectaction2"
 			objectClass="org.eclipse.pde.core.plugin.IPluginBase"
 			adaptable="true">
 			<menu
@@ -43,7 +43,7 @@
 				menubarPath="org.eclipse.buckminster.pde.ui.popup.menu/cspec" />
 		</objectContribution>¨
 		<objectContribution
-			id="org.eclipse.buckminster.ui.projectaction"
+			id="org.eclipse.buckminster.pde.ui.projectaction3"
 			objectClass="org.eclipse.osgi.service.resolver.BundleSpecification"
 			adaptable="true">
 			<menu
