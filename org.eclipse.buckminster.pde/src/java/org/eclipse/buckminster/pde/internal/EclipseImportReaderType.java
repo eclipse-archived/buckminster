@@ -649,9 +649,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					// synchronization
 					//
 					VersionedIdentifier vid = ref.getVersionedIdentifier();
-					if(!seenFeatures.contains(vid))
+					if(seenFeatures.add(vid))
 					{
-						seenFeatures.add(vid);
 						IFeature feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 50));
 						addFeaturePluginEntries(entries, seenFeatures, feature, MonitorUtils.subMonitor(itemsMonitor, 50));
 					}
@@ -667,7 +666,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private static void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries, HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
 	{
-		for(IPluginEntry entry : feature.getPluginEntries())
+		for(IPluginEntry entry : feature.getRawPluginEntries())
 			entries.put(entry.getVersionedIdentifier(), entry);
 
 		IIncludedFeatureReference[] includedFeatures = feature.getIncludedFeatureReferences();
