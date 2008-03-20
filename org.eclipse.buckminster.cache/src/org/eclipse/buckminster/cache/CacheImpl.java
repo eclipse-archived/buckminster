@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
 
+import org.eclipse.buckminster.cache.download.FileReader;
 import org.eclipse.buckminster.cache.policy.ArchivePolicy;
 import org.eclipse.buckminster.cache.policy.DigestPolicy;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -25,6 +27,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class CacheImpl implements ICache
 {
+	public static final String LAST_MODIFIED_HEADER = "Last-Modified"; //$NON-NLS-1$
+
 	private final File m_location;
 
 	public CacheImpl(File location) throws CoreException
@@ -39,8 +43,7 @@ public class CacheImpl implements ICache
 		return m_location;
 	}
 
-	public boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor)
-	throws CoreException
+	public boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		String urlStr = remoteFile.toString().intern();
 		synchronized(urlStr)
@@ -50,47 +53,51 @@ public class CacheImpl implements ICache
 		}
 	}
 
-	public boolean isUpToDate(URL remoteFile, String remoteName, IProgressMonitor monitor)
-	throws CoreException
+	public boolean isUpToDate(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		return isUpToDate(new ArchivePolicy(this, remoteName), remoteFile, monitor);
 	}
 
 	public boolean isUpToDate(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException, FileNotFoundException
 	{
-		return isUpToDate(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, monitor);
+		return isUpToDate(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
+				remoteFile, monitor);
 	}
 
-	public InputStream open(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor)
-	throws CoreException
+	public InputStream open(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		String urlStr = remoteFile.toString().intern();
 		synchronized(urlStr)
 		{
-			try
-			{
-				File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
-				policy.update(remoteFile, localFile, false, monitor);
-				return new FileInputStream(localFile);
-			}
-			catch(FileNotFoundException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
+			File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
+			policy.update(remoteFile, localFile, false, monitor);
+			return new FileInputStream(localFile);
 		}
 	}
 
-	public InputStream open(URL remoteFile, String remoteName, IProgressMonitor monitor)
-	throws CoreException
+	public InputStream open(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		return open(new ArchivePolicy(this, remoteName), remoteFile, monitor);
 	}
 
 	public InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException, FileNotFoundException
 	{
-		return open(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, monitor);
+		return open(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile,
+				monitor);
+	}
+
+	public InputStream openRemote(URL remoteFile) throws CoreException, FileNotFoundException
+	{
+		FileReader reader = new FileReader();
+		return reader.read(remoteFile);
+	}
+
+	public IFileInfo getRemoteInfo(URL remoteFile) throws CoreException, FileNotFoundException
+	{
+		FileReader reader = new FileReader();
+		return reader.readInfo(remoteFile);
 	}
 
 	private UUID getHash(String urlStr)

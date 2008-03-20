@@ -17,10 +17,10 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
-import org.eclipse.buckminster.cache.Cache;
+import org.eclipse.buckminster.cache.CacheImpl;
 import org.eclipse.buckminster.cache.ICache;
-import org.eclipse.buckminster.cache.unpack.NullOutputStream;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -64,7 +64,7 @@ public class TestCache extends TestCase
 
 	public void testPlainCache() throws Exception
 	{
-		ICache c = new Cache(m_cacheFolder);
+		ICache c = new CacheImpl(m_cacheFolder);
 		URL url = new URL("http://www.eclipse.org/buckminster/downloads.html");
 		InputStream input = c.open(url, null, m_monitor);
 		IOUtils.copy(input, NullOutputStream.INSTANCE, null);
@@ -75,7 +75,7 @@ public class TestCache extends TestCase
 
 	public void testDigestCache() throws Exception
 	{
-		ICache c = new Cache(m_cacheFolder);
+		ICache c = new CacheImpl(m_cacheFolder);
 
 		URL url = new URL(zipFile);
 		URL digestURL = new URL(zipDigest);

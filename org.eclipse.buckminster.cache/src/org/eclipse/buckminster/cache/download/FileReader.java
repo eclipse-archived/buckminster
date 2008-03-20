@@ -7,20 +7,30 @@
  ******************************************************************************/
 package org.eclipse.buckminster.cache.download;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.URL;
+import java.util.Date;
 
 import org.eclipse.buckminster.cache.Activator;
+import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
+import org.eclipse.buckminster.runtime.IFileInfo;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ecf.filetransfer.FileTransferJob;
 import org.eclipse.ecf.filetransfer.IFileTransferListener;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransfer;
 import org.eclipse.ecf.filetransfer.IRetrieveFileTransferContainerAdapter;
+import org.eclipse.ecf.filetransfer.IncomingFileTransferException;
 import org.eclipse.ecf.filetransfer.events.IFileTransferEvent;
+import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferEvent;
 import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferReceiveDataEvent;
 import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferReceiveDoneEvent;
 import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferReceiveStartEvent;
@@ -32,19 +42,23 @@ import org.eclipse.ecf.filetransfer.identity.IFileID;
  */
 public class FileReader extends FileTransferJob implements IFileTransferListener
 {
-	private OutputStream m_outputStream;
-
-	private IProgressMonitor m_monitor;
-
-	private ProgressStatistics m_statistics;
-
-	private IIncomingFileTransfer m_incomingFileTransfer;
+	private boolean m_closeStreamWhenFinished = false;
 
 	private Exception m_exception;
 
-	private long m_lastStatsCount;
+	private IFileInfo m_fileInfo;
 
 	private long m_lastProgressCount;
+
+	private long m_lastStatsCount;
+
+	private IProgressMonitor m_monitor;
+
+	private boolean m_onlyGetInfo = false;
+
+	private OutputStream m_outputStream;
+
+	private ProgressStatistics m_statistics;
 
 	public FileReader()
 	{
@@ -55,18 +69,30 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		setUser(false);
 	}
 
-	public String getRemoteName()
+	public IFileInfo getLastFileInfo()
 	{
-		return m_incomingFileTransfer.getRemoteFileName();
+		return m_fileInfo;
 	}
 
 	public synchronized void handleTransferEvent(IFileTransferEvent event)
 	{
+		IIncomingFileTransfer source = ((IIncomingFileTransferEvent)event).getSource();
 		if(event instanceof IIncomingFileTransferReceiveStartEvent)
 		{
 			try
 			{
-				m_incomingFileTransfer = ((IIncomingFileTransferReceiveStartEvent)event).receive(m_outputStream, this);
+				FileInfoBuilder fi = new FileInfoBuilder();
+				Date lastModified = source.getRemoteLastModified();
+				if(lastModified != null)
+					fi.setLastModified(lastModified.getTime());
+				fi.setName(source.getRemoteFileName());
+				fi.setSize(source.getFileLength());
+				m_fileInfo = fi;
+
+				if(m_onlyGetInfo)
+					((IIncomingFileTransferReceiveStartEvent)event).cancel();
+				else
+					((IIncomingFileTransferReceiveStartEvent)event).receive(m_outputStream, this);
 			}
 			catch(IOException e)
 			{
@@ -76,8 +102,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 
 			if(m_monitor != null)
 			{
-				long fileLength = m_incomingFileTransfer.getFileLength();
-				m_statistics = new ProgressStatistics(m_incomingFileTransfer.getRemoteFileName(), fileLength);
+				long fileLength = source.getFileLength();
+				m_statistics = new ProgressStatistics(source.getRemoteFileName(), fileLength);
 				m_monitor.beginTask(null, 1000);
 				m_monitor.subTask(m_statistics.report());
 				m_lastStatsCount = 0;
@@ -90,11 +116,11 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			{
 				if(m_monitor.isCanceled())
 				{
-					m_incomingFileTransfer.cancel();
+					source.cancel();
 					return;
 				}
 
-				long br = m_incomingFileTransfer.getBytesReceived();
+				long br = source.getBytesReceived();
 				long count = br - m_lastStatsCount;
 				m_lastStatsCount = br;
 				m_statistics.increase(count);
@@ -109,34 +135,132 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		}
 		else if(event instanceof IIncomingFileTransferReceiveDoneEvent)
 		{
+			if(m_closeStreamWhenFinished)
+				IOUtils.close(m_outputStream);
+
 			if(m_exception == null)
 				m_exception = ((IIncomingFileTransferReceiveDoneEvent)event).getException();
 		}
 	}
 
-	public void readURL(URL url, OutputStream outputStream, IProgressMonitor monitor) throws CoreException
+	public InputStream read(URL url) throws CoreException, FileNotFoundException
 	{
-		IRetrieveFileTransferContainerAdapter adapter = Activator.getDefault().createRetrieveFileTransfer();	
-		IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
-		m_monitor = monitor;
+		final PipedInputStream input = new PipedInputStream();
+		PipedOutputStream output;
 		try
 		{
-			m_outputStream = outputStream;
-			adapter.sendRetrieveRequest(fileID, this, null);
-			if(m_exception != null)
-				throw new CoreException(new Status(IStatus.ERROR, (String)null, IStatus.OK, m_exception.getMessage(),
-						m_exception));
+			output = new PipedOutputStream(input);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		sendRetrieveRequest(url, output, true, false, null);
 
+		return new InputStream()
+		{
+			@Override
+			public int available() throws IOException
+			{
+				checkException();
+				return input.available();
+			}
+
+			@Override
+			public void close() throws IOException
+			{
+				checkException();
+				input.close();
+			}
+
+			@Override
+			public synchronized void mark(int readlimit)
+			{
+				input.mark(readlimit);
+			}
+
+			@Override
+			public boolean markSupported()
+			{
+				return input.markSupported();
+			}
+
+			@Override
+			public int read() throws IOException
+			{
+				checkException();
+				return input.read();
+			}
+
+			@Override
+			public int read(byte b[]) throws IOException
+			{
+				checkException();
+				return input.read(b);
+			}
+
+			@Override
+			public int read(byte b[], int off, int len) throws IOException
+			{
+				checkException();
+				return input.read(b, off, len);
+			}
+
+			@Override
+			public synchronized void reset() throws IOException
+			{
+				checkException();
+				input.reset();
+			}
+
+			@Override
+			public long skip(long n) throws IOException
+			{
+				checkException();
+				return input.skip(n);
+			}
+
+			private void checkException() throws IOException
+			{
+				if(m_exception == null)
+					return;
+
+				IOException e;
+				Throwable t = BuckminsterException.unwind(m_exception);
+				if(t instanceof IOException)
+					e = (IOException)t;
+				else
+				{
+					e = new IOException(t.getMessage());
+					e.initCause(t);
+				}
+				throw e;
+			}
+		};
+	}
+
+	public IFileInfo readInfo(URL url) throws CoreException, FileNotFoundException
+	{
+		sendRetrieveRequest(url, null, false, true, null);
+		return getLastFileInfo();
+	}
+
+	public void readInto(URL url, OutputStream outputStream, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	{
+		try
+		{
+			sendRetrieveRequest(url, outputStream, false, false, monitor);
 			join();
 		}
 		catch(InterruptedException e)
 		{
+			monitor.setCanceled(true);
+			throw new OperationCanceledException();
 		}
 		finally
 		{
 			if(monitor != null)
 			{
-				m_monitor = null;
 				if(m_statistics == null)
 					//
 					// Monitor was never started. See to that it's balanced
@@ -146,6 +270,41 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 					m_statistics = null;
 				monitor.done();
 			}
+		}
+	}
+
+	protected void sendRetrieveRequest(URL url, OutputStream outputStream, boolean closeStreamWhenFinished, boolean onlyGetInfo, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	{
+		IRetrieveFileTransferContainerAdapter adapter = Activator.getDefault().createRetrieveFileTransfer();
+		m_exception = null;
+		m_closeStreamWhenFinished = closeStreamWhenFinished;
+		m_onlyGetInfo = onlyGetInfo;
+		m_fileInfo = null;
+		m_statistics = null;
+		m_lastProgressCount = 0L;
+		m_lastStatsCount = 0L;
+		m_monitor = monitor;
+		m_outputStream = outputStream;
+
+		try
+		{
+			IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
+			adapter.sendRetrieveRequest(fileID, this, null);
+		}
+		catch(IncomingFileTransferException e)
+		{
+			m_exception = e;
+		}
+		if(m_exception != null)
+		{
+			Throwable t = BuckminsterException.unwind(m_exception);
+			if(t instanceof CoreException)
+				throw (CoreException)t;
+	
+			if(t instanceof FileNotFoundException)
+				throw (FileNotFoundException)t;
+	
+			throw BuckminsterException.wrap(m_exception);
 		}
 	}
 }

@@ -10,70 +10,91 @@ package org.eclipse.buckminster.cache.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.eclipse.buckminster.cache.download.FileReader;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.buckminster.runtime.IFileInfo;
+import org.eclipse.buckminster.runtime.IOUtils;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class TestFileTransfer extends TestCase
 {
-	public void testFileTransfer() throws Exception
+	private String testURL = "http://www.eclipse.org/buckminster/downloads.html";
+
+	TestFileTransfer(String methodName)
+	{
+		super(methodName);
+	}
+
+	public static Test suite() throws Exception
+	{
+		TestSuite suite = new TestSuite();
+		suite.addTest(new TestFileTransfer("testFileInfo"));
+		suite.addTest(new TestFileTransfer("testReadInto"));
+		suite.addTest(new TestFileTransfer("testRead"));
+		return suite;
+	}
+
+	public void testFileInfo() throws Exception
 	{
 		FileReader x = new FileReader();
+		checkFileInfo(x.readInfo(new URL(testURL)));
+	}
+
+	public void testReadInto() throws Exception
+	{
 		File temp = File.createTempFile("filetransfer", ".test");
-		OutputStream out = new FileOutputStream(temp);
-		temp.deleteOnExit();
-
-		x.readURL(new URL("http://www.eclipse.org/buckminster/downloads.html"), out, new IProgressMonitor()
+		try
 		{
-			private boolean m_cancelled;
-		
-			public void beginTask(String name, int totalWork)
-			{
-				System.out.format("-- beginTask(%s, %d)%n", name, Integer.valueOf(totalWork));
-			}
+			OutputStream out = new FileOutputStream(temp);
+			temp.deleteOnExit();
 
-			public void done()
-			{
-				System.out.println("-- done()");
-			}
+			FileReader x = new FileReader();
+			x.readInto(new URL(testURL), out, new PrintingMonitor());
+			out.close();
+			assertTrue("File is empty", temp.length() > 0);
+			checkFileInfo(x.getLastFileInfo());
+		}
+		finally
+		{
+			temp.delete();
+		}
+	}
 
-			public void internalWorked(double work)
-			{
-			}
+	public void testRead() throws Exception
+	{
+		File temp = File.createTempFile("filetransfer", ".test");
+		try
+		{
+			OutputStream out = new FileOutputStream(temp);
+			temp.deleteOnExit();
 
-			public boolean isCanceled()
-			{
-				return m_cancelled;
-			}
+			FileReader x = new FileReader();
+			InputStream in = x.read(new URL(testURL));
+			IOUtils.copy(in, out, null);
+			out.close();
+			assertTrue("File is empty", temp.length() > 0);
+			checkFileInfo(x.getLastFileInfo());
+		}
+		finally
+		{
+			temp.delete();
+		}
+	}
 
-			public void setCanceled(boolean value)
-			{
-				m_cancelled = value;
-			}
-
-			public void setTaskName(String name)
-			{
-			}
-
-			public void subTask(String name)
-			{
-				System.out.format("-- subTask(%s)%n", name);
-			}
-
-			public void worked(int work)
-			{
-				System.out.format("-- worked(%d)%n", Integer.valueOf(work));
-			}
-		});
-		out.close();
-		assertTrue("File is empty", temp.length() > 0);
+	private static void checkFileInfo(IFileInfo fileInfo)
+	{
+		assertTrue("Missing file name", fileInfo.getName() != null);
+		assertTrue("Missing last modified", fileInfo.getLastModified() != 0L);
+		assertTrue("Missing size", fileInfo.getSize() > 0L);
 	}
 }

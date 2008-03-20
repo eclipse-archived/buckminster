@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.ecf.filetransfer,
  org.eclipse.ecf,
- org.apache.commons.httpclient,
  org.eclipse.buckminster.runtime,
  org.eclipse.core.runtime
 Bundle-Activator: org.eclipse.buckminster.cache.Activator

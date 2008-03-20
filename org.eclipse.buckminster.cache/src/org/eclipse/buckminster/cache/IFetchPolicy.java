@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.cache;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
@@ -19,5 +20,5 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IFetchPolicy
 {
-	boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor) throws CoreException;
+	boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 }

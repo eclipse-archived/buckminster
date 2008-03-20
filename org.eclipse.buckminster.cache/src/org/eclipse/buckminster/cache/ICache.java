@@ -8,9 +8,11 @@
 package org.eclipse.buckminster.cache;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -21,11 +23,13 @@ public interface ICache
 {
 	File getLocation();
 
-	boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException;
+	IFileInfo getRemoteInfo(URL url) throws CoreException, FileNotFoundException;
 
-	boolean isUpToDate(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException;
+	boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
-	boolean isUpToDate(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor) throws CoreException;
+	boolean isUpToDate(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
+
+	boolean isUpToDate(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
 	/**
 	 * <p>This method will first assert that the remoteFile is placed in the cache. It will
@@ -47,9 +51,10 @@ public interface ICache
 	 * @param algorithm The digest algorithm, i.e. SHA1 or MD5
 	 * @param monitor A progress monitor tracking the download
 	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
+	 * @throws FileNotFoundException if the remote source could not be found
 	 * @throws CoreException
 	 */
-	InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor) throws CoreException;
+	InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
 	/**
 	 * <p>This method will first assert that the remoteFile is placed in the cache. It will
@@ -68,7 +73,7 @@ public interface ICache
 	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
 	 * @throws CoreException
 	 */
-	InputStream open(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException;
+	InputStream open(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
 	/**
 	 * <p>This method will first assert that the remoteFile is placed in the cache. It will
@@ -81,5 +86,7 @@ public interface ICache
 	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
 	 * @throws CoreException
 	 */
-	InputStream open(IFetchPolicy fetchPolicy, URL remoteFile, IProgressMonitor monitor) throws CoreException;
+	InputStream open(IFetchPolicy fetchPolicy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
+	
+	InputStream openRemote(URL remoteFile) throws CoreException, FileNotFoundException;
 }

@@ -11,6 +11,7 @@ package org.eclipse.buckminster.cache.policy;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import org.eclipse.buckminster.cache.ICache;
-import org.eclipse.buckminster.cache.SmallFileReader;
 import org.eclipse.buckminster.cache.download.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -83,7 +83,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 		}
 	}
 
-	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor) throws CoreException
+	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		byte[] localDigest;
 		byte[] remoteDigest = null;
@@ -242,15 +242,15 @@ public class DigestPolicy extends AbstractFetchPolicy
 		}
 	}
 
-	protected byte[] readRemoteDigest() throws CoreException
+	protected byte[] readRemoteDigest() throws CoreException, FileNotFoundException
 	{
-		SmallFileReader reader = new SmallFileReader();
+		FileReader reader = new FileReader();
 		BytesFromHexBuilder digestByteBuilder = new BytesFromHexBuilder(m_digestLength);
-		reader.readURL(m_remoteDigest, digestByteBuilder);
+		reader.readInto(m_remoteDigest, digestByteBuilder, null);
 		return digestByteBuilder.getBytes();
 	}
 
-	protected byte[] readRemoteFile(URL url, File localFile, IProgressMonitor monitor) throws CoreException
+	protected byte[] readRemoteFile(URL url, File localFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		// Set up the file transfer
 		//
@@ -258,17 +258,12 @@ public class DigestPolicy extends AbstractFetchPolicy
 		DigestOutputStream output = null;
 		try
 		{
-			localFile = localFile.getCanonicalFile();
 			File parentFolder = localFile.getParentFile();
 			if(parentFolder != null)
 				parentFolder.mkdirs();
 			output = new DigestOutputStream(new FileOutputStream(localFile), md);
 			FileReader retriever = new FileReader();
-			retriever.readURL(url, output, monitor);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
+			retriever.readInto(url, output, monitor);
 		}
 		finally
 		{
@@ -282,7 +277,6 @@ public class DigestPolicy extends AbstractFetchPolicy
 		OutputStream output = null;
 		try
 		{
-			localDigestFile = localDigestFile.getCanonicalFile();
 			File parentFolder = localDigestFile.getParentFile();
 			if(parentFolder != null)
 				parentFolder.mkdirs();
