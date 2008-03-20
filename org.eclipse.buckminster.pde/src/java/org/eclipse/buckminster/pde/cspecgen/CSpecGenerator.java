@@ -290,6 +290,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			createProduct.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			createProduct.setProductAlias(ALIAS_OUTPUT);
 			createProduct.setProductBase(OUTPUT_DIR);
+			createProduct.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
 			String outputFolder = TextUtils.notEmptyTrimmedString(getProductOutputFolder(product.getId()));
 			if(outputFolder == null)
 			{

@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.PathGroup;
+import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -25,6 +26,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.MapToDictionary;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -48,6 +50,73 @@ import org.osgi.framework.InvalidSyntaxException;
 public class FragmentsActor extends AbstractActor
 {
 	public static final String ID = "copyTargetFragments";
+
+	@Override
+	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
+	{
+		ComponentIdentifier cid = action.getCSpec().getComponentIdentifier();
+		IPath outputDir = action.getProductBase();
+		if(outputDir == null)
+			throw BuckminsterException.fromMessage("missing product base in copyTargetFragments actor");
+
+		Map<String,String> properties = ctx.getProperties();
+		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
+
+		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
+		if(launcherPlugin == null)
+			return true;
+
+		BundleDescription bundle = launcherPlugin.getBundleDescription();
+		if(bundle == null)
+			return true;
+
+		BundleDescription[] fragments = bundle.getFragments();
+		if(fragments == null || fragments.length == 0)
+			return true;
+
+		int count = 0;
+		for(BundleDescription fragment : fragments)
+		{
+			String fragmentName = fragment.getName();
+			if(fragmentName.contains(".compatibility"))
+				//
+				// Compatibility fragments must be explicitly brought in using
+				// a product or a feature
+				//
+				continue;
+
+			ComponentRequest request = new ComponentRequest(
+				fragmentName, IComponentType.OSGI_BUNDLE,
+				VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion()))); 
+
+			String filterStr = fragment.getPlatformFilter();
+			if(filterStr != null)
+			{
+				try
+				{
+					Filter filter = FilterUtils.createFilter(fragment.getPlatformFilter());
+					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX);
+					if(!filter.match(MapToDictionary.wrap(properties)))
+						continue;
+				}
+				catch(InvalidSyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+
+			Resolution res = WorkspaceInfo.getResolution(request, false);
+			if(res == null)
+				continue;
+
+			count++;
+		}
+		if(count == 0)
+			return true;
+
+		String[] fragFiles = outputDir.toFile().list();
+		return (fragFiles != null && fragFiles.length >= count);
+	}
 
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
@@ -86,7 +155,7 @@ public class FragmentsActor extends AbstractActor
 		IPerformManager performManager = CorePlugin.getPerformManager();
 		try
 		{
-			for(BundleDescription fragment : bundle.getFragments())
+			for(BundleDescription fragment : fragments)
 			{
 				String fragmentName = fragment.getName();
 				if(fragmentName.contains(".compatibility"))

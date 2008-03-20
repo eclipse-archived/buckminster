@@ -91,7 +91,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
 			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
-			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
+			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.ACTOR);
 			bundleAndFragments.addLocalPrerequisite(copyTargetFragments);
 		}
 
