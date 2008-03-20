@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.cache.policy;
+package org.eclipse.buckminster.download.policy;
 
 import java.io.IOException;
 import java.io.InputStream;

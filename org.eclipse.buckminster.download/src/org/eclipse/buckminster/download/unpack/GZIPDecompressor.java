@@ -6,13 +6,13 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.unpack;
+package org.eclipse.buckminster.download.unpack;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.eclipse.buckminster.cache.IDecompressor;
+import org.eclipse.buckminster.download.cache.IDecompressor;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**

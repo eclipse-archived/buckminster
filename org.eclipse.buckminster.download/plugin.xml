@@ -6,14 +6,14 @@
  <extension
        point="org.eclipse.buckminster.download.decompressors">
     <decompressor
-          class="org.eclipse.buckminster.cache.unpack.GZIPDecompressor"
+          class="org.eclipse.buckminster.download.unpack.GZIPDecompressor"
           suffixes=".gz,.gzip">
     </decompressor>
  </extension>
  <extension
        point="org.eclipse.buckminster.download.expanders">
     <expander
-          class="org.eclipse.buckminster.cache.unpack.ZipExpander"
+          class="org.eclipse.buckminster.download.unpack.ZipExpander"
           suffixes=".zip,.jar,.war,.ear">
     </expander>
  </extension>

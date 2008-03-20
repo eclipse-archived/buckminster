@@ -6,12 +6,12 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.policy;
+package org.eclipse.buckminster.download.policy;
 
 import java.io.File;
 
-import org.eclipse.buckminster.cache.ICache;
-import org.eclipse.buckminster.cache.IFetchPolicy;
+import org.eclipse.buckminster.download.cache.ICache;
+import org.eclipse.buckminster.download.cache.IFetchPolicy;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 

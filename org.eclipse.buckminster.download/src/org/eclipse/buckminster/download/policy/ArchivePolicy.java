@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.policy;
+package org.eclipse.buckminster.download.policy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-import org.eclipse.buckminster.cache.ICache;
-import org.eclipse.buckminster.cache.Installer;
-import org.eclipse.buckminster.cache.download.FileReader;
+import org.eclipse.buckminster.download.cache.ICache;
+import org.eclipse.buckminster.download.cache.Installer;
+import org.eclipse.buckminster.download.download.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;

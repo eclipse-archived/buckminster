@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  ******************************************************************************/
-package org.eclipse.buckminster.cache;
+package org.eclipse.buckminster.download.cache;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache;
+package org.eclipse.buckminster.download.cache;
 
 import java.io.File;
 

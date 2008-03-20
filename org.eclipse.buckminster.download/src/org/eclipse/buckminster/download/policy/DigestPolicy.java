@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.policy;
+package org.eclipse.buckminster.download.policy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,8 +23,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.eclipse.buckminster.cache.ICache;
-import org.eclipse.buckminster.cache.download.FileReader;
+import org.eclipse.buckminster.download.cache.ICache;
+import org.eclipse.buckminster.download.download.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;

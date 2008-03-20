@@ -6,19 +6,17 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache;
+package org.eclipse.buckminster.download.cache;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
  */
-public interface IFetchPolicy
+public interface IDecompressor
 {
-	boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
+	InputStream decompress(InputStream input, IProgressMonitor monitor) throws IOException;
 }
