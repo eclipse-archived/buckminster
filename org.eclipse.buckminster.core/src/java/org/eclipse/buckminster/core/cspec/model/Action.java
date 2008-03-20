@@ -351,6 +351,16 @@ public class Action extends TopLevelAttribute
 		if(isDebug)
 			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this, m_upToDatePolicy);
 
+		if(m_upToDatePolicy == UpToDatePolicy.ACTOR)
+		{
+			if(ActorFactory.getInstance().getActor(this).isUpToDate(this, ctx))
+				return true;
+
+			if(isDebug)
+				logger.debug("%sActor decision", failLeadIn);
+			return false;
+		}
+
 		if(m_upToDatePolicy == UpToDatePolicy.MAPPER)
 		{
 			Map<String, Long> prereqFiles = getPrerequisiteRelativeFiles(ctx);

@@ -622,6 +622,14 @@
 					</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="ACTOR">
+				<annotation>
+					<documentation>
+						Let the actor decide. Some system internal actors
+						like the FragmentsActor uses this.
+					</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="COUNT">
 				<annotation>
 					<documentation>

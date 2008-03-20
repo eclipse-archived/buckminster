@@ -21,6 +21,11 @@ public enum UpToDatePolicy
 	DEFAULT,
 
 	/**
+	 * Let the associated actor decide
+	 */
+	ACTOR,
+
+	/**
 	 * Trust timestamp only when the product contains the number of files denoted in attribute 'count'
 	 */
 	COUNT,

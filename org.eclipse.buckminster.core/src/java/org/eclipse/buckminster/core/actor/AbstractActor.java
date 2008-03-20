@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
+import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -90,6 +91,11 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 			m_logger.debug(bld.toString());
 		}
 		this.internalInit();
+	}
+
+	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
+	{
+		return false;
 	}
 
 	public final synchronized IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException

@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.actor;
 
 import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,6 +20,8 @@ import org.eclipse.core.runtime.IStatus;
 public interface IActor
 {
 	void init(Action action) throws CoreException;
+
+	boolean isUpToDate(Action action, IModelCache ctx) throws CoreException;
 
 	IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
 
