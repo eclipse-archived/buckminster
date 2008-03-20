@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Fragment for Buckminster Cache
-Bundle-SymbolicName: org.eclipse.buckminster.cache.test
+Bundle-SymbolicName: org.eclipse.buckminster.download.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
-Fragment-Host: org.eclipse.buckminster.cache;bundle-version="0.0.0"
+Fragment-Host: org.eclipse.buckminster.download;bundle-version="0.0.0"
 Require-Bundle: org.junit4
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
