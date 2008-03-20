@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  ******************************************************************************/
-package org.eclipse.buckminster.download.cache;
+package org.eclipse.buckminster.download.internal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import java.io.PipedOutputStream;
 import java.net.URL;
 import java.util.Date;
 
-import org.eclipse.buckminster.download.util.ProgressStatistics;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;

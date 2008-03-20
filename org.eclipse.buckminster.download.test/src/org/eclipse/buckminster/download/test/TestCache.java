@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.test;
+package org.eclipse.buckminster.download.test;
 
 import java.io.File;
 import java.io.InputStream;
@@ -17,8 +17,8 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
-import org.eclipse.buckminster.cache.CacheImpl;
-import org.eclipse.buckminster.cache.ICache;
+import org.eclipse.buckminster.download.ICache;
+import org.eclipse.buckminster.download.internal.CacheImpl;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.core.runtime.IProgressMonitor;

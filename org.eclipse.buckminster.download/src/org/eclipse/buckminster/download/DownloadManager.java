@@ -10,7 +10,7 @@ package org.eclipse.buckminster.download;
 
 import java.io.File;
 
-import org.eclipse.buckminster.download.cache.CacheImpl;
+import org.eclipse.buckminster.download.internal.CacheImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 

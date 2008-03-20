@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.cache.test;
+package org.eclipse.buckminster.download.test;
 
 import java.io.PrintStream;
 

@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.eclipse.buckminster.download.cache.Activator;
+import org.eclipse.buckminster.download.internal.Activator;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
