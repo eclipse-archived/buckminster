@@ -70,12 +70,7 @@ public class MapFile
 
 			Matcher m = s_pattern.matcher(line);
 			if(!m.matches())
-			{
-				line = line.trim();
-				if(line.length() > 0)
-					logger.debug("NO MATCH FOR %s", line);
 				continue;
-			}
 
 			String fetchType = m.group(4);
 			String fetchTypeSpecific = m.group(5);
