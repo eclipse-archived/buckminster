@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-import org.eclipse.buckminster.download.cache.ICache;
-import org.eclipse.buckminster.download.cache.Installer;
-import org.eclipse.buckminster.download.download.FileReader;
+import org.eclipse.buckminster.download.ICache;
+import org.eclipse.buckminster.download.Installer;
+import org.eclipse.buckminster.download.cache.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;

@@ -6,10 +6,11 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.download.cache;
+package org.eclipse.buckminster.download;
 
 import java.io.File;
 
+import org.eclipse.buckminster.download.cache.CacheImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 
@@ -17,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
  * @author Thomas Hallgren
  *
  */
-public class CacheManager
+public class DownloadManager
 {
 	private static ICache s_instance;
 

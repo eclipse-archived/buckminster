@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.eclipse.buckminster.download.cache.IDecompressor;
+import org.eclipse.buckminster.download.IDecompressor;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**

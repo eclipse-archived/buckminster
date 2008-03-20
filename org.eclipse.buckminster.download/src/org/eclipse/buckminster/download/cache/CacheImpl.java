@@ -14,7 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
 
-import org.eclipse.buckminster.download.download.FileReader;
+import org.eclipse.buckminster.download.ICache;
+import org.eclipse.buckminster.download.IFetchPolicy;
 import org.eclipse.buckminster.download.policy.ArchivePolicy;
 import org.eclipse.buckminster.download.policy.DigestPolicy;
 import org.eclipse.buckminster.runtime.BuckminsterException;

@@ -23,8 +23,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.eclipse.buckminster.download.cache.ICache;
-import org.eclipse.buckminster.download.download.FileReader;
+import org.eclipse.buckminster.download.ICache;
+import org.eclipse.buckminster.download.cache.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;

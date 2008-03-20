@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.download.download;
+package org.eclipse.buckminster.download.util;
 
 import java.util.Locale;
 import java.util.SortedMap;

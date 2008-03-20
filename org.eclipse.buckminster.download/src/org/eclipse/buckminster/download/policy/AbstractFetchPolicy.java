@@ -10,8 +10,8 @@ package org.eclipse.buckminster.download.policy;
 
 import java.io.File;
 
-import org.eclipse.buckminster.download.cache.ICache;
-import org.eclipse.buckminster.download.cache.IFetchPolicy;
+import org.eclipse.buckminster.download.ICache;
+import org.eclipse.buckminster.download.IFetchPolicy;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 
