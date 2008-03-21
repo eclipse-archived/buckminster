@@ -178,5 +178,7 @@
     <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080116.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080116/plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080116.jar"/>
     <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080116.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080116/plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080116.jar"/>
     <archive path="plugins/org.eclipse.team.svn.core_0.7.0.v20080116.jar" url="http://download.eclipse.org/technology/subversive/archive/v20080116/plugins/org.eclipse.team.svn.core_0.7.0.v20080116.jar"/>
+
     <archive path="plugins/com.ibm.icu.base_3.6.1.v20070906.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/R200709171314/bundles/com.ibm.icu.base_3.6.1.v20070906.jar"/>
+    <archive path="plugins/com.ibm.icu.base_3.8.1.v20080103.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/bundles/com.ibm.icu.base_3.8.1.v20080103.jar"/>
 </site>
