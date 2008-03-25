@@ -8,8 +8,13 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -54,6 +59,15 @@ public class StartPage extends InstallWizardPage
 			hSpan = 1;
 		}
 		
+		FocusListener focusNextButtonListener = new FocusAdapter()
+		{
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+				focusNextButton();
+			}
+		};
+		
 		Text text = new Text(brandingComposite, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		text.setText(getInstallWizard().getBrandingString());
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -62,6 +76,7 @@ public class StartPage extends InstallWizardPage
 		gridData.verticalAlignment = SWT.TOP;
 		text.setLayoutData(gridData);
 		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.addFocusListener(focusNextButtonListener);
 
 		new Label(pageComposite, SWT.NONE);
 		
@@ -73,6 +88,7 @@ public class StartPage extends InstallWizardPage
 		gridData.heightHint = 30;
 		text.setLayoutData(gridData);
 		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.addFocusListener(focusNextButtonListener);
 		
 		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
 		{
@@ -114,6 +130,17 @@ public class StartPage extends InstallWizardPage
 		}
 		
 		setControl(pageComposite);
+	}
+	
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		focusNextButton();
+	}
+	
+	private void focusNextButton()
+	{
+		((AdvancedWizardDialog)getContainer()).getButtonFromButtonArea(IDialogConstants.NEXT_ID).setFocus();
 	}
 	
 	@Override

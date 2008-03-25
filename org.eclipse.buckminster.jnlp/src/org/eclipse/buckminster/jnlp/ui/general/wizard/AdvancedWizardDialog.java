@@ -21,6 +21,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
@@ -209,5 +210,10 @@ public class AdvancedWizardDialog extends WizardDialog
 		{
 			super.cancelPressed();
 		}
+	}
+	
+	public Button getButtonFromButtonArea(int buttonId)
+	{
+		return getButton(buttonId);
 	}
 }
