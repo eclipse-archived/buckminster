@@ -98,7 +98,7 @@ public class CreateProductBaseTask extends TargetPlatformTask
 		}
 		catch(Exception e)
 		{
-			throw new BuildException(e.getMessage(), this.getLocation());
+			throw new BuildException(e.getMessage(), e, this.getLocation());
 		}
 	}
 
