@@ -37,7 +37,7 @@ public class ConvertSiteToRuntimeTask extends Task
 		}
 		catch(Exception e)
 		{
-			throw new BuildException(e.toString(), this.getLocation());
+			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 

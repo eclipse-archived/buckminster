@@ -101,7 +101,7 @@ public class FeatureConsolidatorTask extends VersionConsolidatorTask
 		}
 		catch(Exception e)
 		{
-			throw new BuildException(e.toString(), this.getLocation());
+			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 

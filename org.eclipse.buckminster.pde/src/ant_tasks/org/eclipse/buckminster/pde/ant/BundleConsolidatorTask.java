@@ -34,7 +34,7 @@ public class BundleConsolidatorTask extends VersionConsolidatorTask
 		}
 		catch(Exception e)
 		{
-			throw new BuildException(e.toString(), this.getLocation());
+			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 }
