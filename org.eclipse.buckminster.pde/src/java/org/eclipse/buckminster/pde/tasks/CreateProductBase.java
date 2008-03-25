@@ -255,6 +255,9 @@ public class CreateProductBase
 	{
 		CSpec cspec = m_actionContext.getCSpec();
 		Attribute attr = cspec.getAttribute(IPDEConstants.ATTRIBUTE_PRODUCT_ROOT_FILES);
+		if(attr == null)
+			return false;
+
 		for(Prerequisite pq : attr.getPrerequisites())
 		{
 			String cname = pq.getComponentName();
@@ -733,7 +736,7 @@ public class CreateProductBase
 				return name;
 			}
 		}
-		return "eclipse";
+		return DEFAULT_LAUNCHER;
 	}
 
 	private void createEclipseProductFile(File outputDir, IProgressMonitor monitor) throws CoreException, IOException
