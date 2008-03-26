@@ -92,7 +92,7 @@ public class PublishSpacePage extends PublishWizardPage
 		label.setEnabled(getPublishWizard().isCSsiteTopComponent());
 		
 		m_shortDesc = new Text(pageComposite, SWT.BORDER);
-		m_shortDesc.setText(getPublishWizard().getMSpecBuilder().getShortDesc() == null ? "" : getPublishWizard().getMSpecBuilder().getShortDesc());
+		m_shortDesc.setText(UiUtils.getNotNullString(getPublishWizard().getMSpecBuilder().getShortDesc()));
 		m_shortDesc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		m_shortDesc.setEnabled(getPublishWizard().isCSsiteTopComponent());
 		m_shortDesc.addModifyListener(new ModifyListener()

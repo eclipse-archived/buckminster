@@ -44,6 +44,12 @@ public interface MaterializationConstants
 
 	public static final String PROP_ARTIFACT_NAME = "artifactName";
 
+	public static final String PROP_ARTIFACT_VERSION = "artifactVersion";
+
+	public static final String PROP_ARTIFACT_DESCRIPTION = "artifactDescription";
+
+	public static final String PROP_ARTIFACT_DOCUMENTATION = "artifactDocumentation";
+
 	public static final String PROP_BASE_PATH_URL = "basePathURL";
 
 	public static final String PROP_SPACE_NAME = "spaceName";

@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.runtime,
  org.eclipse.buckminster.sax,
  org.eclipse.core.net,
- org.apache.commons.httpclient
+ org.apache.commons.httpclient,
+ org.apache.commons.codec
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.buckminster.jnlp.accountservice

@@ -163,4 +163,9 @@ public class UiUtils
 		}
 		return value;
 	}
+	
+	public static String getNotNullString(String string)
+	{
+		return string == null ? "" : string;
+	}
 }

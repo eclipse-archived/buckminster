@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.jnlp;
 
+import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -42,23 +43,6 @@ public class StartPage extends InstallWizardPage
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 
-		new Label(pageComposite, SWT.NONE).setText("Publisher Information:");
-
-		Composite brandingComposite = new Composite(pageComposite, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(2, false);
-		gridLayout.marginHeight = gridLayout.marginWidth = 0;
-		brandingComposite.setLayout(gridLayout);
-		brandingComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
-		int hSpan = 2;
-		if(getInstallWizard().getBrandingImage() != null)
-		{
-			Label brandingIcon = new Label(brandingComposite, SWT.NONE);
-			brandingIcon.setImage(getInstallWizard().getBrandingImage());
-			brandingIcon.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-			hSpan = 1;
-		}
-		
 		FocusListener focusNextButtonListener = new FocusAdapter()
 		{
 			@Override
@@ -68,22 +52,57 @@ public class StartPage extends InstallWizardPage
 			}
 		};
 		
-		Text text = new Text(brandingComposite, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
-		text.setText(getInstallWizard().getBrandingString());
+		Group productGroup = new Group(pageComposite, SWT.NONE);
+		productGroup.setText("Product Summary");
+		productGroup.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.heightHint = 30;
-		gridData.horizontalSpan = hSpan;
+		productGroup.setLayoutData(gridData);
+		
+		new Label(productGroup, SWT.NONE).setText("Name:");
+		Text text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
+		text.setText(getInstallWizard().getArtifactName());
+		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.addFocusListener(focusNextButtonListener);
+		
+		new Label(productGroup, SWT.NONE).setText("Version:");
+		text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
+		text.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion());
+		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.addFocusListener(focusNextButtonListener);
+		
+		new Label(productGroup, SWT.NONE).setText("Description:");
+		text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
+		text.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));
+		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.addFocusListener(focusNextButtonListener);
+		
+		Label label = new Label(productGroup, SWT.NONE);
+		gridData = new GridData();
 		gridData.verticalAlignment = SWT.TOP;
+		gridData.verticalIndent = 2;
+		label.setLayoutData(gridData);
+		label.setText("Documentation:");
+		text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		text.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.heightHint = 60;
 		text.setLayoutData(gridData);
 		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		text.addFocusListener(focusNextButtonListener);
 
 		new Label(pageComposite, SWT.NONE);
 		
-		new Label(pageComposite, SWT.NONE).setText("Product Summary:");
-
-		text = new Text(pageComposite, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
-		text.setText(getInstallWizard().getArtifactName());
+		Group publisherGroup = new Group(pageComposite, SWT.NONE);
+		publisherGroup.setText("Publisher Information");
+		publisherGroup.setLayout(new GridLayout());
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		publisherGroup.setLayoutData(gridData);
+		
+		text = new Text(publisherGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		text.setText(getInstallWizard().getBrandingString());
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.heightHint = 30;
 		text.setLayoutData(gridData);

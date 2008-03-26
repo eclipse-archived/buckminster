@@ -26,6 +26,9 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_WINDOW
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZERS;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_TYPE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_VERSION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DESCRIPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DOCUMENTATION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_BASE_PATH_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_URL;
@@ -52,6 +55,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -60,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -123,6 +128,12 @@ public class InstallWizard extends AdvancedWizard
 	private URL m_cachedBOMURL;
 	
 	private String m_artifactName;
+	
+	private String m_artifactVersion;
+	
+	private String m_artifactDescription;
+	
+	private String m_artifactDocumentation;
 	
 	private String m_windowTitle;
 	
@@ -499,6 +510,21 @@ public class InstallWizard extends AdvancedWizard
 	String getArtifactName()
 	{
 		return m_artifactName;
+	}
+	
+	String getArtifactVersion()
+	{
+		return m_artifactVersion;
+	}
+	
+	String getArtifactDescription()
+	{
+		return m_artifactDescription;
+	}
+	
+	String getArtifactDocumentation()
+	{
+		return m_artifactDocumentation;
 	}
 	
 	@Override
@@ -993,6 +1019,31 @@ public class InstallWizard extends AdvancedWizard
 		m_builder.setName(tmp);
 		m_artifactName = tmp;
 
+		m_artifactVersion = properties.get(PROP_ARTIFACT_VERSION);
+		m_artifactDescription = properties.get(PROP_ARTIFACT_DESCRIPTION);
+		
+		if(m_artifactDescription != null)
+			try
+			{
+				m_artifactDescription = new String(Base64.decodeBase64(m_artifactDescription.getBytes()), "UTF-8");
+			}
+			catch(UnsupportedEncodingException e1)
+			{
+				m_artifactDescription = null;
+			}
+		
+		m_artifactDocumentation = properties.get(PROP_ARTIFACT_DOCUMENTATION);
+		
+		if(m_artifactDocumentation != null)
+			try
+			{
+				m_artifactDocumentation = new String(Base64.decodeBase64(m_artifactDocumentation.getBytes()), "UTF-8");
+			}
+			catch(UnsupportedEncodingException e1)
+			{
+				m_artifactDocumentation = null;
+			}
+		
 		// Branding image is not wanted
 		m_brandingImage = null;
 
