@@ -81,6 +81,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 	void initializeMSpecTree(BillOfMaterials bom)
 	{
 		m_detailsPanel.initializeMSpecTree(bom);
+		getInstallWizard().setUnresolvedNodeHandler(m_detailsPanel);
 	}
 	
 	@Override

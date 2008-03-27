@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Karel Brezina
  *
  */
-public class MSpecDetailsPanel
+public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 {	
 	private Map<MaterializationNodeHandler, Map<MaterializationNodeHandler, TreeNode>> m_treeNodeCache =
 					new HashMap<MaterializationNodeHandler, Map<MaterializationNodeHandler, TreeNode>>();
@@ -261,6 +261,7 @@ public class MSpecDetailsPanel
 			{
 				m_resolveStatus = ResolveStatus.UNRESOLVED;
 			}
+			
 		}
 
 		public MaterializationNodeBuilder getNodeBuilder()
@@ -431,7 +432,7 @@ public class MSpecDetailsPanel
 			if(m_cspec != null)
 			{
 				if(m_resolveStatus == ResolveStatus.UNRESOLVED_CHILD)
-					smartList.add("*** DEPENDS ON AN UNRESOLVED COMPONENT ***");
+					smartList.add("*** DEPENDS ON AN UNRESOLVED ARTIFACT ***");
 					
 				if(m_cspec.getShortDesc() != null)
 				{
@@ -463,7 +464,7 @@ public class MSpecDetailsPanel
 			}
 			else
 			{
-				smartList.add("*** UNRESOLVED COMPONENT ***");
+				smartList.add("*** UNRESOLVED ARTIFACT ***");
 				smartList.add("Requested Name: " + m_request.getName());
 				smartList.add("Requested Meta-data extractor: " + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID()));
 				smartList.add("Requested Version: " + (m_request.getVersionDesignator() == null ? "Any" : m_request.getVersionDesignator()));
@@ -501,6 +502,8 @@ public class MSpecDetailsPanel
 	
 	private Map<ComponentName, MaterializationNodeHandler> m_componentMap = new HashMap<ComponentName, MaterializationNodeHandler>();
 
+	private Set<MaterializationNodeHandler> m_unresolved = new HashSet<MaterializationNodeHandler>();
+	
 	public MSpecDetailsPanel(MaterializationSpecBuilder mspec, String defaultInstallLocation, boolean showBrowseButtons)
 	{
 		m_mspec = mspec;
@@ -522,6 +525,25 @@ public class MSpecDetailsPanel
 			
 			setupVisibleCheckboxes();
 		}
+	}
+	
+	public boolean isUnresolvedNodeIncluded()
+	{
+		for(MaterializationNodeHandler handler : m_unresolved)
+		{
+			if(!handler.getNodeBuilder().isExclude())
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public void excludeUnresolvedNodes()
+	{
+		for(MaterializationNodeHandler handler : m_unresolved)
+			handler.setExclude(true);
+		
+		setupVisibleCheckboxes();
 	}
 	
 	private void setupVisibleCheckboxes()
@@ -747,6 +769,7 @@ public class MSpecDetailsPanel
 	{
 		m_mspec.getNodes().clear();
 		m_componentMap.clear();
+		m_unresolved.clear();
 		m_treeRoot = new TreeNode(null, null, false);
 		
 		try
@@ -858,6 +881,8 @@ public class MSpecDetailsPanel
 
 			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, depNode.getRequest(), cspec, depNode.getResolution() != null);
 			m_componentMap.put(componentNameId, handler);
+			if(depNode.getResolution() == null)
+				m_unresolved.add(handler);
 		}
 
 		return handler;

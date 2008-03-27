@@ -99,6 +99,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.xml.sax.SAXException;
 
 /**
@@ -186,6 +187,8 @@ public class InstallWizard extends AdvancedWizard
 	private OperationPage m_operationPage;
 	
 	private DonePage m_donePage;
+	
+	private IUnresolvedNodeHandler m_unresolvedNodeHandler;
 	
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
 	
@@ -386,6 +389,21 @@ public class InstallWizard extends AdvancedWizard
     @Override
 	public boolean performFinish()
 	{
+    	if(m_unresolvedNodeHandler != null && m_unresolvedNodeHandler.isUnresolvedNodeIncluded())
+    	{
+    		MessageBox messageBox = new MessageBox(getContainer().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+    		messageBox.setMessage(
+    				"Some distro dependencies cannot be resolved. " +
+    				"You may decide to exclude the unresolved artifacts.\n" +
+    				"However, excluding an artifact may result in a configuration that will no longer build.\n\n" +
+    				"Do you want to exclude the unresolved artifacts?");
+    		messageBox.setText("Warning");
+    		if(messageBox.open() == SWT.YES)
+    			m_unresolvedNodeHandler.excludeUnresolvedNodes();
+    		else
+    			return false;
+    	}
+    	
 		WizardPage originalPage = (WizardPage)getContainer().getCurrentPage();
 		
 		originalPage.setErrorMessage(null);
@@ -914,6 +932,11 @@ public class InstallWizard extends AdvancedWizard
 		m_advancedPage.initializeMSpecTree(getBOM());
 	}
 	
+	void setUnresolvedNodeHandler(IUnresolvedNodeHandler unresolvedNodeHandler)
+	{
+		m_unresolvedNodeHandler = unresolvedNodeHandler;
+	}
+
 	void saveBOM(BillOfMaterials bom, File file)
 	{
 		try
