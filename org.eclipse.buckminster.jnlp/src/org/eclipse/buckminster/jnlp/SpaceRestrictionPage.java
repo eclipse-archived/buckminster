@@ -9,15 +9,20 @@
 package org.eclipse.buckminster.jnlp;
 
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 
@@ -42,6 +47,8 @@ public class SpaceRestrictionPage extends InstallWizardPage
 	private Composite m_solutionInvitationComposite;
 	
 	private Composite m_solutionForbiddenComposite;
+	
+	private Label m_userNameLabel;
 	
 	protected SpaceRestrictionPage()
 	{
@@ -163,12 +170,67 @@ public class SpaceRestrictionPage extends InstallWizardPage
 			}
 		});
 				
-		Composite fillerComposite = new Composite(pageComposite, SWT.NONE);
-		fillerComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		// Bottom part
+		Composite infoComposite = new Composite(pageComposite, SWT.NONE);
+		GridData data = new GridData(GridData.FILL_BOTH);
+		infoComposite.setLayoutData(data);
+		infoComposite.setLayout(new GridLayout());
 
+		Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
+		infoGroup.setText("Login Info");
+		RowLayout rowLayout = new RowLayout();
+		rowLayout.marginHeight = rowLayout.marginWidth = 5;
+		rowLayout.spacing = 0;
+		infoGroup.setLayout(rowLayout);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		infoGroup.setLayoutData(data);
+		
+		new Label(infoGroup, SWT.WRAP).setText("You are currently logged in as ");
+		
+		m_userNameLabel = new Label(infoGroup, SWT.NONE);
+		// prepare bold font
+		FontData[] fontDatas = m_userNameLabel.getFont().getFontData();
+		for(FontData fontData : fontDatas)
+			fontData.setStyle(SWT.ITALIC);
+		m_userNameLabel.setFont(new Font(getShell().getDisplay(), fontDatas));
+		
+		new Label(infoGroup, SWT.NONE).setText(", ");
+		Link loginLink = new Link(infoGroup, SWT.WRAP);
+		loginLink.setText("click <a>here</a> to change your identity.");
+		loginLink.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				LoginDialog loginDialog =
+					new LoginDialog(
+							getShell(), getInstallWizard(),
+							getInstallWizard().getWindowImage(), getInstallWizard().getWindowTitle() + " - Login Dialog",
+							getInstallWizard().getWizardImage(), getInstallWizard().getServiceProvider(),
+							getInstallWizard().getHelpURL());
+				if(loginDialog.open() == IDialogConstants.OK_ID)
+				{
+					updateUserName();
+				}
+			}
+		});		
+		
 		setControl(pageComposite);
 	}
 
+	private void updateUserName()
+	{
+		m_userNameLabel.setText(getInstallWizard().getAuthenticatorCurrentUserName() + " "); // needs an extra space otherwise italic text misses the last part
+		m_userNameLabel.getParent().pack();
+		((Composite)getControl()).layout();
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		updateUserName();
+	}
+	
 	@Override
 	public boolean isPageComplete()
 	{

@@ -171,7 +171,12 @@ public class PublishSpacePage extends PublishWizardPage
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				LoginDialog loginDialog = new LoginDialog(getShell(), getPublishWizard());
+				LoginDialog loginDialog =
+					new LoginDialog(
+							getShell(), getPublishWizard(),
+							getPublishWizard().getWindowImage(), getPublishWizard().getWindowTitle() + " - Login Dialog",
+							getPublishWizard().getWizardImage(), getPublishWizard().getServiceProvider(),
+							getPublishWizard().getHelpURL());
 				if(loginDialog.open() == IDialogConstants.OK_ID)
 				{
 					beforeDisplaySetup();
@@ -218,7 +223,7 @@ public class PublishSpacePage extends PublishWizardPage
 			
 		m_spaceCombo.select(idx);
 		
-		updateUserName(getPublishWizard().getCurrentUserName());
+		updateUserName(getPublishWizard().getAuthenticatorCurrentUserName());
 		
 		((Composite)getControl()).layout();
 	}

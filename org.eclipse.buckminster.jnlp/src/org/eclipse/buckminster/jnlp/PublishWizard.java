@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.sax.Utils;
@@ -32,7 +33,7 @@ import org.xml.sax.SAXException;
  * @author Karel Brezina
  *
  */
-public class PublishWizard extends AdvancedWizard
+public class PublishWizard extends AdvancedWizard implements ILoginHandler
 {
 	private static final String PUBLICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.publication";
 	
@@ -65,7 +66,7 @@ public class PublishWizard extends AdvancedWizard
 			if(originalPublisher == null)
 				throw new JNLPException("Cannot create publisher - missing plugin", ERROR_CODE_AUTHENTICATOR_EXCEPTION);
 			
-			m_publisher = originalPublisher.createDuplicatePublisher(true);
+			m_publisher = originalPublisher.createDuplicate(true);
 		}
 		catch(Throwable e)
 		{
@@ -284,42 +285,42 @@ public class PublishWizard extends AdvancedWizard
 		return isLoggedIn;
 	}
 		
-	String getLoginKey()
+	public String getAuthenticatorLoginKey()
 	{
 		return m_installWizard.getAuthenticatorLoginKey();
 	}
 	
-	void removeLoginKey()
+	public void removeAuthenticatorLoginKey()
 	{
 		m_installWizard.removeAuthenticatorLoginKey();
 	}
 	
-	String getLoginKeyUserName()
+	public String getAuthenticatorLoginKeyUserName()
 	{
 		return m_installWizard.getAuthenticatorLoginKeyUserName();
 	}
 	
-	String getCurrentUserName()
+	public String getAuthenticatorCurrentUserName()
 	{
 		return getPublisher().getCurrenlyLoggedUserName();
 	}
 	
-	String getPreferredUserName()
+	public String getAuthenticatorUserName()
 	{
 		return m_installWizard.getAuthenticatorUserName();
 	}
 	
-	void setPreferredUserName(String userName)
+	public void setAuthenticatorUserName(String userName)
 	{
 		m_installWizard.setAuthenticatorUserName(userName);
 	}
 	
-	String getPreferredPassword()
+	public String getAuthenticatorPassword()
 	{
 		return m_installWizard.getAuthenticatorPassword();
 	}
 
-	void setPreferredPassword(String password)
+	public void setAuthenticatorPassword(String password)
 	{
 		m_installWizard.setAuthenticatorPassword(password);
 	}
@@ -327,5 +328,18 @@ public class PublishWizard extends AdvancedWizard
 	String getOriginalSpaceName()
 	{
 		return m_originalSpaceName;
+	}
+
+	public IAuthenticator getAuthenticator()
+	{
+		return getPublisher();
+	}
+
+	public void setAuthenticator(IAuthenticator authenticator)
+	{
+		if(authenticator instanceof IPublisher)
+			setPublisher((IPublisher)authenticator);
+		else
+			throw new RuntimeException("Unsupported authenticator type - IPublisher is needed");
 	}
 }

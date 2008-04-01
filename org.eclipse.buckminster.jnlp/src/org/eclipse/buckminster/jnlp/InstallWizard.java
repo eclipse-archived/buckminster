@@ -106,7 +106,7 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  * 
  */
-public class InstallWizard extends AdvancedWizard
+public class InstallWizard extends AdvancedWizard implements ILoginHandler
 {
 	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication";
 	
@@ -196,7 +196,7 @@ public class InstallWizard extends AdvancedWizard
 	
 	private final Map<String,String> m_properties;
 	
-	private final IAuthenticator m_authenticator;
+	private IAuthenticator m_authenticator;
 	
 	private String m_authenticatorUserName;
 	
@@ -661,43 +661,53 @@ public class InstallWizard extends AdvancedWizard
 		return MATERIALIZERS;
 	}
 	
-	IAuthenticator getAuthenticator()
+	public IAuthenticator getAuthenticator()
 	{
 		return m_authenticator;
 	}
 	
-	String getAuthenticatorLoginKey()
+	public void setAuthenticator(IAuthenticator authenticator)
+	{
+		m_authenticator = authenticator;
+	}
+	
+	public String getAuthenticatorLoginKey()
 	{
 		return m_loginKey;
 	}
 	
-	void removeAuthenticatorLoginKey()
+	public void removeAuthenticatorLoginKey()
 	{
 		m_loginKey = null;
 		m_loginKeyUserName = null;
 	}
 	
-	String getAuthenticatorLoginKeyUserName()
+	public String getAuthenticatorLoginKeyUserName()
 	{
 		return m_loginKeyUserName;
 	}
 	
-	String getAuthenticatorUserName()
+	public String getAuthenticatorCurrentUserName()
+	{
+		return getAuthenticator().getCurrenlyLoggedUserName();
+	}
+	
+	public String getAuthenticatorUserName()
 	{
 		return m_authenticatorUserName;
 	}
 	
-	void setAuthenticatorUserName(String userName)
+	public void setAuthenticatorUserName(String userName)
 	{
 		m_authenticatorUserName = userName;
 	}
 	
-	String getAuthenticatorPassword()
+	public String getAuthenticatorPassword()
 	{
 		return m_authenticatorPassword;
 	}
 
-	void setAuthenticatorPassword(String password)
+	public void setAuthenticatorPassword(String password)
 	{
 		m_authenticatorPassword = password;
 	}

@@ -39,13 +39,13 @@ public class PublishLoginPage extends PublishWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		m_login.setCurrentUserVisible(getPublishWizard().getLoginKey() != null);
+		m_login.setCurrentUserVisible(getPublishWizard().getAuthenticatorLoginKey() != null);
 		setPageComplete(getCompleteLoginFields());
 	}
 	
 	public void createControl(Composite parent)
 	{		
-		m_login = new LoginPanel(getPublishWizard().getLoginKeyUserName(), getPublishWizard().getPreferredUserName(), getPublishWizard().getPreferredPassword());
+		m_login = new LoginPanel(getPublishWizard().getAuthenticatorLoginKeyUserName(), getPublishWizard().getAuthenticatorUserName(), getPublishWizard().getAuthenticatorPassword());
 
 		ModifyListener fieldsListener = new ModifyListener()
 		{
@@ -105,10 +105,10 @@ public class PublishLoginPage extends PublishWizardPage
 				
 				if(m_login.isCurrentUser())
 				{
-					int result = publisher.relogin(getPublishWizard().getLoginKey());
+					int result = publisher.relogin(getPublishWizard().getAuthenticatorLoginKey());
 
 					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
-						getPublishWizard().removeLoginKey();
+						getPublishWizard().removeAuthenticatorLoginKey();
 
 					if(result != IAuthenticator.LOGIN_OK)
 					{
@@ -149,8 +149,8 @@ public class PublishLoginPage extends PublishWizardPage
 					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
 
-				getPublishWizard().setPreferredUserName(userName);
-				getPublishWizard().setPreferredPassword(password);
+				getPublishWizard().setAuthenticatorUserName(userName);
+				getPublishWizard().setAuthenticatorPassword(password);
 			}
 			catch(Throwable e)
 			{

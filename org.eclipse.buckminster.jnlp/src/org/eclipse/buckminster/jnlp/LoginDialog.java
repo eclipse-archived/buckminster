@@ -11,7 +11,6 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_PUBLISHER_EXCEPTION;
 
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
-import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedTitleAreaDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -20,6 +19,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,23 +32,24 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class LoginDialog extends AdvancedTitleAreaDialog
 {
-	private PublishWizard m_publishWizard;
+	private ILoginHandler m_loginHandler;
 	
 	private LoginPanel m_login;
 	
-	public LoginDialog(Shell parentShell, PublishWizard publishWizard)
+	public LoginDialog(
+			Shell parentShell, ILoginHandler loginHandler,
+			Image windowImage, String windowTitle, Image wizardImage, String serviceProvider, String helpURL)
 	{
 		super(
-				parentShell, publishWizard.getWindowImage(), publishWizard.getWindowTitle() + " - Login Dialog",
-				publishWizard.getWizardImage(), "Login", "Publishing requires login to " + publishWizard.getServiceProvider() + ".",
-				publishWizard.getHelpURL());
-		m_publishWizard = publishWizard;
+				parentShell, windowImage, windowTitle,
+				wizardImage, "Login", "Publishing requires login to " + serviceProvider + ".", helpURL);
+		m_loginHandler = loginHandler;
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{
-		m_login = new LoginPanel(m_publishWizard.getLoginKeyUserName(), m_publishWizard.getPreferredUserName(), m_publishWizard.getPreferredPassword());
+		m_login = new LoginPanel(m_loginHandler.getAuthenticatorLoginKeyUserName(), m_loginHandler.getAuthenticatorUserName(), m_loginHandler.getAuthenticatorPassword());
 
 		ModifyListener fieldsListener = new ModifyListener()
 		{
@@ -73,7 +74,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 
 		Control control = m_login.createControl(composite, fieldsListener, fieldsSwitchListener);
 		
-		m_login.setCurrentUserVisible(m_publishWizard.getLoginKey() != null);
+		m_login.setCurrentUserVisible(m_loginHandler.getAuthenticatorLoginKey() != null);
 
 		return control;
 	}
@@ -98,13 +99,13 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 	{
 		if(buttonId == IDialogConstants.OK_ID)
 		{
-			IPublisher publisher;
+			IAuthenticator authenticator;
 		
 			try
 			{
-				publisher = m_publishWizard.getPublisher().createDuplicatePublisher(false);
+				authenticator = m_loginHandler.getAuthenticator().createDuplicate(false);
 		
-				if(publisher == null)
+				if(authenticator == null)
 				{
 					throw new JNLPException("Publisher is not available", ERROR_CODE_NO_PUBLISHER_EXCEPTION);
 				}
@@ -114,10 +115,10 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 				
 				if(m_login.isCurrentUser())
 				{
-					int result = publisher.relogin(m_publishWizard.getLoginKey());
+					int result = authenticator.relogin(m_loginHandler.getAuthenticatorLoginKey());
 		
 					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
-						m_publishWizard.removeLoginKey();
+						m_loginHandler.removeAuthenticatorLoginKey();
 		
 					if(result != IAuthenticator.LOGIN_OK)
 					{
@@ -130,26 +131,26 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 		
 					if(!m_login.isAlreadyUser())
 					{
-						int result = publisher.register(userName, password, m_login.getEmail());
+						int result = authenticator.register(userName, password, m_login.getEmail());
 		
 						MaterializationUtils.checkRegistrationResponse(result);
 					}
 		
-					if(publisher.relogin(userName, password) != IAuthenticator.LOGIN_OK)
+					if(authenticator.relogin(userName, password) != IAuthenticator.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - check username and password and try again", null);
 					}
 				}
 		
-				if(!publisher.isLoggedIn())
+				if(!authenticator.isLoggedIn())
 				{
 					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
 		
-				m_publishWizard.getPublisher().releaseConnection();
-				m_publishWizard.setPublisher(publisher);
-				m_publishWizard.setPreferredUserName(userName);
-				m_publishWizard.setPreferredPassword(password);
+				m_loginHandler.getAuthenticator().releaseConnection();
+				m_loginHandler.setAuthenticator(authenticator);
+				m_loginHandler.setAuthenticatorUserName(userName);
+				m_loginHandler.setAuthenticatorPassword(password);
 			}
 			catch(Throwable e)
 			{

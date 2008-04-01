@@ -32,7 +32,7 @@ public interface IPublisher extends IAuthenticator
 	 * @return
 	 * @throws Exception
 	 */
-	public IPublisher createDuplicatePublisher(boolean login) throws Exception;
+	public IPublisher createDuplicate(boolean login) throws Exception;
 	
 	public List<String> getSpaceNames() throws Exception;
 	

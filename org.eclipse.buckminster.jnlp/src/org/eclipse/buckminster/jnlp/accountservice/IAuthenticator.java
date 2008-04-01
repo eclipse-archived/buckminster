@@ -104,4 +104,14 @@ public interface IAuthenticator
 	public int register(String userName, String password, String email) throws Exception;
 	
 	public int checkSpaceReadAccess(final String spaceName) throws Exception;
+	
+	/**
+	 * Creates a new authenticator, that is connected to the same server as the original authenticator
+	 * 
+	 * @param login true - the new authenticator will be logged in using the same credentials as the original one,
+	 * false - the new authenticator will be only initialized
+	 * @return
+	 * @throws Exception
+	 */
+	public IAuthenticator createDuplicate(boolean login) throws Exception;
 }
