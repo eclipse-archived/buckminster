@@ -57,6 +57,8 @@ public class Application implements IApplication
 	private static final int WIZARD_MIN_HEIGHT = 550;
 	private static final int WIZARD_MAX_HEIGHT = 750;
 
+	private static final long DEFAULT_POPUP_DELAY = 500;
+	
 	/**
 	 * String for synchronization with the bootstrap
 	 */
@@ -261,8 +263,6 @@ public class Application implements IApplication
 					}
 				});
 
-				// shell.setSize(Math.max(WIZARD_WIDTH, shell.getSize().x), WIZARD_HEIGHT);
-
 				try
 				{
 					if(popupAfter != null)
@@ -273,6 +273,25 @@ public class Application implements IApplication
 					}
 
 					synchronizeWithBootstrap();
+					
+					long popupDelay = DEFAULT_POPUP_DELAY;
+					String popupDelayString = properties.get(MaterializationConstants.PROP_POPUP_DELAY);
+					
+					if(popupDelayString != null)
+					{
+						try
+						{
+							popupDelay = new Long(popupDelayString).longValue();
+						}
+						catch(Throwable e)
+						{
+							popupDelay = DEFAULT_POPUP_DELAY;
+						}
+					}
+					
+					// need to wait a while until applet finishes
+					Thread.sleep(popupDelay);
+					
 					dialog.open();
 					return OK_EXIT_CODE;
 				}

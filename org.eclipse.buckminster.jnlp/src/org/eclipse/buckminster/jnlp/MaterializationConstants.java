@@ -34,6 +34,8 @@ public interface MaterializationConstants
 
 	public static final String PROP_PROPVERSION = "propVersion";
 
+	public static final String PROP_POPUP_DELAY = "popupDelay";
+
 	public static final String PROP_PROFILE_IMAGE_URL = "profileImageURL";
 
 	public static final String PROP_PROFILE_TEXT = "profileText";
