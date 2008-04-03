@@ -32,6 +32,14 @@ public class CreateProductBaseTask extends TargetPlatformTask
 {
 	private boolean m_copyJavaLauncher = true;
 
+	private String m_launcherNameProperty;
+
+	public void setLauncherNameProperty(String property)
+	{
+		m_launcherNameProperty = property;
+	}
+
+
 	private File m_outputDir;
 
 	private File m_productFile;
@@ -92,7 +100,10 @@ public class CreateProductBaseTask extends TargetPlatformTask
 			CreateProductBase createProduct = new CreateProductBase(
 					m_productFile, files, new Path(m_outputDir.toString()), getTargetLocation(), m_copyJavaLauncher);
 
-			createProduct.execute();
+			String launcherName = createProduct.execute();
+			if(m_launcherNameProperty != null)
+				proj.setUserProperty(m_launcherNameProperty, launcherName);
+
 			for(Map.Entry<String,String> hint : createProduct.getHints().entrySet())
 				proj.setUserProperty(hint.getKey(), hint.getValue());
 		}

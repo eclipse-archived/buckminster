@@ -166,7 +166,7 @@ public class CreateProductBase
 		m_copyJavaLauncher = copyJavaLauncher;
 	}
 
-	public void execute() throws Exception
+	public String execute() throws Exception
 	{
 		m_hints = null;
 
@@ -183,7 +183,7 @@ public class CreateProductBase
 		createConfigIniFile(new File(outputDir, "configuration"), monitor);
 		createEclipseProductFile(outputDir, monitor);
 		createLauncherIniFile(outputDir, monitor);
-		createLauncher();
+		return createLauncher();
 	}
 
 	public static final String MACOSX_LAUNCHER_FOLDER = "Eclipse.app/Contents/MacOS";
@@ -192,7 +192,7 @@ public class CreateProductBase
 
 	public static final String DEFAULT_LAUNCHER_WIN32 = DEFAULT_LAUNCHER + ".exe";
 
-	private void createLauncher() throws Exception
+	private String createLauncher() throws Exception
 	{
 		String launcherName = getLauncherName();
 		boolean hasDeltaPack = hasDeltaPackFeature();
@@ -222,7 +222,7 @@ public class CreateProductBase
 
 		ILauncherInfo info = m_product.getLauncherInfo();
 		if(info == null)
-			return;
+			return launcherName;
 
 		String images = null;
 		if(Platform.OS_WIN32.equals(m_os))
@@ -249,6 +249,7 @@ public class CreateProductBase
 		if(images != null)
 			bi.setIcons(images);
 		bi.brand();
+		return launcherName;
 	}
 
 	private boolean hasDeltaPackFeature() throws CoreException

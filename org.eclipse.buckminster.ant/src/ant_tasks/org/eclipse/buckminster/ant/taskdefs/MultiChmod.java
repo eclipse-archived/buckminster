@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Chmod;
 import org.apache.tools.ant.types.FileSet;
@@ -52,16 +53,17 @@ public class MultiChmod extends Task
 			Properties props = propertySet.getProperties();
 			Enumeration<?> propNames = props.propertyNames();
 			while(propNames.hasMoreElements())
-				this.addAllEntries(entries, props.getProperty((String)propNames.nextElement()));
+				addAllEntries(entries, props.getProperty((String)propNames.nextElement()));
 		}
+		Project p = getProject();
 		for(Map.Entry<String, FileSet> entry : entries.entrySet())
 		{
 			Chmod chmod = new Chmod();
-			chmod.setProject(this.getProject());
+			chmod.setProject(p);
 			chmod.setPerm(entry.getKey());
 			chmod.addFileset(entry.getValue());
 			chmod.perform();
-			this.log("Changing to mode " + entry.getKey() + " for files " + entry.getValue());
+			log("Changing to mode " + entry.getKey() + " for files " + entry.getValue());
 		}
 	}
 
@@ -82,25 +84,26 @@ public class MultiChmod extends Task
 		
 		StringTokenizer tokens = new StringTokenizer(propVal, ",");
 		while(tokens.hasMoreTokens())
-			this.addEntry(entries, tokens.nextToken().trim());
+			addEntry(entries, tokens.nextToken().trim());
 	}
 
 	private void addEntry(Map<String,FileSet> entries, String propVal) throws BuildException
 	{
 		Matcher m = s_fileAndPerm.matcher(propVal);
 		if(!m.matches())
-			throw new BuildException("Illegal property value: " + propVal, this.getLocation());
+			throw new BuildException("Illegal property value: " + propVal, getLocation());
 
+		Project p = getProject();
 		String include = m.group(1);
 		String perm = m.group(2);
 		FileSet fs = entries.get(perm);
 		if(fs == null)
 		{
 			fs = new FileSet();
-			fs.setProject(this.getProject());
+			fs.setProject(p);
 			fs.setDir(m_dir);
 			entries.put(perm, fs);
 		}
-		fs.createInclude().setName(include);
+		fs.createInclude().setName(p.replaceProperties(include));
 	}
 }

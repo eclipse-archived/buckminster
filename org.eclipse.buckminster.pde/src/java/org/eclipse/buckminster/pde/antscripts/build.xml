@@ -129,6 +129,7 @@
 		<buckminster.createProductBase
 			productFile="${buckminster.eclipse.productFile}"
 			outputDir="${sp:action.output}"
+			launcherNameProperty="launcherName"
 			copyJavaLauncher="${copyJavaLauncher}">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
 		</buckminster.createProductBase>

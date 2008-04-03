@@ -39,10 +39,13 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -61,6 +64,8 @@ import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.core.plugin.IPluginReference;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
+import org.eclipse.pde.internal.core.ifeature.IFeature;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.iproduct.ILauncherInfo;
 import org.eclipse.pde.internal.core.iproduct.IProduct;
 import org.eclipse.pde.internal.core.iproduct.IProductFeature;
@@ -240,8 +245,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			createProduct.addProperty(PROP_PRODUCT_FILE, productConfig.getName(), false);
 
 			AttributeBuilder rootFiles = cspec.getAttribute(ATTRIBUTE_PRODUCT_ROOT_FILES);
-			if(rootFiles != null)
-				createProduct.addLocalPrerequisite(rootFiles);
 
 			ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
 			GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
@@ -278,6 +281,28 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				featureExports.addLocalPrerequisite(createCopyPluginsAction());
 				featureExports.setRebase(OUTPUT_DIR_SITE);
 				createProduct.addLocalPrerequisite(featureExports);
+
+				IFeatureModel exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.equinox.executable", null);
+				if(exeFeature == null)
+					exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.platform.launchers", null);
+
+				if(exeFeature != null)
+				{
+					IFeature feature = exeFeature.getFeature();
+					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
+					DependencyBuilder dep = createDependency("org.eclipse.equinox.executable",
+							IComponentType.ECLIPSE_FEATURE,
+							version.replaceQualifier(null).toString(),
+							null);
+
+					if(addDependency(dep))
+					{
+						if(rootFiles == null)
+							rootFiles = cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
+						((GroupBuilder)rootFiles).addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
+						featureExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
+					}
+				}
 			}
 
 			// Ensure that the launcher is present
@@ -286,6 +311,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					null);
 			if(addDependency(dep))
 				bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+
+			if(rootFiles != null)
+				createProduct.addLocalPrerequisite(rootFiles);
 
 			createProduct.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			createProduct.setProductAlias(ALIAS_OUTPUT);
