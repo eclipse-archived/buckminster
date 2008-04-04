@@ -39,33 +39,50 @@ public class ArchivePolicy extends AbstractFetchPolicy
 		m_remoteName = remoteName;
 	}
 
-	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor)
+	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException
 	{
 		MonitorUtils.begin(monitor, 1000);
 		try
 		{
-			if(localFile.exists())
+			long localFileTS = localFile.lastModified();
+			if(localFileTS != 0L)
 			{
+				long localAge = System.currentTimeMillis() - localFileTS;
+				if(localAge <= DEFAULT_MAX_LOCAL_AGE)
+				{
+					if(fiHandle != null)
+						fiHandle[0] = readLocalFileInfo(remoteFile);
+					return false;
+				}
+
 				IFileInfo fi;
 				try
 				{
 					fi = getCache().getRemoteInfo(remoteFile);
+					if(fiHandle != null)
+						fiHandle[0] = fi;
 				}
 				catch(FileNotFoundException e)
 				{
 					localFile.delete();
 					throw BuckminsterException.wrap(e);
 				}
-				if(fi.getSize() == localFile.length() && fi.getLastModified() <= localFile.lastModified())
+				if(fi.getSize() == localFile.length() && fi.getLastModified() != 0L && fi.getLastModified() <= localFile.lastModified())
+				{
+					// Update the timestamp on the local file to reflec the check that
+					// we just made.
+					//
+					localFile.setLastModified(System.currentTimeMillis());
 					return false;
+				}
 			}
 			MonitorUtils.worked(monitor, 100);
 			if(checkOnly)
 				return true;
 
 			File tempFile = new File(localFile.getPath() + ".tmp");
-			String fileName = readRemoteFile(remoteFile, tempFile, MonitorUtils.subMonitor(monitor, 800));
+			String fileName = readRemoteFile(remoteFile, tempFile, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 			if(m_remoteName != null)
 				fileName = m_remoteName;
 
@@ -87,7 +104,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 		}
 	}
 
-	protected String readRemoteFile(URL url, File localFile, IProgressMonitor monitor) throws CoreException
+	protected String readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException
 	{
 		// Set up the file transfer
 		//
@@ -101,7 +118,11 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			output = new FileOutputStream(localFile);
 			FileReader retriever = new FileReader();
 			retriever.readInto(url, output, monitor);
-			return retriever.getLastFileInfo().getName();
+			IFileInfo fileInfo = retriever.getLastFileInfo();
+			saveLocalFileInfo(url, fileInfo);
+			if(fiHandle != null)
+				fiHandle[0] = fileInfo;
+			return fileInfo.getName();
 		}
 		catch(IOException e)
 		{

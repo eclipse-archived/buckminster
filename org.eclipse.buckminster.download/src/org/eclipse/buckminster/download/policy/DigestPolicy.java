@@ -26,6 +26,7 @@ import java.util.Arrays;
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.internal.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -83,7 +84,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 		}
 	}
 
-	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		byte[] localDigest;
 		byte[] remoteDigest = null;
@@ -143,7 +144,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 			{
 				try
 				{
-					localDigest = readRemoteFile(remoteFile, tempFile, subMon);
+					localDigest = readRemoteFile(remoteFile, tempFile, fiHandle, subMon);
 				}
 				catch(CoreException e)
 				{
@@ -250,7 +251,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 		return digestByteBuilder.getBytes();
 	}
 
-	protected byte[] readRemoteFile(URL url, File localFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	protected byte[] readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		// Set up the file transfer
 		//
@@ -264,6 +265,10 @@ public class DigestPolicy extends AbstractFetchPolicy
 			output = new DigestOutputStream(new FileOutputStream(localFile), md);
 			FileReader retriever = new FileReader();
 			retriever.readInto(url, output, monitor);
+			IFileInfo fi = retriever.getLastFileInfo();
+			saveLocalFileInfo(url, fi);
+			if(fiHandle != null)
+				fiHandle[0] = fi;
 		}
 		finally
 		{

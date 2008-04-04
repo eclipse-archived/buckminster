@@ -8,11 +8,26 @@
 
 package org.eclipse.buckminster.download.policy;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Properties;
+import java.util.UUID;
 
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.IFetchPolicy;
+import org.eclipse.buckminster.download.internal.CacheImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
+import org.eclipse.buckminster.runtime.IFileInfo;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -30,6 +45,51 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 	protected ICache getCache()
 	{
 		return m_cache;
+	}
+
+	protected void saveLocalFileInfo(URL url, IFileInfo fileInfo) throws CoreException
+	{
+		FileInfoBuilder fiBld = (fileInfo instanceof FileInfoBuilder) ? (FileInfoBuilder)fileInfo : new FileInfoBuilder(fileInfo);
+		Properties saveProps = new Properties();
+		fiBld.addProperties(saveProps);
+		OutputStream out = null;
+		try
+		{
+			out = new BufferedOutputStream(new FileOutputStream(getFileInfoFile(url)));
+			saveProps.store(out, null);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(out);
+		}
+	}
+
+	protected IFileInfo readLocalFileInfo(URL url) throws CoreException
+	{
+		InputStream in = null;
+		Properties loadProps = new Properties();
+		try
+		{
+			in = new BufferedInputStream(new FileInputStream(getFileInfoFile(url)));
+			loadProps.load(in);
+		}
+		catch(FileNotFoundException e)
+		{
+			return null;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(in);
+		}
+		return new FileInfoBuilder(loadProps);
 	}
 
 	protected static void safeRename(File sourceFile, File destFile) throws CoreException
@@ -55,5 +115,13 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 				toDelete.renameTo(destFile);
 			throw BuckminsterException.fromMessage("Unable to rename temp file to %s", destFile);
 		}
+	}
+	
+	protected File getFileInfoFile(URL url)
+	{
+		CacheImpl cache = (CacheImpl)getCache();
+		File folder = cache.getSubFolder(url);
+		UUID hash = cache.getHash(url.toString());
+		return new File(folder, hash.toString() + ".properties");
 	}
 }

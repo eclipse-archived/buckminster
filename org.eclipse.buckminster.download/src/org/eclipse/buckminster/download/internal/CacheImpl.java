@@ -50,7 +50,7 @@ public class CacheImpl implements ICache
 		synchronized(urlStr)
 		{
 			File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
-			return !policy.update(remoteFile, localFile, true, monitor);
+			return !policy.update(remoteFile, localFile, true, null, monitor);
 		}
 	}
 
@@ -66,27 +66,27 @@ public class CacheImpl implements ICache
 				remoteFile, monitor);
 	}
 
-	public InputStream open(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public InputStream open(IFetchPolicy policy, URL remoteFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		String urlStr = remoteFile.toString().intern();
 		synchronized(urlStr)
 		{
 			File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
-			policy.update(remoteFile, localFile, false, monitor);
+			policy.update(remoteFile, localFile, false, fiHandle, monitor);
 			return new FileInputStream(localFile);
 		}
 	}
 
-	public InputStream open(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public InputStream open(URL remoteFile, String remoteName, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		return open(new ArchivePolicy(this, remoteName), remoteFile, monitor);
+		return open(new ArchivePolicy(this, remoteName), remoteFile, fiHandle, monitor);
 	}
 
-	public InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor)
+	public InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException
 	{
-		return open(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile,
-				monitor);
+		return open(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
+				remoteFile, fiHandle, monitor);
 	}
 
 	public InputStream openRemote(URL remoteFile) throws CoreException, FileNotFoundException
@@ -101,12 +101,12 @@ public class CacheImpl implements ICache
 		return reader.readInfo(remoteFile);
 	}
 
-	private UUID getHash(String urlStr)
+	public UUID getHash(String urlStr)
 	{
 		return UUID.nameUUIDFromBytes(urlStr.getBytes());
 	}
 
-	private File getSubFolder(String protocol, String domain)
+	public File getSubFolder(String protocol, String domain)
 	{
 		File protoFolder = new File(m_location, protocol);
 		if(domain == null)
@@ -114,7 +114,7 @@ public class CacheImpl implements ICache
 		return new File(protoFolder, domain);
 	}
 
-	private File getSubFolder(URL url)
+	public File getSubFolder(URL url)
 	{
 		return getSubFolder(url.getProtocol(), url.getHost());
 	}

@@ -66,7 +66,7 @@ public class TestCache extends TestCase
 	{
 		ICache c = new CacheImpl(m_cacheFolder);
 		URL url = new URL("http://www.eclipse.org/buckminster/downloads.html");
-		InputStream input = c.open(url, null, m_monitor);
+		InputStream input = c.open(url, null, null, m_monitor);
 		IOUtils.copy(input, NullOutputStream.INSTANCE, null);
 		input.close();
 
@@ -79,7 +79,7 @@ public class TestCache extends TestCase
 
 		URL url = new URL(zipFile);
 		URL digestURL = new URL(zipDigest);
-		InputStream input = c.open(url, digestURL, "MD5", m_monitor);
+		InputStream input = c.open(url, digestURL, "MD5", null, m_monitor);
 		IOUtils.copy(input, NullOutputStream.INSTANCE, null);
 		input.close();
 

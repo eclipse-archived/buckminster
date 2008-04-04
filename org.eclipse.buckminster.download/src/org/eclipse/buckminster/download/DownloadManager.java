@@ -9,10 +9,17 @@
 package org.eclipse.buckminster.download;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
 import org.eclipse.buckminster.download.internal.CacheImpl;
+import org.eclipse.buckminster.download.internal.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
@@ -60,5 +67,24 @@ public class DownloadManager
 
 		s_instance = new CacheImpl(new File(buckDir, "repository"));
 		return s_instance;
+	}
+
+	public static InputStream read(URL url) throws CoreException, FileNotFoundException
+	{
+		FileReader reader = new FileReader();
+		return reader.read(url);
+	}
+
+	public static IFileInfo readInfo(URL url) throws CoreException, FileNotFoundException
+	{
+		FileReader reader = new FileReader();
+		return reader.readInfo(url);
+	}
+
+	public static IFileInfo readInto(URL url, OutputStream output, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	{
+		FileReader reader = new FileReader();
+		reader.readInto(url, output, monitor);
+		return reader.getLastFileInfo();
 	}
 }
