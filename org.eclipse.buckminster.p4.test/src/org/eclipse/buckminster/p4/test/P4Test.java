@@ -51,7 +51,6 @@ import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
@@ -182,11 +181,10 @@ public class P4Test extends TestCase
 
 	public void testResolve() throws Exception
 	{
-		IProgressMonitor nullMon = new NullProgressMonitor();
 		URL cqueryURL = getClass().getResource("jam.cquery");
-		ResolutionContext ctx = new ResolutionContext(ComponentQuery.fromURL(cqueryURL, true, nullMon));
+		ResolutionContext ctx = new ResolutionContext(ComponentQuery.fromURL(cqueryURL, true));
 		MainResolver resolver = new MainResolver(ctx);
-		BillOfMaterials bom = resolver.resolve(nullMon);
+		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 		assertTrue(bom.isFullyResolved());
 
 		OutputStream bomFile = new BufferedOutputStream(new FileOutputStream(new File(m_tempDir, "jam.bom")));
