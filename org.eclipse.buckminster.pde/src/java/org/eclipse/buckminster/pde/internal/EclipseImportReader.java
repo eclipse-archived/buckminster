@@ -166,7 +166,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	IPluginModelBase getPluginModel(IVersion version, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, m_base.isLocal() ? 1000 : 2000);
@@ -201,7 +200,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements ISiteRe
 			getNodeQuery(), destination, m_base.getType() == PluginImportOperation.IMPORT_BINARY);
 	}
 
-	@SuppressWarnings("deprecation")
 	private IFeatureModel getFeatureModel(IVersion version, IProgressMonitor monitor) throws CoreException
 	{
 		IFeatureModel model = null;
