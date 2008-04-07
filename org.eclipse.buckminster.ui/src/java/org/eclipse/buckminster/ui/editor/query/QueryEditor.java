@@ -11,7 +11,6 @@ package org.eclipse.buckminster.ui.editor.query;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -496,9 +495,9 @@ public class QueryEditor extends EditorPart
 			{
 				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CQUERY);
 			}
-			catch(IOException e)
+			catch(Exception e)
 			{
-				UiUtils.openError(null, "Unable to open editor", e);
+				throw new PartInitException("Unable to open editor", e);
 			}
 		}
 		
