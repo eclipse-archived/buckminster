@@ -72,7 +72,6 @@ public class ComponentListPanel
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		public String getColumnText(Object element, int columnIndex)
 		{
 			ComponentPath componentPath = (ComponentPath)element;

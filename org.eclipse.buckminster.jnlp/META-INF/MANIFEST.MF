@@ -12,5 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.net,
  org.apache.commons.httpclient,
  org.apache.commons.codec
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.buckminster.jnlp.accountservice
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
