@@ -11,7 +11,6 @@ package org.eclipse.buckminster.ui.editor.cspec;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -426,9 +425,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			{
 				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CSPEC);
 			}
-			catch(IOException e)
+			catch(Exception e)
 			{
-				UiUtils.openError(null, "Unable to open editor", e);
+				throw new PartInitException("Unable to open editor", e);
 			}
 		}
 
