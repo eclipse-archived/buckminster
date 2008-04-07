@@ -49,6 +49,7 @@ import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -83,6 +84,11 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 		{
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	public static ComponentQuery fromURL(URL url, boolean validating) throws CoreException
+	{
+		return fromURL(url, validating, new NullProgressMonitor());
 	}
 
 	public static ComponentQuery fromURL(URL url, boolean validating, IProgressMonitor monitor) throws CoreException
