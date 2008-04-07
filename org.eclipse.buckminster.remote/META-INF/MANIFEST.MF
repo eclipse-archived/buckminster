@@ -16,6 +16,6 @@ Export-Package: org.eclipse.buckminster.remote,
  org.eclipse.buckminster.remote.resolver,
  org.eclipse.buckminster.remote.resolver.jsonrpc,
  org.eclipse.buckminster.remote.resolver.service
-Eclipse-LazyStart: false
 Bundle-ClassPath: .,
  lib/jabsorb-1.2.2.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
