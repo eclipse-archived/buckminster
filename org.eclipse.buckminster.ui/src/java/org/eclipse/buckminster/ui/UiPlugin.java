@@ -14,8 +14,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.buckminster.runtime.Buckminster;
-import org.eclipse.buckminster.runtime.URLUtils;
-import org.eclipse.buckminster.ui.internal.GUICertificateTrustInquiry;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -65,7 +63,6 @@ public class UiPlugin extends AbstractUIPlugin
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
-		URLUtils.setTrustInquiry(new GUICertificateTrustInquiry());
 		super.start(context);
 	}
 

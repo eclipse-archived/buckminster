@@ -38,7 +38,6 @@ import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -463,41 +462,6 @@ public abstract class FileUtils
 		try
 		{
 			input = new FileInputStream(source);
-			return copyFile(input, destDir, destName, monitor);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	/**
-	 * Copy the <code>source</code> contents to a <code>destDir</code> directory and give it the name
-	 * <code>destName</code>. This method assumes that source is not a catalog, that destDir is a directory, and that
-	 * a file named destName can be created in destDir. If such a file exists already, an attempt will be made to
-	 * overwrite.
-	 * 
-	 * @param source
-	 *            The source. Cannot be a directory.
-	 * @param destDir
-	 *            The destination directory.
-	 * @param destName
-	 *            The name of the file relative to the destination.
-	 * @throws IOException,
-	 *             MkdirException
-	 * @return The total number of bytes copied
-	 */
-	public static long copyFile(URL source, File destDir, String destName, IProgressMonitor monitor)
-			throws CoreException
-	{
-		InputStream input = null;
-		try
-		{
-			input = URLUtils.openStream(source, null);
 			return copyFile(input, destDir, destName, monitor);
 		}
 		catch(IOException e)

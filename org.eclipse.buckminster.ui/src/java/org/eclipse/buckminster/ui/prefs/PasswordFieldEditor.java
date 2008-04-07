@@ -8,15 +8,10 @@
 
 package org.eclipse.buckminster.ui.prefs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.security.storage.ISecurePreferences;
+import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
+import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -37,9 +32,7 @@ import org.eclipse.swt.widgets.Text;
 public class PasswordFieldEditor extends StringFieldEditor
 {
 	//fake URL - need it for saving to the key ring
-	private final static String KEY_RING_URL = "http://pref.buckminster.eclipse.org";
-	
-	private static URL s_keyRingURL;
+	private final static String BUCKMINSTER_NODE = "buckminster";
 	
 	private String m_keyRingRealm;
 	
@@ -77,18 +70,7 @@ public class PasswordFieldEditor extends StringFieldEditor
      */
     public PasswordFieldEditor(String name, String labelText, int width, int strategy, Composite parent, String keyRingRealm) {
     	super(name, labelText, width, strategy, parent);
-    	
-    	if(s_keyRingURL == null)
-			try
-			{
-				s_keyRingURL = new URL(KEY_RING_URL);
-			}
-			catch(MalformedURLException e)
-			{
-				throw new RuntimeException("Cannot create URL from string '" + KEY_RING_URL + "'");
-			}
-    	
-    	m_keyRingRealm = keyRingRealm;
+       	m_keyRingRealm = keyRingRealm;
     }
     
     /**
@@ -164,32 +146,33 @@ public class PasswordFieldEditor extends StringFieldEditor
         return getPasswordFromKeyRing();
     }
 
-    @SuppressWarnings("unchecked")
 	private String getPasswordFromKeyRing()
     {
-    	Map<String, String> info = Platform.getAuthorizationInfo(s_keyRingURL, m_keyRingRealm, "");
- 
-    	String value = null;
-    	if(info != null)
-    		value = info.get(getPreferenceName());
-    	
-    	return value == null ? "" : value;
-    }
-    
-    private void setPasswordToKeyRing(String password)
-    {
-    	Map<String, String> info = new HashMap<String, String>();
-    	info.put(getPreferenceName(), UiUtils.trimmedValue(password));
+    	ISecurePreferences info = SecurePreferencesFactory.getDefault().node(BUCKMINSTER_NODE).node(m_keyRingRealm);
     	try
 		{
-			Platform.addAuthorizationInfo(s_keyRingURL, m_keyRingRealm, "", info);
+			return info.get(getPreferenceName(), "");
 		}
-		catch(CoreException e)
+		catch(StorageException e)
+		{
+			return "";
+		}
+    }
+
+	private void setPasswordToKeyRing(String password)
+	{
+    	ISecurePreferences info = SecurePreferencesFactory.getDefault().node(BUCKMINSTER_NODE).node(m_keyRingRealm);
+		try
+		{
+	    	info.put(getPreferenceName(), password, true);
+	    	info.flush();
+		}
+		catch(Exception e)
 		{
 			throw new RuntimeException("Cannot save password", e);
 		}
-    }
-    
+	}
+
     @Override
 	public Text getTextControl(Composite parent) {    	
         if (m_textField == null) {

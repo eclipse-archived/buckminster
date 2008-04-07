@@ -13,7 +13,6 @@ package org.eclipse.buckminster.core.query.model;
 import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_NS;
 import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_PREFIX;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -41,6 +40,7 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -48,8 +48,6 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -88,15 +86,10 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 
 	public static ComponentQuery fromURL(URL url, boolean validating) throws CoreException
 	{
-		return fromURL(url, validating, new NullProgressMonitor());
-	}
-
-	public static ComponentQuery fromURL(URL url, boolean validating, IProgressMonitor monitor) throws CoreException
-	{
 		InputStream stream = null;
 		try
 		{
-			stream = URLUtils.openStream(url, monitor);
+			stream = DownloadManager.read(url);
 			return fromStream(url, stream, validating);
 		}
 		catch(IOException e)
@@ -207,7 +200,7 @@ public class ComponentQuery extends UUIDKeyed implements ISaxable
 			InputStream input = null;
 			try
 			{
-				input = new BufferedInputStream(URLUtils.openStream(propsURL, null));
+				input = DownloadManager.read(propsURL);
 				Map<String,String> urlProps = new BMProperties(input);
 				if(urlProps.size() > 0)
 				{

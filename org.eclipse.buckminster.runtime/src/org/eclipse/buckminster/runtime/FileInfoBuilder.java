@@ -8,143 +8,110 @@
 
 package org.eclipse.buckminster.runtime;
 
+import java.util.Properties;
+
 /**
  * @author Filip Hrbek
  * 
  */
 public class FileInfoBuilder implements IFileInfo
 {
-	private String m_name;
-
 	private String m_contentType;
 
-	private long m_size = -1;
+	private long m_lastModified = 0L;
 
-	/**
-	 * Creates an empty FileInfoBuilder
-	 */
+	private String m_name;
+
+	private long m_size = -1L;
+
 	public FileInfoBuilder()
 	{
-		reset();
 	}
 
-	/**
-	 * Creates a new instance as a copy of specified file info
-	 * 
-	 * @param fileInfo
-	 */
-	public FileInfoBuilder(FileInfoBuilder fileInfo)
+	public FileInfoBuilder(IFileInfo fileInfo)
 	{
-		setAll(fileInfo);
+		initFrom(fileInfo);
 	}
 
-	/**
-	 * Resets all attributes to null
-	 */
-	public void reset()
+	public FileInfoBuilder(Properties properties)
 	{
-		m_name = null;
-		m_contentType = null;
-		m_size = -1;
+		m_name = properties.getProperty(PROPERTY_NAME);
+		m_contentType = properties.getProperty(PROPERTY_CONTENT_TYPE);
+
+		String v = properties.getProperty(PROPERTY_LAST_MODIFIED);
+		if(v != null)
+			m_lastModified = Long.parseLong(v);
+
+		v = properties.getProperty(PROPERTY_SIZE);
+		if(v != null)
+			m_size = Long.parseLong(v);
 	}
 
-	/**
-	 * Copies all attributes from specified source
-	 * 
-	 * @param info
-	 */
-	public void setAll(IFileInfo info)
+	public void addProperties(Properties properties)
 	{
-		setName(info.getName());
-		setContentType(info.getContentType());
-		setSize(info.getSize());
+		if(m_contentType != null)
+			properties.setProperty(PROPERTY_CONTENT_TYPE, m_contentType);
+		if(m_lastModified != 0L)
+			properties.setProperty(PROPERTY_LAST_MODIFIED, Long.toString(m_lastModified));
+		if(m_name != null)
+			properties.setProperty(PROPERTY_NAME, m_name);
+		if(m_size != -1L)
+			properties.setProperty(PROPERTY_SIZE, Long.toString(m_size));
 	}
 
-	/**
-	 * @return the name
-	 */
-	public final String getName()
-	{
-		return m_name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public final void setName(String name)
-	{
-		m_name = name;
-	}
-
-	/**
-	 * @return the contentType
-	 */
 	public final String getContentType()
 	{
 		return m_contentType;
 	}
 
-	/**
-	 * @param contentType
-	 *            the contentType to set
-	 */
-	public final void setContentType(String contentType)
+	public long getLastModified()
 	{
-		m_contentType = contentType;
+		return m_lastModified;
 	}
 
-	/**
-	 * @return the size
-	 */
+	public final String getName()
+	{
+		return m_name;
+	}
+
 	public final long getSize()
 	{
 		return m_size;
 	}
 
-	/**
-	 * @param size
-	 *            the size to set
-	 */
+	public void initFrom(IFileInfo info)
+	{
+		setName(info.getName());
+		setContentType(info.getContentType());
+		setSize(info.getSize());
+		setLastModified(info.getLastModified());
+	}
+
+	public void reset()
+	{
+		m_name = null;
+		m_contentType = null;
+		m_size = -1;
+		m_lastModified = 0;
+	}
+
+	public final void setContentType(String contentType)
+	{
+		m_contentType = contentType;
+	}
+
+	public void setLastModified(long timestamp)
+	{
+		m_lastModified = timestamp;
+	}
+
+	public final void setName(String name)
+	{
+		m_name = name;
+	}
+
 	public final void setSize(long size)
 	{
 		m_size = size;
-	}
-
-	/**
-	 * @return the most suitable extension (may return null)
-	 */
-	public String getExtension()
-	{
-		String[] extensions = getExtensions();
-
-		return extensions.length > 0
-				? extensions[0]
-				: null;
-	}
-
-	/**
-	 * @return all extensions mapped to the file's content type (if not known, returns an empty array)
-	 */
-	public String[] getExtensions()
-	{
-		// A very stupid implementation for now... Should use some real MIME type mapping,
-		// e.g. from javax.activation
-		if(m_contentType != null)
-		{
-			if(m_contentType.endsWith("/zip") || m_contentType.endsWith("/x-zip-compressed")
-					|| m_contentType.endsWith("/x-compressed") || m_contentType.endsWith("/x-zip"))
-				return new String[] { "zip" };
-			else if(m_contentType.endsWith("/gzip") || m_contentType.endsWith("/x-gzip"))
-				return new String[] { "tgz" };
-			else if(m_contentType.endsWith("/x-tar"))
-				return new String[] { "tgz" };
-			else if(m_contentType.endsWith("/java-archive") || m_contentType.endsWith("/x-jar"))
-				return new String[] { "jar" };
-			if(m_contentType.endsWith("/exe") || m_contentType.endsWith("/x-msdownload"))
-				return new String[] { "exe" };
-		}
-
-		return new String[0];
 	}
 }

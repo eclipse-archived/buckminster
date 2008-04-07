@@ -9,13 +9,12 @@ package org.eclipse.buckminster.ui.actions;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -97,17 +96,14 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 			tempFile.deleteOnExit();
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery");
-			InputStream input = null;
 			OutputStream output = null;
 			try
 			{
-				input = URLUtils.openStream(url, null);
 				output = new FileOutputStream(tempFile);
-				IOUtils.copy(input, output, null);
+				DownloadManager.readInto(url, output, null);
 			}
 			finally
 			{
-				IOUtils.close(input);
 				IOUtils.close(output);
 			}
 			m_workbenchWindow.getActivePage().openEditor(

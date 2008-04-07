@@ -11,17 +11,17 @@ package org.eclipse.buckminster.ui.editor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Comparator;
 
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.ui.DerivedExternalFileEditorInput;
 import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
@@ -86,7 +86,7 @@ public class EditorUtils
 		return s_pathComparator;
 	}
 
-	public static ExternalFileEditorInput getExternalFileEditorInput(IURIEditorInput input, ArtifactType artifactType) throws IOException
+	public static ExternalFileEditorInput getExternalFileEditorInput(IURIEditorInput input, ArtifactType artifactType) throws CoreException, IOException
 	{
 		URI uri = input.getURI();
 		URL url = uri.toURL();
@@ -103,17 +103,14 @@ public class EditorUtils
 		{
 			cspecFile = File.createTempFile(artifactType.getTempPrefix(), artifactType.getTempExtension());
 			cspecFile.deleteOnExit();
-			InputStream is = null;
 			OutputStream os = null;
 			try
 			{
-				is = URLUtils.openStream(url, null);
 				os = new FileOutputStream(cspecFile);
-				IOUtils.copy(is, os, null);
+				DownloadManager.readInto(url, os, null);
 			}
 			finally
 			{
-				IOUtils.close(is);
 				IOUtils.close(os);
 			}
 		}

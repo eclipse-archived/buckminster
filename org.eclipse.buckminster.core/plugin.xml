@@ -40,8 +40,6 @@
  <extension-point id="queryResolvers" name="%QueryResolvers" schema="schema/queryResolvers.exsd"/>
  <extension-point id="materializers" name="%Materializers" schema="schema/materializers.exsd"/>
  <extension-point id="qualifierGenerators" name="%QualifierGenerators" schema="schema/qualifierGenerators.exsd"/>
- <extension-point id="expanders" name="Expanders" schema="schema/expanders.exsd"/>
- <extension-point id="decompressors" name="Decompressors" schema="schema/decompressors.exsd"/>
  <extension-point id="targetPlatformProviders" name="%TargetPlatformProviders" schema="schema/targetPlatformProviders.exsd"/>
 	<!-- Declare known versionTypes -->
  <extension
@@ -125,13 +123,6 @@
 	</extension>
 	<!-- Declare known remoteReaders -->
 	<!-- Declare known componentTypes -->
- <extension
-       point="org.eclipse.buckminster.core.expanders">
-    <expander
-          class="org.eclipse.buckminster.core.materializer.ZipExpander"
-          suffixes=".zip">
-    </expander>
- </extension>
 	<extension point="org.eclipse.buckminster.core.actors">
 		<actor
 			ID="null"
@@ -298,13 +289,6 @@
           class="org.eclipse.buckminster.core.materializer.TargetPlatformMaterializer"
           id="targetPlatform">
     </materializer>
- </extension>
- <extension
-       point="org.eclipse.buckminster.core.decompressors">
-    <decompressor
-          class="org.eclipse.buckminster.core.materializer.GZIPDecompressor"
-          suffixes=".gz">
-    </decompressor>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.targetPlatformProviders">

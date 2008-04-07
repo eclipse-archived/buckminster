@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -30,6 +31,7 @@ public class URIMatcherBuilder extends AbstractResolutionBuilder
 	public DepNode build(IComponentReader[] rdr, boolean forResolutionAidOnly,
 			IProgressMonitor mon) throws CoreException
 	{
-		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm, mon), Collections.<DepNode>emptyList());
+		MonitorUtils.complete(mon);
+		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm), Collections.<DepNode>emptyList());
 	}
 }

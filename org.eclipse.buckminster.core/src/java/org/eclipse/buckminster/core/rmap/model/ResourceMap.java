@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,10 +42,10 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
@@ -74,13 +73,13 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 	public static ResourceMap fromURL(URL url) throws CoreException
 	{
+		IParserFactory pf = CorePlugin.getDefault().getParserFactory();
+		IParser<ResourceMap> rmapParser = pf.getResourceMapParser(true);
 		InputStream input = null;
 		try
 		{
-			input = URLUtils.openStream(url, null);
-			IParserFactory pf = CorePlugin.getDefault().getParserFactory();
-			IParser<ResourceMap> rmapParser = pf.getResourceMapParser(true);
-			return rmapParser.parse(url.toString(), new BufferedInputStream(input));
+			input = DownloadManager.read(url);
+			return rmapParser.parse(url.toString(), input);
 		}
 		catch(IOException e)
 		{

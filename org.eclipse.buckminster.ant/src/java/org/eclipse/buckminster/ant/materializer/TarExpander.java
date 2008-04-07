@@ -1,60 +1,83 @@
 package org.eclipse.buckminster.ant.materializer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
-import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.materializer.IExpander;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.helpers.NullOutputStream;
+import org.eclipse.buckminster.download.IExpander;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class TarExpander extends AbstractExtension implements IExpander
 {
-	public void expand(InputStream inputs, IPath finalLocation, IProgressMonitor monitor) throws CoreException
+	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException
 	{
 		TarEntry entry;
 		TarInputStream input = null;
 
-		MonitorUtils.begin(monitor, 600);
-		File dest = null;
-		if(finalLocation != null)
+		int ticksLeft = 600;
+		MonitorUtils.begin(monitor, ticksLeft);
+		if(destinationFolder != null)
 		{
-			dest = finalLocation.toFile();
-			FileUtils.prepareDestination(dest, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 100));
+			if(!(destinationFolder.isDirectory() || destinationFolder.mkdirs()))
+				throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+
+			MonitorUtils.worked(monitor, 10);
+			ticksLeft -= 10;
 		}
 
 		try
 		{
-			int ticksLeft = 500;
 			input = new TarInputStream(inputs);
-
 			while((entry = input.getNextEntry()) != null)
 			{
 				String name = entry.getName();
-				IProgressMonitor subMonitor;
-				if(ticksLeft > 0)
-				{
-					subMonitor = MonitorUtils.subMonitor(monitor, 10);
-					ticksLeft -= 10;
-				}
-				else
-					subMonitor = null;
-
 				if(entry.isDirectory())
 				{
-					if(dest != null)
-						FileUtils.createDirectory(new File(dest, name), subMonitor);
+					if(destinationFolder == null)
+						continue;
+
+					File subDir = new File(destinationFolder, name);
+					if(!(subDir.isDirectory() || subDir.mkdirs()))
+						throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+
+					if(ticksLeft >= 10)
+					{
+						MonitorUtils.worked(monitor, 10);
+						ticksLeft -= 10;
+					}
 					continue;
 				}
-				FileUtils.copyFile(input, dest, name, subMonitor);
+
+				OutputStream output = null;
+				try
+				{
+					if(destinationFolder == null)
+						output = NullOutputStream.INSTANCE;
+					else
+						output = new FileOutputStream(new File(destinationFolder, name));
+					
+					IProgressMonitor subMon = null;
+					if(ticksLeft >= 20)
+					{
+						subMon = MonitorUtils.subMonitor(monitor, 10);
+						ticksLeft -= 10;
+					}
+					IOUtils.copy(input, output, subMon);
+				}
+				finally
+				{
+					IOUtils.close(output);
+				}
 			}
 			if(ticksLeft > 0)
 				MonitorUtils.worked(monitor, ticksLeft);

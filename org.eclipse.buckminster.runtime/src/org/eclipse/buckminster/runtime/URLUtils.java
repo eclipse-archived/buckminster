@@ -8,17 +8,13 @@
 package org.eclipse.buckminster.runtime;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.eclipse.buckminster.runtime.internal.DefaultCertificateTrustInquiry;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -26,8 +22,6 @@ import org.eclipse.core.runtime.Path;
  */
 public abstract class URLUtils
 {
-	private static ICertificateTrustInquiry s_trustInquiry = new DefaultCertificateTrustInquiry();
-
 	/**
 	 * Appends a trailing slash to <code>url</code> and returns the result. If the <code>url</code> already has a
 	 * trailing slash, the argument is returned without modification.
@@ -156,11 +150,6 @@ public abstract class URLUtils
 		}
 	}
 
-	public static ICertificateTrustInquiry getTrustInquiry()
-	{
-		return s_trustInquiry;
-	}
-
 	public static boolean isLocalURL(URL url)
 	{
 		String proto = url.getProtocol();
@@ -173,67 +162,6 @@ public abstract class URLUtils
 			proto = spec.substring(0, sepIdx);
 		}
 		return "file".equals(proto) || "platform".equals(proto) || proto.startsWith("bundle");
-	}
-
-	/**
-	 * This is a recommended way to retrieve the input stream for a generic URL. Any code doing 'url.openStream()',
-	 * should instead do 'URLUtils.openStream(url, <monitor-or-null>). There are two benefits: 1) if a monitor is used,
-	 * the action is cancellable. 2) it allows us to unify behavior in the presence of certain URL protols (e.g. https =>
-	 * may need to handle SSL certificates)
-	 * 
-	 * @param url
-	 *            the url to get the input stream from
-	 * @param monitor
-	 *            a monitor to report progress to and check for cancellation. Can be null.
-	 */
-	public static InputStream openStream(URL url, IProgressMonitor monitor) throws IOException
-	{
-		return openStream(url, monitor, null);
-	}
-
-	/**
-	 * This is a recommended way to retrieve the input stream for a generic URL. Any code doing 'url.openStream()',
-	 * should instead do 'URLUtils.openStream(url, <monitor-or-null>). There are two benefits: 1) if a monitor is used,
-	 * the action is cancellable. 2) it allows us to unify behavior in the presence of certain URL protols (e.g. https =>
-	 * may need to handle SSL certificates)
-	 * 
-	 * @param url
-	 *            the url to get the input stream from
-	 * @param monitor
-	 *            a monitor to report progress to and check for cancellation. Can be null.
-	 * @param fileInfo
-	 *            file info to set (if available)
-	 */
-	public static InputStream openStream(URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo)
-			throws IOException
-	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		URLStreamRetrieverRunnable usrr = new URLStreamRetrieverRunnable(url);
-		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-		try
-		{
-			usrr.setDaemon(true);
-			usrr.start();
-			while(usrr.isAlive())
-			{
-				usrr.join(200);
-				MonitorUtils.worked(monitor, 1);
-			}
-
-			if(usrr.getFileInfo() != null && fileInfo != null)
-				fileInfo.setAll(usrr.getFileInfo());
-
-			return usrr.handOverStream();
-		}
-		catch(InterruptedException e)
-		{
-			throw new IOException("Interrupted");
-		}
-		finally
-		{
-			usrr.cleanUp();
-			monitor.done();
-		}
 	}
 
 	public static URL normalizeToURL(String surl) throws MalformedURLException
@@ -320,12 +248,5 @@ public abstract class URLUtils
 		{
 			throw BuckminsterException.wrap(e);
 		}
-	}
-
-	public static void setTrustInquiry(ICertificateTrustInquiry trustInquiry)
-	{
-		if(trustInquiry == null)
-			trustInquiry = new DefaultCertificateTrustInquiry();
-		s_trustInquiry = trustInquiry;
 	}
 }

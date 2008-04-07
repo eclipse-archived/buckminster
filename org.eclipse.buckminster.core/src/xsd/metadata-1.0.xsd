@@ -71,6 +71,7 @@
 		<attribute name="repository" type="string" use="required" />
 		<attribute name="remoteName" type="string" use="optional" />
 		<attribute name="contentType" type="string" use="optional" />
+		<attribute name="lastModified" type="long" use="optional" />
 		<attribute name="size" type="long" use="optional" />
 
 		<!-- Deprecated. For backward compatiblity with 0.1.0 -->

@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.core.rmap.model;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
@@ -38,9 +37,9 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.FileInfoBuilder;
-import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -234,7 +233,7 @@ public class URIMatcher extends RxAssembly
 		return pm;
 	}
 
-	public Resolution createResolution(ProviderMatch pm, IProgressMonitor monitor) throws CoreException
+	public Resolution createResolution(ProviderMatch pm) throws CoreException
 	{
 		Map<String, String> matchMap = pm.getMatcherMap();
 		if(matchMap == null)
@@ -250,24 +249,18 @@ public class URIMatcher extends RxAssembly
 		bld.setComponentTypeID(ctype.getId());
 		bld.setFilter(getFilter(matchMap));
 
-		FileInfoBuilder fileInfo = new FileInfoBuilder();
-		InputStream input = null;
 		try
 		{
-			input = URLUtils.openStream(URLUtils.normalizeToURL(pm.getRepositoryURI()), monitor, fileInfo);
-			return new Resolution(bld.createCSpec(), pm.getNodeQuery(), pm.getProvider(), ctype.getId(), pm.getVersionMatch(), fileInfo);
+			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()));
+			return new Resolution(bld.createCSpec(), pm.getNodeQuery(), pm.getProvider(), ctype.getId(), pm.getVersionMatch(), info);
 		}
 		catch(FileNotFoundException e)
 		{
 			return null;
 		}
-		catch(Exception e)
+		catch(MalformedURLException e)
 		{
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
 		}
 	}
 

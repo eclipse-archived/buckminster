@@ -142,7 +142,7 @@ class CacheEntry
 				cache.schedule(materializer.getKey());
 			}
 			else if (fileInfo != null && m_fileInfo != null)
-				fileInfo.setAll(m_fileInfo);
+				fileInfo.initFrom(m_fileInfo);
 
 			// All is well. No exceptions will bring us here.
 			//

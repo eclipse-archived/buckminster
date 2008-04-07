@@ -46,7 +46,6 @@ import org.eclipse.buckminster.core.version.MissingVersionTypeException;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
-import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.LogAwarePlugin;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -464,25 +463,6 @@ public class CorePlugin extends LogAwarePlugin
 	public InputStream openCachedURL(URL url, IProgressMonitor monitor) throws IOException, CoreException
 	{
 		return m_urlCache.openURL(url, monitor);
-	}
-
-	/**
-	 * Opens a url using the short duration cache maintained by this plugin and sets the file info (if available)
-	 * 
-	 * @param url
-	 *            URL to open
-	 * @param monitor
-	 *            progress monitor
-	 * @param fileInfo
-	 *            file info to be retreived from the URL
-	 * 
-	 * @return input stream for the url
-	 * @throws IOException
-	 */
-	public InputStream openCachedURL(URL url, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException,
-			CoreException
-	{
-		return m_urlCache.openURL(url, monitor, fileInfo);
 	}
 
 	/**

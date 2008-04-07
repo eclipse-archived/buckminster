@@ -73,7 +73,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		m_features = features;
 		m_actionContext = AbstractActor.getActiveContext();
 		if(template != null)
-			m_saxableSite = SiteReader.getSite(template, null);
+			m_saxableSite = SiteReader.getSite(template);
 		else
 			m_saxableSite = new SaxableSite(new ExtendedSite());
 	}

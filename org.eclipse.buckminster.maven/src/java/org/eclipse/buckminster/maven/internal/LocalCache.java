@@ -20,14 +20,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.eclipse.buckminster.core.helpers.ProgressReporter;
-import org.eclipse.buckminster.core.helpers.ProgressStatistics;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.maven.MavenPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -100,7 +96,7 @@ public class LocalCache
 		m_localCacheRoot = localCacheRoot;
 	}
 
-	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor, FileInfoBuilder info)
+	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor)
 			throws CoreException, IOException
 	{
 		IProgressMonitor subMonitor = monitor;
@@ -110,7 +106,7 @@ public class LocalCache
 			File localFile;
 			try
 			{
-				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor, info);
+				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor);
 				monitor.subTask("Verifying digest...");
 				return new FileInputStream(localFile);
 			}
@@ -135,7 +131,7 @@ public class LocalCache
 		}
 	}
 
-	private static byte[] readRemoteDigest(StringBuilder urlBld, String suffix, int nBytes, IProgressMonitor monitor)
+	private static byte[] readRemoteDigest(StringBuilder urlBld, String suffix, int nBytes)
 			throws CoreException
 	{
 		int len = urlBld.length();
@@ -146,7 +142,7 @@ public class LocalCache
 		InputStream input = null;
 		try
 		{
-			input = URLUtils.openStream(new URL(urlStr), MonitorUtils.subMonitor(monitor, 5));
+			input = DownloadManager.read(new URL(urlStr));
 			return readHex(urlStr, input, nBytes);
 		}
 		catch(IOException e)
@@ -167,8 +163,7 @@ public class LocalCache
 
 	private static final int MD5_LEN = 16;
 
-	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor,
-			FileInfoBuilder info) throws IOException, CoreException
+	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException, CoreException
 	{
 		IPath fullPath = m_localCacheRoot.append(path);
 		File file = fullPath.toFile();
@@ -189,15 +184,15 @@ public class LocalCache
 		byte[] remoteMd5 = null;
 		if((failureCounter & 1) == 0)
 		{
-			remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN, MonitorUtils.subMonitor(monitor, 5));
+			remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN);
 			if(remoteMd5 == null)
-				remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN, MonitorUtils.subMonitor(monitor, 5));
+				remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN);
 		}
 		else
 		{
-			remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN, MonitorUtils.subMonitor(monitor, 5));
+			remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN);
 			if(remoteSha1 == null)
-				remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN, MonitorUtils.subMonitor(monitor, 5));
+				remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN);
 		}
 
 		byte[] remoteDigest;
@@ -215,11 +210,11 @@ public class LocalCache
 			localDigestFile = md5File;
 			digestSize = MD5_LEN;
 		}
-		InputStream input = null;
 		if(remoteDigest != null)
 		{
 			// Compare local and with remote digest for equality
 			//
+			InputStream input = null;
 			try
 			{
 				input = new FileInputStream(localDigestFile);
@@ -263,66 +258,15 @@ public class LocalCache
 		OutputStream output = null;
 		try
 		{
-			MonitorUtils.ensureNotNull(monitor);
-			monitor.beginTask(null, 1000);
-			monitor.subTask("Reading from " + remoteURL);
-
-
 			File outputDir = containingFolder.toFile();
 			if(!(outputDir.exists() || outputDir.mkdirs()))
 				throw new IOException("Unable to create directory " + outputDir);
 
-			input = URLUtils.openStream(remoteURL, MonitorUtils.subMonitor(monitor, 100), info);
 			output = new FileOutputStream(file);
-
-			byte[] buf = new byte[0x2000];
-			int count;
-
-			IProgressMonitor writeMonitor = MonitorUtils.subMonitor(monitor, failureCounter == 0
-					? 900
-					: 0);
-
-			writeMonitor.beginTask(null, info.getSize() > 0
-					? (int)info.getSize()
-					: IProgressMonitor.UNKNOWN);
-			try
-			{
-				ProgressStatistics progress = new ProgressStatistics(info.getSize());
-				progress.setConverter(ProgressStatistics.FILESIZE_CONVERTER);
-
-				ProgressReporter progressReporter = new ProgressReporter(writeMonitor, progress, "Fetching "
-						+ info.getName() + " (%s)", progress.getReportInterval());
-				progressReporter.start();
-
-				try
-				{
-					while((count = input.read(buf)) >= 0)
-					{
-						output.write(buf, 0, count);
-						md.update(buf, 0, count);
-						progress.increase(count);
-
-						// Bump the reporter to report the change
-						progressReporter.interrupt();
-
-						MonitorUtils.worked(writeMonitor, info.getSize() > 0
-								? count
-								: 1);
-					}
-				}
-				finally
-				{
-					progressReporter.stopReporting();
-				}
-			}
-			finally
-			{
-				writeMonitor.done();
-			}
+			DownloadManager.readInto(remoteURL, output, monitor);
 		}
 		finally
 		{
-			IOUtils.close(input);
 			IOUtils.close(output);
 		}
 

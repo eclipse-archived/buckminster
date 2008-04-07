@@ -8,17 +8,14 @@
 
 package org.eclipse.buckminster.core.materializer;
 
-import java.util.ArrayList;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.MapUnion;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -30,20 +27,14 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
  */
 public class MaterializationContext extends RMContext
 {
-	public static final String DECOMPRESSORS_POINT = CorePlugin.CORE_NAMESPACE + ".decompressors";
-	public static final String EXPANDERS_POINT = CorePlugin.CORE_NAMESPACE + ".expanders";
-
 	private final BillOfMaterials m_bom;
 	private final MaterializationSpec m_materializationSpec;
 	private final MaterializationStatistics m_statistics = new MaterializationStatistics();
@@ -239,113 +230,24 @@ public class MaterializationContext extends RMContext
 		return m_rebootNeeded;
 	}
 
-	public void processUnpack(Resolution resolution, IDecompressor[][] decompressorsHandle, IExpander[] expanderHandle)
+	public String getSuffixedName(Resolution resolution)
 	throws CoreException
 	{
 		MaterializationSpec mspec = getMaterializationSpec();
 		ComponentName cName = resolution.getComponentIdentifier();
 		if(!mspec.isUnpack(cName))
-			return;
+			return null;
 
 		String name = mspec.getSuffix(cName);
 		if(name == null)
 		{
 			IReaderType rd = resolution.getProvider().getReaderType();
 			IPath leaf = rd.getLeafArtifact(resolution, this);
-			if(leaf == null ||leaf.segmentCount() == 0)
+			if(leaf == null || leaf.segmentCount() == 0)
 				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of %s", cName);
 			name = leaf.segment(0);
 		}
-
-		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = extRegistry.getConfigurationElementsFor(DECOMPRESSORS_POINT);
-		int idx = elems.length;
-		String[][] suffixes = new String[idx][];
-		while(--idx >= 0)
-			suffixes[idx] = TextUtils.split(elems[idx].getAttribute("suffixes"), ",");
-
-		boolean first = true;
-		ArrayList<IDecompressor> decompressorList = null;
-		while(name.length() > 0)
-		{
-			// Find the suffix that matches the most characters at the
-			// end of the path
-			//
-			int matchIdx = -1;
-			int matchLen = -1;
-			idx = elems.length;
-			while(--idx >= 0)
-			{
-				for(String suffix : suffixes[idx])
-				{
-					if(suffix.length() > matchLen && name.endsWith(suffix))
-					{
-						matchLen = suffix.length();
-						matchIdx = idx;
-					}
-				}
-			}
-
-			if(matchIdx < 0)
-			{
-				// No matching decompressor was found
-				//
-				if(first && !mspec.isExpand(cName))
-					throw BuckminsterException.fromMessage("Unable find decompressor for " + cName);
-				break;
-			}
-
-			if(decompressorsHandle != null)
-			{
-				if(decompressorList == null)
-					decompressorList = new ArrayList<IDecompressor>();
-	
-				IConfigurationElement elem = elems[matchIdx];
-				decompressorList.add(IDecompressor.class.cast(elem.createExecutableExtension("class")));
-			}
-
-			// Strip of suffix managed by this decompressor
-			//
-			name = name.substring(0, name.length() - matchLen);
-			first = false;
-		}
-		if(decompressorList != null)
-			decompressorsHandle[0] = decompressorList.toArray(new IDecompressor[decompressorList.size()]);
-
-		if(!mspec.isExpand(cName))
-			return;
-
-		elems = extRegistry.getConfigurationElementsFor(EXPANDERS_POINT);
-		idx = elems.length;
-		suffixes = new String[idx][];
-		while(--idx >= 0)
-			suffixes[idx] = TextUtils.split(elems[idx].getAttribute("suffixes"), ",");
-
-		// Find the suffix that matches the most characters at the
-		// end of the path
-		//
-		int matchIdx = -1;
-		int matchLen = -1;
-		idx = elems.length;
-		while(--idx >= 0)
-		{
-			for(String suffix : suffixes[idx])
-			{
-				if(suffix.length() > matchLen && name.endsWith(suffix))
-				{
-					matchLen = suffix.length();
-					matchIdx = idx;
-				}
-			}
-		}
-		if(matchIdx >= 0)
-		{
-			if(expanderHandle != null)
-				expanderHandle[0] = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class"));
-			name = name.substring(0, name.length() - matchLen);
-		}
-		else
-			throw BuckminsterException.fromMessage("Unable find expander for " + cName);
+		return name;
 	}
 
 	/**

@@ -7,7 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.commands;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +29,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IMarker;
@@ -166,7 +166,7 @@ public class Perform extends WorkspaceCommand
 			try
 			{
 				URL propsURL = URLUtils.normalizeToURL(v);
-				input = new BufferedInputStream(URLUtils.openStream(propsURL, null));
+				input = DownloadManager.read(propsURL);
 				Map<String,String> props = new BMProperties(input);
 				if(m_props == null)
 					m_props = props;

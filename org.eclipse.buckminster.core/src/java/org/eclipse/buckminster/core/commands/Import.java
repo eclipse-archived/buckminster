@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.core.commands;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -20,6 +19,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -49,18 +49,19 @@ public class Import extends WorkspaceInitCommand
 		try
 		{
 			InputStream bomIn = null;
+			MonitorUtils.begin(monitor, 100);
 			try
 			{
 				MaterializationSpec mspec = null;
-				monitor.beginTask(null, 100);
 				URL url = FileLocator.resolve(m_url);
 				if(url.getPath().endsWith(".mspec"))
 				{
-					mspec = MaterializationSpec.fromURL(m_url, MonitorUtils.subMonitor(monitor, 5));
+					mspec = MaterializationSpec.fromURL(m_url);
 					url = FileLocator.resolve(mspec.getURL());
 				}
+				MonitorUtils.worked(monitor, 5);
 
-				bomIn = new BufferedInputStream(URLUtils.openStream(url, MonitorUtils.subMonitor(monitor, 5)));
+				bomIn = DownloadManager.read(url);
 				BillOfMaterials bom = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true).parse(url.toString(), bomIn);
 				IOUtils.close(bomIn);
 				bomIn = null;
@@ -84,7 +85,7 @@ public class Import extends WorkspaceInitCommand
 			finally
 			{
 				IOUtils.close(bomIn);
-				monitor.done();
+				MonitorUtils.done(monitor);
 			}
 		}
 		catch(Throwable t)

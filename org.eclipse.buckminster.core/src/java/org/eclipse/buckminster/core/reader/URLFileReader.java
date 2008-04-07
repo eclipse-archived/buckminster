@@ -14,17 +14,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializerEndPoint;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -38,7 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class URLFileReader extends AbstractReader implements IFileReader
 {
 	private final URI m_uri;
-	private FileInfoBuilder m_fileInfo;
+	private IFileInfo m_fileInfo;
 
 	protected URLFileReader(IReaderType readerType, ProviderMatch rInfo, URI uri) throws CoreException
 	{
@@ -75,7 +74,6 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		monitor.subTask("Copying from " + url);
 
 		InputStream in = null;
-		OutputStream out = null;
 		try
 		{
 			if(destFile.toURI().toURL().equals(url))
@@ -84,12 +82,14 @@ public class URLFileReader extends AbstractReader implements IFileReader
 				//
 				return;
 
-			in = open(MonitorUtils.subMonitor(monitor, 800));
-			File destDir = destFile.getParentFile();
+			IFileInfo[] fiHandle = new IFileInfo[1];
+			in = DownloadManager.getCache().open(url, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+			m_fileInfo = fiHandle[0];
 
 			// Assert that parent directory exists unless
 			// we are at the root.
 			//
+			File destDir = destFile.getParentFile();
 			if(destDir != null && !destDir.isDirectory())
 				FileUtils.createDirectory(destDir, MonitorUtils.subMonitor(monitor, 100));
 			else
@@ -104,17 +104,17 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		finally
 		{
 			IOUtils.close(in);
-			IOUtils.close(out);
 			monitor.done();
 		}
 	}
 
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
 	{
-		m_fileInfo = new FileInfoBuilder();
-		InputStream stream = CorePlugin.getDefault().openCachedURL(getURL(), monitor, m_fileInfo);
-		
-		return stream;
+		ICache cache = DownloadManager.getCache();
+		IFileInfo[] fiHandle = new IFileInfo[1];
+		InputStream input = cache.open(getURL(), null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+		m_fileInfo = fiHandle[0];
+		return input;
 	}
 
 	public IFileInfo getFileInfo()

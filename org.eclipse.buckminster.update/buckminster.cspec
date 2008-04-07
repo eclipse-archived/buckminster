@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.update" componentType="buckminster" version="1.0.0.qualifier" versionType="OSGi">
     <cs:dependencies>
-        <cs:dependency name="org.eclipse.buckminster.core.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.core.feature" componentType="eclipse.feature" versionDesignator="1.1.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature" versionDesignator="1.1.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.cvs.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.cvs.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.maven.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.maven.feature" componentType="eclipse.feature" versionDesignator="1.1.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.p4.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.p4.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.pde.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.pde.feature" componentType="eclipse.feature" versionDesignator="1.1.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="1.1.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.remote.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subclipse.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subclipse.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>

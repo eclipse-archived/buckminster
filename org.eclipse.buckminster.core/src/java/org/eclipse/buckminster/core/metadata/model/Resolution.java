@@ -43,7 +43,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Resolution extends UUIDKeyed implements ISaxable
+public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 {
 	public static final String TAG = "resolution";
 
@@ -64,6 +64,8 @@ public class Resolution extends UUIDKeyed implements ISaxable
 	public static final String ATTR_REMOTE_NAME = "remoteName";
 
 	public static final String ATTR_CONTENT_TYPE = "contentType";
+
+	public static final String ATTR_LAST_MODIFIED = "lastModified";
 
 	public static final String ATTR_SIZE = "size";
 
@@ -87,6 +89,8 @@ public class Resolution extends UUIDKeyed implements ISaxable
 
 	private final String m_contentType;
 
+	private final long m_lastModified;
+
 	private final long m_size;
 
 	private transient CSpec m_cspec;
@@ -107,12 +111,14 @@ public class Resolution extends UUIDKeyed implements ISaxable
 		{
 			m_remoteName = null;
 			m_contentType = null;
+			m_lastModified = 0L;
 			m_size = -1L;
 		}
 		else
 		{
 			m_remoteName = fi.getName();
 			m_contentType = fi.getContentType();
+			m_lastModified = fi.getLastModified();
 			m_size = fi.getSize();
 		}
 	}
@@ -131,21 +137,24 @@ public class Resolution extends UUIDKeyed implements ISaxable
 		m_materializable = reader.canMaterialize();
 		m_repository = providerMatch.getRepositoryURI();
 		
-		String contentType = null;
 		String remoteName = null;
+		String contentType = null;
+		long lastModified = 0L;
 		long size = -1L;
 		if(reader instanceof IFileReader)
 		{
 			IFileInfo fileInfo = ((IFileReader)reader).getFileInfo();
 			if(fileInfo != null)
 			{
-				contentType = fileInfo.getContentType();
+				lastModified = fileInfo.getLastModified();
 				remoteName = fileInfo.getName();
+				contentType = fileInfo.getContentType();
 				size = fileInfo.getSize();
 			}
 		}
 		m_remoteName = remoteName;
 		m_contentType = contentType;
+		m_lastModified = lastModified;
 		m_size = size;
 	}
 
@@ -161,6 +170,7 @@ public class Resolution extends UUIDKeyed implements ISaxable
 		m_repository = old.getRepository();
 		m_remoteName = old.getRemoteName();
 		m_contentType = old.getContentType();
+		m_lastModified = old.getLastModified();
 		m_size = old.getSize();
 	}
 
@@ -176,12 +186,13 @@ public class Resolution extends UUIDKeyed implements ISaxable
 		m_repository = old.getRepository();
 		m_remoteName = old.getRemoteName();
 		m_contentType = old.getContentType();
+		m_lastModified = old.getLastModified();
 		m_size = old.getSize();
 	}
 
 	public Resolution(CSpec cspec, String componentTypeId, VersionMatch versionMatch, Provider provider,
 		boolean materializeable, ComponentRequest request, List<String> attributes,
-		String repository, String remoteName, String contentType, long size)
+		String repository, String remoteName, String contentType, long lastModified, long size)
 	{
 		m_cspec = cspec;
 		m_provider = provider;
@@ -193,6 +204,7 @@ public class Resolution extends UUIDKeyed implements ISaxable
 		m_repository = repository;
 		m_remoteName = remoteName;
 		m_contentType = contentType;
+		m_lastModified = lastModified;
 		m_size = size;
 	}
 
@@ -238,11 +250,6 @@ public class Resolution extends UUIDKeyed implements ISaxable
 	public IComponentType getComponentType() throws CoreException
 	{
 		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
-	}
-
-	public String getContentType()
-	{
-		return m_contentType;
 	}
 
 	public String getDefaultTag()
@@ -452,7 +459,9 @@ public class Resolution extends UUIDKeyed implements ISaxable
 			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
 		if(m_contentType != null)
 			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
-		if(m_size != -1)
+		if(m_lastModified != 0L)
+			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
+		if(m_size != -1L)
 			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
 	}
 
@@ -479,5 +488,15 @@ public class Resolution extends UUIDKeyed implements ISaxable
 	public URI getArtifactURI(RMContext context) throws CoreException
 	{
 		return getProvider().getReaderType().getArtifactURL(this, context);
+	}
+
+	public long getLastModified()
+	{
+		return m_lastModified;
+	}
+
+	public String getContentType()
+	{
+		return m_contentType;
 	}
 }

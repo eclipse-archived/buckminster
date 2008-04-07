@@ -8,16 +8,11 @@
 
 package org.eclipse.buckminster.core.materializer;
 
-import java.io.FileOutputStream;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.download.Installer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,22 +24,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class MaterializerEndPoint
 {
 	private final IPath m_finalDestination;
-	private final IDecompressor[] m_decompressors;
-	private final IExpander m_expander;
+	private final Installer m_installer;
 
-	MaterializerEndPoint(IPath finalLocation, IDecompressor[] decompressors, IExpander expander)
+	MaterializerEndPoint(IPath finalLocation, Installer installer)
 	{
 		m_finalDestination = finalLocation;
-		m_decompressors = decompressors == null ? new IDecompressor[0] : decompressors;
-		m_expander = expander;
+		m_installer = installer;
 	}
 
 	public static MaterializerEndPoint create(IPath location, Resolution resolution, MaterializationContext ctx) throws CoreException
 	{
-		IDecompressor[][] decompressorsHandle = new IDecompressor[1][];
-		IExpander[] expanderHandle = new IExpander[1];		
-		ctx.processUnpack(resolution, decompressorsHandle, expanderHandle);
-		return new MaterializerEndPoint(location, decompressorsHandle[0], expanderHandle[0]);
+		String suffixedName = ctx.getSuffixedName(resolution);
+		Installer installer = (suffixedName == null)
+			? Installer.getPlainInstaller()
+			: Installer.getInstaller(suffixedName, ctx.getMaterializationSpec().isExpand(resolution.getComponentIdentifier()));
+		return new MaterializerEndPoint(location, installer);
 	}
 
 	public IPath getFinalDestination()
@@ -54,43 +48,6 @@ public class MaterializerEndPoint
 
 	public void unpack(InputStream input, IProgressMonitor monitor) throws IOException, CoreException
 	{
-		int dcCount = m_decompressors.length;
-		monitor.beginTask(null, 100 + dcCount * 100);
-		if(dcCount > 0)
-		{
-			// We will want to close our IDecompressor instances
-			// later on but we don't want to close the input that
-			// was passed in. So we protect it here.
-			//
-			input = new FilterInputStream(input)
-			{
-				@Override
-				public void close()
-				{
-				}
-			};
-
-			for(IDecompressor decompressor : m_decompressors)
-				input = decompressor.decompress(input, MonitorUtils.subMonitor(monitor, 100));
-		}
-
-		OutputStream output = null;
-		try
-		{
-			if(m_expander != null)
-				m_expander.expand(input, m_finalDestination, MonitorUtils.subMonitor(monitor, 100));
-			else
-			{
-				output = new FileOutputStream(m_finalDestination.toFile());
-				FileUtils.copyFile(input, output, MonitorUtils.subMonitor(monitor, 100));
-			}
-		}
-		finally
-		{
-			IOUtils.close(output);
-			if(dcCount > 0)
-				IOUtils.close(input);
-			monitor.done();
-		}
+		m_installer.install(input, m_finalDestination.toFile(), monitor);
 	}
 }

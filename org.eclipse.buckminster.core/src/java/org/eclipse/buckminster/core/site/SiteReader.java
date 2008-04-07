@@ -18,6 +18,7 @@ import java.net.URL;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -43,41 +44,33 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("restriction")
 public class SiteReader implements IStreamConsumer<SaxableSite>
 {
-	public static SaxableSite getSite(URL siteURL, IProgressMonitor monitor) throws CoreException, IOException
+	public static SaxableSite getSite(URL siteURL) throws CoreException, IOException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 1);
 		InputStream input = null;
 		try
 		{
-			input = new BufferedInputStream(URLUtils.openStream(siteURL, monitor));
+			input = DownloadManager.read(siteURL);
 			SaxableSite site = parseSite(input, siteURL);
-			MonitorUtils.worked(monitor, 1);
 			return site;
 		}
 		finally
 		{
 			IOUtils.close(input);
-			monitor.done();
 		}
 	}
 
-	public static SaxableSite getSite(File siteFile, IProgressMonitor monitor) throws CoreException, IOException
+	public static SaxableSite getSite(File siteFile) throws CoreException, IOException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 1);
 		InputStream input = null;
 		try
 		{
 			input = new BufferedInputStream(new FileInputStream(siteFile));
 			SaxableSite site = parseSite(input, siteFile.toURI().toURL());
-			MonitorUtils.worked(monitor, 1);
 			return site;
 		}
 		finally
 		{
 			IOUtils.close(input);
-			monitor.done();
 		}
 	}
 

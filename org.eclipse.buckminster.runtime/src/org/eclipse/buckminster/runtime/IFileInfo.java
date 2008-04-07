@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text or
@@ -8,34 +8,38 @@
 
 package org.eclipse.buckminster.runtime;
 
+
 /**
  * @author Filip Hrbek
  *
  */
 public interface IFileInfo
 {
+	public static final String PROPERTY_CONTENT_TYPE = "contentType";
+
+	public static final String PROPERTY_LAST_MODIFIED = "lastModified";
+
+	public static final String PROPERTY_NAME = "name";
+
+	public static final String PROPERTY_SIZE = "size";
+
 	/**
 	 * @return the name (may return null)
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * @return the contentType (may return null)
 	 */
-	public String getContentType();
+	String getContentType();
+
+	/**
+	 * @return the timestamp when the file was last modified
+	 */
+	long getLastModified();
 
 	/**
 	 * @return the size or -1 if the size is not known
 	 */
-	public long getSize();
-	
-	/**
-	 * @return the most suitable extension (may return null)
-	 */
-	public String getExtension();
-	
-	/**
-	 * @return all extensions mapped to the file's content type (if not known, returns an empty array)
-	 */
-	public String[] getExtensions();
+	long getSize();
 }

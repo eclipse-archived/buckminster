@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.core.feature"
       label="Buckminster - Core"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.ui">
 
@@ -128,6 +128,12 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ecf"/>
+      <import plugin="org.eclipse.ecf.filetransfer"/>
+      <import plugin="org.eclipse.ecf.identity"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient"/>
+      <import plugin="org.eclipse.buckminster.download"/>
    </requires>
 
    <plugin

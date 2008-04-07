@@ -49,6 +49,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportBase.Key;
@@ -355,7 +356,16 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				File tempSite = getTempSite(userCache);
 				File subDir = new File(tempSite, typeDir);
 				File jarFile = new File(subDir, jarName);
-				FileUtils.copyFile(pluginURL, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
+				InputStream input = null;
+				try
+				{
+					input = DownloadManager.getCache().open(pluginURL, null, null, MonitorUtils.subMonitor(monitor, 900));
+					FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
+				}
+				finally
+				{
+					IOUtils.close(input);
+				}
 				Key remoteKey = base.getKey();
 
 				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(),
@@ -388,7 +398,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 				if(unpack)
 				{
-					InputStream input = new FileInputStream(jarFile);
+					input = new FileInputStream(jarFile);
 					File destDir = new File(subDir, vcName);
 					try
 					{
@@ -442,7 +452,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 		if(remoteLocation.getPath().endsWith(".map"))
 		{
-			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, new NullProgressMonitor()))
+			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation))
 			{
 				VersionedIdentifier vid = entry.getVersionedIdentifier();
 				if(name.equals(vid.getIdentifier()) && version.equalsUnqualified(VersionFactory.OSGiType.coerce(vid.getVersion())))
@@ -562,13 +572,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
-	private static RemotePluginEntry[] getMapPluginEntries(URL location, IProgressMonitor monitor) throws CoreException
+	private static RemotePluginEntry[] getMapPluginEntries(URL location) throws CoreException
 	{
 		InputStream input;
 		try
 		{
 			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
-			input = URLUtils.openStream(location, monitor);
+			input = DownloadManager.read(location);
 			MapFile.parse(input, location.toString(), mapEntries);
 			ArrayList<RemotePluginEntry> entries = new ArrayList<RemotePluginEntry>();
 			for(MapFileEntry entry : mapEntries)
@@ -616,11 +626,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	public IPluginEntry[] getSitePluginEntries(URL location, IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask(null, 100);
 		if(location.getPath().endsWith(".map"))
-			return getMapPluginEntries(location, monitor);
+		{
+			MonitorUtils.complete(monitor);
+			return getMapPluginEntries(location);
+		}
 
 		ISite site;
+		MonitorUtils.begin(monitor, 100);
 		synchronized(SiteManager.class)
 		{
 			site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
@@ -659,7 +672,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			}
 			finally
 			{
-				monitor.done();
+				MonitorUtils.done(monitor);
 			}
 		}
 	}

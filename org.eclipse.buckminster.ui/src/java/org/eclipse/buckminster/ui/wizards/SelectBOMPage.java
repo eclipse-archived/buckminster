@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -218,9 +219,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
 						QueryWizard wizard = getQueryWizard();
 						MaterializationSpecBuilder mspecBld = wizard.getMaterializationSpec();
-						input = URLUtils.openStream(urlToParse, MonitorUtils.subMonitor(monitor, 10));
-						FileUtils.copyFile(input, byteBld, MonitorUtils.subMonitor(monitor, 10));
-						input.close();
+						DownloadManager.readInto(urlToParse, byteBld, MonitorUtils.subMonitor(monitor, 20));
 						input = byteBld.getInputStream();
 
 						IParserFactory pf = CorePlugin.getDefault().getParserFactory();
@@ -241,10 +240,8 @@ public class SelectBOMPage extends AbstractQueryPage
 						{
 							mspecBld.initFrom(mspec);
 							urlToParse = mspec.getURL();
-							input = URLUtils.openStream(mspec.getURL(), MonitorUtils.subMonitor(monitor, 10));
 							byteBld.reset();
-							FileUtils.copyFile(input, byteBld, MonitorUtils.subMonitor(monitor, 10));
-							input.close();
+							DownloadManager.readInto(mspec.getURL(), byteBld, MonitorUtils.subMonitor(monitor, 20));
 						}
 						else
 						{

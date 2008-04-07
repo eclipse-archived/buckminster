@@ -31,9 +31,10 @@ import org.eclipse.buckminster.core.common.model.Split;
 import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.sax.TopHandler;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -163,9 +164,9 @@ public class PropertyFormatTestCase extends TestCase
 				super.startElement(uri, localName, qName, attrs);
 		}
 
-		public void parse(URL url) throws IOException, SAXException
+		public void parse(URL url) throws IOException, SAXException, CoreException
 		{
-			InputStream input = URLUtils.openStream(url, null);
+			InputStream input = DownloadManager.read(url);
 			try
 			{
 				InputSource source = new InputSource(new BufferedInputStream(input));

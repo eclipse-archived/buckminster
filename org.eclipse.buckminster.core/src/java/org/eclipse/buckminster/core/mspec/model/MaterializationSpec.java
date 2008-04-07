@@ -26,14 +26,13 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -67,12 +66,12 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		}
 	}
 
-	public static MaterializationSpec fromURL(URL url, IProgressMonitor monitor) throws CoreException
+	public static MaterializationSpec fromURL(URL url) throws CoreException
 	{
 		InputStream stream = null;
 		try
 		{
-			stream = URLUtils.openStream(url, monitor);
+			stream = DownloadManager.read(url);
 			return fromStream(url.toString(), stream);
 		}
 		catch(IOException e)

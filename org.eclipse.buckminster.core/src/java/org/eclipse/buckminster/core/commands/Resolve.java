@@ -117,11 +117,11 @@ public class Resolve extends WorkspaceInitCommand
 				//
 				bomOut = new BufferedOutputStream(new FileOutputStream(m_bomFile));
 				
+			MonitorUtils.begin(monitor, m_resolveOnly ? 40 : 100);
 			try
 			{
-				monitor.beginTask(null, m_resolveOnly ? 40 : 100);
-
-				ComponentQuery query = ComponentQuery.fromURL(m_url, true, MonitorUtils.subMonitor(monitor, 5));
+				ComponentQuery query = ComponentQuery.fromURL(m_url, true);
+				MonitorUtils.worked(monitor, 5);
 				ResolutionContext context = new ResolutionContext(query);
 				MainResolver resolver = new MainResolver(context);
 				context.setContinueOnError(continueOnError);
@@ -149,7 +149,7 @@ public class Resolve extends WorkspaceInitCommand
 			finally
 			{
 				IOUtils.close(bomOut);
-				monitor.done();
+				MonitorUtils.done(monitor);
 			}
 		}
 		catch(Throwable t)
