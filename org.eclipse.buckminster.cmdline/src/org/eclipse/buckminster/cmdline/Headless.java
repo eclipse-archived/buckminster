@@ -7,11 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.cmdline;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
-import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.buckminster.cmdline.parser.CommandLineParser;
@@ -22,8 +22,6 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.buckminster.runtime.URLUtils;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
@@ -253,10 +251,7 @@ public class Headless implements IApplication, OptionValueType
 				if(scriptFile.equals("-"))
 					lines = System.in;
 				else
-				{
-					URL url = URLUtils.normalizeToURL(scriptFile);
-					lines = URLUtils.openStream(url, new NullProgressMonitor());
-				}
+					lines = new FileInputStream(scriptFile);
 
 				LineNumberReader reader = new LineNumberReader(new InputStreamReader(lines));
 				String line;
