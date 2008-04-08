@@ -13,10 +13,12 @@ package org.eclipse.buckminster.pde.internal;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
@@ -58,25 +60,29 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
+		IVersion v = null;
 		if(m_type == InstalledType.PLUGIN)
 		{
 			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(m_componentName, null);
 			if(plugin != null)
-			{
-				IVersion v = VersionFactory.OSGiType.coerce(plugin.getBundleDescription().getVersion());
-				return new VersionMatch(v, null, getProvider().getSpace(), -1L, null, null);
-			}
+				v = VersionFactory.OSGiType.coerce(plugin.getBundleDescription().getVersion());
 		}
 		else
 		{
 			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(m_componentName, null);
 			if(feature != null)
-			{
-				String version = feature.getFeature().getVersion();
-				IVersion v = VersionFactory.OSGiType.fromString(version);
-				return new VersionMatch(v, null, getProvider().getSpace(), -1L, null, null);
-			}
+				v = VersionFactory.OSGiType.fromString(feature.getFeature().getVersion());
 		}
-		return null;
+		if(v == null)
+			return null;
+
+		NodeQuery query = getQuery();
+		IVersionDesignator dsg = query.getVersionDesignator();
+		if(!(dsg == null || dsg.designates(v)))
+		{
+			logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s", dsg));
+			return null;
+		}
+		return new VersionMatch(v, null, getProvider().getSpace(), -1L, null, null);
 	}
 }
