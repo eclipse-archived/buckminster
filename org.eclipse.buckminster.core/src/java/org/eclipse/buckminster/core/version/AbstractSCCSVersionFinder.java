@@ -334,9 +334,40 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			if(entry == null)
 				return null;
 
+			NodeQuery query = getQuery();
+
+			// Rule out anything that is above a given revision
+			//
+			long revision = query.getRevision();
+			if(revision != -1 && entry.getRevision() > revision)
+			{
+				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high");
+				return null;
+			}
+
+			// Rule out anything that is later then a given time
+			//
+			Date timestamp = query.getTimestamp();
+			if(timestamp != null)
+			{
+				Date entryTs = entry.getTimestamp();
+				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
+				{
+					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young");
+					return null;
+				}
+			}
+
 			IVersion version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
-			return new VersionMatch(version, null, getProvider().getSpace(), entry.getRevision(), entry.getTimestamp(),
-					null);
+			IVersionDesignator versionDesignator = query.getVersionDesignator();
+			if(!(versionDesignator == null || versionDesignator.designates(version)))
+			{
+				// Discriminated by our designator
+				//
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));
+				return null;
+			}			
+			return new VersionMatch(version, null, getProvider().getSpace(), entry.getRevision(), entry.getTimestamp(), null);
 		}
 		finally
 		{
