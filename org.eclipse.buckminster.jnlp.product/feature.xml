@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.jnlp.product"
       label="Java Webstart enabled Installer"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -401,15 +401,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.resources.win32"
-         os="win32"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.core.filesystem.linux.ppc"
          download-size="0"
          install-size="0"
@@ -626,5 +617,50 @@ This Agreement is governed by the laws of the State of New York and the intellec
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.resources.win32.x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.download"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ecf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.ecf.filetransfer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.ecf.identity"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.ecf.provider.filetransfer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.ecf.provider.filetransfer.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
