@@ -9,6 +9,8 @@ package org.eclipse.buckminster.jnlp.product;
 
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,6 +18,8 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -27,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
+import org.eclipse.buckminster.jnlp.bootstrap.CorruptedFileException;
 import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
@@ -68,7 +73,7 @@ public class ProductInstaller implements IProductInstaller
 
 	private static final int DEFAULT_UNPACK_COUNT = 80;
 
-	public void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException
+	public void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException, CorruptedFileException
 	{
 		m_main = main;
 
@@ -132,15 +137,16 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
-	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException, OperationCanceledException
+	private void installResource(String resourceName, ProgressFacade monitor) throws JNLPException, OperationCanceledException, CorruptedFileException
 	{
 		installResource(resourceName, monitor, true);
 	}
 
-	private void installResource(String resourceName, ProgressFacade monitor, boolean required) throws JNLPException, OperationCanceledException
+	private void installResource(String resourceName, ProgressFacade monitor, boolean required) throws JNLPException, OperationCanceledException, CorruptedFileException
 	{
 		monitor.taskIncrementalProgress(5);
 		InputStream resourceZip = getClass().getResourceAsStream(resourceName);
+		InputStream resourceZipMD5 = getClass().getResourceAsStream(resourceName + ".MD5");
 		monitor.taskIncrementalProgress(5);
 		if(resourceZip == null)
 		{
@@ -155,21 +161,30 @@ public class ProductInstaller implements IProductInstaller
 
 		try
 		{
-			installFromStream(resourceZip, monitor);
+			installFromStream(resourceZip, resourceZipMD5, monitor);
 		}
 		finally
 		{
 			Main.close(resourceZip);
+			Main.close(resourceZipMD5);
 		}
 	}
 
-	private void installFromStream(InputStream productZip, ProgressFacade monitor) throws JNLPException, OperationCanceledException
+	private void installFromStream(InputStream productZip, InputStream productZipMD5, ProgressFacade monitor) throws JNLPException, OperationCanceledException, CorruptedFileException
 	{
-		File installLocation = m_main.getInstallLocation();
-		ZipInputStream zipInput = new ZipInputStream(productZip);
-		ZipEntry zipEntry;
 		try
 		{
+			byte[] productBytes = readStream(productZip);
+			String computedMD5 = encrypt(productBytes, "MD5").trim();
+			String originalMD5 = new String(readStream(productZipMD5)).trim();
+			
+			if(!computedMD5.equals(originalMD5))
+				throw new CorruptedFileException();
+
+			File installLocation = m_main.getInstallLocation();
+			ZipInputStream zipInput = new ZipInputStream(new ByteArrayInputStream(productBytes));
+			ZipEntry zipEntry;
+			
 			while((zipEntry = zipInput.getNextEntry()) != null)
 			{
 				monitor.checkCanceled();				
@@ -278,6 +293,48 @@ public class ProductInstaller implements IProductInstaller
 		}
 	}
 
+	private byte[] readStream(InputStream input) throws IOException
+	{
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		byte[] copyBuf = new byte[8192];
+		int count;
+		while((count = input.read(copyBuf)) > 0)
+			output.write(copyBuf, 0, count);
+
+		return output.toByteArray();
+	}
+	
+	private static String encrypt(byte[] bytes, String algorithmName)
+	{
+		String md5val = "";
+		MessageDigest algorithm = null;
+
+		try
+		{
+			algorithm = MessageDigest.getInstance(algorithmName);
+		}
+		catch(NoSuchAlgorithmException nsae)
+		{
+			throw new IllegalArgumentException("Unknown encrypt algorithm: " + algorithmName);
+		}
+
+		algorithm.reset();
+		algorithm.update(bytes);
+		byte messageDigest[] = algorithm.digest();
+		StringBuffer hexString = new StringBuffer();
+
+		for(int i = 0; i < messageDigest.length; i++)
+		{
+			String hex = Integer.toHexString(0xFF & messageDigest[i]);
+			if(hex.length() == 1)
+			{
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+		md5val = hexString.toString();
+		return md5val;
+	}
 	private boolean recursiveUnpack(File file) throws IOException
 	{
 		// Make sure this jar file doesn't contain packed entries

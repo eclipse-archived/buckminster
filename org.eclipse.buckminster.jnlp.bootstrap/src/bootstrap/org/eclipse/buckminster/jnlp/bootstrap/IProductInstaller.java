@@ -15,7 +15,7 @@ import java.io.File;
  */
 public interface IProductInstaller
 {
-	void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException;
+	void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException, CorruptedFileException;
 	
 	public String getApplicationFolder();
 	

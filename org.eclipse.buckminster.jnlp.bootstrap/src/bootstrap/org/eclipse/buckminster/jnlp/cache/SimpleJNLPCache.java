@@ -8,8 +8,11 @@
 
 package org.eclipse.buckminster.jnlp.cache;
 
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -81,11 +84,15 @@ public class SimpleJNLPCache
 	// Delete everything which is not the latest and is older than 24 hours
 	private static final long OBSOLETE_THRESHOLD = 86400000;
 
+	private static final String CORRUPTED_DOWNLOAD_FOLDER = "corrupted.download";
+	
 	private final SimpleJNLPCacheClassLoader m_classLoader;
 
 	private final File m_location;
 	
 	private List<ISimpleJNLPCacheListener> m_listeners;
+	
+	private File m_latestFile = null;
 
 	public SimpleJNLPCache(File location)
 	{
@@ -132,8 +139,12 @@ public class SimpleJNLPCache
 
 					if(timestamp > latestTimestamp)
 					{
-						latestTimestamp = timestamp;
-						latestFile = file;
+						// tests if the latest cache is not corrupted
+						if(!new File(file, CORRUPTED_DOWNLOAD_FOLDER).exists())
+						{
+							latestTimestamp = timestamp;
+							latestFile = file;
+						}
 					}
 				}
 
@@ -237,9 +248,29 @@ public class SimpleJNLPCache
 		for (ISimpleJNLPCacheListener listener : m_listeners)
 			listener.finished(jnlp);
 
+		m_latestFile = latestFile;
+		
 		return updated;
 	}
 
+	public void removeLatest() throws JNLPException
+	{
+		if(m_latestFile != null)
+		{
+			// mark this cache as corrupted - cannot deleted right now, it could be locked by browser
+			try
+			{
+				new File(m_latestFile, CORRUPTED_DOWNLOAD_FOLDER).createNewFile();
+			}
+			catch(IOException e)
+			{
+				throw new JNLPException("Can not create a new file",
+						"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+			}
+			m_latestFile = null;
+		}
+	}
+	
 	public void addListener(ISimpleJNLPCacheListener listener)
 	{
 		m_listeners.add(listener);

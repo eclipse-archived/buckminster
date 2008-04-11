@@ -83,6 +83,12 @@ public class Main
 	public static final int DEFAULT_STARTUP_TIME = 4000;
 
 	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout";
+	
+	public static final String PROP_BASE_PATH_URL = "basePathURL";
+	
+	public static final String REPORT_ERROR_VIEW = "feedback.seam";
+	
+	public static final String REPORT_ERROR_CORRUPTEDFILE = "Materializator-CorruptedFile";
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
 
@@ -617,6 +623,23 @@ public class Main
 					}
 					throw e;
 				}
+				catch(CorruptedFileException e)
+				{
+					cache.removeLatest();
+					
+					try
+					{
+						reportToServer(props.getProperty(PROP_BASE_PATH_URL), REPORT_ERROR_CORRUPTEDFILE);
+					}
+					catch(IOException e1)
+					{
+						throw new JNLPException("The downloaded materialization wizard contains corrupted file\nError could not be reported",
+								"Trigger the materialization again", ERROR_CODE_RESOURCE_EXCEPTION, e1);
+					}
+
+					throw new JNLPException("The downloaded materialization wizard contains corrupted file",
+							"Trigger the materialization again", ERROR_CODE_RESOURCE_EXCEPTION);
+				}
 			}
 			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
 			// in the clipboard.
@@ -710,6 +733,14 @@ public class Main
 		{
 			SplashWindow.disposeSplash();
 		}
+	}
+
+	private void reportToServer(String basePath, String problem) throws IOException
+	{
+		String string = basePath + REPORT_ERROR_VIEW + "?problem=" + problem;
+		URL feedbackURL = new URL(string);
+		// ping feedback view to report it to apache log
+		feedbackURL.openConnection(); 
 	}
 
 	private byte[] loadData(String url) throws JNLPException
