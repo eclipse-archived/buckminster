@@ -41,7 +41,7 @@ public class TestOPMLParser extends TestCase
 
 	public void testParser() throws Exception
 	{
-		OPMLParser parser = new OPMLParser(false, false);
+		OPMLParser parser = new OPMLParser(true);
 		OutputStream out = System.out;
 		Utils.serialize(parseURL("http://hosting.opml.org/dave/spec/subscriptionList.opml", parser), out);
 		Utils.serialize(parseURL("http://hosting.opml.org/dave/spec/states.opml", parser), out);
