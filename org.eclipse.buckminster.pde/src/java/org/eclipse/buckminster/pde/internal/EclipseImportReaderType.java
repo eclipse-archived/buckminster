@@ -371,38 +371,52 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(),
 					base.getQuery(), name).toString());
 
+				File destDir = null;
 				boolean unpack = true;
-				if(!base.isFeature())
+				ConflictResolution cres = ConflictResolution.REPLACE;
+
+				if(jarName.endsWith(".zip"))
 				{
-					// Guess unpack based on classpath
+					// Special orbit packaging. Just unzip into the plug-ins folder
 					//
-					JarFile jf = new JarFile(jarFile);
-					Manifest mf = jf.getManifest();
-					if(mf != null)
+					destDir = subDir;
+					cres = ConflictResolution.UPDATE;
+				}
+				else
+				{
+					if(!base.isFeature())
 					{
-						String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(Constants.BUNDLE_CLASSPATH), ",");
-	
-						int top = classPath.length;
-						unpack = (top > 0);
-						for(int idx = 0; idx < top; ++idx)
+						// Guess unpack based on classpath
+						//
+						JarFile jf = new JarFile(jarFile);
+						Manifest mf = jf.getManifest();
+						if(mf != null)
 						{
-							if(classPath[idx].equals("."))
+							String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(Constants.BUNDLE_CLASSPATH), ",");
+		
+							int top = classPath.length;
+							unpack = (top > 0);
+							for(int idx = 0; idx < top; ++idx)
 							{
-								unpack = false;
-								break;
+								if(classPath[idx].equals("."))
+								{
+									unpack = false;
+									break;
+								}
 							}
 						}
+						jf.close();
 					}
-					jf.close();
+					if(unpack)
+						destDir = new File(subDir, vcName);
 				}
 
 				if(unpack)
 				{
 					input = new FileInputStream(jarFile);
-					File destDir = new File(subDir, vcName);
 					try
 					{
-						FileUtils.unzip(input, null, destDir, ConflictResolution.REPLACE, MonitorUtils.subMonitor(monitor, 100));
+						FileUtils.unzip(input, null, destDir, cres, MonitorUtils.subMonitor(monitor, 100));
 					}
 					finally
 					{
