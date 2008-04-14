@@ -16,6 +16,8 @@ public interface BootstrapConstants
 {
 	public static final String ERROR_HELP_URL = "http://www.eclipse.org/buckminster/materialization/troubleshooting.php";
 
+	public static final String ERROR_CODE_CORRUPTED_FILE_EXCEPTION = "CorruptedFileException";
+
 	public static final String ERROR_CODE_JNLP_SAX_EXCEPTION = "JnlpSAXException";
 
 	public static final String ERROR_CODE_ARTIFACT_SAX_EXCEPTION = "ArtifactSAXException";

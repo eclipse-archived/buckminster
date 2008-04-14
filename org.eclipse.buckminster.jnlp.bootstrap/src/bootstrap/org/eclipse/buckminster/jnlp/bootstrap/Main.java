@@ -34,6 +34,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,9 +89,11 @@ public class Main
 	
 	public static final String REPORT_ERROR_VIEW = "feedback.seam";
 	
-	public static final String REPORT_ERROR_CORRUPTEDFILE = "Materializator-CorruptedFile";
+	public static final String REPORT_ERROR_PREFIX = "Materializator-";
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
+	
+	private static String s_basePathUrl = null;
 
 	private File m_applicationData;
 
@@ -184,11 +187,13 @@ public class Main
 		}
 		catch(Throwable t)
 		{
-
+			String errorCode;
+			
 			if(t instanceof JNLPException)
 			{
 				JNLPException e = (JNLPException)t;
 				String problem = e.getMessage();
+				errorCode = e.getErrorCode();
 
 				if(e.getCause() != null)
 				{
@@ -198,11 +203,12 @@ public class Main
 				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem, e.getSolution(),
 						main.getErrorURL() == null
 								? null
-								: main.getErrorURL() + "?errorCode=" + e.getErrorCode()).open();
+								: main.getErrorURL() + "?errorCode=" + errorCode).open();
 			}
 			else
 			{
 				String problem = t.getMessage();
+				errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
 
 				if(problem == null)
 				{
@@ -214,7 +220,7 @@ public class Main
 				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem,
 						"Check your java installation and try again", main.getErrorURL() == null
 								? null
-								: main.getErrorURL() + "?errorCode=" + ERROR_CODE_RUNTIME_EXCEPTION).open();
+								: main.getErrorURL() + "?errorCode=" + errorCode).open();
 			}
 
 			try
@@ -228,6 +234,15 @@ public class Main
 			{
 			}
 
+			try
+			{
+				reportToServer(errorCode);
+			}
+			catch(IOException e)
+			{
+				// no report
+			}
+			
 			if(!fromApplet)
 				Runtime.getRuntime().exit(-1);
 		}
@@ -241,6 +256,26 @@ public class Main
 		pw.close();
 
 		return sw.toString();
+	}
+
+	private static void reportToServer(String errorCode) throws IOException
+	{
+		if(s_basePathUrl == null)
+			return;
+		
+		String javaVersion = URLEncoder.encode(System.getProperty("java.version"), "UTF-8");
+		String javaVendor = URLEncoder.encode(System.getProperty("java.vendor"), "UTF-8");
+
+		String string = s_basePathUrl + REPORT_ERROR_VIEW + "?errorCode=" + REPORT_ERROR_PREFIX + errorCode +
+		"&javaVersion=" + javaVersion + "&javaVendor=" + javaVendor;
+		URL feedbackURL = new URL(string);
+		// ping feedback view to report it to apache log
+		InputStream is = feedbackURL.openStream();
+		
+		byte[] copyBuf = new byte[8192];
+		while(is.read(copyBuf) > 0);
+
+		is.close();
 	}
 
 	public synchronized File getApplicationDataLocation() throws JNLPException
@@ -498,6 +533,8 @@ public class Main
 		{
 			Properties props = parseArguments(args);
 
+			s_basePathUrl = props.getProperty(PROP_BASE_PATH_URL);
+			
 			String tmp = props.getProperty(PROP_ERROR_URL);
 
 			if(tmp != null)
@@ -627,18 +664,8 @@ public class Main
 				{
 					cache.removeLatest();
 					
-					try
-					{
-						reportToServer(props.getProperty(PROP_BASE_PATH_URL), REPORT_ERROR_CORRUPTEDFILE);
-					}
-					catch(IOException e1)
-					{
-						throw new JNLPException("The downloaded materialization wizard contains corrupted file\nError could not be reported",
-								"Trigger the materialization again", ERROR_CODE_RESOURCE_EXCEPTION, e1);
-					}
-
-					throw new JNLPException("The downloaded materialization wizard contains corrupted file",
-							"Trigger the materialization again", ERROR_CODE_RESOURCE_EXCEPTION);
+					throw new JNLPException("The downloaded materialization wizard a contains corrupted file",
+							"Trigger the materialization again", ERROR_CODE_CORRUPTED_FILE_EXCEPTION);
 				}
 			}
 			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
@@ -733,14 +760,6 @@ public class Main
 		{
 			SplashWindow.disposeSplash();
 		}
-	}
-
-	private void reportToServer(String basePath, String problem) throws IOException
-	{
-		String string = basePath + REPORT_ERROR_VIEW + "?problem=" + problem;
-		URL feedbackURL = new URL(string);
-		// ping feedback view to report it to apache log
-		feedbackURL.openConnection(); 
 	}
 
 	private byte[] loadData(String url) throws JNLPException
