@@ -8,8 +8,8 @@
 
 package org.eclipse.buckminster.opml.model;
 
-import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxable;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -19,10 +19,16 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  *
  */
-public class OPML extends AbstractSaxableElement implements ISaxable
+public class OPML extends UUIDKeyed implements ISaxable
 {
+	public static final String OPML_NAMESPACE = "http://opml.org/spec2";
+	public static final String OPML_PREFIX = "opml";
+	public static final String OPML_NS_RESOURCE = "/opml-2.0-ns.xsd";
+
 	public static final String ATTR_VERSION = "version";
 	public static final String TAG = "opml";
+
+	public static final int SEQUENCE_NUMBER = 1;
 
 	private final Body m_body;
 	private final Head m_head;
@@ -74,5 +80,17 @@ public class OPML extends AbstractSaxableElement implements ISaxable
 	{
 		m_head.toSax(handler, namespace, prefix, m_head.getDefaultTag());
 		m_body.toSax(handler, namespace, prefix, m_body.getDefaultTag());
+	}
+	
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return OPML_NAMESPACE;
+	}
+	
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return OPML_PREFIX;
 	}
 }

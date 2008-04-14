@@ -38,12 +38,13 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Thomas Hallgren
  */
-public class FileStorage<T extends IUUIDKeyed> implements ISaxableStorage<T>
+public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 {
 	private final HashMap<UUID,TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();
 

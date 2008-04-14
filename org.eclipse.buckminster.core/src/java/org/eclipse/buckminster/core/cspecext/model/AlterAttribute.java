@@ -11,12 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.MissingPathException;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.PropertyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -33,8 +34,8 @@ public abstract class AlterAttribute<T extends TopLevelAttribute>
 	protected AlterAttribute(T base, Set<String> removedHints, Map<String, String> alteredHints)
 	{
 		m_base = base;
-		m_removedHints = UUIDKeyed.createUnmodifiableSet(removedHints);
-		m_alteredHints = UUIDKeyed.createUnmodifiableProperties(alteredHints);
+		m_removedHints = Utils.createUnmodifiableSet(removedHints);
+		m_alteredHints = ExpandingProperties.createUnmodifiableProperties(alteredHints);
 	}
 
 	/**

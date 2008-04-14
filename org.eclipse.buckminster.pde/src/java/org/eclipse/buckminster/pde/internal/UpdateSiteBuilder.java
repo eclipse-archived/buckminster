@@ -14,8 +14,6 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
@@ -38,8 +36,8 @@ public class UpdateSiteBuilder extends AbstractResolutionBuilder
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
 		CSpecBuilder cspecBld = ri.createCSpec();
-		CSpec cspec = this.applyExtensions(cspecBld.createCSpec(), forResolutionAidOnly, reader, monitor);
-		return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
+		CSpec cspec = applyExtensions(cspecBld.createCSpec(), forResolutionAidOnly, reader, monitor);
+		return createResolution(reader, cspec, null);
 	}
 }
 

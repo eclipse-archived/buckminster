@@ -10,7 +10,7 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.List;
 
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -27,7 +27,7 @@ public class RxGroup extends RxPart
 	public RxGroup(String name, boolean optional, List<RxPart> parts)
 	{
 		super(name, optional);
-		m_parts = UUIDKeyed.createUnmodifiableList(parts);
+		m_parts = Utils.createUnmodifiableList(parts);
 	}
 
 	@Override

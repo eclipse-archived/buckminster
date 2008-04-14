@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.metadata;
 
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 
 /**
  * @author Thomas Hallgren
@@ -16,7 +17,7 @@ public class ReferentialIntegrityException extends LocalizedException
 {
 	private static final long serialVersionUID = 7053885060385428942L;
 
-	public ReferentialIntegrityException(IUUIDKeyed instance, String operation, String reason)
+	public ReferentialIntegrityException(IUUIDPersisted instance, String operation, String reason)
 	{
 		super("Unable to %s the %s with id %s: %s",
 			operation, instance.getClass().getName(), instance.getId(), reason);

@@ -25,14 +25,11 @@ import org.xml.sax.SAXException;
  */
 public class Head extends AbstractSaxableElement
 {
-	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z");
-	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-
-	public static final String TAG = "head";
-	public static final String ELEM_DATE_CREATED = "dateCreated"; 
+	public static final String ELEM_DATE_CREATED = "dateCreated";
 	public static final String ELEM_DATE_MODIFIED = "dateModified";
+
 	public static final String ELEM_DOCS = "docs";
-	public static final String ELEM_EXPANSION_STATE = "expansionState";
+	public static final String ELEM_EXPANSION_STATE = "expansionState"; 
 	public static final String ELEM_OWNER_EMAIL = "ownerEmail";
 	public static final String ELEM_OWNER_ID = "ownerId";
 	public static final String ELEM_OWNER_NAME = "ownerName";
@@ -42,6 +39,9 @@ public class Head extends AbstractSaxableElement
 	public static final String ELEM_WINDOW_LEFT = "windowLeft";
 	public static final String ELEM_WINDOW_RIGHT = "windowRight";
 	public static final String ELEM_WINDOW_TOP = "windowTop";
+	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z");
+	public static final String TAG = "head";
 
 	private final Date m_dateCreated;
 	private final Date m_dateModified;
@@ -56,66 +56,6 @@ public class Head extends AbstractSaxableElement
 	private final int m_windowLeft;
 	private final int m_windowRight;
 	private final int m_windowTop;
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		// Order is significant here since the XML-schema defines a sequence
-		//
-		emitString(handler, namespace, prefix, ELEM_TITLE, m_title);
-		emitDate(handler, namespace, prefix, ELEM_DATE_CREATED, m_dateCreated);
-		emitDate(handler, namespace, prefix, ELEM_DATE_MODIFIED, m_dateModified);
-		emitString(handler, namespace, prefix, ELEM_OWNER_NAME, m_ownerName);
-		emitString(handler, namespace, prefix, ELEM_OWNER_EMAIL, m_ownerEmail);
-		emitString(handler, namespace, prefix, ELEM_OWNER_ID, m_ownerId);
-		emitString(handler, namespace, prefix, ELEM_DOCS, m_docs);
-		emitIntList(handler, namespace, prefix, ELEM_EXPANSION_STATE, m_expansionState);
-		emitInt(handler, namespace, prefix, ELEM_VERT_SCROLL_STATE, m_vertScrollState);
-		emitInt(handler, namespace, prefix, ELEM_WINDOW_TOP, m_windowTop);
-		emitInt(handler, namespace, prefix, ELEM_WINDOW_LEFT, m_windowLeft);
-		emitInt(handler, namespace, prefix, ELEM_WINDOW_BOTTOM, m_windowBottom);
-		emitInt(handler, namespace, prefix, ELEM_WINDOW_RIGHT, m_windowRight);
-	}
-
-	private void emitIntList(ContentHandler handler, String namespace, String prefix, String elemName, int[] value) throws SAXException
-	{
-		int top = value.length;
-		if(top > 0)
-		{
-			StringBuilder bld = new StringBuilder(top * 3);
-			bld.append(value[0]);
-			for(int idx = 1; idx < top; ++idx)
-			{
-				bld.append(',');
-				bld.append(value[idx]);
-			}
-			emitString(handler, namespace, prefix, elemName, bld.toString());
-		}
-	}
-
-	private void emitInt(ContentHandler handler, String namespace, String prefix, String elemName, int value) throws SAXException
-	{
-		if(value != 0)
-			emitString(handler, namespace, prefix, elemName, Integer.toString(value));
-	}
-
-	private void emitDate(ContentHandler handler, String namespace, String prefix, String elemName, Date date) throws SAXException
-	{
-		if(date != null)
-			emitString(handler, namespace, prefix, elemName, RFC_822_4DY_FORMAT.format(date));
-	}
-
-	private void emitString(ContentHandler handler, String namespace, String prefix, String elemName, Object value) throws SAXException
-	{
-		if(value == null)
-			return;
-		String qName = Utils.makeQualifiedName(prefix, elemName);
-		handler.startElement(namespace, elemName, qName, EMPTY_ATTRIBUTES);
-		char[] chars = value.toString().toCharArray();
-		if(chars.length > 0)
-			handler.characters(chars, 0, chars.length);
-		handler.endElement(namespace, elemName, qName);
-	}
 
 	public Head(HeadBuilder head)
 	{
@@ -202,5 +142,65 @@ public class Head extends AbstractSaxableElement
 	public int getWindowTop()
 	{
 		return m_windowTop;
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		// Order is significant here since the XML-schema defines a sequence
+		//
+		emitString(handler, namespace, prefix, ELEM_TITLE, m_title);
+		emitDate(handler, namespace, prefix, ELEM_DATE_CREATED, m_dateCreated);
+		emitDate(handler, namespace, prefix, ELEM_DATE_MODIFIED, m_dateModified);
+		emitString(handler, namespace, prefix, ELEM_OWNER_NAME, m_ownerName);
+		emitString(handler, namespace, prefix, ELEM_OWNER_EMAIL, m_ownerEmail);
+		emitString(handler, namespace, prefix, ELEM_OWNER_ID, m_ownerId);
+		emitString(handler, namespace, prefix, ELEM_DOCS, m_docs);
+		emitIntList(handler, namespace, prefix, ELEM_EXPANSION_STATE, m_expansionState);
+		emitInt(handler, namespace, prefix, ELEM_VERT_SCROLL_STATE, m_vertScrollState);
+		emitInt(handler, namespace, prefix, ELEM_WINDOW_TOP, m_windowTop);
+		emitInt(handler, namespace, prefix, ELEM_WINDOW_LEFT, m_windowLeft);
+		emitInt(handler, namespace, prefix, ELEM_WINDOW_BOTTOM, m_windowBottom);
+		emitInt(handler, namespace, prefix, ELEM_WINDOW_RIGHT, m_windowRight);
+	}
+
+	private void emitDate(ContentHandler handler, String namespace, String prefix, String elemName, Date date) throws SAXException
+	{
+		if(date != null)
+			emitString(handler, namespace, prefix, elemName, RFC_822_4DY_FORMAT.format(date));
+	}
+
+	private void emitInt(ContentHandler handler, String namespace, String prefix, String elemName, int value) throws SAXException
+	{
+		if(value != 0)
+			emitString(handler, namespace, prefix, elemName, Integer.toString(value));
+	}
+
+	private void emitIntList(ContentHandler handler, String namespace, String prefix, String elemName, int[] value) throws SAXException
+	{
+		int top = value.length;
+		if(top > 0)
+		{
+			StringBuilder bld = new StringBuilder(top * 3);
+			bld.append(value[0]);
+			for(int idx = 1; idx < top; ++idx)
+			{
+				bld.append(',');
+				bld.append(value[idx]);
+			}
+			emitString(handler, namespace, prefix, elemName, bld.toString());
+		}
+	}
+
+	private void emitString(ContentHandler handler, String namespace, String prefix, String elemName, Object value) throws SAXException
+	{
+		if(value == null)
+			return;
+		String qName = Utils.makeQualifiedName(prefix, elemName);
+		handler.startElement(namespace, elemName, qName, EMPTY_ATTRIBUTES);
+		char[] chars = value.toString().toCharArray();
+		if(chars.length > 0)
+			handler.characters(chars, 0, chars.length);
+		handler.endElement(namespace, elemName, qName);
 	}
 }

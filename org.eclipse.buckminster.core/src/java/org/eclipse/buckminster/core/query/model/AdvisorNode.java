@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
@@ -150,8 +150,8 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable
 		m_revision = bld.getRevision();
 		m_timestamp = bld.getTimestamp();
 		m_resolutionPrio = bld.getResolutionPrio();
-		m_attributes = UUIDKeyed.createUnmodifiableList(bld.getAttributes());
-		m_properties = UUIDKeyed.createUnmodifiableProperties(bld.getProperties());
+		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
+		m_properties = ExpandingProperties.createUnmodifiableProperties(bld.getProperties());
 	}
 
 	public boolean allowCircularDependency()

@@ -3,6 +3,15 @@
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 
+	<xs:annotation>
+		<xs:documentation>
+			This is the XML-Schema for the OPML 2.0 specification that is used
+			when validating opml documents that does not declare a namespace. A
+			copy of this schema that declares opml with namespace can be found
+			in the file opml-2.0-ns.xsd
+		</xs:documentation>
+	</xs:annotation>
+
 	<xs:element name="opml" type="OPML"/>
 
 	<xs:complexType name="OPML">

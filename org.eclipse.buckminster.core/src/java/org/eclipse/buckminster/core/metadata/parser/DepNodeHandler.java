@@ -9,10 +9,10 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.xml.sax.SAXException;
 
 /**
@@ -25,7 +25,7 @@ abstract class DepNodeHandler extends ExtensionAwareHandler implements IWrapperP
 		super(parent);
 	}
 
-	public IUUIDKeyed getWrapped(UUID id) throws SAXException
+	public UUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		return ((IDWrapperHandler)getParentHandler()).getWrapped(id);
 	}

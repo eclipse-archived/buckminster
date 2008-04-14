@@ -17,12 +17,14 @@ import java.io.InputStream;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -47,13 +49,29 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 		IComponentReader reader = readerHandle[0];
 		try
 		{
+			OPML opml = null;
 			CSpec cspec;
 			if(reader instanceof ICatalogReader)
-				cspec = ((ICatalogReader)reader).readFile(CorePlugin.CSPEC_FILE, this, MonitorUtils.subMonitor(monitor, 1000));
+			{
+				ICatalogReader catRdr = (ICatalogReader)reader;
+				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE, MonitorUtils.subMonitor(monitor, 100));
+				cspec = catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100));
+
+				fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, null);
+				try
+				{
+					opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 100));
+				}
+				catch(FileNotFoundException e)
+				{
+					// This is OK, the OPML is optional
+				}
+			}
 			else
 				cspec = ((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000));
-			cspec = this.applyExtensions(cspec, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
-			return this.createResolution(reader, cspec);
+
+			cspec = applyExtensions(cspec, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
+			return createResolution(reader, cspec, opml);
 		}
 		catch(FileNotFoundException e)
 		{

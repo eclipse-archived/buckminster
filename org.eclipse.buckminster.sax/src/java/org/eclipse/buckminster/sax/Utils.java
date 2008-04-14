@@ -14,7 +14,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -316,5 +323,63 @@ public class Utils
 		{
 			throw new SAXException(e.getMessage());
 		}
+	}
+
+	public static <T> List<T> createUnmodifiableList(Collection<T> coll)
+	{
+		List<T> aList;
+		if(coll == null || coll.size() == 0)
+			aList = Collections.emptyList();
+		else
+		{
+			List<T> newList;
+			if(coll.size() == 1)
+			{
+				T value = (coll instanceof List) ? ((List<T>)coll).get(0) : coll.iterator().next();
+				newList = Collections.singletonList(value);
+			}
+			else
+				newList = new ArrayList<T>(coll);
+			aList = Collections.unmodifiableList(newList);
+		}
+		return aList;
+	}
+
+	public static <K,V> Map<K,V> createUnmodifiableMap(Map<K,V> aMap)
+	{
+		if(aMap == null || aMap.size() == 0)
+			aMap = Collections.emptyMap();
+		else
+		{
+			if(aMap.size() == 1)
+			{
+				Map.Entry<K,V> entry = aMap.entrySet().iterator().next();
+				aMap = Collections.singletonMap(entry.getKey(), entry.getValue());
+			}
+			else
+				aMap = new HashMap<K,V>(aMap);
+			aMap = Collections.unmodifiableMap(aMap);
+		}
+		return aMap;
+	}
+
+	public static <T> Set<T> createUnmodifiableSet(Collection<T> coll)
+	{
+		Set<T> aSet;
+		if(coll == null || coll.size() == 0)
+			aSet = Collections.emptySet();
+		else
+		{
+			Set<T> newSet;
+			if(coll.size() == 1)
+			{
+				T value = (coll instanceof List) ? ((List<T>)coll).get(0) : coll.iterator().next();
+				newSet = Collections.singleton(value);
+			}
+			else
+				newSet = new HashSet<T>(coll);
+			aSet = Collections.unmodifiableSet(newSet);
+		}
+		return aSet;
 	}
 }

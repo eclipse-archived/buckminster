@@ -27,7 +27,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -97,9 +96,9 @@ public class Action extends TopLevelAttribute
 		m_productAlias = builder.getProductAlias();
 		m_productBase = builder.getProductBase();
 		m_productFileCount = builder.getProductFileCount();
-		m_products = UUIDKeyed.createUnmodifiablePaths(builder.getProductPaths());
-		m_actorProperties = UUIDKeyed.createUnmodifiableProperties(builder.getActorProperties());
-		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());
+		m_products = CSpec.createUnmodifiablePaths(builder.getProductPaths());
+		m_actorProperties = ExpandingProperties.createUnmodifiableProperties(builder.getActorProperties());
+		m_properties = ExpandingProperties.createUnmodifiableProperties(builder.getProperties());
 		m_upToDatePolicy = builder.getUpToDatePolicy();
 	}
 

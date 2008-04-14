@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.core.runtime.CoreException;
@@ -66,19 +65,6 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 	{
 		this.parseInput(systemID, input);
 		return m_resourceMap;
-	}
-
-	class ResourceMapSAXParser extends SAXParserWrapper implements ISAXParser<ResourceMap>
-	{
-		public ResourceMap getResult()
-		{
-			return m_resourceMap;
-		}
-	}
-
-	public ISAXParser<ResourceMap> getSAXParser()
-	{
-		return new ResourceMapSAXParser();
 	}
 
 	void setResourceMap(ResourceMap resourceMap)

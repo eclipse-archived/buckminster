@@ -10,14 +10,15 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
-import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryHandler;
 import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
+import org.eclipse.buckminster.opml.parser.OPMLHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -34,6 +35,7 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 	private final UnresolvedNodeHandler m_unresolvedNodeHandler = new UnresolvedNodeHandler(this);
 	private final GeneratorNodeHandler m_generatorNodeHandler = new GeneratorNodeHandler(this);
 	private final ComponentQueryHandler m_componentQueryHandler = new ComponentQueryHandler(this, null);
+	private final OPMLHandler m_opmlHandler = new OPMLHandler(this);
 	private BillOfMaterialsHandler m_billOfMaterialsHandler;
 
 	private UUID m_id;
@@ -75,6 +77,8 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 			ch = m_generatorNodeHandler;
 		else if(m_componentQueryHandler.getTAG().equals(localName))
 			ch = m_componentQueryHandler;
+		else if(m_opmlHandler.getTAG().equals(localName))
+			ch = m_opmlHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
@@ -92,6 +96,8 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 			m_wrapper = new IDWrapper(m_id, m_resolutionHandler.getResolution());
 		else if(child == m_componentQueryHandler)
 			m_wrapper = new IDWrapper(m_id, m_componentQueryHandler.getComponentQuery());
+		else if(child == m_opmlHandler)
+			m_wrapper = new IDWrapper(m_id, m_opmlHandler.getOPML());
 	}
 
 	public IDWrapper getWrapper()
@@ -99,7 +105,7 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		return m_wrapper;
 	}
 
-	IUUIDKeyed getWrapped(UUID id) throws SAXException
+	UUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		return ((IWrapperParent)getParentHandler()).getWrapped(id);
 	}

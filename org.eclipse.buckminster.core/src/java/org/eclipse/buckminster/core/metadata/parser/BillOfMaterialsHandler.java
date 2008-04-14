@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
-import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.IDWrapper;
@@ -22,6 +21,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -87,7 +87,7 @@ public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppe
 	}
 
 	@Override
-	public IUUIDKeyed getWrapped(UUID id) throws SAXException
+	public UUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		IDWrapper wrapper = m_wrapperMap.get(id);
 		if(wrapper == null)

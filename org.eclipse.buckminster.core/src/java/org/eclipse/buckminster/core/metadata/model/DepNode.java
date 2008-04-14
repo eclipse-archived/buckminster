@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.sax.ISaxable;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class DepNode extends UUIDKeyed implements ISaxable
+public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 {
 	public static final int SEQUENCE_NUMBER = 3;
 

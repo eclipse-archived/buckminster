@@ -10,18 +10,24 @@
 
 package org.eclipse.buckminster.pde.cspecgen;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -54,16 +60,35 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		if(!(reader instanceof ICatalogReader))
 			reader = new ZipArchiveReader((IFileReader)reader);
 
-		monitor.beginTask(null, 2000);
+		ICatalogReader catRdr = (ICatalogReader)reader;
+		monitor.beginTask(null, forResolutionAidOnly ? 1200 : 1600);
 		monitor.subTask("Generating cspec from PDE artifacts");
 		try
 		{
 			m_usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
-			parseFile(cspecBuilder, forResolutionAidOnly, (ICatalogReader)reader, MonitorUtils.subMonitor(monitor, 1000));
+			parseFile(cspecBuilder, forResolutionAidOnly, catRdr, MonitorUtils.subMonitor(monitor, 1000));
 			CSpec cspec = applyExtensions(cspecBuilder.createCSpec(), forResolutionAidOnly, reader, MonitorUtils.subMonitor(
-				monitor, 1000));
-			return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
+				monitor, 200));
+
+			OPML opml = null;
+			if(!forResolutionAidOnly)
+			{
+				String fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, MonitorUtils.subMonitor(monitor, 200));
+				try
+				{
+					opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 200));
+				}
+				catch(FileNotFoundException e)
+				{
+					// This is OK, the OPML is optional
+				}
+				catch(IOException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+			return createResolution(reader, cspec, opml);
 		}
 		finally
 		{

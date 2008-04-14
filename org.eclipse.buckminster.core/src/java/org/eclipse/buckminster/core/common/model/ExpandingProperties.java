@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -555,5 +556,14 @@ public class ExpandingProperties implements IProperties
 	String getExpandedProperty(String key, int recursionGuard)
 	{
 		return convertValue(m_map.get(key), recursionGuard);
+	}
+
+	public static Map<String,String> createUnmodifiableProperties(Map<String,String> aMap)
+	{
+		if(aMap == null || aMap.size() == 0)
+			aMap = Collections.emptyMap();
+		else
+			aMap = Collections.unmodifiableMap(new ExpandingProperties(aMap));
+		return aMap;
 	}
 }

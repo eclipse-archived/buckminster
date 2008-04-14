@@ -13,7 +13,6 @@ import java.util.Collections;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -53,19 +52,6 @@ public class DocumentationParser extends AbstractParser<Documentation> implement
 	{
 		this.parseInput(systemID, input);
 		return m_documentation;
-	}
-
-	class DocumentationSAXParser extends SAXParserWrapper implements ISAXParser<Documentation>
-	{
-		public Documentation getResult()
-		{
-			return m_documentation;
-		}
-	}
-
-	public ISAXParser<Documentation> getSAXParser()
-	{
-		return new DocumentationSAXParser();
 	}
 
 	public void childPopped(ChildHandler child)

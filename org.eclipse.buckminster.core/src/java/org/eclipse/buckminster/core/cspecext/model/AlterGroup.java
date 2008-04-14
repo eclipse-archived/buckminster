@@ -17,7 +17,7 @@ import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -36,8 +36,8 @@ public class AlterGroup extends AlterAttribute<Group>
 			Set<String> removedPrerequisites, Map<String,Prerequisite> alteredPrerequisites)
 	{
 		super(base, removedHints, alteredHints);
-		m_removedPrerequisites = UUIDKeyed.createUnmodifiableSet(removedPrerequisites);
-		m_alteredPrerequisites = UUIDKeyed.createUnmodifiableMap(alteredPrerequisites);
+		m_removedPrerequisites = Utils.createUnmodifiableSet(removedPrerequisites);
+		m_alteredPrerequisites = Utils.createUnmodifiableMap(alteredPrerequisites);
 	}
 
 	@Override

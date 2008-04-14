@@ -19,9 +19,9 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -40,7 +40,7 @@ public class RxAssembly extends AbstractSaxableElement
 
 	public RxAssembly(List<RxPart> parts) throws CoreException, PatternSyntaxException
 	{
-		m_parts = UUIDKeyed.createUnmodifiableList(parts);
+		m_parts = Utils.createUnmodifiableList(parts);
 
 		StringBuilder bld = new StringBuilder();
 		bld.append('^');

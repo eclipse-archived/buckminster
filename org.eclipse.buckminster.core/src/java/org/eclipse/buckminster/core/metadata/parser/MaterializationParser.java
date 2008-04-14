@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.model.Materialization;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -47,19 +46,6 @@ public class MaterializationParser extends MetaDataParser<Materialization>
 	{
 		this.parseInput(systemID, input);
 		return m_materialization;
-	}
-
-	class MaterializationSAXParser extends SAXParserWrapper implements ISAXParser<Materialization>
-	{
-		public Materialization getResult()
-		{
-			return m_materialization;
-		}
-	}
-
-	public ISAXParser<Materialization> getSAXParser()
-	{
-		return new MaterializationSAXParser();
 	}
 
 	public void childPopped(ChildHandler child)

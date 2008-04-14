@@ -9,7 +9,7 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.xml.sax.SAXException;
 
 /**
@@ -17,5 +17,5 @@ import org.xml.sax.SAXException;
  */
 public interface IWrapperParent
 {
-	IUUIDKeyed getWrapped(UUID id) throws SAXException;
+	UUIDKeyed getWrapped(UUID id) throws SAXException;
 }

@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -44,19 +43,6 @@ public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
 	{
 		this.parseInput(systemID, input);
 		return m_resolution;
-	}
-
-	class BillOfMaterialsSAXParser extends SAXParserWrapper implements ISAXParser<BillOfMaterials>
-	{
-		public BillOfMaterials getResult()
-		{
-			return m_resolution;
-		}
-	}
-
-	public ISAXParser<BillOfMaterials> getSAXParser()
-	{
-		return new BillOfMaterialsSAXParser();
 	}
 
 	public void childPopped(ChildHandler child)

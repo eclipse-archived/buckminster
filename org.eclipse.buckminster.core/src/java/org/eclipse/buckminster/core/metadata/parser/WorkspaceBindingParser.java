@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -44,19 +43,6 @@ public class WorkspaceBindingParser extends MetaDataParser<WorkspaceBinding>
 	{
 		this.parseInput(systemID, input);
 		return m_wsBinding;
-	}
-
-	class WorkspaceBindingSAXParser extends SAXParserWrapper implements ISAXParser<WorkspaceBinding>
-	{
-		public WorkspaceBinding getResult()
-		{
-			return m_wsBinding;
-		}
-	}
-
-	public ISAXParser<WorkspaceBinding> getSAXParser()
-	{
-		return new WorkspaceBindingSAXParser();
 	}
 
 	public void childPopped(ChildHandler child)

@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.parser.MetaDataParser;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -50,19 +49,6 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 	{
 		this.parseInput(systemId, input);
 		return m_materializationSpec;
-	}
-
-	class MaterializationSpecSAXParser extends SAXParserWrapper implements ISAXParser<MaterializationSpec>
-	{
-		public MaterializationSpec getResult()
-		{
-			return m_materializationSpec;
-		}
-	}
-
-	public ISAXParser<MaterializationSpec> getSAXParser()
-	{
-		return new MaterializationSpecSAXParser();
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

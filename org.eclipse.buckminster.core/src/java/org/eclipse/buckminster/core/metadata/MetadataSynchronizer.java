@@ -16,14 +16,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.reader.EclipsePreferencesReader;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -40,6 +43,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -47,11 +51,13 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 @SuppressWarnings("restriction")
 public class MetadataSynchronizer implements IResourceChangeListener
@@ -169,16 +175,16 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				if(resource == null)
 					return false;
 
+				// Project is probably removed. If it is, we should have it in our cache
+				//
+				IProject project = resource.getProject();
+				if(project == null)
+					return true;
+
 				IPath relPath = resource.getProjectRelativePath();
 				IPath path = resource.getLocation();
 				if(path == null)
 				{
-					// Project is probably removed. If it is, we should have it in our cache
-					//
-					IProject project = resource.getProject();
-					if(project == null)
-						return true;
-
 					IPath projPath = m_deletedProjectLocations.get(project.getName());
 					if(projPath == null)
 						//
@@ -196,7 +202,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				synchronized(MetadataSynchronizer.this)
 				{
 					m_removedEntries.add(path);
-					if(isCSpecSource(relPath))
+					if(isCSpecSource(resource, relPath))
 					{
 						m_projectsNeedingUpdate.add(resource.getProject());
 						return false;
@@ -209,7 +215,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			{
 				IResource resource = delta.getResource();
 				IPath path = resource.getProjectRelativePath();
-				if((path.isEmpty() && resource instanceof IProject) || isCSpecSource(path))
+				if((path.isEmpty() && resource instanceof IProject) || isCSpecSource(resource, path))
 				{
 					synchronized(MetadataSynchronizer.this)
 					{
@@ -357,6 +363,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		// type as a placeholder.
 		//
 		s_default.registerCSpecSource(CorePlugin.CSPECEXT_FILE);
+		s_default.registerCSpecSource(EclipsePreferencesReader.BUCKMINSTER_PROJECT_PREFS_PATH);
 
 		for(IConfigurationElement elem : elems)
 		{
@@ -629,7 +636,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		return entry;
 	}
 
-	private boolean isCSpecSource(IPath path)
+	private boolean isCSpecSource(IResource resource, IPath path)
 	{
 		String pathStr = path.toPortableString();
 		for(Pattern pattern : m_cspecSources.values())
@@ -638,6 +645,25 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(m.matches())
 				return true;
 		}
+		IProject project = resource.getProject();
+		if(project == null)
+			return false;
+
+		ProjectScope scope = new ProjectScope(project);
+		IEclipsePreferences prefs = scope.getNode(CorePlugin.getID());
+
+		String tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+		
+		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
 		return false;
 	}
 }

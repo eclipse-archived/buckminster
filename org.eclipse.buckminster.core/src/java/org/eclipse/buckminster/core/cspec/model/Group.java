@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -108,7 +107,7 @@ public class Group extends TopLevelAttribute
 	{
 		super(builder);
 		m_prerequisiteRebase = builder.getRebase();
-		m_prerequisites = UUIDKeyed.createUnmodifiableList(builder.getPrerequisiteList());
+		m_prerequisites = Utils.createUnmodifiableList(builder.getPrerequisiteList());
 	}
 
 	public IPath getPrerequisiteRebase()

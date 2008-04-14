@@ -9,10 +9,10 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.ISaxableElement;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -28,16 +28,15 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 	public static final String ATTR_ID = "id";
 
 	private final UUID m_id;
-	private final IUUIDKeyed m_wrapped;
+	private final UUIDKeyed m_wrapped;
 
-	public IDWrapper(IUUIDKeyed wrapped)
+	public IDWrapper(UUIDKeyed wrapped)
 	{
 		this(wrapped.getId(), wrapped);
 	}
 
-	public IDWrapper(UUID id, IUUIDKeyed wrapped)
+	public IDWrapper(UUID id, UUIDKeyed wrapped)
 	{
-		assert wrapped instanceof ISaxableElement;
 		m_id = id;
 		m_wrapped = wrapped;
 	}
@@ -57,7 +56,7 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 		return m_id;
 	}
 
-	public IUUIDKeyed getWrapped()
+	public UUIDKeyed getWrapped()
 	{
 		return m_wrapped;
 	}

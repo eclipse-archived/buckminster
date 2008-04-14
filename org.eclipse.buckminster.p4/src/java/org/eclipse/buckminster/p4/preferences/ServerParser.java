@@ -57,19 +57,6 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 		return m_server;
 	}
 
-	class ServerSAXParser extends SAXParserWrapper implements ISAXParser<Server>
-	{
-		public Server getResult()
-		{
-			return m_server;
-		}
-	}
-
-	public ISAXParser<Server> getSAXParser()
-	{
-		return new ServerSAXParser();
-	}
-
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		m_server = ((ServerHandler)child).getServer();

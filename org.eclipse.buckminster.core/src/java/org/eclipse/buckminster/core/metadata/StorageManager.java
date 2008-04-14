@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -36,6 +37,8 @@ public class StorageManager
 
 	private final ISaxableStorage<Materialization> m_materializations;
 
+	private final ISaxableStorage<OPML> m_opmls;
+
 	public StorageManager(File baseLocation) throws CoreException
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
@@ -55,6 +58,9 @@ public class StorageManager
 
 		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
 			pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
+
+		m_opmls = new FileStorage<OPML>(new File(baseLocation, OPML.TAG),
+			pf.getOPMLParser(false), OPML.class, OPML.SEQUENCE_NUMBER);
 
 		m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
 			pf.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
@@ -85,6 +91,11 @@ public class StorageManager
 		return m_resolutions;
 	}
 
+	public ISaxableStorage<OPML> getOPMLs() throws CoreException
+	{
+		return m_opmls;
+	}
+
 	public ISaxableStorage<Provider> getProviders() throws CoreException
 	{
 		return m_providers;
@@ -101,6 +112,7 @@ public class StorageManager
 		|| m_resolutions.sequenceChanged()
 		|| m_cspecs.sequenceChanged()
 		|| m_providers.sequenceChanged()
+		|| m_opmls.sequenceChanged()
 		|| m_wsBindings.sequenceChanged())
 		{
 			// Don't use another thread here. It will deadlock

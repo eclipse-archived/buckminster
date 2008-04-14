@@ -25,12 +25,5 @@ public interface IParser<T>
 	 */
 	T parse(String systemId, InputStream stream)
 	throws CoreException;
-
-	/**
-	 * Sometimes its desirable to produce a model from
-	 * SAX events rather than reading from a file.
-	 * @return
-	 */
-	ISAXParser<T> getSAXParser();
 }
 

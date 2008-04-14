@@ -11,8 +11,8 @@ package org.eclipse.buckminster.core.mspec.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -52,7 +52,7 @@ public abstract class MaterializationDirective extends AbstractSaxableElement
 
 		m_materializer = builder.getMaterializer();
 		m_conflictResolution = builder.getConflictResolution();
-		m_properties = UUIDKeyed.createUnmodifiableProperties(builder.getProperties());
+		m_properties = ExpandingProperties.createUnmodifiableProperties(builder.getProperties());
 		m_maxParallelJobs = builder.getMaxParallelJobs();
 	}
 

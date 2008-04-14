@@ -26,9 +26,11 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
+import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -40,10 +42,10 @@ import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.buckminster.sax.ISaxable;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -56,7 +58,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class CSpec extends UUIDKeyed implements ISaxable
+public class CSpec extends UUIDKeyed implements IUUIDPersisted
 {
 	public static final String ATTR_FILTER = "filter";
 
@@ -537,11 +539,11 @@ public class CSpec extends UUIDKeyed implements ISaxable
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		if(m_documentation != null)
-			m_documentation.toSax(handler, BM_CSPEC_NS, BM_CSPEC_PREFIX, m_documentation.getDefaultTag());
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 
-		Utils.emitCollection(BM_CSPEC_NS, BM_CSPEC_PREFIX, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, m_dependencies.values(),
+		Utils.emitCollection(namespace, prefix, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, m_dependencies.values(),
 				handler);
-		Utils.emitCollection(BM_CSPEC_NS, BM_CSPEC_PREFIX, ELEM_GENERATORS, Generator.TAG, m_generators.values(),
+		Utils.emitCollection(namespace, prefix, ELEM_GENERATORS, Generator.TAG, m_generators.values(),
 				handler);
 		ArrayList<Attribute> topArtifacts = new ArrayList<Attribute>();
 		ArrayList<Attribute> actions = new ArrayList<Attribute>();
@@ -558,9 +560,21 @@ public class CSpec extends UUIDKeyed implements ISaxable
 		Collections.sort(topArtifacts, s_attributeSorter);
 		Collections.sort(actions, s_attributeSorter);
 		Collections.sort(groups, s_attributeSorter);
-		Utils.emitCollection(BM_CSPEC_NS, BM_CSPEC_PREFIX, ELEM_ARTIFACTS, null, topArtifacts, handler);
-		Utils.emitCollection(BM_CSPEC_NS, BM_CSPEC_PREFIX, ELEM_ACTIONS, null, actions, handler);
-		Utils.emitCollection(BM_CSPEC_NS, BM_CSPEC_PREFIX, ELEM_GROUPS, null, groups, handler);
+		Utils.emitCollection(namespace, prefix, ELEM_ARTIFACTS, null, topArtifacts, handler);
+		Utils.emitCollection(namespace, prefix, ELEM_ACTIONS, null, actions, handler);
+		Utils.emitCollection(namespace, prefix, ELEM_GROUPS, null, groups, handler);
+	}
+	
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_CSPEC_NS;
+	}
+	
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_CSPEC_PREFIX;
 	}
 
 	List<ActionArtifact> getActionArtifacts(Action action)
@@ -933,5 +947,19 @@ public class CSpec extends UUIDKeyed implements ISaxable
 			throw new MissingAttributeException(referencedCSpec.getComponentIdentifier().toString(), attributeName, true);
 		}
 		return null;
+	}
+
+	public static Set<IPath> createUnmodifiablePaths(Set<IPath> aSet)
+	{
+		if(aSet == null || aSet.size() == 0)
+			aSet = Collections.emptySet();
+		else
+		{
+			HashSet<IPath> saxablePaths = new HashSet<IPath>();
+			for(IPath path : aSet)
+				saxablePaths.add(SaxablePath.coerce(path));
+			aSet = Collections.unmodifiableSet(saxablePaths);
+		}
+		return aSet;
 	}
 }

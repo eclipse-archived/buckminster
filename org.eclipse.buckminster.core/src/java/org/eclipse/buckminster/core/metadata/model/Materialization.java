@@ -16,7 +16,7 @@ import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.sax.ISaxable;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -27,7 +27,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Materialization extends UUIDKeyed implements ISaxable
+public class Materialization extends UUIDKeyed implements IUUIDPersisted
 {
 	public static final String TAG = "materialization";
 

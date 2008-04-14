@@ -26,7 +26,6 @@ import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.SiteFeatureReader;
@@ -65,7 +64,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
 
 			if(forResolutionAidOnly)
-				return new ResolvedNode(new Resolution(getCSpecBuilder(siteFeature).createCSpec(), reader), null);
+				return createResolution(reader, getCSpecBuilder(siteFeature).createCSpec(), null);
 
 			NodeQuery query = reader.getNodeQuery();
 			QualifiedDependency qdep = new QualifiedDependency(query.getComponentRequest(), null);
@@ -153,7 +152,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		else
 			cspec = cspecBld.createCSpec();
 
-		node.setResolution(new Resolution(cspec, reader), children);
+		node.setResolution(new Resolution(cspec, null, reader), children);
 		MonitorUtils.worked(monitor, 5);
 		monitor.done();
 		return node;

@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.model.DepNode;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -62,19 +61,6 @@ public class DepNodeParser extends MetaDataParser<DepNode>
 	{
 		this.parseInput(systemID, input);
 		return m_resolvedNode;
-	}
-
-	class ResolvedNodeSAXParser extends SAXParserWrapper implements ISAXParser<DepNode>
-	{
-		public DepNode getResult()
-		{
-			return m_resolvedNode;
-		}
-	}
-
-	public ISAXParser<DepNode> getSAXParser()
-	{
-		return new ResolvedNodeSAXParser();
 	}
 
 	public void childPopped(ChildHandler child)

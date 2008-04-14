@@ -91,7 +91,7 @@ public class ResolvedNode extends DepNode
 	public ResolvedNode(Resolution resolution, List<DepNode> children)
 	{
 		m_resolution = resolution;
-		m_children = UUIDKeyed.createUnmodifiableList(children);
+		m_children = Utils.createUnmodifiableList(children);
 	}
 
 	@Override

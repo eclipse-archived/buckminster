@@ -91,6 +91,8 @@ public class CorePlugin extends LogAwarePlugin
 
 	public static final String CSPECEXT_FILE = "buckminster.cspex";
 
+	public static final String OPML_FILE = "buckminster.opml";
+
 	public static final String FORCED_ACTIVATIONS_POINT = CORE_NAMESPACE + ".forcedActivations";
 
 	public static final String QUALIFIER_GENERATOR_POINT = CORE_NAMESPACE + ".qualifierGenerators";

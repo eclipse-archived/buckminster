@@ -39,12 +39,16 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * @author Thomas Hallgren
  */
 public abstract class AbstractCatalogReader extends AbstractReader implements ICatalogReader
 {
+	private boolean m_prefStateKnown = false;
+	private IEclipsePreferences m_preferences;
+
 	protected AbstractCatalogReader(IReaderType readerType, ProviderMatch providerMatch)
 	{
 		super(readerType, providerMatch);
@@ -70,6 +74,33 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 		innerGetMatchingRootFiles(matchPattern, files, MonitorUtils.subMonitor(monitor, 90));
 		return files;
+	}
+
+	public synchronized IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException
+	{
+		if(m_prefStateKnown)
+		{
+			MonitorUtils.complete(monitor);
+			return m_preferences;
+		}
+
+		try
+		{
+			m_preferences = readFile(EclipsePreferencesReader.BUCKMINSTER_PROJECT_PREFS_PATH, EclipsePreferencesReader.INSTANCE, monitor);
+			return m_preferences;
+		}
+		catch(FileNotFoundException e)
+		{
+			return null;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			m_prefStateKnown = true;
+		}
 	}
 
 	public final FileHandle getContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
@@ -140,7 +171,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	public final <T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
 			throws CoreException, IOException
 	{
-		monitor.beginTask(null, 100);
+		MonitorUtils.begin(monitor, 100);
 		try
 		{
 			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 10));
@@ -168,7 +199,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 		finally
 		{
-			monitor.done();
+			MonitorUtils.done(monitor);
 		}
 	}
 
@@ -239,7 +270,10 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	{
 		URL overlay = getNodeQuery().getOverlayFolder();
 		if(overlay == null)
+		{
+			MonitorUtils.complete(monitor);
 			return null;
+		}
 
 		File fileOverlay;
 		try

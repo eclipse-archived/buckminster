@@ -252,7 +252,7 @@ public class URIMatcher extends RxAssembly
 		try
 		{
 			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()));
-			return new Resolution(bld.createCSpec(), pm.getNodeQuery(), pm.getProvider(), ctype.getId(), pm.getVersionMatch(), info);
+			return new Resolution(bld.createCSpec(), null, pm.getNodeQuery(), pm.getProvider(), ctype.getId(), pm.getVersionMatch(), info);
 		}
 		catch(FileNotFoundException e)
 		{

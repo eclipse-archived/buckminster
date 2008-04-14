@@ -13,7 +13,7 @@ import java.util.Set;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -29,7 +29,7 @@ public class AlterArtifact extends AlterAttribute<Artifact>
 	public AlterArtifact(Artifact base, Set<String> removedHints, Map<String, String> alteredHints, Set<IPath> removedPaths)
 	{
 		super(base, removedHints, alteredHints);
-		m_removedPaths = UUIDKeyed.createUnmodifiablePaths(removedPaths);
+		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
 	@Override

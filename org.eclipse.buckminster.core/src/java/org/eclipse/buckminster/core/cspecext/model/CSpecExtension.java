@@ -23,8 +23,8 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -57,10 +57,10 @@ public class CSpecExtension
 			Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes)
 	{
 		m_base = base;
-		m_removedDependencies = UUIDKeyed.createUnmodifiableSet(removedDependencies);
-		m_removedAttributes = UUIDKeyed.createUnmodifiableSet(removedAttributes);
-		m_alteredAttributes = UUIDKeyed.createUnmodifiableMap(alteredAttributes);
-		m_alteredDependencies = UUIDKeyed.createUnmodifiableMap(alteredDependencies);
+		m_removedDependencies = Utils.createUnmodifiableSet(removedDependencies);
+		m_removedAttributes = Utils.createUnmodifiableSet(removedAttributes);
+		m_alteredAttributes = Utils.createUnmodifiableMap(alteredAttributes);
+		m_alteredDependencies = Utils.createUnmodifiableMap(alteredDependencies);
 	}
 
 	/**

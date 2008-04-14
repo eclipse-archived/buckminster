@@ -22,10 +22,10 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
 
 /**
@@ -138,7 +138,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	{
 		if(m_parentContext != null)
 			return m_parentContext.getDecisionLog(request);
-		return UUIDKeyed.createUnmodifiableList(m_decisionLog.get(request));
+		return Utils.createUnmodifiableList(m_decisionLog.get(request));
 	}
 
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)

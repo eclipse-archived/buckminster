@@ -13,7 +13,6 @@ import java.util.List;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -63,19 +62,6 @@ public class AlterCSpecParser extends AbstractParser<CSpecExtension> implements 
 	{
 		this.parseInput(systemId, input);
 		return m_cSpecExtension;
-	}
-
-	class CSpecExtensionSAXParser extends SAXParserWrapper implements ISAXParser<CSpecExtension>
-	{
-		public CSpecExtension getResult()
-		{
-			return m_cSpecExtension;
-		}
-	}
-
-	public ISAXParser<CSpecExtension> getSAXParser()
-	{
-		return new CSpecExtensionSAXParser();
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

@@ -22,7 +22,6 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxableElement;
@@ -62,7 +61,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 	{
 		super(builder);
 		m_public = builder.isPublic();
-		m_installerHints = UUIDKeyed.createUnmodifiableProperties(builder.getInstallerHints());
+		m_installerHints = ExpandingProperties.createUnmodifiableProperties(builder.getInstallerHints());
 	}
 
 	TopLevelAttribute(String name)

@@ -32,8 +32,6 @@ import org.xml.sax.XMLReader;
  */
 public class OPMLParser extends TopHandler implements ChildPoppedListener, ErrorHandler
 {
-	private static final String OPML_NAMESPACE = "http://opml.org/spec2";
-
 	private final URL m_schemaURL;
 
 	private OPML m_opml;
@@ -51,9 +49,9 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 		setNamespaceAware(false);
 		setErrorHandler(this);
 
-		m_schemaURL = getClass().getResource("/opml-2.0.xsd");
+		m_schemaURL = OPMLParser.class.getResource("/opml-2.0.xsd");
 		if(m_schemaURL == null)
-			throw new SAXException("Unable to find XMLSchema for namespace " + OPML_NAMESPACE);
+			throw new SAXException("Unable to find XMLSchema for opml");
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -68,7 +66,7 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 		throw e;
     }
 
-	public OPML parse(String systemId, InputStream input) throws SAXException, IOException
+	public OPML parseInput(String systemId, InputStream input) throws SAXException, IOException
 	{
 		if(!(input instanceof BufferedInputStream || input instanceof ByteArrayInputStream))
 			input = new BufferedInputStream(input);

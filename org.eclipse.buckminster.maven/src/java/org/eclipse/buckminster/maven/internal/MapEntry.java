@@ -11,7 +11,6 @@ package org.eclipse.buckminster.maven.internal;
 
 import java.util.List;
 
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -29,7 +28,7 @@ class MapEntry extends GroupAndArtifact
 	{
 		super(groupId, artifactId);
 		m_name = name;
-		m_aliases = UUIDKeyed.createUnmodifiableList(aliases);
+		m_aliases = Utils.createUnmodifiableList(aliases);
 	}
 
 	public List<GroupAndArtifact> getAliases()

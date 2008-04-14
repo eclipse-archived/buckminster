@@ -11,10 +11,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.buckminster.core.XMLConstants;
-
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -65,19 +63,6 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 	{
 		this.parseInput(systemId, input);
 		return m_cSpec;
-	}
-
-	class CSpecSAXParser extends SAXParserWrapper implements ISAXParser<CSpec>
-	{
-		public CSpec getResult()
-		{
-			return m_cSpec;
-		}
-	}
-
-	public ISAXParser<CSpec> getSAXParser()
-	{
-		return new CSpecSAXParser();
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

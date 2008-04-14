@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.ctype;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -46,6 +47,16 @@ public interface IComponentType extends IBuckminsterExtension
 	public static final String UNKNOWN = "unknown";
 
 	public static final String ECLIPSE_SITE_FEATURE = "site.feature";
+
+	public static final String PREF_METADATA_FOLDER = CorePlugin.getID() + ".metadata.folder";
+
+	public static final String PREF_CSPEC_FILE = CorePlugin.getID() + ".cspec.file";
+
+	public static final String PREF_CSPEX_FILE = CorePlugin.getID() + ".cspex.file";
+
+	public static final String PREF_CQUERY_FILE = CorePlugin.getID() + ".cquery.file";
+
+	public static final String PREF_OPML_FILE = CorePlugin.getID() + ".opml.file";
 
 	/**
 	 * Extracts the component version from artifacts found inside of the component. Component

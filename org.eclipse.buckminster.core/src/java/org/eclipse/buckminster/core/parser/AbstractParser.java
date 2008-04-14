@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -48,7 +49,7 @@ import org.xml.sax.XMLReader;
 public abstract class AbstractParser<T> extends TopHandler implements ErrorHandler, IParser<T>
 {
 	private final boolean m_validating;
-	private final String m_namespaceLocations;
+	private final List<String> m_namespaceLocations;
 	private final List<ParserFactory.ParserExtension> m_parserExtensions;
 	private HashSet<String> m_printedWarnings;
 
@@ -74,7 +75,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 
 		if(top != schemaLocations.length)
 			throw new IllegalArgumentException("the namespace and schemaLocation arrays must be equal in length");
-		StringBuilder namespaceLocations = new StringBuilder();		
+		m_namespaceLocations = new ArrayList<String>();		
 		for(int idx = 0; idx < top; ++idx)
 		{
 			String namespace = namespaces[idx];
@@ -82,28 +83,22 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			URL schemaURL = getClass().getResource(schemaFile);
 			if(schemaURL == null)
 				throw BuckminsterException.fromMessage("Unable to find XMLSchema for namespace %s", namespace);
-			if(idx > 0)
-				namespaceLocations.append(' ');
-			namespaceLocations.append(namespace);
-			namespaceLocations.append(' ');
-			namespaceLocations.append(schemaURL.toString());
+			addNamespaceLocation(namespace, schemaURL);
 		}
 
 		if(parserExtensions != null)
 		{
 			for(ParserFactory.ParserExtension pe : parserExtensions)
-			{
-				if(namespaceLocations.length() > 0)
-					namespaceLocations.append(' ');
-				namespaceLocations.append(pe.getNamespace());
-				namespaceLocations.append(' ');
-				namespaceLocations.append(pe.getResource().toString());
-			}
+				addNamespaceLocation(pe.getNamespace(), pe.getResource());
 		}
 		m_parserExtensions = parserExtensions;
-		m_namespaceLocations = namespaceLocations.toString();
 		setNamespaceAware(true);
 		setErrorHandler(this);
+	}
+
+	protected void addNamespaceLocation(String namespace, URL location)
+	{
+		m_namespaceLocations.add(namespace + ' ' + location.toString());
 	}
 
 	protected void init()
@@ -115,7 +110,22 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			reader.setFeature("http://apache.org/xml/features/validation/schema", true);
 			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 		}
-		reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", m_namespaceLocations);
+
+		int len = 0;
+		int top = m_namespaceLocations.size();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			len += m_namespaceLocations.get(idx).length();
+			len++;
+		}
+		StringBuilder bld = new StringBuilder(len);
+		for(int idx = 0; idx < top; ++idx)
+		{
+			if(idx > 0)
+				bld.append(' ');
+			bld.append(m_namespaceLocations.get(idx));
+		}			
+		reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", bld.toString());
 	}
 
 	@Override
@@ -140,6 +150,34 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 
 	protected void parseInput(String systemId, InputStream input) throws CoreException
 	{
+		IFile[] files = clearMarkers(systemId);
+		try
+		{
+			init();
+			if(!(input instanceof BufferedInputStream || input instanceof ByteArrayInputStream))
+				input = new BufferedInputStream(input);
+			InputSource source = new InputSource(input);
+			if(systemId != null)
+				source.setSystemId(systemId);
+			getXMLReader().parse(source);
+		}
+		catch(SAXParseException e)
+		{
+			setMarkers(files, e);
+			throw BuckminsterException.wrap(e);
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			getXMLReader().setContentHandler(this);
+		}
+	}
+
+	public static IFile[] clearMarkers(String systemId)
+	{
 		// If the systemId is represented as a resource in the workspace, then remove
 		// all problem markers from it.
 		//
@@ -153,49 +191,32 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		{
 			// Ignore, probably a locked workspace
 		}
+		return files;
+	}
 
+	public static void setMarkers(IFile[] files, SAXParseException e)
+	{
+		// Annotate the file if "systemId" denotes a resource in a project
+		//
 		try
 		{
-			init();
-			if(!(input instanceof BufferedInputStream || input instanceof ByteArrayInputStream))
-				input = new BufferedInputStream(input);
-			InputSource source = new InputSource(input);
-			if(systemId != null)
-				source.setSystemId(systemId);
-			getXMLReader().parse(source);
-		}
-		catch(SAXParseException e)
-		{
-			// Annotate the file if "systemId" denotes a resource in a project
-			//
-			try
+			String msg = e.getMessage();
+			Matcher match = s_saxParseCleaner.matcher(msg);
+			if(match.matches())
+				msg = match.group(1);
+
+			for(IFile file : files)
 			{
-				String msg = e.getMessage();
-				Matcher match = s_saxParseCleaner.matcher(msg);
-				if(match.matches())
-					msg = match.group(1);
-				for(IFile file : files)
-				{
-					IMarker marker = file.createMarker(IMarker.PROBLEM);
-					marker.setAttribute(IMarker.MESSAGE, msg);
-					marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-					marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-					marker.setAttribute(IMarker.LINE_NUMBER, e.getLineNumber());
-				}
+				IMarker marker = file.createMarker(IMarker.PROBLEM);
+				marker.setAttribute(IMarker.MESSAGE, msg);
+				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+				marker.setAttribute(IMarker.LINE_NUMBER, e.getLineNumber());
 			}
-			catch(CoreException ce)
-			{
-				// Ignore
-			}
-			throw BuckminsterException.wrap(e);
 		}
-		catch(Exception e)
+		catch(CoreException ce)
 		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			getXMLReader().setContentHandler(this);
+			// Ignore
 		}
 	}
 

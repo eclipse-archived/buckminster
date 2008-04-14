@@ -12,12 +12,14 @@
 	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
 	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0"
 	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:opml="http://opml.org/spec2"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="http://www.eclipse.org/buckminster/MetaData-1.0">
 	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" />
 	<import namespace="http://www.eclipse.org/buckminster/CQuery-1.0" />
 	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" />
 	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
+	<import namespace="http://opml.org/spec2" />
 	<element name="billOfMaterials" type="md:BillOfMaterials" />
 	<!--  For backward compatibility -->
 	<element name="exportedBillOfMaterials" type="md:BillOfMaterials" />
@@ -50,6 +52,7 @@
 			<element name="resolvedNode" type="md:ResolvedNode" />
 			<element name="unresolvedNode" type="md:UnresolvedNode" />
 			<element name="generatorNode" type="md:GeneratorNode" />
+			<element name="opml" type="opml:OPML" />
 			<element name="billOfMaterials" type="md:BillOfMaterials" />
 		</choice>
 		<attribute name="id" type="com:uuid" use="required" />
@@ -64,6 +67,7 @@
 		</sequence>
 		<attribute name="attributes" type="string" use="optional" />
 		<attribute name="cspecId" type="com:uuid" use="required" />
+		<attribute name="opmlId" type="com:uuid" use="optional" />
 		<attribute name="componentType" type="string" use="optional" />
 		<attribute name="projectName" type="string" use="optional" />
 		<attribute name="materializable" type="boolean" use="required" />

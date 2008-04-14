@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.metadata.model;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -74,7 +75,7 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		m_timestamp = timestamp;
 		m_workspaceRoot = workspaceRoot;
 		m_workspaceRelativePath = workspaceRelativePath;
-		m_properties = UUIDKeyed.createUnmodifiableProperties(properties);
+		m_properties = ExpandingProperties.createUnmodifiableProperties(properties);
 	}
 
 	public int compareTo(WorkspaceBinding o)

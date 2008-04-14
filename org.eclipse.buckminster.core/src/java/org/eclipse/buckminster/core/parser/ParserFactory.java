@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.parser;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,14 +42,19 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.core.rmap.parser.ProviderParser;
 import org.eclipse.buckminster.core.rmap.parser.ResourceMapParser;
+import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.opml.parser.OPMLParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class ParserFactory implements IParserFactory
 {
@@ -245,6 +251,48 @@ public class ParserFactory implements IParserFactory
 			}
 		}
 		return peMap;
+	}
+
+	static class OPMLParserExt extends OPMLParser implements IParser<OPML>
+	{
+		OPMLParserExt(boolean validating) throws SAXException
+		{
+			super(validating);
+		}
+
+		public OPML parse(String systemId, InputStream input) throws CoreException
+		{
+			IFile[] files = AbstractParser.clearMarkers(systemId);
+			try
+			{
+				return parseInput(systemId, input);
+			}
+			catch(SAXParseException e)
+			{
+				AbstractParser.setMarkers(files, e);
+				throw BuckminsterException.wrap(e);
+			}
+			catch(Exception e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				getXMLReader().setContentHandler(this);
+			}
+		}
+	}
+
+	public IParser<OPML> getOPMLParser(boolean validating) throws CoreException
+	{
+		try
+		{
+			return new OPMLParserExt(validating);
+		}
+		catch(SAXException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 }
 

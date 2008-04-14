@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 
 public class QualifiedDependency
@@ -27,7 +27,7 @@ public class QualifiedDependency
 	public QualifiedDependency(ComponentRequest request, Collection<String> attributes)
 	{
 		m_request = request;
-		m_attributes = UUIDKeyed.createUnmodifiableSet(attributes);
+		m_attributes = Utils.createUnmodifiableSet(attributes);
 	}
 
 	public QualifiedDependency applyAdvice(AdvisorNode advice)

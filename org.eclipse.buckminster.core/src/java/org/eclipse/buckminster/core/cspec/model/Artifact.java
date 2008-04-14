@@ -18,7 +18,6 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -55,7 +54,7 @@ public class Artifact extends TopLevelAttribute
 				base = base.addTrailingSeparator();
 		}
 		m_base = base;
-		m_paths = UUIDKeyed.createUnmodifiablePaths(builder.getPaths());
+		m_paths = CSpec.createUnmodifiablePaths(builder.getPaths());
 	}
 
 	public IPath getBase()

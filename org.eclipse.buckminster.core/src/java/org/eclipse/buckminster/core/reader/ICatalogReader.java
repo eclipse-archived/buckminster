@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * A catalog reader knows how to read individual files from a component stored at a some
@@ -53,6 +54,15 @@ public interface ICatalogReader extends IComponentReader
 	 * @throws IOException
 	 */
 	List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException, IOException;
+
+	/**
+	 * Read the project specific preferences for Buckminster from the remote source.
+	 *
+	 * @param monitor
+	 * @return The found preferences or <code>null</code> if the file is missing
+	 * @throws CoreException
+	 */
+	IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Same as {@link #materialize(IPath, IProgressMonitor)} but overlay folders are not considered.

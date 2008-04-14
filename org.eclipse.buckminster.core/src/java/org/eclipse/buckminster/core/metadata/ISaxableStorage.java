@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.metadata.model.ElementNotFoundException;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Thomas Hallgren
  */
-public interface ISaxableStorage<T extends IUUIDKeyed>
+public interface ISaxableStorage<T extends UUIDKeyed>
 {
 	/**
 	 * Checks if this storage contains the given element

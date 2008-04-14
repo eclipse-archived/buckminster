@@ -31,8 +31,9 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.IFileInfo;
-import org.eclipse.buckminster.sax.ISaxable;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -43,7 +44,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
+public class Resolution extends UUIDKeyed implements IUUIDPersisted, IFileInfo
 {
 	public static final String TAG = "resolution";
 
@@ -56,6 +57,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 	public static final String ATTR_PROVIDER_ID = "providerId";
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
+
+	public static final String ATTR_OPML_ID = "opmlId";
 
 	public static final String ATTR_QUERY_ID = "queryId";
 
@@ -95,14 +98,17 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 
 	private transient CSpec m_cspec;
 
+	private transient OPML m_opml;
+
 	private transient Provider m_provider;
 
-	public Resolution(CSpec cspec, NodeQuery nq, Provider provider, String ctypeId, VersionMatch vm, IFileInfo fi) throws CoreException
+	public Resolution(CSpec cspec, OPML opml, NodeQuery nq, Provider provider, String ctypeId, VersionMatch vm, IFileInfo fi) throws CoreException
 	{
 		m_cspec = cspec;
+		m_opml = opml;
 		m_componentTypeId = ctypeId;
 		m_request = nq.getComponentRequest();
-		m_attributes = UUIDKeyed.createUnmodifiableList(nq.getRequiredAttributes());
+		m_attributes = Utils.createUnmodifiableList(nq.getRequiredAttributes());
 		m_provider = provider;
 		m_versionMatch = vm;
 		m_materializable = true;
@@ -123,15 +129,16 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 		}
 	}
 
-	public Resolution(CSpec cspec, IComponentReader reader) throws CoreException
+	public Resolution(CSpec cspec, OPML opml, IComponentReader reader) throws CoreException
 	{
 		ProviderMatch providerMatch = reader.getProviderMatch();
 		Provider provider = providerMatch.getProvider();
 		NodeQuery nq = providerMatch.getNodeQuery();
 		m_cspec = cspec;
+		m_opml = opml;
 		m_componentTypeId = providerMatch.getComponentType().getId();
 		m_request = nq.getComponentRequest();
-		m_attributes = UUIDKeyed.createUnmodifiableList(nq.getRequiredAttributes());
+		m_attributes = Utils.createUnmodifiableList(nq.getRequiredAttributes());
 		m_provider = provider;
 		m_versionMatch = providerMatch.getVersionMatch();
 		m_materializable = reader.canMaterialize();
@@ -161,6 +168,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 	public Resolution(CSpec cspec, Resolution old) throws CoreException
 	{
 		m_cspec = cspec;
+		m_opml = old.getOPML();
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_provider = old.getProvider();
@@ -177,6 +185,7 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 	public Resolution(IVersion version, Resolution old) throws CoreException
 	{
 		m_cspec = old.getCSpec();
+		m_opml = old.getOPML();
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_provider = old.getProvider();
@@ -190,17 +199,18 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 		m_size = old.getSize();
 	}
 
-	public Resolution(CSpec cspec, String componentTypeId, VersionMatch versionMatch, Provider provider,
+	public Resolution(CSpec cspec, OPML opml, String componentTypeId, VersionMatch versionMatch, Provider provider,
 		boolean materializeable, ComponentRequest request, List<String> attributes,
 		String repository, String remoteName, String contentType, long lastModified, long size)
 	{
 		m_cspec = cspec;
+		m_opml = opml;
 		m_provider = provider;
 		m_componentTypeId = componentTypeId;
 		m_versionMatch = versionMatch;
 		m_materializable = materializeable;
 		m_request = request;
-		m_attributes = UUIDKeyed.createUnmodifiableList(attributes);
+		m_attributes = Utils.createUnmodifiableList(attributes);
 		m_repository = repository;
 		m_remoteName = remoteName;
 		m_contentType = contentType;
@@ -242,14 +252,32 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 		return m_cspec.getId();
 	}
 
-	public String getComponentTypeId()
+	/**
+	 * Returns the OPML document
+	 * @return The OPML or <code>null</code> if no OPML was present
+	 */
+	public OPML getOPML()
 	{
-		return m_componentTypeId;
+		return m_opml;
+	}
+
+	/**
+	 * Returns the id of the contained OPML.
+	 * @return The id of the contained OPML or null if no OPML exists.
+	 */
+	public UUID getOPMLId()
+	{
+		return m_opml == null ? null : m_opml.getId();
 	}
 
 	public IComponentType getComponentType() throws CoreException
 	{
 		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
+	}
+
+	public String getComponentTypeId()
+	{
+		return m_componentTypeId;
 	}
 
 	public String getDefaultTag()
@@ -410,6 +438,8 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 	{
 		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
 		m_cspec.store(sm);
+		if(m_opml != null)
+			sm.getOPMLs().putElement(m_opml);
 		m_provider.store(sm);
 		sm.getResolutions().putElement(this);
 	}
@@ -446,6 +476,9 @@ public class Resolution extends UUIDKeyed implements ISaxable, IFileInfo
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
+		if(m_opml != null)
+			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
+
 		String tmp = TextUtils.concat(m_attributes, ",");
 		if(tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);

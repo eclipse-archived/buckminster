@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -47,6 +48,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	private final VersionMatchHandler m_versionMatchHandler = new VersionMatchHandler(this);
 	private final ArrayList<String> m_attributes = new ArrayList<String>();
 	private UUID m_cspecId;
+	private UUID m_opmlId;
 	private UUID m_providerId;
 	private ComponentRequest m_request;
 	private String m_componentType;
@@ -76,6 +78,8 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		m_cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
 		m_materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
 		m_providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
+		String tmp = getOptionalStringValue(attrs, Resolution.ATTR_OPML_ID);
+		m_opmlId = (tmp == null) ? null : UUID.fromString(tmp);
 		m_componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
 		m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
 		m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
@@ -137,11 +141,14 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		AbstractHandler parent = getParentHandler();
 		CSpec cspec;
 		Provider provider;
+		OPML opml = null;
 		if(parent instanceof IDWrapperHandler)
 		{
 			IDWrapperHandler wh = (IDWrapperHandler)parent;
 			cspec = (CSpec)wh.getWrapped(m_cspecId);
 			provider = (Provider)wh.getWrapped(m_providerId);
+			if(m_opmlId != null)
+				opml = (OPML)wh.getWrapped(m_opmlId);
 		}
 		else
 		{
@@ -150,6 +157,8 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				StorageManager sm = StorageManager.getDefault();
 				cspec = sm.getCSpecs().getElement(m_cspecId);
 				provider = sm.getProviders().getElement(m_providerId);
+				if(m_opmlId != null)
+					opml = sm.getOPMLs().getElement(m_opmlId);
 			}
 			catch(CoreException e)
 			{
@@ -159,6 +168,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 		return new Resolution(
 				cspec,
+				opml,
 				m_componentType,
 				m_versionMatch,
 				provider,

@@ -10,12 +10,14 @@ package org.eclipse.buckminster.core.cspecext.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -50,13 +52,13 @@ public class AlterAction extends AlterAttribute<Action>
 			Set<String> removedProperties, Map<String, String> alteredProperties, Set<IPath> removedPaths)
 	{
 		super(base, removedHints, alteredHints);
-		m_alteredPrerequisites = UUIDKeyed.createUnmodifiableMap(alteredPrerequisites);
-		m_removedPrerequisites = UUIDKeyed.createUnmodifiableSet(removedPrerequisites);
-		m_alteredActorProperties = UUIDKeyed.createUnmodifiableProperties(alteredActorProperties);
-		m_removedActorProperties = UUIDKeyed.createUnmodifiableSet(removedActorProperties);
-		m_alteredProperties = UUIDKeyed.createUnmodifiableProperties(alteredProperties);
-		m_removedProperties = UUIDKeyed.createUnmodifiableSet(removedProperties);
-		m_removedPaths = UUIDKeyed.createUnmodifiablePaths(removedPaths);
+		m_alteredPrerequisites = Utils.createUnmodifiableMap(alteredPrerequisites);
+		m_removedPrerequisites = Utils.createUnmodifiableSet(removedPrerequisites);
+		m_alteredActorProperties = ExpandingProperties.createUnmodifiableProperties(alteredActorProperties);
+		m_removedActorProperties = Utils.createUnmodifiableSet(removedActorProperties);
+		m_alteredProperties = ExpandingProperties.createUnmodifiableProperties(alteredProperties);
+		m_removedProperties = Utils.createUnmodifiableSet(removedProperties);
+		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -68,19 +67,6 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 	{
 		parseInput(systemID, input);
 		return m_provider;
-	}
-
-	class ProviderSAXParser extends SAXParserWrapper implements ISAXParser<Provider>
-	{
-		public Provider getResult()
-		{
-			return m_provider;
-		}
-	}
-
-	public ISAXParser<Provider> getSAXParser()
-	{
-		return new ProviderSAXParser();
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

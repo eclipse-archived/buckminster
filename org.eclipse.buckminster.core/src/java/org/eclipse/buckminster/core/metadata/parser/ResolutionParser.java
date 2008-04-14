@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -47,19 +46,6 @@ public class ResolutionParser extends MetaDataParser<Resolution>
 	{
 		this.parseInput(systemID, input);
 		return m_resolution;
-	}
-
-	class ResolutionSAXParser extends SAXParserWrapper implements ISAXParser<Resolution>
-	{
-		public Resolution getResult()
-		{
-			return m_resolution;
-		}
-	}
-
-	public ISAXParser<Resolution> getSAXParser()
-	{
-		return new ResolutionSAXParser();
 	}
 
 	public void childPopped(ChildHandler child)

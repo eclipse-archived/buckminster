@@ -94,8 +94,11 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 					return bom;
 
 				if(reader instanceof ICatalogReader)
-					cquery = ((ICatalogReader)reader).readFile(CorePlugin.CQUERY_FILE, this,
-						MonitorUtils.subMonitor(monitor, 200));
+				{
+					ICatalogReader catRdr = (ICatalogReader)reader;
+					String fileName = getMetadataFile(catRdr, IComponentType.PREF_CQUERY_FILE, CorePlugin.CQUERY_FILE, MonitorUtils.subMonitor(monitor, 100));
+					cquery = catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100));
+				}
 				else
 					cquery = ((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 200));
 				reader.close();

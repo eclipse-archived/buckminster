@@ -14,6 +14,7 @@ import java.io.InputStream;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -23,11 +24,15 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * @author Thomas Hallgren
@@ -70,9 +75,9 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		return m_weight;
 	}
 
-	public DepNode createResolution(IComponentReader reader, CSpec cspec) throws CoreException
+	public DepNode createResolution(IComponentReader reader, CSpec cspec, OPML opml) throws CoreException
 	{
-		return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, reader));
+		return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, opml, reader));
 	}
 
 	protected CSpec applyExtensions(CSpec cspec, boolean forResolutionAidOnly, IComponentReader reader, IProgressMonitor monitor)
@@ -123,5 +128,26 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		{
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath, IProgressMonitor monitor) throws CoreException
+	{
+		return getMetadataFile(reader.readBuckminsterPreferences(monitor), prefName, defaultPath);
+	}
+
+	public static String getMetadataFile(IEclipsePreferences prefs, String prefName, String defaultPath)
+	{
+		if(prefs == null)
+			return defaultPath;
+
+		defaultPath = prefs.get(prefName, defaultPath);
+		IPath path = Path.fromPortableString(defaultPath);
+		if(!path.isAbsolute())
+		{
+			String metadataFolder = prefs.get(IComponentType.PREF_METADATA_FOLDER, null);
+			if(metadataFolder != null)
+				path = Path.fromPortableString(metadataFolder).append(path);
+		}
+		return path.makeRelative().toPortableString();
 	}
 }

@@ -8,12 +8,11 @@
 
 package org.eclipse.buckminster.opml.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.buckminster.opml.builder.BodyBuilder;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
+import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -28,11 +27,7 @@ public class Body extends AbstractSaxableElement
 
 	public Body(BodyBuilder bodyBuilder)
 	{
-		List<Outline> outlines = bodyBuilder.getOutlines();
-		if(outlines == null || outlines.isEmpty())
-			m_outlines = Collections.emptyList();
-		else
-			m_outlines = Collections.unmodifiableList(new ArrayList<Outline>(outlines));
+		m_outlines = Utils.createUnmodifiableList(bodyBuilder.getOutlines());
 	}
 
 	public String getDefaultTag()

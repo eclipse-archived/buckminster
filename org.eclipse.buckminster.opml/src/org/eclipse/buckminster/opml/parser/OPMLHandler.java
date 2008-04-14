@@ -32,7 +32,7 @@ public class OPMLHandler extends ElementHandler implements ChildPoppedListener
 	private Head m_head;
 	private Body m_body;
 
-	OPMLHandler(AbstractHandler parent)
+	public OPMLHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}

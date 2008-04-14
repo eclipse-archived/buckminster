@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -79,19 +78,6 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 		}
 		this.parseInput(systemId, input);
 		return m_componentQuery;
-	}
-
-	class ComponentQuerySAXParser extends SAXParserWrapper implements ISAXParser<ComponentQuery>
-	{
-		public ComponentQuery getResult()
-		{
-			return m_componentQuery;
-		}
-	}
-
-	public ISAXParser<ComponentQuery> getSAXParser()
-	{
-		return new ComponentQuerySAXParser();
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

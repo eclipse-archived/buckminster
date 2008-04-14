@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
-import org.eclipse.buckminster.core.metadata.IUUIDKeyed;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -30,6 +29,8 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -73,7 +74,7 @@ public class BillOfMaterials extends DepNode
 		return new BillOfMaterials(topNode, query, timestamp);
 	}
 
-	private static void addIfNotAdded(IUUIDKeyed object, Set<UUID> unique, List<IDWrapper> wrappers)
+	private static void addIfNotAdded(UUIDKeyed object, Set<UUID> unique, List<IDWrapper> wrappers)
 	{
 		UUID key = object.getId();
 		if(unique.contains(key))
@@ -127,6 +128,9 @@ public class BillOfMaterials extends DepNode
 				//
 				addIfNotAdded(resolution.getProvider(), unique, wrappers);
 				addIfNotAdded(resolution.getCSpec(), unique, wrappers);
+				OPML opml = resolution.getOPML();
+				if(opml != null)
+					addIfNotAdded(opml, unique, wrappers);
 				addIfNotAdded(resolution, unique, wrappers);
 
 				// Recursively add all children of this ResolvedNode. It's
@@ -344,7 +348,7 @@ public class BillOfMaterials extends DepNode
 
 		for(IDWrapper wrapper : wrappers)
 		{
-			IUUIDKeyed wrapped = wrapper.getWrapped();
+			UUIDKeyed wrapped = wrapper.getWrapped();
 			if(wrapped instanceof Provider)
 				((Provider)wrapped).addPrefixMappings(prefixMappings);
 		}

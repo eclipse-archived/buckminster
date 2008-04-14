@@ -58,7 +58,7 @@ public class TestOPMLParser extends TestCase
 		try
 		{
 			input = new BufferedInputStream(url.openStream());
-			return parser.parse(urlString, input);
+			return parser.parseInput(urlString, input);
 		}
 		finally
 		{

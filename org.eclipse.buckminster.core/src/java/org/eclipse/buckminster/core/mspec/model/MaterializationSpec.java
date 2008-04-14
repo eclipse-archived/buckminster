@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.metadata.model.UUIDKeyed;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -93,7 +92,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		ArrayList<MaterializationNode> nodes = new ArrayList<MaterializationNode>();
 		for(MaterializationNodeBuilder nodeBuilder : builder.getNodes())
 			nodes.add(nodeBuilder.createMaterializationNode());
-		m_nodes = UUIDKeyed.createUnmodifiableList(nodes);
+		m_nodes = Utils.createUnmodifiableList(nodes);
 	}
 
 	public String getProjectName(ComponentName cName) throws CoreException

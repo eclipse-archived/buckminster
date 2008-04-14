@@ -56,7 +56,7 @@ public class CSpecBuilderTestCase extends TestCase
 		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
 		VersionMatch fixed = new VersionMatch(vs, null, null, -1, new Date(), null);
 		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, "svn://foo.bar.com/foobar");
-		Resolution resolution = new Resolution(c, IComponentType.BUCKMINSTER, fixed, provider, true, request,
+		Resolution resolution = new Resolution(c, null, IComponentType.BUCKMINSTER, fixed, provider, true, request,
 			Collections.<String>emptyList(), provider.getURI(Collections.<String,String>emptyMap()), null, null, 0L, -1L);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();
