@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<opml version="2.0">
+	<head>
+		<title>Demo Subscriptions</title>
+		<dateCreated>Mon, 14 Apr 2008 14:18:51 GMT</dateCreated>
+		<ownerName>Thomas Hallgren</ownerName>
+		<ownerEmail>thomas@tada.se</ownerEmail>
+	</head>
+	<body>
+		<outline text="Yahoo! News: Technology" description="Technology" htmlUrl="http://news.yahoo.com/news?tmpl=index&amp;cid=738" language="unknown" title="Yahoo! News: Technology" type="rss" version="RSS2" xmlUrl="http://rss.news.yahoo.com/rss/tech"/>
+		<outline text="NYT &gt; Technology" description="" htmlUrl="http://www.nytimes.com/pages/technology/index.html?partner=rssnyt" language="unknown" title="NYT &gt; Technology" type="rss" version="RSS2" xmlUrl="http://www.nytimes.com/services/xml/rss/nyt/Technology.xml"/>
+		<outline text="Wired News" description="Technology, and the way we do business, is changing the world we know. Wired News is a technology - and business-oriented news service feeding an intelligent, discerning audience. What role does technology play in the day-to-day living of your life? Wired News tells you. How has evolving technology changed the face of the international business world? Wired News puts you in the picture." htmlUrl="http://www.wired.com/" language="unknown" title="Wired News" type="rss" version="RSS" xmlUrl="http://www.wired.com/news_drop/netcenter/netcenter.rdf"/>
+	</body>
+</opml>
