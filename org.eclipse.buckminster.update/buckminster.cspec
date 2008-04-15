@@ -22,8 +22,6 @@
         <cs:private name="root.artifacts">
             <cs:path path="epl-v10.html"/>
             <cs:path path="COPYRIGHT"/>
-            <cs:path path="build.properties"/>
-            <cs:path path="site.properties"/>
         </cs:private>
         <cs:private name="site.template" path="site.xml"/>
     </cs:artifacts>
