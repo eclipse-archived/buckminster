@@ -7,8 +7,4 @@
    </description>
    <category-def name="core.category" label="Buckminster (core)"/>
    <category-def name="optional.category" label="Buckminster (optional)"/>
-
-	<archive path="plugins/org.apache.commons.codec_1.3.0.v200803061910.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/org.apache.commons.codec_1.3.0.v200803061910.jar"/>
-	<archive path="plugins/org.apache.commons.httpclient_3.1.0.v200803061910.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/org.apache.commons.httpclient_3.1.0.v200803061910.jar"/>
-	<archive path="plugins/org.apache.commons.logging_1.1.1.v200803061910.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/org.apache.commons.logging_1.1.1.v200803061910.jar"/>
 </site>

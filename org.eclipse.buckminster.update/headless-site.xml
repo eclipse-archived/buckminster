@@ -345,9 +345,4 @@
     <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080116.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080116/plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080116.jar"/>
     <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080116.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080116/plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080116.jar"/>
     <archive path="plugins/org.eclipse.team.svn.core_0.7.0.v20080116.jar" url="http://download.eclipse.org/technology/subversive/archive/v20080116/plugins/org.eclipse.team.svn.core_0.7.0.v20080116.jar"/>
-
-	<archive path="plugins/org.apache.commons.codec_1.3.0.v200803061910.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/org.apache.commons.codec_1.3.0.v200803061910.jar"/>
-	<archive path="plugins/org.apache.commons.httpclient_3.1.0.v200803061910.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/org.apache.commons.httpclient_3.1.0.v200803061910.jar"/>
-	<archive path="plugins/org.apache.commons.logging_1.1.1.v200803061910.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/org.apache.commons.logging_1.1.1.v200803061910.jar"/>
-    <archive path="plugins/com.ibm.icu.base_3.8.1.v20080304.jar" url="http://download.eclipse.org/tools/orbit/downloads/drops/S20080326131619/bundles/com.ibm.icu.base_3.8.1.v20080304.jar"/>
 </site>
