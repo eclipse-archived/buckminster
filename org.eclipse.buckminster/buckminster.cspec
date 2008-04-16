@@ -3,15 +3,15 @@
     <cs:dependencies>
         <cs:dependency name="commons-net"/>
         <cs:dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature"/>
-        <cs:dependency name="org.eclipse.buckminster.jnlp.bootstrap" componentType="buckminster"/>
-        <cs:dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
-        <cs:dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
-        <cs:dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
         <cs:dependency name="org.eclipse.buckminster.core.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.cvs.test" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.bootstrap" componentType="buckminster"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.maven.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.p4.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.pde.test" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="build.core.product" actor="ant">
@@ -74,6 +74,16 @@
                 <cs:attribute name="zip.jnlp" alias="requirement"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.ls/" upToDatePolicy="MAPPER"/>
+        </cs:public>
+        <cs:public name="normalize.site" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="normalize.jars"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="build.site" alias="requirement" component="org.eclipse.buckminster.update"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/site.n/" upToDatePolicy="MAPPER"/>
         </cs:public>
         <cs:public name="pack.site" actor="ant">
             <cs:actorProperties>
@@ -180,16 +190,6 @@
                 <cs:attribute name="build.product" alias="requirement"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/product.n/" upToDatePolicy="MAPPER"/>
-        </cs:private>
-        <cs:private name="normalize.site" actor="ant">
-            <cs:actorProperties>
-                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
-                <cs:property key="targets" value="normalize.jars"/>
-            </cs:actorProperties>
-            <cs:prerequisites>
-                <cs:attribute name="build.site" alias="requirement" component="org.eclipse.buckminster.update"/>
-            </cs:prerequisites>
-            <cs:products alias="product.output" base="${buckminster.output}/site.n/" upToDatePolicy="MAPPER"/>
         </cs:private>
         <cs:private name="pack.jnlp" actor="ant">
             <cs:actorProperties>

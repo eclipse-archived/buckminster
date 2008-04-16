@@ -25,13 +25,30 @@
 	<dirname file="${input.file}" property="input.folder"/>
 	<basename file="${input.file}" property="subject.file"/>
 	<buckminster.substitute pattern=".*\.(\w+)$" replacement="$1" value="${subject.file}" property="subject.extension"/>
+	<buckminster.substitute pattern="(.*)\.\w+$" replacement="$1" value="${subject.file}" property="subject.name"/>
 	<property name="output.folder" location="${sp:product.output}"/>
 
 	<target name="normalize.jars">
+		<property name="short.file.name" location="${output.folder}/z.${subject.extension}"/>
+		<property name="zip.temp" location="${buckminster.temp}/${subject.name}"/>
+
 		<delete dir="${output.folder}"/>
 		<mkdir dir="${output.folder}"/>
-		<property name="short.file.name" value="${output.folder}/z.${subject.extension}"/>
-		<copy file="${input.file}" tofile="${short.file.name}"/>
+
+		<delete dir="${zip.temp}"/>
+		<unzip dest="${zip.temp}" src="${input.file}"/>
+
+		<path id="sign.excludes">
+			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar"/>
+		</path>
+		<pathconvert property="sign.excludes" pathsep="," refid="sign.excludes">
+			<globmapper from="${zip.temp}/" to="" handledirsep="true"/>
+		</pathconvert>
+
+		<echo message="sign.excludes=${sign.excludes}${line.separator}" file="${zip.temp}/pack.properties"/>
+		<echo message="pack.excludes=${sign.excludes}" file="${zip.temp}/pack.properties" append="true"/>
+
+		<zip destfile="${short.file.name}" basedir="${zip.temp}"/>
 		<eclipse.jarProcessor verbose="${verbose}" normalize="true" jar="${short.file.name}"/>
 		<move file="${short.file.name}" tofile="${output.folder}/${subject.file}" />
 	</target>
