@@ -2,11 +2,18 @@
 <?eclipse version="3.0"?>
 <plugin>
 	<extension point="org.eclipse.ui.importWizards">
-		<wizard id="org.eclipse.buckminster.ui.Import"
-			name="%ImportWizardShortDescription" icon="icons/materialize.png"
-			class="org.eclipse.buckminster.ui.wizards.QueryWizard">
+		<wizard
+        category="org.eclipse.buckminster"
+        class="org.eclipse.buckminster.ui.wizards.QueryWizard"
+        icon="icons/materialize.png"
+        id="org.eclipse.buckminster.ui.Import"
+        name="%ImportWizardShortDescription">
 			<description>%ImportWizardLongDescription</description>
 		</wizard>
+  <category
+        id="org.eclipse.buckminster"
+        name="Buckminster">
+  </category>
 	</extension>
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution
@@ -144,5 +151,19 @@
              configId="org.eclipse.ui.intro.universalConfig"
              content="intro/intro.xml">
        </configExtension>
+    </extension>
+    <extension
+          point="org.eclipse.ui.views">
+       <category
+             id="org.eclipse.buckminster"
+             name="Buckminster">
+       </category>
+       <view
+             category="org.eclipse.buckminster"
+             class="org.eclipse.buckminster.ui.views.BuckminsterView"
+             id="org.eclipse.buckminster.ui.view1"
+             name="Component Info View"
+             restorable="true">
+       </view>
     </extension>
 </plugin>
