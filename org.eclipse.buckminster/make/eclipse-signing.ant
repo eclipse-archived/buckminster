@@ -41,7 +41,7 @@
 		<path id="sign.excludes">
 			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar"/>
 		</path>
-		<pathconvert property="sign.excludes" pathsep="," refid="sign.excludes">
+		<pathconvert property="sign.excludes" pathsep="," dirsep="/" refid="sign.excludes">
 			<globmapper from="${zip.temp}/" to="" handledirsep="true"/>
 		</pathconvert>
 
