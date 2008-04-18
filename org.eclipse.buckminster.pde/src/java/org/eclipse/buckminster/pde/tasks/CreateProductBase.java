@@ -638,6 +638,8 @@ public class CreateProductBase
 						if(!first)
 							writer.write(",");
 						writer.write(id);
+						if("org.eclipse.equinox.app".equals(id))
+							writer.write("@start");
 					}
 				}
 				catch(InvalidSyntaxException e)
