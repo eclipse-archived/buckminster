@@ -593,21 +593,21 @@ public class CreateProductBase
 		environment.put("osgi.arch", m_arch);
 		environment.put("osgi.nl", m_nl);
 		List<BundleDescription> pluginModels = getPluginModels();
-		HashSet<String> pluginIDs = new HashSet<String>(pluginModels.size());
-		for(BundleDescription bundle : pluginModels)
-			pluginIDs.add(bundle.getSymbolicName());
 
 		// include only bundles that are actually in this product configuration
 		//
 		boolean first = true;
 		Set<String> bundles = new HashSet<String>();
+		bundles.add("org.eclipse.osgi");
+
 		for(String token : TextUtils.split(bundleList, ","))
 		{
 			int delimIdx = token.indexOf('@');
 			String id = delimIdx >= 0
 					? token.substring(0, delimIdx)
 					: token;
-			if(!pluginIDs.contains(id))
+
+			if(!bundles.add(id))
 				continue;
 
 			if(!first)
@@ -616,36 +616,30 @@ public class CreateProductBase
 			writer.write(id);
 			if(delimIdx >= 0 && delimIdx < token.length() - 1)
 				writer.write(token, delimIdx, token.length() - delimIdx);
-			bundles.add(id);
 			first = false;
 		}
 
-		if(!pluginIDs.contains("org.eclipse.update.configurator"))
+		for(BundleDescription bundle : pluginModels)
 		{
-			bundles.add("org.eclipse.osgi");
-
-			for(BundleDescription bundle : pluginModels)
+			String filterSpec = bundle.getPlatformFilter();
+			try
 			{
-				String filterSpec = bundle.getPlatformFilter();
-				try
-				{
-					if(filterSpec == null || FilterUtils.createFilter(filterSpec).match(environment))
-					{
-						String id = bundle.getSymbolicName();
-						if(bundles.contains(id))
-							continue;
+				String id = bundle.getSymbolicName();
+				if(!bundles.add(id))
+					continue;
 
-						if(!first)
-							writer.write(",");
-						writer.write(id);
-						if("org.eclipse.equinox.app".equals(id))
-							writer.write("@start");
-					}
-				}
-				catch(InvalidSyntaxException e)
+				if(filterSpec == null || FilterUtils.createFilter(filterSpec).match(environment))
 				{
-					throw BuckminsterException.wrap(e);
+					if(!first)
+						writer.write(",");
+					writer.write(id);
+					if("org.eclipse.equinox.app".equals(id))
+						writer.write("@start");
 				}
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw BuckminsterException.wrap(e);
 			}
 		}
 	}

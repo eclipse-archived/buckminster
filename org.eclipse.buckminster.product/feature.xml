@@ -130,20 +130,6 @@ such license is available at www.eclipse.org.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.frameworkadmin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.frameworkadmin.equinox"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.launcher"
          download-size="0"
          install-size="0"
@@ -151,10 +137,17 @@ such license is available at www.eclipse.org.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.simpleconfigurator.manipulator"
+         id="org.eclipse.update.configurator"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.runtime.compatibility.registry"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
 </feature>
