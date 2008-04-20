@@ -178,6 +178,8 @@ public class Head extends AbstractSaxableElement
 
 	private void emitIntList(ContentHandler handler, String namespace, String prefix, String elemName, int[] value) throws SAXException
 	{
+		if(value == null)
+			return;
 		int top = value.length;
 		if(top > 0)
 		{
