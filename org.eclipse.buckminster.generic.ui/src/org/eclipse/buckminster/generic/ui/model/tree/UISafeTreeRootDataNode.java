@@ -29,7 +29,8 @@ public class UISafeTreeRootDataNode extends AbstractTreeRootDataNode
 	{
 		super(data);
 	}
-	
+
+	@Override
 	protected void triggerListeners(final TreeDataEvent e)
 	{
 		// Make sure listeners are notified in the UI thread
