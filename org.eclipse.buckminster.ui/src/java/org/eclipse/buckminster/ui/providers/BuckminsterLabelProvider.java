@@ -40,6 +40,7 @@ public class BuckminsterLabelProvider extends LabelProvider
 	private Image m_fileImage;
 	private Image m_cspecImage;
 	private Image m_componentImage;
+	private Image m_rssImage;
 
 	public BuckminsterLabelProvider()
 	{
@@ -75,6 +76,12 @@ public class BuckminsterLabelProvider extends LabelProvider
 			m_componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage();
 		return m_componentImage;
 	}
+	private Image getRssImage()
+	{
+		if(m_rssImage == null)
+			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage();
+		return m_rssImage;
+	}
 	@Override
 	public Image getImage(Object element)
 	{
@@ -100,6 +107,10 @@ public class BuckminsterLabelProvider extends LabelProvider
 		
 		if(element instanceof Resolution)
 			return getComponentImage();
+		
+		if(element instanceof Outline)
+			return getRssImage();
+		
 		return null;
 	}
 
@@ -137,7 +148,7 @@ public class BuckminsterLabelProvider extends LabelProvider
 		}
 		if(element instanceof OPML)
 		{
-			return "Feeds (OPML)";
+			return "Component Information";
 		}
 		if(element instanceof Outline)
 		{

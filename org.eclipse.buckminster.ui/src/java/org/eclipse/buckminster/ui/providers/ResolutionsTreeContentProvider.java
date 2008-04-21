@@ -74,6 +74,7 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 		public OutlineDataNode(Outline data)
 		{
 			super(data);
+			List<Outline> outlines = data.getOutlines();
 		}
 		
 	}
