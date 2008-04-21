@@ -81,16 +81,16 @@ public class OPML extends UUIDKeyed implements ISaxable
 		m_head.toSax(handler, namespace, prefix, m_head.getDefaultTag());
 		m_body.toSax(handler, namespace, prefix, m_body.getDefaultTag());
 	}
-	
+
 	@Override
 	protected String getElementNamespace(String namespace)
 	{
-		return OPML_NAMESPACE;
+		return "".equals(namespace) ? "" : OPML_NAMESPACE;
 	}
-	
+
 	@Override
 	protected String getElementPrefix(String prefix)
 	{
-		return OPML_PREFIX;
+		return "".equals(prefix) ? "" : OPML_PREFIX;
 	}
 }
