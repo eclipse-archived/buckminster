@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.IViewSite;
 
 /**
  * The TreeDataNodeContentProvider uses an ITreeRootNode to hold the tree's data. 
@@ -48,7 +49,11 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 			switch(event.getType())
 			{
 			case CHANGE:
-				m_treeViewer.refresh(event.getNode());
+				// if the changed node is the root node - refresh the entire tree
+				if(event.getNode() instanceof ITreeRootNode)
+					m_treeViewer.refresh();
+				else
+					m_treeViewer.refresh(event.getNode());
 				break;
 			}
 		}
