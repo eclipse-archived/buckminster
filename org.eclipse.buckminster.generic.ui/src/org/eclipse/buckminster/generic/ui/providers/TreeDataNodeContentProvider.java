@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ui.IViewSite;
 
 /**
  * The TreeDataNodeContentProvider uses an ITreeRootNode to hold the tree's data. 
@@ -61,7 +60,11 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 
 		public Object[] getElements(Object parent)
 		{
-			if(parent instanceof IViewSite)
+			// if asking for the data that was used to build a tree, then return the root holding the tree.
+			// the previous version used the ViewSite as this outermost parent
+			// but that only works for a content provider where the tree always shows the same content
+			//
+			if(!(parent instanceof ITreeDataNode)) // Was (parent instanceof IViewSite)
 			{
 				if(m_invisibleRoot == null)
 					initialize();

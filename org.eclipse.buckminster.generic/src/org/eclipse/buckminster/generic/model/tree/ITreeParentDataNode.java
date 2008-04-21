@@ -21,6 +21,7 @@ public interface ITreeParentDataNode extends ITreeDataNode
 {
 		void addChild(ITreeDataNode child);
 		void removeChild(ITreeDataNode child);
+		void removeAllChildren();
 		void replaceChild(ITreeDataNode oldChild, ITreeDataNode[] newChildren);
 		void replaceChild(ITreeDataNode oldChild, ITreeDataNode newChild);
 		ITreeDataNode[] getChildren();

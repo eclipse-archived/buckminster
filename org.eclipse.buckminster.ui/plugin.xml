@@ -165,5 +165,44 @@
              name="Component Info View"
              restorable="true">
        </view>
+       <view
+             category="org.eclipse.buckminster"
+             class="org.eclipse.buckminster.ui.views.ComponentBrowserView"
+             icon="icons/component.png"
+             id="org.eclipse.buckminster.ui.views.ComponentBrowserView"
+             name="Component Explorer">
+       </view>
+    </extension>
+    <extension
+          point="org.eclipse.ui.perspectiveExtensions">
+       <perspectiveExtension
+             targetID="org.eclipse.ui.resourcePerspective">
+          <view
+                closeable="true"
+                id="org.eclipse.buckminster.ui.views.ComponentBrowserView"
+                minimized="false"
+                moveable="true"
+                ratio="0.5"
+                relationship="stack"
+                relative="org.eclipse.ui.navigator.ProjectExplorer"
+                showTitle="true"
+                standalone="true"
+                visible="true">
+          </view>
+       </perspectiveExtension>
+       <perspectiveExtension
+             targetID="org.eclipse.jdt.ui.JavaPerspective">
+          <view
+                closeable="true"
+                id="org.eclipse.buckminster.ui.views.ComponentBrowserView"
+                minimized="false"
+                moveable="true"
+                relationship="stack"
+                relative="org.eclipse.jdt.ui.PackageExplorer"
+                showTitle="true"
+                standalone="true"
+                visible="true">
+          </view>
+       </perspectiveExtension>
     </extension>
 </plugin>
