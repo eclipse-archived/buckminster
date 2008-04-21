@@ -8,6 +8,8 @@
 
 package org.eclipse.buckminster.ui.providers;
 
+import java.util.List;
+
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.ui.UiPlugin;
@@ -108,9 +110,19 @@ public class BuckminsterLabelProvider extends LabelProvider
 		if(element instanceof Resolution)
 			return getComponentImage();
 		
-		if(element instanceof Outline)
-			return getRssImage();
+		// OPML stuff
+		if(element instanceof OPML)
+			return getFolderImage();
 		
+		if(element instanceof Outline)
+		{
+			// An outline that has sub-outlines is shown as a folder
+			//
+			List<Outline> outlines = ((Outline)element).getOutlines();
+			if(outlines != null && outlines.size() > 0)
+				return getFolderImage();
+			return getRssImage();
+		}
 		return null;
 	}
 

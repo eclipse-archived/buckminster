@@ -8,20 +8,27 @@
 
 package org.eclipse.buckminster.ui.providers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeDataNode;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
+import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
+import org.eclipse.buckminster.generic.model.tree.PendingTreeDataNode;
 import org.eclipse.buckminster.generic.ui.model.tree.UISafeTreeRootDataNode;
 import org.eclipse.buckminster.generic.ui.providers.TreeDataNodeContentProvider;
 import org.eclipse.buckminster.opml.model.Body;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.IViewSite;
 
 /**
  * Provides all resolutions as a tree.
@@ -68,16 +75,59 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			}
 		}
 	}
-	public static class OutlineDataNode extends BasicTreeDataNode
+	public static class OutlineDataNode extends BasicTreeParentDataNode
 	{
 
 		public OutlineDataNode(Outline data)
 		{
 			super(data);
 			List<Outline> outlines = data.getOutlines();
+			if(outlines != null)
+				for(Outline outline : outlines)
+					addChild(new OutlineDataNode(outline));
 		}
 		
 	}
+	/**
+	 * A node that expands itself into a tree of all resolutions in the background.
+	 * @author henrik
+	 *
+	 */
+	public static class AllResolutionsNode extends PendingTreeDataNode
+	{
+
+		@Override
+		public ITreeDataNode[] createNode(IProgressMonitor monitor)
+		{
+			monitor.worked(1);
+			List<Resolution> resolutions;
+			try
+			{
+				resolutions = WorkspaceInfo.getAllResolutions();
+			}
+			catch(CoreException e)
+			{
+				resolutions = new ArrayList<Resolution>(0);
+				e.printStackTrace();
+			}
+			int size = resolutions.size();
+			if(size == 0)
+			{
+				ITreeDataNode[] empty = new ITreeDataNode[1];
+				empty[0] = new BasicTreeDataNode("No components found");
+				return empty;
+			}
+			ITreeDataNode[] result = new ITreeDataNode[size];
+			int i = 0;
+			for(Resolution r: resolutions)
+			{
+				result[i++] = new ResolutionDataNode(r);
+				monitor.worked(1);
+			}
+			return result;
+		}		
+	}
+	
 	@Override
 	protected void initialize()
 	{		
@@ -87,7 +137,9 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 	
 	/**
 	 * When the input is a single Resolution, or a List<Resolution> a tree is produced.
-	 * Changing input first removed the entire current tree, and a new tree is erected.
+	 * Changing input first removes the entire current tree, and a new tree is erected.
+	 * If the newInput is an instance of IViewSite all resolutions are collected in the
+	 * background.
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -112,5 +164,15 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 		}
 		if(newInput instanceof Resolution)
 			root.addChild(new ResolutionDataNode((Resolution)newInput));
+		if(newInput instanceof ITreeDataNode)
+			root.addChild((ITreeDataNode)newInput);
+
+		// if the node added to the hidden root is a pending node - start expanding it now in the background.
+		if(newInput instanceof IViewSite)
+		{
+			AllResolutionsNode pending = new ResolutionsTreeContentProvider.AllResolutionsNode();
+			root.addChild(pending);
+			pending.schedule("getting resolutions");
+		}
 	}
 }

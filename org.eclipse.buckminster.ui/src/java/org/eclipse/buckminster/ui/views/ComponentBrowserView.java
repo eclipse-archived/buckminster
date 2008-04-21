@@ -126,66 +126,15 @@ public class ComponentBrowserView extends ViewPart
 					((ITreeParentDataNode)o).onOpen();
 			}			
 		});
-		List<Resolution> resolutions;
-		try
-		{
-			resolutions = WorkspaceInfo.getAllResolutions();
-		}
-		catch(CoreException e)
-		{
-			resolutions = new ArrayList<Resolution>(0);
-			e.printStackTrace();
-		}
-		m_viewer.setInput(resolutions);
+
+		// This tells the resolution content provider to produce a default tree of all resolutions.
+		m_viewer.setInput(getViewSite());
 		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();		
 	}
-
-//	/**
-//	 * This is a callback that will allow us to create the viewer and initialize it.
-//	 */
-//	@Override
-//	public void createPartControl(Composite parent)
-//	{
-//		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-//		final Table table = viewer.getTable();
-//		table.setHeaderVisible(true);
-//		String[] columnNames = new String[] { "Name", "Version" };
-//		int[] columnWeights = new int[] { 70, 30 };
-//
-//		table.setHeaderVisible(true);
-//		DynamicTableLayout layout = new DynamicTableLayout(450);
-//		for(int idx = 0; idx < columnNames.length; idx++)
-//		{
-//			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, idx);
-//			tableColumn.setText(columnNames[idx]);
-//			
-//			layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
-//		}
-//		table.setLayout(layout);
-//		
-//		viewer.setContentProvider(new ArrayContentProvider());
-//		viewer.setLabelProvider(new ViewLabelProvider());
-//		viewer.setSorter(new NameSorter());
-//		List<Resolution> resolutions;
-//		try
-//		{
-//			resolutions = WorkspaceInfo.getAllResolutions();
-//		}
-//		catch(CoreException e)
-//		{
-//			resolutions = new ArrayList<Resolution>(0);
-//			e.printStackTrace();
-//		}
-//		viewer.setInput(resolutions);
-//		makeActions();
-//		hookContextMenu();
-//		hookDoubleClickAction();
-//		contributeToActionBars();
-//	}
 
 	private void hookContextMenu()
 	{
