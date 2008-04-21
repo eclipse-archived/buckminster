@@ -54,7 +54,7 @@ public abstract class PendingTreeDataNode extends BasicTreeDataNode
 				}
 			}
 		};
-		m_getNodeJob.setUser(true);
+		m_getNodeJob.setUser(false);
 		m_getNodeJob.setPriority(Job.LONG);
 		m_getNodeJob.schedule();
 	}
