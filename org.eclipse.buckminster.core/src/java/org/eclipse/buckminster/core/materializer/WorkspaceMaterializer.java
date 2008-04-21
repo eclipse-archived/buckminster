@@ -524,13 +524,12 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 			performManager.perform(cspec, bindEntryPoint.getName(), props, false, monitor);
 
-			cspec = LocalResolver.fromPath(productPath, resolution.getName());
-			resolution = new Resolution(cspec, resolution);
-			resolution.store(sm);
-			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), cspec
-					.getComponentIdentifier());
+			Resolution newRes = LocalResolver.fromPath(productPath, resolution.getName());
+			newRes = new Resolution(newRes.getCSpec(), newRes.getOPML(), resolution);
+			newRes.store(sm);
+			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), newRes.getComponentIdentifier());
 			newMat.store(sm);
-			return new WorkspaceBinding(newMat.getComponentLocation(), resolution, wb.getWorkspaceRoot(), new Path(bindingName), null);
+			return new WorkspaceBinding(newMat.getComponentLocation(), newRes, wb.getWorkspaceRoot(), new Path(bindingName), null);
 		}
 		catch(CoreException e)
 		{

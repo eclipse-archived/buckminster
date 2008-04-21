@@ -165,10 +165,10 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IFileInfo
 		m_size = size;
 	}
 
-	public Resolution(CSpec cspec, Resolution old) throws CoreException
+	public Resolution(CSpec cspec, OPML opml, Resolution old) throws CoreException
 	{
 		m_cspec = cspec;
-		m_opml = old.getOPML();
+		m_opml = opml;
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_provider = old.getProvider();

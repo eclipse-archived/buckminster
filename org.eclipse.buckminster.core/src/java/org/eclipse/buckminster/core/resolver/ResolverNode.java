@@ -154,7 +154,7 @@ public class ResolverNode
 						}
 						bld.removeDependency(depName);
 						cspec = bld.createCSpec();
-						m_resolution = new Resolution(cspec, m_resolution);
+						m_resolution = new Resolution(cspec, m_resolution.getOPML(), m_resolution);
 					}
 					else
 						childNodeArr.add(childNode);

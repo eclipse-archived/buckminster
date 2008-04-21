@@ -12,7 +12,6 @@ package org.eclipse.buckminster.pde.internal;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
@@ -86,10 +85,10 @@ public class ImportBundle
 			// Fetch the cspec from the materialized component (it's changed)
 			//
 			StorageManager sm = StorageManager.getDefault();
-			CSpec cspec = LocalResolver.fromPath(m_outputDir, m_bundleName);
-			Resolution newRes = new Resolution(cspec, node.getResolution());
+			Resolution newRes = LocalResolver.fromPath(m_outputDir, m_bundleName);
+			newRes = new Resolution(newRes.getCSpec(), newRes.getOPML(), node.getResolution());
 			newRes.store(sm);
-			Materialization mat = new Materialization(m_outputDir, cspec.getComponentIdentifier());
+			Materialization mat = new Materialization(m_outputDir, newRes.getComponentIdentifier());
 			mat.store(sm);
 		}
 		finally

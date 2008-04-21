@@ -25,7 +25,6 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -476,10 +475,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return node;
 	}
 
-	public static CSpec fromPath(IPath productPath, String name) throws CoreException
+	public static Resolution fromPath(IPath productPath, String name) throws CoreException
 	{
-		Resolution resolution = fromPath(productPath, name, null, new NullProgressMonitor());
-		return resolution.getCSpec();
+		return fromPath(productPath, name, null, new NullProgressMonitor());
 	}
 
 	private static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor)
@@ -577,7 +575,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		// changes
 		//
 		if(oldInfo != null)
-			resolution = new Resolution(resolution.getCSpec(), oldInfo);
+			resolution = new Resolution(resolution.getCSpec(), resolution.getOPML(), oldInfo);
 		return resolution;
 	}
 }
