@@ -22,6 +22,11 @@ public class UiUtils
 		return getImageDescriptor(getWorkbench(), file.getName());
 
 	}
+	public static ImageDescriptor getImageDescriptor(String fileName)
+	{
+		return getImageDescriptor(getWorkbench(), fileName);
+	}
+	
 	public static ImageDescriptor getImageDescriptor(IWorkbench workbench, String fileName)
 	{
 		return workbench.getEditorRegistry().getImageDescriptor(fileName);

@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.generic.ui.actions;
 
+import org.eclipse.buckminster.generic.ui.GenericUiPlugin;
 import org.eclipse.buckminster.generic.ui.utils.UiUtils;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -16,6 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+import org.eclipse.buckminster.generic.ui.utils.UiUtils;
 
 /**
  * Opens an internal or external browser for a selected object that is adaptable to
@@ -67,6 +69,9 @@ public class ViewInBrowserAction extends AbstractAction
 		String txt = bld.toString();
 		setText(txt);
 		setToolTipText(txt);
+		setImageDescriptor(m_feed 
+				? GenericUiPlugin.getImageDescriptor("icons/rssfeed.png")
+				: UiUtils.getImageDescriptor("file.html"));
 	}
 	@Override
 	public void run()

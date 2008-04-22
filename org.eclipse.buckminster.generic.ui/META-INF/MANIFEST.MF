@@ -15,3 +15,4 @@ Export-Package: org.eclipse.buckminster.generic.ui.actions,
  org.eclipse.buckminster.generic.ui.model.tree,
  org.eclipse.buckminster.generic.ui.providers,
  org.eclipse.buckminster.generic.ui.utils
+Bundle-Activator: org.eclipse.buckminster.generic.ui.GenericUiPlugin
