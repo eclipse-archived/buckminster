@@ -15,9 +15,13 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
+import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
+import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
+import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
 import org.eclipse.buckminster.ui.providers.BuckminsterLabelProvider;
 import org.eclipse.buckminster.ui.providers.ResolutionsTreeContentProvider;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -60,6 +64,10 @@ public class ComponentBrowserView extends ViewPart
 	private Action action2;
 
 	private Action doubleClickAction;
+	
+	private ViewInBrowserAction m_viewInBrowser;
+	private ViewInBrowserAction m_viewInExternalBrowser;
+	private ViewInBrowserAction m_viewFeedInBrowser;
 
 //	private DrillDownAdapter m_drillDownAdapter;
 
@@ -161,6 +169,7 @@ public class ComponentBrowserView extends ViewPart
 
 	private void fillLocalPullDown(IMenuManager manager)
 	{
+		
 		manager.add(action1);
 		manager.add(new Separator());
 		manager.add(action2);
@@ -168,6 +177,20 @@ public class ComponentBrowserView extends ViewPart
 
 	private void fillContextMenu(IMenuManager manager)
 	{
+		ISelection selection = m_viewer.getSelection();
+		Object obj = ((IStructuredSelection)selection).getFirstElement();
+
+		if(obj instanceof IAdaptable)
+		{
+			if(((IAdaptable)obj).getAdapter(IBrowseableFeed.class) != null)	
+				manager.add(m_viewFeedInBrowser);
+			if(((IAdaptable)obj).getAdapter(IBrowseable.class) != null)
+			{
+				manager.add(m_viewInBrowser);
+				manager.add(m_viewInExternalBrowser);
+			}
+		}
+		
 		manager.add(action1);
 		manager.add(action2);
 		// Other plug-ins can contribute there actions here
@@ -182,6 +205,10 @@ public class ComponentBrowserView extends ViewPart
 
 	private void makeActions()
 	{
+		m_viewInBrowser = new ViewInBrowserAction(m_viewer, true, "content", false);
+		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, "content", false);
+		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, "feed", true);
+		
 		action1 = new Action()
 		{
 			@Override
