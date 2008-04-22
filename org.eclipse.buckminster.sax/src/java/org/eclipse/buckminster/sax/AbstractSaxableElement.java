@@ -8,6 +8,8 @@
 
 package org.eclipse.buckminster.sax;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -15,7 +17,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractSaxableElement implements ISaxableElement
+public abstract class AbstractSaxableElement implements ISaxableElement, IAdaptable
 {
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
 	throws SAXException
@@ -45,4 +47,16 @@ public abstract class AbstractSaxableElement implements ISaxableElement
 	{
 		return prefix;
 	}
+	/**
+	 * Default implementation of IAdaptable.getAdapter() - if the data object is instance
+	 * of the wanted class, it is returned immediately, else the task is delegated to the
+	 * Platform Adapter Manager which handles registered adapter factories.
+	 */
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isInstance(this))
+			return this;
+		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}			
 }
