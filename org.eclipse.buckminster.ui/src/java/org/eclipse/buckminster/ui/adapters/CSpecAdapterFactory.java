@@ -9,11 +9,15 @@
 package org.eclipse.buckminster.ui.adapters;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Adapter Factory that converts between CSpec and CSpecDataNode
+ * Adapter Factory that converts between CSpec and CSpecDataNode and can convert an IResource to
+ * a CSpec or CSpecDataNode.
+ * 
  * @author Henrik Lindberg
  *
  */
@@ -28,18 +32,48 @@ public class CSpecAdapterFactory implements IAdapterFactory
 		if(adaptableObject instanceof CSpec && adapterType.isAssignableFrom(CSpecDataNode.class))
 			return new CSpecDataNode((CSpec)adaptableObject);
 		
-		if(adaptableObject instanceof IAdaptable)
-			return ((IAdaptable)adaptableObject).getAdapter(adapterType);
+		if(adaptableObject instanceof CSpecDataNode && adapterType.isAssignableFrom(CSpec.class))
+			return (CSpec)((CSpecDataNode)adaptableObject).getData();
 		
+		if(adaptableObject instanceof IResource)
+		{
+			CSpec cspec = getCSpecFromResource((IResource)adaptableObject);
+			if(cspec == null)
+				return null;
+			
+			if(adapterType.isAssignableFrom(CSpecDataNode.class))
+				return new CSpecDataNode(cspec);
+			if(adapterType.isAssignableFrom(CSpec.class))
+				return cspec;
+		}
+			
 		// give up
 		return null;
 	}
 
-
+	public CSpec getCSpecFromResource(IResource resource)
+	{
+		while(resource != null)
+		{
+			try
+			{
+				CSpec cspec = WorkspaceInfo.getCSpec(resource);
+				if(cspec != null)
+				{
+					return cspec;
+				}
+				resource = resource.getParent();
+			}
+			catch(CoreException e)
+			{
+				// ignore
+			}
+		}		
+		return null;
+	}
 	@SuppressWarnings("unchecked")
 	public Class[] getAdapterList()
 	{
-		// TODO Auto-generated method stub
 		return s_adapterList;
 	}
 

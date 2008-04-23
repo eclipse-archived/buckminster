@@ -20,6 +20,7 @@ import org.eclipse.buckminster.ui.adapters.BrowseableAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.CSpecAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.CSpecDataNode;
 import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -83,6 +84,7 @@ public class UiPlugin extends AbstractUIPlugin
 		Platform.getAdapterManager().registerAdapters(s_adapterFactory, OutlineDataNode.class);
 		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, CSpec.class);
 		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
+		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, IResource.class);
 		
 	}
 

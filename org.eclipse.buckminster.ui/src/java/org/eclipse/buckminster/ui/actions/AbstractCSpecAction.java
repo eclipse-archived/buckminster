@@ -7,11 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.actions;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,7 +19,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
+ * View the selected object adapted to CSpec.class. This will show a read only view of the 
+ * CSpec in a CSpec editor.
+ * 
  * @author Thomas Hallgren
+ * @author Henrik Lindberg
  */
 public abstract class AbstractCSpecAction implements IObjectActionDelegate
 {
@@ -68,32 +68,10 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 		if(first instanceof IAdaptable)
 		{
 			m_selectedComponent = (CSpec)((IAdaptable)first).getAdapter(CSpec.class);
-			if(m_selectedComponent != null)
-				return;
 		}
-		if(!(first instanceof IResource))
-			return;
 
-		// TODO - this can be very nicely replaced with an adapter factory for IResource
-		IResource resource = (IResource)first;
-		while(resource != null)
-		{
-			try
-			{
-				CSpec cspec = WorkspaceInfo.getCSpec(resource);
-				if(cspec != null)
-				{
-					m_selectedComponent = cspec;
-					break;
-				}
-				resource = resource.getParent();
-			}
-			catch(CoreException e)
-			{
-				resource = null;
-				CorePlugin.getLogger().warning(e, e.getMessage());
-			}
-		}
+		action.setEnabled(m_selectedComponent != null);
+		
 	}
 
 	protected void setSelectedComponent(CSpec cspec)
