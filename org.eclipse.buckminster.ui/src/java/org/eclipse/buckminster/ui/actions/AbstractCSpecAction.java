@@ -12,6 +12,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -63,9 +64,17 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 			return;
 
 		Object first = s.getFirstElement();
+		// If the selected object is a CSpec, or adaptable to CSpec, use it.
+		if(first instanceof IAdaptable)
+		{
+			m_selectedComponent = (CSpec)((IAdaptable)first).getAdapter(CSpec.class);
+			if(m_selectedComponent != null)
+				return;
+		}
 		if(!(first instanceof IResource))
 			return;
 
+		// TODO - this can be very nicely replaced with an adapter factory for IResource
 		IResource resource = (IResource)first;
 		while(resource != null)
 		{

@@ -47,6 +47,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 //import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -69,7 +70,7 @@ public class ComponentBrowserView extends ViewPart
 	private ViewInBrowserAction m_viewInExternalBrowser;
 	private ViewInBrowserAction m_viewFeedInBrowser;
 
-//	private DrillDownAdapter m_drillDownAdapter;
+	private DrillDownAdapter m_drillDownAdapter;
 
 	class ViewLabelProvider extends BuckminsterLabelProvider implements ITableLabelProvider
 	{
@@ -117,7 +118,7 @@ public class ComponentBrowserView extends ViewPart
 	public void createPartControl(Composite parent)
 	{
 		m_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-//		m_drillDownAdapter = new DrillDownAdapter(m_viewer);
+		m_drillDownAdapter = new DrillDownAdapter(m_viewer);
 		m_viewer.setContentProvider(new ResolutionsTreeContentProvider());
 		m_viewer.setLabelProvider(new BuckminsterLabelProvider());
 		m_viewer.setSorter(new NameSorter());
@@ -190,9 +191,9 @@ public class ComponentBrowserView extends ViewPart
 				manager.add(m_viewInExternalBrowser);
 			}
 		}
-		
+		manager.add(new Separator());
 		manager.add(action1);
-		manager.add(action2);
+
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}

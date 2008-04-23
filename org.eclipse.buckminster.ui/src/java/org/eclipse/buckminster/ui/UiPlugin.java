@@ -13,9 +13,12 @@ package org.eclipse.buckminster.ui;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.ui.adapters.BrowseableAdapterFactory;
+import org.eclipse.buckminster.ui.adapters.CSpecAdapterFactory;
+import org.eclipse.buckminster.ui.adapters.CSpecDataNode;
 import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -38,6 +41,8 @@ public class UiPlugin extends AbstractUIPlugin
 	private ResourceBundle m_resourceBundle;
 
 	private ScopedPreferenceStore m_preferenceStore;
+
+	private static CSpecAdapterFactory s_cspecAdapterFactory;
 
 	private static BrowseableAdapterFactory s_adapterFactory;
 
@@ -73,8 +78,11 @@ public class UiPlugin extends AbstractUIPlugin
 		
 		// register factory to convert an Outline to browseable URLs
 		s_adapterFactory = new BrowseableAdapterFactory();
+		s_cspecAdapterFactory = new CSpecAdapterFactory();
 		Platform.getAdapterManager().registerAdapters(s_adapterFactory, Outline.class);
 		Platform.getAdapterManager().registerAdapters(s_adapterFactory, OutlineDataNode.class);
+		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, CSpec.class);
+		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
 		
 	}
 
@@ -85,6 +93,7 @@ public class UiPlugin extends AbstractUIPlugin
 	public void stop(BundleContext context) throws Exception
 	{
 		Platform.getAdapterManager().unregisterAdapters(s_adapterFactory);
+		Platform.getAdapterManager().unregisterAdapters(s_cspecAdapterFactory);
 
 		super.stop(context);
 		s_plugin = null;
