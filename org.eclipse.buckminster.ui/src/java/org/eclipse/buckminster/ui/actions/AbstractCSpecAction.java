@@ -19,8 +19,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
- * View the selected object adapted to CSpec.class. This will show a read only view of the 
- * CSpec in a CSpec editor.
+ * Operate on the selected object adapted to CSpec.class.
  * 
  * @author Thomas Hallgren
  * @author Henrik Lindberg
