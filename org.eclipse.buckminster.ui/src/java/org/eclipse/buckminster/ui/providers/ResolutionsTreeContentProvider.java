@@ -14,7 +14,9 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeDataNode;
+import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.PendingTreeDataNode;
@@ -63,11 +65,20 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 				empty[0] = new BasicTreeDataNode("No components found");
 				return empty;
 			}
-			ITreeDataNode[] result = new ITreeDataNode[size];
-			int i = 0;
+			ITreeDataNode[] result = new ITreeDataNode[2];
+			ITreeParentDataNode ws = new BasicTreeParentDataNode("Workspace Components");
+			ITreeParentDataNode tp = new BasicTreeParentDataNode("Target Platform Components");  
+			result[0] = ws;
+			result[1] = tp;
+			
 			for(Resolution r: resolutions)
 			{
-				result[i++] = new ResolutionDataNode(r);
+				// Divide nodes on target platform and workspace parent nodes
+				ResolutionDataNode rd = new ResolutionDataNode(r);
+				if(IReaderType.ECLIPSE_PLATFORM.equals(r.getProvider().getReaderTypeId())) 
+					tp.addChild(rd);
+				else
+					ws.addChild(rd);
 				monitor.worked(1);
 			}
 			return result;

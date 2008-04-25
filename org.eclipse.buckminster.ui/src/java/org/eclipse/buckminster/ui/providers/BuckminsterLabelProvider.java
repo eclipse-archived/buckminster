@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.ui.utils.UiUtils;
 import org.eclipse.core.resources.IFile;
@@ -85,10 +86,12 @@ public class BuckminsterLabelProvider extends LabelProvider
 		return m_rssImage;
 	}
 	@Override
-	public Image getImage(Object element)
+	public Image getImage(Object selected)
 	{
-		if(element instanceof ITreeDataNode)
+		Object element = selected;
+		if(selected instanceof ITreeDataNode)
 			element = ((ITreeDataNode)element).getData();
+		
 		if(element instanceof IProject)
 			return getProjectImage();
 
@@ -123,6 +126,11 @@ public class BuckminsterLabelProvider extends LabelProvider
 				return getFolderImage();
 			return getRssImage();
 		}
+		
+		// Parents default to Folder
+		if(selected instanceof BasicTreeParentDataNode)
+			return getFolderImage();
+		
 		return null;
 	}
 
