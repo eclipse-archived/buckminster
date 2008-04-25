@@ -26,7 +26,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 
@@ -36,7 +38,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Henrik Lindberg
  *
  */
-public class BuckminsterLabelProvider extends LabelProvider
+public class BuckminsterLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider
 {
 	private Image m_projectImage;
 	private Image m_folderImage;
@@ -140,42 +142,7 @@ public class BuckminsterLabelProvider extends LabelProvider
 	@Override
 	public String getText(Object element)
 	{
-		if(element instanceof ITreeDataNode)
-			element = ((ITreeDataNode)element).getData();
-		if(element instanceof IResource)
-			return ((IResource)element).getName();
-		if(element instanceof Resolution)
-		{
-			Resolution r = (Resolution)element;
-			StringBuilder bld = new StringBuilder(r.getName());
-			String type = r.getComponentTypeId();
-			if(type != null)
-			{
-				bld.append(" : ");
-				bld.append(type);
-			}
-			IVersion version = r.getVersion();
-			if(version != null)
-			{
-				bld.append(" - ");
-				bld.append(version.toString());
-			}
-			return bld.toString();
-		}
-		if(element instanceof CSpec)
-		{
-			return "Component Specification (CSpec)";
-		}
-		if(element instanceof OPML)
-		{
-			return "Component Information";
-		}
-		if(element instanceof Outline)
-		{
-			Outline outline = (Outline)element;
-			return outline.getText();
-		}
-		return element.toString();
+		return getStyledText(element).toString();
 	}
 
 	@Override
@@ -194,6 +161,47 @@ public class BuckminsterLabelProvider extends LabelProvider
 		
 		// note - do not dispose of images that were not created !
 		super.dispose();
+	}
+
+	public StyledString getStyledText(Object element)
+	{
+		if(element instanceof ITreeDataNode)
+			element = ((ITreeDataNode)element).getData();
+		if(element instanceof IResource)
+			return new StyledString(((IResource)element).getName());
+		
+		if(element instanceof Resolution)
+		{
+			Resolution r = (Resolution)element;
+			StyledString bld = new StyledString(r.getName());
+			String type = r.getComponentTypeId();
+			if(type != null)
+			{
+				bld.append(" : ", StyledString.DECORATIONS_STYLER);
+				bld.append(type, StyledString.DECORATIONS_STYLER);
+			}
+			IVersion version = r.getVersion();
+			if(version != null)
+			{
+				bld.append(" - ", StyledString.DECORATIONS_STYLER);
+				bld.append(version.toString(), StyledString.DECORATIONS_STYLER);
+			}
+			return bld;
+		}
+		if(element instanceof CSpec)
+		{
+			return new StyledString("Component Specification (CSpec)");
+		}
+		if(element instanceof OPML)
+		{
+			return new StyledString("Component Information");
+		}
+		if(element instanceof Outline)
+		{
+			Outline outline = (Outline)element;
+			return new StyledString(outline.getText());
+		}
+		return new StyledString(element.toString());
 	}
 
 }

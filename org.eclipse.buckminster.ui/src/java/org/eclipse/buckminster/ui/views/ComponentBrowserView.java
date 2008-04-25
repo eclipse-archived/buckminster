@@ -26,6 +26,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -109,7 +110,8 @@ public class ComponentBrowserView extends ViewPart
 	{
 		m_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		m_viewer.setContentProvider(new ResolutionsTreeContentProvider());
-		m_viewer.setLabelProvider(new BuckminsterLabelProvider());
+		
+		m_viewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new BuckminsterLabelProvider()));
 		m_viewer.setSorter(new NameSorter());
 		m_viewer.addTreeListener(new ITreeViewerListener(){
 			public void treeCollapsed(TreeExpansionEvent event)
