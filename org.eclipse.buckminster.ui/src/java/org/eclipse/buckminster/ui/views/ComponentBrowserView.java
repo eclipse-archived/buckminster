@@ -12,6 +12,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
+import org.eclipse.buckminster.generic.ui.GenericUiPlugin;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
 import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
@@ -25,7 +26,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -40,9 +40,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -55,9 +53,7 @@ public class ComponentBrowserView extends ViewPart
 //	private TableViewer viewer;
 	private TreeViewer m_viewer;
 	
-	private Action action1;
-
-	private Action action2;
+	private Action m_refreshAction;
 
 	private Action doubleClickAction;
 	
@@ -162,11 +158,8 @@ public class ComponentBrowserView extends ViewPart
 	}
 
 	private void fillLocalPullDown(IMenuManager manager)
-	{
-		
-		manager.add(action1);
-		manager.add(new Separator());
-		manager.add(action2);
+	{		
+		manager.add(m_refreshAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager)
@@ -191,8 +184,7 @@ public class ComponentBrowserView extends ViewPart
 
 	private void fillLocalToolBar(IToolBarManager manager)
 	{
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(m_refreshAction);
 	}
 
 	private void makeActions()
@@ -201,32 +193,19 @@ public class ComponentBrowserView extends ViewPart
 		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, "content", false);
 		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, "feed", true);
 		
-		action1 = new Action()
+		m_refreshAction = new Action()
 		{
 			@Override
 			public void run()
 			{
-				showMessage("Action 1 executed");
+				// This tells the resolution content provider to produce a default tree of all resolutions.
+				m_viewer.setInput(getViewSite());
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-				ISharedImages.IMG_OBJS_INFO_TSK));
-
-		action2 = new Action()
-		{
-			@Override
-			public void run()
-			{
-				showMessage("Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-				ISharedImages.IMG_OBJS_INFO_TSK));
-
+		m_refreshAction.setText("Refresh");
+		m_refreshAction.setToolTipText("Refresh Component Explorer");
+		m_refreshAction.setImageDescriptor(GenericUiPlugin.getImageDescriptor("icons/refresh.gif"));
+		
 		doubleClickAction = new Action()
 		{
 			@Override
@@ -260,10 +239,10 @@ public class ComponentBrowserView extends ViewPart
 		});
 	}
 
-	private void showMessage(String message)
-	{
-		MessageDialog.openInformation(m_viewer.getControl().getShell(), "Component Browser View", message);
-	}
+//	private void showMessage(String message)
+//	{
+//		MessageDialog.openInformation(m_viewer.getControl().getShell(), "Component Browser View", message);
+//	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
