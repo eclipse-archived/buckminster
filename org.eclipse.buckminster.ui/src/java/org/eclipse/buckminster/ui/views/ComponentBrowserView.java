@@ -8,19 +8,16 @@
 
 package org.eclipse.buckminster.ui.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
 import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
+import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
 import org.eclipse.buckminster.ui.providers.BuckminsterLabelProvider;
 import org.eclipse.buckminster.ui.providers.ResolutionsTreeContentProvider;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -46,8 +43,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-//import org.eclipse.ui.part.DrillDownAdapter;
-import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -70,10 +65,9 @@ public class ComponentBrowserView extends ViewPart
 	private ViewInBrowserAction m_viewInExternalBrowser;
 	private ViewInBrowserAction m_viewFeedInBrowser;
 
-	private DrillDownAdapter m_drillDownAdapter;
-
 	class ViewLabelProvider extends BuckminsterLabelProvider implements ITableLabelProvider
 	{
+		// TODO: Cleanup - this stuff is not used
 		public String getColumnText(Object element, int columnIndex)
 		{
 			Resolution cr = (Resolution)element;
@@ -118,7 +112,6 @@ public class ComponentBrowserView extends ViewPart
 	public void createPartControl(Composite parent)
 	{
 		m_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		m_drillDownAdapter = new DrillDownAdapter(m_viewer);
 		m_viewer.setContentProvider(new ResolutionsTreeContentProvider());
 		m_viewer.setLabelProvider(new BuckminsterLabelProvider());
 		m_viewer.setSorter(new NameSorter());
@@ -233,6 +226,7 @@ public class ComponentBrowserView extends ViewPart
 		action2.setToolTipText("Action 2 tooltip");
 		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
 				ISharedImages.IMG_OBJS_INFO_TSK));
+
 		doubleClickAction = new Action()
 		{
 			@Override
@@ -240,7 +234,17 @@ public class ComponentBrowserView extends ViewPart
 			{
 				ISelection selection = m_viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on " + obj.toString());
+				if(obj instanceof IAdaptable)
+				{
+					// Invoke the ViewCSpec Action
+					CSpec cspec = (CSpec)((IAdaptable)obj).getAdapter(CSpec.class);
+					if(cspec == null)
+						return;
+					ViewCSpecAction vca = new ViewCSpecAction();
+					vca.setActivePart(this, ComponentBrowserView.this.getSite().getPart());
+					vca.selectionChanged(this, selection);
+					vca.run(this);
+				}
 			}
 		};
 	}
