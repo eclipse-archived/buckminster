@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
-import org.eclipse.buckminster.generic.ui.utils.UiUtils;
 
 /**
  * Opens an internal or external browser for a selected object that is adaptable to
@@ -110,7 +109,6 @@ public class ViewInBrowserAction extends AbstractAction
 		}
 		catch(PartInitException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
