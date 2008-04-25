@@ -191,8 +191,6 @@ public class ComponentBrowserView extends ViewPart
 				manager.add(m_viewInExternalBrowser);
 			}
 		}
-		manager.add(new Separator());
-		manager.add(action1);
 
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

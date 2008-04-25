@@ -221,5 +221,17 @@
                 menubarPath="additions">
           </action>
        </objectContribution>
+       <objectContribution
+             adaptable="true"
+             id="org.eclipse.buckminster.ui.opmlObjectContribution"
+             objectClass="org.eclipse.buckminster.opml.model.OPML">
+          <action
+                class="org.eclipse.buckminster.ui.actions.ExportOPMLAction"
+                enablesFor="+"
+                id="org.eclipse.buckminster.ui.exportOpmlAction"
+                label="Export Component Info as OPML File"
+                menubarPath="additions">
+          </action>
+       </objectContribution>
     </extension>
 </plugin>

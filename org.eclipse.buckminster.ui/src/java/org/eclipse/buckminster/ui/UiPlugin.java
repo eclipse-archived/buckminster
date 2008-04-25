@@ -14,14 +14,20 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.ui.adapters.BrowseableAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.CSpecAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.CSpecDataNode;
+import org.eclipse.buckminster.ui.adapters.OPMLAdapterFactory;
+import org.eclipse.buckminster.ui.adapters.OPMLDataNode;
 import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
+import org.eclipse.buckminster.ui.adapters.ResolutionDataNode;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -42,6 +48,8 @@ public class UiPlugin extends AbstractUIPlugin
 	private ResourceBundle m_resourceBundle;
 
 	private ScopedPreferenceStore m_preferenceStore;
+
+	private static OPMLAdapterFactory s_opmlAdapterFactory;
 
 	private static CSpecAdapterFactory s_cspecAdapterFactory;
 
@@ -80,12 +88,21 @@ public class UiPlugin extends AbstractUIPlugin
 		// register factory to convert an Outline to browseable URLs
 		s_adapterFactory = new BrowseableAdapterFactory();
 		s_cspecAdapterFactory = new CSpecAdapterFactory();
-		Platform.getAdapterManager().registerAdapters(s_adapterFactory, Outline.class);
-		Platform.getAdapterManager().registerAdapters(s_adapterFactory, OutlineDataNode.class);
-		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, CSpec.class);
-		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
-		Platform.getAdapterManager().registerAdapters(s_cspecAdapterFactory, IResource.class);
-		
+		s_opmlAdapterFactory = new OPMLAdapterFactory();
+		IAdapterManager adapterManager = Platform.getAdapterManager();
+		adapterManager.registerAdapters(s_adapterFactory, Outline.class);
+		adapterManager.registerAdapters(s_adapterFactory, OutlineDataNode.class);
+		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpec.class);
+		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
+		adapterManager.registerAdapters(s_cspecAdapterFactory, IResource.class);
+
+		adapterManager.registerAdapters(s_opmlAdapterFactory, Resolution.class);		
+		adapterManager.registerAdapters(s_opmlAdapterFactory, ResolutionDataNode.class);		
+		adapterManager.registerAdapters(s_opmlAdapterFactory, OPML.class);		
+		adapterManager.registerAdapters(s_opmlAdapterFactory, OPMLDataNode.class);		
+		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);		
+		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);		
+
 	}
 
 	/**
@@ -94,9 +111,10 @@ public class UiPlugin extends AbstractUIPlugin
 	@Override
 	public void stop(BundleContext context) throws Exception
 	{
-		Platform.getAdapterManager().unregisterAdapters(s_adapterFactory);
-		Platform.getAdapterManager().unregisterAdapters(s_cspecAdapterFactory);
-
+		IAdapterManager adapterManager = Platform.getAdapterManager();
+		adapterManager.unregisterAdapters(s_adapterFactory);
+		adapterManager.unregisterAdapters(s_cspecAdapterFactory);
+		adapterManager.unregisterAdapters(s_opmlAdapterFactory);
 		super.stop(context);
 		s_plugin = null;
 		m_resourceBundle = null;
