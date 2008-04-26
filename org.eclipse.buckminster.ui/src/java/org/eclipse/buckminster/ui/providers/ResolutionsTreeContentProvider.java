@@ -36,9 +36,25 @@ import org.eclipse.ui.IViewSite;
  */
 public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 {
+	public enum Mode
+	{
+		ALL,
+		SINGLE,
+		;
+	}
+	Mode m_mode;
+	
+	public ResolutionsTreeContentProvider()
+	{
+		this(Mode.ALL);
+	}
+	public ResolutionsTreeContentProvider(Mode mode)
+	{
+		m_mode = mode;
+	}
 	/**
 	 * A node that expands itself into a tree of all resolutions in a background thread.
-	 * @author henrik
+	 * @author Henrik Lindberg
 	 *
 	 */
 	public static class AllResolutionsNode extends PendingTreeDataNode
@@ -105,6 +121,10 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 	{
+		// if nothing changes
+		if(oldInput == newInput)
+			return;
+		
 		super.inputChanged(viewer, oldInput, newInput);
 		ITreeParentDataNode root = getHiddenRoot();
 		if(root == null)
@@ -112,9 +132,9 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			initialize();
 			root = getHiddenRoot();
 		}
-		root.removeAllChildren();
 		if(newInput instanceof List)
 		{
+			root.removeAllChildren();
 			List<Resolution> resolutions = (List<Resolution>)newInput;
 			if(resolutions.size() < 1)
 				return; // empty
@@ -123,16 +143,34 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			return;
 		}
 		if(newInput instanceof Resolution)
-			root.addChild(new ResolutionDataNode((Resolution)newInput));
+		{
+			ITreeDataNode[] children = root.getChildren();
+			if(!(children.length > 0 && children[0] instanceof ResolutionDataNode 
+					&& newInput.equals(((ResolutionDataNode)children[0]).getData())))
+			{
+				root.removeAllChildren();
+				root.addChild(new ResolutionDataNode((Resolution)newInput));
+			}
+		}
 		if(newInput instanceof ITreeDataNode)
+		{
+			root.removeAllChildren();
 			root.addChild((ITreeDataNode)newInput);
-
+		}
 		// if the node added to the hidden root is a pending node - start expanding it now in the background.
 		if(newInput instanceof IViewSite)
 		{
-			AllResolutionsNode pending = new ResolutionsTreeContentProvider.AllResolutionsNode();
-			root.addChild(pending);
-			pending.schedule("getting resolutions");
+			root.removeAllChildren();
+			if(m_mode == Mode.ALL)
+			{
+				AllResolutionsNode pending = new ResolutionsTreeContentProvider.AllResolutionsNode();
+				root.addChild(pending);
+				pending.schedule("getting resolutions");
+			}
+			else
+			{
+				root.addChild(new BasicTreeDataNode("Nothing to display."));
+			}
 		}
 	}
 }

@@ -51,8 +51,7 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ComponentBrowserView extends ViewPart
 {
-//	private TableViewer viewer;
-	private TreeViewer m_viewer;
+	protected TreeViewer m_viewer;
 	
 	private Action m_refreshAction;
 
@@ -61,46 +60,13 @@ public class ComponentBrowserView extends ViewPart
 	private ViewInBrowserAction m_viewInBrowser;
 	private ViewInBrowserAction m_viewInExternalBrowser;
 	private ViewInBrowserAction m_viewFeedInBrowser;
-
-	class ViewLabelProvider extends BuckminsterLabelProvider implements ITableLabelProvider
-	{
-		// TODO: Cleanup - this stuff is not used
-		public String getColumnText(Object element, int columnIndex)
-		{
-			Resolution cr = (Resolution)element;
-			String lbl;
-			switch(columnIndex)
-			{
-			case 0:
-				lbl = super.getText(cr);
-				// lbl = cr.getRequest().getViewName();
-				break;
-			case 1:
-				IVersion vs = cr.getVersion();
-				lbl = vs == null ? "" : vs.toString();
-				break;
-			default:
-				lbl = null;
-			}
-			return lbl;
-		}
-		public Image getColumnImage(Object obj, int index)
-		{
-			return index != 0 ? null : getImage(obj);
-		}
-
-	}
-
-
+	
 	class NameSorter extends ViewerSorter
 	{
 	}
-
-	/**
-	 * The constructor.
-	 */
-	public ComponentBrowserView()
+	public boolean isAutoExpand()
 	{
+		return false;
 	}
 	/**
 	 * Call-back that creates and initializes the viewer.
@@ -109,7 +75,7 @@ public class ComponentBrowserView extends ViewPart
 	public void createPartControl(Composite parent)
 	{
 		m_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		m_viewer.setContentProvider(new ResolutionsTreeContentProvider());
+		m_viewer.setContentProvider(getContentProvider());
 		
 		m_viewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new BuckminsterLabelProvider()));
 		m_viewer.setSorter(new NameSorter());
@@ -135,7 +101,10 @@ public class ComponentBrowserView extends ViewPart
 		hookDoubleClickAction();
 		contributeToActionBars();		
 	}
-
+	protected ResolutionsTreeContentProvider getContentProvider()
+	{
+		return new ResolutionsTreeContentProvider();
+	}
 	private void hookContextMenu()
 	{
 		MenuManager menuMgr = new MenuManager("#PopupMenu");

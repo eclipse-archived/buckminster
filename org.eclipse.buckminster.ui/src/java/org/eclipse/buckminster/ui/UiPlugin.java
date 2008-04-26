@@ -24,7 +24,9 @@ import org.eclipse.buckminster.ui.adapters.CSpecDataNode;
 import org.eclipse.buckminster.ui.adapters.OPMLAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.OPMLDataNode;
 import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
+import org.eclipse.buckminster.ui.adapters.ResolutionAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.ResolutionDataNode;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterManager;
@@ -54,6 +56,8 @@ public class UiPlugin extends AbstractUIPlugin
 	private static CSpecAdapterFactory s_cspecAdapterFactory;
 
 	private static BrowseableAdapterFactory s_adapterFactory;
+	
+	private static ResolutionAdapterFactory s_resolutionAdapterFactory;
 
 	// must be the same as the id in plugin.xml
 	//
@@ -89,6 +93,8 @@ public class UiPlugin extends AbstractUIPlugin
 		s_adapterFactory = new BrowseableAdapterFactory();
 		s_cspecAdapterFactory = new CSpecAdapterFactory();
 		s_opmlAdapterFactory = new OPMLAdapterFactory();
+		s_resolutionAdapterFactory = new ResolutionAdapterFactory();
+		
 		IAdapterManager adapterManager = Platform.getAdapterManager();
 		adapterManager.registerAdapters(s_adapterFactory, Outline.class);
 		adapterManager.registerAdapters(s_adapterFactory, OutlineDataNode.class);
@@ -103,6 +109,10 @@ public class UiPlugin extends AbstractUIPlugin
 		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);		
 		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);		
 
+		adapterManager.registerAdapters(s_resolutionAdapterFactory, IResource.class);		
+		adapterManager.registerAdapters(s_resolutionAdapterFactory, IProject.class);		
+		adapterManager.registerAdapters(s_resolutionAdapterFactory, Resolution.class);		
+		adapterManager.registerAdapters(s_resolutionAdapterFactory, ResolutionDataNode.class);		
 	}
 
 	/**
@@ -115,6 +125,7 @@ public class UiPlugin extends AbstractUIPlugin
 		adapterManager.unregisterAdapters(s_adapterFactory);
 		adapterManager.unregisterAdapters(s_cspecAdapterFactory);
 		adapterManager.unregisterAdapters(s_opmlAdapterFactory);
+		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
 		super.stop(context);
 		s_plugin = null;
 		m_resourceBundle = null;
