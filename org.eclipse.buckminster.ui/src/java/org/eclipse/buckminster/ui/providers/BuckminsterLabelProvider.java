@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.buckminster.opml.model.OutlineType;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 
@@ -46,6 +47,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 	private Image m_cspecImage;
 	private Image m_componentImage;
 	private Image m_rssImage;
+	private Image m_htmlImage;
 
 	public BuckminsterLabelProvider()
 	{
@@ -87,6 +89,12 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage();
 		return m_rssImage;
 	}
+	private Image getHtmlImage()
+	{
+		if(m_htmlImage == null)
+			m_htmlImage = 	UiUtils.getImageDescriptor("file.html").createImage();
+		return m_htmlImage;
+	}
 	@Override
 	public Image getImage(Object selected)
 	{
@@ -126,6 +134,9 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			List<Outline> outlines = ((Outline)element).getOutlines();
 			if(outlines != null && outlines.size() > 0)
 				return getFolderImage();
+			// An outline that is a link is shown as a browseable image
+			if(((Outline)element).getType() == OutlineType.LINK)
+				return getHtmlImage();
 			return getRssImage();
 		}
 		
@@ -158,6 +169,8 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			m_cspecImage.dispose();
 		if(m_componentImage != null)
 			m_componentImage.dispose();
+		if(m_htmlImage != null)
+			m_htmlImage.dispose();
 		
 		// note - do not dispose of images that were not created !
 		super.dispose();
