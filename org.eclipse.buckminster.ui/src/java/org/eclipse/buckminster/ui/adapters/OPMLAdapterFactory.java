@@ -143,6 +143,9 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		// The remaining adaptions need a parent that is an OPML
 		//
 		ITreeParentDataNode parent = adapted.getParent();
+		while(parent != null && !(parent instanceof OPMLDataNode))
+			parent = parent.getParent();
+		
 		if(parent == null || !(parent instanceof OPMLDataNode))
 			return null;
 		
