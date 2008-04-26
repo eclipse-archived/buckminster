@@ -26,6 +26,7 @@ import org.eclipse.buckminster.ui.adapters.OPMLDataNode;
 import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
 import org.eclipse.buckminster.ui.adapters.ResolutionAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.ResolutionDataNode;
+import org.eclipse.buckminster.ui.adapters.ResourceAdapterFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -50,6 +51,8 @@ public class UiPlugin extends AbstractUIPlugin
 	private ResourceBundle m_resourceBundle;
 
 	private ScopedPreferenceStore m_preferenceStore;
+
+	private static ResourceAdapterFactory s_resourceAdapterFactory;
 
 	private static OPMLAdapterFactory s_opmlAdapterFactory;
 
@@ -94,13 +97,13 @@ public class UiPlugin extends AbstractUIPlugin
 		s_cspecAdapterFactory = new CSpecAdapterFactory();
 		s_opmlAdapterFactory = new OPMLAdapterFactory();
 		s_resolutionAdapterFactory = new ResolutionAdapterFactory();
+		s_resourceAdapterFactory = new ResourceAdapterFactory();
 		
 		IAdapterManager adapterManager = Platform.getAdapterManager();
 		adapterManager.registerAdapters(s_adapterFactory, Outline.class);
 		adapterManager.registerAdapters(s_adapterFactory, OutlineDataNode.class);
 		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpec.class);
 		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
-		adapterManager.registerAdapters(s_cspecAdapterFactory, IResource.class);
 
 		adapterManager.registerAdapters(s_opmlAdapterFactory, Resolution.class);		
 		adapterManager.registerAdapters(s_opmlAdapterFactory, ResolutionDataNode.class);		
@@ -108,11 +111,13 @@ public class UiPlugin extends AbstractUIPlugin
 		adapterManager.registerAdapters(s_opmlAdapterFactory, OPMLDataNode.class);		
 		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);		
 		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);		
-
-		adapterManager.registerAdapters(s_resolutionAdapterFactory, IResource.class);		
+		
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, IProject.class);		
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, Resolution.class);		
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, ResolutionDataNode.class);		
+
+		adapterManager.registerAdapters(s_resourceAdapterFactory, IResource.class);
+		
 	}
 
 	/**
@@ -126,6 +131,8 @@ public class UiPlugin extends AbstractUIPlugin
 		adapterManager.unregisterAdapters(s_cspecAdapterFactory);
 		adapterManager.unregisterAdapters(s_opmlAdapterFactory);
 		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
+		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
+		
 		super.stop(context);
 		s_plugin = null;
 		m_resourceBundle = null;

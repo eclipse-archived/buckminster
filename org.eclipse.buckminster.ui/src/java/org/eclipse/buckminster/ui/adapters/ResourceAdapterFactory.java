@@ -11,18 +11,18 @@ package org.eclipse.buckminster.ui.adapters;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
  * Adapter Factory that converts:
- * CSpec and CSpecDataNode to each other, and to Resolution and ResolutionDataNode
- * IResource to CSpec, or CSpecDataNode.
+ * IResource to CSpec, CSpecDataNode, Resolution, and ResolutionDataNode
  * 
  * @author Henrik Lindberg
  *
  */
-public class CSpecAdapterFactory implements IAdapterFactory
+public class ResourceAdapterFactory implements IAdapterFactory
 {
 	@SuppressWarnings("unchecked")
 	private static Class[] s_adapterList = { 
@@ -33,42 +33,58 @@ public class CSpecAdapterFactory implements IAdapterFactory
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
-		if(adaptableObject instanceof CSpec)
-			return adaptCSpec((CSpec)adaptableObject, adapterType);
-		
-		if(adaptableObject instanceof CSpecDataNode)
-			return adaptCSpec((CSpec)((CSpecDataNode)adaptableObject).getData(), adapterType);
-					
+		if(adaptableObject instanceof IResource)
+		{
+			// All adaptions require a cspec for the resource
+			CSpec cspec = getCSpecFromResource((IResource)adaptableObject);
+			if(cspec == null)
+				return null;
+			
+			if(adapterType.isAssignableFrom(CSpec.class))
+				return cspec;			
+			if(adapterType.isAssignableFrom(CSpecDataNode.class))
+				return new CSpecDataNode(cspec);
+
+			// Remaining adaptions need a Resolution
+			Resolution r = null;
+			try
+			{
+				r = WorkspaceInfo.getResolution(cspec.getComponentIdentifier());
+			}
+			catch(CoreException e)
+			{
+				return null;
+			}
+			if(r == null)
+				return null;
+			if(adapterType.isAssignableFrom(Resolution.class))
+				return r;
+			if(adapterType.isAssignableFrom(ResolutionDataNode.class))
+				return new ResolutionDataNode(r);
+		}
+			
 		// give up
 		return null;
 	}
-	@SuppressWarnings("unchecked")
-	public Object adaptCSpec(CSpec cspec, Class adapterType)
+	
+	public CSpec getCSpecFromResource(IResource resource)
 	{
-		if(adapterType.isAssignableFrom(CSpec.class))
-			return cspec; // duh
-		
-		if(adapterType.isAssignableFrom(CSpecDataNode.class))
-			return new CSpecDataNode(cspec);
-		
-		if(adapterType.isAssignableFrom(Resolution.class))				
+		while(resource != null)
+		{
 			try
 			{
-				return WorkspaceInfo.getResolution(cspec.getComponentIdentifier());
+				CSpec cspec = WorkspaceInfo.getCSpec(resource);
+				if(cspec != null)
+				{
+					return cspec;
+				}
+				resource = resource.getParent();
 			}
 			catch(CoreException e)
 			{
-				return null;
+				// ignore
 			}
-		if(adapterType.isAssignableFrom(ResolutionDataNode.class))
-			try
-			{
-				return new ResolutionDataNode(WorkspaceInfo.getResolution(cspec.getComponentIdentifier()));
-			}
-			catch(CoreException e)
-			{
-				return null;
-			}
+		}		
 		return null;
 	}
 	@SuppressWarnings("unchecked")
