@@ -24,6 +24,6 @@ public class ResolutionDataNode extends BasicTreeParentDataNode
 		// add opml child node
 		OPML opml = data.getOPML();
 		if(opml != null)
-			addChild(new OPMLDataNode(data.getOPML()));
+			addChild(new OPMLDataNode(data.getOPML()));		
 	}		
 }

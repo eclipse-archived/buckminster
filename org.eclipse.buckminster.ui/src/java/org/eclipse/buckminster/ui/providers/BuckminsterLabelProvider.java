@@ -14,7 +14,9 @@ import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.opml.model.OutlineType;
 import org.eclipse.buckminster.ui.UiPlugin;
+import org.eclipse.buckminster.ui.adapters.ComponentReference;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -48,6 +50,8 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 	private Image m_componentImage;
 	private Image m_rssImage;
 	private Image m_htmlImage;
+	private Image m_dependantImage;
+	private Image m_dependencyImage;
 
 	public BuckminsterLabelProvider()
 	{
@@ -95,6 +99,19 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			m_htmlImage = 	UiUtils.getImageDescriptor("file.html").createImage();
 		return m_htmlImage;
 	}
+	private Image getDependantImage()
+	{
+		if(m_dependantImage == null)
+			m_dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage();
+		return m_dependantImage;
+	}
+	private Image getDependencyImage()
+	{
+		if(m_dependencyImage == null)
+			m_dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage();
+		return m_dependencyImage;
+	}
+	
 	@Override
 	public Image getImage(Object selected)
 	{
@@ -139,7 +156,12 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 				return getHtmlImage();
 			return getRssImage();
 		}
-		
+		if(element instanceof ComponentReference)
+			if(((ComponentReference)element).getMode() == ComponentReference.Mode.IN)
+				return getDependantImage();
+			else
+				return getDependencyImage();
+			
 		// Parents default to Folder
 		if(selected instanceof BasicTreeParentDataNode)
 			return getFolderImage();
@@ -171,6 +193,10 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			m_componentImage.dispose();
 		if(m_htmlImage != null)
 			m_htmlImage.dispose();
+		if(m_dependencyImage != null)
+			m_dependencyImage.dispose();
+		if(m_dependantImage != null)
+			m_dependantImage.dispose();
 		
 		// note - do not dispose of images that were not created !
 		super.dispose();
@@ -201,6 +227,24 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			}
 			return bld;
 		}
+		if(element instanceof ComponentReference)
+		{
+			ComponentReference ref = (ComponentReference)element;
+			StyledString bld = new StyledString(ref.getComponentName());
+			ComponentRequest req = ref.getComponentRequest();
+			if(req.getComponentTypeID() != null)
+			{
+				bld.append(" : ", StyledString.DECORATIONS_STYLER);
+				bld.append(req.getComponentTypeID(), StyledString.DECORATIONS_STYLER);
+			}
+			if(req.getVersionDesignator() != null)
+			{
+				bld.append(" - ", StyledString.DECORATIONS_STYLER);
+				bld.append(req.getVersionDesignator().toString(), StyledString.DECORATIONS_STYLER);
+			}
+			return bld;
+		}
+			
 		if(element instanceof CSpec)
 		{
 			return new StyledString("Component Specification (CSpec)");
