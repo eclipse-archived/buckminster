@@ -160,13 +160,6 @@
        </category>
        <view
              category="org.eclipse.buckminster"
-             class="org.eclipse.buckminster.ui.views.BuckminsterView"
-             id="org.eclipse.buckminster.ui.view1"
-             name="Component Info View"
-             restorable="true">
-       </view>
-       <view
-             category="org.eclipse.buckminster"
              class="org.eclipse.buckminster.ui.views.ComponentBrowserView"
              icon="icons/component.png"
              id="org.eclipse.buckminster.ui.views.ComponentBrowserView"
