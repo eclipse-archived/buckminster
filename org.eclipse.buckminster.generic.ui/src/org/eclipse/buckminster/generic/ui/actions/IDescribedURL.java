@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.generic.ui.actions;
 
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -22,7 +23,12 @@ public interface IDescribedURL
 	 * @return
 	 */
 	URL getBrowseableURL();
-	
+
+	/**
+	 * Get the URI (same as the URL, but in URI form).
+	 * @return
+	 */
+	URI getBrowseableURI();
 	/**
 	 * The name shown for the browser instance.
 	 * @return
