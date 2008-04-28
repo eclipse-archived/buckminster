@@ -76,9 +76,9 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 				return null;
 			}
 			if(returnClass == IBrowseable.class)
-				return new BrowseableURL(url, outline.getText(), outline.getTitle());
+				return new BrowseableURL(uri, url, outline.getText(), outline.getTitle());
 			if(returnClass == IBrowseableFeed.class)
-				return new BrowseableFeedURL(url, outline.getText(), outline.getTitle());
+				return new BrowseableFeedURL(uri, url, outline.getText(), outline.getTitle());
 		}
 		return null;
 	}
@@ -90,11 +90,13 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 	}
 	public static class BrowseableURL implements IBrowseable
 	{
+		private final URI m_uri;
 		private final URL m_url;
 		private String m_name;
 		private String m_tooltip;
-		BrowseableURL(URL url, String name, String tooltip)
+		BrowseableURL(URI uri, URL url, String name, String tooltip)
 		{
+			m_uri = uri;
 			m_url = url;
 			m_name = name;
 			m_tooltip = tooltip;
@@ -102,6 +104,10 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 		public URL getBrowseableURL()
 		{
 			return m_url;
+		}
+		public URI getBrowseableURI()
+		{
+			return m_uri;
 		}
 		public String getName()
 		{
@@ -114,9 +120,9 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 	}
 	public static class BrowseableFeedURL extends BrowseableURL implements IBrowseableFeed
 	{
-		public BrowseableFeedURL(URL url, String name, String tooltip)
+		public BrowseableFeedURL(URI uri, URL url, String name, String tooltip)
 		{
-			super(url, name, tooltip);
+			super(uri, url, name, tooltip);
 		}
 	}
 }
