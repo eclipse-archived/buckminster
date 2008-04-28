@@ -71,12 +71,12 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 			return;
 
 		Object first = s.getFirstElement();
-		// If the selected object is a CSpec, or adaptable to CSpec, use it.
+		// If the selected object is an instance of wanted type, or is adaptable to that type, use it.
 		
 		if(getType().isInstance(first))
-		{
+			m_selected = getType().cast(first);
+		else
 			m_selected = adapt(first);
-		}
 
 		action.setEnabled(m_selected != null);
 		
@@ -86,10 +86,9 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 		m_selected = selected;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected T adapt(Object selected)
 	{
-		return (T)((IAdaptable)selected).getAdapter(getType());
+		return getType().cast(((IAdaptable)selected).getAdapter(getType()));
 	}
 	
 	protected void showMessage(String title, String message)
