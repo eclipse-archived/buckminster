@@ -10,6 +10,10 @@ package org.eclipse.buckminster.generic.plugin;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 
 
 /**
@@ -22,9 +26,9 @@ public class PluginClassHandle<T>
 	protected final IConfigurationElement m_configElement;
 	private final Class<T> m_clazz;
 	private T m_handle;
-	private AbstractPlugin m_plugin;
+	private Plugin m_plugin;
 	
-	protected PluginClassHandle(AbstractPlugin plugin, IConfigurationElement configElement, Class<T> clazz, String requiredElement)
+	protected PluginClassHandle(Plugin plugin, IConfigurationElement configElement, Class<T> clazz, String requiredElement)
 	{
 		m_plugin = plugin;
 		m_configElement = configElement;
@@ -44,7 +48,9 @@ public class PluginClassHandle<T>
 				(name == null ? "[missing name attribute]" : name) +
 				" in " +
 				configElement.getDeclaringExtension().getNamespaceIdentifier();
-		m_plugin.logError(msg, e);
+		ILog log = m_plugin.getLog();
+		
+		log.log(new Status(IStatus.ERROR, m_plugin.getBundle().getSymbolicName(), msg));
 	}
 	
 	public synchronized T getHandle()
