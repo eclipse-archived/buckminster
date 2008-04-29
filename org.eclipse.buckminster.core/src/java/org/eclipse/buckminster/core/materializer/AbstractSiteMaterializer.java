@@ -81,7 +81,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		{
 			if(!m_includedRes.contains(res))
 			{
-				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site, res.getComponentIdentifier());
+				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site, res
+						.getComponentIdentifier());
 
 				// Get the site reference from the site. It might not exist since we only see
 				// the features that are listed in the site.xml
@@ -153,22 +154,26 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		}
 	}
 
-	protected abstract ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor) throws CoreException;
+	protected abstract ISite getDestinationSite(MaterializationContext context, IPath destination,
+			IProgressMonitor monitor) throws CoreException;
 
-	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite, ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
+	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
+			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
 
-	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context, Set<ComponentIdentifier> allInstalled, Map<IPath, Map<String, FeaturesPerSite>> sites, IProgressMonitor monitor) throws CoreException
+	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context,
+			Set<ComponentIdentifier> allInstalled, Map<IPath, Map<String, FeaturesPerSite>> sites,
+			IProgressMonitor monitor) throws CoreException
 	{
 		int count = 0;
 		Set<IPath> destinations = sites.keySet();
-		for (IPath path : destinations)
+		for(IPath path : destinations)
 			count += sites.get(path).size();
 
 		HashSet<ComponentIdentifier> installDelta = new HashSet<ComponentIdentifier>();
 		monitor.beginTask(null, destinations.size() * 100 + count * 100);
 		try
 		{
-			for (IPath path : destinations)
+			for(IPath path : destinations)
 			{
 				ISite mirrorSite = getDestinationSite(context, path, MonitorUtils.subMonitor(monitor, 100));
 				for(FeaturesPerSite fps : sites.get(path).values())
@@ -186,16 +191,20 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 								context.addRequestStatus(first.getRequest(), status);
 								Platform.addLogListener(this);
 							}
-						}	
+						}
 					};
 					Platform.addLogListener(listener);
 
 					try
 					{
-						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "Start mirroring"));
-						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(monitor, 5));
-						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils.subMonitor(monitor, 90));
-						Set<ComponentIdentifier> afterInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(monitor, 5));
+						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
+								"Start mirroring"));
+						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
+								monitor, 5));
+						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils
+								.subMonitor(monitor, 90));
+						Set<ComponentIdentifier> afterInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
+								monitor, 5));
 
 						// Create the delta that represents the installed components and add it to the
 						// complete delta for all site installations.
@@ -212,7 +221,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					}
 					finally
 					{
-						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(), "End mirroring"));
+						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
+								"End mirroring"));
 						Platform.removeLogListener(listener);
 					}
 				}
@@ -225,7 +235,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		}
 	}
 
-	private static Set<ComponentIdentifier> getSiteComponents(ISite site, IProgressMonitor monitor) throws CoreException
+	private static Set<ComponentIdentifier> getSiteComponents(ISite site, IProgressMonitor monitor)
+			throws CoreException
 	{
 		ISiteFeatureReference[] refs = site.getRawFeatureReferences();
 		monitor.beginTask(null, refs.length * 100);
@@ -233,7 +244,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		for(ISiteFeatureReference ref : refs)
 		{
 			VersionedIdentifier vi = ref.getVersionedIdentifier();
-			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE, VersionFactory.OSGiType.coerce(vi.getVersion()));
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE,
+					VersionFactory.OSGiType.coerce(vi.getVersion()));
 			if(components.add(ci))
 			{
 				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
@@ -246,14 +258,16 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		return components;
 	}
 
-	private static void addFeatureComponents(IFeature feature, Set<ComponentIdentifier> components, IProgressMonitor monitor) throws CoreException
+	private static void addFeatureComponents(IFeature feature, Set<ComponentIdentifier> components,
+			IProgressMonitor monitor) throws CoreException
 	{
 		IIncludedFeatureReference[] refs = feature.getRawIncludedFeatureReferences();
 		monitor.beginTask(null, refs.length * 100);
 		for(IIncludedFeatureReference ref : refs)
 		{
 			VersionedIdentifier vi = ref.getVersionedIdentifier();
-			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE, VersionFactory.OSGiType.coerce(vi.getVersion()));
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE,
+					VersionFactory.OSGiType.coerce(vi.getVersion()));
 			if(components.add(ci))
 			{
 				IFeature incFeature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
@@ -264,7 +278,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		for(IPluginEntry plugin : feature.getRawPluginEntries())
 		{
 			VersionedIdentifier vi = plugin.getVersionedIdentifier();
-			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.OSGI_BUNDLE, VersionFactory.OSGiType.coerce(vi.getVersion()));
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.OSGI_BUNDLE,
+					VersionFactory.OSGiType.coerce(vi.getVersion()));
 			components.add(ci);
 		}
 		monitor.done();
@@ -300,29 +315,39 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			}
 			catch(CoreException e)
 			{
-				throw BuckminsterException.fromMessage("Unable to install plugins and features that do not stem from an update site since PDE is missing");
+				throw BuckminsterException
+						.fromMessage("Unable to install plugins and features that do not stem from an update site since PDE is missing");
 			}
 			File tempSite = FileUtils.createTempFolder("bmsite", "tmp");
-			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite, features, plugins));
+			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite,
+					features, plugins));
 		}
 
 		for(Resolution resolution : siteFeatures)
 		{
-			IPath installLocation = context.getInstallLocation(resolution);
-			String siteURL = resolution.getRepository();
-			Map<String, FeaturesPerSite> sitesInLocation = sites.get(installLocation);
-			if(sitesInLocation == null)
+			try
 			{
-				sitesInLocation = new HashMap<String, FeaturesPerSite>();
-				sites.put(installLocation, sitesInLocation);
+				IPath installLocation = context.getInstallLocation(resolution);
+				String siteURL = resolution.getRepository();
+				Map<String, FeaturesPerSite> sitesInLocation = sites.get(installLocation);
+				if(sitesInLocation == null)
+				{
+					sitesInLocation = new HashMap<String, FeaturesPerSite>();
+					sites.put(installLocation, sitesInLocation);
+				}
+				FeaturesPerSite fps = sitesInLocation.get(siteURL);
+				if(fps == null)
+				{
+					fps = new FeaturesPerSite(SiteFeatureReaderType.getSite(siteURL, MonitorUtils.subMonitor(monitor,
+							100)));
+					sitesInLocation.put(siteURL, fps);
+				}
+				fps.add(resolution);
 			}
-			FeaturesPerSite fps = sitesInLocation.get(siteURL);
-			if(fps == null)
+			catch(Exception e)
 			{
-				fps = new FeaturesPerSite(SiteFeatureReaderType.getSite(siteURL, MonitorUtils.subMonitor(monitor, 100)));
-				sitesInLocation.put(siteURL, fps);
+				context.addRequestStatus(resolution.getRequest(), BuckminsterException.wrap(e).getStatus());
 			}
-			fps.add(resolution);
 		}
 	}
 }
