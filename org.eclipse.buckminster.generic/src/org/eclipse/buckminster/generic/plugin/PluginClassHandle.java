@@ -37,7 +37,7 @@ public class PluginClassHandle<T>
 		if(!configElement.getName().equals(requiredElement))
 			throw new IllegalArgumentException("Not correct requiredElement: "+
 					configElement.getName() +
-					"expected: " +
+					". Expected: " +
 					requiredElement);
 	}
 	
