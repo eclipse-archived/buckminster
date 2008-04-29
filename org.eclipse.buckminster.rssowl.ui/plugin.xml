@@ -24,11 +24,19 @@
          <action
                class="org.eclipse.buckminster.rssowl.ui.actions.OpenRssFeedAction"
                enablesFor="1"
+               icon="icons/rssfeed.png"
+               
                id="org.eclipse.buckminster.rssowl.ui.action1"
                label="Open Feed in RSS Owl"
                menubarPath="additions">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.ui.OpenFeedAction">
+      <org.eclipse.buckminster.ui.OpenFeedAction
+            class="org.eclipse.buckminster.rssowl.ui.actions.OpenRssFeedAction">
+      </org.eclipse.buckminster.ui.OpenFeedAction>
    </extension>
 
 </plugin>
