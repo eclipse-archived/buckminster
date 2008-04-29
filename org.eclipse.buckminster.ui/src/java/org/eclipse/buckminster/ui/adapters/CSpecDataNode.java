@@ -21,7 +21,7 @@ public class CSpecDataNode extends BasicTreeParentDataNode
 	{
 		super(data);
 		Map<String, ComponentRequest> dependencies = data.getDependencies();
-		if(dependencies != null)
+		if(dependencies != null && dependencies.size() > 0)
 			addChild(new DependenciesDataNode(dependencies));
 	}
 }
