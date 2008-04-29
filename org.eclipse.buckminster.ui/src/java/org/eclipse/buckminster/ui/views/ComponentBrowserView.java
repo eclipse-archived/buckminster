@@ -14,6 +14,7 @@ import org.eclipse.buckminster.generic.ui.GenericUiPlugin;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
 import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
+import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
 import org.eclipse.buckminster.ui.providers.BuckminsterLabelProvider;
 import org.eclipse.buckminster.ui.providers.ResolutionsTreeContentProvider;
@@ -30,6 +31,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -37,6 +39,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
@@ -135,6 +138,9 @@ public class ComponentBrowserView extends ViewPart
 		ISelection selection = m_viewer.getSelection();
 		Object obj = ((IStructuredSelection)selection).getFirstElement();
 
+		// Other plugins can contribute actions to "default" 
+		manager.add(new Separator("default"));
+		
 		if(obj instanceof IAdaptable)
 		{
 			if(((IAdaptable)obj).getAdapter(IBrowseableFeed.class) != null)	
@@ -185,12 +191,33 @@ public class ComponentBrowserView extends ViewPart
 				{
 					// Invoke the ViewCSpec Action
 					CSpec cspec = (CSpec)((IAdaptable)obj).getAdapter(CSpec.class);
-					if(cspec == null)
+					if(cspec != null)
+					{
+						ViewCSpecAction vca = new ViewCSpecAction();
+						vca.setActivePart(this, ComponentBrowserView.this.getSite().getPart());
+						vca.selectionChanged(this, selection);
+						vca.run(this);
 						return;
-					ViewCSpecAction vca = new ViewCSpecAction();
-					vca.setActivePart(this, ComponentBrowserView.this.getSite().getPart());
-					vca.selectionChanged(this, selection);
-					vca.run(this);
+					}
+					IBrowseableFeed feed = (IBrowseableFeed)((IAdaptable)obj).getAdapter(IBrowseableFeed.class);
+					if(feed != null)
+					{
+						 IObjectActionDelegate delegate = UiPlugin.getDefault().getOpenRssFeedAction();
+						 if(delegate != null)
+						 {
+							 delegate.setActivePart(this, ComponentBrowserView.this);
+							 delegate.selectionChanged(this, new StructuredSelection(feed));
+							 delegate.run(this);
+							 return;
+						 }	 
+					}
+					IBrowseable site = (IBrowseable)((IAdaptable)obj).getAdapter(IBrowseable.class);
+					if(site != null)
+					{
+						m_viewInBrowser.run();
+						return;
+					}
+				
 				}
 			}
 		};

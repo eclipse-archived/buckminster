@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.generic.plugin.PluginClassHandle;
+import org.eclipse.buckminster.generic.utils.PluginUtils;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -31,12 +33,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
@@ -69,6 +75,10 @@ public class UiPlugin extends AbstractUIPlugin
 	static public final String s_themeId = s_id + ".theme";
 
 	public static final String BUILDER_EDITORS_POINT = s_id + ".incrementalBuilderEditors";
+
+	public static final String EPOINT_OPEN_FEED = s_id + ".OpenFeedAction";
+
+	public static final String ATT_CLASS = "class";
 
 	static public String getID()
 	{
@@ -214,4 +224,53 @@ public class UiPlugin extends AbstractUIPlugin
 			status = new Status(IStatus.ERROR, getID(), -1, t.getMessage(), t);
 		return status;
 	}
+	private static OpenRssFeedActionHandle s_openRssFeedActionHandle;
+
+	public  IObjectActionDelegate getOpenRssFeedAction()
+	{
+		// make sure we have the handle to the operation
+		if(s_openRssFeedActionHandle == null)
+		{
+			IExtensionPoint epoint = Platform.getExtensionRegistry().getExtensionPoint(EPOINT_OPEN_FEED);
+			IExtension[] extensions = epoint.getExtensions();
+
+			for(int i = 0; i < extensions.length; i++)
+			{
+				IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
+				for(int j = 0; j < configElements.length; j++)
+				{
+					IConfigurationElement configElement = configElements[j];
+
+					if(s_openRssFeedActionHandle != null)
+					{
+						// duplicate
+						getLog().log(new Status(IStatus.ERROR, this.getBundle().getSymbolicName(),
+								"Duplicate OpenFeedAction found in plugin: "
+								+ configElement.getDeclaringExtension().getNamespaceIdentifier()
+								+ ". (duplicate ignored)."));
+					}
+					s_openRssFeedActionHandle = new OpenRssFeedActionHandle(configElement);
+				}
+			}
+		}
+		
+		return s_openRssFeedActionHandle == null ? null : s_openRssFeedActionHandle.getHandle();
+	}
+
+	private static class OpenRssFeedActionHandle extends PluginClassHandle<IObjectActionDelegate>
+	{
+		private final String m_operationId;
+
+		public OpenRssFeedActionHandle(IConfigurationElement configElement)
+		{
+			super(s_plugin, configElement, IObjectActionDelegate.class, UiPlugin.EPOINT_OPEN_FEED);
+			m_operationId = PluginUtils.getAttribute(configElement, UiPlugin.ATT_CLASS, null);
+		}
+
+		public String getOperationId()
+		{
+			return m_operationId;
+		}
+	}
+	
 }
