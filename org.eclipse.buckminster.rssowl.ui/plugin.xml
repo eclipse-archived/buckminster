@@ -28,7 +28,7 @@
                
                id="org.eclipse.buckminster.rssowl.ui.action1"
                label="Open Feed in RSS Owl"
-               menubarPath="additions">
+               menubarPath="default">
          </action>
       </objectContribution>
    </extension>
