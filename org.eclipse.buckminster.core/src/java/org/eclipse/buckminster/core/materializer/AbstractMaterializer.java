@@ -46,13 +46,21 @@ import org.eclipse.osgi.service.datalocation.Location;
  */
 public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer
 {
-	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException
+	public static String[] getMaterializerIDs(boolean includeEmptyEntry)
 	{
-		return resolution.getProvider().getReaderType();
+		IConfigurationElement[] elems = getElements();
+		int idx = elems.length;
+		ArrayList<String> names = new ArrayList<String>(idx + 1);
+		if(includeEmptyEntry)
+			names.add("");
+		while(--idx >= 0)
+			names.add(elems[idx].getAttribute("id"));
+		Collections.sort(names);
+		return names.toArray(new String[names.size()]);
 	}
 
 	public static void performInstallActions(BillOfMaterials bom, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
+		IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, bom.uniqueNodeCount() * 100);
 		try
@@ -88,6 +96,12 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
+	private static IConfigurationElement[] getElements()
+	{
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
+	}
+
 	public boolean canWorkInParallel()
 	{
 		// Most materializers should be able to do this.
@@ -95,7 +109,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		return true;
 	}
 
-	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution)
+	throws CoreException
 	{
 		if(Platform.OS_WIN32.equals(Platform.getOS()))
 		{
@@ -124,10 +139,15 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		throw BuckminsterException.fromMessage("Unable to determine users home directory");
 	}
 
+	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException
+	{
+		return resolution.getProvider().getReaderType();
+	}
+
 	public abstract String getMaterializerRootDir();
 
-	public void installRecursive(DepNode node, MaterializationContext context,
-			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
+	public void installRecursive(DepNode node, MaterializationContext context, Set<String> generated,
+		Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{
 		if(node instanceof GeneratorNode)
 		{
@@ -160,7 +180,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
-	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	public void performInstallAction(Resolution resolution, MaterializationContext context,
+		IProgressMonitor monitor) throws CoreException
 	{
 		// The AbstractMaterializer will not perform any install actions
 		//
@@ -168,21 +189,29 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 	}
 
 	private void delegateAndInstallRecursive(DepNode node, MaterializationContext context,
-			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
+		Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{
-		String materializerId = context.getMaterializationSpec().getMaterializerID(node.getResolution());
-		IMaterializer materializer = materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(materializerId);
+		IMaterializer materializer;
+		if(node instanceof GeneratorNode)
+			materializer = this;
+		else
+		{
+			String materializerId = context.getMaterializationSpec().getMaterializerID(node.getResolution());
+			materializer = materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(
+				materializerId);
+		}
 		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
 	}
 
-	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context,
+		IProgressMonitor monitor) throws CoreException
 	{
 		CSpec cspec = generatorNode.getDeclaringCSpec();
 		try
 		{
 			IPerformManager performManager = CorePlugin.getPerformManager();
-			Attribute generatorAttribute = cspec.getReferencedAttribute(
-					generatorNode.getComponent(), generatorNode.getAttribute(), new ModelCache());
+			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(),
+				generatorNode.getAttribute(), new ModelCache());
 			if(generatorAttribute != null)
 			{
 				performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
@@ -196,24 +225,5 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
 		}
 		return false;
-	}
-
-	public static String[] getMaterializerIDs(boolean includeEmptyEntry)
-	{
-		IConfigurationElement[] elems = getElements();
-		int idx = elems.length;
-		ArrayList<String> names = new ArrayList<String>(idx+1);
-		if(includeEmptyEntry)
-			names.add("");
-		while(--idx >= 0)
-			names.add(elems[idx].getAttribute("id"));
-		Collections.sort(names);
-		return names.toArray(new String[names.size()]);
-	}
-
-	private static IConfigurationElement[] getElements()
-	{
-		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
 	}
 }
