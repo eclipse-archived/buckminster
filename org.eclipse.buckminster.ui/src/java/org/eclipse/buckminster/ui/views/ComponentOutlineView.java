@@ -57,7 +57,8 @@ public class ComponentOutlineView extends ComponentBrowserView
 		{
 			IEditorInput input = ((EditorPart)part).getEditorInput();
 			IResource resource = (IResource)input.getAdapter(IResource.class);
-			r = (Resolution)resource.getAdapter(Resolution.class);			
+			if(resource != null)
+				r = (Resolution)resource.getAdapter(Resolution.class);			
 		}
 		else
 		{
