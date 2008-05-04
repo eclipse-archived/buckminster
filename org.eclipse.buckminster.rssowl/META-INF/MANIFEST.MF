@@ -1,13 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Rssowl Buckminster Integration Plug-in
-Bundle-SymbolicName: org.eclipse.buckminster.rssowl
+Bundle-SymbolicName: org.eclipse.buckminster.rssowl;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.buckminster.rssowl.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.opml;bundle-version="1.0.0",
  org.eclipse.buckminster.core;bundle-version="1.1.0",
- org.rssowl.core;bundle-version="2.0.0"
+ org.rssowl.core;bundle-version="2.0.0",
+ org.eclipse.buckminster.generic;bundle-version="1.0.0",
+ org.eclipse.buckminster.runtime;bundle-version="1.1.0",
+ org.eclipse.core.resources;bundle-version="3.4.0"
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.buckminster.rssowl
