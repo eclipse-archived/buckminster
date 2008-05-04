@@ -122,7 +122,7 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 	{
 		// if nothing changes
-		if(oldInput == newInput)
+		if(oldInput == newInput && !(newInput instanceof IViewSite))
 			return;
 		
 		super.inputChanged(viewer, oldInput, newInput);
