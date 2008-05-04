@@ -111,7 +111,7 @@ public class ViewInBrowserAction extends AbstractAction
 		{
 			e.printStackTrace();
 		}
-		
+
 	}
 }
 
