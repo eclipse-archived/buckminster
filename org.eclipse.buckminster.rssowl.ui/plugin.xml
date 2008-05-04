@@ -38,5 +38,11 @@
             class="org.eclipse.buckminster.rssowl.ui.actions.OpenRssFeedAction">
       </org.eclipse.buckminster.ui.OpenFeedAction>
    </extension>
+   <extension
+         point="org.rssowl.ui.RequestRewriters">
+      <RequestRewriter
+            class="org.eclipse.buckminster.rssowl.ui.BuckminsterURIRewriter">
+      </RequestRewriter>
+   </extension>
 
 </plugin>
