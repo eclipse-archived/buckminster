@@ -98,7 +98,7 @@ public class Activator extends Plugin implements IResourceChangeListener
 		if(isBookmarksDirty())
 		{
 			Job syncJob = new OwlSyncJob();
-			syncJob.schedule();			
+			syncJob.schedule(1000L);			
 		}
 	}
 }
