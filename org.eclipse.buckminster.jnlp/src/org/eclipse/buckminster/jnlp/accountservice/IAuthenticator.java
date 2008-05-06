@@ -13,7 +13,7 @@ import org.apache.commons.httpclient.HttpClient;
 /**
  * Enables authentication of an user
  * 
- * @author kaja
+ * @author Karel Brezina
  */
 public interface IAuthenticator
 {

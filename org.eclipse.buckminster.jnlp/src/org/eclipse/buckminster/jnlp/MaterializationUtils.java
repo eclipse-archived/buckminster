@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -300,10 +301,10 @@ public class MaterializationUtils
 
 		if(userHome != null)
 		{
-			destination = userHome + "/materializations";
+			destination = userHome + File.pathSeparator + DEFAULT_MATERIALIZATION_FOLDER;
 		
 			if(artifactName != null)
-				destination += "/" + artifactName;
+				destination += File.pathSeparator + artifactName;
 		}
 		return destination;
 	}

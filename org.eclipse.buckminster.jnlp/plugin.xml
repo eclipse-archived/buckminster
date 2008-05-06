@@ -4,6 +4,7 @@
    <extension-point id="authentication" name="JNLP Authentication" schema="schema/authentication.exsd"/>
    <extension-point id="learnmore" name="Learn More" schema="schema/learnMore.exsd"/>
    <extension-point id="publication" name="JNLP Publication" schema="schema/publication.exsd"/>
+   <extension-point id="componentInfo" name="Component INFO" schema="schema/componentInfo.exsd"/>
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">

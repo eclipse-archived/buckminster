@@ -20,6 +20,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_M
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_WINDOW_TITLE;
@@ -78,6 +79,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -88,6 +90,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
@@ -109,6 +112,8 @@ import org.xml.sax.SAXException;
 public class InstallWizard extends AdvancedWizard implements ILoginHandler
 {
 	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication";
+	
+	static private final String COMPONENTINFO_EXTPOINT = "org.eclipse.buckminster.jnlp.componentinfo";
 	
 	static private final String ATTRIBUTE_CLASS = "class";
 	
@@ -198,6 +203,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	
 	private IAuthenticator m_authenticator;
 	
+	private IComponentInfoProvider m_infoProvider;
+	
+	private String m_infoPageURL;
+	
 	private String m_authenticatorUserName;
 	
 	private String m_authenticatorPassword;
@@ -215,6 +224,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		readProperties(properties);
 		
 		m_authenticator = createAuthenticator(m_loginRequired);
+		
+		m_infoProvider = createComponentInfoProvider();
 		
 		m_learnMores = createLearnMores();
 	}
@@ -269,6 +280,39 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 
 		return authenticator;
+	}
+
+	private IComponentInfoProvider createComponentInfoProvider()
+	{
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = er.getConfigurationElementsFor(COMPONENTINFO_EXTPOINT);
+		IComponentInfoProvider infoProvider = null;
+
+		try
+		{
+			if(elems.length != 1)
+				return null;
+			
+			try
+			{
+				infoProvider = (IComponentInfoProvider) elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
+			}
+			catch(Throwable e)
+			{
+				throw new JNLPException("Cannot create component info provider", ERROR_CODE_RUNTIME_EXCEPTION, e);
+			}
+		}
+		catch(JNLPException e)
+		{
+			m_problemInProperties = true;
+			
+			IStatus status = BuckminsterException.wrap(e.getCause() != null ? e.getCause() : e).getStatus();
+			CorePlugin.logWarningsAndErrors(status);
+			HelpLinkErrorDialog.openError(
+					null, null, ERROR_WINDOW_TITLE,	e.getMessage(), ERROR_HELP_TITLE, m_errorURL, e.getErrorCode(), status);
+		}
+
+		return infoProvider;
 	}
 
 	private List<LearnMoreItem> createLearnMores()
@@ -409,6 +453,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		originalPage.setErrorMessage(null);
 		try
 		{
+			if(m_builder.getInstallLocation() == null)
+				m_builder.setInstallLocation(Path.fromOSString(MaterializationUtils.getDefaultDestination(getArtifactName())).addTrailingSeparator());
+			
 			MaterializationSpecBuilder builderToPerform = new MaterializationSpecBuilder();
 			builderToPerform.initFrom(m_builder.createMaterializationSpec());
 			
@@ -425,6 +472,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			getContainer().run(true, true, mr);
 			jobManager.setProgressProvider(null);
 			((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
+			
+			if(getComponentInfoProvider() != null)
+				m_infoPageURL = getComponentInfoProvider().prepareHTML(
+						getProperties(),
+						getBOM().getResolution().getOPML(),
+						MaterializationUtils.getDefaultDestination(null));
 			
 			getContainer().showPage(m_donePage);
 			m_donePage.update(mr.getContext());
@@ -669,6 +722,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public void setAuthenticator(IAuthenticator authenticator)
 	{
 		m_authenticator = authenticator;
+	}
+	
+	public IComponentInfoProvider getComponentInfoProvider()
+	{
+		return m_infoProvider;
+	}
+	
+	public String getComponentInfoPageURL()
+	{
+		return m_infoPageURL;
 	}
 	
 	public String getAuthenticatorLoginKey()

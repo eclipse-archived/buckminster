@@ -141,4 +141,6 @@ public interface MaterializationConstants
 	public static final String ERROR_CODE_404_EXCEPTION = "404Exception";
 	
 	public static final String ERROR_CODE_500_EXCEPTION = "500Exception";
+	
+	public static final String DEFAULT_MATERIALIZATION_FOLDER = "materializations";
 }
