@@ -233,7 +233,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		public WorkspaceCatchUpJob()
 		{
 			super("Buckminster workspace catch up");
-			setUser(true);
 
 			// We need very high prio on this since we wait
 			// for it to complete during plug-in activation
