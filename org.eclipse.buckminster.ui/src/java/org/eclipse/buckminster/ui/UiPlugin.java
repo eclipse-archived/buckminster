@@ -29,6 +29,7 @@ import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
 import org.eclipse.buckminster.ui.adapters.ResolutionAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.ResolutionDataNode;
 import org.eclipse.buckminster.ui.adapters.ResourceAdapterFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -121,12 +122,13 @@ public class UiPlugin extends AbstractUIPlugin
 		adapterManager.registerAdapters(s_opmlAdapterFactory, OPMLDataNode.class);		
 		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);		
 		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);		
-		
-		adapterManager.registerAdapters(s_resolutionAdapterFactory, IProject.class);		
+			
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, Resolution.class);		
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, ResolutionDataNode.class);		
 
 		adapterManager.registerAdapters(s_resourceAdapterFactory, IResource.class);
+		adapterManager.registerAdapters(s_resourceAdapterFactory, IProject.class);
+		adapterManager.registerAdapters(s_resourceAdapterFactory, IFile.class);
 		
 	}
 
