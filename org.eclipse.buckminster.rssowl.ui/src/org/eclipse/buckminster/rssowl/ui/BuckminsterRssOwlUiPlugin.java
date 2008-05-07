@@ -7,14 +7,6 @@
  ******************************************************************/
 package org.eclipse.buckminster.rssowl.ui;
 
-import org.eclipse.buckminster.generic.plugin.PluginClassHandle;
-import org.eclipse.buckminster.generic.utils.PluginUtils;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 

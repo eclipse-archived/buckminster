@@ -8,8 +8,7 @@
 
 package org.eclipse.buckminster.rssowl.ui;
 
-import org.eclipse.buckminster.rssowl.OwlSynchronizer;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.buckminster.rssowl.OwlSyncJob;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
@@ -29,15 +28,8 @@ public class SynchronizeRssOwlAction implements IViewActionDelegate
 
 	public void run(IAction action)
 	{
-		try
-		{
-			OwlSynchronizer.syncAllResolutions();
-		}
-		catch(CoreException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		OwlSyncJob syncJob = new OwlSyncJob();
+		syncJob.schedule();
 	}
 
 	public void selectionChanged(IAction action, ISelection selection)
