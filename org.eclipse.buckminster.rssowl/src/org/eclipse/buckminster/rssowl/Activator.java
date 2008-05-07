@@ -7,14 +7,14 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends Plugin implements IResourceChangeListener
+public class Activator extends AbstractUIPlugin implements IResourceChangeListener
 {
 
 	// The plug-in ID
@@ -36,15 +36,16 @@ public class Activator extends Plugin implements IResourceChangeListener
 	 * Synchronizes bookmarks in RSS OWL with the current state of the workspace.
 	 * 
 	 */
+	@SuppressWarnings("restriction")
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
 		super.start(context);
 		s_instance = this;
-		
+		// org.rssowl.ui.internal.Activator.getDefault();
 		// make sure RSS OWL bookmarks and feeds are synchronized
 		Job syncJob = new OwlSyncJob();
-		syncJob.schedule();
+		syncJob.schedule(1000L);
 		
 		// Add listening to the workspace to be able to resync on certain types of changes.
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);

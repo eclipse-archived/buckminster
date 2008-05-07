@@ -4,10 +4,12 @@ package org.eclipse.buckminster.rssowl;
 
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.generic.utils.ProgressUtils;
 import org.eclipse.buckminster.opml.model.Body;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.rssowl.core.Owl;
 import org.rssowl.core.persist.IBookMark;
@@ -43,14 +45,26 @@ public class OwlSynchronizer
 	 * 
 	 * @throws CoreException
 	 */
-	public static void syncAllResolutions() throws CoreException
+	public static void syncAllResolutions(IProgressMonitor monitor) throws CoreException
 	{
+		final IProgressMonitor waitingForResolutionsMonitor = ProgressUtils.submon(monitor, 1);
+		waitingForResolutionsMonitor.beginTask("Waiting for resolutions", IProgressMonitor.UNKNOWN);
+		
 		FolderState root = getComponentsFolder();
 		List<Resolution> resolutions = null;
+		waitingForResolutionsMonitor.worked(1);
 		resolutions = WorkspaceInfo.getAllResolutions();
+		waitingForResolutionsMonitor.done();
+		
+		if(resolutions == null)
+			return;
+		final IProgressMonitor bookmarkSyncMonitor = ProgressUtils.submon(monitor, 1);
+		bookmarkSyncMonitor.beginTask("Synchronizing Bookmarks", resolutions.size()+2);
 
 		for(Resolution r : resolutions)
 		{
+			bookmarkSyncMonitor.worked(1);
+			
 			// A resolution without OPML, or where the Body is null or has no outlines
 			// is not worth processing. We may still end up with an empty folder though if all
 			// the links in the outline are just url links...
@@ -66,9 +80,12 @@ public class OwlSynchronizer
 		//--SAVE everything to keep (this is easy since the OWL DAO cascades all the changes.
 		//
 		root.save();
+		bookmarkSyncMonitor.worked(1);
 		
 		//--REMOVE everything else
 		root.removeUnused();		
+		bookmarkSyncMonitor.worked(1);
+		bookmarkSyncMonitor.done();
 	}
 	/**
 	 * Updates one selected Resolution with Owl bookmarks.
