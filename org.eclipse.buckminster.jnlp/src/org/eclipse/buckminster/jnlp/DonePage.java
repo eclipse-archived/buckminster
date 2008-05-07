@@ -136,7 +136,7 @@ public class DonePage extends InstallWizardPage
 		setControl(pageComposite);
 	}
 
-	private void createLink(Composite parent, String string, final String url)
+	private Link createLink(Composite parent, String string, final String url)
 	{
 		Link learnMoreLink = new Link(parent, SWT.NONE);
 		learnMoreLink.setText("<a>" + string + "</a>");
@@ -158,6 +158,7 @@ public class DonePage extends InstallWizardPage
 			}
 		});
 
+		return learnMoreLink;
 	}
 
 	public void update(MaterializationContext context)

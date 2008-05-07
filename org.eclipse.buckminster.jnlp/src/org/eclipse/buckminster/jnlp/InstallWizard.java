@@ -113,7 +113,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 {
 	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication";
 	
-	static private final String COMPONENTINFO_EXTPOINT = "org.eclipse.buckminster.jnlp.componentinfo";
+	static private final String COMPONENTINFO_EXTPOINT = "org.eclipse.buckminster.jnlp.componentInfo";
 	
 	static private final String ATTRIBUTE_CLASS = "class";
 	
