@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.part.EditorPart;
 
 /**
@@ -82,6 +83,20 @@ public class ComponentOutlineView extends ComponentBrowserView
 						resource = resource.getProject();
 						r = (Resolution)resource.getAdapter(Resolution.class);				
 					}
+				}
+				if(r == null)
+				{
+					IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter)element.getAdapter(IWorkbenchAdapter.class);
+					if(wbAdapter != null)
+					{
+						IResource resource = null;
+						Object parent = wbAdapter.getParent(element);
+						if(parent != null && parent instanceof IAdaptable)
+							resource = (IResource)((IAdaptable)parent).getAdapter(IResource.class);
+						if(resource != null)
+							r = (Resolution)resource.getAdapter(Resolution.class);
+					}
+						
 				}
 			}
 			
