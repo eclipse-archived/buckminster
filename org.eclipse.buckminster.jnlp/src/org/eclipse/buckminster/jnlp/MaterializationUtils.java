@@ -301,10 +301,10 @@ public class MaterializationUtils
 
 		if(userHome != null)
 		{
-			destination = userHome + File.pathSeparator + DEFAULT_MATERIALIZATION_FOLDER;
+			destination = userHome + File.separator + DEFAULT_MATERIALIZATION_FOLDER;
 		
 			if(artifactName != null)
-				destination += File.pathSeparator + artifactName;
+				destination += File.separator + artifactName;
 		}
 		return destination;
 	}
