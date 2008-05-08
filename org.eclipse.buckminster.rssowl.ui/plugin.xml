@@ -7,7 +7,7 @@
             id="org.eclipse.buckminster.rssowl.ui.viewContribution1"
             targetID="org.eclipse.buckminster.ui.views.ComponentBrowserView">
          <action
-               class="org.eclipse.buckminster.rssowl.ui.SynchronizeRssOwlAction"
+               class="org.eclipse.buckminster.rssowl.ui.actions.SynchronizeRssOwlAction"
                id="org.eclipse.buckminster.rssowl.ui.sync"
                label="Synchronize RSS OWL"
                style="push"

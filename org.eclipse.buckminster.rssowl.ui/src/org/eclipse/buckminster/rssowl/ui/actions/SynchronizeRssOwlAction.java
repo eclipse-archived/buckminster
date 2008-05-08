@@ -6,7 +6,7 @@
  * prior written consent or license from Cloudsmith Inc.
  ******************************************************************/
 
-package org.eclipse.buckminster.rssowl.ui;
+package org.eclipse.buckminster.rssowl.ui.actions;
 
 import org.eclipse.buckminster.rssowl.OwlSyncJob;
 import org.eclipse.jface.action.IAction;
