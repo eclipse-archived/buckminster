@@ -605,7 +605,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	}
 	
 	@Override
-	protected Image getWindowImage()
+	public Image getWindowImage()
 	{
 		return m_windowImage;
 	}
@@ -669,7 +669,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_learnMoreURL;
 	}
 	
-	String getErrorURL()
+	public String getErrorURL()
 	{
 		return m_errorURL;
 	}

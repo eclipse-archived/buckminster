@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  ******************************************************************************/
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.ide;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
@@ -18,6 +18,10 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
+import org.eclipse.buckminster.jnlp.InstallWizard;
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
