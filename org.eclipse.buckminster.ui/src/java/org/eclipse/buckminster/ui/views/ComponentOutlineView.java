@@ -87,7 +87,7 @@ public class ComponentOutlineView extends ComponentBrowserView
 				if(r == null)
 				{
 					IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter)element.getAdapter(IWorkbenchAdapter.class);
-					if(wbAdapter != null)
+					while(wbAdapter != null)
 					{
 						IResource resource = null;
 						Object parent = wbAdapter.getParent(element);
@@ -95,6 +95,14 @@ public class ComponentOutlineView extends ComponentBrowserView
 							resource = (IResource)((IAdaptable)parent).getAdapter(IResource.class);
 						if(resource != null)
 							r = (Resolution)resource.getAdapter(Resolution.class);
+						if(r != null)
+							break;
+						
+						wbAdapter = (parent == null || !(parent instanceof IAdaptable) )
+								? null 
+								: (IWorkbenchAdapter)((IAdaptable)parent).getAdapter(IWorkbenchAdapter.class);
+						if(wbAdapter != null)
+							element = (IAdaptable)parent;
 					}
 						
 				}
