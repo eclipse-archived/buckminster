@@ -752,7 +752,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	
 	public String getAuthenticatorCurrentUserName()
 	{
-		return getAuthenticator().getCurrenlyLoggedUserName();
+		IAuthenticator auth = getAuthenticator();
+		return auth == null ? "" : auth.getCurrenlyLoggedUserName();
 	}
 	
 	public String getAuthenticatorUserName()
@@ -788,10 +789,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	int checkSpaceReadAccess() throws Exception
 	{
-		if(m_authenticator == null || m_spaceName == null)
+		if(m_loginRequired && (m_authenticator == null || m_spaceName == null))
 			return IAuthenticator.SPACE_ACCESS_FORBIDDEN;
 		
-		return m_authenticator.checkSpaceReadAccess(m_spaceName);
+		// if authenticator is null - get smacked later (can only end up here without an
+		// authenticator if loginRequired is false anyway).
+		return m_authenticator == null ? IAuthenticator.SPACE_ACCESS_OK : m_authenticator.checkSpaceReadAccess(m_spaceName);
 	}	
 
 	IWizardPage getDownloadPage()
