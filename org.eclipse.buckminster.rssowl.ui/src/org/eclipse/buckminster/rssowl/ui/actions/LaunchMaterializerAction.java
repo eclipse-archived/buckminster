@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.rssowl.ui.actions;
 
 import org.eclipse.buckminster.jnlp.ide.IDEApplication;
-import org.eclipse.buckminster.rssowl.OwlSyncJob;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
