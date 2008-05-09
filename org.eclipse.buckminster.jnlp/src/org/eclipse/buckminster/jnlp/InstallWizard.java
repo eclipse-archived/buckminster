@@ -111,273 +111,143 @@ import org.xml.sax.SAXException;
 public class InstallWizard extends AdvancedWizard implements ILoginHandler
 {
 	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication";
-	
+
 	static private final String COMPONENTINFO_EXTPOINT = "org.eclipse.buckminster.jnlp.componentInfo";
-	
+
 	static private final String ATTRIBUTE_CLASS = "class";
-	
+
 	static private final String LEARNMORE_EXTPOINT = "org.eclipse.buckminster.jnlp.learnmore";
-	
+
 	static private final String ATTRIBUTE_STRING = "string";
-	
+
 	static private final String ATTRIBUTE_URL = "url";
-	
+
+	private static MultiStatus createMultiStatusFromStatus(IStatus status)
+	{
+		return new MultiStatus(status.getPlugin(), status.getCode(), status.getMessage(), status.getException());
+	}
+
 	private Image m_brandingImage;
-	
+
 	private String m_brandingString;
-	
+
 	private URL m_mspecURL = null;
-	
+
 	private BillOfMaterials m_cachedBOM;
-	
+
 	private URL m_cachedBOMURL;
-	
+
 	private String m_artifactName;
-	
+
 	private String m_artifactVersion;
-	
+
 	private String m_artifactDescription;
-	
+
 	private String m_artifactDocumentation;
-	
+
 	private String m_windowTitle;
-	
+
 	private Image m_windowImage;
-	
+
 	private Image m_wizardImage;
-	
+
 	private Image m_materializationImage;
-	
+
 	private String m_helpURL;
-	
+
 	private String m_moreInfoURL;
-	
+
 	private String m_errorURL = ERROR_HELP_URL;
-	
+
 	private boolean m_loginRequired;
-	
+
 	private String m_learnMoreURL;
-	
+
 	private String m_basePathURL;
-	
+
 	private String m_homePageURL;
-	
+
 	private String m_serviceProvider;
-	
+
 	private String m_spaceName;
-	
+
 	private String m_loginKey;
-	
+
 	private String m_loginKeyUserName;
-	
+
 	private String m_cspecName;
-	
+
 	private String m_cspecType;
-	
+
 	private String m_cspecVersionString;
-	
+
 	private String m_cspecVersionType;
-	
+
 	private boolean m_loginPageRequested = false;
-	
+
 	private LoginPage m_loginPage;
-	
+
 	private SpaceRestrictionPage m_spaceRestrictionPage;
 
 	private SimpleDownloadPage m_downloadPage;
-	
+
 	private SimpleAdvancedPage m_advancedPage;
-	
+
 	private OperationPage m_operationPage;
-	
+
 	private DonePage m_donePage;
-	
+
 	private IUnresolvedNodeHandler m_unresolvedNodeHandler;
-	
+
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
-	
+
 	private final List<MSpecChangeListener> m_mspecListeners = new ArrayList<MSpecChangeListener>();
-	
-	private final Map<String,String> m_properties;
-	
+
+	private final Map<String, String> m_properties;
+
 	private final boolean m_startedFromIDE;
-	
+
 	private IAuthenticator m_authenticator;
-	
+
 	private IComponentInfoProvider m_infoProvider;
-	
+
 	private String m_infoPageURL;
-	
+
 	private String m_authenticatorUserName;
-	
+
 	private String m_authenticatorPassword;
-	
+
 	private final List<LearnMoreItem> m_learnMores;
-	
+
 	private boolean m_problemInProperties = false;
 
 	public InstallWizard(Map<String, String> properties)
 	{
 		this(properties, false);
 	}
-	
+
 	public InstallWizard(Map<String, String> properties, boolean startedFromIDE)
 	{
 		setNeedsProgressMonitor(true);
 
 		m_properties = properties;
 		m_startedFromIDE = startedFromIDE;
-		
+
 		readProperties(properties);
-		
+
 		m_authenticator = createAuthenticator(m_loginRequired);
-		
+
 		m_infoProvider = createComponentInfoProvider();
-		
+
 		m_learnMores = createLearnMores();
 	}
-	
-	private IAuthenticator createAuthenticator(boolean needed)
+
+	public void addMSpecChangeListener(MSpecChangeListener listener)
 	{
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = er.getConfigurationElementsFor(AUTHENTICATION_EXTPOINT);
-		IAuthenticator authenticator = null;
-
-		try
-		{
-			if(elems.length != 1)
-			{
-				throw new JNLPException("Authenticator is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
-			}
-			
-			try
-			{
-				authenticator = (IAuthenticator) elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
-				authenticator.initialize(m_basePathURL);
-				
-				if(m_loginKey != null)
-				{
-					int result = authenticator.login(m_loginKey);
-					
-					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
-						m_loginKey = null;
-					
-					if(result == IAuthenticator.LOGIN_OK)
-						m_loginKeyUserName = authenticator.getCurrenlyLoggedUserName();
-					else
-						m_loginKeyUserName = null;
-				}
-			}
-			catch(Throwable e)
-			{
-				throw new JNLPException("Cannot create authenticator", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
-			}
-		}
-		catch(JNLPException e)
-		{
-			if(needed)
-			{
-				m_problemInProperties = true;
-				
-				IStatus status = BuckminsterException.wrap(e.getCause() != null ? e.getCause() : e).getStatus();
-				CorePlugin.logWarningsAndErrors(status);
-				HelpLinkErrorDialog.openError(
-						null, null, ERROR_WINDOW_TITLE,	e.getMessage(), ERROR_HELP_TITLE, m_errorURL, e.getErrorCode(), status);
-			}
-		}
-
-		return authenticator;
-	}
-
-	private IComponentInfoProvider createComponentInfoProvider()
-	{
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = er.getConfigurationElementsFor(COMPONENTINFO_EXTPOINT);
-		IComponentInfoProvider infoProvider = null;
-
-		try
-		{
-			if(elems.length != 1)
-				return null;
-			
-			try
-			{
-				infoProvider = (IComponentInfoProvider) elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
-			}
-			catch(Throwable e)
-			{
-				throw new JNLPException("Cannot create component info provider", ERROR_CODE_RUNTIME_EXCEPTION, e);
-			}
-		}
-		catch(JNLPException e)
-		{
-			m_problemInProperties = true;
-			
-			IStatus status = BuckminsterException.wrap(e.getCause() != null ? e.getCause() : e).getStatus();
-			CorePlugin.logWarningsAndErrors(status);
-			HelpLinkErrorDialog.openError(
-					null, null, ERROR_WINDOW_TITLE,	e.getMessage(), ERROR_HELP_TITLE, m_errorURL, e.getErrorCode(), status);
-		}
-
-		return infoProvider;
-	}
-
-	private List<LearnMoreItem> createLearnMores()
-	{
-		List<LearnMoreItem> learnMores = new ArrayList<LearnMoreItem>();
-
-		// Learn more items from properties
-		if(m_learnMoreURL != null)
-		{
-			learnMores.add(new LearnMoreItem("Create your own virtual distribution", m_learnMoreURL));
-		}
-		
-		if(m_homePageURL != null)
-		{
-			learnMores.add(new LearnMoreItem("Search your components at " + m_serviceProvider, m_homePageURL));
-		}
-		
-		// Learn more items from extension
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = er.getConfigurationElementsFor(LEARNMORE_EXTPOINT);
-		
-		for(IConfigurationElement elem : elems)
-		{
-			learnMores.add(new LearnMoreItem(elem.getAttribute(ATTRIBUTE_STRING), elem.getAttribute(ATTRIBUTE_URL)));			
-		}
-		
-		return learnMores;
+		m_mspecListeners.add(listener);
 	}
 
 	@Override
-	protected void addAdvancedPages()
-	{
-		addAdvancedPage(new StartPage());
-
-		if(!m_problemInProperties)
-		{
-			m_loginPage = new LoginPage(
-						m_authenticator == null ? "Virtual Distro Provider" : getServiceProvider());
-			addAdvancedPage(m_loginPage);
-
-			m_downloadPage = new SimpleDownloadPage();
-			addAdvancedPage(m_downloadPage);
-			
-			m_advancedPage = new SimpleAdvancedPage();
-			addAdvancedPage(m_advancedPage);
-			
-			m_spaceRestrictionPage = new SpaceRestrictionPage();
-			addAdvancedPage(m_spaceRestrictionPage);
-			
-			m_operationPage = new OperationPage();
-			addAdvancedPage(m_operationPage);
-			
-			m_donePage = new DonePage();
-			addAdvancedPage(m_donePage);
-		}
-	}
-	
-    @Override
 	public void createPageControls(Composite pageContainer)
 	{
 		try
@@ -388,27 +258,117 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			m_problemInProperties = true;
 
-			final IStatus status =
-				e.getCause() == null ?
-					BuckminsterException.wrap(e).getStatus() :
-						BuckminsterException.wrap(e.getCause()).getStatus();
+			final IStatus status = e.getCause() == null
+					? BuckminsterException.wrap(e).getStatus()
+					: BuckminsterException.wrap(e.getCause()).getStatus();
 
 			CorePlugin.logWarningsAndErrors(status);
 			Display.getDefault().syncExec(new Runnable()
 			{
 				public void run()
 				{
-					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE,
-							m_errorURL, e.getErrorCode(), status);
+					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE, e
+							.getMessage(), ERROR_HELP_TITLE, m_errorURL, e.getErrorCode(), status);
 				}
 			});
 		}
 	}
-    
-    @Override
+
+	@Override
+	public void dispose()
+	{
+		if(m_brandingImage != null)
+		{
+			m_brandingImage.dispose();
+		}
+
+		if(m_windowImage != null)
+		{
+			m_windowImage.dispose();
+		}
+
+		if(m_wizardImage != null)
+		{
+			m_wizardImage.dispose();
+		}
+	}
+
+	public IAuthenticator getAuthenticator()
+	{
+		return m_authenticator;
+	}
+
+	public String getAuthenticatorCurrentUserName()
+	{
+		IAuthenticator auth = getAuthenticator();
+		return auth == null
+				? ""
+				: auth.getCurrenlyLoggedUserName();
+	}
+
+	public String getAuthenticatorLoginKey()
+	{
+		return m_loginKey;
+	}
+
+	public String getAuthenticatorLoginKeyUserName()
+	{
+		return m_loginKeyUserName;
+	}
+
+	public String getAuthenticatorPassword()
+	{
+		return m_authenticatorPassword;
+	}
+
+	public String getAuthenticatorUserName()
+	{
+		return m_authenticatorUserName;
+	}
+
+	public String getComponentInfoPageURL()
+	{
+		return m_infoPageURL;
+	}
+
+	public IComponentInfoProvider getComponentInfoProvider()
+	{
+		return m_infoProvider;
+	}
+
+	public String getErrorURL()
+	{
+		return m_errorURL;
+	}
+
+	@Override
+	public String getHelpURL()
+	{
+		return m_helpURL;
+	}
+
+	@Override
+	public String getMoreInfoURL()
+	{
+		return m_moreInfoURL;
+	}
+
+	@Override
+	public Image getWindowImage()
+	{
+		return m_windowImage;
+	}
+
+	@Override
+	public String getWindowTitle()
+	{
+		return m_windowTitle;
+	}
+
+	@Override
 	public boolean performCancel()
-    {
-    	try
+	{
+		try
 		{
 			// disable progress provider
 			Job.getJobManager().setProgressProvider(null);
@@ -433,61 +393,73 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			// it should always finish
 			e.printStackTrace();
 		}
-    	
-    	return true;
-    }
-    
-    @Override
+
+		return true;
+	}
+
+	@Override
 	public boolean performFinish()
 	{
-    	if(m_unresolvedNodeHandler != null && m_unresolvedNodeHandler.isUnresolvedNodeIncluded())
-    	{
-    		MessageBox messageBox = new MessageBox(getContainer().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-    		messageBox.setMessage(
-    				"Some distro dependencies cannot be resolved. " +
-    				"You may decide to exclude the unresolved artifacts.\n" +
-    				"However, excluding an artifact may result in a configuration that will no longer build.\n\n" +
-    				"Do you want to exclude the unresolved artifacts?");
-    		messageBox.setText("Warning");
-    		if(messageBox.open() == SWT.YES)
-    			m_unresolvedNodeHandler.excludeUnresolvedNodes();
-    		else
-    			return false;
-    	}
-    	
+		if(m_unresolvedNodeHandler != null && m_unresolvedNodeHandler.isUnresolvedNodeIncluded())
+		{
+			MessageBox messageBox = new MessageBox(getContainer().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+			messageBox.setMessage("Some distro dependencies cannot be resolved. "
+					+ "You may decide to exclude the unresolved artifacts.\n"
+					+ "However, excluding an artifact may result in a configuration that will no longer build.\n\n"
+					+ "Do you want to exclude the unresolved artifacts?");
+			messageBox.setText("Warning");
+			if(messageBox.open() == SWT.YES)
+				m_unresolvedNodeHandler.excludeUnresolvedNodes();
+			else
+				return false;
+		}
+
 		WizardPage originalPage = (WizardPage)getContainer().getCurrentPage();
-		
+
 		originalPage.setErrorMessage(null);
 		try
 		{
 			if(m_builder.getInstallLocation() == null)
-				m_builder.setInstallLocation(Path.fromOSString(MaterializationUtils.getDefaultDestination(getArtifactName())).addTrailingSeparator());
-			
+				m_builder.setInstallLocation(Path.fromOSString(
+						MaterializationUtils.getDefaultDestination(getArtifactName())).addTrailingSeparator());
+
 			MaterializationSpecBuilder builderToPerform = new MaterializationSpecBuilder();
 			builderToPerform.initFrom(m_builder.createMaterializationSpec());
-			
+
 			if(m_cachedBOMURL != null)
 				builderToPerform.setURL(m_cachedBOMURL);
 
 			excludeCSsiteComponents(builderToPerform, getBOM());
-			
+
 			getContainer().showPage(m_operationPage);
-			
+
 			if(!m_startedFromIDE)
 			{
 				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
 				Job.getJobManager().setProgressProvider(m_operationPage.getProgressProvider());
 			}
-			
+
 			MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
 			getContainer().run(true, true, mr);
-			
+
 			if(getComponentInfoProvider() != null)
-				m_infoPageURL = getComponentInfoProvider().prepareHTML(
-						getProperties(),
-						getBOM().getResolution().getOPML(),
-						MaterializationUtils.getDefaultDestination(null));
-			
+				try
+				{
+					m_infoPageURL = getComponentInfoProvider().prepareHTML(getProperties(),
+							getBOM().getResolution().getOPML(), MaterializationUtils.getDefaultDestination(null));
+				}
+				catch(Exception e)
+				{
+					m_infoPageURL = null;
+					final IStatus status = BuckminsterException.wrap(e).getStatus();
+					CorePlugin.logWarningsAndErrors(status);
+					HelpLinkErrorDialog
+							.openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
+									"Cannot create an HTML page with additional distro infomation",
+									MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
+									ERROR_CODE_RUNTIME_EXCEPTION, status);
+				}
+
 			getContainer().showPage(m_donePage);
 			m_donePage.update(mr.getContext());
 		}
@@ -499,90 +471,114 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		catch(Exception e)
 		{
 			showOriginalPage(originalPage);
-			
+
 			final IStatus status = BuckminsterException.wrap(e).getStatus();
 			CorePlugin.logWarningsAndErrors(status);
-			HelpLinkErrorDialog.openError(
-					null,
-					m_windowImage,
-					MaterializationConstants.ERROR_WINDOW_TITLE,
-					"Materialization failed",
-					MaterializationConstants.ERROR_HELP_TITLE,
-					m_errorURL,
-					ERROR_CODE_MATERIALIZATION_EXCEPTION,
-					status);
+			HelpLinkErrorDialog.openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
+					"Materialization failed", MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
+					ERROR_CODE_MATERIALIZATION_EXCEPTION, status);
 		}
 		finally
 		{
 			if(!m_startedFromIDE)
 			{
 				Job.getJobManager().setProgressProvider(null);
-				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);			
+				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
 			}
 		}
-		
+
 		return false;
 	}
-	
-    // CSSITE components don't need to be materialized, so they are excluded
-	private void excludeCSsiteComponents(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+
+	public void removeAuthenticatorLoginKey()
 	{
-		if(hasCSsiteReader(depNode))
-			excludeComponent(mspec, depNode);
-		
-		for(DepNode childDepNode : depNode.getChildren())
-			excludeCSsiteComponents(mspec, childDepNode);
+		m_loginKey = null;
+		m_loginKeyUserName = null;
 	}
 
-	private boolean hasCSsiteReader(DepNode depNode) throws CoreException
+	public void removeMSpecChangeListener(MSpecChangeListener listener)
 	{
-		Resolution resolution = depNode.getResolution();
-		
-		if(resolution != null)
-			if(MaterializationConstants.READER_TYPE_CSSITE.equals(resolution.getProvider().getReaderTypeId()))
-				return true;
-		
-		return false;
+		m_mspecListeners.remove(listener);
 	}
-	
-	private void excludeComponent(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
-	{
-		Resolution resolution = depNode.getResolution();
 
-		if(resolution != null)
+	public void setAuthenticator(IAuthenticator authenticator)
+	{
+		m_authenticator = authenticator;
+	}
+
+	public void setAuthenticatorPassword(String password)
+	{
+		m_authenticatorPassword = password;
+	}
+
+	public void setAuthenticatorUserName(String userName)
+	{
+		m_authenticatorUserName = userName;
+	}
+
+	@Override
+	protected void addAdvancedPages()
+	{
+		addAdvancedPage(new StartPage());
+
+		if(!m_problemInProperties)
 		{
-			CSpec cspec = resolution.getCSpec();
+			m_loginPage = new LoginPage(m_authenticator == null
+					? "Virtual Distro Provider"
+					: getServiceProvider());
+			addAdvancedPage(m_loginPage);
 
-			if(cspec != null)
-			{
-				String componentName = cspec.getName();
-				String componentType = cspec.getComponentTypeID();
+			m_downloadPage = new SimpleDownloadPage();
+			addAdvancedPage(m_downloadPage);
 
-				MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
-				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
-				nodeBuilder.setComponentTypeID(componentType);
-				nodeBuilder.setExclude(true);
-				
-				mspec.getNodes().add(0, nodeBuilder);
-			}
+			m_advancedPage = new SimpleAdvancedPage();
+			addAdvancedPage(m_advancedPage);
+
+			m_spaceRestrictionPage = new SpaceRestrictionPage();
+			addAdvancedPage(m_spaceRestrictionPage);
+
+			m_operationPage = new OperationPage();
+			addAdvancedPage(m_operationPage);
+
+			m_donePage = new DonePage();
+			addAdvancedPage(m_donePage);
 		}
 	}
 
-	private void showOriginalPage(IWizardPage originalPage)
+	@Override
+	protected Image getWizardImage()
 	{
-		WizardPage originalPreviousPage = (WizardPage)originalPage.getPreviousPage();
-		getContainer().showPage(originalPage);
-		originalPage.setPreviousPage(originalPreviousPage);
+		return m_wizardImage;
 	}
 
-	MaterializationSpecBuilder getMaterializationSpecBuilder()
+	String getArtifactDescription()
 	{
-		return m_builder;
+		return m_artifactDescription;
 	}
 
-	Map<String, String> getProperties()
+	String getArtifactDocumentation()
 	{
-		return m_properties;
+		return m_artifactDocumentation;
+	}
+
+	String getArtifactName()
+	{
+		return m_artifactName;
+	}
+
+	String getArtifactVersion()
+	{
+		return m_artifactVersion;
+	}
+
+	BillOfMaterials getBOM()
+	{
+		if(m_cachedBOM == null)
+		{
+			initBOM();
+		}
+
+		return m_cachedBOM;
 	}
 
 	Image getBrandingImage()
@@ -594,225 +590,26 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	{
 		return m_brandingString;
 	}
-	
-	String getArtifactName()
-	{
-		return m_artifactName;
-	}
-	
-	String getArtifactVersion()
-	{
-		return m_artifactVersion;
-	}
-	
-	String getArtifactDescription()
-	{
-		return m_artifactDescription;
-	}
-	
-	String getArtifactDocumentation()
-	{
-		return m_artifactDocumentation;
-	}
-	
-	@Override
-	public String getWindowTitle()
-	{
-		return m_windowTitle;
-	}
-	
-	@Override
-	public Image getWindowImage()
-	{
-		return m_windowImage;
-	}
-	
-	@Override
-	protected Image getWizardImage()
-	{
-		return m_wizardImage;
-	}
-	
-	Image getMaterializationImage()
-	{
-		return m_materializationImage;
-	}
-	
-	@Override
-	public String getHelpURL()
-	{
-		return m_helpURL;
-	}
-	
-	@Override
-	public String getMoreInfoURL()
-	{
-		return m_moreInfoURL;
-	}
-	
-	boolean isLoginRequired()
-	{
-		return m_loginRequired;
-	}
-	
-	boolean isLoggedIn()
-	{
-		boolean isLoggedIn = false;
-		
-		try
-		{
-			isLoggedIn = m_authenticator.isLoggedIn();
-		}
-		catch(Exception e1)
-		{
-			// nothing isLoggedIn == false
-		}
-		
-		return isLoggedIn;
-	}
-	
-	boolean isLoginPageRequested()
-	{
-		return m_loginPageRequested;
-	}
-	
-	void setLoginPageRequested(boolean loginPageRequested)
-	{
-		m_loginPageRequested = loginPageRequested;
-	}
-	
-	String getLearnMoreURL()
-	{
-		return m_learnMoreURL;
-	}
-	
-	public String getErrorURL()
-	{
-		return m_errorURL;
-	}
-	
-	String getServiceProviderHomePageURL()
-	{
-		return m_homePageURL;
-	}
-	
-	String getServiceProvider()
-	{
-		return m_serviceProvider;
-	}
-	
-	String getSpaceName()
-	{
-		return m_spaceName;
-	}
-	
+
 	String getCSpecName()
 	{
 		return m_cspecName;
 	}
-	
+
 	String getCSpecType()
 	{
 		return m_cspecType;
 	}
-	
+
 	String getCSpecVersionString()
 	{
 		return m_cspecVersionString;
 	}
-	
+
 	String getCSpecVersionType()
 	{
 		return m_cspecVersionType;
 	}
-	
-	String[] getMaterializers()
-	{
-		return MATERIALIZERS;
-	}
-	
-	public IAuthenticator getAuthenticator()
-	{
-		return m_authenticator;
-	}
-	
-	public void setAuthenticator(IAuthenticator authenticator)
-	{
-		m_authenticator = authenticator;
-	}
-	
-	public IComponentInfoProvider getComponentInfoProvider()
-	{
-		return m_infoProvider;
-	}
-	
-	public String getComponentInfoPageURL()
-	{
-		return m_infoPageURL;
-	}
-	
-	public String getAuthenticatorLoginKey()
-	{
-		return m_loginKey;
-	}
-	
-	public void removeAuthenticatorLoginKey()
-	{
-		m_loginKey = null;
-		m_loginKeyUserName = null;
-	}
-	
-	public String getAuthenticatorLoginKeyUserName()
-	{
-		return m_loginKeyUserName;
-	}
-	
-	public String getAuthenticatorCurrentUserName()
-	{
-		IAuthenticator auth = getAuthenticator();
-		return auth == null ? "" : auth.getCurrenlyLoggedUserName();
-	}
-	
-	public String getAuthenticatorUserName()
-	{
-		return m_authenticatorUserName;
-	}
-	
-	public void setAuthenticatorUserName(String userName)
-	{
-		m_authenticatorUserName = userName;
-	}
-	
-	public String getAuthenticatorPassword()
-	{
-		return m_authenticatorPassword;
-	}
-
-	public void setAuthenticatorPassword(String password)
-	{
-		m_authenticatorPassword = password;
-	}
-	
-	List<LearnMoreItem> getLearnMores()
-	{
-		return m_learnMores;
-	}
-	
-	boolean isProblemInProperties()
-	{
-		return m_problemInProperties;
-	}
-	
-
-	int checkSpaceReadAccess() throws Exception
-	{
-		if(m_loginRequired && (m_authenticator == null || m_spaceName == null))
-			return IAuthenticator.SPACE_ACCESS_FORBIDDEN;
-		
-		// if authenticator is null - get smacked later (can only end up here without an
-		// authenticator if loginRequired is false anyway).
-		return m_authenticator == null ? IAuthenticator.SPACE_ACCESS_OK : m_authenticator.checkSpaceReadAccess(m_spaceName);
-	}	
 
 	IWizardPage getDownloadPage()
 	{
@@ -820,12 +617,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			int result = checkSpaceReadAccess();
 
-			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN ||
-					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS ||
-					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
-			{	
+			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN
+					|| result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS
+					|| result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+			{
 				m_spaceRestrictionPage.setStatus(result);
-				
+
 				return m_spaceRestrictionPage;
 			}
 		}
@@ -836,198 +633,114 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		return m_downloadPage;
 	}
-	
-	boolean isMaterializerInitialized()
+
+	List<LearnMoreItem> getLearnMores()
 	{
-		return m_cachedBOMURL != null;
+		return m_learnMores;
 	}
-	
-	void resetMaterializerInitialization()
+
+	String getLearnMoreURL()
 	{
-		m_cachedBOMURL = null;
+		return m_learnMoreURL;
 	}
-	
+
+	Image getMaterializationImage()
+	{
+		return m_materializationImage;
+	}
+
+	MaterializationSpecBuilder getMaterializationSpecBuilder()
+	{
+		return m_builder;
+	}
+
+	String[] getMaterializers()
+	{
+		return MATERIALIZERS;
+	}
+
+	Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
+	String getServiceProvider()
+	{
+		return m_serviceProvider;
+	}
+
+	String getServiceProviderHomePageURL()
+	{
+		return m_homePageURL;
+	}
+
+	String getSpaceName()
+	{
+		return m_spaceName;
+	}
+
+	int checkSpaceReadAccess() throws Exception
+	{
+		if(m_loginRequired && (m_authenticator == null || m_spaceName == null))
+			return IAuthenticator.SPACE_ACCESS_FORBIDDEN;
+
+		// if authenticator is null - get smacked later (can only end up here without an
+		// authenticator if loginRequired is false anyway).
+		return m_authenticator == null
+				? IAuthenticator.SPACE_ACCESS_OK
+				: m_authenticator.checkSpaceReadAccess(m_spaceName);
+	}
+
 	void initializeMaterializer()
 	{
 		initMSPEC();
 		initBOM();
 	}
-	
-	private void initMSPEC()
-	{
-		try
-		{
-			HttpClient client;
-			
-			if(m_authenticator != null)
-				client = m_authenticator.getHttpClient();
-			else
-				client = new HttpClient();
-			
-			HttpMethod method = null;
-			InputStream stream = null;
-			
-			try
-			{
-				method = new GetMethod(m_mspecURL.toURI().toString());
 
-				int status = client.executeMethod(method);
-				MaterializationUtils.checkConnection(status, m_mspecURL.toString());
-
-				stream = method.getResponseBodyAsStream();
-
-				IParser<MaterializationSpec> parser = CorePlugin.getDefault().getParserFactory()
-						.getMaterializationSpecParser(true);
-
-				m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
-				m_builder.setInstallLocation(MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation()));
-			}
-			catch(URISyntaxException e)
-			{
-				throw new JNLPException("Cannot read materialization specification",
-						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-			}
-			finally
-			{
-				IOUtils.close(stream);
-				
-				if(method != null)
-					method.releaseConnection();
-			}
-			
-			Display.getDefault().asyncExec(new Runnable(){
-
-				public void run()
-				{
-					MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
-					for(MSpecChangeListener listener : m_mspecListeners)
-					{
-						listener.handleMSpecChangeEvent(event);
-					}
-				}});
-			
-		} catch(FileNotFoundException e)
-		{
-			throw new JNLPException(
-					"Cannot read materialization specification",
-					ERROR_CODE_404_EXCEPTION,
-					BuckminsterException.fromMessage("%s cannot be found", m_mspecURL));
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-		}
-		catch(CoreException e)
-		{
-			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_ARTIFACT_EXCEPTION, e);
-		}
-	}
-	
-	private void initBOM()
-	{
-		m_cachedBOM = null;
-		
-		try
-		{
-			HttpClient client;
-			
-			if(m_authenticator != null)
-				client = m_authenticator.getHttpClient();
-			else
-				client = new HttpClient();
-			
-			URL bomURL = getMaterializationSpecBuilder().getURL();
-
-			HttpMethod method = null;
-			InputStream stream = null;
-			BillOfMaterials bom = null;
-			
-			try
-			{
-				method = new GetMethod(bomURL.toURI().toString());
-
-				int status = client.executeMethod(method);
-				MaterializationUtils.checkConnection(status, bomURL.toString());
-
-				stream = method.getResponseBodyAsStream();
-
-				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory()
-						.getBillOfMaterialsParser(true);
-
-				bom = parser.parse(bomURL.toString(), stream);
-			}
-			catch(URISyntaxException e)
-			{
-				throw new JNLPException("Cannot read materialization specification",
-						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-			}
-			finally
-			{
-				IOUtils.close(stream);
-				
-				if(method != null)
-					method.releaseConnection();
-			}
-
-			m_cachedBOM = bom;
-		}
-		catch(CoreException e)
-		{
-			throw new JNLPException(
-					"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
-					ERROR_CODE_ARTIFACT_EXCEPTION, e);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_404_EXCEPTION,
-					BuckminsterException.fromMessage("%s cannot be found", getMaterializationSpecBuilder().getURL()));
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-		}
-		
-		File cachedBOMFile;
-		try
-		{
-			cachedBOMFile = File.createTempFile("jnlp", ".bom");
-			cachedBOMFile.deleteOnExit();
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
-		}
-		
-		saveBOM(m_cachedBOM, cachedBOMFile);
-		
-		try
-		{
-			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-		}
-	}
-		
-	BillOfMaterials getBOM()
-	{
-		if(m_cachedBOM == null)
-		{
-			initBOM();
-		}
-	
-		return m_cachedBOM;
-	}
-	
 	void initMSpecTree()
 	{
 		m_advancedPage.initializeMSpecTree(getBOM());
 	}
-	
-	void setUnresolvedNodeHandler(IUnresolvedNodeHandler unresolvedNodeHandler)
+
+	boolean isLoggedIn()
 	{
-		m_unresolvedNodeHandler = unresolvedNodeHandler;
+		boolean isLoggedIn = false;
+
+		try
+		{
+			isLoggedIn = m_authenticator.isLoggedIn();
+		}
+		catch(Exception e1)
+		{
+			// nothing isLoggedIn == false
+		}
+
+		return isLoggedIn;
+	}
+
+	boolean isLoginPageRequested()
+	{
+		return m_loginPageRequested;
+	}
+
+	boolean isLoginRequired()
+	{
+		return m_loginRequired;
+	}
+
+	boolean isMaterializerInitialized()
+	{
+		return m_cachedBOMURL != null;
+	}
+
+	boolean isProblemInProperties()
+	{
+		return m_problemInProperties;
+	}
+
+	void resetMaterializerInitialization()
+	{
+		m_cachedBOMURL = null;
 	}
 
 	void saveBOM(BillOfMaterials bom, File file)
@@ -1051,272 +764,165 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			throw new JNLPException("Cannot write to file", ERROR_CODE_FILE_IO_EXCEPTION, e1);
 		}
 	}
-	
-	private void readProperties(Map<String, String> properties)
+
+	void setLoginPageRequested(boolean loginPageRequested)
 	{
-		class ErrorEntry
+		m_loginPageRequested = loginPageRequested;
+	}
+
+	void setUnresolvedNodeHandler(IUnresolvedNodeHandler unresolvedNodeHandler)
+	{
+		m_unresolvedNodeHandler = unresolvedNodeHandler;
+	}
+
+	private IAuthenticator createAuthenticator(boolean needed)
+	{
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = er.getConfigurationElementsFor(AUTHENTICATION_EXTPOINT);
+		IAuthenticator authenticator = null;
+
+		try
 		{
-			private IStatus m_status;
-			private String m_errorCode;
-			
-			public ErrorEntry(IStatus status, String errorCode)
+			if(elems.length != 1)
 			{
-				super();
-				m_status = status;
-				m_errorCode = errorCode;
+				throw new JNLPException("Authenticator is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 			}
 
-			public String getErrorCode()
-			{
-				return m_errorCode;
-			}
-
-			public IStatus getStatus()
-			{
-				return m_status;
-			}
-		}
-		
-		List<ErrorEntry> errorList = new ArrayList<ErrorEntry>();
-		
-		String tmp = properties.get(PROP_BASE_PATH_URL);
-		
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_BASE_PATH_URL);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-
-		m_basePathURL = tmp;
-
-		tmp = properties.get(PROP_ARTIFACT_TYPE);
-		
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_ARTIFACT_TYPE);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-			tmp = ARTIFACT_TYPE_UNKNOWN;
-		}
-
-		String artifactType = tmp;
-		
-		tmp = properties.get(PROP_ARTIFACT_URL);
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_ARTIFACT_URL);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		} else
-		{
 			try
 			{
-				if(ARTIFACT_TYPE_MSPEC.equals(artifactType))
+				authenticator = (IAuthenticator)elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
+				authenticator.initialize(m_basePathURL);
+
+				if(m_loginKey != null)
 				{
-					m_mspecURL = new URL(tmp);
-					// initURL() is called in LoginPage
-				} else
-				{
-					m_builder.setURL(new URL(tmp));
+					int result = authenticator.login(m_loginKey);
+
+					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
+						m_loginKey = null;
+
+					if(result == IAuthenticator.LOGIN_OK)
+						m_loginKeyUserName = authenticator.getCurrenlyLoggedUserName();
+					else
+						m_loginKeyUserName = null;
 				}
 			}
-			catch(MalformedURLException e)
+			catch(Throwable e)
 			{
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+				throw new JNLPException("Cannot create authenticator", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
 			}
 		}
-		
-		tmp = properties.get(PROP_ARTIFACT_NAME);
-		if(tmp == null)
+		catch(JNLPException e)
 		{
-			Throwable e = new MissingPropertyException(PROP_ARTIFACT_NAME);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-			tmp = ARTIFACT_UNKNOWN_TEXT;
-		}
-		
-		m_builder.setName(tmp);
-		m_artifactName = tmp;
+			if(needed)
+			{
+				m_problemInProperties = true;
 
-		m_artifactVersion = properties.get(PROP_ARTIFACT_VERSION);
-		m_artifactDescription = properties.get(PROP_ARTIFACT_DESCRIPTION);
-		
-		if(m_artifactDescription != null)
+				IStatus status = BuckminsterException.wrap(e.getCause() != null
+						? e.getCause()
+						: e).getStatus();
+				CorePlugin.logWarningsAndErrors(status);
+				HelpLinkErrorDialog.openError(null, null, ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE,
+						m_errorURL, e.getErrorCode(), status);
+			}
+		}
+
+		return authenticator;
+	}
+
+	private IComponentInfoProvider createComponentInfoProvider()
+	{
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = er.getConfigurationElementsFor(COMPONENTINFO_EXTPOINT);
+		IComponentInfoProvider infoProvider = null;
+
+		try
+		{
+			if(elems.length != 1)
+				return null;
+
 			try
 			{
-				m_artifactDescription = new String(Base64.decodeBase64(m_artifactDescription.getBytes()), "UTF-8");
+				infoProvider = (IComponentInfoProvider)elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
 			}
-			catch(UnsupportedEncodingException e1)
+			catch(Throwable e)
 			{
-				m_artifactDescription = null;
-			}
-		
-		m_artifactDocumentation = properties.get(PROP_ARTIFACT_DOCUMENTATION);
-		
-		if(m_artifactDocumentation != null)
-			try
-			{
-				m_artifactDocumentation = new String(Base64.decodeBase64(m_artifactDocumentation.getBytes()), "UTF-8");
-			}
-			catch(UnsupportedEncodingException e1)
-			{
-				m_artifactDocumentation = null;
-			}
-		
-		// Branding image is not wanted
-		m_brandingImage = null;
-
-		tmp = properties.get(PROP_PROFILE_TEXT);
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_PROFILE_TEXT);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-			tmp = ARTIFACT_UNKNOWN_TEXT;
-		}
-		m_brandingString = tmp;
-
-		tmp = properties.get(PROP_WINDOW_TITLE);
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_WINDOW_TITLE);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-			tmp = WINDOW_TITLE_UNKNOWN;
-		}
-		m_windowTitle = tmp;
-
-		tmp = properties.get(PROP_WINDOW_ICON);
-		m_windowImage = null;
-		if(tmp != null)
-		{
-			try
-			{
-				m_windowImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
-			}
-			catch(MalformedURLException e)
-			{
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+				throw new JNLPException("Cannot create component info provider", ERROR_CODE_RUNTIME_EXCEPTION, e);
 			}
 		}
-
-		tmp = properties.get(PROP_WIZARD_ICON);
-		m_wizardImage = null;
-		if(tmp != null)
-		{
-			try
-			{
-				m_wizardImage = getNormalizedWizardImage(ImageDescriptor.createFromURL(new URL(tmp)).createImage());
-			}
-			catch(MalformedURLException e)
-			{
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
-			}
-		}
-		
-		tmp = properties.get(PROP_MATERIALIZATION_IMAGE);
-		m_materializationImage = null;
-		if(tmp != null)
-		{
-			try
-			{
-				m_materializationImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
-			}
-			catch(MalformedURLException e)
-			{
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
-			}
-		}
-		
-		m_helpURL = properties.get(PROP_HELP_URL);
-		// TODO use different helpURL and moreInfoURL, now there is just helpURL
-		m_moreInfoURL = m_helpURL;
-		//m_moreInfoURL = properties.get(PROP_MORE_INFO_URL);
-		
-		m_errorURL = properties.get(PROP_ERROR_URL);
-		if(m_errorURL == null)
-		{
-			m_errorURL = ERROR_HELP_URL;
-		}
-		
-		m_loginRequired = false;
-		tmp = properties.get(PROP_LOGIN_REQUIRED);
-		if("true".equalsIgnoreCase(tmp))
-		{
-			m_loginRequired = true;
-		}
-
-		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
-		
-		m_homePageURL = properties.get(PROP_HOME_PAGE_URL);
-		
-		m_serviceProvider = properties.get(PROP_SERVICE_PROVIDER);
-
-		m_spaceName = properties.get(PROP_SPACE_NAME);
-
-		m_cspecName = properties.get(PROP_CSPEC_NAME);
-		if(m_cspecName == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_CSPEC_NAME);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-		
-		m_cspecType = properties.get(PROP_CSPEC_TYPE);
-		if(m_cspecType == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_CSPEC_TYPE);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-		
-		m_cspecVersionString = properties.get(PROP_CSPEC_VERSION_STRING);
-		if(m_cspecVersionString == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_STRING);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-		
-		m_cspecVersionType = properties.get(PROP_CSPEC_VERSION_TYPE);
-		if(m_cspecVersionType == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_TYPE);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(), ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-
-		if(errorList.size() > 0)
+		catch(JNLPException e)
 		{
 			m_problemInProperties = true;
-			
-			final IStatus topStatus;
-			
-			if(errorList.size() == 1)
-			{
-				topStatus = errorList.get(0).getStatus();
-			} else
-			{
-				topStatus = createMultiStatusFromStatus(errorList.get(0).getStatus());
-				for(int i = 1; i < errorList.size(); i++)
-				{
-					((MultiStatus) topStatus).add(errorList.get(i).getStatus());
-				}
-			}		
-			
-			final String topErrorCode = errorList.get(0).getErrorCode();
-			
-			CorePlugin.logWarningsAndErrors(topStatus);
-			Display.getDefault().syncExec(new Runnable()
-			{
-				public void run()
-				{
-					HelpLinkErrorDialog.openError(
-							null,
-							m_windowImage,
-							ERROR_WINDOW_TITLE,
-							"Error while reading materialization information",
-							ERROR_HELP_TITLE,
-							m_errorURL,
-							topErrorCode,
-							topStatus);
-				}
-			});
+
+			IStatus status = BuckminsterException.wrap(e.getCause() != null
+					? e.getCause()
+					: e).getStatus();
+			CorePlugin.logWarningsAndErrors(status);
+			HelpLinkErrorDialog.openError(null, null, ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE, m_errorURL,
+					e.getErrorCode(), status);
 		}
-		
-		m_loginKey = properties.get(PROP_LOGIN_KEY);
-	}		
+
+		return infoProvider;
+	}
+
+	private List<LearnMoreItem> createLearnMores()
+	{
+		List<LearnMoreItem> learnMores = new ArrayList<LearnMoreItem>();
+
+		// Learn more items from properties
+		if(m_learnMoreURL != null)
+		{
+			learnMores.add(new LearnMoreItem("Create your own virtual distribution", m_learnMoreURL));
+		}
+
+		if(m_homePageURL != null)
+		{
+			learnMores.add(new LearnMoreItem("Search your components at " + m_serviceProvider, m_homePageURL));
+		}
+
+		// Learn more items from extension
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = er.getConfigurationElementsFor(LEARNMORE_EXTPOINT);
+
+		for(IConfigurationElement elem : elems)
+		{
+			learnMores.add(new LearnMoreItem(elem.getAttribute(ATTRIBUTE_STRING), elem.getAttribute(ATTRIBUTE_URL)));
+		}
+
+		return learnMores;
+	}
+
+	private void excludeComponent(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	{
+		Resolution resolution = depNode.getResolution();
+
+		if(resolution != null)
+		{
+			CSpec cspec = resolution.getCSpec();
+
+			if(cspec != null)
+			{
+				String componentName = cspec.getName();
+				String componentType = cspec.getComponentTypeID();
+
+				MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
+				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+				nodeBuilder.setComponentTypeID(componentType);
+				nodeBuilder.setExclude(true);
+
+				mspec.getNodes().add(0, nodeBuilder);
+			}
+		}
+	}
+
+	// CSSITE components don't need to be materialized, so they are excluded
+	private void excludeCSsiteComponents(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	{
+		if(hasCSsiteReader(depNode))
+			excludeComponent(mspec, depNode);
+
+		for(DepNode childDepNode : depNode.getChildren())
+			excludeCSsiteComponents(mspec, childDepNode);
+	}
 
 	/**
 	 * Wizard page doesn't display message text (the second line in title area) if the wizard image is too small
@@ -1328,20 +934,22 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private Image getNormalizedWizardImage(Image origImage)
 	{
 		final int WIZARD_IMAGE_HEIGHT = 64;
-		
+
 		ImageData origImageData = origImage.getImageData();
 
 		if(origImageData.height >= WIZARD_IMAGE_HEIGHT)
 		{
 			return origImage;
 		}
-		
-		ImageData newImageData = new ImageData(origImageData.width, WIZARD_IMAGE_HEIGHT, origImageData.depth, origImageData.palette);
-		
+
+		ImageData newImageData = new ImageData(origImageData.width, WIZARD_IMAGE_HEIGHT, origImageData.depth,
+				origImageData.palette);
+
 		newImageData.alpha = origImageData.alpha;
-		
+
 		ImageData transparencyMask = origImageData.getTransparencyMask();
-		boolean testTransparency = origImageData.getTransparencyType() == SWT.TRANSPARENCY_MASK || origImageData.getTransparencyType() == SWT.TRANSPARENCY_PIXEL;
+		boolean testTransparency = origImageData.getTransparencyType() == SWT.TRANSPARENCY_MASK
+				|| origImageData.getTransparencyType() == SWT.TRANSPARENCY_PIXEL;
 
 		for(int y = 0; y < origImageData.height; y++)
 		{
@@ -1370,48 +978,468 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return new Image(Display.getDefault(), newImageData);
 	}
 
-	@Override
-	public void dispose()
+	private boolean hasCSsiteReader(DepNode depNode) throws CoreException
 	{
-		if(m_brandingImage != null)
+		Resolution resolution = depNode.getResolution();
+
+		if(resolution != null)
+			if(MaterializationConstants.READER_TYPE_CSSITE.equals(resolution.getProvider().getReaderTypeId()))
+				return true;
+
+		return false;
+	}
+
+	private void initBOM()
+	{
+		m_cachedBOM = null;
+
+		try
 		{
-			m_brandingImage.dispose();
+			HttpClient client;
+
+			if(m_authenticator != null)
+				client = m_authenticator.getHttpClient();
+			else
+				client = new HttpClient();
+
+			URL bomURL = getMaterializationSpecBuilder().getURL();
+
+			HttpMethod method = null;
+			InputStream stream = null;
+			BillOfMaterials bom = null;
+
+			try
+			{
+				method = new GetMethod(bomURL.toURI().toString());
+
+				int status = client.executeMethod(method);
+				MaterializationUtils.checkConnection(status, bomURL.toString());
+
+				stream = method.getResponseBodyAsStream();
+
+				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(
+						true);
+
+				bom = parser.parse(bomURL.toString(), stream);
+			}
+			catch(URISyntaxException e)
+			{
+				throw new JNLPException("Cannot read materialization specification",
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+			}
+			finally
+			{
+				IOUtils.close(stream);
+
+				if(method != null)
+					method.releaseConnection();
+			}
+
+			m_cachedBOM = bom;
 		}
-		
-		if(m_windowImage != null)
+		catch(CoreException e)
 		{
-			m_windowImage.dispose();
+			throw new JNLPException(
+					"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
+					ERROR_CODE_ARTIFACT_EXCEPTION, e);
 		}
-		
-		if(m_wizardImage != null)
+		catch(FileNotFoundException e)
 		{
-			m_wizardImage.dispose();
+			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_404_EXCEPTION,
+					BuckminsterException.fromMessage("%s cannot be found", getMaterializationSpecBuilder().getURL()));
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+		}
+
+		File cachedBOMFile;
+		try
+		{
+			cachedBOMFile = File.createTempFile("jnlp", ".bom");
+			cachedBOMFile.deleteOnExit();
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
+		}
+
+		saveBOM(m_cachedBOM, cachedBOMFile);
+
+		try
+		{
+			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 		}
 	}
-	
-	private static MultiStatus createMultiStatusFromStatus(IStatus status)
+
+	private void initMSPEC()
 	{
-		return new MultiStatus(
-				status.getPlugin(), status.getCode(), status.getMessage(), status.getException());
+		try
+		{
+			HttpClient client;
+
+			if(m_authenticator != null)
+				client = m_authenticator.getHttpClient();
+			else
+				client = new HttpClient();
+
+			HttpMethod method = null;
+			InputStream stream = null;
+
+			try
+			{
+				method = new GetMethod(m_mspecURL.toURI().toString());
+
+				int status = client.executeMethod(method);
+				MaterializationUtils.checkConnection(status, m_mspecURL.toString());
+
+				stream = method.getResponseBodyAsStream();
+
+				IParser<MaterializationSpec> parser = CorePlugin.getDefault().getParserFactory()
+						.getMaterializationSpecParser(true);
+
+				m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
+				m_builder
+						.setInstallLocation(MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation()));
+			}
+			catch(URISyntaxException e)
+			{
+				throw new JNLPException("Cannot read materialization specification",
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+			}
+			finally
+			{
+				IOUtils.close(stream);
+
+				if(method != null)
+					method.releaseConnection();
+			}
+
+			Display.getDefault().asyncExec(new Runnable()
+			{
+
+				public void run()
+				{
+					MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
+					for(MSpecChangeListener listener : m_mspecListeners)
+					{
+						listener.handleMSpecChangeEvent(event);
+					}
+				}
+			});
+
+		}
+		catch(FileNotFoundException e)
+		{
+			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_404_EXCEPTION,
+					BuckminsterException.fromMessage("%s cannot be found", m_mspecURL));
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+		}
+		catch(CoreException e)
+		{
+			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_ARTIFACT_EXCEPTION, e);
+		}
 	}
-	
-	public void addMSpecChangeListener(MSpecChangeListener listener)
+
+	private void readProperties(Map<String, String> properties)
 	{
-		m_mspecListeners.add(listener);
+		class ErrorEntry
+		{
+			private IStatus m_status;
+
+			private String m_errorCode;
+
+			public ErrorEntry(IStatus status, String errorCode)
+			{
+				super();
+				m_status = status;
+				m_errorCode = errorCode;
+			}
+
+			public String getErrorCode()
+			{
+				return m_errorCode;
+			}
+
+			public IStatus getStatus()
+			{
+				return m_status;
+			}
+		}
+
+		List<ErrorEntry> errorList = new ArrayList<ErrorEntry>();
+
+		String tmp = properties.get(PROP_BASE_PATH_URL);
+
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_BASE_PATH_URL);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+
+		m_basePathURL = tmp;
+
+		tmp = properties.get(PROP_ARTIFACT_TYPE);
+
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_ARTIFACT_TYPE);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+			tmp = ARTIFACT_TYPE_UNKNOWN;
+		}
+
+		String artifactType = tmp;
+
+		tmp = properties.get(PROP_ARTIFACT_URL);
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_ARTIFACT_URL);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+		else
+		{
+			try
+			{
+				if(ARTIFACT_TYPE_MSPEC.equals(artifactType))
+				{
+					m_mspecURL = new URL(tmp);
+					// initURL() is called in LoginPage
+				}
+				else
+				{
+					m_builder.setURL(new URL(tmp));
+				}
+			}
+			catch(MalformedURLException e)
+			{
+				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+			}
+		}
+
+		tmp = properties.get(PROP_ARTIFACT_NAME);
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_ARTIFACT_NAME);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+			tmp = ARTIFACT_UNKNOWN_TEXT;
+		}
+
+		m_builder.setName(tmp);
+		m_artifactName = tmp;
+
+		m_artifactVersion = properties.get(PROP_ARTIFACT_VERSION);
+		m_artifactDescription = properties.get(PROP_ARTIFACT_DESCRIPTION);
+
+		if(m_artifactDescription != null)
+			try
+			{
+				m_artifactDescription = new String(Base64.decodeBase64(m_artifactDescription.getBytes()), "UTF-8");
+			}
+			catch(UnsupportedEncodingException e1)
+			{
+				m_artifactDescription = null;
+			}
+
+		m_artifactDocumentation = properties.get(PROP_ARTIFACT_DOCUMENTATION);
+
+		if(m_artifactDocumentation != null)
+			try
+			{
+				m_artifactDocumentation = new String(Base64.decodeBase64(m_artifactDocumentation.getBytes()), "UTF-8");
+			}
+			catch(UnsupportedEncodingException e1)
+			{
+				m_artifactDocumentation = null;
+			}
+
+		// Branding image is not wanted
+		m_brandingImage = null;
+
+		tmp = properties.get(PROP_PROFILE_TEXT);
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_PROFILE_TEXT);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+			tmp = ARTIFACT_UNKNOWN_TEXT;
+		}
+		m_brandingString = tmp;
+
+		tmp = properties.get(PROP_WINDOW_TITLE);
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_WINDOW_TITLE);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+			tmp = WINDOW_TITLE_UNKNOWN;
+		}
+		m_windowTitle = tmp;
+
+		tmp = properties.get(PROP_WINDOW_ICON);
+		m_windowImage = null;
+		if(tmp != null)
+		{
+			try
+			{
+				m_windowImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
+			}
+			catch(MalformedURLException e)
+			{
+				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+			}
+		}
+
+		tmp = properties.get(PROP_WIZARD_ICON);
+		m_wizardImage = null;
+		if(tmp != null)
+		{
+			try
+			{
+				m_wizardImage = getNormalizedWizardImage(ImageDescriptor.createFromURL(new URL(tmp)).createImage());
+			}
+			catch(MalformedURLException e)
+			{
+				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+			}
+		}
+
+		tmp = properties.get(PROP_MATERIALIZATION_IMAGE);
+		m_materializationImage = null;
+		if(tmp != null)
+		{
+			try
+			{
+				m_materializationImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
+			}
+			catch(MalformedURLException e)
+			{
+				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+			}
+		}
+
+		m_helpURL = properties.get(PROP_HELP_URL);
+		// TODO use different helpURL and moreInfoURL, now there is just helpURL
+		m_moreInfoURL = m_helpURL;
+		//m_moreInfoURL = properties.get(PROP_MORE_INFO_URL);
+
+		m_errorURL = properties.get(PROP_ERROR_URL);
+		if(m_errorURL == null)
+		{
+			m_errorURL = ERROR_HELP_URL;
+		}
+
+		m_loginRequired = false;
+		tmp = properties.get(PROP_LOGIN_REQUIRED);
+		if("true".equalsIgnoreCase(tmp))
+		{
+			m_loginRequired = true;
+		}
+
+		m_learnMoreURL = properties.get(PROP_LEARN_MORE_URL);
+
+		m_homePageURL = properties.get(PROP_HOME_PAGE_URL);
+
+		m_serviceProvider = properties.get(PROP_SERVICE_PROVIDER);
+
+		m_spaceName = properties.get(PROP_SPACE_NAME);
+
+		m_cspecName = properties.get(PROP_CSPEC_NAME);
+		if(m_cspecName == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_NAME);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+
+		m_cspecType = properties.get(PROP_CSPEC_TYPE);
+		if(m_cspecType == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_TYPE);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+
+		m_cspecVersionString = properties.get(PROP_CSPEC_VERSION_STRING);
+		if(m_cspecVersionString == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_STRING);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+
+		m_cspecVersionType = properties.get(PROP_CSPEC_VERSION_TYPE);
+		if(m_cspecVersionType == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_TYPE);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+
+		if(errorList.size() > 0)
+		{
+			m_problemInProperties = true;
+
+			final IStatus topStatus;
+
+			if(errorList.size() == 1)
+			{
+				topStatus = errorList.get(0).getStatus();
+			}
+			else
+			{
+				topStatus = createMultiStatusFromStatus(errorList.get(0).getStatus());
+				for(int i = 1; i < errorList.size(); i++)
+				{
+					((MultiStatus)topStatus).add(errorList.get(i).getStatus());
+				}
+			}
+
+			final String topErrorCode = errorList.get(0).getErrorCode();
+
+			CorePlugin.logWarningsAndErrors(topStatus);
+			Display.getDefault().syncExec(new Runnable()
+			{
+				public void run()
+				{
+					HelpLinkErrorDialog.openError(null, m_windowImage, ERROR_WINDOW_TITLE,
+							"Error while reading materialization information", ERROR_HELP_TITLE, m_errorURL,
+							topErrorCode, topStatus);
+				}
+			});
+		}
+
+		m_loginKey = properties.get(PROP_LOGIN_KEY);
 	}
-	
-	public void removeMSpecChangeListener(MSpecChangeListener listener)
+
+	private void showOriginalPage(IWizardPage originalPage)
 	{
-		m_mspecListeners.remove(listener);
+		WizardPage originalPreviousPage = (WizardPage)originalPage.getPreviousPage();
+		getContainer().showPage(originalPage);
+		originalPage.setPreviousPage(originalPreviousPage);
 	}
 }
 
 class LearnMoreItem
 {
 	private String m_string;
-	
+
 	private String m_url;
-	
+
 	public LearnMoreItem(String string, String url)
 	{
 		m_string = string;
