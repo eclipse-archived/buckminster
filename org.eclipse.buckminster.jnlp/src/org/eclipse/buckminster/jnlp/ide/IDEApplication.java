@@ -99,7 +99,7 @@ public class IDEApplication
 			{
 				// Create the wizard dialog and resize it.
 				//
-				final InstallWizard installWizard = new InstallWizard(properties);
+				final InstallWizard installWizard = new InstallWizard(properties, true);
 				m_errorURL = installWizard.getErrorURL();
 				
 				// The original started with a mask of SWT.APPLICATION_MODAL - and this changed the icon of
@@ -227,5 +227,11 @@ public class IDEApplication
 
 	public void stop()
 	{
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		IDEApplication app = new IDEApplication();
+		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop");
 	}
 }

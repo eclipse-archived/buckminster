@@ -92,7 +92,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -201,6 +200,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	
 	private final Map<String,String> m_properties;
 	
+	private final boolean m_startedFromIDE;
+	
 	private IAuthenticator m_authenticator;
 	
 	private IComponentInfoProvider m_infoProvider;
@@ -217,9 +218,15 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	public InstallWizard(Map<String, String> properties)
 	{
+		this(properties, false);
+	}
+	
+	public InstallWizard(Map<String, String> properties, boolean startedFromIDE)
+	{
 		setNeedsProgressMonitor(true);
 
 		m_properties = properties;
+		m_startedFromIDE = startedFromIDE;
 		
 		readProperties(properties);
 		
@@ -465,13 +472,15 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			excludeCSsiteComponents(builderToPerform, getBOM());
 			
 			getContainer().showPage(m_operationPage);
-			IJobManager jobManager = Job.getJobManager();
-			((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
-			jobManager.setProgressProvider(m_operationPage.getProgressProvider());
+			
+			if(!m_startedFromIDE)
+			{
+				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
+				Job.getJobManager().setProgressProvider(m_operationPage.getProgressProvider());
+			}
+			
 			MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
 			getContainer().run(true, true, mr);
-			jobManager.setProgressProvider(null);
-			((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
 			
 			if(getComponentInfoProvider() != null)
 				m_infoPageURL = getComponentInfoProvider().prepareHTML(
@@ -502,6 +511,14 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					m_errorURL,
 					ERROR_CODE_MATERIALIZATION_EXCEPTION,
 					status);
+		}
+		finally
+		{
+			if(!m_startedFromIDE)
+			{
+				Job.getJobManager().setProgressProvider(null);
+				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);			
+			}
 		}
 		
 		return false;
