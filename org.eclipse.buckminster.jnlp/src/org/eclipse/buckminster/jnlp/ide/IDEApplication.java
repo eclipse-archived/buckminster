@@ -28,7 +28,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.window.Window.IExceptionHandler;
-import org.eclipse.swt.SWT;
+
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Display;
@@ -102,7 +102,10 @@ public class IDEApplication
 				final InstallWizard installWizard = new InstallWizard(properties);
 				m_errorURL = installWizard.getErrorURL();
 				
-				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard, ~SWT.APPLICATION_MODAL);
+				// The original started with a mask of SWT.APPLICATION_MODAL - and this changed the icon of
+				// Eclipse to the icon of the dialog = a cloud. Looks much better if icon is unchanged.
+				//
+				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard, ~0); // SWT.APPLICATION_MODAL);
 				dialog.create();
 
 				// General exception handler
