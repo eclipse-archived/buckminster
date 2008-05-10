@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import java.io.File;
 import java.util.List;
 
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -23,12 +22,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Karel Brezina
@@ -37,18 +33,19 @@ import org.eclipse.swt.widgets.Shell;
 public class DonePage extends InstallWizardPage
 {
 	private static final int VERTICAL_SPACING = 10;
-	
+
 	private static final int HORIZONTAL_INDENT = 50;
-	
+
 	private static final String ICON_LEARN = "library_wiz.png";
-	
+
 	private static final String ICON_PUBLISH = "xhtml_wiz.png";
-	
+
 	private ComponentListPanel m_componentListPanel;
-	
+
 	protected DonePage()
 	{
-		super(MaterializationConstants.STEP_DONE, "Materialization Completed", "Close the materialization dialog.", null);
+		super(MaterializationConstants.STEP_DONE, "Materialization Completed", "Close the materialization dialog.",
+				null);
 		setPreviousPage(this);
 	}
 
@@ -64,21 +61,21 @@ public class DonePage extends InstallWizardPage
 		GridData layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		label.setLayoutData(layoutData);
-			
+
 		List<LearnMoreItem> learnMores = getInstallWizard().getLearnMores();
-		
+
 		label = new Label(pageComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_LEARN));
 		GridData learnMoreIconlayoutData = new GridData();
 		learnMoreIconlayoutData.horizontalIndent = HORIZONTAL_INDENT;
-		
-		learnMoreIconlayoutData.verticalSpan = learnMores.size();		
+
+		learnMoreIconlayoutData.verticalSpan = learnMores.size();
 		if(learnMoreIconlayoutData.verticalSpan == 0)
 		{
 			learnMoreIconlayoutData.verticalSpan = 1;
 			new Label(pageComposite, SWT.NONE);
 		}
-		
+
 		learnMoreIconlayoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(learnMoreIconlayoutData);
 
@@ -86,10 +83,10 @@ public class DonePage extends InstallWizardPage
 		{
 			createLink(pageComposite, item.getString(), item.getUrl());
 		}
-		
+
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
-		
+
 		label = new Label(pageComposite, SWT.NONE);
 		label.setText("Distro Actions:");
 		layoutData = new GridData();
@@ -117,10 +114,10 @@ public class DonePage extends InstallWizardPage
 				MaterializationUtils.startPublishingWizard(getInstallWizard(), getShell());
 			}
 		});
-		
+
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
-		
+
 		Group listGroup = new Group(pageComposite, SWT.NONE);
 		listGroup.setText("Materialized Components");
 		FillLayout fillLayout = new FillLayout();
@@ -129,10 +126,10 @@ public class DonePage extends InstallWizardPage
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.horizontalSpan = 2;
 		listGroup.setLayoutData(gridData);
-		
+
 		m_componentListPanel = new ComponentListPanel();
 		m_componentListPanel.createControl(listGroup);
-		
+
 		setControl(pageComposite);
 	}
 
@@ -150,7 +147,7 @@ public class DonePage extends InstallWizardPage
 			public void widgetSelected(SelectionEvent e)
 			{
 				String linkURL = url;
-				
+
 				if(linkURL != null)
 				{
 					Program.launch(linkURL);
@@ -167,7 +164,7 @@ public class DonePage extends InstallWizardPage
 		showFailed(ms.getFailed().size());
 		m_componentListPanel.update(context);
 	}
-	
+
 	private void showFailed(int failed)
 	{
 		if(failed > 0)
@@ -178,146 +175,31 @@ public class DonePage extends InstallWizardPage
 		else
 			setErrorMessage(null);
 	}
-	
-	// Last page after materialization - only cancel is enabled
+
+	// Previous is disabled
 	@Override
-	public boolean isPageComplete()
-	{
-		if(getContainer().getCurrentPage() == this)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	// Last page after materialization - only cancel is enabled
-    @Override
 	public IWizardPage getPreviousPage()
-    {
-    	return null;
-    }
-    
+	{
+		return null;
+	}
+
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return getInstallWizard().getBOM().getResolution().getOPML() == null
+				? null
+				: getInstallWizard().getInfoPage();
+	}
+
 	@Override
 	public String getOverrideCancelButtonText()
 	{
 		return "Done";
 	}
-	
+
 	@Override
 	public int getOverrideDefaultButtonId()
 	{
 		return IDialogConstants.CANCEL_ID;
-	}
-}
-
-/**
- * Wrapper for FileDialog (save version). Overwriting shows a message. 
- */
-class SafeSaveDialog
-{
-	private FileDialog m_dialog;
-
-	public SafeSaveDialog(Shell shell)
-	{
-		m_dialog = new FileDialog(shell, SWT.SAVE);
-	}
-
-	public String open()
-	{
-		String fileName = null;
-
-		boolean done = false;
-
-		while(!done)
-		{
-			fileName = m_dialog.open();
-			if(fileName == null)
-			{
-				done = true;
-			}
-			else
-			{
-				File file = new File(fileName);
-				if(file.exists())
-				{
-					MessageBox mb = new MessageBox(m_dialog.getParent(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-					mb.setText("Warning");
-					mb.setMessage("File " + fileName + " already exists. Do you want to overwrite it?");
-
-					done = (mb.open() == SWT.YES);
-				}
-				else
-				{
-					done = true;
-				}
-			}
-		}
-		return fileName;
-	}
-
-	public String getFileName()
-	{
-		return m_dialog.getFileName();
-	}
-
-	public String[] getFileNames()
-	{
-		return m_dialog.getFileNames();
-	}
-
-	public String[] getFilterExtensions()
-	{
-		return m_dialog.getFilterExtensions();
-	}
-
-	public String[] getFilterNames()
-	{
-		return m_dialog.getFilterNames();
-	}
-
-	public String getFilterPath()
-	{
-		return m_dialog.getFilterPath();
-	}
-
-	public void setFileName(String string)
-	{
-		m_dialog.setFileName(string);
-	}
-
-	public void setFilterExtensions(String[] extensions)
-	{
-		m_dialog.setFilterExtensions(extensions);
-	}
-
-	public void setFilterNames(String[] names)
-	{
-		m_dialog.setFilterNames(names);
-	}
-
-	public void setFilterPath(String string)
-	{
-		m_dialog.setFilterPath(string);
-	}
-
-	public Shell getParent()
-	{
-		return m_dialog.getParent();
-	}
-
-	public int getStyle()
-	{
-		return m_dialog.getStyle();
-	}
-
-	public String getText()
-	{
-		return m_dialog.getText();
-	}
-
-	public void setText(String string)
-	{
-		m_dialog.setText(string);
 	}
 }

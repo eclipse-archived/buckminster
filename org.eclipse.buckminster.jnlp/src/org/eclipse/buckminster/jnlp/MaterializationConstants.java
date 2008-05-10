@@ -28,6 +28,8 @@ public interface MaterializationConstants
 	
 	public static final String STEP_DONE = "DoneStep";
 	
+	public static final String STEP_INFO = "InfoStep";
+	
 	public static final String STEP_PUBLISH_LOGIN = "LoginStep";
 
 	public static final String STEP_PUBLISH = "PublishStep";
@@ -114,7 +116,7 @@ public interface MaterializationConstants
 
 	public static final String ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION = "MalformedPropertyException";
 
-	public static final String ERROR_CODE_ARTIFACT_EXCEPTION = "ArtifactException";
+	public static final String ERROR_CODE_ARTIFACT_EXCEPTION = "ArtifactSAXException";
 
 	public static final String ERROR_CODE_MATERIALIZATION_EXCEPTION = "MaterializationException";
 

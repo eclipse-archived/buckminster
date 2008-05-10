@@ -197,6 +197,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private DonePage m_donePage;
 
+	private InfoPage m_infoPage;
+	
 	private IUnresolvedNodeHandler m_unresolvedNodeHandler;
 
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
@@ -219,6 +221,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private final List<LearnMoreItem> m_learnMores;
 
+	private boolean m_materializationFinished = false;
+	
 	private boolean m_problemInProperties = false;
 
 	public InstallWizard(Map<String, String> properties)
@@ -441,6 +445,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
 			getContainer().run(true, true, mr);
+			
+			m_materializationFinished = true;
 
 			if(getComponentInfoProvider() != null)
 				try
@@ -542,6 +548,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			m_donePage = new DonePage();
 			addAdvancedPage(m_donePage);
+
+			m_infoPage = new InfoPage();
+			addAdvancedPage(m_infoPage);
 		}
 	}
 
@@ -634,6 +643,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_downloadPage;
 	}
 
+	IWizardPage getInfoPage()
+	{
+		return m_infoPage;
+	}
+
 	List<LearnMoreItem> getLearnMores()
 	{
 		return m_learnMores;
@@ -644,6 +658,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_learnMoreURL;
 	}
 
+	boolean isMaterializationFinished()
+	{
+		return m_materializationFinished;
+	}
+	
 	Image getMaterializationImage()
 	{
 		return m_materializationImage;
