@@ -100,7 +100,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 		ErrorDialog.openError(getShell(), title, 
 				message,
 				new Status(IStatus.ERROR,
-						"org.eclipse.buckminster.generic.ui.actions",
+						"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
 						e.getMessage(),
 						e));
 	}
@@ -109,7 +109,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 		ErrorDialog.openError(getShell(), title, 
 				message,
 				new Status(IStatus.ERROR,
-						"org.eclipse.buckminster.generic.ui.actions",
+						"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
 						message
 						));
 	}

@@ -69,8 +69,8 @@ public class ViewInBrowserAction extends AbstractAction
 		setText(txt);
 		setToolTipText(txt);
 		setImageDescriptor(m_feed 
-				? GenericUiPlugin.getImageDescriptor("icons/rssfeed.png")
-				: UiUtils.getImageDescriptor("file.html"));
+				? GenericUiPlugin.getImageDescriptor("icons/rssfeed.png") //$NON-NLS-1$
+				: UiUtils.getImageDescriptor("file.html")); //$NON-NLS-1$
 	}
 	@Override
 	public void run()
