@@ -16,7 +16,7 @@ import org.eclipse.ui.IViewPart;
 
 
 /**
- * An action to trigger OWL sync
+ * An Test action that triggers a hardcoded materialization from Cloudsmith.
  * @author Henrik Lindberg
  *
  */

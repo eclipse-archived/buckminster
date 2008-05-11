@@ -44,19 +44,5 @@
             class="org.eclipse.buckminster.rssowl.ui.BuckminsterURIRewriter">
       </RequestRewriter>
    </extension>
-   <extension
-         point="org.eclipse.ui.viewActions">
-      <viewContribution
-            id="org.eclipse.buckminster.rssowl.ui.viewContribution2"
-            targetID="org.eclipse.buckminster.ui.views.ComponentBrowserView">
-         <action
-               class="org.eclipse.buckminster.rssowl.ui.actions.LaunchMaterializerAction"
-               id="org.eclipse.buckminster.rssowl.ui.launchm"
-               label="Materializer Launch"
-               style="push"
-               toolbarPath="additions">
-         </action>
-      </viewContribution>
-   </extension>
 
 </plugin>

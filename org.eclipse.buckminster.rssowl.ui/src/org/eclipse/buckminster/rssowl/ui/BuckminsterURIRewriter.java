@@ -115,7 +115,6 @@ public class BuckminsterURIRewriter implements IRewriter
 			}
 			catch(URISyntaxException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return s_continue;
 			}
