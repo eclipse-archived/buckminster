@@ -151,7 +151,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private Image m_wizardImage;
 
-	private Image m_materializationImage;
+//	private Image m_materializationImage; // unused
 
 	private String m_helpURL;
 
@@ -658,16 +658,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_learnMoreURL;
 	}
 
+//	// Seems to be never used
+//	Image getMaterializationImage()
+//	{
+//		return m_materializationImage;
+//	}
 	boolean isMaterializationFinished()
 	{
 		return m_materializationFinished;
 	}
 	
-	Image getMaterializationImage()
-	{
-		return m_materializationImage;
-	}
-
 	MaterializationSpecBuilder getMaterializationSpecBuilder()
 	{
 		return m_builder;
@@ -1336,20 +1336,21 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			}
 		}
 
-		tmp = properties.get(PROP_MATERIALIZATION_IMAGE);
-		m_materializationImage = null;
-		if(tmp != null)
-		{
-			try
-			{
-				m_materializationImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
-			}
-			catch(MalformedURLException e)
-			{
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
-						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
-			}
-		}
+//		// Loads an image that is never used
+//		tmp = properties.get(PROP_MATERIALIZATION_IMAGE);
+//		m_materializationImage = null;
+//		if(tmp != null)
+//		{
+//			try
+//			{
+//				m_materializationImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
+//			}
+//			catch(MalformedURLException e)
+//			{
+//				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+//						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+//			}
+//		}
 
 		m_helpURL = properties.get(PROP_HELP_URL);
 		// TODO use different helpURL and moreInfoURL, now there is just helpURL

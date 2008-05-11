@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
@@ -35,10 +36,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * This class controls all aspects of the materializer's execution when running 
- * in the Eclipse IDE.
+ * This class controls all aspects of the materializer's execution when running in the Eclipse IDE.
  */
-public class IDEApplication
+public class IDEApplication extends Observable
 {
 	public static final Integer OK_EXIT_CODE = new Integer(0);
 
@@ -48,28 +48,50 @@ public class IDEApplication
 	 * The wizard dialog width
 	 */
 	private static final int WIZARD_MIN_WIDTH = 550;
+
 	private static final int WIZARD_MAX_WIDTH = 850;
 
 	/**
 	 * The wizard dialog height
 	 */
 	private static final int WIZARD_MIN_HEIGHT = 550;
+
 	private static final int WIZARD_MAX_HEIGHT = 750;
-		
+
 	private String m_errorURL = ERROR_HELP_URL;
 
-	public Object start(String configUrl) throws Exception
+	String m_errorCode = null;
+
+	public static enum State
 	{
-		String errorCode = null;
+		INITIALIZING, STARTED, FAILED;
+	}
+
+	private State m_state = State.INITIALIZING;
+
+	public State getState()
+	{
+		return m_state;
+	}
+
+	public void setState(State state)
+	{
+		m_state = state;
+		setChanged();
+		notifyObservers();
+	}
+
+	public void start(final String configUrl) throws Exception
+	{
 
 		try{
 			if(configUrl == null || configUrl.length() < 1)
 			{
-				errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
+				m_errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
 				throw BuckminsterException.fromMessage("Missing required argument configUrl <URL to config properties>");
 			}
 
-			Map<String, String> properties = new HashMap<String, String>();
+			final Map<String, String> properties = new HashMap<String, String>();
 			InputStream propStream = null;
 			try
 			{
@@ -87,14 +109,14 @@ public class IDEApplication
 			}
 			catch(IOException e)
 			{
-				errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
+				m_errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
+				setState(State.FAILED);
 				throw BuckminsterException.fromMessage(e, "Can not read materialization information");
 			}
 			finally
 			{
 				IOUtils.close(propStream);
 			}
-
 			try
 			{
 				// Create the wizard dialog and resize it.
@@ -174,14 +196,15 @@ public class IDEApplication
 				});
 
 				try
-				{					
+				{
+					setState(State.STARTED);
 					dialog.open();
-					return OK_EXIT_CODE;
+					return;
 				}
 				catch(Throwable e)
 				{
-					errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
-					final String finalErrorCode = errorCode;
+					m_errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
+					final String finalErrorCode = m_errorCode;
 					final IStatus status = BuckminsterException.wrap(e).getStatus();
 					CorePlugin.logWarningsAndErrors(status);
 					Display.getDefault().syncExec(new Runnable()
@@ -193,23 +216,23 @@ public class IDEApplication
 									m_errorURL, finalErrorCode, status);
 						}
 					});
-					return ERROR_EXIT_CODE;
+					return;
 				}
 			}
 			finally
 			{
-				// NOT want you want inside IDE
-//				display.dispose();
 			}
+//	}});
+			
 		}
 		catch(Throwable e)
 		{
 			e.printStackTrace();
-			if(errorCode == null)
+			if(m_errorCode == null)
 			{
-				errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
+				m_errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
 			}
-			final String finalErrorCode = errorCode;
+			final String finalErrorCode = m_errorCode;
 			final IStatus status = BuckminsterException.wrap(e).getStatus();
 			CorePlugin.logWarningsAndErrors(status);
 			Display.getDefault().syncExec(new Runnable()
@@ -221,7 +244,6 @@ public class IDEApplication
 							m_errorURL, finalErrorCode, status);
 				}
 			});
-			return ERROR_EXIT_CODE;
 		}
 	}
 
