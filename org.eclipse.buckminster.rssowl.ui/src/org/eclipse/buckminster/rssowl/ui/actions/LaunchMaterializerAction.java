@@ -32,7 +32,7 @@ public class LaunchMaterializerAction implements IViewActionDelegate
 		IDEApplication app = new IDEApplication();
 		try
 		{
-			app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop");
+			app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop"); //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{

@@ -17,7 +17,7 @@ public class BuckminsterRssOwlUiPlugin extends AbstractUIPlugin
 {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.buckminster.rssowl.ui";
+	public static final String PLUGIN_ID = "org.eclipse.buckminster.rssowl.ui"; //$NON-NLS-1$
 
 
 	// The shared instance

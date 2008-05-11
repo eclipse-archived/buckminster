@@ -65,7 +65,7 @@ public class BuckminsterURIRewriter implements IRewriter
 		}
 		cloudsmithRules:
 		{
-			if(uri.getHost() == null || !uri.getHost().contains("cloudsmith.com"))
+			if(uri.getHost() == null || !uri.getHost().contains("cloudsmith.com")) //$NON-NLS-1$
 				break cloudsmithRules;
 			String path = uri.getRawPath();
 			if(path == null || path.length() < 1)
@@ -77,22 +77,22 @@ public class BuckminsterURIRewriter implements IRewriter
 				// This rule adds an "eclipse=1" parameter to an URL that points to cloudsmith materialization page
 				// to allow it to render the materialization using the buckminster: scheme
 				//
-				if(!path.contains("dynamic/view") || !path.contains("component"))
+				if(!path.contains("dynamic/view") || !path.contains("component")) //$NON-NLS-1$ //$NON-NLS-2$
 					break rule;
 
 				StringBuilder bld = new StringBuilder(location + 10);
 				bld.append(location);
 				// if there was a query string already, the added parameter must have & separator
 				bld.append(uri.getRawQuery() == null
-						? "?"
-						: "&");
-				bld.append("eclipse=1");
+						? "?" 							//$NON-NLS-1$
+						: "&"); 						//$NON-NLS-1$
+				bld.append("eclipse=1"); 				//$NON-NLS-1$
 				return new Result(bld.toString());
 			}
 		}
 		rule:
 		{
-			if(uri.getScheme() == null || !uri.getScheme().equals("buckminster"))
+			if(uri.getScheme() == null || !uri.getScheme().equals("buckminster")) //$NON-NLS-1$
 				break rule;
 
 			// parse the buckminster scheme specific part into Action and parameters
@@ -105,7 +105,7 @@ public class BuckminsterURIRewriter implements IRewriter
 				String actionData = schemeURI.getRawSchemeSpecificPart();
 
 				// buckminster:materialize:URL
-				if("materialize".equals(actionName))
+				if("materialize".equals(actionName)) //$NON-NLS-1$
 				{
 					// what follows the materialize scheme should be a jnlp URI
 					//
@@ -121,7 +121,7 @@ public class BuckminsterURIRewriter implements IRewriter
 		}
 		rule:
 		{
-			if(uri.getPath() == null || !uri.getPath().endsWith(".cquery"))
+			if(uri.getPath() == null || !uri.getPath().endsWith(".cquery")) //$NON-NLS-1$
 				break rule;
 			return new Result(new OpenCQueryAction(uri), true);
 		}
@@ -155,7 +155,7 @@ public class BuckminsterURIRewriter implements IRewriter
 
 			String urlString = null;
 			String host = m_jnlpURI.getHost();
-			if(host != null && host.contains("cloudsmith.com"))
+			if(host != null && host.contains("cloudsmith.com")) //$NON-NLS-1$
 			{
 				// a cloudsmith .jnlp
 				String scheme = m_jnlpURI.getScheme();
@@ -169,10 +169,10 @@ public class BuckminsterURIRewriter implements IRewriter
 				// from: /dynamic/jnlp/materialize/xxxx-nnnn.jnlp
 				// to: /dynamic/prop/jnlp/xxxx-nnnn.prop
 				//
-				String[] segments = path.split("/");
-				segments[2] = "prop";
-				segments[3] = "jnlp";
-				segments[4] = segments[4].replace(".jnlp", ".prop");
+				String[] segments = path.split("/");			//$NON-NLS-1$
+				segments[2] = "prop";							//$NON-NLS-1$
+				segments[3] = "jnlp";							//$NON-NLS-1$
+				segments[4] = segments[4].replace(".jnlp", ".prop"); //$NON-NLS-1$
 
 				// put new URI together
 				// - concatenate the path
@@ -182,7 +182,7 @@ public class BuckminsterURIRewriter implements IRewriter
 				// append them - initial segment is an empty "" so skip it
 				for(int i = 1; i < segments.length; i++)
 				{
-					bld.append("/");
+					bld.append("/"); //$NON-NLS-1$
 					bld.append(segments[i]);
 				}
 				path = bld.toString();
@@ -195,7 +195,8 @@ public class BuckminsterURIRewriter implements IRewriter
 				catch(URISyntaxException e)
 				{
 					e.printStackTrace();
-					MessageDialog.openError(null, "Internal Problem", "Could not create resulting URI from: "
+					MessageDialog.openError(null, 
+							"Internal Problem", "Could not create resulting URI from: "
 							+ m_jnlpURI.toString());
 					return;
 				}
@@ -204,11 +205,11 @@ public class BuckminsterURIRewriter implements IRewriter
 			else
 			{
 				// non cloudsmith .jnlp
-				urlString = m_jnlpURI.toString().replace(".jnlp", ".prop");
+				urlString = m_jnlpURI.toString().replace(".jnlp", ".prop"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			// Ask if user wants to run this in the IDE or in the browser.
 			IPreferenceStore prefsStore = UiPlugin.getDefault().getPreferenceStore();
-			String prefsKey = "buckminster.materializer.jnlp.materializeInExternalBrowser";
+			String prefsKey = "buckminster.materializer.jnlp.materializeInExternalBrowser"; //$NON-NLS-1$
 			MessageDialogWithToggle m = MessageDialogWithToggle.openOkCancelConfirm(null,
 					"Start Materialization Wizard", "Do you want to run the materialization wizard now?",
 					"Run in external browser", prefsStore.getBoolean(prefsKey), null, prefsKey);
@@ -280,7 +281,7 @@ public class BuckminsterURIRewriter implements IRewriter
 				URL url = new URL(urlStr);
 				File tempFile = File.createTempFile(BlankQueryAction.TEMP_FILE_PREFIX, ".cquery");
 				tempFile.deleteOnExit();
-				IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery");
+				IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery"); //$NON-NLS-1$
 				OutputStream output = null;
 				try
 				{
