@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Status;
  */
 public class PluginClassHandle<T>
 {
-	private final static String ATT_CLASS = "class";
+	private final static String ATT_CLASS = "class"; //$NON-NLS-1$
 	protected final IConfigurationElement m_configElement;
 	private final Class<T> m_clazz;
 	private T m_handle;

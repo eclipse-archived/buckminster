@@ -50,10 +50,10 @@ public class PluginUtils
 	{
 		IConfigurationElement[] childElements = configElement.getChildren(name);
 		if(childElements.length < 1)
-			throw new IllegalArgumentException("Missing " + name + " sequence");
+			throw new IllegalArgumentException("Missing " + name + " sequence"); //$NON-NLS-2$
 		String[] result = new String[childElements.length];
 		for(int i = 0; i < childElements.length; i++)
-			result[i] = getAttribute(childElements[i], "name", null);
+			result[i] = getAttribute(childElements[i], "name", null); //$NON-NLS-1$
 		return result;
 	}
 }
