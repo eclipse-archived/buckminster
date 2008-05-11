@@ -18,7 +18,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.buckminster.rssowl";
+	public static final String PLUGIN_ID = "org.eclipse.buckminster.rssowl"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator s_instance;
@@ -36,14 +36,11 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 * Synchronizes bookmarks in RSS OWL with the current state of the workspace.
 	 * 
 	 */
-	@SuppressWarnings("restriction")
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
 		super.start(context);
 		s_instance = this;
-		// org.rssowl.ui.internal.Activator.getDefault();
-		// make sure RSS OWL bookmarks and feeds are synchronized
 		Job syncJob = new OwlSyncJob();
 		syncJob.schedule(1000L);
 		

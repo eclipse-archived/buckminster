@@ -157,7 +157,7 @@ public class OwlSynchronizer
 		IFolder componentsFolder = null;
 		for(IFolder f : rootFolders)
 		{
-			if("Components".equals(f.getName()) && blogroll.equals(f.getBlogrollLink()))
+			if("Components".equals(f.getName()) && blogroll.equals(f.getBlogrollLink())) //$NON-NLS-1$
 			{
 				// found it
 				componentsFolder = f;
@@ -168,7 +168,7 @@ public class OwlSynchronizer
 		{
 			// Create the components root folder.
 			// Set a fake blogroll to make it special
-		    componentsFolder = Owl.getModelFactory().createFolder(null, null, "Components");
+		    componentsFolder = Owl.getModelFactory().createFolder(null, null, "Components"); //$NON-NLS-1$
 		    componentsFolder.setBlogrollLink(blogroll);
 		    folderDAO.save(componentsFolder);
 		    // Return the newly created folder state
@@ -188,7 +188,7 @@ public class OwlSynchronizer
 	private static synchronized URI getComponentBlogroll()
 	{
 		if(s_componentBlogroll == null)
-			s_componentBlogroll = URIUtils.createURI("http://org.eclipse.buckminster.rssowl/Components");
+			s_componentBlogroll = URIUtils.createURI("http://org.eclipse.buckminster.rssowl/Components"); //$NON-NLS-1$
 		return s_componentBlogroll; 
 			
 	}

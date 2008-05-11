@@ -58,14 +58,6 @@ public class OwlSyncJob extends Job
 							}
 							
 						});
-//						InternalOwl.getDefault().startup(new LongOperationMonitor(monitor)
-//						{
-//							@Override
-//							public void beginLongOperation()
-//							{
-//							}
-//
-//						});
 					}
 				});
 			}
