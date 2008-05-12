@@ -72,7 +72,6 @@
     <archive path="plugins/org.eclipse.debug.ui_3.4.0.v20080430-1630.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.debug.ui_3.4.0.v20080430-1630.jar"/>
     <archive path="plugins/org.eclipse.ecf.filetransfer_2.0.0.v20080428-0800.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.ecf.filetransfer_2.0.0.v20080428-0800.jar"/>
     <archive path="plugins/org.eclipse.ecf.identity_2.0.0.v20080428-0800.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.ecf.identity_2.0.0.v20080428-0800.jar"/>
-    <archive path="plugins/org.eclipse.ecf.provider.filetransfer.httpclient_2.0.0.v20080406-1615.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.ecf.provider.filetransfer.httpclient_2.0.0.v20080406-1615.jar"/>
     <archive path="plugins/org.eclipse.ecf.provider.filetransfer.ssl_1.0.0.v20080428-0800.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.ecf.provider.filetransfer.ssl_1.0.0.v20080428-0800.jar"/>
     <archive path="plugins/org.eclipse.ecf.provider.filetransfer_2.0.0.v20080428-0800.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.ecf.provider.filetransfer_2.0.0.v20080428-0800.jar"/>
     <archive path="plugins/org.eclipse.ecf.ssl_1.0.0.v20080428-0800.jar" url="http://update.eclipse.org/updates/3.4/plugins/org.eclipse.ecf.ssl_1.0.0.v20080428-0800.jar"/>
