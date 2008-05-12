@@ -132,7 +132,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.ecf.filetransfer"/>
       <import plugin="org.eclipse.ecf.identity"/>
       <import plugin="org.eclipse.ecf.provider.filetransfer"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient"/>
       <import plugin="org.eclipse.buckminster.download"/>
    </requires>
 
