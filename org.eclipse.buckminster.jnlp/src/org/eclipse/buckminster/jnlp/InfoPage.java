@@ -40,7 +40,7 @@ public class InfoPage extends InstallWizardPage
 {
 	private static final int VERTICAL_SPACING = 10;
 
-	private static final int HORIZONTAL_INDENT = 50;
+	private static final int HORIZONTAL_INDENT = 20;
 
 	private static final String[] OPML_FILTER_NAMES = {"OPML (*.opml)"};
 
@@ -50,6 +50,8 @@ public class InfoPage extends InstallWizardPage
 
 	private static final String ICON_LOCAL_FOLDER = "workset_wiz.png";
 
+	private Label m_heading;
+	
 	private Link m_openHTML;
 	
 	private String m_infoPageURL;
@@ -69,14 +71,18 @@ public class InfoPage extends InstallWizardPage
 		GridLayout layout = new GridLayout(2, false);
 		layout.verticalSpacing = VERTICAL_SPACING;
 		pageComposite.setLayout(layout);
-
-		Label label = new Label(pageComposite, SWT.NONE);
-		label.setText("Learn:");
 		GridData layoutData = new GridData();
+		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		m_heading = new Label(pageComposite, SWT.WRAP);
+		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
-		label.setLayoutData(layoutData);
-
-		label = new Label(pageComposite, SWT.NONE);
+		m_heading.setLayoutData(layoutData);
+		
+		new Label(pageComposite, SWT.NONE);
+		new Label(pageComposite, SWT.NONE);
+		
+		Label label = new Label(pageComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_LEARN));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
@@ -84,7 +90,7 @@ public class InfoPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		m_openHTML = new Link(pageComposite, SWT.NONE);
-		m_openHTML.setText("<a>View distro information</a>");
+		m_openHTML.setText("<a>Open additional material as a HTML file</a>");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		m_openHTML.setLayoutData(layoutData);
@@ -104,12 +110,6 @@ public class InfoPage extends InstallWizardPage
 		new Label(pageComposite, SWT.NONE);
 
 		label = new Label(pageComposite, SWT.NONE);
-		label.setText("Save:");
-		layoutData = new GridData();
-		layoutData.horizontalSpan = 2;
-		label.setLayoutData(layoutData);
-
-		label = new Label(pageComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_LOCAL_FOLDER));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
@@ -117,7 +117,7 @@ public class InfoPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		m_saveOPML = new Link(pageComposite, SWT.NONE);
-		m_saveOPML.setText("<a>Save distro information</a>");
+		m_saveOPML.setText("<a>Save additional material as an OPML file</a>");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		m_saveOPML.setLayoutData(layoutData);
@@ -172,6 +172,14 @@ public class InfoPage extends InstallWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
+		m_heading.setText(
+				"Links to additional material was available in the materialized distro. This material can be read by the recommended tools in Eclipse," +
+				" but is also available as a HTML file and as an OPML file that some browsers and RSS readers can process directly.");
+		GridData layoutData = (GridData)m_heading.getLayoutData();
+		layoutData.widthHint = m_heading.getShell().getSize().x - 25;
+		m_heading.getParent().layout();
+		
 		m_infoPageURL = getInstallWizard().getComponentInfoPageURL();
 		m_openHTML.setEnabled(m_infoPageURL != null);
 	}
