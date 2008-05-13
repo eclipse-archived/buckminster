@@ -59,7 +59,9 @@ public class ComponentOutlineView extends ComponentBrowserView
 			IEditorInput input = ((EditorPart)part).getEditorInput();
 			IResource resource = (IResource)input.getAdapter(IResource.class);
 			if(resource != null)
-				r = (Resolution)resource.getAdapter(Resolution.class);			
+				r = (Resolution)resource.getAdapter(Resolution.class);
+			else
+				return; // i.e. if editor is not for a resource, stay on the same component
 		}
 		else
 		{
