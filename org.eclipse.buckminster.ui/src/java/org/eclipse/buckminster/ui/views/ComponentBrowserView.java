@@ -163,9 +163,9 @@ public class ComponentBrowserView extends ViewPart
 
 	private void makeActions()
 	{
-		m_viewInBrowser = new ViewInBrowserAction(m_viewer, true, "content", false);
-		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, "content", false);
-		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, "feed", true);
+		m_viewInBrowser = new ViewInBrowserAction(m_viewer, true, "Content", false);
+		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, "Content", false);
+		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, "Feed", true);
 		
 		m_refreshAction = new Action()
 		{
