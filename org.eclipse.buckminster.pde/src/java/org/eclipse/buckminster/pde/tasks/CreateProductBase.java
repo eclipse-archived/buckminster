@@ -488,7 +488,7 @@ public class CreateProductBase
 	private File getCustomIniFile()
 	{
 		IConfigurationFileInfo info = m_product.getConfigurationFileInfo();
-		if(info != null && info.getUse(m_os).equals("custom"))
+		if(info != null && "custom".equals(info.getUse(m_os)))
 		{
 			String path = getExpandedPath(info.getPath(m_os));
 			if(path != null)
