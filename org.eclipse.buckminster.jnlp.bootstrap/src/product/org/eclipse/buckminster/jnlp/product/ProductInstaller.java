@@ -42,6 +42,8 @@ public class ProductInstaller implements IProductInstaller
 {
 	private static final String INSTALL_FOLDER = "installer";
 	
+	private static final String PACK_PROPERTIES_FILE = "pack.properties";
+	
 	private static final String INSTALL_DONE_FOLDER = "installation.completed";
 	
 	private static final String PACK_SUFFIX = ".pack.gz";
@@ -184,10 +186,15 @@ public class ProductInstaller implements IProductInstaller
 			File installLocation = m_main.getInstallLocation();
 			ZipInputStream zipInput = new ZipInputStream(new ByteArrayInputStream(productBytes));
 			ZipEntry zipEntry;
-			
+
+zipEntryCycle:			
 			while((zipEntry = zipInput.getNextEntry()) != null)
 			{
 				monitor.checkCanceled();				
+				
+				for(String skipFile : getSkipFiles())
+					if(zipEntry.getName().equals(skipFile))
+						continue zipEntryCycle;
 				
 				boolean folderOK = false;
 				for(String folder : getInstallFolders())
@@ -486,6 +493,11 @@ public class ProductInstaller implements IProductInstaller
 		return new String[]{INSTALL_FOLDER};
 	}
 
+	private String[] getSkipFiles()
+	{
+		return new String[]{PACK_PROPERTIES_FILE};
+	}
+	
 	public boolean isInstalled(File installLocation) throws JNLPException 
 	{
 		File appFolder = new File(installLocation, getApplicationFolder());
