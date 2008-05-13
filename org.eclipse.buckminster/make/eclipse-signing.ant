@@ -39,14 +39,21 @@
 		<unzip dest="${zip.temp}" src="${input.file}"/>
 
 		<path id="sign.excludes">
-			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar"/>
+			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse*.jar" excludes="**/org.eclipse.buckminster.*,**/org.eclipse.slf4j.*"/>
 		</path>
 		<pathconvert property="sign.excludes" pathsep="," dirsep="/" refid="sign.excludes">
 			<globmapper from="${zip.temp}/" to="" handledirsep="true"/>
 		</pathconvert>
 
+		<path id="pack.excludes">
+			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse.jdt.compiler*.jar"/>
+		</path>
+		<pathconvert property="pack.excludes" pathsep="," dirsep="/" refid="pack.excludes">
+			<globmapper from="${zip.temp}/" to="" handledirsep="true"/>
+		</pathconvert>
+
 		<echo message="sign.excludes=${sign.excludes}${line.separator}" file="${zip.temp}/pack.properties"/>
-		<echo message="pack.excludes=${sign.excludes}" file="${zip.temp}/pack.properties" append="true"/>
+		<echo message="pack.excludes=${pack.excludes}" file="${zip.temp}/pack.properties" append="true"/>
 
 		<zip destfile="${short.file.name}" basedir="${zip.temp}"/>
 		<eclipse.jarProcessor verbose="${verbose}" normalize="true" jar="${short.file.name}"/>
