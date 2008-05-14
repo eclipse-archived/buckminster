@@ -462,13 +462,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
          unpack="false"/>
 
    <plugin
-         id="com.ibm.icu.base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.buckminster.jdt"
          download-size="0"
          install-size="0"
@@ -657,6 +650,26 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.eclipse.ecf.provider.filetransfer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.equinox.security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.opml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.ibm.icu.base"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
