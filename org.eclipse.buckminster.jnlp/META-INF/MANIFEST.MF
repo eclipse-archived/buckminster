@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.net,
  org.apache.commons.httpclient,
  org.apache.commons.codec,
- org.eclipse.buckminster.opml;bundle-version="1.0.0"
+ org.eclipse.buckminster.opml;bundle-version="1.0.0",
+ com.ibm.icu.base;bundle-version="3.8.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.buckminster.jnlp.accountservice,
  org.eclipse.buckminster.jnlp.componentinfo,
