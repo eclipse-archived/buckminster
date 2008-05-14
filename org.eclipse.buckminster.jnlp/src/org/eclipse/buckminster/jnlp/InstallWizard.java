@@ -38,7 +38,6 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HOME_PA
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_KEY;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_MATERIALIZATION_IMAGE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SERVICE_PROVIDER;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SPACE_NAME;
