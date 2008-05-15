@@ -1,10 +1,10 @@
-/*******************************************************************
+/*****************************************************************************
  * Copyright (c) 2006-2007, Cloudsmith Inc.
- * The code, documentation and other materials contained herein
- * are the sole and exclusive property of Cloudsmith Inc. and may
- * not be disclosed, used, modified, copied or distributed without
- * prior written consent or license from Cloudsmith Inc.
- ******************************************************************/
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.remote.cloudsmith.componentinfo;
 
@@ -82,6 +82,8 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 
 	public static final String JPG_FILE_EXTENSION = "jpg";
 
+	public static final String PROP_PROVIDER_LOGO_URL = "providerLogo";
+	
 	public static final String PROP_PROFILE_IMAGE_ID = "profileImageID";
 
 	public static final String PROP_PROFILE_IMAGE_URL = "profileImageURL";
@@ -266,6 +268,9 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		if(!new File(imgDestDir, IMG_RSS).exists())
 			FileUtils.copyFile(getResource(IPath.SEPARATOR + IMG_FOLDER + IPath.SEPARATOR + IMG_RSS), imgDestDir,
 					IMG_RSS, m_nullMonitor);
+		if(!new File(imgDestDir, IMG_LOGO).exists())
+			FileUtils.copyFile(new URL(m_properties.get(PROP_PROVIDER_LOGO_URL)).openStream(), imgDestDir,
+					IMG_LOGO, m_nullMonitor);
 		if(profileImgName != null)
 			if(!new File(imgDestDir, profileImgName).exists())
 				FileUtils.copyFile(new URL(m_properties.get(PROP_PROFILE_IMAGE_URL)).openStream(), imgDestDir,
