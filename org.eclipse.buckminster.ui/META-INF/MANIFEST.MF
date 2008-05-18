@@ -11,6 +11,7 @@ Export-Package: org.eclipse.buckminster.ui,
  org.eclipse.buckminster.ui.editor,
  org.eclipse.buckminster.ui.editor.rmap,
  org.eclipse.buckminster.ui.prefs,
+ org.eclipse.buckminster.ui.providers,
  org.eclipse.buckminster.ui.wizards
 Require-Bundle: org.eclipse.ui;bundle-version="3.3.0",
  org.eclipse.ui.ide;bundle-version="3.3.0",
