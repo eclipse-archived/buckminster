@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.parser.OPMLParser;
-import org.eclipse.buckminster.sax.Utils;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.parser.OPMLParser;
+import org.eclipse.buckminster.sax.Utils;
 
 /**
  * @author Thomas Hallgren
@@ -51,7 +51,7 @@ public class TestOPMLParser extends TestCase
 		Utils.serialize(parseURL("http://hosting.opml.org/dave/spec/category.opml", parser), out);
 	}
 
-	public static OPML parseURL(String urlString, OPMLParser parser) throws Exception
+	public static IOPML parseURL(String urlString, OPMLParser parser) throws Exception
 	{
 		URL url = new URL(urlString);
 		InputStream input = null;
