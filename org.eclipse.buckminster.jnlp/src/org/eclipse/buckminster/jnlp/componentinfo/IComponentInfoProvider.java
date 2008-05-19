@@ -10,7 +10,7 @@ package org.eclipse.buckminster.jnlp.componentinfo;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.opml.IOPML;
 
 /**
  * Provides further component information
@@ -27,5 +27,5 @@ public interface IComponentInfoProvider
 	 * @param destination 	destination folder
 	 * @return				URL string to component info HTML page
 	 */
-	String prepareHTML(Map<String,String> properties, OPML opml, String destination) throws Exception;
+	String prepareHTML(Map<String,String> properties, IOPML opml, String destination) throws Exception;
 }
