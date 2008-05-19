@@ -5,9 +5,9 @@ package org.eclipse.buckminster.rssowl;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.utils.ProgressUtils;
-import org.eclipse.buckminster.opml.model.Body;
+import org.eclipse.buckminster.opml.IBody;
+import org.eclipse.buckminster.opml.IOutline;
 import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -109,22 +109,23 @@ public class OwlSynchronizer
 	/**
 	 * Synchronize the resolution and the folder. The resolution must have opml with
 	 * at least one outline in the body.
-	 * @param r
+	 * @param list
 	 * @param componentFolder
 	 */
-	private static void sync(Resolution r, FolderState componentFolder)
+	private static void sync(Resolution resolution, FolderState componentFolder)
 	{
-		OPML opml = r.getOPML();
-		Body body = opml.getBody();
+		OPML opml = resolution.getOPML();
+		IBody body = opml.getBody();
 		if(body == null)
 			return; // empty OPML
 		sync(body.getOutlines(), componentFolder);
 	}
-	private static void sync(List<Outline> outlines, FolderState folder)
+	
+	private static void sync(List<? extends IOutline> outlines, FolderState folder)
 	{
 		if(outlines == null)
 			return;
-		for(Outline outline : outlines)
+		for(IOutline outline : outlines)
 		{
 			// An outline is just a link if it has an url property and such outlines are ignored
 			// as rssowl only handles feeds.
@@ -298,7 +299,7 @@ public class OwlSynchronizer
 		{
 			return m_keep;
 		}
-		public void createMark(Outline outline)
+		public void createMark(IOutline outline)
 		{			
 			if(outline.getXmlUrl() != null)
 			{
