@@ -11,6 +11,8 @@ package org.eclipse.buckminster.opml.model;
 import java.net.URI;
 import java.util.Date;
 
+import org.eclipse.buckminster.opml.IOutline;
+import org.eclipse.buckminster.opml.OutlineType;
 import org.eclipse.buckminster.opml.builder.OutlineBuilder;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
@@ -20,7 +22,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  *
  */
-public class Outline extends Body
+public class Outline extends Body implements IOutline
 {
 	@SuppressWarnings("hiding")
 	public static final String TAG = "outline";
@@ -66,26 +68,8 @@ public class Outline extends Body
 		m_language = outline.getLanguage();
 		m_text = outline.getText();
 		m_title = outline.getTitle();
+		m_type = outline.getType();
 		m_typeString = outline.getTypeString();
-		
-		OutlineType type;
-		if(m_typeString == null)
-			type = OutlineType.TEXT;
-		else
-		{
-			String tmp = m_typeString.toUpperCase();
-			try
-			{
-				if("TEXT/X-OPML".equals(tmp))
-					tmp = "OPML";
-				type = OutlineType.valueOf(tmp);
-			}
-			catch(IllegalArgumentException e)
-			{
-				type = OutlineType.UNKNOWN;
-			}
-		}
-		m_type = type;
 		m_url = outline.getUrl();
 		m_version = outline.getVersion();
 		m_xmlUrl = outline.getXmlUrl();

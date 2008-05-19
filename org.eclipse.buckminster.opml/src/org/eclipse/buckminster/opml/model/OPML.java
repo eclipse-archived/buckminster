@@ -8,7 +8,10 @@
 
 package org.eclipse.buckminster.opml.model;
 
-import org.eclipse.buckminster.sax.ISaxable;
+import org.eclipse.buckminster.opml.IBody;
+import org.eclipse.buckminster.opml.IHead;
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
@@ -19,7 +22,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  *
  */
-public class OPML extends UUIDKeyed implements ISaxable
+public class OPML extends UUIDKeyed implements IOPML
 {
 	public static final String OPML_NAMESPACE = "http://opml.org/spec2";
 	public static final String OPML_PREFIX = "opml";
@@ -34,14 +37,27 @@ public class OPML extends UUIDKeyed implements ISaxable
 	private final Head m_head;
 	private final String m_version;
 
-	public OPML(String version, Head head, Body body)
+	public OPML(OPMLBuilder builder)
 	{
-		m_version = version;
-		m_head = head;
-		m_body = body;
+		m_version = builder.getVersion();
+		m_head = new Head(builder.getHeadBuilder());
+		m_body = new Body(builder.getBodyBuilder());
 	}
 
-	public Body getBody()
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isAssignableFrom(OPMLBuilder.class))
+		{
+			OPMLBuilder bld = new OPMLBuilder();
+			bld.initFrom(this);
+			return bld;
+		}
+		return super.getAdapter(adapter);
+	}
+
+	public IBody getBody()
 	{
 		return m_body;
 	}
@@ -51,7 +67,7 @@ public class OPML extends UUIDKeyed implements ISaxable
 		return TAG;
 	}
 
-	public Head getHead()
+	public IHead getHead()
 	{
 		return m_head;
 	}

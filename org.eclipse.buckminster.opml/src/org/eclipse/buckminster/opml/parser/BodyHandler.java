@@ -12,7 +12,6 @@ import org.eclipse.buckminster.opml.model.Body;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
-import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -21,26 +20,23 @@ import org.xml.sax.SAXException;
  *
  * @author Thomas Hallgren
  */
-class BodyHandler extends ElementHandler implements ChildPoppedListener
+class BodyHandler extends ElementHandler
 {
 	public static final String TAG = Body.TAG;
 
-	private OutlineHandler m_outlineHandler;
+	private final BodyBuilder m_bodyBuilder;
 
-	private BodyBuilder m_bodyBuilder;
-
-	BodyHandler(AbstractHandler parent)
+	BodyHandler(AbstractHandler parent, BodyBuilder body)
 	{
 		super(parent);
+		m_bodyBuilder = body;
 	}
 
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		if(m_bodyBuilder == null)
-			m_bodyBuilder = createBodyBuilder();
-		else
-			m_bodyBuilder.clear();
+		super.handleAttributes(attrs);
+		m_bodyBuilder.clear();
 	}
 
 	@Override
@@ -49,34 +45,14 @@ class BodyHandler extends ElementHandler implements ChildPoppedListener
 	{
 		ChildHandler ch;
 		if(Outline.TAG.equals(localName))
-		{
-			if(m_outlineHandler == null)
-				 m_outlineHandler = new OutlineHandler(this);
-			ch = m_outlineHandler;
-		}
+			ch = new OutlineHandler(this, m_bodyBuilder.addOutline());
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_outlineHandler)
-			m_bodyBuilder.addOutline((Outline)m_outlineHandler.getBody());
-	}
-
-	public Body getBody()
-	{
-		return new Body(m_bodyBuilder);
 	}
 	
 	protected BodyBuilder getBodyBuilder()
 	{
 		return m_bodyBuilder;
-	}
-	
-	protected BodyBuilder createBodyBuilder()
-	{
-		return new BodyBuilder();
 	}
 }

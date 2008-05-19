@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.opml.model;
+package org.eclipse.buckminster.opml;
 
 /**
  * @author Thomas Hallgren

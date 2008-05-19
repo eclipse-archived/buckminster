@@ -32,7 +32,7 @@ class HeadHandler extends ChildHandler
 {
 	public static final String TAG = Head.TAG;
 
-	private final HeadBuilder m_headBuilder = new HeadBuilder();
+	private final HeadBuilder m_head;
 	private final StringHandler m_stringHandler = new StringHandler();
 
 	class StringHandler extends StringElementHandler
@@ -51,31 +51,31 @@ class HeadHandler extends ChildHandler
 				: localName;
 
 			if(Head.ELEM_DATE_CREATED.equals(name))
-				m_headBuilder.setDateCreated(getDate(name));
+				m_head.setDateCreated(getDate(name));
 			else if(Head.ELEM_DATE_MODIFIED.equals(name))
-				m_headBuilder.setDateModified(getDate(name));
+				m_head.setDateModified(getDate(name));
 			else if(Head.ELEM_DOCS.equals(name))
-				m_headBuilder.setDocs(getURI(name));
+				m_head.setDocs(getURI(name));
 			else if(Head.ELEM_EXPANSION_STATE.equals(name))
-				m_headBuilder.setExpansionState(getIntList(name));
+				m_head.setExpansionState(getIntList(name));
 			else if(Head.ELEM_OWNER_EMAIL.equals(name))
-				m_headBuilder.setOwnerEmail(getString());
+				m_head.setOwnerEmail(getString());
 			else if(Head.ELEM_OWNER_ID.equals(name))
-				m_headBuilder.setOwnerId(getURI(name));
+				m_head.setOwnerId(getURI(name));
 			else if(Head.ELEM_OWNER_NAME.equals(name))
-				m_headBuilder.setOwnerName(getString());
+				m_head.setOwnerName(getString());
 			else if(Head.ELEM_TITLE.equals(name))
-				m_headBuilder.setTitle(getString());
+				m_head.setTitle(getString());
 			else if(Head.ELEM_VERT_SCROLL_STATE.equals(name))
-				m_headBuilder.setVertScrollState(getInt(name));
+				m_head.setVertScrollState(getInt(name));
 			else if(Head.ELEM_WINDOW_BOTTOM.equals(name))
-				m_headBuilder.setWindowBottom(getInt(name));
+				m_head.setWindowBottom(getInt(name));
 			else if(Head.ELEM_WINDOW_LEFT.equals(name))
-				m_headBuilder.setWindowLeft(getInt(name));
+				m_head.setWindowLeft(getInt(name));
 			else if(Head.ELEM_WINDOW_RIGHT.equals(name))
-				m_headBuilder.setWindowRight(getInt(name));
+				m_head.setWindowRight(getInt(name));
 			else if(Head.ELEM_WINDOW_TOP.equals(name))
-				m_headBuilder.setWindowTop(getInt(name));
+				m_head.setWindowTop(getInt(name));
 
 			// According to the spec, elements that are not recognized should
 			// be ignored.
@@ -143,9 +143,10 @@ class HeadHandler extends ChildHandler
 		}
 	}
 
-	HeadHandler(AbstractHandler parent)
+	HeadHandler(AbstractHandler parent, HeadBuilder head)
 	{
 		super(parent);
+		m_head = head;
 	}
 
 	@Override
@@ -153,16 +154,5 @@ class HeadHandler extends ChildHandler
 	throws SAXException
 	{
 		return m_stringHandler;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_headBuilder.clear();
-	}
-
-	public Head getHead()
-	{
-		return new Head(m_headBuilder);
 	}
 }

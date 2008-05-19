@@ -11,45 +11,42 @@ package org.eclipse.buckminster.opml.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.buckminster.opml.model.Body;
-import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.buckminster.opml.IBody;
+import org.eclipse.buckminster.opml.IOutline;
 
 /**
  * @author Thomas Hallgren
  */
-public class BodyBuilder
+public class BodyBuilder implements IBody
 {
-	private List<Outline> m_outlines;
+	private ArrayList<OutlineBuilder> m_outlines = new ArrayList<OutlineBuilder>();
 
 	public void clear()
 	{
-		if(m_outlines != null)
-			m_outlines.clear();
+		m_outlines.clear();
 	}
 
-	public void addOutline(Outline outline)
+	public OutlineBuilder addOutline()
 	{
-		if(m_outlines == null)
-			m_outlines = new ArrayList<Outline>();
-		m_outlines.add(outline);
+		OutlineBuilder outlineBuilder = new OutlineBuilder();
+		m_outlines.add(outlineBuilder);
+		return outlineBuilder;
 	}
 
-	public List<Outline> getOutlines()
+	public List<? extends IOutline> getOutlines()
 	{
 		return m_outlines;
 	}
 
-	public void initFrom(Body body)
+	public List<OutlineBuilder> getOutlineBuilders()
+	{
+		return m_outlines;
+	}
+
+	public void initFrom(IBody body)
 	{
 		clear();
-		List<Outline> outlines = body.getOutlines();
-		int top = outlines.size();
-		if(top > 0)
-		{
-			if(m_outlines == null)
-				m_outlines = new ArrayList<Outline>(outlines);
-			else
-				m_outlines.addAll(outlines);
-		}
+		for(IOutline outline : body.getOutlines())
+			addOutline().initFrom(outline);
 	}
 }

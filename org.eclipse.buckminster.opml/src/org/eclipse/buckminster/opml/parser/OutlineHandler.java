@@ -7,9 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.opml.parser;
 
-import org.eclipse.buckminster.opml.builder.BodyBuilder;
 import org.eclipse.buckminster.opml.builder.OutlineBuilder;
-import org.eclipse.buckminster.opml.model.Body;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
@@ -25,9 +23,9 @@ class OutlineHandler extends BodyHandler
 	@SuppressWarnings("hiding")
 	public static final String TAG = Outline.TAG;
 
-	OutlineHandler(AbstractHandler parent)
+	OutlineHandler(AbstractHandler parent, OutlineBuilder builder)
 	{
-		super(parent);
+		super(parent, builder);
 	}
 
 	@Override
@@ -49,17 +47,5 @@ class OutlineHandler extends BodyHandler
 		bld.setUrl(getOptionalURI(attrs, Outline.ATTR_URL));		
 		bld.setVersion(getOptionalStringValue(attrs, Outline.ATTR_VERSION));		
 		bld.setXmlUrl(getOptionalURI(attrs, Outline.ATTR_XML_URL));		
-	}
-
-	@Override
-	public Body getBody()
-	{
-		return new Outline((OutlineBuilder)getBodyBuilder());
-	}
-
-	@Override
-	protected BodyBuilder createBodyBuilder()
-	{
-		return new OutlineBuilder();
 	}
 }

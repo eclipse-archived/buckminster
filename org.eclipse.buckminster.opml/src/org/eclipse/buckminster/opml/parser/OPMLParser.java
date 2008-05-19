@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -34,7 +35,7 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 {
 	private final URL m_schemaURL;
 
-	private OPML m_opml;
+	private OPMLBuilder m_opml;
 
 	public OPMLParser(boolean validating) throws SAXException
 	{
@@ -83,7 +84,7 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 		{
 			getXMLReader().setContentHandler(this);
 		}
-		return m_opml;
+		return new OPML(m_opml);
 	}
 
 	@Override

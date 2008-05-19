@@ -7,12 +7,12 @@
  *****************************************************************************/
 package org.eclipse.buckminster.opml.parser;
 
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.Body;
 import org.eclipse.buckminster.opml.model.Head;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
-import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -21,16 +21,13 @@ import org.xml.sax.SAXException;
  *
  * @author Thomas Hallgren
  */
-public class OPMLHandler extends ElementHandler implements ChildPoppedListener
+public class OPMLHandler extends ElementHandler
 {
 	public static final String TAG = OPML.TAG;
 
-	private final HeadHandler m_headHandler = new HeadHandler(this);
-	private final BodyHandler m_bodyHandler = new BodyHandler(this);
-
-	private String m_version;
-	private Head m_head;
-	private Body m_body;
+	private final OPMLBuilder m_opml = new OPMLBuilder();
+	private final HeadHandler m_headHandler = new HeadHandler(this, m_opml.getHeadBuilder());
+	private final BodyHandler m_bodyHandler = new BodyHandler(this, m_opml.getBodyBuilder());
 
 	public OPMLHandler(AbstractHandler parent)
 	{
@@ -40,14 +37,13 @@ public class OPMLHandler extends ElementHandler implements ChildPoppedListener
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_version = getStringValue(attrs, OPML.ATTR_VERSION);
-		m_head = null;
-		m_body = null;
+		m_opml.clear();
+		m_opml.setVersion(getStringValue(attrs, OPML.ATTR_VERSION));
 	}
 
-	public OPML getOPML()
+	public OPMLBuilder getOPML()
 	{
-		return new OPML(m_version, m_head, m_body);
+		return m_opml;
 	}
 
 	@Override
@@ -62,13 +58,5 @@ public class OPMLHandler extends ElementHandler implements ChildPoppedListener
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_bodyHandler)
-			m_body = m_bodyHandler.getBody();
-		else if(child == m_headHandler)
-			m_head = m_headHandler.getHead();
 	}
 }

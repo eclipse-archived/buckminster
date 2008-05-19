@@ -8,9 +8,14 @@
 
 package org.eclipse.buckminster.opml.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.buckminster.opml.IBody;
+import org.eclipse.buckminster.opml.IOutline;
 import org.eclipse.buckminster.opml.builder.BodyBuilder;
+import org.eclipse.buckminster.opml.builder.OutlineBuilder;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
@@ -19,7 +24,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class Body extends AbstractSaxableElement
+public class Body extends AbstractSaxableElement implements IBody
 {
 	public static final String TAG = "body";
 
@@ -27,7 +32,17 @@ public class Body extends AbstractSaxableElement
 
 	public Body(BodyBuilder bodyBuilder)
 	{
-		m_outlines = Utils.createUnmodifiableList(bodyBuilder.getOutlines());
+		List<OutlineBuilder> outlineBuilders = bodyBuilder.getOutlineBuilders();
+		int top = outlineBuilders.size();
+		if(top == 0)
+			m_outlines = Collections.emptyList();
+		else
+		{
+			List<Outline> outlines = new ArrayList<Outline>(top);
+			for(OutlineBuilder outlineBuilder : outlineBuilders)
+				outlines.add(new Outline(outlineBuilder));
+			m_outlines = Utils.createUnmodifiableList(outlines);
+		}
 	}
 
 	public String getDefaultTag()
@@ -35,7 +50,7 @@ public class Body extends AbstractSaxableElement
 		return TAG;
 	}
 
-	public List<Outline> getOutlines()
+	public List<? extends IOutline> getOutlines()
 	{
 		return m_outlines;
 	}

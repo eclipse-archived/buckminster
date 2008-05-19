@@ -11,13 +11,13 @@ package org.eclipse.buckminster.opml.builder;
 import java.net.URI;
 import java.util.Date;
 
-import org.eclipse.buckminster.opml.model.Head;
+import org.eclipse.buckminster.opml.IHead;
 
 /**
  * @author Thomas Hallgren
  * 
  */
-public class HeadBuilder
+public class HeadBuilder implements IHead
 {
 	private Date m_dateCreated;
 
@@ -127,7 +127,7 @@ public class HeadBuilder
 		return m_windowTop;
 	}
 
-	public void initFrom(Head head)
+	public void initFrom(IHead head)
 	{
 		m_dateCreated = head.getDateCreated();
 		m_docs = head.getDocs();

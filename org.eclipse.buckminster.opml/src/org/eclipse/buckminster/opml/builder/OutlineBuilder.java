@@ -11,13 +11,14 @@ package org.eclipse.buckminster.opml.builder;
 import java.net.URI;
 import java.util.Date;
 
-import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.buckminster.opml.IOutline;
+import org.eclipse.buckminster.opml.OutlineType;
 
 /**
  * @author Thomas Hallgren
  * 
  */
-public class OutlineBuilder extends BodyBuilder
+public class OutlineBuilder extends BodyBuilder implements IOutline
 {
 	private boolean m_breakpoint;
 
@@ -99,6 +100,28 @@ public class OutlineBuilder extends BodyBuilder
 		return m_title;
 	}
 
+	public OutlineType getType()
+	{
+		OutlineType type;
+		if(m_typeString == null)
+			type = OutlineType.TEXT;
+		else
+		{
+			String tmp = m_typeString.toUpperCase();
+			try
+			{
+				if("TEXT/X-OPML".equals(tmp))
+					tmp = "OPML";
+				type = OutlineType.valueOf(tmp);
+			}
+			catch(IllegalArgumentException e)
+			{
+				type = OutlineType.UNKNOWN;
+			}
+		}
+		return type;
+	}
+
 	public String getTypeString()
 	{
 		return m_typeString;
@@ -119,7 +142,7 @@ public class OutlineBuilder extends BodyBuilder
 		return m_xmlUrl;
 	}
 
-	public void initFrom(Outline outline)
+	public void initFrom(IOutline outline)
 	{
 		super.initFrom(outline);
 		m_breakpoint = outline.isBreakpoint();

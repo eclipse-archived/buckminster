@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.eclipse.buckminster.opml.IHead;
 import org.eclipse.buckminster.opml.builder.HeadBuilder;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -23,7 +24,7 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  *
  */
-public class Head extends AbstractSaxableElement
+public class Head extends AbstractSaxableElement implements IHead
 {
 	public static final String ELEM_DATE_CREATED = "dateCreated";
 	public static final String ELEM_DATE_MODIFIED = "dateModified";
