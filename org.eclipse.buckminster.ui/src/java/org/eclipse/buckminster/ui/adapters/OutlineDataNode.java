@@ -8,21 +8,17 @@
 
 package org.eclipse.buckminster.ui.adapters;
 
-import java.util.List;
-
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
-import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.buckminster.opml.IOutline;
 
 public class OutlineDataNode extends BasicTreeParentDataNode
 {
 
-	public OutlineDataNode(Outline data)
+	public OutlineDataNode(IOutline data)
 	{
 		super(data);
-		List<Outline> outlines = data.getOutlines();
-		if(outlines != null)
-			for(Outline outline : outlines)
-				addChild(new OutlineDataNode(outline));
+		for(IOutline outline : data.getOutlines())
+			addChild(new OutlineDataNode(outline));
 	}
 	
 }

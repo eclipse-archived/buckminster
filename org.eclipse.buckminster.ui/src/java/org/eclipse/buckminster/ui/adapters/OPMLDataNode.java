@@ -9,18 +9,18 @@
 package org.eclipse.buckminster.ui.adapters;
 
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
-import org.eclipse.buckminster.opml.model.Body;
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.buckminster.opml.IBody;
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.IOutline;
 
 public class OPMLDataNode extends BasicTreeParentDataNode
 {
 
-	public OPMLDataNode(OPML data)
+	public OPMLDataNode(IOPML data)
 	{
 		super(data == null ? "no opml" : data);
-		Body body = data.getBody();
-		for(Outline outline : body.getOutlines())
+		IBody body = data.getBody();
+		for(IOutline outline : body.getOutlines())
 		{
 			addChild(new OutlineDataNode(outline));
 		}

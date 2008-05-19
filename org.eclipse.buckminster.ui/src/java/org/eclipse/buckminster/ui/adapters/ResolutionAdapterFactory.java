@@ -30,7 +30,7 @@ public class ResolutionAdapterFactory implements IAdapterFactory
 			return new ResolutionDataNode((Resolution)adaptableObject);
 		
 		if(adaptableObject instanceof ResolutionDataNode && adapterType.isAssignableFrom(Resolution.class))
-			return (Resolution)((ResolutionDataNode)adaptableObject).getData();
+			return ((ResolutionDataNode)adaptableObject).getData();
 					
 		// give up
 		return null;

@@ -10,25 +10,23 @@ package org.eclipse.buckminster.ui.providers;
 
 import java.util.List;
 
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.model.Outline;
-import org.eclipse.buckminster.opml.model.OutlineType;
-import org.eclipse.buckminster.ui.UiPlugin;
-import org.eclipse.buckminster.ui.adapters.ComponentReference;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.ui.utils.UiUtils;
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.IOutline;
+import org.eclipse.buckminster.opml.OutlineType;
+import org.eclipse.buckminster.ui.UiPlugin;
+import org.eclipse.buckminster.ui.adapters.ComponentReference;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -141,27 +139,26 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			return getComponentImage();
 		
 		// OPML stuff
-		if(element instanceof OPML)
+		if(element instanceof IOPML)
 			return getFolderImage();
 		
-		if(element instanceof Outline)
+		if(element instanceof IOutline)
 		{
 			// An outline that has sub-outlines is shown as a folder
 			//
-			List<Outline> outlines = ((Outline)element).getOutlines();
+			List<? extends IOutline> outlines = ((IOutline)element).getOutlines();
 			if(outlines != null && outlines.size() > 0)
 				return getFolderImage();
 			// An outline that is a link is shown as a browseable image
-			if(((Outline)element).getType() == OutlineType.LINK)
+			if(((IOutline)element).getType() == OutlineType.LINK)
 				return getHtmlImage();
 			return getRssImage();
 		}
 		if(element instanceof ComponentReference)
-			if(((ComponentReference)element).getMode() == ComponentReference.Mode.IN)
-				return getDependantImage();
-			else
-				return getDependencyImage();
-			
+			return ((ComponentReference)element).getMode() == ComponentReference.Mode.IN
+				? getDependantImage()
+				: getDependencyImage();
+
 		// Parents default to Folder
 		if(selected instanceof BasicTreeParentDataNode)
 			return getFolderImage();
@@ -249,13 +246,13 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		{
 			return new StyledString("Component Specification (CSpec)");
 		}
-		if(element instanceof OPML)
+		if(element instanceof IOPML)
 		{
 			return new StyledString("Component Information");
 		}
-		if(element instanceof Outline)
+		if(element instanceof IOutline)
 		{
-			Outline outline = (Outline)element;
+			IOutline outline = (IOutline)element;
 			return new StyledString(outline.getText());
 		}
 		return new StyledString(element.toString());

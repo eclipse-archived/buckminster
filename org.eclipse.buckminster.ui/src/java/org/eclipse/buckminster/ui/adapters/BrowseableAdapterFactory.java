@@ -14,8 +14,9 @@ import java.net.URL;
 
 import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
+import org.eclipse.buckminster.opml.IOutline;
+import org.eclipse.buckminster.opml.OutlineType;
 import org.eclipse.buckminster.opml.model.Outline;
-import org.eclipse.buckminster.opml.model.OutlineType;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
@@ -33,11 +34,11 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 	{
 		// Adapt an Outline or adaptable to Outline
 		//
-		Outline outline = null;
+		IOutline outline = null;
 		if(adaptableObject instanceof IAdaptable)
-			outline = (Outline)((IAdaptable)adaptableObject).getAdapter(Outline.class);
-		if(outline == null && adaptableObject instanceof Outline)
-			outline = (Outline)adaptableObject;
+			outline = (IOutline)((IAdaptable)adaptableObject).getAdapter(Outline.class);
+		if(outline == null && adaptableObject instanceof IOutline)
+			outline = (IOutline)adaptableObject;
 		
 		// Convert outline to URL - refuse if there is no HTML URI,
 		// or if this URI is not adaptable to a URL

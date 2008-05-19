@@ -10,7 +10,7 @@ package org.eclipse.buckminster.ui.adapters;
 
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
-import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.opml.IOPML;
 
 public class ResolutionDataNode extends BasicTreeParentDataNode
 {
@@ -22,7 +22,7 @@ public class ResolutionDataNode extends BasicTreeParentDataNode
 		addChild(new CSpecDataNode(data.getCSpec()));
 		
 		// add opml child node
-		OPML opml = data.getOPML();
+		IOPML opml = data.getOPML();
 		if(opml != null)
 			addChild(new OPMLDataNode(data.getOPML()));		
 	}		

@@ -10,6 +10,8 @@ package org.eclipse.buckminster.ui.adapters;
 
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.IOutline;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.core.runtime.IAdapterFactory;
@@ -41,10 +43,10 @@ public class OPMLAdapterFactory implements IAdapterFactory
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
-		if(adaptableObject instanceof OPML)
-			return fromOPML((OPML)adaptableObject, adapterType);
+		if(adaptableObject instanceof IOPML)
+			return fromOPML((IOPML)adaptableObject, adapterType);
 		
-		if(adaptableObject instanceof Outline)
+		if(adaptableObject instanceof IOutline)
 			return fromOutline((Outline)adaptableObject, adapterType);
 		
 		if(adaptableObject instanceof Resolution)
@@ -61,7 +63,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object fromOPML(OPML adapted, Class clazz)
+	public Object fromOPML(IOPML adapted, Class clazz)
 	{
 		if(clazz.isAssignableFrom(OPMLDataNode.class))
 			return new OPMLDataNode(adapted);
@@ -93,7 +95,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		
 		if(clazz.isAssignableFrom(OPMLDataNode.class))
 			{
-			OPML opml = adapted.getOPML();
+			IOPML opml = adapted.getOPML();
 			return opml == null ? null : new OPMLDataNode(opml);
 			}
 
