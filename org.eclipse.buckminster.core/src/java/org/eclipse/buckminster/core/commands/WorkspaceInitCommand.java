@@ -19,7 +19,7 @@ import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;

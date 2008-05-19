@@ -94,7 +94,7 @@ public class WorkspaceBindTask
 		BillOfMaterials bom = BillOfMaterials.create(new ResolvedNode(topQuery, resolution), query);
 		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 		mspecBuilder.setName(bom.getViewName());
-		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+		mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 		MaterializationSpec mspec = mspecBuilder.createMaterializationSpec();
 		IMaterializer wsMat = CorePlugin.getDefault().getMaterializer(IMaterializer.WORKSPACE);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspec, context);

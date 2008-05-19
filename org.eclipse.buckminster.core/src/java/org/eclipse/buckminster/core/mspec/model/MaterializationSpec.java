@@ -21,6 +21,9 @@ import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
+import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -39,7 +42,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationSpec extends MaterializationDirective implements ISaxable
+public class MaterializationSpec extends MaterializationDirective implements ISaxable, IMaterializationSpec
 {
 	public static final String TAG = "mspec";
 	public static final String ATTR_NAME = "name";
@@ -90,14 +93,27 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		m_shortDesc = builder.getShortDesc();
 		m_url = builder.getURL();
 		ArrayList<MaterializationNode> nodes = new ArrayList<MaterializationNode>();
-		for(MaterializationNodeBuilder nodeBuilder : builder.getNodes())
+		for(MaterializationNodeBuilder nodeBuilder : builder.getNodeBuilders())
 			nodes.add(nodeBuilder.createMaterializationNode());
 		m_nodes = Utils.createUnmodifiableList(nodes);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isAssignableFrom(MaterializationSpecBuilder.class))
+		{
+			MaterializationSpecBuilder bld = new MaterializationSpecBuilder();
+			bld.initFrom(this);
+			return bld;
+		}
+		return super.getAdapter(adapter);
+	}
+
 	public String getProjectName(ComponentName cName) throws CoreException
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		IMaterializationNode node = getMatchingNode(cName);
 		if(node == null)
 			return cName.getProjectName();
 
@@ -123,7 +139,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public ConflictResolution getConflictResolution(ComponentName cName)
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		IMaterializationNode node = getMatchingNode(cName);
 		ConflictResolution cr = null;
 		if(node != null)
 			cr = node.getConflictResolution();
@@ -137,7 +153,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return cr;
 	}
 
-	public MaterializationNode getMatchingNode(ComponentName cName)
+	public IMaterializationNode getMatchingNode(ComponentName cName)
 	{
 		String name = cName.getName();
 		for(MaterializationNode aNode : m_nodes)
@@ -161,7 +177,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public String getMaterializerID(Resolution resolution) throws CoreException
 	{
-		MaterializationNode node = getMatchingNode(resolution.getComponentIdentifier());
+		IMaterializationNode node = getMatchingNode(resolution.getComponentIdentifier());
 		String materializer = (node == null) ? null : node.getMaterializerID();
 		if(materializer == null)
 		{
@@ -179,18 +195,18 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public IPath getLeafArtifact(ComponentName cname)
 	{
-		MaterializationNode node = getMatchingNode(cname);
+		IMaterializationNode node = getMatchingNode(cname);
 		return node == null ? null : node.getLeafArtifact();
 	}
 
-	public List<MaterializationNode> getNodes()
+	public List<? extends IMaterializationNode> getNodes()
 	{
 		return m_nodes;
 	}
 
 	public IPath getResourcePath(ComponentName cName)
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		IMaterializationNode node = getMatchingNode(cName);
 		return node == null ? null : node.getResourcePath();
 	}
 
@@ -201,7 +217,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public String getSuffix(ComponentName cName)
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		IMaterializationNode node = getMatchingNode(cName);
 		return node == null ? null : node.getSuffix();
 	}
 
@@ -212,19 +228,19 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public boolean isExcluded(ComponentName cname)
 	{
-		MaterializationNode node = getMatchingNode(cname);
+		IMaterializationNode node = getMatchingNode(cname);
 		return node != null && node.isExclude();
 	}
 
 	public boolean isExpand(ComponentName cName)
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		IMaterializationNode node = getMatchingNode(cName);
 		return node != null && (node.isUnpack() && node.isExpand());
 	}
 
 	public boolean isUnpack(ComponentName cName)
 	{
-		MaterializationNode node = getMatchingNode(cName);
+		IMaterializationNode node = getMatchingNode(cName);
 		return node != null && node.isUnpack();
 	}
 

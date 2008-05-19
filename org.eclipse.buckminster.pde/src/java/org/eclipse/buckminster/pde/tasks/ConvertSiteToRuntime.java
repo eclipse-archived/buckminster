@@ -21,7 +21,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;

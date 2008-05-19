@@ -80,7 +80,7 @@ public class PublishWizard extends AdvancedWizard implements ILoginHandler
 		m_mspec.initFrom(installWizard.getMaterializationSpecBuilder().createMaterializationSpec());
 		m_mspec.setInstallLocation(MaterializationUtils.generalizePath(m_mspec, m_mspec.getInstallLocation()));
 		
-		for(MaterializationNodeBuilder builder : m_mspec.getNodes())
+		for(MaterializationNodeBuilder builder : m_mspec.getNodeBuilders())
 		{
 			builder.setInstallLocation(MaterializationUtils.generalizePath(m_mspec, builder.getInstallLocation()));
 		}

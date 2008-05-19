@@ -3,8 +3,8 @@ package org.eclipse.buckminster.core.distro.builder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.distro.IDistro;
+import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.opml.IOPML;
@@ -38,9 +38,19 @@ public class DistroBuilder implements IDistro
 		return m_cquery;
 	}
 
+	public IMaterializationSpec getMspec()
+	{
+		return getMspecBuilder();
+	}
+
 	public MaterializationSpecBuilder getMspecBuilder()
 	{
 		return m_mspec;
+	}
+
+	public IOPML getOpml()
+	{
+		return getOpmlBuilder();
 	}
 
 	public OPMLBuilder getOpmlBuilder()
@@ -66,16 +76,5 @@ public class DistroBuilder implements IDistro
 	{
 		// TODO: Awaits IComponentSpec interface
 		return null;
-	}
-
-	public MaterializationSpec getMspec()
-	{
-		// TODO: Awaits IMaterializationSpec interface
-		return null;
-	}
-
-	public IOPML getOpml()
-	{
-		return getOpmlBuilder();
 	}
 }

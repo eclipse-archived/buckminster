@@ -139,7 +139,7 @@ public class Resolve extends WorkspaceInitCommand
 					//
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
-					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
 					MaterializationJob.run(matCtx, true);
 					if(matCtx.emitWarningAndErrorTags())

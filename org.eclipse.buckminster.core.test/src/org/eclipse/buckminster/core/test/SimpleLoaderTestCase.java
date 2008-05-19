@@ -63,7 +63,7 @@ public class SimpleLoaderTestCase extends TestCase
 		BillOfMaterials bom = resolver.resolve(m_nullMonitor);
 		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 		mspecBuilder.setName(bom.getViewName());
-		mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+		mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), resolver.getContext());
 		MaterializationJob.run(matCtx, true);
 	}

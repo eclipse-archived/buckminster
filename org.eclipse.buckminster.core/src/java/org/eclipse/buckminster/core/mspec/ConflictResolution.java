@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.core.mspec.model;
+package org.eclipse.buckminster.core.mspec;
 
 /**
  * An enum that describes what to do when content exists

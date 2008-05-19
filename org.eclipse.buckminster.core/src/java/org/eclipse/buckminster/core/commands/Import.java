@@ -72,7 +72,7 @@ public class Import extends WorkspaceInitCommand
 					//
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
-					mspecBuilder.setMaterializer(IMaterializer.WORKSPACE);
+					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 					bom.addMaterializationNodes(mspecBuilder);
 					mspec = mspecBuilder.createMaterializationSpec();
 				}

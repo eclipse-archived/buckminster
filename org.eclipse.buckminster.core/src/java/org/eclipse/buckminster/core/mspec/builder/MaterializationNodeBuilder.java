@@ -10,14 +10,16 @@ package org.eclipse.buckminster.core.mspec.builder;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
  *
  */
-public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
+public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder implements IMaterializationNode
 {
 	private Pattern m_namePattern;
 	private IPath m_leafArtifact;
@@ -52,6 +54,16 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder
 	public MaterializationNode createMaterializationNode()
 	{
 		return new MaterializationNode(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isInstance(this))
+			return this;
+		if(adapter.isAssignableFrom(MaterializationNode.class))
+			return new MaterializationNode(this);
+		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
 	public Pattern getBindingNamePattern()

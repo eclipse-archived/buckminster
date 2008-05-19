@@ -12,20 +12,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.mspec.model.MaterializationDirective;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.IMaterializationDirective;
 import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Thomas Hallgren
  *
  */
-public abstract class MaterializationDirectiveBuilder
+public abstract class MaterializationDirectiveBuilder implements IMaterializationDirective
 {
 	private Documentation m_documentation;
 	private IPath m_installLocation;
 	private IPath m_workspaceLocation;
-	private String m_materializer;
+	private String m_materializerID;
 	private final HashMap<String,String> m_properties = new HashMap<String,String>();
 	private ConflictResolution m_conflictResolution;
 	private int m_maxParallelJobs = -1;
@@ -35,7 +35,7 @@ public abstract class MaterializationDirectiveBuilder
 		m_maxParallelJobs = -1;
 		m_installLocation = null;
 		m_workspaceLocation = null;
-		m_materializer = null;
+		m_materializerID = null;
 		m_conflictResolution = null;
 		m_documentation = null;
 		m_properties.clear();
@@ -51,9 +51,9 @@ public abstract class MaterializationDirectiveBuilder
 		return m_installLocation;
 	}
 
-	public String getMaterializer()
+	public String getMaterializerID()
 	{
-		return m_materializer;
+		return m_materializerID;
 	}
 
 	public int getMaxParallelJobs()
@@ -76,13 +76,13 @@ public abstract class MaterializationDirectiveBuilder
 		return m_workspaceLocation;
 	}
 
-	public void initFrom(MaterializationDirective md)
+	public void initFrom(IMaterializationDirective md)
 	{
 		clear();
 		m_documentation = md.getDocumentation();
 		m_installLocation = md.getInstallLocation();
 		m_workspaceLocation = md.getWorkspaceLocation();
-		m_materializer = md.getMaterializerID();
+		m_materializerID = md.getMaterializerID();
 		m_maxParallelJobs = md.getMaxParallelJobs();
 		m_conflictResolution = md.getConflictResolution();
 		m_properties.putAll(md.getProperties());
@@ -98,9 +98,9 @@ public abstract class MaterializationDirectiveBuilder
 		m_installLocation = installLocation;
 	}
 
-	public void setMaterializer(String materializer)
+	public void setMaterializerID(String materializerID)
 	{
-		m_materializer = materializer;
+		m_materializerID = materializerID;
 	}
 
 	public void setMaxParallelJobs(int maxParallelJobs)

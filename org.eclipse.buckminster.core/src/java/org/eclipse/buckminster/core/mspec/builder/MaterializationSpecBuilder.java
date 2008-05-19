@@ -14,14 +14,18 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
+import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.core.runtime.Platform;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
  *
  */
-public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
+public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder implements IMaterializationSpec
 {
 	private final List<MaterializationNodeBuilder> m_nodes = new ArrayList<MaterializationNodeBuilder>();
 	private String m_shortDesc;
@@ -38,12 +42,34 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 		m_nodes.clear();
 	}
 
+	public MaterializationNodeBuilder addNodeBuilder()
+	{
+		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
+		m_nodes.add(node);
+		return node;
+	}
+
 	public MaterializationSpec createMaterializationSpec()
 	{
 		return new MaterializationSpec(this);
 	}
 
-	public MaterializationNodeBuilder getMatchingNode(ComponentName cName)
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isInstance(this))
+			return this;
+		if(adapter.isAssignableFrom(MaterializationSpec.class))
+			return createMaterializationSpec();
+		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
+
+	public IMaterializationNode getMatchingNode(ComponentName cName)
+	{
+		return getMatchingNodeBuilder(cName);
+	}
+
+	public MaterializationNodeBuilder getMatchingNodeBuilder(ComponentName cName)
 	{
 		String name = cName.getName();
 		for(MaterializationNodeBuilder aNode : m_nodes)
@@ -64,7 +90,12 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 		return m_name;
 	}
 
-	public List<MaterializationNodeBuilder> getNodes()
+	public List<? extends IMaterializationNode> getNodes()
+	{
+		return getNodeBuilders();
+	}
+
+	public List<MaterializationNodeBuilder> getNodeBuilders()
 	{
 		return m_nodes;
 	}
@@ -79,13 +110,13 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 		return m_url;
 	}
 
-	public void initFrom(MaterializationSpec mspec)
+	public void initFrom(IMaterializationSpec mspec)
 	{
 		super.initFrom(mspec);
 		m_name = mspec.getName();
 		m_shortDesc = mspec.getShortDesc();
 		m_url = mspec.getURL();
-		for(MaterializationNode node : mspec.getNodes())
+		for(IMaterializationNode node : mspec.getNodes())
 		{
 			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
 			nodeBuilder.initFrom(node);
@@ -106,5 +137,11 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder
 	public void setURL(URL url)
 	{
 		m_url = url;
+	}
+
+	public void toSax(ContentHandler receiver) throws SAXException
+	{
+		MaterializationSpec mspec = new MaterializationSpec(this);
+		mspec.toSax(receiver);
 	}
 }

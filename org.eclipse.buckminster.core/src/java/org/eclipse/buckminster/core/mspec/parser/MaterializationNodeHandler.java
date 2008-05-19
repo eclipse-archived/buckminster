@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.core.mspec.parser;
 
-import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -26,9 +25,9 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 
 	private UnpackHandler m_unpackHandler;
 
-	public MaterializationNodeHandler(AbstractHandler parent)
+	public MaterializationNodeHandler(AbstractHandler parent, MaterializationNodeBuilder builder)
 	{
-		super(parent, TAG);
+		super(parent, TAG, builder);
 	}
 
 	public MaterializationNodeBuilder getMaterializationNodeBuilder()
@@ -68,11 +67,5 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	@Override
-	MaterializationDirectiveBuilder createBuilder()
-	{
-		return new MaterializationNodeBuilder();
 	}
 }

@@ -19,7 +19,7 @@ import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -174,7 +174,7 @@ public class MaterializationContext extends RMContext
 	public Map<String, String> getProperties(ComponentName cName)
 	{
 		Map<String,String> p = super.getProperties(cName);
-		MaterializationNode node = m_materializationSpec.getMatchingNode(cName);
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(cName);
 		if(node != null)
 			p.putAll(node.getProperties());
 		return p;
@@ -184,7 +184,7 @@ public class MaterializationContext extends RMContext
 	{
 		IPath nodeLocation = null;
 		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
 		if(node != null)
 		{
 			nodeLocation = node.getWorkspaceLocation();
@@ -264,7 +264,7 @@ public class MaterializationContext extends RMContext
 	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException
 	{
 		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		MaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
 		IPath location = null;
 		if(node != null)
 		{

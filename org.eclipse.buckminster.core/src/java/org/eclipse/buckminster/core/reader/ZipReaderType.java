@@ -25,9 +25,8 @@ public class ZipReaderType extends URLReaderType
 	@Override
 	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
 	{
-		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
+		MaterializationNodeBuilder node = bld.addNodeBuilder();
 		node.setNamePattern(Pattern.compile(Pattern.quote(res.getName())));
 		node.setUnpack(true);
-		bld.getNodes().add(node);
 	}
 }

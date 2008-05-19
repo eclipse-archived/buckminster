@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

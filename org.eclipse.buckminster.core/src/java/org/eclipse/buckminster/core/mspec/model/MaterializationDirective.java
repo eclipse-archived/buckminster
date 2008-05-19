@@ -13,6 +13,8 @@ import java.util.Map;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.IMaterializationDirective;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -24,7 +26,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class MaterializationDirective extends AbstractSaxableElement
+public abstract class MaterializationDirective extends AbstractSaxableElement implements IMaterializationDirective
 {
 	public static final String ATTR_INSTALL_LOCATION = "installLocation";
 	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation";
@@ -50,7 +52,7 @@ public abstract class MaterializationDirective extends AbstractSaxableElement
 		tmp = builder.getWorkspaceLocation();
 		m_workspaceLocation = (tmp == null) ? null : tmp.addTrailingSeparator();
 
-		m_materializer = builder.getMaterializer();
+		m_materializer = builder.getMaterializerID();
 		m_conflictResolution = builder.getConflictResolution();
 		m_properties = ExpandingProperties.createUnmodifiableProperties(builder.getProperties());
 		m_maxParallelJobs = builder.getMaxParallelJobs();

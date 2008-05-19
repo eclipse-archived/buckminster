@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -136,7 +136,7 @@ public class DestinationForm
 	
 				public void modifyText(ModifyEvent e)
 				{
-					m_builder.setMaterializer(
+					m_builder.setMaterializerID(
 							(String)m_destTypeCombo.getData(String.valueOf(m_destTypeCombo.getSelectionIndex())));
 				}
 			});
@@ -309,11 +309,11 @@ public class DestinationForm
 		if(m_destTypeCombo != null)
 		{
 			int defaultIdx = m_defaultDestinationType;
-			if(m_builder.getMaterializer() != null)
-				defaultIdx = m_destinationTypes.indexOf(m_builder.getMaterializer());
+			if(m_builder.getMaterializerID() != null)
+				defaultIdx = m_destinationTypes.indexOf(m_builder.getMaterializerID());
 	
 			m_destTypeCombo.select(defaultIdx);
-			m_builder.setMaterializer(m_destinationTypes.get(defaultIdx));
+			m_builder.setMaterializerID(m_destinationTypes.get(defaultIdx));
 		}
 		
 		if(m_builder.getInstallLocation() == null)

@@ -26,10 +26,11 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
+import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
-import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -216,7 +217,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		protected Control createContents(Composite parent)
 		{
 			Control contents = super.createContents(parent);
-			String materializer = m_node.getMaterializer();
+			String materializer = m_node.getMaterializerID();
 			int matIdx = 0;
 			if(materializer != null)
 			{
@@ -329,7 +330,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			m_node.setLeafArtifact(tmp == null ? null : Path.fromOSString(tmp));
 
 			int idx = m_materializer.getSelectionIndex();
-			m_node.setMaterializer(idx <= 0 ? null : m_materializer.getItem(idx));
+			m_node.setMaterializerID(idx <= 0 ? null : m_materializer.getItem(idx));
 
 			idx = m_conflictResolution.getSelectionIndex();
 			m_node.setConflictResolution(idx <= 0 ? null : ConflictResolution.values()[idx-1]);
@@ -736,13 +737,12 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		QueryWizard wizard = getQueryWizard();
 		ComponentName cname = resolution.getComponentIdentifier();
 		MaterializationSpecBuilder mspec = wizard.getMaterializationSpec();
-		MaterializationNodeBuilder node = mspec.getMatchingNode(cname);
+		MaterializationNodeBuilder node = mspec.getMatchingNodeBuilder(cname);
 		if(node == null)
 		{
-			node = new MaterializationNodeBuilder();
+			node = mspec.addNodeBuilder();
 			node.setNamePattern(Pattern.compile("^\\Q" + cname.getName() + "\\E$"));
 			node.setComponentTypeID(cname.getComponentTypeID());
-			mspec.getNodes().add(node);
 		}
 		wizard.invalidateMaterializationContext();
 		return node;
@@ -837,7 +837,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			{
 				if(materializer != null && materializer.length() == 0)
 					materializer = null;
-				wizard.getMaterializationSpec().setMaterializer(materializer);
+				wizard.getMaterializationSpec().setMaterializerID(materializer);
 				wizard.invalidateMaterializationContext();
 				getComponentTable().setInput(wizard.getBOM().findAll(null));
 				setSelectedComponentValues(getSelectedComponent());
@@ -924,8 +924,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		}
 
 		MaterializationContext context = getQueryWizard().getMaterializationContext();
-		MaterializationSpec mspec = context.getMaterializationSpec();
-		MaterializationNode node = mspec.getMatchingNode(resolution.getComponentIdentifier());
+		IMaterializationSpec mspec = context.getMaterializationSpec();
+		IMaterializationNode node = mspec.getMatchingNode(resolution.getComponentIdentifier());
 		boolean useDefaults = node == null;
 		boolean skip = !useDefaults && node.isExclude();
 		boolean canMaterialize = resolution.isMaterializable();
@@ -948,7 +948,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		try
 		{
 			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			MaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution.getComponentIdentifier());
+			IMaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution.getComponentIdentifier());
 			if(skip)
 			{
 				if(node == null || !node.isExclude())
@@ -1023,7 +1023,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				QueryWizard wizard = getQueryWizard();
 				ComponentRequest rq = resolution.getRequest();
 				MaterializationSpecBuilder bld = wizard.getMaterializationSpec();
-				MaterializationNodeBuilder node = bld.getMatchingNode(rq);
+				MaterializationNodeBuilder node = bld.getMatchingNodeBuilder(rq);
 				if(flag)
 				{
 					if(node != null)

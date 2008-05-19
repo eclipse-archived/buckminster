@@ -25,8 +25,8 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
-import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -153,7 +153,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						{
 							// We are installing into folder
 							//
-							MaterializationNode node = mspec.getMatchingNode(ci);
+							IMaterializationNode node = mspec.getMatchingNode(ci);
 							if(node != null && node.isUnpack())
 							{
 								// An unpack must never clear the folder that it uses as parent for the unpack

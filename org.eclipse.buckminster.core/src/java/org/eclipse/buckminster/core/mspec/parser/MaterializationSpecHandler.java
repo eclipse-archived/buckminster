@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.core.mspec.parser;
 
-import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -23,23 +22,9 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 {
 	public static final String TAG = MaterializationSpec.TAG;
 	
-	private MaterializationNodeHandler m_materializationNodeHandler;
-
 	public MaterializationSpecHandler(AbstractHandler parent)
 	{
-		super(parent, TAG);
-	}
-
-	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_materializationNodeHandler)
-		{
-			MaterializationSpecBuilder builder = (MaterializationSpecBuilder)getBuilder();
-			builder.getNodes().add(m_materializationNodeHandler.getMaterializationNodeBuilder());
-		}
-		else
-			super.childPopped(child);
+		super(parent, TAG, new MaterializationSpecBuilder());
 	}
 
 	@Override
@@ -48,11 +33,7 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 	{
 		ChildHandler ch;
 		if(MaterializationNodeHandler.TAG.equals(localName))
-		{
-			if(m_materializationNodeHandler == null)
-				m_materializationNodeHandler = new MaterializationNodeHandler(this);
-			ch = m_materializationNodeHandler;
-		}
+			ch = new MaterializationNodeHandler(this, ((MaterializationSpecBuilder)getBuilder()).addNodeBuilder());
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
@@ -71,11 +52,5 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 	public MaterializationSpec getMaterializationSpec()
 	{
 		return new MaterializationSpec((MaterializationSpecBuilder)getBuilder());
-	}
-
-	@Override
-	MaterializationDirectiveBuilder createBuilder()
-	{
-		return new MaterializationSpecBuilder();
 	}
 }

@@ -760,8 +760,7 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 	{
 		m_bom = bom;
 		m_originalNodeBuilders = new ArrayList<MaterializationNodeBuilder>();
-		m_originalNodeBuilders.addAll(m_mspec.getNodes());
-		
+		m_originalNodeBuilders.addAll(m_mspec.getNodeBuilders());
 		initializeTree();		
 	}
 	
@@ -879,7 +878,7 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 			if(componentType != null)
 				nodeBuilder.setComponentTypeID(componentType);
 
-			handler = new MaterializationNodeHandler(m_mspec.getNodes(), nodeBuilder, depNode.getRequest(), cspec, depNode.getResolution() != null);
+			handler = new MaterializationNodeHandler(m_mspec.getNodeBuilders(), nodeBuilder, depNode.getRequest(), cspec, depNode.getResolution() != null);
 			m_componentMap.put(componentNameId, handler);
 			if(depNode.getResolution() == null)
 				m_unresolved.add(handler);

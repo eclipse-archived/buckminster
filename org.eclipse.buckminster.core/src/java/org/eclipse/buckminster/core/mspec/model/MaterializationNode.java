@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.mspec.model;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IPath;
@@ -20,7 +21,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationNode extends MaterializationDirective
+public class MaterializationNode extends MaterializationDirective implements IMaterializationNode
 {
 	public static final String TAG = "mspecNode";
 	public static final String ATTR_NAME_PATTERN = "namePattern";
@@ -94,6 +95,19 @@ public class MaterializationNode extends MaterializationDirective
 			receiver.startElement(namespace, ELEM_UNPACK, qName, attrs);
 			receiver.endElement(namespace, ELEM_UNPACK, qName);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isAssignableFrom(MaterializationNodeBuilder.class))
+		{
+			MaterializationNodeBuilder bld = new MaterializationNodeBuilder();
+			bld.initFrom(this);
+			return bld;
+		}
+		return super.getAdapter(adapter);
 	}
 
 	public Pattern getBindingNamePattern()

@@ -922,12 +922,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				String componentName = cspec.getName();
 				String componentType = cspec.getComponentTypeID();
 
-				MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
+				MaterializationNodeBuilder nodeBuilder = mspec.addNodeBuilder();
 				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
 				nodeBuilder.setComponentTypeID(componentType);
 				nodeBuilder.setExclude(true);
-
-				mspec.getNodes().add(0, nodeBuilder);
 			}
 		}
 	}

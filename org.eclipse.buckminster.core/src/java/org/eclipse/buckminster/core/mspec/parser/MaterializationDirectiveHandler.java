@@ -12,9 +12,9 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationDirective;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.Path;
@@ -29,11 +29,12 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 {
 	private DocumentationHandler m_documentationHandler;
 
-	private MaterializationDirectiveBuilder m_builder;
+	private final MaterializationDirectiveBuilder m_builder;
 
-	public MaterializationDirectiveHandler(AbstractHandler parent, String tag)
+	public MaterializationDirectiveHandler(AbstractHandler parent, String tag, MaterializationDirectiveBuilder builder)
 	{
 		super(parent, tag);
+		m_builder = builder;
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_builder = createBuilder();
+		m_builder.clear();
 		String tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_INSTALL_LOCATION);
 		if(tmp != null)
 			m_builder.setInstallLocation(Path.fromPortableString(tmp));
@@ -78,7 +79,7 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 		if(tmp != null)
 			m_builder.setWorkspaceLocation(Path.fromPortableString(tmp));
 
-		m_builder.setMaterializer(getOptionalStringValue(attrs, MaterializationDirective.ATTR_MATERIALIZER));
+		m_builder.setMaterializerID(getOptionalStringValue(attrs, MaterializationDirective.ATTR_MATERIALIZER));
 		m_builder.setMaxParallelJobs(getOptionalIntValue(attrs, MaterializationDirective.ATTR_MAX_PARALLEL_JOBS, -1));
 
 		tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_CONFLICT_RESOLUTION);
@@ -99,6 +100,4 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 	{
 		return m_builder;
 	}
-
-	abstract MaterializationDirectiveBuilder createBuilder();
 }

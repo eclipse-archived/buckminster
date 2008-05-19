@@ -203,7 +203,7 @@ public class P4Test extends TestCase
 		MaterializationSpecBuilder mspecBld = new MaterializationSpecBuilder();
 		mspecBld.setName(bom.getViewName());
 		mspecBld.setURL(bomFile.toURI().toURL());
-		mspecBld.setMaterializer(IMaterializer.FILE_SYSTEM);
+		mspecBld.setMaterializerID(IMaterializer.FILE_SYSTEM);
 		MaterializationContext ctx = new MaterializationContext(bom, mspecBld.createMaterializationSpec());
 		MaterializationJob.run(ctx, true);
 		assertTrue(ctx.getStatus().isOK());

@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
@@ -58,29 +58,24 @@ public class MSpecTestCase extends TestCase
 		builder.setURL(new URL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery"));
 		builder.setShortDesc("Buckminster materialization spec");
 		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home") + System.getProperty("file.separator") + "bucky"));
-		builder.setMaterializer("workspace");
+		builder.setMaterializerID("workspace");
 
-		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
+		MaterializationNodeBuilder node = builder.addNodeBuilder();
 		node.setNamePattern(Pattern.compile(".*"));
 		node.setComponentTypeID("plugin");
 		node.setConflictResolution(ConflictResolution.KEEP);
 		node.setInstallLocation(Path.fromPortableString("plugins"));
-		builder.getNodes().add(node);
 
-		node = new MaterializationNodeBuilder();
+		node = builder.addNodeBuilder();
 		node.setNamePattern(Pattern.compile(".*"));
 		node.setComponentTypeID("feature");
 		node.setConflictResolution(ConflictResolution.REPLACE);
 		node.setInstallLocation(Path.fromPortableString("features"));
 
-		builder.getNodes().add(node);
-
-		node = new MaterializationNodeBuilder();
+		node = builder.addNodeBuilder();
 		node.setNamePattern(Pattern.compile("i.don.not.want.this.one"));
 		node.setComponentTypeID("plugin");
 		node.setExclude(true);
-		
-		builder.getNodes().add(node);
 
 		MaterializationSpec spec = new MaterializationSpec(builder);
 
