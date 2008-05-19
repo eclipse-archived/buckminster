@@ -21,8 +21,17 @@
 	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
 	<import namespace="http://opml.org/spec2" />
 	<element name="billOfMaterials" type="md:BillOfMaterials" />
-	<!--  For backward compatibility -->
-	<element name="exportedBillOfMaterials" type="md:BillOfMaterials" />
+
+	<element name="distro" type="md:Distro"/>
+	<complexType name="Distro">
+		<sequence>
+			<element name="cspec" type="cs:ComponentSpec" minOccurs="1" maxOccurs="1"/>
+			<element name="cquery" type="cq:ComponentQuery" minOccurs="1" maxOccurs="1"/>
+			<element name="mspec" type="md:MaterializationSpec" minOccurs="1" maxOccurs="1"/>
+			<element name="opml" type="opml:OPML" minOccurs="1" maxOccurs="1"/>
+		</sequence>
+	</complexType>
+
 	<complexType name="BOMNode" />
 	<complexType name="BillOfMaterials">
 		<complexContent>

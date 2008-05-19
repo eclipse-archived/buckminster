@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryHandler;
 import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.parser.OPMLHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -97,7 +98,7 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		else if(child == m_componentQueryHandler)
 			m_wrapper = new IDWrapper(m_id, m_componentQueryHandler.getComponentQuery());
 		else if(child == m_opmlHandler)
-			m_wrapper = new IDWrapper(m_id, m_opmlHandler.getOPML());
+			m_wrapper = new IDWrapper(m_id, new OPML(m_opmlHandler.getOPML()));
 	}
 
 	public IDWrapper getWrapper()
