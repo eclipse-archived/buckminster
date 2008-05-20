@@ -90,6 +90,18 @@ public class MaterializationUtils
 	private static final int PUBLISH_WIZARD_MIN_HEIGHT = 450;
 	private static final int PUBLISH_WIZARD_MAX_HEIGHT = 750;
 
+	/**
+	 * The target platform wizard dialog width
+	 */
+	private static final int TP_WIZARD_MIN_WIDTH = 450;
+	private static final int TP_WIZARD_MAX_WIDTH = 650;
+
+	/**
+	 * The target platform wizard dialog height
+	 */
+	private static final int TP_WIZARD_MIN_HEIGHT = 250;
+	private static final int TP_WIZARD_MAX_HEIGHT = 450;
+
 	private static final Map<String,String> s_humanReadableComponentTypes;
 	
 	// needs to be synchronized with the server side, new component types need to be added
@@ -209,6 +221,27 @@ public class MaterializationUtils
 		shell.setSize(
 				Math.min(Math.max(PUBLISH_WIZARD_MIN_WIDTH, shell.getSize().x), PUBLISH_WIZARD_MAX_WIDTH),
 				Math.min(Math.max(PUBLISH_WIZARD_MIN_HEIGHT, shell.getSize().y), PUBLISH_WIZARD_MAX_HEIGHT));
+		
+		dialog.open();
+	}
+
+	/**
+	 * Opens target platform wizard dialog
+	 * 
+	 * @param installWizard
+	 * @param parentShell
+	 */
+	public static void startTPWizard(InstallWizard installWizard, Shell parentShell)
+	{
+		TPWizard tpWizard = new TPWizard(installWizard);
+		
+		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, tpWizard);
+		dialog.create();
+		
+		final Shell shell = dialog.getShell();
+		shell.setSize(
+				Math.min(Math.max(TP_WIZARD_MIN_WIDTH, shell.getSize().x), TP_WIZARD_MAX_WIDTH),
+				Math.min(Math.max(TP_WIZARD_MIN_HEIGHT, shell.getSize().y), TP_WIZARD_MAX_HEIGHT));
 		
 		dialog.open();
 	}

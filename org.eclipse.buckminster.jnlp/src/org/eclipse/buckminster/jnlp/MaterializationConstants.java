@@ -34,6 +34,10 @@ public interface MaterializationConstants
 
 	public static final String STEP_PUBLISH = "PublishStep";
 
+	public static final String STEP_TP_INTRO = "TPIntroStep";
+
+	public static final String STEP_TP_ECLIPSE_LOCATION = "TPEclipseLocation";
+
 	public static final String PROP_PROPVERSION = "propVersion";
 
 	public static final String PROP_POPUP_DELAY = "popupDelay";
@@ -145,4 +149,14 @@ public interface MaterializationConstants
 	public static final String ERROR_CODE_500_EXCEPTION = "500Exception";
 	
 	public static final String DEFAULT_MATERIALIZATION_FOLDER = "materializations";
+	
+	public static final String META_AREA = ".metadata";
+	
+	public static final String MATERIALIZATOR_PROPERTIES = "materializator.properties";
+	
+	public static final String LOCALPROP_ENABLE_TP_WIZARD = "enable.tp.wizard";
+	
+	public static final String VALUE_TRUE = "true";
+	
+	public static final String VALUE_FALSE = "false";
 }
