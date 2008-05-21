@@ -24,33 +24,51 @@ import org.eclipse.swt.widgets.Label;
  */
 public class TPIntroPage extends TPWizardPage
 {
+	private static final String ICON_BULB = "quick_fix.png";
+	
+	private static final int HORIZONTAL_INDENT = 20;
+
+	private Composite m_pageComposite;
+	
+	private Label m_headingIcon;
+	
 	private Label m_heading;
 	
 	private Button m_enableWizard;
 	
 	protected TPIntroPage()
 	{
-		super(MaterializationConstants.STEP_TP_INTRO, "Setup Eclipse", "Get the best experience with the materialized material in Eclipse.",
-				null);
+		super(MaterializationConstants.STEP_TP_INTRO, "Setup Eclipse", "Get the best experience with the materialized material in Eclipse.");
 	}
 
 	public void createControl(Composite parent)
 	{
-		Composite pageComposite = new Composite(parent, SWT.NONE);
+		m_pageComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		pageComposite.setLayout(layout);
+		m_pageComposite.setLayout(layout);
 		GridData layoutData = new GridData();
-		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		m_pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		m_heading = new Label(pageComposite, SWT.WRAP);
+		Composite headingComposite = new Composite(m_pageComposite, SWT.NONE);
+		headingComposite.setLayout(new GridLayout(2, false));
+		
+		m_headingIcon = new Label(headingComposite, SWT.NONE);
+		m_headingIcon.setImage(MaterializationUtils.getImage(ICON_BULB));
 		layoutData = new GridData();
-		layoutData.horizontalSpan = 2;
+		layoutData.horizontalIndent = HORIZONTAL_INDENT;
+		layoutData.verticalAlignment = GridData.CENTER;
+		m_headingIcon.setLayoutData(layoutData);
+
+		m_heading = new Label(headingComposite, SWT.WRAP);
+		layoutData = new GridData();
+		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		m_heading.setLayoutData(layoutData);
 		
-		Composite fillComposite = new Composite(pageComposite, SWT.NONE);
+		Composite fillComposite = new Composite(m_pageComposite, SWT.NONE);
 		fillComposite.setLayout(new FillLayout());
+		fillComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		m_enableWizard = new Button(pageComposite, SWT.CHECK);
+		m_enableWizard = new Button(m_pageComposite, SWT.CHECK);
 		m_enableWizard.setText("Do not start this wizard next time");
 		m_enableWizard.addSelectionListener(new SelectionAdapter()
 		{
@@ -61,7 +79,7 @@ public class TPIntroPage extends TPWizardPage
 			}
 		});
 
-		setControl(pageComposite);
+		setControl(m_pageComposite);
 	}
 
 	@Override
@@ -72,7 +90,7 @@ public class TPIntroPage extends TPWizardPage
 				"This wizard will help you to setup your Eclipse installation to get the best experience" +
 				" with the materialized material in Eclipse.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
-		layoutData.widthHint = m_heading.getShell().getSize().x - 25;
-		m_heading.getParent().layout();
+		layoutData.widthHint = m_heading.getShell().getSize().x - m_headingIcon.getSize().x - 80;
+		m_pageComposite.layout();
 	}
 }

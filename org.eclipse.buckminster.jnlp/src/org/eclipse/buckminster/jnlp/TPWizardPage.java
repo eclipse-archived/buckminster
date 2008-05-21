@@ -9,11 +9,10 @@
 package org.eclipse.buckminster.jnlp;
 
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardPage;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 abstract public class TPWizardPage extends AdvancedWizardPage
 {
@@ -22,9 +21,9 @@ abstract public class TPWizardPage extends AdvancedWizardPage
 		super(pageName);
 	}
 
-	protected TPWizardPage(String pageName, String title, String message, ImageDescriptor titleImage)
+	protected TPWizardPage(String pageName, String title, String message)
 	{
-		super(pageName, title, message, titleImage);
+		super(pageName, title, message, null);
 	}
 
 	TPWizard getTPWizard()
