@@ -28,9 +28,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
-import org.eclipse.buckminster.opml.model.Body;
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.model.Outline;
+import org.eclipse.buckminster.opml.IBody;
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.IOutline;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -171,9 +171,9 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 
 	private Map<String, String> m_properties;
 
-	private OPML m_opml;
+	private IOPML m_opml;
 
-	public String prepareHTML(Map<String, String> properties, OPML opml, String destination) throws Exception
+	public String prepareHTML(Map<String, String> properties, IOPML opml, String destination) throws Exception
 	{
 		if(opml == null)
 			return null;
@@ -279,7 +279,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		return htmlURL;
 	}
 
-	private Element addOutline(Outline outline)
+	private Element addOutline(IOutline outline)
 	{
 		Element childElement = null;
 
@@ -320,12 +320,12 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		return li;
 	}
 
-	private void addOutlines(Element element, Body body, int level)
+	private void addOutlines(Element element, IBody body, int level)
 	{
 		Element ul = null;
 
 		if(body != null && body.getOutlines() != null)
-			for(Outline outline : body.getOutlines())
+			for(IOutline outline : body.getOutlines())
 			{
 				Element childElement = addOutline(outline);
 
