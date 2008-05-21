@@ -131,7 +131,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		m_namePattern = namePattern;
 	}
 
-	public void initFrom(MaterializationNode mn)
+	public void initFrom(IMaterializationNode mn)
 	{
 		super.initFrom(mn);
 		m_namePattern = mn.getNamePattern();
