@@ -6,27 +6,28 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.tp;
 
-import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardPage;
 
 /**
- * Event that is sent to MSpecChangeListeners
- * 
  * @author Karel Brezina
- *
+ * 
  */
-public class MSpecChangeEvent
+abstract public class TPWizardPage extends AdvancedWizardPage
 {
-	private MaterializationSpecBuilder m_mspec;
-	
-	public MSpecChangeEvent(MaterializationSpecBuilder mspec)
+	protected TPWizardPage(String pageName)
 	{
-		m_mspec = mspec;
+		super(pageName);
 	}
-	
-	public MaterializationSpecBuilder getMSpec()
+
+	protected TPWizardPage(String pageName, String title, String message)
 	{
-		return m_mspec;
+		super(pageName, title, message, null);
+	}
+
+	TPWizard getTPWizard()
+	{
+		return (TPWizard)getAdvancedWizard();
 	}
 }

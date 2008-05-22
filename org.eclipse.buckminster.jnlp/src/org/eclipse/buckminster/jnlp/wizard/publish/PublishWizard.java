@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.publish;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
@@ -17,9 +17,14 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.jnlp.wizard.ILoginHandler;
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
+import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;

@@ -37,6 +37,10 @@ public interface MaterializationConstants
 	public static final String STEP_TP_INTRO = "TPIntroStep";
 
 	public static final String STEP_TP_NEW_OR_CURRENT = "TPNewOrCurrent";
+	
+	public static final String STEP_TP_NEW_RECOMMENDED = "TPNewRecommended";
+
+	public static final String STEP_TP_NEW_LOCATION = "TPNewLocation";
 
 	public static final String PROP_PROPVERSION = "propVersion";
 

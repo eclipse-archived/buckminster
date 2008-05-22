@@ -6,12 +6,17 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
 
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
-import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
+import org.eclipse.buckminster.jnlp.wizard.LoginPanel;
+import org.eclipse.buckminster.jnlp.wizard.install.InstallWizardPage;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,31 +26,39 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
-public class PublishLoginPage extends PublishWizardPage
+public class LoginPage extends InstallWizardPage
 {
 	private LoginPanel m_login;
 
 	private String m_lastRegisteredUserName;
 
 	private String m_lastRegisteredPassword;
-
-	protected PublishLoginPage(String provider)
+	
+	private boolean m_pageCommitted;
+	
+	protected LoginPage(String provider)
 	{
-		super(MaterializationConstants.STEP_PUBLISH_LOGIN, "Login", "Publishing requires login to " + provider + ".", null);
+		super(MaterializationConstants.STEP_LOGIN, "Login", "Materialization requires login to " + provider + ".", null);
 	}
 
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		m_login.setCurrentUserVisible(getPublishWizard().getAuthenticatorLoginKey() != null);
+		getInstallWizard().setLoginPageRequested(true);
+		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
+		
 		setPageComplete(getCompleteLoginFields());
+		
+		m_pageCommitted = false;
 	}
 	
 	public void createControl(Composite parent)
 	{		
-		m_login = new LoginPanel(getPublishWizard().getAuthenticatorLoginKeyUserName(), getPublishWizard().getAuthenticatorUserName(), getPublishWizard().getAuthenticatorPassword());
+		m_login = new LoginPanel(getInstallWizard().getAuthenticatorLoginKeyUserName());
+
+		setPageComplete(false);
 
 		ModifyListener fieldsListener = new ModifyListener()
 		{
@@ -67,17 +80,6 @@ public class PublishLoginPage extends PublishWizardPage
 		setControl(m_login.createControl(parent, fieldsListener, fieldsSwitchListener));
 	}
 
-	@Override
-    public boolean isPageComplete()
-	{
-        if(isCurrentPage())
-        {
-        	return super.isPageComplete();
-		}
-
-        return getPublishWizard().isLoggedIn();
-    }
-
 	private boolean getCompleteLoginFields()
 	{
 		String errorMsg = m_login.checkCompleteLoginFields();
@@ -87,41 +89,60 @@ public class PublishLoginPage extends PublishWizardPage
 	}
 
 	@Override
+    public boolean isPageComplete()
+	{
+        if(isCurrentPage())
+        {
+        	return super.isPageComplete();
+		}
+
+        return !getInstallWizard().isLoginRequired() || getInstallWizard().isLoggedIn();
+    }
+
+	@Override
+	public void setPageComplete(boolean complete)
+	{
+		super.setPageComplete(!getInstallWizard().isLoginRequired() || complete);
+	}
+	
+    @Override
 	public boolean performPageCommit()
 	{
-			IPublisher publisher;
+		if(isCurrentPage())
+		{
+
+			IAuthenticator authenticator;
+
+			String userName = null;
+			String password = null;
 
 			try
 			{
-				publisher = getPublishWizard().getPublisher();
+				authenticator = getInstallWizard().getAuthenticator();
 
-				if(publisher == null)
+				if(authenticator == null)
 				{
-					throw new JNLPException("Publisher is not available", ERROR_CODE_NO_PUBLISHER_EXCEPTION);
+					throw new JNLPException("Authenticator is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 				}
 
-				String userName = null;
-				String password = null;
-				
 				if(m_login.isCurrentUser())
 				{
-					int result = publisher.relogin(getPublishWizard().getAuthenticatorLoginKey());
+					int result = authenticator.relogin(getInstallWizard().getAuthenticatorLoginKey());
 
 					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
-						getPublishWizard().removeAuthenticatorLoginKey();
+						getInstallWizard().removeAuthenticatorLoginKey();
 
 					if(result != IAuthenticator.LOGIN_OK)
-					{
 						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
-					}					
-				} else
+				}
+				else
 				{					
 					userName = m_login.getLogin();
 					password = m_login.getPassword();
 	
 					if(!m_login.isAlreadyUser())
 					{
-						int result = publisher.register(userName, password, m_login.getEmail());
+						int result = authenticator.register(userName, password, m_login.getEmail());
 	
 						if(result == IAuthenticator.REGISTER_LOGIN_EXISTS &&
 								m_lastRegisteredUserName != null && m_lastRegisteredUserName.equals(userName) &&
@@ -138,19 +159,16 @@ public class PublishLoginPage extends PublishWizardPage
 						}
 					}
 	
-					if(publisher.relogin(userName, password) != IAuthenticator.LOGIN_OK)
+					if(authenticator.relogin(userName, password) != IAuthenticator.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - check username and password and try again", null);
 					}
 				}
-
-				if(!publisher.isLoggedIn())
+				
+				if(!authenticator.isLoggedIn())
 				{
 					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
-
-				getPublishWizard().setAuthenticatorUserName(userName);
-				getPublishWizard().setAuthenticatorPassword(password);
 			}
 			catch(Throwable e)
 			{
@@ -158,8 +176,28 @@ public class PublishLoginPage extends PublishWizardPage
 				return false;
 			}
 			
-			setErrorMessage(null);
+			if(
+				((userName == null) != (getInstallWizard().getAuthenticatorUserName() == null)) ||
+				userName != null && password != null && !(userName.equals(getInstallWizard().getAuthenticatorUserName()) && password.equals(getInstallWizard().getAuthenticatorPassword())))
+			{
+				getInstallWizard().resetMaterializerInitialization();
+			}
+			
+			getInstallWizard().setAuthenticatorUserName(userName);
+			getInstallWizard().setAuthenticatorPassword(password);
+			
+			m_pageCommitted = true;
+		}
 		
 		return true;
+	}
+    
+	@Override
+	public IWizardPage getNextPage()
+	{
+		if(m_pageCommitted)
+			return getInstallWizard().getDownloadPage();
+		
+		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);
 	}
 }

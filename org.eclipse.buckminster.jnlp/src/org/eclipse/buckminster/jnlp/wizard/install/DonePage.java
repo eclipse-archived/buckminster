@@ -6,12 +6,14 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
 import java.util.List;
 
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;

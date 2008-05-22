@@ -6,26 +6,20 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.tp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
+
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.pde.core.plugin.TargetPlatform;
-import org.eclipse.pde.internal.core.ICoreConstants;
-import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Karel Brezina
  * 
  */
-@SuppressWarnings("restriction")
 public class TPWizard extends AdvancedWizard
 {
 	private static final String TP_WINDOW_TITLE = "Setup Eclipse Installation";
@@ -69,11 +63,6 @@ public class TPWizard extends AdvancedWizard
 		return false;
 	}
 
-	public void unsetTP()
-	{
-		this.setTP(TargetPlatform.getDefaultLocation());
-	}
-
 	@Override
 	protected void addAdvancedPages()
 	{
@@ -91,20 +80,5 @@ public class TPWizard extends AdvancedWizard
 	protected Image getWizardImage()
 	{
 		return m_installWizard.getWizardImage();
-	}
-
-	void setTP(String targetPlatform)
-	{
-		PDECore pdePlugin = PDECore.getDefault();
-		Preferences preferences = pdePlugin.getPluginPreferences();
-		IPath newPath = new Path(targetPlatform);
-		Platform.getInstallLocation();
-		IPath defaultPath = new Path(TargetPlatform.getDefaultLocation());
-		String mode = defaultPath.equals(newPath)
-				? ICoreConstants.VALUE_USE_THIS
-				: ICoreConstants.VALUE_USE_OTHER;
-		preferences.setValue(ICoreConstants.TARGET_MODE, mode);
-		preferences.setValue(ICoreConstants.PLATFORM_PATH, targetPlatform);
-		pdePlugin.savePluginPreferences();
 	}
 }

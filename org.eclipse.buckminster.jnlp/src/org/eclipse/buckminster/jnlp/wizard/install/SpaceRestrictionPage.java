@@ -6,8 +6,11 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
+import org.eclipse.buckminster.jnlp.wizard.LoginDialog;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;

@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_MSPEC;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_UNKNOWN;
@@ -24,7 +24,10 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_R
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_WINDOW_TITLE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZATOR_PROPERTIES;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZERS;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.META_AREA;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_VERSION;
@@ -49,17 +52,21 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_T
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -70,6 +77,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -77,6 +85,14 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
+import org.eclipse.buckminster.jnlp.wizard.ILoginHandler;
+import org.eclipse.buckminster.jnlp.wizard.IUnresolvedNodeHandler;
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.MaterializerRunnable;
+import org.eclipse.buckminster.jnlp.MissingPropertyException;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
@@ -84,9 +100,11 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
@@ -150,7 +168,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private Image m_wizardImage;
 
-//	private Image m_materializationImage; // unused
+	// private Image m_materializationImage; // unused
 
 	private String m_helpURL;
 
@@ -197,7 +215,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private DonePage m_donePage;
 
 	private InfoPage m_infoPage;
-	
+
 	private IUnresolvedNodeHandler m_unresolvedNodeHandler;
 
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
@@ -205,6 +223,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private final List<MSpecChangeListener> m_mspecListeners = new ArrayList<MSpecChangeListener>();
 
 	private final Map<String, String> m_properties;
+
+	private final BMProperties m_localProperties;
 
 	private final boolean m_startedFromIDE;
 
@@ -221,7 +241,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private final List<LearnMoreItem> m_learnMores;
 
 	private boolean m_materializationFinished = false;
-	
+
 	private boolean m_problemInProperties = false;
 
 	public InstallWizard(Map<String, String> properties)
@@ -234,9 +254,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		setNeedsProgressMonitor(true);
 
 		m_properties = properties;
+
 		m_startedFromIDE = startedFromIDE;
 
 		readProperties(properties);
+
+		m_localProperties = readLocalProperties();
 
 		m_authenticator = createAuthenticator(m_loginRequired);
 
@@ -396,7 +419,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			// it should always finish
 			e.printStackTrace();
 		}
+		// TODO uncomment
+/*
+		if(isMaterializationFinished())
+		{
+			if(VALUE_TRUE.equals(m_localProperties.get(LOCALPROP_ENABLE_TP_WIZARD)))
+				MaterializationUtils.startTPWizard(this, getShell());
 
+			saveLocalProperties();
+		}
+*/
 		return true;
 	}
 
@@ -444,7 +476,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
 			getContainer().run(true, true, mr);
-			
+
 			m_materializationFinished = true;
 
 			if(getComponentInfoProvider() != null)
@@ -554,7 +586,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	}
 
 	@Override
-	protected Image getWizardImage()
+	public Image getWizardImage()
 	{
 		return m_wizardImage;
 	}
@@ -579,7 +611,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_artifactVersion;
 	}
 
-	BillOfMaterials getBOM()
+	public BillOfMaterials getBOM()
 	{
 		if(m_cachedBOM == null)
 		{
@@ -599,22 +631,22 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_brandingString;
 	}
 
-	String getCSpecName()
+	public String getCSpecName()
 	{
 		return m_cspecName;
 	}
 
-	String getCSpecType()
+	public String getCSpecType()
 	{
 		return m_cspecType;
 	}
 
-	String getCSpecVersionString()
+	public String getCSpecVersionString()
 	{
 		return m_cspecVersionString;
 	}
 
-	String getCSpecVersionType()
+	public String getCSpecVersionType()
 	{
 		return m_cspecVersionType;
 	}
@@ -657,17 +689,17 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_learnMoreURL;
 	}
 
-//	// Seems to be never used
-//	Image getMaterializationImage()
-//	{
-//		return m_materializationImage;
-//	}
+	// // Seems to be never used
+	// Image getMaterializationImage()
+	// {
+	// return m_materializationImage;
+	// }
 	boolean isMaterializationFinished()
 	{
 		return m_materializationFinished;
 	}
-	
-	MaterializationSpecBuilder getMaterializationSpecBuilder()
+
+	public MaterializationSpecBuilder getMaterializationSpecBuilder()
 	{
 		return m_builder;
 	}
@@ -682,7 +714,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_properties;
 	}
 
-	String getServiceProvider()
+	public String getServiceProvider()
 	{
 		return m_serviceProvider;
 	}
@@ -692,7 +724,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_homePageURL;
 	}
 
-	String getSpaceName()
+	public String getSpaceName()
 	{
 		return m_spaceName;
 	}
@@ -791,6 +823,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	void setUnresolvedNodeHandler(IUnresolvedNodeHandler unresolvedNodeHandler)
 	{
 		m_unresolvedNodeHandler = unresolvedNodeHandler;
+	}
+
+	public BMProperties getLocalProperties()
+	{
+		return m_localProperties;
 	}
 
 	private IAuthenticator createAuthenticator(boolean needed)
@@ -922,6 +959,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				String componentName = cspec.getName();
 				String componentType = cspec.getComponentTypeID();
 
+				for(MaterializationNodeBuilder builder : mspec.getNodeBuilders())
+					if((componentType == null || componentType.equals(builder.getComponentTypeID()))
+							&& builder.getNamePattern().matcher(componentName).matches())
+						builder.setExclude(true);
+
 				MaterializationNodeBuilder nodeBuilder = mspec.addNodeBuilder();
 				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
 				nodeBuilder.setComponentTypeID(componentType);
@@ -941,10 +983,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	}
 
 	/**
-	 * Wizard page doesn't display message text (the second line in title area) if the wizard image is too small
-	 * This function creates a new image that is 64 pixels high - adds to the original image transparent stripe
+	 * Wizard page doesn't display message text (the second line in title area) if the wizard image is too small This
+	 * function creates a new image that is 64 pixels high - adds to the original image transparent stripe
 	 * 
-	 * @param origImage original image
+	 * @param origImage
+	 * 		original image
 	 * @return new image
 	 */
 	private Image getNormalizedWizardImage(Image origImage)
@@ -1333,26 +1376,26 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			}
 		}
 
-//		// Loads an image that is never used
-//		tmp = properties.get(PROP_MATERIALIZATION_IMAGE);
-//		m_materializationImage = null;
-//		if(tmp != null)
-//		{
-//			try
-//			{
-//				m_materializationImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
-//			}
-//			catch(MalformedURLException e)
-//			{
-//				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
-//						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
-//			}
-//		}
+		// // Loads an image that is never used
+		// tmp = properties.get(PROP_MATERIALIZATION_IMAGE);
+		// m_materializationImage = null;
+		// if(tmp != null)
+		// {
+		// try
+		// {
+		// m_materializationImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
+		// }
+		// catch(MalformedURLException e)
+		// {
+		// errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+		// ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
+		// }
+		// }
 
 		m_helpURL = properties.get(PROP_HELP_URL);
 		// TODO use different helpURL and moreInfoURL, now there is just helpURL
 		m_moreInfoURL = m_helpURL;
-		//m_moreInfoURL = properties.get(PROP_MORE_INFO_URL);
+		// m_moreInfoURL = properties.get(PROP_MORE_INFO_URL);
 
 		m_errorURL = properties.get(PROP_ERROR_URL);
 		if(m_errorURL == null)
@@ -1448,6 +1491,66 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		WizardPage originalPreviousPage = (WizardPage)originalPage.getPreviousPage();
 		getContainer().showPage(originalPage);
 		originalPage.setPreviousPage(originalPreviousPage);
+	}
+
+	private static BMProperties readLocalProperties()
+	{
+		BMProperties localProperties = null;
+		InputStream in = null;
+		try
+		{
+			in = new FileInputStream(getLocalPropertiesLocation().toFile());
+			localProperties = new BMProperties(in);
+		}
+		catch(FileNotFoundException e)
+		{
+			localProperties = new BMProperties(getDefaultLocalProperties());
+		}
+		catch(IOException e)
+		{
+			localProperties = new BMProperties(getDefaultLocalProperties());
+			e.printStackTrace();
+		}
+		finally
+		{
+			IOUtils.close(in);
+		}
+
+		return localProperties;
+	}
+
+	private static Map<String, String> getDefaultLocalProperties()
+	{
+		Map<String, String> defaultLocalProperties = new HashMap<String, String>();
+		defaultLocalProperties.put(LOCALPROP_ENABLE_TP_WIZARD, VALUE_TRUE);
+		return defaultLocalProperties;
+	}
+
+	private void saveLocalProperties()
+	{
+		OutputStream out = null;
+		try
+		{
+			File propFile = getLocalPropertiesLocation().toFile();
+			if(!propFile.exists())
+				propFile.createNewFile();
+			out = new FileOutputStream(propFile);
+			m_localProperties.store(out, null);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			IOUtils.close(out);
+		}
+	}
+
+	private static IPath getLocalPropertiesLocation()
+	{
+		return ResourcesPlugin.getWorkspace().getRoot().getLocation().append(META_AREA).append(
+				MATERIALIZATOR_PROPERTIES);
 	}
 }
 

@@ -89,6 +89,11 @@ public abstract class AdvancedWizardPage extends WizardPage
 		return m_pageCommitted;	
 	}
 	
+	public final void uncommitPage()
+	{
+		m_pageCommitted = false;
+	}
+	
 	/**
 	 * Page can change "Finish" button text (e.g. to "Publish"). If null is returned no text is changed.
 	 */

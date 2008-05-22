@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardPage;

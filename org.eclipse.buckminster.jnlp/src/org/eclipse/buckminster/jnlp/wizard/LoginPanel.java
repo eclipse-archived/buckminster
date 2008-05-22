@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;

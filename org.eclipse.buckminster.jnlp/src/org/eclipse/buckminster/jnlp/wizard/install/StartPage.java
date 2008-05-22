@@ -6,8 +6,10 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -154,6 +156,10 @@ public class StartPage extends InstallWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
+		// TODO - remove
+		// MaterializationUtils.startTPWizard(getInstallWizard(), getShell());
+		// end of remove
+
 		focusNextButton();
 	}
 	

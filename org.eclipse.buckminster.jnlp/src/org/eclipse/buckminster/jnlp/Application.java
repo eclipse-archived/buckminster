@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
+import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IOUtils;

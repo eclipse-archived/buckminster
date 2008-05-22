@@ -6,15 +6,27 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
+
+import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 
 /**
- * Listens for changes in MSPEC builder. If the builder is changed, sends event with the new builder
+ * Event that is sent to MSpecChangeListeners
  * 
  * @author Karel Brezina
  *
  */
-public interface  MSpecChangeListener
+public class MSpecChangeEvent
 {
-	void handleMSpecChangeEvent (MSpecChangeEvent event);
+	private MaterializationSpecBuilder m_mspec;
+	
+	public MSpecChangeEvent(MaterializationSpecBuilder mspec)
+	{
+		m_mspec = mspec;
+	}
+	
+	public MaterializationSpecBuilder getMSpec()
+	{
+		return m_mspec;
+	}
 }

@@ -6,13 +6,17 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.publish;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.wizard.LoginDialog;
+import org.eclipse.buckminster.jnlp.wizard.MSpecDetailsPanel;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;

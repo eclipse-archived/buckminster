@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +14,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;

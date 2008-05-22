@@ -6,8 +6,9 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.jface.wizard.IWizardPage;

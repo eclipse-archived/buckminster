@@ -6,13 +6,25 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.tp;
 
 import java.io.File;
 
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.pde.core.plugin.TargetPlatform;
+import org.eclipse.pde.internal.core.ICoreConstants;
+import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -32,11 +44,26 @@ import org.eclipse.swt.widgets.Text;
  * @author Karel Brezina
  * 
  */
+@SuppressWarnings("restriction")
 public class TPNewOrCurrentPage extends TPWizardPage
 {
-	private String TOOL_TIP_ECLIPSE_LOCATION = "Location of the current Eclipse";
+	private static final String TOOL_TIP_ECLIPSE_LOCATION = "Location of the current Eclipse";
 
-	private String TOOL_TIP_BROWSE_ECLIPSE_LOCATION = "Browse location of the current Eclipse";
+	private static final String TOOL_TIP_BROWSE_ECLIPSE_LOCATION = "Browse location of the current Eclipse";
+
+	private static final String ECLIPSE_FEATURE = "org.eclipse.platform";
+
+	private static final String BUCKMINSTER_FEATURE = "org.eclipse.buckminster.core.feature";
+
+	private static final String SPACES_FEATURE = "org.eclipse.spaces.core.feature";
+
+	private static final String MIN_ECLIPSE_VERSION = "3.3.0";
+
+	private static final String MIN_OK_ECLIPSE_VERSION = "3.4.0";
+
+	private static final IVersion s_minEclipseVersion;
+
+	private static final IVersion s_minOkEclipseVersion;
 
 	private Button m_newEclipseButton;
 
@@ -45,6 +72,25 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	private Text m_locationText;
 
 	private Button m_browseButton;
+
+	private IVersion m_currentEclipseVersion;
+
+	private boolean m_buckminsterInstalled = false;
+
+	private boolean m_spacesInstalled = false;
+
+	static
+	{
+		try
+		{
+			s_minEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, MIN_ECLIPSE_VERSION);
+			s_minOkEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, MIN_OK_ECLIPSE_VERSION);
+		}
+		catch(CoreException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	protected TPNewOrCurrentPage()
 	{
@@ -87,7 +133,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		{
 			public void modifyText(ModifyEvent e)
 			{
-				getContainer().updateButtons();
+				firePageChanged();
 			}
 		});
 
@@ -127,7 +173,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 					pathString = path.removeTrailingSeparator().toOSString();
 					file = new File(pathString);
-				} while(!file.exists());
+				} while(!file.exists() && pathString.length() > 0);
 
 				if(!file.isDirectory())
 					return null;
@@ -142,7 +188,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 			public void widgetSelected(SelectionEvent e)
 			{
 				enableEclipseLocation(m_currentEclipseButton.getSelection());
-				getContainer().updateButtons();
+				firePageChanged();
 			}
 		};
 
@@ -150,10 +196,17 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		m_currentEclipseButton.addSelectionListener(radioListener);
 
 		m_newEclipseButton.setSelection(true);
-
+		enableEclipseLocation(m_currentEclipseButton.getSelection());
+		
 		setControl(pageComposite);
 	}
 
+	private void firePageChanged()
+	{
+		uncommitPage();
+		getContainer().updateButtons();
+	}
+	
 	@Override
 	public boolean isPageComplete()
 	{
@@ -163,6 +216,11 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	@Override
 	public boolean performPageCommit()
 	{
+		setErrorMessage(null);
+
+		m_buckminsterInstalled = false;
+		m_spacesInstalled = false;
+
 		if(m_newEclipseButton.getSelection())
 			return true;
 
@@ -179,6 +237,36 @@ public class TPNewOrCurrentPage extends TPWizardPage
 			if(!locationFile.exists())
 				throw new JNLPException("Selected Eclipse location is not a directory", null);
 
+			try
+			{
+				setTP(location);
+				IFeatureModel featureModel = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
+						ECLIPSE_FEATURE);
+				if(featureModel == null)
+					throw new JNLPException("The selected location is not an Eclipse folder", null);
+
+				m_currentEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, featureModel.getFeature()
+						.getVersion());
+
+				if(s_minEclipseVersion.compareTo(m_currentEclipseVersion) > 0)
+					throw new JNLPException("Your Eclipse is too old, you need the new version", null);
+
+				m_buckminsterInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
+						BUCKMINSTER_FEATURE) != null;
+				m_spacesInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(SPACES_FEATURE) != null;
+			}
+			catch(JNLPException e)
+			{
+				throw e;
+			}
+			catch(Exception e)
+			{
+				throw new JNLPException("Error in analysing Eclipse installation", null);
+			}
+			finally
+			{
+				unsetTP();
+			}
 		}
 		catch(JNLPException e)
 		{
@@ -204,9 +292,49 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		return m_newEclipseButton.getSelection();
 	}
 
+	boolean isEclipseUpToDate()
+	{
+		return s_minOkEclipseVersion.compareTo(m_currentEclipseVersion) <= 0;
+	}
+
+	IVersion getCurrentEclipseVersion()
+	{
+		return m_currentEclipseVersion;
+	}
+
+	boolean isBuckminsterInstalled()
+	{
+		return m_buckminsterInstalled;
+	}
+
+	boolean isSpacesInstalled()
+	{
+		return m_spacesInstalled;
+	}
+
 	private void enableEclipseLocation(boolean enabled)
 	{
 		m_locationText.setEnabled(enabled);
 		m_browseButton.setEnabled(enabled);
+	}
+
+	private void setTP(String targetPlatform)
+	{
+		PDECore pdePlugin = PDECore.getDefault();
+		Preferences preferences = pdePlugin.getPluginPreferences();
+		IPath newPath = new Path(targetPlatform);
+		Platform.getInstallLocation();
+		IPath defaultPath = new Path(TargetPlatform.getDefaultLocation());
+		String mode = defaultPath.equals(newPath)
+				? ICoreConstants.VALUE_USE_THIS
+				: ICoreConstants.VALUE_USE_OTHER;
+		preferences.setValue(ICoreConstants.TARGET_MODE, mode);
+		preferences.setValue(ICoreConstants.PLATFORM_PATH, targetPlatform);
+		pdePlugin.savePluginPreferences();
+	}
+
+	private void unsetTP()
+	{
+		this.setTP(TargetPlatform.getDefaultLocation());
 	}
 }

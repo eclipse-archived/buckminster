@@ -6,10 +6,12 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_PUBLISHER_EXCEPTION;
 
+import org.eclipse.buckminster.jnlp.JNLPException;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedTitleAreaDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;

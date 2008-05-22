@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
+package org.eclipse.buckminster.jnlp.wizard.publish;
 
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardPage;
 import org.eclipse.jface.resource.ImageDescriptor;

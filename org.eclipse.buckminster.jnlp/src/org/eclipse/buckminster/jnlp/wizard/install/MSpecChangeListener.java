@@ -6,28 +6,15 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp;
-
-import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardPage;
+package org.eclipse.buckminster.jnlp.wizard.install;
 
 /**
- * @author Karel Brezina
+ * Listens for changes in MSPEC builder. If the builder is changed, sends event with the new builder
  * 
+ * @author Karel Brezina
+ *
  */
-abstract public class TPWizardPage extends AdvancedWizardPage
+public interface  MSpecChangeListener
 {
-	protected TPWizardPage(String pageName)
-	{
-		super(pageName);
-	}
-
-	protected TPWizardPage(String pageName, String title, String message)
-	{
-		super(pageName, title, message, null);
-	}
-
-	TPWizard getTPWizard()
-	{
-		return (TPWizard)getAdvancedWizard();
-	}
+	void handleMSpecChangeEvent (MSpecChangeEvent event);
 }
