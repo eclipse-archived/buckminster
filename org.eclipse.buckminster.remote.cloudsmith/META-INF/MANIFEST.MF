@@ -4,16 +4,5 @@ Bundle-Name: Cloudsmith Remote Resolution Service Connector
 Bundle-SymbolicName: org.eclipse.buckminster.remote.cloudsmith;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.buckminster.remote,
- org.apache.commons.httpclient;bundle-version="3.1.0",
- org.eclipse.buckminster.core;bundle-version="1.1.0",
- org.eclipse.buckminster.jnlp;bundle-version="1.0.0",
- org.eclipse.core.runtime;bundle-version="3.4.0",
- org.eclipse.buckminster.opml;bundle-version="1.0.0",
- com.ibm.icu.base;bundle-version="3.8.1",
- org.apache.commons.codec;bundle-version="1.3.0",
- org.eclipse.buckminster.slf4j;bundle-version="1.0.0",
- org.slf4j.extendable;bundle-version="1.4.3"
-Bundle-ClassPath: .,
- lib/jabsorb-1.2.2.jar
+Require-Bundle: org.eclipse.buckminster.remote
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
