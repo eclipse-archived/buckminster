@@ -380,7 +380,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private void createProjectBinding(String projName, WorkspaceBinding wb, RMContext context,
+	private void createProjectBinding(String suggestedProjectName, WorkspaceBinding wb, RMContext context,
 			IProgressMonitor monitor) throws CoreException, IOException
 	{
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -400,9 +400,18 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 		// Find the .project file and load the description
 		//
-		IProjectDescription description = null;
 		monitor.beginTask(null, 150);
-		monitor.subTask("Binding " + projName);
+		monitor.subTask("Binding " + suggestedProjectName);
+		IProjectDescription description;
+		try
+		{
+			description = workspace.loadProjectDescription(locationPath.append(".project"));
+		}
+		catch(CoreException e)
+		{
+			description = null;
+		}
+		MonitorUtils.worked(monitor, 50);
 
 		// Some special treatment is needed for projects that are rooted in the workspace location
 		//
@@ -411,43 +420,28 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 		try
 		{
-			try
-			{
-				description = workspace.loadProjectDescription(locationPath.append(".project"));
-
-				// Consider it an error to attempt a bind using a different
-				// project name then the one present in the .project file.
-				//
-				if(isRootedInWorkspace && !projName.equals(description.getName()))
-					throw new ProjectNameMismatchException(projName, description.getName());
-				MonitorUtils.worked(monitor, 50);
-			}
-			catch(CoreException e)
+			if(description == null)
 			{
 				if(isRootedInWorkspace)
 				{
 					// This is heading for disaster unless the last segment of the locationPath
-					// is in fact equal to the name of the project
+					// is in fact equal to the name of the project. For some reason, Eclipse
+					// stipulates that this has to be the case for this particular physical
+					// layout.
 					//
 					String forcedName = locationPath.lastSegment();
-					if(!forcedName.equals(projName))
-					{
-						// We can't use another name since the project is directly below the workspace.
-						// Eclipse stipulates that the name *has* to be the same name as the folder
-						// at this point. So we start over here...
-						//
-						createProjectBinding(forcedName, wb, context, MonitorUtils.subMonitor(monitor, 150));
-						return;
-					}
+					if(!forcedName.equals(suggestedProjectName))
+						throw new ProjectNameMismatchException(suggestedProjectName, forcedName);
+					description = workspace.newProjectDescription(suggestedProjectName);
 				}
 				else
 				{
-					description = workspace.newProjectDescription(projName);
+					description = workspace.newProjectDescription(suggestedProjectName);
 					description.setLocation(locationPath);
 				}
 			}
 
-			IProject project = wsRoot.getProject(projName);
+			IProject project = wsRoot.getProject(description.getName());
 			if(!project.exists())
 				project.create(description, MonitorUtils.subMonitor(monitor, 50));
 
