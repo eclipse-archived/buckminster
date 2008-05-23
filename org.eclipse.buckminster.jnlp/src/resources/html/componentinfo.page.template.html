@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=UTF-8" />
+<title>Cloudsmith - Distro Page</title>
+<link rel="icon" href=
+"img/favicon.ico" type=
+"image/x-icon" />
+<style type="text/css">
+/*<![CDATA[*/
+body {
+        color:#424242;
+        font-family:Verdana,Arial,sans-serif;
+        font-size:x-small;
+        font-weight:normal;
+        width:900px;
+}
+
+* {
+        outline-style:none;
+}
+
+img {
+        border: none;
+}
+
+img.MaterializeProfileImage {
+        display:block;
+}
+
+label {
+        color:#939392;
+        font-family:Verdana;
+        font-size:x-small;
+        font-weight:700;
+        letter-spacing:0em;
+}
+
+h2 {
+        color:#3190D7;
+        font-family:Verdana;
+        font-size:x-small;
+        font-weight:bold;
+        margin-bottom:5px;
+        margin-top:10px;
+        padding:0px 0px 8px;
+}
+
+h3.PublisherSubHeading {
+        color:#727272;
+        margin-bottom:6px;
+        padding-top:12px;
+}
+
+h3 {
+        font-family:Verdana;
+        font-size:x-small;
+        margin-top:0px;
+}
+
+.PageHeader {
+        color:#727272;
+        font-size:medium;
+        font-weight:1000;
+}
+
+.Important {
+        font-weight:bold;
+}
+
+.InputField, .OutputField {
+        border:1px solid #ECECEC;
+        color:#3190D7;
+        font-family:Verdana;
+        font-size:x-small;
+        font-weight:normal;
+        letter-spacing:0em;
+        padding:3px 7px;
+}
+
+.DistroNameCell {
+        margin-bottom:0px;
+        margin-top:2px;
+        width:380px;
+}
+
+.HeadingDivider {
+        margin-bottom:10px;
+        margin-top:10px;
+}
+
+tr.DistroRow1 td {
+        padding-bottom:8px;
+}
+
+td.DistroNameLabelCell {
+        padding-right:10px;
+}
+
+div.Divider, div.Divider-L {
+        border-top:1px solid #ECECEC;
+        font-size:0px;
+        height:1px;
+        line-height:1px;
+        max-height:1px;
+        padding:0px;
+        width:818px;
+}
+
+ul {
+	list-style-type: none;
+	list-style-image: none;
+	list-style-position: outside;
+	font-size:x-small;
+}
+
+li {
+	margin-top: 10px;
+}
+
+a, a:visited {
+        color: #2180c7;
+}
+
+a:hover {
+        color: #8cafcd;
+}
+
+a.FooterLink {
+        text-decoration: none;
+        padding-bottom: 2px;
+}
+
+a.FooterLink:link, a.FooterLink:visited {
+        color: #b3b3b2;
+}
+
+a.FooterLink:hover {
+        color: #3190d7;
+}
+
+a.BlueLink, a.BlueLink:visited {
+        color: #2180c7;
+        text-decoration: none;
+}
+
+a.BlueLink:hover {
+        color: #3190d7;
+        text-decoration: underline;
+}
+
+/*]]>*/
+</style>
+</head>
+<body>
+<div style="margin-left:35px; margin-top:25px;">
+<table style="width:818px; margin-left:15px;" cellspacing="0"
+cellpadding="0">
+<col style="width:70%; margin-right:30px;" />
+<col style="width:30%;" />
+<tr>
+<td colspan="2"><a id="homeLink" href=
+"#{basePath}/home.seam" name="homeLink"><img id=
+"bannerLogo" src=
+"img/logotype.2.png" alt=
+"cloudsmith logo" /></a></td>
+</tr>
+<tr>
+<td style="padding-top:30px;"><label class="PageHeader">DISTRO
+PAGE</label></td>
+<td style="text-align: right; vertical-align: bottom;"><a id=
+"cloudpageLink" class="BlueLink" href=
+"#{basePath}/dynamic/view/81428336.component" name=
+"cloudpageLink">go to Cloudpage&nbsp;<img src=
+"img/arrow.blue2.png" alt="blue arrow" /></a></td>
+</tr>
+<tr>
+<td colspan="2">
+<div class="Divider HeadingDivider"></div>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top;">
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td colspan="2">
+<h2>General Information</h2>
+</td>
+</tr>
+<tr class="DistroRow1">
+<td class="DistroNameLabelCell"><label id="distroNameLabel" for=
+"distroNameField">Distro</label></td>
+<td><input id="distroNameField" name="distroNameField" value=
+"" class="DistroNameCell OutputField Important"
+readonly="readonly" type="text" /></td>
+</tr>
+<tr class="DistroRow1">
+<td class="DistroNameLabelCell"><label id="distroVersionLabel" for=
+"distroVersionField">Version</label></td>
+<td><input id="distroVersionField" name="distroVersionField" value=
+"" class="DistroNameCell OutputField Important"
+readonly="readonly" type="text" /></td>
+</tr>
+<tr class="DistroRow1">
+<td class="DistroNameLabelCell"><label id=
+"distroComponentDescLabel" for=
+"distroComponentDescField">Description</label></td>
+<td><input id="distroComponentDescField" name=
+"distroComponentDescField" value="" class=
+"DistroNameCell OutputField Important" readonly="readonly" type=
+"text" /></td>
+</tr>
+<tr class="DistroRow1">
+<td style="vertical-align:top; padding-top:8px;" class=
+"DistroNameLabelCell"><label id="distroComponentDocLabel" for=
+"distroComponentDocField">Documentation</label></td>
+<td>
+<textarea id="distroComponentDocField" name=
+"distroComponentDocField" rows="4" cols="5" class=
+"DistroNameCell OutputField Important" readonly="readonly">
+</textarea></td>
+</tr>
+</table>
+</td>
+<td style="vertical-align:top;">
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td colspan="2">
+<h2>Publisher Information</h2>
+</td>
+</tr>
+<tr>
+<td>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td><img id="publisherImage" src="img/avatar.fpo.png"
+class="MaterializeProfileImage" alt="publisher image" /></td>
+<td style="vertical-align: top;">
+<h3 id="publisherName" class="PublisherSubHeading"></h3>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<h3 class="PublisherSubHeading">Information from the publisher</h3>
+<span id="publisherInfo"></span></td>
+</tr>
+<tr>
+<td>
+<h3 class="PublisherSubHeading">Link to more info from
+publisher</h3>
+<a id="publisherURL" href="" class="BlueLink"></a></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<div class="Divider HeadingDivider"></div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<h2>Additional Distro Information</h2>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<div id="distroInfo" style="width: 818px; max-height: 280px; overflow: auto;">
+</div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<div style="margin-top: 80px;"><a class="FooterLink" href=
+"#{basePath}/INFO-aboutus.html">about
+us</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class=
+"FooterLink" href=
+"#{basePath}/INFO-terms.html">terms</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class="FooterLink"
+href=
+"#{basePath}/INFO-news.html">news</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class="FooterLink"
+href="http://blog.cloudsmith.com">blog</a>&nbsp;<span style=
+"color:#ececec;">|</span>&nbsp;<a class="FooterLink" href=
+"#{basePath}/INFO-press.html">press</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class="FooterLink"
+href=
+"#{basePath}/INFO-contact.html">contact</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;
+<a class="FooterLink" href="http://127.0.0.1/forum">forum</a><br />
+<img class="Cloudbar2" src=
+"img/footer.bar.2.png" height=
+"10" width="210" alt="cloudbar" /><br />
+</div>
+</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

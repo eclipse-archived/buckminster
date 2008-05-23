@@ -63,6 +63,11 @@ public class TPNewLocationPage extends TPWizardPage
 		m_heading.setLayoutData(gridData);
 
 		Label label = new Label(m_pageComposite, SWT.NONE);
+		gridData = new GridData();
+		gridData.horizontalSpan = 3;
+		label.setLayoutData(gridData);
+		
+		label = new Label(m_pageComposite, SWT.NONE);
 		label.setText("Destination Address:");
 		label.setToolTipText(TOOL_TIP_DESTINATION_ADDRESS);
 
