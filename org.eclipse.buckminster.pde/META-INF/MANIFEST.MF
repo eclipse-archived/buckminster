@@ -11,7 +11,9 @@ Export-Package: org.eclipse.buckminster.pde,
  org.eclipse.buckminster.pde.cspecgen.bundle,
  org.eclipse.buckminster.pde.cspecgen.feature,
  org.eclipse.buckminster.pde.internal,
- org.eclipse.buckminster.pde.mapprovider
+ org.eclipse.buckminster.pde.mapfile,
+ org.eclipse.buckminster.pde.mapprovider,
+ org.eclipse.buckminster.pde.tasks
 Require-Bundle: org.eclipse.buckminster.jdt;bundle-version="1.0.0",
  org.eclipse.buckminster.ant;bundle-version="1.1.0",
  org.eclipse.buckminster.core;bundle-version="1.1.0",
