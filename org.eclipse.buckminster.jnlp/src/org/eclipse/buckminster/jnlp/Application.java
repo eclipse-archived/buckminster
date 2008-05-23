@@ -50,7 +50,7 @@ public class Application implements IApplication
 	 * The wizard dialog width
 	 */
 	private static final int WIZARD_MIN_WIDTH = 550;
-	private static final int WIZARD_MAX_WIDTH = 850;
+	private static final int WIZARD_MAX_WIDTH = 750;
 
 	/**
 	 * The wizard dialog height
