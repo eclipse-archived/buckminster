@@ -636,7 +636,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder buildSource = cspec.getGroup(ATTRIBUTE_ECLIPSE_BUILD_SOURCE);
 		if(buildSource == null && createIfMissing)
 		{
-			buildSource = cspec.addGroup(ATTRIBUTE_ECLIPSE_BUILD_SOURCE, false);
+			buildSource = cspec.addGroup(ATTRIBUTE_ECLIPSE_BUILD_SOURCE, true);
 			getAttributeEclipseBuild().addLocalPrerequisite(ATTRIBUTE_ECLIPSE_BUILD_SOURCE);
 		}
 		return buildSource;
