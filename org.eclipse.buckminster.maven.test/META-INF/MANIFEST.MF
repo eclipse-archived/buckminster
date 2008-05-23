@@ -1,9 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test Fragment for Buckminster maven support
+Bundle-Name: Test Plugin for Buckminster maven support
 Bundle-SymbolicName: org.eclipse.buckminster.maven.test
 Bundle-Version: 1.0.0
 Bundle-Vendor: Eclipse.org
-Fragment-Host: org.eclipse.buckminster.maven;bundle-version="0.0.0"
-Require-Bundle: org.junit4
+Require-Bundle: org.junit4,
+ org.eclipse.buckminster.maven;bundle-version="1.1.0",
+ org.eclipse.buckminster.core;bundle-version="1.1.0",
+ org.eclipse.buckminster.runtime;bundle-version="1.1.0",
+ org.eclipse.core.runtime;bundle-version="3.4.0",
+ org.eclipse.buckminster.sax;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
