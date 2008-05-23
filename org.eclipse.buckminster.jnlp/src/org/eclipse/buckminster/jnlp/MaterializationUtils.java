@@ -352,4 +352,50 @@ public class MaterializationUtils
 		URL imageUrl = myClass.getResource(imageResource);
 		return ImageDescriptor.createFromURL(imageUrl).createImage();
 	}
+	
+	/**
+	 * From a given path computes a path that exists in the file system. 
+	 * 
+	 * @param enteredPath entered path
+	 * @return path that exists in the file system
+	 */
+	public static String getKnownPath(String enteredPath)
+	{
+		IPath path = new Path(enteredPath);
+
+		if(path == null)
+			return null;
+
+		File file = null;
+		String pathString = null;
+		do
+		{
+			// second and other runs - remove last segment
+			if(file != null)
+				path = path.removeLastSegments(1);
+
+			pathString = path.removeTrailingSeparator().toOSString();
+			file = new File(pathString);
+		} while(!file.exists() && pathString.length() > 0);
+
+		if(!file.isDirectory())
+			return null;
+
+		return pathString;
+	}
+
+	public static File getBackupFolder(File eclipseFolder)
+	{
+		String backupString = eclipseFolder.getPath() + ".backup";
+		File backupFile = new File(backupString);
+		
+		int i = 0;
+		while(backupFile.exists())
+		{
+			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i)));
+		}
+		
+		return backupFile;
+	}
+
 }

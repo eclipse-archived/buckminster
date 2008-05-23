@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -65,6 +66,10 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 	private static final IVersion s_minOkEclipseVersion;
 
+	private Composite m_pageComposite;
+	
+	private Label m_heading;
+	
 	private Button m_newEclipseButton;
 
 	private Button m_currentEclipseButton;
@@ -95,30 +100,31 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	protected TPNewOrCurrentPage()
 	{
 		super(MaterializationConstants.STEP_TP_INTRO, "New or Current Eclipse",
-				"Do you want to install a new Elipse or use the current one?");
+				"Do you want to install a new Elipse or use a current one?");
 	}
 
 	public void createControl(Composite parent)
 	{
-		Composite pageComposite = new Composite(parent, SWT.NONE);
-		pageComposite.setLayout(new GridLayout(1, false));
-		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		m_pageComposite = new Composite(parent, SWT.NONE);
+		m_pageComposite.setLayout(new GridLayout(1, false));
+		m_pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		m_newEclipseButton = new Button(pageComposite, SWT.RADIO);
+		m_heading = new Label(m_pageComposite, SWT.WRAP);
+
+		new Label(m_pageComposite, SWT.NONE);
+		m_newEclipseButton = new Button(m_pageComposite, SWT.RADIO);
 		m_newEclipseButton.setText("New Eclipse");
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_newEclipseButton.setLayoutData(gridData);
 
-		new Label(pageComposite, SWT.NONE);
-
-		m_currentEclipseButton = new Button(pageComposite, SWT.RADIO);
+		m_currentEclipseButton = new Button(m_pageComposite, SWT.RADIO);
 		m_currentEclipseButton.setText("Current Eclipse");
 		gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		m_currentEclipseButton.setLayoutData(gridData);
 
-		Group currentEclipseGroup = new Group(pageComposite, SWT.NONE);
+		Group currentEclipseGroup = new Group(m_pageComposite, SWT.NONE);
 		currentEclipseGroup.setLayout(new GridLayout(3, false));
 		currentEclipseGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -147,7 +153,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 			public void widgetSelected(SelectionEvent se)
 			{
 				DirectoryDialog dlg = new DirectoryDialog(m_browseButton.getShell());
-				dlg.setFilterPath(getKnownPath());
+				dlg.setFilterPath(MaterializationUtils.getKnownPath(m_locationText.getText()));
 				String dir = dlg.open();
 
 				if(dir != null)
@@ -155,33 +161,8 @@ public class TPNewOrCurrentPage extends TPWizardPage
 					m_locationText.setText(dir);
 				}
 			}
-
-			private String getKnownPath()
-			{
-				IPath path = new Path(m_locationText.getText());
-
-				if(path == null)
-					return null;
-
-				File file = null;
-				String pathString = null;
-				do
-				{
-					// second and other runs - remove last segment
-					if(file != null)
-						path = path.removeLastSegments(1);
-
-					pathString = path.removeTrailingSeparator().toOSString();
-					file = new File(pathString);
-				} while(!file.exists() && pathString.length() > 0);
-
-				if(!file.isDirectory())
-					return null;
-
-				return pathString;
-			}
 		});
-
+		
 		SelectionListener radioListener = new SelectionAdapter()
 		{
 			@Override
@@ -198,7 +179,17 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		m_newEclipseButton.setSelection(true);
 		enableEclipseLocation(m_currentEclipseButton.getSelection());
 		
-		setControl(pageComposite);
+		setControl(m_pageComposite);
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
+		m_heading.setText("Do you want to install a new Elipse or use a current one?");
+		GridData layoutData = (GridData)m_heading.getLayoutData();
+		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
+		m_pageComposite.layout();
 	}
 
 	private void firePageChanged()
@@ -221,6 +212,8 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		m_buckminsterInstalled = false;
 		m_spacesInstalled = false;
 
+		getTPWizard().setNewEclipse(m_newEclipseButton.getSelection());
+		
 		if(m_newEclipseButton.getSelection())
 			return true;
 
@@ -246,7 +239,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 					throw new JNLPException("The selected location is not an Eclipse folder", null);
 
 				m_currentEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, featureModel.getFeature()
-						.getVersion());
+						.getVersion()).replaceQualifier(null);
 
 				if(s_minEclipseVersion.compareTo(m_currentEclipseVersion) > 0)
 					throw new JNLPException("Your Eclipse is too old, you need the new version", null);
@@ -277,14 +270,9 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		return true;
 	}
 
-	IPath getEclipseLocation()
+	String getEclipseFolder()
 	{
-		String pathStr = m_locationText.getText();
-		IPath path = (pathStr == null || pathStr.length() == 0)
-				? null
-				: Path.fromOSString(pathStr).addTrailingSeparator();
-
-		return path;
+		return UiUtils.trimmedValue(m_locationText);
 	}
 
 	boolean isNewEclipse()

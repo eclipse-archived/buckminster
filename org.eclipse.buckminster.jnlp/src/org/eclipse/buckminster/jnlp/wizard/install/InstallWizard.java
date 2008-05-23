@@ -51,6 +51,10 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_N
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_VERSION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_PROJECTS_DISTRO_URL;
+
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
 
@@ -85,6 +89,9 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.wizard.ILoginHandler;
 import org.eclipse.buckminster.jnlp.wizard.IUnresolvedNodeHandler;
@@ -199,6 +206,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_cspecVersionString;
 
 	private String m_cspecVersionType;
+
+	private String m_eclipseDistroURL;
+	
+	private IVersion m_eclipseDistroVersion;
+	
+	private String m_eclipseProjectsDistroURL;
 
 	private boolean m_loginPageRequested = false;
 
@@ -649,6 +662,21 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public String getCSpecVersionType()
 	{
 		return m_cspecVersionType;
+	}
+
+	public String getEclipseDistroURL()
+	{
+		return m_eclipseDistroURL;
+	}
+
+	public IVersion getEclipseDistroVersion()
+	{
+		return m_eclipseDistroVersion;
+	}
+
+	public String getEclipseProjectsDistroURL()
+	{
+		return m_eclipseProjectsDistroURL;
 	}
 
 	IWizardPage getDownloadPage()
@@ -1450,6 +1478,19 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
 
+		m_eclipseDistroURL = properties.get(PROP_ECLIPSE_DISTRO_URL);
+		tmp = properties.get(PROP_ECLIPSE_DISTRO_VERSION);
+		try
+		{
+			m_eclipseDistroVersion = (tmp == null ? null : VersionFactory.createVersion(IVersionType.OSGI, tmp));
+		}
+		catch(CoreException e)
+		{
+			m_eclipseDistroVersion = null;
+		}
+		
+		m_eclipseProjectsDistroURL = properties.get(PROP_ECLIPSE_PROJECTS_DISTRO_URL);
+		
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;

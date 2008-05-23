@@ -42,6 +42,8 @@ public interface MaterializationConstants
 
 	public static final String STEP_TP_NEW_LOCATION = "TPNewLocation";
 
+	public static final String STEP_TP_BACKUP_FOLDER = "TPNewLocation";
+
 	public static final String PROP_PROPVERSION = "propVersion";
 
 	public static final String PROP_POPUP_DELAY = "popupDelay";
@@ -97,6 +99,12 @@ public interface MaterializationConstants
 	public static final String PROP_CSPEC_VERSION_STRING = "cspecVersionString";
 	
 	public static final String PROP_CSPEC_VERSION_TYPE = "cspecVersionType";
+
+	public static final String PROP_ECLIPSE_DISTRO_URL = "eclipseDistroURL";
+
+	public static final String PROP_ECLIPSE_DISTRO_VERSION = "eclipseDistroVersion";
+
+	public static final String PROP_ECLIPSE_PROJECTS_DISTRO_URL = "eclipseProjectsDistroURL";
 
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
 

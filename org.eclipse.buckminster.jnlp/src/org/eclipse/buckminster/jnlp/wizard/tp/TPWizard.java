@@ -12,6 +12,10 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_EN
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
 
+import java.io.File;
+
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.swt.graphics.Image;
@@ -24,7 +28,15 @@ public class TPWizard extends AdvancedWizard
 {
 	private static final String TP_WINDOW_TITLE = "Setup Eclipse Installation";
 
-	InstallWizard m_installWizard;
+	private static final String ECLIPSE_FOLDER_NAME = "eclipse";
+
+	private InstallWizard m_installWizard;
+
+	private TPNewOrCurrentPage m_newOrCurrentPage;
+
+	private TPNewLocationPage m_newLocationPage;
+
+	private boolean m_newEclipse;
 
 	public TPWizard(InstallWizard installWizard)
 	{
@@ -59,7 +71,17 @@ public class TPWizard extends AdvancedWizard
 	@Override
 	public boolean performFinish()
 	{
-		// TODO Auto-generated method stub
+		if(isNewEclipse())
+		{
+			File eclipseFolder = new File(getEclipseFolder());
+			
+			if(eclipseFolder.exists())
+			{
+				File backupFolder = MaterializationUtils.getBackupFolder(eclipseFolder);
+				eclipseFolder.renameTo(backupFolder);
+			}
+		}
+
 		return false;
 	}
 
@@ -67,7 +89,16 @@ public class TPWizard extends AdvancedWizard
 	protected void addAdvancedPages()
 	{
 		addAdvancedPage(new TPIntroPage());
-		addAdvancedPage(new TPNewOrCurrentPage());
+
+		m_newOrCurrentPage = new TPNewOrCurrentPage();
+		addAdvancedPage(m_newOrCurrentPage);
+
+		addAdvancedPage(new TPNewRecommendedPage());
+
+		m_newLocationPage = new TPNewLocationPage();
+		addAdvancedPage(m_newLocationPage);
+
+		addAdvancedPage(new TPBackupFolderPage());
 	}
 
 	@Override
@@ -80,5 +111,40 @@ public class TPWizard extends AdvancedWizard
 	protected Image getWizardImage()
 	{
 		return m_installWizard.getWizardImage();
+	}
+
+	IVersion getCurrentEclipseVersion()
+	{
+		return m_newOrCurrentPage.getCurrentEclipseVersion();
+	}
+
+	IVersion getProvidedEclipseVersion()
+	{
+		return m_installWizard.getEclipseDistroVersion();
+	}
+
+	boolean isNewEclipse()
+	{
+		return m_newEclipse;
+	}
+
+	void setNewEclipse(boolean newEclipse)
+	{
+		m_newEclipse = newEclipse;
+	}
+
+	String getNewEclipseDestinationFolder()
+	{
+		return m_newLocationPage.getDestinationFolder();
+	}
+
+	String getEclipseFolder()
+	{
+		if(isNewEclipse())
+			return getNewEclipseDestinationFolder() == null
+					? null
+					: (getNewEclipseDestinationFolder() + File.separatorChar + ECLIPSE_FOLDER_NAME);
+
+		return m_newOrCurrentPage.getEclipseFolder();
 	}
 }
