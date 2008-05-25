@@ -155,7 +155,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 	private void dialogChanged()
 	{
 		IResource container = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()));
-		String fileName = getFileName();
+		String fileName = fileText.getText();
 
 		if(getContainerName().length() == 0)
 		{
@@ -206,9 +206,16 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		return containerText.getText();
 	}
 
+	/**
+	 * Returns the entered filename with correct extension.
+	 * @return
+	 */
 	public String getFileName()
 	{
-		return fileText.getText();
+		String fileName = fileText.getText();
+		if(!fileName.endsWith("." + m_extension))
+			fileName += "." + m_extension;
+		return fileName;
 	}
 
 }

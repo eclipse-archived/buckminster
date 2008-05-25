@@ -128,6 +128,7 @@ public abstract class NewBMFileWizard extends Wizard
 			throwCoreException("Container \"" + containerName + "\" does not exist.");
 		}
 		IContainer container = (IContainer)resource;
+		
 		final IFile file = container.getFile(new Path(fileName));
 		try
 		{
