@@ -810,15 +810,33 @@ public class SvnSession implements Closeable
 			monitor.beginTask(null, 1);
 			try
 			{
-				SVNUrl svnURL = getSVNUrl(null);
-				ISVNInfo info = m_clientAdapter.getInfo(svnURL);
-				if(info == null)
-					return null;
-				repoRev = info.getRevision();
-			}
-			catch(SVNClientException e)
-			{
-				throw BuckminsterException.wrap(e);
+				for(int retries = 0;; ++retries)
+				{
+					try
+					{
+						SVNUrl svnURL = getSVNUrl(null);
+						ISVNInfo info = m_clientAdapter.getInfo(svnURL);
+						if(info == null)
+							return null;
+						repoRev = info.getRevision();
+						break;
+					}
+					catch(SVNClientException e)
+					{
+						if(++retries < 3)
+						{
+							try
+							{
+								Thread.sleep(2000);
+							}
+							catch(InterruptedException e1)
+							{
+							}
+							continue;
+						}
+						throw BuckminsterException.wrap(e);
+					}
+				}
 			}
 			finally
 			{
@@ -997,11 +1015,19 @@ public class SvnSession implements Closeable
 			catch(SVNClientException e)
 			{
 				String msg = e.getMessage();
-				if(msg != null && msg.toLowerCase().contains("non-existent"))
+				if(msg != null)
 				{
-					logger.debug("Remote folder does not exist %s[%s]", url, revision);
-					m_dirCache.put(key, null);
-					return null;
+					msg = msg.toLowerCase();
+					if(msg != null)
+					{
+						msg = msg.toLowerCase();
+						if(msg.contains("non-existent") || msg.contains("not found"))
+						{
+							logger.debug("Remote folder does not exist %s[%s]", url, revision);
+							m_dirCache.put(key, null);
+							return null;
+						}
+					}
 				}
 				throw BuckminsterException.wrap(e);
 			}
@@ -1043,8 +1069,7 @@ public class SvnSession implements Closeable
 					msg = msg.toLowerCase();
 					if(msg.contains("non-existent") || msg.contains("not found"))
 					{
-						if(logger.isDebugEnabled())
-							logger.debug(String.format("Remote folder does not exist %s", key));
+						logger.debug("Remote folder does not exist %s", key);
 						return s_emptyFolder;
 					}
 				}

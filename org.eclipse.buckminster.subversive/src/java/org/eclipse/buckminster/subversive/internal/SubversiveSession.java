@@ -954,8 +954,7 @@ public class SubversiveSession implements Closeable
 					msg = msg.toLowerCase();
 					if(msg.contains("non-existent") || msg.contains("not found"))
 					{
-						if(logger.isDebugEnabled())
-							logger.debug(String.format("Remote folder does not exist %s", key));
+						logger.debug("Remote folder does not exist %s", key);
 						return s_emptyFolder;
 					}
 				}
