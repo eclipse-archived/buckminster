@@ -230,6 +230,10 @@ public class URLCatalogReaderType extends CatalogReaderType
 			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
 		}
+		finally
+		{
+			IOUtils.close(pageSource);
+		}
 		return links.toArray(new URL[links.size()]);
 	}
 
