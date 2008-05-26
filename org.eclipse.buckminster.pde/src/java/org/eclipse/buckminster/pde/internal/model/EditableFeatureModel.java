@@ -154,7 +154,8 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		{
 			try
 			{
-				ctxQualLen = getContextQualifierLength(new FileInputStream(m_externalFile));
+				input = new FileInputStream(m_externalFile);
+				ctxQualLen = getContextQualifierLength(input);
 			}
 			catch(FileNotFoundException e)
 			{

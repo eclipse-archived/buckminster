@@ -22,6 +22,7 @@ import org.eclipse.buckminster.pde.internal.datatransfer.IImportStructureProvide
 import org.eclipse.buckminster.pde.internal.datatransfer.ImportOperation;
 import org.eclipse.buckminster.pde.internal.datatransfer.ZipFileStructureProvider;
 import org.eclipse.buckminster.pde.internal.dialogs.IOverwriteQuery;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -304,22 +305,26 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 
 	protected void importArchive(IProject project, File archive, IPath destPath) throws CoreException
 	{
+		FileInputStream fstream = null;
 		try
 		{
 			if(destPath.segmentCount() > 2)
 				CoreUtility.createFolder(project.getFolder(destPath.removeLastSegments(1)));
 			IFile file = project.getFile(destPath);
-			FileInputStream fstream = new FileInputStream(archive);
+			fstream = new FileInputStream(archive);
 			if(file.exists())
 				file.setContents(fstream, true, false, null);
 			else
 				file.create(fstream, true, null);
-			fstream.close();
 		}
 		catch(IOException e)
 		{
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.OK, e.getMessage(), e);
 			throw new CoreException(status);
+		}
+		finally
+		{
+			IOUtils.close(fstream);
 		}
 	}
 
