@@ -55,12 +55,12 @@ public class VersionFactory
 		return VersionDesignator.explicitFromString(versionType, versionString);
 	}
 
-	public static IVersionDesignator createGTEqualDesignator(IVersion version) throws VersionSyntaxException
+	public static IVersionDesignator createGTEqualDesignator(IVersion version)
 	{
 		return VersionDesignator.GTEqual(version);
 	}
 
-	public static IVersionDesignator createExplicitDesignator(IVersion version) throws VersionSyntaxException
+	public static IVersionDesignator createExplicitDesignator(IVersion version)
 	{
 		return VersionDesignator.explicit(version);
 	}

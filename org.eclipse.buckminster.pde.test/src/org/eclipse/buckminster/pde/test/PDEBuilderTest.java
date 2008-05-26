@@ -66,7 +66,7 @@ public class PDEBuilderTest extends PDETestCase
 		if(reader[0] != null)
 			reader[0].close();
 
-		IFeatureModel featureModel = EclipsePlatformReaderType.getBestFeature("org.eclipse.pde", null);
+		IFeatureModel featureModel = EclipsePlatformReaderType.getBestFeature("org.eclipse.pde", null, null);
 		String installLocation = featureModel.getInstallLocation();
 		if(installLocation == null)
 		{

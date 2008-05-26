@@ -282,9 +282,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				featureExports.setRebase(OUTPUT_DIR_SITE);
 				createProduct.addLocalPrerequisite(featureExports);
 
-				IFeatureModel exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.equinox.executable", null);
+				IFeatureModel exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.equinox.executable", null, null);
 				if(exeFeature == null)
-					exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.platform.launchers", null);
+					exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.platform.launchers", null, null);
 
 				if(exeFeature != null)
 				{

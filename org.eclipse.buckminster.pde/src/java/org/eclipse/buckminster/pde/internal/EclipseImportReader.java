@@ -46,7 +46,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class EclipseImportReader extends AbstractRemoteReader implements ISiteReader, IPDEConstants
+public class EclipseImportReader extends AbstractRemoteReader implements IPDEConstants
 {
 	private EclipseImportBase m_base;
 

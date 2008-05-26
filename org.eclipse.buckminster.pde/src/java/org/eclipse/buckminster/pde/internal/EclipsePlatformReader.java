@@ -19,7 +19,6 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -31,6 +30,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.IModel;
-import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
@@ -50,7 +49,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class EclipsePlatformReader extends AbstractCatalogReader implements ISiteReader
+public class EclipsePlatformReader extends AbstractCatalogReader
 {
 	public enum InstalledType { FEATURE, PLUGIN }
 
@@ -115,11 +114,6 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 		return false;
 	}
 
-	public List<IFragmentModel> getFragmentsFor(String pluginId)
-	{
-		return ((EclipsePlatformReaderType)getReaderType()).getFragmentsFor(pluginId);
-	}
-
 	public synchronized IPluginModelBase getPluginModelBase() throws CoreException
 	{
 		if(m_type != InstalledType.PLUGIN)
@@ -127,16 +121,11 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 
 		if(m_model == null)
 		{
-			m_model = getBestPlugin(getDesiredVersion());
+			m_model = getBestPlugin();
 			if(m_model == null)
 				throw new MissingComponentException(m_componentName);
 		}
 		return (IPluginModelBase)m_model;
-	}
-
-	public IPluginModelBase getPluginModelBase(String pluginId, String version)
-	{
-		return EclipsePlatformReaderType.getBestPlugin(pluginId, version);
 	}
 
 	public InstalledType getType()
@@ -272,29 +261,29 @@ public class EclipsePlatformReader extends AbstractCatalogReader implements ISit
 			return null;
 
 		if(m_model == null)
-			m_model = getBestFeature(getDesiredVersion());
+			m_model = getBestFeature();
 		return (IFeatureModel)m_model;
 	}
 
-	private IFeatureModel getBestFeature(String desiredVersion)
+	private IFeatureModel getBestFeature()
 	{
-		return EclipsePlatformReaderType.getBestFeature(m_componentName, desiredVersion);
+		return EclipsePlatformReaderType.getBestFeature(m_componentName, getDesiredVersion(), null);
 	}
 
-	private IPluginModelBase getBestPlugin(String desiredVersion)
+	private IPluginModelBase getBestPlugin()
 	{
-		return EclipsePlatformReaderType.getBestPlugin(m_componentName, desiredVersion);
+		return EclipsePlatformReaderType.getBestPlugin(m_componentName, getDesiredVersion(), null);
 	}
 
-	private String getDesiredVersion()
+	private IVersionDesignator getDesiredVersion()
 	{
-		String desiredVersion = null;
+		IVersionDesignator desiredVersion = null;
 		ProviderMatch vsMatch = getProviderMatch();
 		if(vsMatch != null)
 		{
 			IVersion version = vsMatch.getVersionMatch().getVersion();
 			if(version != null)
-				desiredVersion = version.toString();
+				desiredVersion = VersionFactory.createExplicitDesignator(version);
 		}
 		return desiredVersion;
 	}

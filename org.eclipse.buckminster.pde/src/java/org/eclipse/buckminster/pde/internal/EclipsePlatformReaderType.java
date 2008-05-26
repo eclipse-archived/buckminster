@@ -20,7 +20,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,10 +41,12 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.site.ISiteFeatureConverter;
 import org.eclipse.buckminster.core.site.SaxableSite;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -60,7 +61,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.service.resolver.BundleDescription;
-import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.core.PDECore;
@@ -264,19 +264,19 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	public IPath getFixedLocation(Resolution cr)
 	{
 		IVersion version = cr.getVersion();
-		String versionString = version == null ? null : version.toString();
+		IVersionDesignator vd = version == null ? null : VersionFactory.createExplicitDesignator(version);
 		String location;
 		ComponentRequest rq = cr.getRequest();
 		if(IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID()))
 		{
-			IFeatureModel model = getBestFeature(rq.getName(), versionString);
+			IFeatureModel model = getBestFeature(rq.getName(), vd, null);
 			if(model == null)
 				return null;
 			location = model.getInstallLocation();
 		}
 		else
 		{
-			IPluginModelBase model = getBestPlugin(rq.getName(), versionString);
+			IPluginModelBase model = getBestPlugin(rq.getName(), vd, null);
 			if(model == null)
 				return null;
 			location = model.getInstallLocation();
@@ -310,61 +310,74 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		return null;
 	}
 
-	public static IFeatureModel getBestFeature(String componentName, String desiredVersion)
+	public static IFeatureModel getBestFeature(String componentName, IVersionDesignator versionDesignator, NodeQuery query)
 	{
-		if(desiredVersion == null)
-			desiredVersion = "0.0.0";
-		return PDECore.getDefault().getFeatureModelManager().findFeatureModel(componentName, desiredVersion);
+		IFeatureModel candidate = null;
+		IVersion candidateVersion = null;
+		for(IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName))
+		{
+			IFeature feature = model.getFeature();
+			String ov = feature.getVersion();
+			if(ov == null)
+			{
+				if(candidate == null && versionDesignator == null)
+					candidate = model;
+				continue;
+			}
+
+			IVersion v = VersionFactory.OSGiType.coerce(ov);
+			if(!(versionDesignator == null || versionDesignator.designates(v)))
+			{
+				if(query != null)
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s", versionDesignator));
+				continue;
+			}
+
+			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
+			{
+				candidate = model;
+				candidateVersion = v;
+			}
+		}
+		return candidate;
 	}
 
-	public static IPluginModelBase getBestPlugin(String componentName, String desiredVersion)
+	public static IPluginModelBase getBestPlugin(String componentName, IVersionDesignator versionDesignator, NodeQuery query)
 	{
-		IPluginModelBase unversioned = null;
+		IPluginModelBase candidate = null;
+		IVersion candidateVersion = null;
 		for(IPluginModelBase model : PluginRegistry.getActiveModels())
 		{
 			BundleDescription desc = model.getBundleDescription();
 			if(desc == null)
 				continue;
 
-			if(desc.getSymbolicName().equals(componentName))
-			{
-				Version v = desc.getVersion();
-				if(v == null)
-				{
-					if(desiredVersion == null)
-						return model;
-					unversioned = model;
-					continue;
-				}
+			if(!desc.getSymbolicName().equals(componentName))
+				continue;
 
-				if(desiredVersion == null || desiredVersion.equals(v.toString()))
-					return model;
+			Version ov = desc.getVersion();
+			if(ov == null)
+			{
+				if(candidate == null && versionDesignator == null)
+					candidate = model;
+				continue;
+			}
+
+			IVersion v = VersionFactory.OSGiType.coerce(ov);
+			if(!(versionDesignator == null || versionDesignator.designates(v)))
+			{
+				if(query != null)
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s", versionDesignator));
+				continue;
+			}
+
+			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
+			{
+				candidate = model;
+				candidateVersion = v;
 			}
 		}
-		return unversioned;
-	}
-
-	public List<IFragmentModel> getFragmentsFor(String pluginId)
-	{
-		IPluginModelBase plugin = getBestPlugin(pluginId, null);
-		if(plugin == null || plugin.isFragmentModel())
-			return Collections.<IFragmentModel> emptyList();
-
-		ArrayList<IFragmentModel> frags = null;
-		for(IPluginModelBase candidate : PDECore.getDefault().getModelManager().getActiveModels(true))
-		{
-			if(candidate.isFragmentModel())
-			{
-				IFragmentModel frag = (IFragmentModel)candidate;
-				if(frag.getFragment().getPluginId().equals(pluginId))
-				{
-					if(frags == null)
-						frags = new ArrayList<IFragmentModel>();
-					frags.add(frag);
-				}
-			}
-		}
-		return frags == null ? Collections.<IFragmentModel> emptyList() : frags;
+		return candidate;
 	}
 
 	private static String getArtifactURLString(RMContext context, Resolution res) throws CoreException
