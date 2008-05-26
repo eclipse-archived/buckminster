@@ -42,7 +42,13 @@ public interface MaterializationConstants
 
 	public static final String STEP_TP_NEW_LOCATION = "TPNewLocation";
 
-	public static final String STEP_TP_BACKUP_FOLDER = "TPNewLocation";
+	public static final String STEP_TP_BACKUP_FOLDER = "TPBackupFolder";
+
+	public static final String STEP_TP_DONE = "TPDone";
+
+	public static final String STEP_TP_OPERATION = "TPOperatation";
+
+	public static final String STEP_TP_PROJECT_SELECTION = "TPProjectSelection";
 
 	public static final String PROP_PROPVERSION = "propVersion";
 
