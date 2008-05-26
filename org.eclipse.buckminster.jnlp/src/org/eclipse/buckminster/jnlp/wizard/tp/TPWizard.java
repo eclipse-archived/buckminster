@@ -36,6 +36,8 @@ public class TPWizard extends AdvancedWizard
 
 	private TPNewLocationPage m_newLocationPage;
 
+	private TPProjectSelectionPage m_projectSelectionPage;
+
 	private boolean m_newEclipse;
 
 	public TPWizard(InstallWizard installWizard)
@@ -99,6 +101,9 @@ public class TPWizard extends AdvancedWizard
 		addAdvancedPage(m_newLocationPage);
 
 		addAdvancedPage(new TPBackupFolderPage());
+
+		m_projectSelectionPage = new TPProjectSelectionPage();
+		addAdvancedPage(m_projectSelectionPage);
 	}
 
 	@Override
@@ -133,6 +138,21 @@ public class TPWizard extends AdvancedWizard
 		m_newEclipse = newEclipse;
 	}
 
+	boolean isBuckminsterInstalled()
+	{
+		return !isNewEclipse() && m_newOrCurrentPage.isBuckminsterInstalled();
+	}
+	
+	boolean isSpacesInstalled()
+	{
+		return !isNewEclipse() && m_newOrCurrentPage.isSpacesInstalled();
+	}
+	
+	boolean isRSSOwlInstalled()
+	{
+		return !isNewEclipse() && m_newOrCurrentPage.isRSSOwlInstalled();
+	}
+	
 	String getNewEclipseDestinationFolder()
 	{
 		return m_newLocationPage.getDestinationFolder();

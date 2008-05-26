@@ -56,7 +56,9 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 	private static final String BUCKMINSTER_FEATURE = "org.eclipse.buckminster.core.feature";
 
-	private static final String SPACES_FEATURE = "org.eclipse.spaces.core.feature";
+	private static final String SPACES_FEATURE = "org.eclipse.spaces.feature";
+
+	private static final String RSSOWL_FEATURE = "org.eclipse.buckminster.rssowl.feature";
 
 	private static final String MIN_ECLIPSE_VERSION = "3.3.0";
 
@@ -84,6 +86,8 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 	private boolean m_spacesInstalled = false;
 
+	private boolean m_rssowlInstalled = false;
+	
 	static
 	{
 		try
@@ -211,6 +215,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 		m_buckminsterInstalled = false;
 		m_spacesInstalled = false;
+		m_rssowlInstalled = false;
 
 		getTPWizard().setNewEclipse(m_newEclipseButton.getSelection());
 		
@@ -247,6 +252,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 				m_buckminsterInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
 						BUCKMINSTER_FEATURE) != null;
 				m_spacesInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(SPACES_FEATURE) != null;
+				m_rssowlInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(RSSOWL_FEATURE) != null;
 			}
 			catch(JNLPException e)
 			{
@@ -298,6 +304,11 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	boolean isSpacesInstalled()
 	{
 		return m_spacesInstalled;
+	}
+
+	boolean isRSSOwlInstalled()
+	{
+		return m_rssowlInstalled;
 	}
 
 	private void enableEclipseLocation(boolean enabled)
