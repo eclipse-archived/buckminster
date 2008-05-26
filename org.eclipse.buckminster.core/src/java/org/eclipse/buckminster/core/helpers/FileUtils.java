@@ -841,8 +841,14 @@ public abstract class FileUtils
 		if(f.isFile())
 		{
 			FileInputStream fis = new FileInputStream(f);
-			copyFile(fis, dos, monitor);
-			fis.close();
+			try
+			{
+				copyFile(fis, dos, monitor);
+			}
+			finally
+			{
+				IOUtils.close(fis);
+			}
 		}
 		else
 			deepCalculateDigest(f, dos, f.getCanonicalPath().length() + 1, monitor);
