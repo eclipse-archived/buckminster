@@ -168,12 +168,12 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			@Override
 			public void close() throws IOException
 			{
+				IOUtils.close(input);
 				checkException();
-				input.close();
 			}
 
 			@Override
-			public synchronized void mark(int readlimit)
+			public void mark(int readlimit)
 			{
 				input.mark(readlimit);
 			}
@@ -206,7 +206,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			}
 
 			@Override
-			public synchronized void reset() throws IOException
+			public void reset() throws IOException
 			{
 				checkException();
 				input.reset();

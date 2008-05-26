@@ -588,7 +588,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private static RemotePluginEntry[] getMapPluginEntries(URL location) throws CoreException
 	{
-		InputStream input;
+		InputStream input = null;
 		try
 		{
 			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
@@ -635,6 +635,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		catch(IOException e)
 		{
 			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
 		}
 	}
 

@@ -44,7 +44,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 			CoreException
 	{
 		if("file".equalsIgnoreCase(url.getProtocol()))
-			return DownloadManager.read(url);
+			return url.openStream();
 
 		return this.open(new Materializer()
 		{
@@ -54,13 +54,12 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 				if(info == null)
 					info = new FileInfoBuilder();
 
-				OutputStream output = null;
 				File tempFile = null;
 				boolean success = false;
 				try
 				{
 					tempFile = File.createTempFile("bmurl", ".cache");
-					output = new FileOutputStream(tempFile);
+					OutputStream output = new FileOutputStream(tempFile);
 					try
 					{
 						DownloadManager.readInto(url, output, mon);
@@ -74,7 +73,6 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 				}
 				finally
 				{
-					IOUtils.close(output);
 					if(!success && tempFile != null)
 						tempFile.delete();
 				}
