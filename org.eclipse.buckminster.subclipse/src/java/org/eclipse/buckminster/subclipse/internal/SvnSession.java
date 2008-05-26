@@ -1038,11 +1038,15 @@ public class SvnSession implements Closeable
 			catch(SVNClientException e)
 			{
 				String msg = e.getMessage();
-				if(msg != null && msg.toLowerCase().contains("non-existent"))
+				if(msg != null)
 				{
-					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote folder does not exist %s", key));
-					return s_emptyFolder;
+					msg = msg.toLowerCase();
+					if(msg.contains("non-existent") || msg.contains("not found"))
+					{
+						if(logger.isDebugEnabled())
+							logger.debug(String.format("Remote folder does not exist %s", key));
+						return s_emptyFolder;
+					}
 				}
 				throw BuckminsterException.wrap(e);
 			}
