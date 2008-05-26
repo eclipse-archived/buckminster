@@ -36,7 +36,7 @@
    </extension>
    <extension
          point="org.eclipse.buckminster.core.queryResolvers">
-      <queryResolver id="cloudsmith" priority="10">
+      <queryResolver id="cloudsmith">
          <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
             <parameter
                   name="provider"
