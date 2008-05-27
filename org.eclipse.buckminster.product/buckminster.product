@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.4"?>
 
 <product name="Buckminster" id="org.eclipse.buckminster.cmdline.product" application="org.eclipse.buckminster.cmdline.headless" useFeatures="true">
 
-
-   <configIni use="default"/>
+   <configIni use="custom" path="/org.eclipse.buckminster.product/config.ini"/>
 
    <launcherArgs>
    </launcherArgs>
 
    <windowImages/>
-
 
    <launcher name="_removethisfile">
       <solaris/>
@@ -19,12 +17,11 @@
       </win>
    </launcher>
 
-
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.eclipse.buckminster.product"/>
+      <feature id="org.eclipse.buckminster.product" version=""/>
    </features>
 
 </product>
