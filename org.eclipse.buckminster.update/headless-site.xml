@@ -377,7 +377,7 @@
     <archive path="plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.doc_1.2.0.jar"/>
     <archive path="plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.subclipse.ui_1.2.4.jar"/>
     <archive path="plugins/org.tigris.subversion.javahl.win32_1.2.4.jar" url="http://subclipse.tigris.org/update_1.2.x/plugins/org.tigris.subversion.javahl.win32_1.2.4.jar"/>
-    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080116.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080116/plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080116.jar"/>
-    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080116.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080116/plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080116.jar"/>
-    <archive path="plugins/org.eclipse.team.svn.core_0.7.0.v20080116.jar" url="http://download.eclipse.org/technology/subversive/archive/v20080116/plugins/org.eclipse.team.svn.core_0.7.0.v20080116.jar"/>
+    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080307.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080517/plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080307.jar"/>
+    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080517.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080517/plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080517.jar"/>
+    <archive path="plugins/org.eclipse.team.svn.core_0.7.0.v20080521.jar" url="http://download.eclipse.org/technology/subversive/archive/v20080521/plugins/org.eclipse.team.svn.core_0.7.0.v20080521.jar"/>
 </site>
