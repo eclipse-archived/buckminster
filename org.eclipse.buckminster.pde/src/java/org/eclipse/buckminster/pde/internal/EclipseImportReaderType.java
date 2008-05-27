@@ -664,7 +664,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				MonitorUtils.worked(monitor, 50);
 				return entries;
 			}
-			catch(UnsupportedOperationException e)
+			catch(UnsupportedOperationException uoe)
 			{
 				// Damn it! We need to use the slow version.
 				//
@@ -682,7 +682,16 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					VersionedIdentifier vid = ref.getVersionedIdentifier();
 					if(seenFeatures.add(vid))
 					{
-						IFeature feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 50));
+						IFeature feature;
+						try
+						{
+							feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 50));
+						}
+						catch(Exception e)
+						{
+							PDEPlugin.getLogger().warning(e, e.getMessage());
+							continue;
+						}
 						addFeaturePluginEntries(entries, seenFeatures, feature, MonitorUtils.subMonitor(itemsMonitor, 50));
 					}
 				}
@@ -715,8 +724,18 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				MonitorUtils.worked(monitor, 100);
 			else
 			{
-				seenFeatures.add(vid);			
-				addFeaturePluginEntries(entries, seenFeatures, ref.getFeature(MonitorUtils.subMonitor(monitor, 50)), MonitorUtils.subMonitor(monitor, 50));
+				seenFeatures.add(vid);
+				IFeature includedFeature;
+				try
+				{
+					includedFeature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
+				}
+				catch(Exception e)
+				{
+					PDEPlugin.getLogger().warning(e, e.getMessage());
+					continue;
+				}
+				addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils.subMonitor(monitor, 50));
 			}
 		}
 		monitor.done();
