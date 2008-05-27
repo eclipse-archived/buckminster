@@ -14,6 +14,7 @@ import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -44,7 +45,7 @@ public class TPNewLocationPage extends TPWizardPage
 	private Text m_locationText;
 
 	private Button m_browseButton;
-	
+
 	protected TPNewLocationPage()
 	{
 		super(MaterializationConstants.STEP_TP_NEW_LOCATION, "Destination Address",
@@ -66,7 +67,7 @@ public class TPNewLocationPage extends TPWizardPage
 		gridData = new GridData();
 		gridData.horizontalSpan = 3;
 		label.setLayoutData(gridData);
-		
+
 		label = new Label(m_pageComposite, SWT.NONE);
 		label.setText("Destination Address:");
 		label.setToolTipText(TOOL_TIP_DESTINATION_ADDRESS);
@@ -108,7 +109,7 @@ public class TPNewLocationPage extends TPWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
 		m_heading.setText("Select a destination address for the new Eclipse installation.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
@@ -131,11 +132,11 @@ public class TPNewLocationPage extends TPWizardPage
 	public boolean performPageCommit()
 	{
 		setErrorMessage(null);
-		
+
 		try
 		{
 			File destinationFolder = new File(UiUtils.trimmedValue(m_locationText));
-			
+
 			if(!destinationFolder.exists() || !destinationFolder.isDirectory())
 				throw new JNLPException("Selected destination directory does not exist", null);
 		}
@@ -147,9 +148,18 @@ public class TPNewLocationPage extends TPWizardPage
 
 		return true;
 	}
-	
+
 	String getDestinationFolder()
 	{
 		return UiUtils.trimmedValue(m_locationText);
+	}
+
+	@Override
+	public IWizardPage getNextPage()
+	{
+		if(getTPWizard().getEclipseFolder() != null && new File(getTPWizard().getEclipseFolder()).exists())
+			return getTPWizard().getBackupFolderPage();
+
+		return getTPWizard().getToolsSelectionPage();
 	}
 }

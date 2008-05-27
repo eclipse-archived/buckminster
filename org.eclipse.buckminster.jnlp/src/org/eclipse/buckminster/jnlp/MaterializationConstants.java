@@ -42,13 +42,13 @@ public interface MaterializationConstants
 
 	public static final String STEP_TP_NEW_LOCATION = "TPNewLocation";
 
-	public static final String STEP_TP_BACKUP_FOLDER = "TPBackupFolder";
+	public static final String STEP_TP_BACKUP_FOLDER = "TPNewLocation";
+	
+	public static final String STEP_TP_TOOL_SELECTION = "TPToolSelection";
+
+	public static final String STEP_TP_OPERATION = "TPOperation";
 
 	public static final String STEP_TP_DONE = "TPDone";
-
-	public static final String STEP_TP_OPERATION = "TPOperatation";
-
-	public static final String STEP_TP_PROJECT_SELECTION = "TPProjectSelection";
 
 	public static final String PROP_PROPVERSION = "propVersion";
 
@@ -106,11 +106,13 @@ public interface MaterializationConstants
 	
 	public static final String PROP_CSPEC_VERSION_TYPE = "cspecVersionType";
 
-	public static final String PROP_ECLIPSE_DISTRO_URL = "eclipseDistroURL";
+	public static final String PROP_ECLIPSE_SDK_URL = "eclipseSDKLatestURL";
 
-	public static final String PROP_ECLIPSE_DISTRO_VERSION = "eclipseDistroVersion";
+	public static final String PROP_ECLIPSE_SDK_VERSION = "eclipseSDKLatestVersion";
 
-	public static final String PROP_ECLIPSE_PROJECTS_DISTRO_URL = "eclipseProjectsDistroURL";
+	public static final String PROP_ECLIPSE_DISTRO_TOOLS_34_URL = "eclipseDistroTools3.4URL";
+
+	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_URL = "eclipseDistroTools3.3URL";
 
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
 

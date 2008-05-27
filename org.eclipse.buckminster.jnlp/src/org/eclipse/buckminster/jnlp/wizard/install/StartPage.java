@@ -35,6 +35,12 @@ import org.eclipse.swt.widgets.Text;
  */
 public class StartPage extends InstallWizardPage
 {
+	private Text m_artifactNameText;
+	private Text m_artifactVersionText;
+	private Text m_artifactDescriptionText;
+	private Text m_artifactDocumentationText;
+	private Text m_publisherInfoText;
+
 	protected StartPage()
 	{
 		super(MaterializationConstants.STEP_START, "Materialization", "Please verify that what is described below is what you want to materialize.", null);
@@ -61,25 +67,22 @@ public class StartPage extends InstallWizardPage
 		productGroup.setLayoutData(gridData);
 		
 		new Label(productGroup, SWT.NONE).setText("Name:");
-		Text text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
-		text.setText(getInstallWizard().getArtifactName());
-		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		text.addFocusListener(focusNextButtonListener);
+		m_artifactNameText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
+		m_artifactNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		m_artifactNameText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		m_artifactNameText.addFocusListener(focusNextButtonListener);
 		
 		new Label(productGroup, SWT.NONE).setText("Version:");
-		text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
-		text.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion());
-		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		text.addFocusListener(focusNextButtonListener);
+		m_artifactVersionText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
+		m_artifactVersionText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		m_artifactVersionText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		m_artifactVersionText.addFocusListener(focusNextButtonListener);
 		
 		new Label(productGroup, SWT.NONE).setText("Description:");
-		text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
-		text.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));
-		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		text.addFocusListener(focusNextButtonListener);
+		m_artifactDescriptionText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
+		m_artifactDescriptionText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		m_artifactDescriptionText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		m_artifactDescriptionText.addFocusListener(focusNextButtonListener);
 		
 		Label label = new Label(productGroup, SWT.NONE);
 		gridData = new GridData();
@@ -87,13 +90,12 @@ public class StartPage extends InstallWizardPage
 		gridData.verticalIndent = 2;
 		label.setLayoutData(gridData);
 		label.setText("Documentation:");
-		text = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
-		text.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
+		m_artifactDocumentationText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.heightHint = 60;
-		text.setLayoutData(gridData);
-		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		text.addFocusListener(focusNextButtonListener);
+		m_artifactDocumentationText.setLayoutData(gridData);
+		m_artifactDocumentationText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		m_artifactDocumentationText.addFocusListener(focusNextButtonListener);
 
 		new Label(pageComposite, SWT.NONE);
 		
@@ -103,13 +105,12 @@ public class StartPage extends InstallWizardPage
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		publisherGroup.setLayoutData(gridData);
 		
-		text = new Text(publisherGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
-		text.setText(getInstallWizard().getBrandingString());
+		m_publisherInfoText = new Text(publisherGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.heightHint = 30;
-		text.setLayoutData(gridData);
-		text.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		text.addFocusListener(focusNextButtonListener);
+		m_publisherInfoText.setLayoutData(gridData);
+		m_publisherInfoText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		m_publisherInfoText.addFocusListener(focusNextButtonListener);
 		
 		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
 		{
@@ -159,6 +160,12 @@ public class StartPage extends InstallWizardPage
 		// TODO - remove
 		// MaterializationUtils.startTPWizard(getInstallWizard(), getShell());
 		// end of remove
+
+		m_artifactNameText.setText(getInstallWizard().getArtifactName());
+		m_artifactVersionText.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion());
+		m_artifactDescriptionText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));
+		m_artifactDocumentationText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
+		m_publisherInfoText.setText(getInstallWizard().getBrandingString());
 
 		focusNextButton();
 	}

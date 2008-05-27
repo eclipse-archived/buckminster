@@ -51,9 +51,10 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_N
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_VERSION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_PROJECTS_DISTRO_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_SDK_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_SDK_VERSION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_URL;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
@@ -73,19 +74,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -106,7 +102,6 @@ import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -126,7 +121,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
-import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
@@ -207,11 +201,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_cspecVersionType;
 
-	private String m_eclipseDistroURL;
+	private String m_eclipseSDKURL;
 	
-	private IVersion m_eclipseDistroVersion;
+	private IVersion m_eclipseSDKVersion;
 	
-	private String m_eclipseProjectsDistroURL;
+	private String m_eclipseDistroTools34URL;
+
+	private String m_eclipseDistroTools33URL;
 
 	private boolean m_loginPageRequested = false;
 
@@ -477,7 +473,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			if(m_cachedBOMURL != null)
 				builderToPerform.setURL(m_cachedBOMURL);
 
-			excludeCSsiteComponents(builderToPerform, getBOM());
+			MaterializationUtils.excludeCSsiteComponents(builderToPerform, getBOM());
 
 			getContainer().showPage(m_operationPage);
 
@@ -598,6 +594,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 	}
 
+	public boolean isStartedFromIDE()
+	{
+		return m_startedFromIDE;
+	}
+
 	@Override
 	public Image getWizardImage()
 	{
@@ -664,19 +665,24 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_cspecVersionType;
 	}
 
-	public String getEclipseDistroURL()
+	public String getEclipseSDKURL()
 	{
-		return m_eclipseDistroURL;
+		return m_eclipseSDKURL;
 	}
 
-	public IVersion getEclipseDistroVersion()
+	public IVersion getEclipseSDKVersion()
 	{
-		return m_eclipseDistroVersion;
+		return m_eclipseSDKVersion;
 	}
 
-	public String getEclipseProjectsDistroURL()
+	public String getEclipseDistroTools34URL()
 	{
-		return m_eclipseProjectsDistroURL;
+		return m_eclipseDistroTools34URL;
+	}
+
+	public String getEclipseDistroTools33URL()
+	{
+		return m_eclipseDistroTools33URL;
 	}
 
 	IWizardPage getDownloadPage()
@@ -821,28 +827,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_cachedBOMURL = null;
 	}
 
-	void saveBOM(BillOfMaterials bom, File file)
-	{
-		try
-		{
-			FileOutputStream os = new FileOutputStream(file);
-			Utils.serialize(bom, os);
-			os.close();
-		}
-		catch(FileNotFoundException e1)
-		{
-			throw new JNLPException("File cannot be opened or created", ERROR_CODE_FILE_IO_EXCEPTION, e1);
-		}
-		catch(SAXException e1)
-		{
-			throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
-		}
-		catch(IOException e1)
-		{
-			throw new JNLPException("Cannot write to file", ERROR_CODE_FILE_IO_EXCEPTION, e1);
-		}
-	}
-
 	void setLoginPageRequested(boolean loginPageRequested)
 	{
 		m_loginPageRequested = loginPageRequested;
@@ -974,42 +958,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return learnMores;
 	}
 
-	private void excludeComponent(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
-	{
-		Resolution resolution = depNode.getResolution();
-
-		if(resolution != null)
-		{
-			CSpec cspec = resolution.getCSpec();
-
-			if(cspec != null)
-			{
-				String componentName = cspec.getName();
-				String componentType = cspec.getComponentTypeID();
-
-				for(MaterializationNodeBuilder builder : mspec.getNodeBuilders())
-					if((componentType == null || componentType.equals(builder.getComponentTypeID()))
-							&& builder.getNamePattern().matcher(componentName).matches())
-						builder.setExclude(true);
-
-				MaterializationNodeBuilder nodeBuilder = mspec.addNodeBuilder();
-				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
-				nodeBuilder.setComponentTypeID(componentType);
-				nodeBuilder.setExclude(true);
-			}
-		}
-	}
-
-	// CSSITE components don't need to be materialized, so they are excluded
-	private void excludeCSsiteComponents(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
-	{
-		if(hasCSsiteReader(depNode))
-			excludeComponent(mspec, depNode);
-
-		for(DepNode childDepNode : depNode.getChildren())
-			excludeCSsiteComponents(mspec, childDepNode);
-	}
-
 	/**
 	 * Wizard page doesn't display message text (the second line in title area) if the wizard image is too small This
 	 * function creates a new image that is 64 pixels high - adds to the original image transparent stripe
@@ -1063,17 +1011,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 
 		return new Image(Display.getDefault(), newImageData);
-	}
-
-	private boolean hasCSsiteReader(DepNode depNode) throws CoreException
-	{
-		Resolution resolution = depNode.getResolution();
-
-		if(resolution != null)
-			if(MaterializationConstants.READER_TYPE_CSSITE.equals(resolution.getProvider().getReaderTypeId()))
-				return true;
-
-		return false;
 	}
 
 	private void initBOM()
@@ -1151,7 +1088,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
 		}
 
-		saveBOM(m_cachedBOM, cachedBOMFile);
+		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
 
 		try
 		{
@@ -1478,18 +1415,19 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
 
-		m_eclipseDistroURL = properties.get(PROP_ECLIPSE_DISTRO_URL);
-		tmp = properties.get(PROP_ECLIPSE_DISTRO_VERSION);
+		m_eclipseSDKURL = properties.get(PROP_ECLIPSE_SDK_URL);
+		tmp = properties.get(PROP_ECLIPSE_SDK_VERSION);
 		try
 		{
-			m_eclipseDistroVersion = (tmp == null ? null : VersionFactory.createVersion(IVersionType.OSGI, tmp));
+			m_eclipseSDKVersion = (tmp == null ? null : VersionFactory.createVersion(IVersionType.OSGI, tmp));
 		}
 		catch(CoreException e)
 		{
-			m_eclipseDistroVersion = null;
+			m_eclipseSDKVersion = null;
 		}
 		
-		m_eclipseProjectsDistroURL = properties.get(PROP_ECLIPSE_PROJECTS_DISTRO_URL);
+		m_eclipseDistroTools34URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_URL);
+		m_eclipseDistroTools33URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_URL);
 		
 		if(errorList.size() > 0)
 		{

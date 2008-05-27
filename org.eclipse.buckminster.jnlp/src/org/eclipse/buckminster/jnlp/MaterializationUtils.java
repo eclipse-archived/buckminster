@@ -11,7 +11,10 @@ package org.eclipse.buckminster.jnlp;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +26,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
@@ -30,22 +38,26 @@ import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.buckminster.jnlp.wizard.publish.PublishWizard;
 import org.eclipse.buckminster.jnlp.wizard.tp.TPWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
+import org.xml.sax.SAXException;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class MaterializationUtils
 {
 	static class PropertyEntryByLength implements Comparable<PropertyEntryByLength>
 	{
 		private String m_key;
-		
+
 		private String m_value;
 
 		public PropertyEntryByLength(String key, String value)
@@ -53,7 +65,7 @@ public class MaterializationUtils
 			m_key = key;
 			m_value = value;
 		}
-				
+
 		public String getKey()
 		{
 			return m_key;
@@ -67,50 +79,52 @@ public class MaterializationUtils
 		public int compareTo(PropertyEntryByLength o)
 		{
 			int result = o.getKey().length() - m_key.length();
-			
+
 			if(result != 0)
 				return result;
-			
+
 			return m_key.compareTo(o.getKey());
-		}	
+		}
 	}
-	
-	private static Map<MaterializationSpecBuilder, Map<String, String>> m_expandProperties =
-		new HashMap<MaterializationSpecBuilder, Map<String, String>>();
-	
-	private static Map<MaterializationSpecBuilder, Set<PropertyEntryByLength>> m_generalizeProperties =
-		new HashMap<MaterializationSpecBuilder, Set<PropertyEntryByLength>>();
-	
+
+	private static Map<MaterializationSpecBuilder, Map<String, String>> m_expandProperties = new HashMap<MaterializationSpecBuilder, Map<String, String>>();
+
+	private static Map<MaterializationSpecBuilder, Set<PropertyEntryByLength>> m_generalizeProperties = new HashMap<MaterializationSpecBuilder, Set<PropertyEntryByLength>>();
+
 	/**
 	 * The publishing wizard dialog width
 	 */
 	private static final int PUBLISH_WIZARD_MIN_WIDTH = 450;
+
 	private static final int PUBLISH_WIZARD_MAX_WIDTH = 850;
 
 	/**
 	 * The publishing wizard dialog height
 	 */
 	private static final int PUBLISH_WIZARD_MIN_HEIGHT = 450;
+
 	private static final int PUBLISH_WIZARD_MAX_HEIGHT = 750;
 
 	/**
 	 * The target platform wizard dialog width
 	 */
 	private static final int TP_WIZARD_MIN_WIDTH = 450;
+
 	private static final int TP_WIZARD_MAX_WIDTH = 650;
 
 	/**
 	 * The target platform wizard dialog height
 	 */
 	private static final int TP_WIZARD_MIN_HEIGHT = 250;
+
 	private static final int TP_WIZARD_MAX_HEIGHT = 450;
 
-	private static final Map<String,String> s_humanReadableComponentTypes;
-	
+	private static final Map<String, String> s_humanReadableComponentTypes;
+
 	// needs to be synchronized with the server side, new component types need to be added
 	static
 	{
-		s_humanReadableComponentTypes = new HashMap<String,String>();
+		s_humanReadableComponentTypes = new HashMap<String, String>();
 		s_humanReadableComponentTypes.put(null, "Any");
 		s_humanReadableComponentTypes.put("unknown", "None");
 		s_humanReadableComponentTypes.put("cssite", "Cloudsmith");
@@ -158,18 +172,19 @@ public class MaterializationUtils
 				break;
 			}
 
-			throw new JNLPException("Cannot read materialization specification", errorCode, BuckminsterException.fromMessage(
-					"%s - %s", originalURL, HttpStatus.getStatusText(status)));
+			throw new JNLPException("Cannot read materialization specification", errorCode, BuckminsterException
+					.fromMessage("%s - %s", originalURL, HttpStatus.getStatusText(status)));
 		}
 	}
-	
+
 	/**
 	 * Checks response of IAuthenticator.register method
 	 * 
-	 * @param result result of IAuthenticator.register method
+	 * @param result
+	 * 		result of IAuthenticator.register method
 	 * @throws JNLPException
 	 */
-	
+
 	public static void checkRegistrationResponse(int result) throws JNLPException
 	{
 		switch(result)
@@ -189,14 +204,15 @@ public class MaterializationUtils
 		case IAuthenticator.REGISTER_EMAIL_FORMAT_ERROR:
 			throw new JNLPException("Email does not have standard format", null);
 		case IAuthenticator.REGISTER_EMAIL_ALREADY_VALIDATED:
-			throw new JNLPException("Email is already verified for another user", null);	
+			throw new JNLPException("Email is already verified for another user", null);
 		}
 	}
-	
+
 	/**
 	 * Gets human readable component type
 	 * 
-	 * @param componentType componentType ID
+	 * @param componentType
+	 * 		componentType ID
 	 * @return human readable component type
 	 */
 	public static String getHumanReadableComponentType(String componentType)
@@ -206,7 +222,7 @@ public class MaterializationUtils
 			hrType = componentType;
 		return hrType;
 	}
-	
+
 	/**
 	 * Opens publishing wizard dialog
 	 * 
@@ -216,15 +232,14 @@ public class MaterializationUtils
 	public static void startPublishingWizard(InstallWizard installWizard, Shell parentShell)
 	{
 		PublishWizard publishWizard = new PublishWizard(installWizard);
-		
+
 		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, publishWizard);
 		dialog.create();
-		
+
 		final Shell shell = dialog.getShell();
-		shell.setSize(
-				Math.min(Math.max(PUBLISH_WIZARD_MIN_WIDTH, shell.getSize().x), PUBLISH_WIZARD_MAX_WIDTH),
-				Math.min(Math.max(PUBLISH_WIZARD_MIN_HEIGHT, shell.getSize().y), PUBLISH_WIZARD_MAX_HEIGHT));
-		
+		shell.setSize(Math.min(Math.max(PUBLISH_WIZARD_MIN_WIDTH, shell.getSize().x), PUBLISH_WIZARD_MAX_WIDTH), Math
+				.min(Math.max(PUBLISH_WIZARD_MIN_HEIGHT, shell.getSize().y), PUBLISH_WIZARD_MAX_HEIGHT));
+
 		dialog.open();
 	}
 
@@ -237,15 +252,22 @@ public class MaterializationUtils
 	public static void startTPWizard(InstallWizard installWizard, Shell parentShell)
 	{
 		TPWizard tpWizard = new TPWizard(installWizard);
-		
-		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, tpWizard);
+
+		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, tpWizard)
+		{
+			@Override
+			public boolean isHelpAvailable()
+			{
+				return false;
+			}
+
+		};
 		dialog.create();
-		
+
 		final Shell shell = dialog.getShell();
-		shell.setSize(
-				Math.min(Math.max(TP_WIZARD_MIN_WIDTH, shell.getSize().x), TP_WIZARD_MAX_WIDTH),
-				Math.min(Math.max(TP_WIZARD_MIN_HEIGHT, shell.getSize().y), TP_WIZARD_MAX_HEIGHT));
-		
+		shell.setSize(Math.min(Math.max(TP_WIZARD_MIN_WIDTH, shell.getSize().x), TP_WIZARD_MAX_WIDTH), Math.min(Math
+				.max(TP_WIZARD_MIN_HEIGHT, shell.getSize().y), TP_WIZARD_MAX_HEIGHT));
+
 		dialog.open();
 	}
 
@@ -259,13 +281,13 @@ public class MaterializationUtils
 	public static IPath expandPath(MaterializationSpecBuilder mspec, IPath installLocation)
 	{
 		Map<String, String> properties = m_expandProperties.get(mspec);
-		
+
 		if(properties == null)
 		{
 			properties = new RMContext(mspec.getProperties());
 			m_expandProperties.put(mspec, properties);
 		}
-		
+
 		return Path.fromOSString(ExpandingProperties.expand(properties, installLocation.toOSString(), 0));
 	}
 
@@ -280,48 +302,48 @@ public class MaterializationUtils
 	{
 		if(installLocation == null)
 			return null;
-		
+
 		Set<PropertyEntryByLength> properties = m_generalizeProperties.get(mspec);
-		
+
 		if(properties == null)
 		{
 			properties = new TreeSet<PropertyEntryByLength>();
 			RMContext context = new RMContext(mspec.getProperties());
-			
+
 			for(String key : context.keySet())
 			{
 				String value = context.get(key);
-				
+
 				if(value == null || value.length() == 0)
 					continue;
-				
+
 				// unifying file separators
 				String unifiedValue = new Path(value).removeTrailingSeparator().toString();
 
 				// changing meaning - key is value, value is key
-				properties.add(new PropertyEntryByLength(unifiedValue, key));				
+				properties.add(new PropertyEntryByLength(unifiedValue, key));
 			}
-			
+
 			m_generalizeProperties.put(mspec, properties);
 		}
 
 		String pathToGeneralize = installLocation.addTrailingSeparator().toString();
 		int len = pathToGeneralize.length();
-		
-		for(PropertyEntryByLength entry: properties)
+
+		for(PropertyEntryByLength entry : properties)
 		{
 			String key = entry.getKey();
 			if(key.length() > len)
 				continue;
-			
+
 			Pattern pattern = Pattern.compile("(^|/)(" + Pattern.quote(key) + ")/");
 			Matcher matcher = pattern.matcher(pathToGeneralize);
 			pathToGeneralize = matcher.replaceAll("$1\\${" + entry.getValue() + "}/");
 		}
-		
+
 		return new Path(pathToGeneralize);
 	}
-	
+
 	/**
 	 * Gets default install location
 	 * 
@@ -332,19 +354,19 @@ public class MaterializationUtils
 	public static String getDefaultDestination(String artifactName) throws JNLPException
 	{
 		String destination = null;
-		
+
 		String userHome = System.getProperty("user.home");
 
 		if(userHome != null)
 		{
 			destination = userHome + File.separator + DEFAULT_MATERIALIZATION_FOLDER;
-		
+
 			if(artifactName != null)
 				destination += File.separator + artifactName;
 		}
 		return destination;
 	}
-	
+
 	public static Image getImage(String imageName)
 	{
 		Class<?> myClass = MaterializationUtils.class;
@@ -352,11 +374,12 @@ public class MaterializationUtils
 		URL imageUrl = myClass.getResource(imageResource);
 		return ImageDescriptor.createFromURL(imageUrl).createImage();
 	}
-	
+
 	/**
-	 * From a given path computes a path that exists in the file system. 
+	 * From a given path computes a path that exists in the file system.
 	 * 
-	 * @param enteredPath entered path
+	 * @param enteredPath
+	 * 		entered path
 	 * @return path that exists in the file system
 	 */
 	public static String getKnownPath(String enteredPath)
@@ -388,14 +411,89 @@ public class MaterializationUtils
 	{
 		String backupString = eclipseFolder.getPath() + ".backup";
 		File backupFile = new File(backupString);
-		
+
 		int i = 0;
 		while(backupFile.exists())
 		{
 			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i)));
 		}
-		
+
 		return backupFile;
 	}
 
+	/**
+	 * Excludes CSSite components
+	 * 
+	 * @param mspec
+	 * @param depNode
+	 * @throws CoreException
+	 */
+	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	{
+		if(hasCSsiteReader(depNode))
+			excludeComponent(mspec, depNode);
+
+		for(DepNode childDepNode : depNode.getChildren())
+			excludeCSsiteComponents(mspec, childDepNode);
+	}
+
+	private static void excludeComponent(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	{
+		Resolution resolution = depNode.getResolution();
+
+		if(resolution != null)
+		{
+			CSpec cspec = resolution.getCSpec();
+
+			if(cspec != null)
+			{
+				String componentName = cspec.getName();
+				String componentType = cspec.getComponentTypeID();
+
+				for(MaterializationNodeBuilder builder : mspec.getNodeBuilders())
+					if((componentType == null || componentType.equals(builder.getComponentTypeID()))
+							&& builder.getNamePattern().matcher(componentName).matches())
+						builder.setExclude(true);
+
+				MaterializationNodeBuilder nodeBuilder = mspec.addNodeBuilder();
+				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+				nodeBuilder.setComponentTypeID(componentType);
+				nodeBuilder.setExclude(true);
+			}
+		}
+	}
+
+	private static boolean hasCSsiteReader(DepNode depNode) throws CoreException
+	{
+		Resolution resolution = depNode.getResolution();
+
+		if(resolution != null)
+			if(MaterializationConstants.READER_TYPE_CSSITE.equals(resolution.getProvider().getReaderTypeId()))
+				return true;
+
+		return false;
+	}
+
+	public static void saveBOM(BillOfMaterials bom, File file)
+	{
+		OutputStream os = null;
+
+		try
+		{
+			os = new FileOutputStream(file);
+			Utils.serialize(bom, os);
+		}
+		catch(FileNotFoundException e1)
+		{
+			throw new JNLPException("File cannot be opened or created", ERROR_CODE_FILE_IO_EXCEPTION, e1);
+		}
+		catch(SAXException e1)
+		{
+			throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
+		}
+		finally
+		{
+			IOUtils.close(os);
+		}
+	}
 }

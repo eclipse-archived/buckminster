@@ -11,9 +11,6 @@ package org.eclipse.buckminster.jnlp.wizard.tp;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -22,22 +19,20 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
-public class TPNewRecommendedPage extends TPWizardPage
+public class TPToolSelectionPage extends TPWizardPage
 {
 	private Composite m_pageComposite;
-	
+
 	private Label m_heading;
 	
-	private Button m_newEclipseButton;
+	private Button m_distroToolsButton;
 
-	private Button m_currentEclipseButton;
-
-	protected TPNewRecommendedPage()
+	protected TPToolSelectionPage()
 	{
-		super(MaterializationConstants.STEP_TP_NEW_RECOMMENDED, "New Eclipse is recommended",
-				"It is recommended to install the new version of Eclipse.");
+		super(MaterializationConstants.STEP_TP_TOOL_SELECTION, "Tool Selection",
+				"Select tools to be installed into your Eclipse installation.");
 	}
 
 	public void createControl(Composite parent)
@@ -50,26 +45,11 @@ public class TPNewRecommendedPage extends TPWizardPage
 
 		new Label(m_pageComposite, SWT.NONE);
 
-		m_newEclipseButton = new Button(m_pageComposite, SWT.RADIO);
-		m_newEclipseButton.setText("Install New Eclipse");
+		m_distroToolsButton = new Button(m_pageComposite, SWT.CHECK);
+		m_distroToolsButton.setText("Install Distro Tools");
 
-		m_currentEclipseButton = new Button(m_pageComposite, SWT.RADIO);
-		m_currentEclipseButton.setText("Use Current Eclipse");
+		m_distroToolsButton.setSelection(true);
 
-		SelectionListener radioListener = new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				firePageChanged();
-			}
-		};
-
-		m_newEclipseButton.addSelectionListener(radioListener);
-		m_currentEclipseButton.addSelectionListener(radioListener);
-
-		m_newEclipseButton.setSelection(true);
-		
 		setControl(m_pageComposite);
 	}
 
@@ -78,32 +58,21 @@ public class TPNewRecommendedPage extends TPWizardPage
 	{
 		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
 		m_heading.setText(
-				"You are currently using Eclipse " + getTPWizard().getCurrentEclipseVersion() + ". It is recommended to install Eclipse " + getTPWizard().getProvidedEclipseVersion() + " to get the leatest features.");
+				"Distro Tools make it easy to work with your distros within Eclipse.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
 		m_pageComposite.layout();
 	}
 
-	private void firePageChanged()
+	boolean isDistroToolsSelected()
 	{
-		uncommitPage();
+		return m_distroToolsButton.getSelection();
 	}
 	
-	@Override
-	public boolean performPageCommit()
-	{
-		if(getContainer().getCurrentPage() == this)
-			getTPWizard().setNewEclipse(m_newEclipseButton.getSelection());
-		
-		return true;
-	}
-	
+	// disable NEXT
 	@Override
 	public IWizardPage getNextPage()
 	{
-		if(m_newEclipseButton.getSelection())
-			return getTPWizard().getNewLocationPage();
-		
-		return getTPWizard().getToolsSelectionPage();
+		return null;
 	}
 }

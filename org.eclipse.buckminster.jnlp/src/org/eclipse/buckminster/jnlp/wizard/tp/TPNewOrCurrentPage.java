@@ -8,7 +8,10 @@
 
 package org.eclipse.buckminster.jnlp.wizard.tp;
 
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
+
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionType;
@@ -19,9 +22,12 @@ import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
@@ -104,7 +110,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	protected TPNewOrCurrentPage()
 	{
 		super(MaterializationConstants.STEP_TP_INTRO, "New or Current Eclipse",
-				"Do you want to install a new Elipse or use a current one?");
+				"Do you want to install a new Elipse or use the current one?");
 	}
 
 	public void createControl(Composite parent)
@@ -190,7 +196,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	protected void beforeDisplaySetup()
 	{
 		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
-		m_heading.setText("Do you want to install a new Elipse or use a current one?");
+		m_heading.setText("Do you want to install a new Elipse or use the current one?");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
 		m_pageComposite.layout();
@@ -224,7 +230,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 		try
 		{
-			String location = UiUtils.trimmedValue(m_locationText);
+			final String location = UiUtils.trimmedValue(m_locationText);
 			if(location == null)
 				throw new JNLPException("Eclipse location cannot be empty", null);
 
@@ -237,34 +243,60 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 			try
 			{
-				setTP(location);
-				IFeatureModel featureModel = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
-						ECLIPSE_FEATURE);
-				if(featureModel == null)
-					throw new JNLPException("The selected location is not an Eclipse folder", null);
+				getContainer().run(true, false, new IRunnableWithProgress()
+				{
 
-				m_currentEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, featureModel.getFeature()
-						.getVersion()).replaceQualifier(null);
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+					{
+						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+						monitor.subTask("Retrieving information from the installed Eclipse");
+						
+						try
+						{
+							setTP(location);
+							IFeatureModel featureModel = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
+									ECLIPSE_FEATURE);
+							if(featureModel == null)
+								throw new JNLPException("The selected location is not an Eclipse folder", null);
 
-				if(s_minEclipseVersion.compareTo(m_currentEclipseVersion) > 0)
-					throw new JNLPException("Your Eclipse is too old, you need the new version", null);
+							m_currentEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, featureModel.getFeature()
+										.getVersion()).replaceQualifier(null);
 
-				m_buckminsterInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
-						BUCKMINSTER_FEATURE) != null;
-				m_spacesInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(SPACES_FEATURE) != null;
-				m_rssowlInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(RSSOWL_FEATURE) != null;
+							if(s_minEclipseVersion.compareTo(m_currentEclipseVersion) > 0)
+								throw new JNLPException("Your Eclipse is too old, you need the new version", null);
+
+							m_buckminsterInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
+									BUCKMINSTER_FEATURE) != null;
+							m_spacesInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(SPACES_FEATURE) != null;
+							m_rssowlInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(RSSOWL_FEATURE) != null;
+						}
+						catch(JNLPException e)
+						{
+							throw new InvocationTargetException(e);
+						}
+						catch(CoreException e)
+						{
+							throw new InvocationTargetException(new JNLPException("Error while analysing Eclipse installation", null));
+						}
+						finally
+						{
+							unsetTP();
+						}
+						
+						monitor.done();
+					}
+				});
 			}
-			catch(JNLPException e)
+			catch(InvocationTargetException e1)
 			{
-				throw e;
+				if(e1.getCause() != null && e1.getCause() instanceof JNLPException)
+					throw (JNLPException)e1.getCause();
+				
+				throw new JNLPException("Error while analysing Eclipse installation", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
 			}
-			catch(Exception e)
+			catch(InterruptedException e1)
 			{
-				throw new JNLPException("Error in analysing Eclipse installation", null);
-			}
-			finally
-			{
-				unsetTP();
+				new JNLPException("Operation cancelled", null);
 			}
 		}
 		catch(JNLPException e)
@@ -335,5 +367,14 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	private void unsetTP()
 	{
 		this.setTP(TargetPlatform.getDefaultLocation());
+	}
+	
+	@Override
+	public IWizardPage getNextPage()
+	{
+		if(m_newEclipseButton.getSelection())
+			return getTPWizard().getNewLocationPage();
+		
+		return getTPWizard().getNewRecommendedPage();
 	}
 }
