@@ -62,11 +62,6 @@ public abstract class BuckminsterException extends CoreException
 		((BMStatus)status).setMessage(String.format(message, args));
 	}
 
-	public static void deeplyPrint(IStatus status, PrintStream strm, boolean stackTrace, boolean includeWarnings)
-	{
-		deeplyPrint(status, strm, stackTrace, includeWarnings, 0);
-	}
-
 	public static void deeplyPrint(Throwable e, PrintStream strm, boolean stackTrace)
 	{
 		deeplyPrint(e, strm, stackTrace, 0);
@@ -172,28 +167,16 @@ public abstract class BuckminsterException extends CoreException
 		}
 	}
 
-	private static void deeplyPrint(CoreException ce, PrintStream strm, boolean stackTrace, boolean includeWarnings, int level)
+	private static void deeplyPrint(CoreException ce, PrintStream strm, boolean stackTrace, int level)
 	{
 		appendLevelString(strm, level);
 		if(stackTrace)
 			ce.printStackTrace(strm);
-		deeplyPrint(ce.getStatus(), strm, stackTrace, includeWarnings, level);
+		deeplyPrint(ce.getStatus(), strm, stackTrace, level);
 	}
 
-	private static void deeplyPrint(IStatus status, PrintStream strm, boolean stackTrace, boolean includeWarnings, int level)
+	private static void deeplyPrint(IStatus status, PrintStream strm, boolean stackTrace, int level)
 	{
-		switch(status.getSeverity())
-		{
-		case IStatus.ERROR:
-			break;
-		case IStatus.WARNING:
-			if(includeWarnings)
-				break;
-			/* Fall through */
-		default:
-			return;
-		}
-
 		appendLevelString(strm, level);
 		String msg = status.getMessage();
 		strm.println(msg);
@@ -209,14 +192,14 @@ public abstract class BuckminsterException extends CoreException
 		{
 			IStatus[] children = status.getChildren();
 			for(int i = 0; i < children.length; i++)
-				deeplyPrint(children[i], strm, stackTrace, includeWarnings, level + 1);
+				deeplyPrint(children[i], strm, stackTrace, level + 1);
 		}
 	}
 
 	private static void deeplyPrint(Throwable t, PrintStream strm, boolean stackTrace, int level)
 	{
 		if(t instanceof CoreException)
-			deeplyPrint((CoreException)t, strm, stackTrace, false, level);
+			deeplyPrint((CoreException)t, strm, stackTrace, level);
 		else
 		{
 			appendLevelString(strm, level);
