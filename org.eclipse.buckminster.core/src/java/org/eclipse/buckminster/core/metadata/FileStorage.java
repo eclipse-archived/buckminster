@@ -158,8 +158,8 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 				? bf.getInt(0)
 				: -1;
 
-			m_sequenceChanged = (foundSequenceNumber != sequenceNumber);
-			if(m_sequenceChanged)
+			m_sequenceChanged = (foundSequenceNumber >= 0 && foundSequenceNumber != sequenceNumber);
+			if(foundSequenceNumber < 0 || m_sequenceChanged)
 			{
 				// Use exclusive lock and write the new sequence number
 				//
