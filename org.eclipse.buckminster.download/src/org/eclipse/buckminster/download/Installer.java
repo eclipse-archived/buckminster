@@ -89,7 +89,7 @@ public class Installer
 				int matchIdx = -1;
 				int matchLen = -1;
 				idx = elems.length;
-				while(--idx >= 0)
+				suffixFound: while(--idx >= 0)
 				{
 					for(String suffix : suffixes[idx])
 					{
@@ -97,6 +97,7 @@ public class Installer
 						{
 							matchLen = suffix.length();
 							matchIdx = idx;
+							break suffixFound;
 						}
 					}
 				}
@@ -130,7 +131,7 @@ public class Installer
 				int matchIdx = -1;
 				int matchLen = -1;
 				idx = elems.length;
-				while(--idx >= 0)
+				suffixFound: while(--idx >= 0)
 				{
 					for(String suffix : suffixes[idx])
 					{
@@ -138,6 +139,7 @@ public class Installer
 						{
 							matchLen = suffix.length();
 							matchIdx = idx;
+							break suffixFound;
 						}
 					}
 				}

@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator
 {
-	public static final String PLUGIN_ID = "org.eclipse.buckminster.cache";
+	public static final String PLUGIN_ID = "org.eclipse.buckminster.download";
 
 	private static Activator s_plugin;
 
