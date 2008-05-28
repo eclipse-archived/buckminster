@@ -32,9 +32,9 @@ public class MaterializerEndPoint
 		m_installer = installer;
 	}
 
-	public static MaterializerEndPoint create(IPath location, Resolution resolution, MaterializationContext ctx) throws CoreException
+	public static MaterializerEndPoint create(IPath location, String remoteName, Resolution resolution, MaterializationContext ctx) throws CoreException
 	{
-		String suffixedName = ctx.getSuffixedName(resolution);
+		String suffixedName = ctx.getSuffixedName(resolution, remoteName);
 		Installer installer = (suffixedName == null)
 			? Installer.getPlainInstaller()
 			: Installer.getInstaller(suffixedName, ctx.getMaterializationSpec().isExpand(resolution.getComponentIdentifier()));

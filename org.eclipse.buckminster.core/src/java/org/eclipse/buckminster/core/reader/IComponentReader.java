@@ -13,11 +13,15 @@ package org.eclipse.buckminster.core.reader;
 import java.io.Closeable;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.IResolverBackchannel;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A Component reader knows how to read a component stored at some arbitrary location. An instance
@@ -59,4 +63,16 @@ public interface IComponentReader extends IResolverBackchannel, Closeable
 	 * @throws CoreException
 	 */
 	IVersionConverter getVersionConverter() throws CoreException;
+
+	/**
+	 * Materialize (download and unpack) the the file appointed by this reader into the
+	 * specified <code>location</code>. The implementation must ensure that the
+	 * materialization is atomic.
+	 * @param location
+	 * @param resolution
+	 * @param ctx
+	 * @param monitor The progress monitor.
+	 * @throws CoreException
+	 */
+	void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException;
 }

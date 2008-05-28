@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006
+ * Copyright (c) 2004, 2008
  * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
  * Pontus Rydin, Nils Unden, Peer Torngren
  * The code, documentation and other materials contained herein have been
@@ -13,14 +13,13 @@ package org.eclipse.buckminster.core.reader;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.buckminster.core.materializer.MaterializerEndPoint;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A file reader can read one single file that constitutes the component.
- * @author thhal
+ * @author Thomas Hallgren
  */
 public interface IFileReader extends IComponentReader
 {
@@ -40,16 +39,6 @@ public interface IFileReader extends IComponentReader
 	 * @return file info associated with the stream, or null if no info is available
 	 */
 	IFileInfo getFileInfo();
-
-	/**
-	 * Materialize (download and unpack) the the file appointed by this reader into the
-	 * specified <code>destination</code>. The implementation must ensure that the
-	 * materialization is atomic.
-	 * @param unpacker The unpacker for the download (might be just a copy)
-	 * @param monitor The progress monitor.
-	 * @throws CoreException
-	 */
-	void materialize(MaterializerEndPoint unpacker, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Read a file and send the result to the <code>consumer</code>.

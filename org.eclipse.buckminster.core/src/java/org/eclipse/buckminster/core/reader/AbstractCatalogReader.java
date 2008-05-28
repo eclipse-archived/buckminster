@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -150,17 +152,17 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
-	public final void materialize(IPath destination, IProgressMonitor monitor) throws CoreException
+	public final void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException
 	{
 		ProviderMatch pm = this.getProviderMatch();
 		CorePlugin.getLogger().debug("Provider %s(%s): materializing to %s", getReaderType().getId(),
-				pm.getRepositoryURI(), destination);
+				pm.getRepositoryURI(), location);
 
 		monitor.beginTask(null, 100);
 		try
 		{
-			innerMaterialize(destination, MonitorUtils.subMonitor(monitor, 80));
-			copyOverlay(destination, MonitorUtils.subMonitor(monitor, 10));
+			innerMaterialize(location, MonitorUtils.subMonitor(monitor, 80));
+			copyOverlay(location, MonitorUtils.subMonitor(monitor, 10));
 		}
 		finally
 		{

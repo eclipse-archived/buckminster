@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006
+ * Copyright (c) 2004, 2008
  * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
  * Pontus Rydin, Nils Unden, Peer Torngren
  * The code, documentation and other materials contained herein have been
@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 /**
  * A catalog reader knows how to read individual files from a component stored at a some
  * arbitrary location.
- * @author thhal
+ * @author Thomas Hallgren
  */
 public interface ICatalogReader extends IComponentReader
 {
@@ -71,17 +71,6 @@ public interface ICatalogReader extends IComponentReader
 	 * @throws CoreException
 	 */
 	void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException;
-
-	/**
-	 * Materialize (copy, fetch, or checkout) the entire repository denoted by this reader into the
-	 * specified <code>destination</code>. The implementation must ensure that the
-	 * materialization is atomic. This method will take overlay folders specified in the component
-	 * query into account.
-	 * @param destination The destination for the materialization
-	 * @param monitor The progress monitor.
-	 * @throws CoreException
-	 */
-	void materialize(IPath destination, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Read a file and send the result to the <code>consumer</code>.

@@ -230,7 +230,7 @@ public class MaterializationContext extends RMContext
 		return m_rebootNeeded;
 	}
 
-	public String getSuffixedName(Resolution resolution)
+	public String getSuffixedName(Resolution resolution, String remoteName)
 	throws CoreException
 	{
 		MaterializationSpec mspec = getMaterializationSpec();
@@ -239,6 +239,9 @@ public class MaterializationContext extends RMContext
 			return null;
 
 		String name = mspec.getSuffix(cName);
+		if(name == null)
+			name = remoteName;
+
 		if(name == null)
 		{
 			IReaderType rd = resolution.getProvider().getReaderType();

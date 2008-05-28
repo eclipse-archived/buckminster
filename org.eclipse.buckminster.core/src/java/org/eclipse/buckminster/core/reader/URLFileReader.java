@@ -19,7 +19,9 @@ import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerEndPoint;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.download.ICache;
@@ -28,6 +30,7 @@ import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -64,10 +67,9 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		}
 	}
 
-	public void materialize(MaterializerEndPoint unpacker, IProgressMonitor monitor)
+	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
 	throws CoreException
 	{
-		File destFile = unpacker.getFinalDestination().toFile();
 		URL url = this.getURL();
 
 		monitor.beginTask(null, 1000);
@@ -76,15 +78,18 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		InputStream in = null;
 		try
 		{
+			IFileInfo[] fiHandle = new IFileInfo[1];
+			in = DownloadManager.getCache().open(url, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+			m_fileInfo = fiHandle[0];
+
+			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getName(), resolution, ctx);
+			File destFile = unpacker.getFinalDestination().toFile();
+
 			if(destFile.toURI().toURL().equals(url))
 				//
 				// Materialization would result in copy onto self
 				//
 				return;
-
-			IFileInfo[] fiHandle = new IFileInfo[1];
-			in = DownloadManager.getCache().open(url, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
-			m_fileInfo = fiHandle[0];
 
 			// Assert that parent directory exists unless
 			// we are at the root.
