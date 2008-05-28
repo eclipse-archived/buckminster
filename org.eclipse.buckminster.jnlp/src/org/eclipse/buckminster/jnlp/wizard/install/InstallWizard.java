@@ -55,6 +55,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_SDK_VERSION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
@@ -81,6 +82,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -202,9 +204,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_cspecVersionType;
 
 	private String m_eclipseSDKURL;
-	
+
 	private IVersion m_eclipseSDKVersion;
-	
+
 	private String m_eclipseDistroTools34URL;
 
 	private String m_eclipseDistroTools33URL;
@@ -428,16 +430,18 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			// it should always finish
 			e.printStackTrace();
 		}
-		// TODO uncomment
-/*
+
 		if(isMaterializationFinished())
 		{
-			if(VALUE_TRUE.equals(m_localProperties.get(LOCALPROP_ENABLE_TP_WIZARD)))
+			String materializerID = getMaterializationSpecBuilder().getMaterializerID();
+
+			if((materializerID == IMaterializer.TARGET_PLATFORM || materializerID == IMaterializer.WORKSPACE)
+					&& VALUE_TRUE.equals(m_localProperties.get(LOCALPROP_ENABLE_TP_WIZARD)))
 				MaterializationUtils.startTPWizard(this, getShell());
 
 			saveLocalProperties();
 		}
-*/
+
 		return true;
 	}
 
@@ -840,6 +844,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public BMProperties getLocalProperties()
 	{
 		return m_localProperties;
+	}
+
+	public void enableWizardNextTime(boolean enable)
+	{
+		getLocalProperties().put(LOCALPROP_ENABLE_TP_WIZARD, enable
+				? VALUE_TRUE
+				: VALUE_FALSE);
 	}
 
 	private IAuthenticator createAuthenticator(boolean needed)
@@ -1419,16 +1430,18 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		tmp = properties.get(PROP_ECLIPSE_SDK_VERSION);
 		try
 		{
-			m_eclipseSDKVersion = (tmp == null ? null : VersionFactory.createVersion(IVersionType.OSGI, tmp));
+			m_eclipseSDKVersion = (tmp == null
+					? null
+					: VersionFactory.createVersion(IVersionType.OSGI, tmp));
 		}
 		catch(CoreException e)
 		{
 			m_eclipseSDKVersion = null;
 		}
-		
+
 		m_eclipseDistroTools34URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_URL);
 		m_eclipseDistroTools33URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_URL);
-		
+
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;

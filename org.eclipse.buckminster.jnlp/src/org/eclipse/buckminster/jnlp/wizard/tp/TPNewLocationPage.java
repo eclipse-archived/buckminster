@@ -40,8 +40,6 @@ public class TPNewLocationPage extends TPWizardPage
 
 	private Composite m_pageComposite;
 
-	private Label m_heading;
-
 	private Text m_locationText;
 
 	private Button m_browseButton;
@@ -58,17 +56,7 @@ public class TPNewLocationPage extends TPWizardPage
 		m_pageComposite.setLayout(new GridLayout(3, false));
 		m_pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		m_heading = new Label(m_pageComposite, SWT.WRAP);
-		GridData gridData = new GridData();
-		gridData.horizontalSpan = 3;
-		m_heading.setLayoutData(gridData);
-
 		Label label = new Label(m_pageComposite, SWT.NONE);
-		gridData = new GridData();
-		gridData.horizontalSpan = 3;
-		label.setLayoutData(gridData);
-
-		label = new Label(m_pageComposite, SWT.NONE);
 		label.setText("Destination Address:");
 		label.setToolTipText(TOOL_TIP_DESTINATION_ADDRESS);
 
@@ -106,16 +94,6 @@ public class TPNewLocationPage extends TPWizardPage
 		setControl(m_pageComposite);
 	}
 
-	@Override
-	protected void beforeDisplaySetup()
-	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
-		m_heading.setText("Select a destination address for the new Eclipse installation.");
-		GridData layoutData = (GridData)m_heading.getLayoutData();
-		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
-		m_pageComposite.layout();
-	}
-
 	private void firePageChanged()
 	{
 		uncommitPage();
@@ -125,7 +103,8 @@ public class TPNewLocationPage extends TPWizardPage
 	@Override
 	public boolean isPageComplete()
 	{
-		return UiUtils.trimmedValue(m_locationText) != null;
+		return getTPWizard().getNewOrCurrentPage().isPageCommitted()
+				&& (!getTPWizard().isNewEclipse() || UiUtils.trimmedValue(m_locationText) != null);
 	}
 
 	@Override
@@ -133,18 +112,19 @@ public class TPNewLocationPage extends TPWizardPage
 	{
 		setErrorMessage(null);
 
-		try
-		{
-			File destinationFolder = new File(UiUtils.trimmedValue(m_locationText));
+		if(getContainer().getCurrentPage() == this)
+			try
+			{
+				File destinationFolder = new File(UiUtils.trimmedValue(m_locationText));
 
-			if(!destinationFolder.exists() || !destinationFolder.isDirectory())
-				throw new JNLPException("Selected destination directory does not exist", null);
-		}
-		catch(JNLPException e)
-		{
-			setErrorMessage(e.getMessage());
-			return false;
-		}
+				if(!destinationFolder.exists() || !destinationFolder.isDirectory())
+					throw new JNLPException("Selected destination directory does not exist", null);
+			}
+			catch(JNLPException e)
+			{
+				setErrorMessage(e.getMessage());
+				return false;
+			}
 
 		return true;
 	}

@@ -89,7 +89,7 @@ public class AdvancedWizardDialog extends WizardDialog
 		for(IWizardPage page : getWizard().getPages())
 		{
 			AdvancedWizardPage instalPage = (AdvancedWizardPage) page;
-			if(!instalPage.isCommitted())
+			if(!instalPage.isPageCommitted())
 			{
 				if(!instalPage.commitPage())
 				{

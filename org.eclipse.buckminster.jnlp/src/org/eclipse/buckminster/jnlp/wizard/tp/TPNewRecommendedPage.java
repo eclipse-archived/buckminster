@@ -78,7 +78,7 @@ public class TPNewRecommendedPage extends TPWizardPage
 	{
 		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
 		m_heading.setText(
-				"You are currently using Eclipse " + getTPWizard().getCurrentEclipseVersion() + ". It is recommended to install Eclipse " + getTPWizard().getProvidedEclipseVersion() + " to get the leatest features.");
+				"You are currently using Eclipse " + getTPWizard().getCurrentEclipseVersion() + ". It is recommended to install Eclipse " + getTPWizard().getProvidedEclipseVersion() + " to get the latest features.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
 		m_pageComposite.layout();

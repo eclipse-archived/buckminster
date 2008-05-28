@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
@@ -22,6 +23,9 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TPDonePage extends TPWizardPage
 {
+	private Composite m_pageComposite;
+
+	private Label m_heading;
 
 	protected TPDonePage()
 	{
@@ -31,11 +35,14 @@ public class TPDonePage extends TPWizardPage
 
 	public void createControl(Composite parent)
 	{
-		Composite pageComposite = new Composite(parent, SWT.NONE);
-		pageComposite.setLayout(new GridLayout(1, false));
-		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
-		setControl(pageComposite);
+		m_pageComposite = new Composite(parent, SWT.NONE);
+		m_pageComposite.setLayout(new GridLayout(1, false));
+		m_pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		m_heading = new Label(m_pageComposite, SWT.WRAP);
+		m_heading.setText("Eclipse installation was successfully set.");
+
+		setControl(m_pageComposite);
 	}
 
 	// Disable finish

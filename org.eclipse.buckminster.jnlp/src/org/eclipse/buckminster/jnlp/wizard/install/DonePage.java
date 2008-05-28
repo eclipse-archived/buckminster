@@ -8,8 +8,12 @@
 
 package org.eclipse.buckminster.jnlp.wizard.install;
 
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
+
 import java.util.List;
 
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
@@ -23,6 +27,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -30,7 +35,7 @@ import org.eclipse.swt.widgets.Link;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class DonePage extends InstallWizardPage
 {
@@ -43,6 +48,8 @@ public class DonePage extends InstallWizardPage
 	private static final String ICON_PUBLISH = "xhtml_wiz.png";
 
 	private ComponentListPanel m_componentListPanel;
+
+	private Button m_tpWizardButton;
 
 	protected DonePage()
 	{
@@ -131,7 +138,24 @@ public class DonePage extends InstallWizardPage
 
 		m_componentListPanel = new ComponentListPanel();
 		m_componentListPanel.createControl(listGroup);
+		
+		m_tpWizardButton = new Button(pageComposite, SWT.CHECK);
+		m_tpWizardButton.setText("Do not start Eclipse installation wizard");
+		m_tpWizardButton.setSelection(!VALUE_TRUE.equals(getInstallWizard().getLocalProperties().get(LOCALPROP_ENABLE_TP_WIZARD)));
+		m_tpWizardButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				getInstallWizard().enableWizardNextTime(!m_tpWizardButton.getSelection());
+			}
+		});
 
+		gridData = new GridData();
+		gridData.horizontalSpan = 2;
+		m_tpWizardButton.setLayoutData(gridData);
+		
+		
 		setControl(pageComposite);
 	}
 
@@ -158,6 +182,15 @@ public class DonePage extends InstallWizardPage
 		});
 
 		return learnMoreLink;
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		String materializerID = getMaterializationSpecBuilder().getMaterializerID();
+
+		if(materializerID != IMaterializer.TARGET_PLATFORM && materializerID != IMaterializer.WORKSPACE)
+			m_tpWizardButton.setVisible(false);
 	}
 
 	public void update(MaterializationContext context)

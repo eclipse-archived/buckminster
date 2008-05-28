@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.jnlp.wizard.install;
 
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
-import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -157,10 +156,6 @@ public class StartPage extends InstallWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		// TODO - remove
-		// MaterializationUtils.startTPWizard(getInstallWizard(), getShell());
-		// end of remove
-
 		m_artifactNameText.setText(getInstallWizard().getArtifactName());
 		m_artifactVersionText.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion());
 		m_artifactDescriptionText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));

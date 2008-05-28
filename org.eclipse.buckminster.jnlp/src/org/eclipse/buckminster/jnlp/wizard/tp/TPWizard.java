@@ -9,16 +9,15 @@
 package org.eclipse.buckminster.jnlp.wizard.tp;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_MSPEC;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
@@ -42,18 +41,28 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.pde.core.plugin.TargetPlatform;
+import org.eclipse.pde.internal.core.ICoreConstants;
+import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Karel Brezina
  * 
  */
+@SuppressWarnings("restriction")
 public class TPWizard extends AdvancedWizard
 {
 	private static final String TP_WINDOW_TITLE = "Setup Eclipse Installation";
@@ -62,6 +71,18 @@ public class TPWizard extends AdvancedWizard
 	
 	private static final String OSGI_3_4_0 = "3.4.0";
 	
+	private static final String ECLIPSE_FEATURE = "org.eclipse.platform";
+
+	private static final String BUCKMINSTER_FEATURE = "org.eclipse.buckminster.core.feature";
+
+	private static final String SPACES_FEATURE = "org.eclipse.spaces.feature";
+
+	private static final String RSSOWL_FEATURE = "org.eclipse.buckminster.rssowl.feature";
+	
+	private static final String MIN_ECLIPSE_VERSION = "3.3.0";
+
+	private static final String MIN_OK_ECLIPSE_VERSION = "3.4.0";
+
 	private static final String OS_WIN = "win32";
 
 	private static final String OS_LINUX = "linux";
@@ -96,6 +117,10 @@ public class TPWizard extends AdvancedWizard
 	
 	private static final String PLATFORM_MACOSX_CARBON = "macosx-carbon";
 	
+	private static final IVersion s_minEclipseVersion;
+
+	private static final IVersion s_minOkEclipseVersion;
+
 	private InstallWizard m_installWizard;
 
 	private TPNewOrCurrentPage m_newOrCurrentPage;
@@ -114,7 +139,28 @@ public class TPWizard extends AdvancedWizard
 
 	private boolean m_newEclipse;
 	
+	private IVersion m_currentEclipseVersion;
+	
 	private boolean m_materializationFinished = false;
+	
+	private boolean m_buckminsterInstalled = false;
+
+	private boolean m_spacesInstalled = false;
+
+	private boolean m_rssowlInstalled = false;
+
+	static
+	{
+		try
+		{
+			s_minEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, MIN_ECLIPSE_VERSION);
+			s_minOkEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, MIN_OK_ECLIPSE_VERSION);
+		}
+		catch(CoreException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	public TPWizard(InstallWizard installWizard)
 	{
@@ -124,9 +170,7 @@ public class TPWizard extends AdvancedWizard
 
 	public void enableWizardNextTime(boolean enable)
 	{
-		m_installWizard.getLocalProperties().put(LOCALPROP_ENABLE_TP_WIZARD, enable
-				? VALUE_TRUE
-				: VALUE_FALSE);
+		m_installWizard.enableWizardNextTime(enable);
 	}
 
 	@Override
@@ -145,7 +189,7 @@ public class TPWizard extends AdvancedWizard
 		{
 			getContainer().showPage(m_operationPage);
 
-			if(!m_installWizard.isStartedFromIDE())
+			if(!isStartedFromIDE())
 			{
 				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
 				Job.getJobManager().setProgressProvider(m_operationPage.getProgressProvider());
@@ -214,7 +258,7 @@ public class TPWizard extends AdvancedWizard
 		}
 		finally
 		{
-			if(!m_installWizard.isStartedFromIDE())
+			if(!isStartedFromIDE())
 			{
 				Job.getJobManager().setProgressProvider(null);
 				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
@@ -277,21 +321,28 @@ public class TPWizard extends AdvancedWizard
 	{
 		addAdvancedPage(new TPIntroPage());
 
-		m_newOrCurrentPage = new TPNewOrCurrentPage();
-		addAdvancedPage(m_newOrCurrentPage);
-
-		m_newRecommendedPage = new TPNewRecommendedPage();
-		addAdvancedPage(m_newRecommendedPage);
-
-		m_newLocationPage = new TPNewLocationPage();
-		addAdvancedPage(m_newLocationPage);
-
-		m_backupFolderPage = new TPBackupFolderPage();
-		addAdvancedPage(m_backupFolderPage);
-
+		if(!isStartedFromIDE())
+		{
+			m_newOrCurrentPage = new TPNewOrCurrentPage();
+			addAdvancedPage(m_newOrCurrentPage);
+	
+			m_newRecommendedPage = new TPNewRecommendedPage();
+			addAdvancedPage(m_newRecommendedPage);
+	
+			m_newLocationPage = new TPNewLocationPage();
+			addAdvancedPage(m_newLocationPage);
+	
+			m_backupFolderPage = new TPBackupFolderPage();
+			addAdvancedPage(m_backupFolderPage);
+		}
+		else
+		{
+			setNewEclipse(false);
+		}
+	
 		m_toolSelectionPage = new TPToolSelectionPage();
 		addAdvancedPage(m_toolSelectionPage);
-
+		
 		m_operationPage = new TPOperationPage();
 		addAdvancedPage(m_operationPage);
 
@@ -313,7 +364,7 @@ public class TPWizard extends AdvancedWizard
 
 	IVersion getCurrentEclipseVersion()
 	{
-		return m_newOrCurrentPage.getCurrentEclipseVersion();
+		return m_currentEclipseVersion;
 	}
 
 	IVersion getProvidedEclipseVersion()
@@ -324,6 +375,11 @@ public class TPWizard extends AdvancedWizard
 	boolean isMaterializationFinished()
 	{
 		return m_materializationFinished;
+	}
+	
+	boolean isStartedFromIDE()
+	{
+		return m_installWizard.isStartedFromIDE();
 	}
 
 	boolean isNewEclipse()
@@ -336,19 +392,24 @@ public class TPWizard extends AdvancedWizard
 		m_newEclipse = newEclipse;
 	}
 
+	boolean isEclipseUpToDate()
+	{
+		return s_minOkEclipseVersion.compareTo(m_currentEclipseVersion) <= 0;
+	}
+	
 	boolean isBuckminsterInstalled()
 	{
-		return !isNewEclipse() && m_newOrCurrentPage.isBuckminsterInstalled();
+		return !isNewEclipse() && m_buckminsterInstalled;
 	}
 	
 	boolean isSpacesInstalled()
 	{
-		return !isNewEclipse() && m_newOrCurrentPage.isSpacesInstalled();
+		return !isNewEclipse() && m_spacesInstalled;
 	}
 	
 	boolean isRSSOwlInstalled()
 	{
-		return !isNewEclipse() && m_newOrCurrentPage.isRSSOwlInstalled();
+		return !isNewEclipse() && m_rssowlInstalled;
 	}
 	
 	String getNewEclipseDestinationFolder()
@@ -358,6 +419,9 @@ public class TPWizard extends AdvancedWizard
 
 	String getEclipseFolder()
 	{
+		if(isStartedFromIDE())
+			return TargetPlatform.getLocation();
+
 		if(isNewEclipse())
 			return getNewEclipseDestinationFolder() == null
 					? null
@@ -371,22 +435,27 @@ public class TPWizard extends AdvancedWizard
 		return m_toolSelectionPage.isDistroToolsSelected();
 	}
 
-	IWizardPage getNewLocationPage()
+	TPWizardPage getNewOrCurrentPage()
+	{
+		return m_newOrCurrentPage;
+	}
+	
+	TPWizardPage getNewLocationPage()
 	{
 		return m_newLocationPage;
 	}
 
-	IWizardPage getToolsSelectionPage()
+	TPWizardPage getToolsSelectionPage()
 	{
 		return m_toolSelectionPage;
 	}
 
-	IWizardPage getNewRecommendedPage()
+	TPWizardPage getNewRecommendedPage()
 	{
 		return m_newRecommendedPage;
 	}
 
-	IWizardPage getBackupFolderPage()
+	TPWizardPage getBackupFolderPage()
 	{
 		return m_backupFolderPage;
 	}
@@ -470,5 +539,89 @@ public class TPWizard extends AdvancedWizard
 		}
 
 		return bom;
+	}
+	
+	void analyzeTP(final String tpLocation)
+	{
+		try
+		{
+			getContainer().run(true, false, new IRunnableWithProgress()
+			{
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+				{
+					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+					monitor.subTask("Retrieving information from the installed Eclipse");
+					
+					m_buckminsterInstalled = false;
+					m_spacesInstalled = false;
+					m_rssowlInstalled = false;
+					
+					try
+					{
+						setTP(tpLocation);
+						IFeatureModel featureModel = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
+								ECLIPSE_FEATURE);
+						if(featureModel == null)
+							throw new JNLPException("The selected location is not an Eclipse folder", null);
+
+						m_currentEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, featureModel.getFeature()
+									.getVersion()).replaceQualifier(null);
+
+						if(s_minEclipseVersion.compareTo(m_currentEclipseVersion) > 0)
+							throw new JNLPException("Your Eclipse is too old, you need the new version", null);
+
+						m_buckminsterInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(
+								BUCKMINSTER_FEATURE) != null;
+						m_spacesInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(SPACES_FEATURE) != null;
+						m_rssowlInstalled = PDECore.getDefault().getFeatureModelManager().findFeatureModel(RSSOWL_FEATURE) != null;
+					}
+					catch(JNLPException e)
+					{
+						throw new InvocationTargetException(e);
+					}
+					catch(CoreException e)
+					{
+						throw new InvocationTargetException(new JNLPException("Error while analysing Eclipse installation", null));
+					}
+					finally
+					{
+						unsetTP();
+					}
+					
+					monitor.done();
+				}
+			});
+		}
+		catch(InvocationTargetException e1)
+		{
+			if(e1.getCause() != null && e1.getCause() instanceof JNLPException)
+				throw (JNLPException)e1.getCause();
+			
+			throw new JNLPException("Error while analysing Eclipse installation", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
+		}
+		catch(InterruptedException e1)
+		{
+			new JNLPException("Operation cancelled", null);
+		}
+	}
+	
+	private void setTP(String targetPlatform)
+	{
+		PDECore pdePlugin = PDECore.getDefault();
+		Preferences preferences = pdePlugin.getPluginPreferences();
+		IPath newPath = new Path(targetPlatform);
+		Platform.getInstallLocation();
+		IPath defaultPath = new Path(TargetPlatform.getDefaultLocation());
+		String mode = defaultPath.equals(newPath)
+				? ICoreConstants.VALUE_USE_THIS
+				: ICoreConstants.VALUE_USE_OTHER;
+		preferences.setValue(ICoreConstants.TARGET_MODE, mode);
+		preferences.setValue(ICoreConstants.PLATFORM_PATH, targetPlatform);
+		pdePlugin.savePluginPreferences();
+	}
+
+	private void unsetTP()
+	{
+		this.setTP(TargetPlatform.getDefaultLocation());
 	}
 }

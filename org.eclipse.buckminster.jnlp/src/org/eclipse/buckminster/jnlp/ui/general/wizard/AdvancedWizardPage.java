@@ -84,7 +84,7 @@ public abstract class AdvancedWizardPage extends WizardPage
 		return m_pageCommitted;
 	}
 
-	public final boolean isCommitted()
+	public final boolean isPageCommitted()
 	{
 		return m_pageCommitted;	
 	}
