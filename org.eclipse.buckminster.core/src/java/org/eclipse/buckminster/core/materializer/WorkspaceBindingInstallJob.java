@@ -73,7 +73,7 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 			{
 				s_active = new WorkspaceBindingInstallJob();
 				s_active.addJobChangeListener(new Repeater());
-				s_active.schedule();
+				s_active.schedule(5000);
 			}
 		}
 	}
