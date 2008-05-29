@@ -140,6 +140,6 @@ public class TPNewLocationPage extends TPWizardPage
 		if(getTPWizard().getEclipseFolder() != null && new File(getTPWizard().getEclipseFolder()).exists())
 			return getTPWizard().getBackupFolderPage();
 
-		return getTPWizard().getToolsSelectionPage();
+		return null;
 	}
 }

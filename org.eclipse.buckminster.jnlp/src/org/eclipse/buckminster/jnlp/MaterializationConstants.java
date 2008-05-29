@@ -44,6 +44,8 @@ public interface MaterializationConstants
 
 	public static final String STEP_TP_BACKUP_FOLDER = "TPNewLocation";
 	
+	public static final String STEP_TP_UPTODATE = "TPUptodate";
+	
 	public static final String STEP_TP_TOOL_SELECTION = "TPToolSelection";
 
 	public static final String STEP_TP_OPERATION = "TPOperation";
@@ -113,6 +115,10 @@ public interface MaterializationConstants
 	public static final String PROP_ECLIPSE_DISTRO_TOOLS_34_URL = "eclipseDistroTools3.4URL";
 
 	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_URL = "eclipseDistroTools3.3URL";
+
+	public static final String PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL = "eclipseDistroTools3.4UpdateSiteURL";
+
+	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL = "eclipseDistroTools3.3UpdateSiteURL";
 
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
 

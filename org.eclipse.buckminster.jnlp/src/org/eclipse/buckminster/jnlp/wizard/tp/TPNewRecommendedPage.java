@@ -104,6 +104,6 @@ public class TPNewRecommendedPage extends TPWizardPage
 		if(m_newEclipseButton.getSelection())
 			return getTPWizard().getNewLocationPage();
 		
-		return getTPWizard().getToolsSelectionPage();
+		return getTPWizard().getUptodatePage();
 	}
 }

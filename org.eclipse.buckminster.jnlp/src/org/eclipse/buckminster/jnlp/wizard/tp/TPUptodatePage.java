@@ -23,19 +23,23 @@ import org.eclipse.swt.widgets.Link;
 
 /**
  * @author Karel Brezina
- * 
+ *
  */
-public class TPDonePage extends TPWizardPage
+public class TPUptodatePage extends TPWizardPage
 {
 	private Composite m_pageComposite;
 
 	private Label m_heading;
 
 	private Label m_linkHeading;
+	
+	private String m_updateSiteURL;
+	
+	private Link m_updateSiteLink;
 
-	protected TPDonePage()
+	protected TPUptodatePage()
 	{
-		super(MaterializationConstants.STEP_TP_DONE, "Materialization Completed", "Close the materialization dialog.");
+		super(MaterializationConstants.STEP_TP_UPTODATE, "Up-To-Date", "Eclipse installation is up-to-date.");
 		setPreviousPage(this);
 	}
 
@@ -46,23 +50,22 @@ public class TPDonePage extends TPWizardPage
 		m_pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		m_heading = new Label(m_pageComposite, SWT.WRAP);
-		m_heading.setText("Eclipse " + getTPWizard().getProvidedEclipseVersion() + " was successfully installed.");
+		m_heading.setText("Your Eclipse installation is up-to-date.");
 
 		new Label(m_pageComposite, SWT.NONE);
 
 		m_linkHeading = new Label(m_pageComposite, SWT.WRAP);
-		Link updateSiteLink = new Link(m_pageComposite, SWT.NONE);
-		updateSiteLink.setText("<a>" + getTPWizard().getEclipseDistroTools34UpdateSiteURL() + "</a>");
+		m_updateSiteLink = new Link(m_pageComposite, SWT.NONE);
 		GridData layoutData = new GridData();
 		layoutData.horizontalIndent = 20;
-		updateSiteLink.setLayoutData(layoutData);
-		updateSiteLink.addSelectionListener(new SelectionAdapter()
+		m_updateSiteLink.setLayoutData(layoutData);
+		m_updateSiteLink.addSelectionListener(new SelectionAdapter()
 		{
 
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				String linkURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
+				String linkURL = m_updateSiteURL;
 
 				if(linkURL != null)
 				{
@@ -81,7 +84,15 @@ public class TPDonePage extends TPWizardPage
 		m_linkHeading
 				.setText("To get the best experience with the materialized material in Eclipse install EclipseDistroTools from the following update site:");
 		GridData layoutData = (GridData)m_linkHeading.getLayoutData();
-		layoutData.widthHint = m_linkHeading.getShell().getSize().x - 30;
+		layoutData.widthHint = m_linkHeading.getShell().getSize().x - 30;	
+		
+		if(getTPWizard().getCurrentEclipseVersion().compareTo(TPWizard.getOSGi340Version()) >= 0)
+			m_updateSiteURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
+		else
+			m_updateSiteURL = getTPWizard().getEclipseDistroTools33UpdateSiteURL();
+
+		m_updateSiteLink.setText("<a>" + m_updateSiteURL + "</a>");
+		
 		m_pageComposite.layout();
 	}
 

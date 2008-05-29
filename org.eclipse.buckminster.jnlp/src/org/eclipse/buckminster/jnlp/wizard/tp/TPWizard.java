@@ -120,6 +120,8 @@ public class TPWizard extends AdvancedWizard
 	private static final IVersion s_minEclipseVersion;
 
 	private static final IVersion s_minOkEclipseVersion;
+	
+	private static final IVersion s_osgi340Version;
 
 	private InstallWizard m_installWizard;
 
@@ -131,7 +133,7 @@ public class TPWizard extends AdvancedWizard
 	
 	private TPBackupFolderPage m_backupFolderPage;
 
-	private TPToolSelectionPage m_toolSelectionPage;
+	private TPUptodatePage m_uptodatePage;
 	
 	private TPOperationPage m_operationPage;
 
@@ -155,6 +157,7 @@ public class TPWizard extends AdvancedWizard
 		{
 			s_minEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, MIN_ECLIPSE_VERSION);
 			s_minOkEclipseVersion = VersionFactory.createVersion(IVersionType.OSGI, MIN_OK_ECLIPSE_VERSION);
+			s_osgi340Version = VersionFactory.createVersion(IVersionType.OSGI, OSGI_3_4_0);
 		}
 		catch(CoreException e)
 		{
@@ -224,9 +227,8 @@ public class TPWizard extends AdvancedWizard
 
 			if(isDistroToolsSelected())
 			{
-				IVersion osgi340Version = VersionFactory.createVersion(IVersionType.OSGI, OSGI_3_4_0);
 				MaterializationSpecBuilder toolsBuilder;
-				if(eclipseVersion.compareTo(osgi340Version) >= 0)
+				if(eclipseVersion.compareTo(s_osgi340Version) >= 0)
 					toolsBuilder = getMspec(m_installWizard.getEclipseDistroTools34URL());
 				else
 					toolsBuilder = getMspec(m_installWizard.getEclipseDistroTools33URL());
@@ -339,10 +341,16 @@ public class TPWizard extends AdvancedWizard
 		{
 			setNewEclipse(false);
 		}
-	
+		
+		m_uptodatePage = new TPUptodatePage();
+		addAdvancedPage(m_uptodatePage);
+		
+		// TODO make it work with distros instead of update sites
+
+/*	temporarily removed - links to updatesites are used instead
 		m_toolSelectionPage = new TPToolSelectionPage();
 		addAdvancedPage(m_toolSelectionPage);
-		
+*/		
 		m_operationPage = new TPOperationPage();
 		addAdvancedPage(m_operationPage);
 
@@ -365,6 +373,11 @@ public class TPWizard extends AdvancedWizard
 	IVersion getCurrentEclipseVersion()
 	{
 		return m_currentEclipseVersion;
+	}
+
+	static IVersion getOSGi340Version()
+	{
+		return s_osgi340Version;
 	}
 
 	IVersion getProvidedEclipseVersion()
@@ -432,7 +445,9 @@ public class TPWizard extends AdvancedWizard
 	
 	boolean isDistroToolsSelected()
 	{
-		return m_toolSelectionPage.isDistroToolsSelected();
+		// TODO make it work with distros instead of update sites
+		return false;
+		//return m_toolSelectionPage.isDistroToolsSelected();
 	}
 
 	TPWizardPage getNewOrCurrentPage()
@@ -445,11 +460,18 @@ public class TPWizard extends AdvancedWizard
 		return m_newLocationPage;
 	}
 
+	// TODO make it work with distros instead of update sites
+/*
 	TPWizardPage getToolsSelectionPage()
 	{
 		return m_toolSelectionPage;
 	}
-
+*/
+	TPUptodatePage getUptodatePage()
+	{
+		return m_uptodatePage;
+	}
+	
 	TPWizardPage getNewRecommendedPage()
 	{
 		return m_newRecommendedPage;
@@ -623,5 +645,15 @@ public class TPWizard extends AdvancedWizard
 	private void unsetTP()
 	{
 		this.setTP(TargetPlatform.getDefaultLocation());
+	}
+	
+	String getEclipseDistroTools33UpdateSiteURL()
+	{
+		return m_installWizard.getEclipseDistroTools33UpdateSiteURL();
+	}
+	
+	String getEclipseDistroTools34UpdateSiteURL()
+	{
+		return m_installWizard.getEclipseDistroTools34UpdateSiteURL();
 	}
 }

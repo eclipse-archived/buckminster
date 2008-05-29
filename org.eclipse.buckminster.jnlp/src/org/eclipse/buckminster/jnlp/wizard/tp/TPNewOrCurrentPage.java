@@ -200,6 +200,6 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		if(isPageCommitted() && !getTPWizard().isEclipseUpToDate())
 			return getTPWizard().getNewRecommendedPage();
 		
-		return getTPWizard().getToolsSelectionPage();
+		return getTPWizard().getUptodatePage();
 	}
 }

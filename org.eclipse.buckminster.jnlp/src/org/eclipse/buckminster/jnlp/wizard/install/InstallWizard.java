@@ -55,6 +55,8 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_SDK_VERSION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
 
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
@@ -210,6 +212,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_eclipseDistroTools34URL;
 
 	private String m_eclipseDistroTools33URL;
+	
+	private String m_eclipseDistroTools34UpdateSiteURL;
+	
+	private String m_eclipseDistroTools33UpdateSiteURL;
 
 	private boolean m_loginPageRequested = false;
 
@@ -687,6 +693,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public String getEclipseDistroTools33URL()
 	{
 		return m_eclipseDistroTools33URL;
+	}
+
+	public String getEclipseDistroTools34UpdateSiteURL()
+	{
+		return m_eclipseDistroTools34UpdateSiteURL;
+	}
+
+	public String getEclipseDistroTools33UpdateSiteURL()
+	{
+		return m_eclipseDistroTools33UpdateSiteURL;
 	}
 
 	IWizardPage getDownloadPage()
@@ -1441,6 +1457,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_eclipseDistroTools34URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_URL);
 		m_eclipseDistroTools33URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_URL);
+
+		m_eclipseDistroTools34UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL);
+		m_eclipseDistroTools33UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL);
 
 		if(errorList.size() > 0)
 		{
