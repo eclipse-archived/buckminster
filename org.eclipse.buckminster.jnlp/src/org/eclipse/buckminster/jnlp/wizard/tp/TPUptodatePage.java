@@ -12,14 +12,14 @@ import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
@@ -31,11 +31,9 @@ public class TPUptodatePage extends TPWizardPage
 
 	private Label m_heading;
 
-	private Label m_linkHeading;
+	private Label m_updateSiteHeading;
 	
-	private String m_updateSiteURL;
-	
-	private Link m_updateSiteLink;
+	private Text m_updateSiteText;
 
 	protected TPUptodatePage()
 	{
@@ -54,25 +52,16 @@ public class TPUptodatePage extends TPWizardPage
 
 		new Label(m_pageComposite, SWT.NONE);
 
-		m_linkHeading = new Label(m_pageComposite, SWT.WRAP);
-		m_updateSiteLink = new Link(m_pageComposite, SWT.NONE);
+		m_updateSiteHeading = new Label(m_pageComposite, SWT.WRAP);
+		m_updateSiteText = new Text(m_pageComposite, SWT.NO_FOCUS | SWT.READ_ONLY);
+		FontData[] fontDadas = m_updateSiteText.getFont().getFontData();
+		if(fontDadas.length > 0)
+			fontDadas[0].setStyle(SWT.ITALIC);
+		m_updateSiteText.setFont(new Font(Display.getCurrent(), fontDadas));
+
 		GridData layoutData = new GridData();
-		layoutData.horizontalIndent = 20;
-		m_updateSiteLink.setLayoutData(layoutData);
-		m_updateSiteLink.addSelectionListener(new SelectionAdapter()
-		{
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				String linkURL = m_updateSiteURL;
-
-				if(linkURL != null)
-				{
-					Program.launch(linkURL);
-				}
-			}
-		});
+		layoutData.horizontalAlignment = SWT.CENTER;
+		m_updateSiteText.setLayoutData(layoutData);
 
 		setControl(m_pageComposite);
 	}
@@ -81,17 +70,19 @@ public class TPUptodatePage extends TPWizardPage
 	protected void beforeDisplaySetup()
 	{
 		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
-		m_linkHeading
+		m_updateSiteHeading
 				.setText("To get the best experience with the materialized material in Eclipse install EclipseDistroTools from the following update site:");
-		GridData layoutData = (GridData)m_linkHeading.getLayoutData();
-		layoutData.widthHint = m_linkHeading.getShell().getSize().x - 30;	
+		GridData layoutData = (GridData)m_updateSiteHeading.getLayoutData();
+		layoutData.widthHint = m_updateSiteHeading.getShell().getSize().x - 30;	
+		
+		String updateSiteURL;
 		
 		if(getTPWizard().getCurrentEclipseVersion().compareTo(TPWizard.getOSGi340Version()) >= 0)
-			m_updateSiteURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
+			updateSiteURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
 		else
-			m_updateSiteURL = getTPWizard().getEclipseDistroTools33UpdateSiteURL();
+			updateSiteURL = getTPWizard().getEclipseDistroTools33UpdateSiteURL();
 
-		m_updateSiteLink.setText("<a>" + m_updateSiteURL + "</a>");
+		m_updateSiteText.setText(updateSiteURL);
 		
 		m_pageComposite.layout();
 	}

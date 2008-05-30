@@ -12,14 +12,14 @@ import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
@@ -51,25 +51,16 @@ public class TPDonePage extends TPWizardPage
 		new Label(m_pageComposite, SWT.NONE);
 
 		m_linkHeading = new Label(m_pageComposite, SWT.WRAP);
-		Link updateSiteLink = new Link(m_pageComposite, SWT.NONE);
-		updateSiteLink.setText("<a>" + getTPWizard().getEclipseDistroTools34UpdateSiteURL() + "</a>");
+		Text updateSiteText = new Text(m_pageComposite, SWT.NO_FOCUS | SWT.READ_ONLY);
+		updateSiteText.setText(getTPWizard().getEclipseDistroTools34UpdateSiteURL());
+		FontData[] fontDadas = updateSiteText.getFont().getFontData();
+		if(fontDadas.length > 0)
+			fontDadas[0].setStyle(SWT.ITALIC);
+		updateSiteText.setFont(new Font(Display.getCurrent(), fontDadas));
+
 		GridData layoutData = new GridData();
-		layoutData.horizontalIndent = 20;
-		updateSiteLink.setLayoutData(layoutData);
-		updateSiteLink.addSelectionListener(new SelectionAdapter()
-		{
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				String linkURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
-
-				if(linkURL != null)
-				{
-					Program.launch(linkURL);
-				}
-			}
-		});
+		layoutData.horizontalAlignment = SWT.CENTER;
+		updateSiteText.setLayoutData(layoutData);
 
 		setControl(m_pageComposite);
 	}

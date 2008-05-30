@@ -13,6 +13,7 @@ import java.io.File;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -101,5 +102,11 @@ public class TPBackupFolderPage extends TPWizardPage
 	private void firePageChanged()
 	{
 		getContainer().updateButtons();
+	}
+	
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return null;
 	}
 }

@@ -415,7 +415,7 @@ public class MaterializationUtils
 		int i = 0;
 		while(backupFile.exists())
 		{
-			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i)));
+			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++)));
 		}
 
 		return backupFile;
