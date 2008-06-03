@@ -94,10 +94,13 @@ public class TPNewLocationPage extends TPWizardPage
 		setControl(m_pageComposite);
 	}
 
-	private void firePageChanged()
+	@Override
+	public IWizardPage getNextPage()
 	{
-		uncommitPage();
-		getContainer().updateButtons();
+		if(getTPWizard().getEclipseFolder() != null && new File(getTPWizard().getEclipseFolder()).exists())
+			return getTPWizard().getBackupFolderPage();
+
+		return null;
 	}
 
 	@Override
@@ -134,12 +137,9 @@ public class TPNewLocationPage extends TPWizardPage
 		return UiUtils.trimmedValue(m_locationText);
 	}
 
-	@Override
-	public IWizardPage getNextPage()
+	private void firePageChanged()
 	{
-		if(getTPWizard().getEclipseFolder() != null && new File(getTPWizard().getEclipseFolder()).exists())
-			return getTPWizard().getBackupFolderPage();
-
-		return null;
+		uncommitPage();
+		getContainer().updateButtons();
 	}
 }

@@ -41,7 +41,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 	private static final String TOOL_TIP_BROWSE_ECLIPSE_LOCATION = "Browse location of the current Eclipse";
 
 	private Composite m_pageComposite;
-	
+
 	private Button m_newEclipseButton;
 
 	private Button m_currentEclipseButton;
@@ -114,7 +114,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 				}
 			}
 		});
-		
+
 		SelectionListener radioListener = new SelectionAdapter()
 		{
 			@Override
@@ -130,16 +130,22 @@ public class TPNewOrCurrentPage extends TPWizardPage
 
 		m_newEclipseButton.setSelection(true);
 		enableEclipseLocation(m_currentEclipseButton.getSelection());
-		
+
 		setControl(m_pageComposite);
 	}
 
-	private void firePageChanged()
+	@Override
+	public IWizardPage getNextPage()
 	{
-		uncommitPage();
-		getContainer().updateButtons();
+		if(m_newEclipseButton.getSelection())
+			return getTPWizard().getNewLocationPage();
+
+		if(isPageCommitted() && !getTPWizard().isEclipseUpToDate())
+			return getTPWizard().getNewRecommendedPage();
+
+		return getTPWizard().getUptodatePage();
 	}
-	
+
 	@Override
 	public boolean isPageComplete()
 	{
@@ -152,7 +158,7 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		setErrorMessage(null);
 
 		getTPWizard().setNewEclipse(m_newEclipseButton.getSelection());
-		
+
 		if(m_newEclipseButton.getSelection())
 			return true;
 
@@ -191,15 +197,9 @@ public class TPNewOrCurrentPage extends TPWizardPage
 		m_browseButton.setEnabled(enabled);
 	}
 
-	@Override
-	public IWizardPage getNextPage()
+	private void firePageChanged()
 	{
-		if(m_newEclipseButton.getSelection())
-			return getTPWizard().getNewLocationPage();
-		
-		if(isPageCommitted() && !getTPWizard().isEclipseUpToDate())
-			return getTPWizard().getNewRecommendedPage();
-		
-		return getTPWizard().getUptodatePage();
+		uncommitPage();
+		getContainer().updateButtons();
 	}
 }

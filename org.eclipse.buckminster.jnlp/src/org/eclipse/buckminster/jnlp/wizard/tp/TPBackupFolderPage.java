@@ -26,18 +26,18 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class TPBackupFolderPage extends TPWizardPage
 {
 	private Composite m_pageComposite;
-	
+
 	private Label m_heading;
-	
+
 	private Button m_agreeButton;
 
 	private Button m_disagreeButton;
-	
+
 	protected TPBackupFolderPage()
 	{
 		super(MaterializationConstants.STEP_TP_BACKUP_FOLDER, "Backup Folder",
@@ -73,8 +73,20 @@ public class TPBackupFolderPage extends TPWizardPage
 		m_disagreeButton.addSelectionListener(radioListener);
 
 		m_agreeButton.setSelection(true);
-		
+
 		setControl(m_pageComposite);
+	}
+
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isPageComplete()
+	{
+		return m_agreeButton.getSelection();
 	}
 
 	@Override
@@ -83,30 +95,17 @@ public class TPBackupFolderPage extends TPWizardPage
 		File eclipseFolder = new File(getTPWizard().getEclipseFolder());
 		File backupFolder = MaterializationUtils.getBackupFolder(eclipseFolder);
 		String backupName = new Path(backupFolder.getPath()).lastSegment();
-		
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
-		m_heading.setText(
-				"The selected destination folder already contains an Eclipse folder. " +
-				"This folder will be backed up to " + backupName + ".");
+
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_heading.setText("The selected destination folder already contains an Eclipse folder. "
+				+ "This folder will be backed up to " + backupName + ".");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
 		m_pageComposite.layout();
 	}
-	
-	@Override
-	public boolean isPageComplete()
-	{
-		return m_agreeButton.getSelection();
-	}
-	
+
 	private void firePageChanged()
 	{
 		getContainer().updateButtons();
-	}
-	
-	@Override
-	public IWizardPage getNextPage()
-	{
-		return null;
 	}
 }

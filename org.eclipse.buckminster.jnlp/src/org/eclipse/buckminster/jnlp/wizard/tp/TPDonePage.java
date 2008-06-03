@@ -65,34 +65,6 @@ public class TPDonePage extends TPWizardPage
 		setControl(m_pageComposite);
 	}
 
-	@Override
-	protected void beforeDisplaySetup()
-	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
-		m_linkHeading
-				.setText("To get the best experience with the materialized material in Eclipse install EclipseDistroTools from the following update site:");
-		GridData layoutData = (GridData)m_linkHeading.getLayoutData();
-		layoutData.widthHint = m_linkHeading.getShell().getSize().x - 30;
-		m_pageComposite.layout();
-	}
-
-	// Disable finish
-	@Override
-	public boolean isPageComplete()
-	{
-		if(getContainer().getCurrentPage() == this)
-			return false;
-
-		return true;
-	}
-
-	// Previous is disabled
-	@Override
-	public IWizardPage getPreviousPage()
-	{
-		return null;
-	}
-
 	// Next is disabled
 	@Override
 	public IWizardPage getNextPage()
@@ -110,5 +82,33 @@ public class TPDonePage extends TPWizardPage
 	public int getOverrideDefaultButtonId()
 	{
 		return IDialogConstants.CANCEL_ID;
+	}
+
+	// Previous is disabled
+	@Override
+	public IWizardPage getPreviousPage()
+	{
+		return null;
+	}
+
+	// Disable finish
+	@Override
+	public boolean isPageComplete()
+	{
+		if(getContainer().getCurrentPage() == this)
+			return false;
+
+		return true;
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_linkHeading
+				.setText("To get the best experience with the materialized material in Eclipse install EclipseDistroTools from the following update site:");
+		GridData layoutData = (GridData)m_linkHeading.getLayoutData();
+		layoutData.widthHint = m_linkHeading.getShell().getSize().x - 30;
+		m_pageComposite.layout();
 	}
 }

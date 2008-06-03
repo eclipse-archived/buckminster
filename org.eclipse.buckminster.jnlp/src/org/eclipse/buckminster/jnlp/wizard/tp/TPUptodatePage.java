@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class TPUptodatePage extends TPWizardPage
 {
@@ -32,7 +32,7 @@ public class TPUptodatePage extends TPWizardPage
 	private Label m_heading;
 
 	private Label m_updateSiteHeading;
-	
+
 	private Text m_updateSiteText;
 
 	protected TPUptodatePage()
@@ -66,44 +66,6 @@ public class TPUptodatePage extends TPWizardPage
 		setControl(m_pageComposite);
 	}
 
-	@Override
-	protected void beforeDisplaySetup()
-	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
-		m_updateSiteHeading
-				.setText("To get the best experience with the materialized material in Eclipse install EclipseDistroTools from the following update site:");
-		GridData layoutData = (GridData)m_updateSiteHeading.getLayoutData();
-		layoutData.widthHint = m_updateSiteHeading.getShell().getSize().x - 30;	
-		
-		String updateSiteURL;
-		
-		if(getTPWizard().getCurrentEclipseVersion().compareTo(TPWizard.getOSGi340Version()) >= 0)
-			updateSiteURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
-		else
-			updateSiteURL = getTPWizard().getEclipseDistroTools33UpdateSiteURL();
-
-		m_updateSiteText.setText(updateSiteURL);
-		
-		m_pageComposite.layout();
-	}
-
-	// Disable finish
-	@Override
-	public boolean isPageComplete()
-	{
-		if(getContainer().getCurrentPage() == this)
-			return false;
-
-		return true;
-	}
-
-	// Previous is disabled
-	@Override
-	public IWizardPage getPreviousPage()
-	{
-		return null;
-	}
-
 	// Next is disabled
 	@Override
 	public IWizardPage getNextPage()
@@ -121,5 +83,43 @@ public class TPUptodatePage extends TPWizardPage
 	public int getOverrideDefaultButtonId()
 	{
 		return IDialogConstants.CANCEL_ID;
+	}
+
+	// Previous is disabled
+	@Override
+	public IWizardPage getPreviousPage()
+	{
+		return null;
+	}
+
+	// Disable finish
+	@Override
+	public boolean isPageComplete()
+	{
+		if(getContainer().getCurrentPage() == this)
+			return false;
+
+		return true;
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_updateSiteHeading
+				.setText("To get the best experience with the materialized material in Eclipse install EclipseDistroTools from the following update site:");
+		GridData layoutData = (GridData)m_updateSiteHeading.getLayoutData();
+		layoutData.widthHint = m_updateSiteHeading.getShell().getSize().x - 30;
+
+		String updateSiteURL;
+
+		if(getTPWizard().getCurrentEclipseVersion().compareTo(TPWizard.getOSGi340Version()) >= 0)
+			updateSiteURL = getTPWizard().getEclipseDistroTools34UpdateSiteURL();
+		else
+			updateSiteURL = getTPWizard().getEclipseDistroTools33UpdateSiteURL();
+
+		m_updateSiteText.setText(updateSiteURL);
+
+		m_pageComposite.layout();
 	}
 }

@@ -90,17 +90,6 @@ public class TPIntroPage extends TPWizardPage
 	}
 
 	@Override
-	protected void beforeDisplaySetup()
-	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
-		m_heading.setText("This wizard will help you to setup your Eclipse installation to get the best experience"
-				+ " with the materialized material in Eclipse.");
-		GridData layoutData = (GridData)m_heading.getLayoutData();
-		layoutData.widthHint = m_heading.getShell().getSize().x - m_headingIcon.getSize().x - 80;
-		m_pageComposite.layout();
-	}
-
-	@Override
 	public boolean performPageCommit()
 	{
 		setErrorMessage(null);
@@ -128,5 +117,16 @@ public class TPIntroPage extends TPWizardPage
 			}
 
 		return true;
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_heading.setText("This wizard will help you to setup your Eclipse installation to get the best experience"
+				+ " with the materialized material in Eclipse.");
+		GridData layoutData = (GridData)m_heading.getLayoutData();
+		layoutData.widthHint = m_heading.getShell().getSize().x - m_headingIcon.getSize().x - 80;
+		m_pageComposite.layout();
 	}
 }

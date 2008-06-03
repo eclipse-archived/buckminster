@@ -26,7 +26,7 @@ public class TPToolSelectionPage extends TPWizardPage
 	private Composite m_pageComposite;
 
 	private Label m_heading;
-	
+
 	private Button m_distroToolsButton;
 
 	protected TPToolSelectionPage()
@@ -53,12 +53,18 @@ public class TPToolSelectionPage extends TPWizardPage
 		setControl(m_pageComposite);
 	}
 
+	// disable NEXT
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return null;
+	}
+
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
-		m_heading.setText(
-				"Distro Tools make it easy to work with your distros within Eclipse.");
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_heading.setText("Distro Tools make it easy to work with your distros within Eclipse.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
 		m_pageComposite.layout();
@@ -67,12 +73,5 @@ public class TPToolSelectionPage extends TPWizardPage
 	boolean isDistroToolsSelected()
 	{
 		return m_distroToolsButton.getSelection();
-	}
-	
-	// disable NEXT
-	@Override
-	public IWizardPage getNextPage()
-	{
-		return null;
 	}
 }

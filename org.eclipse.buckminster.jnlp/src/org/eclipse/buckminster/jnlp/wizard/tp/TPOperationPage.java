@@ -19,15 +19,16 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class TPOperationPage extends TPWizardPage
 {
 	private ProgressProvider m_progressProvider;
-	
+
 	protected TPOperationPage()
 	{
-		super(MaterializationConstants.STEP_TP_OPERATION, "Materialization in Progress", "Please wait until materialization finishes.");
+		super(MaterializationConstants.STEP_TP_OPERATION, "Materialization in Progress",
+				"Please wait until materialization finishes.");
 	}
 
 	public void createControl(Composite parent)
@@ -35,10 +36,28 @@ public class TPOperationPage extends TPWizardPage
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		m_progressProvider = new MaterializationProgressProvider(pageComposite);
 
 		setControl(pageComposite);
+	}
+
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return getWizard().getPage(MaterializationConstants.STEP_TP_DONE);
+	}
+
+	// Disable previous
+	@Override
+	public IWizardPage getPreviousPage()
+	{
+		return null;
+	}
+
+	public ProgressProvider getProgressProvider()
+	{
+		return m_progressProvider;
 	}
 
 	// Disable finish
@@ -47,25 +66,7 @@ public class TPOperationPage extends TPWizardPage
 	{
 		if(getContainer().getCurrentPage() == this)
 			return false;
-		
-		return true;
-	}
-	
-	// Disable previous
-    @Override
-	public IWizardPage getPreviousPage()
-    {
-    	return null;
-    }
 
-	@Override
-	public IWizardPage getNextPage()
-	{
-		return getWizard().getPage(MaterializationConstants.STEP_TP_DONE);
-	}
-	
-	public ProgressProvider getProgressProvider()
-	{
-		return m_progressProvider;
+		return true;
 	}
 }

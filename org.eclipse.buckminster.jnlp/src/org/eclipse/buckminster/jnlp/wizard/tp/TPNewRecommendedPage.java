@@ -22,14 +22,14 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class TPNewRecommendedPage extends TPWizardPage
 {
 	private Composite m_pageComposite;
-	
+
 	private Label m_heading;
-	
+
 	private Button m_newEclipseButton;
 
 	private Button m_currentEclipseButton;
@@ -69,16 +69,35 @@ public class TPNewRecommendedPage extends TPWizardPage
 		m_currentEclipseButton.addSelectionListener(radioListener);
 
 		m_newEclipseButton.setSelection(true);
-		
+
 		setControl(m_pageComposite);
+	}
+
+	@Override
+	public IWizardPage getNextPage()
+	{
+		if(m_newEclipseButton.getSelection())
+			return getTPWizard().getNewLocationPage();
+
+		return getTPWizard().getUptodatePage();
+	}
+
+	@Override
+	public boolean performPageCommit()
+	{
+		if(getContainer().getCurrentPage() == this)
+			getTPWizard().setNewEclipse(m_newEclipseButton.getSelection());
+
+		return true;
 	}
 
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
-		m_heading.setText(
-				"You are currently using Eclipse " + getTPWizard().getCurrentEclipseVersion() + ". It is recommended to install Eclipse " + getTPWizard().getProvidedEclipseVersion() + " to get the latest features.");
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_heading.setText("You are currently using Eclipse " + getTPWizard().getCurrentEclipseVersion()
+				+ ". It is recommended to install Eclipse " + getTPWizard().getProvidedEclipseVersion()
+				+ " to get the latest features.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 30;
 		m_pageComposite.layout();
@@ -87,23 +106,5 @@ public class TPNewRecommendedPage extends TPWizardPage
 	private void firePageChanged()
 	{
 		uncommitPage();
-	}
-	
-	@Override
-	public boolean performPageCommit()
-	{
-		if(getContainer().getCurrentPage() == this)
-			getTPWizard().setNewEclipse(m_newEclipseButton.getSelection());
-		
-		return true;
-	}
-	
-	@Override
-	public IWizardPage getNextPage()
-	{
-		if(m_newEclipseButton.getSelection())
-			return getTPWizard().getNewLocationPage();
-		
-		return getTPWizard().getUptodatePage();
 	}
 }
