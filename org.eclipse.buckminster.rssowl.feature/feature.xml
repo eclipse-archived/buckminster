@@ -226,7 +226,7 @@ litigation.
       <import plugin="org.rssowl.core" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.generic" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.runtime" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.buckminster.rssowl" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.rssowl.ui" version="2.0.0" match="greaterOrEqual"/>
