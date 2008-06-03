@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.resolver;
 import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
@@ -100,7 +101,10 @@ class ResolverNodeWithJob extends ResolverNode
 		}
 		catch(CoreException e)
 		{
-			m_resolver.getContext().addRequestStatus(getQuery().getComponentRequest(), e.getStatus());
+			RMContext context = m_resolver.getContext();
+			context.addRequestStatus(getQuery().getComponentRequest(), e.getStatus());
+			if(!context.isContinueOnError())
+				m_resolver.cancelTopMonitor();
 		}
 		catch(OperationCanceledException e)
 		{

@@ -82,6 +82,12 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		}
 	}
 
+	synchronized void cancelTopMonitor()
+	{
+		if(m_topMonitor != null)
+			m_topMonitor.setCanceled(true);
+	}
+
 	@Override
 	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
 	{
