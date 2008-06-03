@@ -86,7 +86,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
-		SVNRevision.Number repoRev = m_session.getRepositoryRevision(monitor);
-		return repoRev == null ? null : new RevisionEntry(null, null, repoRev.getNumber());
+		ISVNDirEntry entry = m_session.getRootEntry(monitor);
+		return entry == null ? null : new RevisionEntry(null, null, entry.getLastChangedRevision().getNumber());
 	}
 }

@@ -43,10 +43,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.tigris.subversion.clientadapter.Activator;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
+import org.tigris.subversion.subclipse.core.SVNClientManager;
 import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
-import org.tigris.subversion.subclipse.core.client.NotificationListener;
 import org.tigris.subversion.subclipse.core.repo.SVNRepositories;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
@@ -57,27 +58,32 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 /**
- * <p>The SVN repository will be able to use reader checks if a repository contains the three recommended directories
- * <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is
- * interpreted as no <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. In
- * order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must
- * contain the path element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path
- * will be considered a <code>module</code> path. If no <code>trunk</code> element is present in the path, the
- * last element will be considered the <code>module</code></p>
- * <p>The repository URL may also contain a query part that in turn may
- * have four different flags:
+ * <p>
+ * The SVN repository will be able to use reader checks if a repository contains the three
+ * recommended directories <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A
+ * missing <code>tags</code> directory is interpreted as no <code>tags</code>. A missing
+ * <code>branches</code> directory is interpreted as no branches. In order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must contain the path
+ * element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path will
+ * be considered a <code>module</code> path. If no <code>trunk</code> element is present in the
+ * path, the last element will be considered the <code>module</code>
+ * </p>
+ * <p>
+ * The repository URL may also contain a query part that in turn may have four different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
- * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
+ * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the
+ * actual tag</dd>
  * <dt>moduleAfterTag</dt>
  * <dd>When resolving a tag, append the module name after the actual tag</dd>
  * <dt>moduleBeforeBranch</dt>
- * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
+ * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and
+ * the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
- * </dl></p>
- * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
- * 
+ * </dl>
+ * </p>
+ * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end
+ * of the resolved URL.
  * @author Thomas Hallgren
  */
 public class SvnSession implements Closeable
@@ -127,7 +133,7 @@ public class SvnSession implements Closeable
 				return false;
 			RepositoryAccess that = (RepositoryAccess)o;
 			return m_svnURL.equals(that.m_svnURL) && Trivial.equalsAllowNull(m_user, that.m_user)
-					&& Trivial.equalsAllowNull(m_password, that.m_password);
+				&& Trivial.equalsAllowNull(m_password, that.m_password);
 		}
 
 		public SVNUrl getSvnURL()
@@ -283,8 +289,8 @@ public class SvnSession implements Closeable
 	private static ISVNDirEntry[] s_emptyFolder = new ISVNDirEntry[0];
 
 	/**
-	 * Different versions of subclipse have different signatures for this method. We want to cover them all.
-	 * 
+	 * Different versions of subclipse have different signatures for this method. We want to cover
+	 * them all.
 	 * @return
 	 */
 	private static Method s_getKnownRepositories;
@@ -310,14 +316,14 @@ public class SvnSession implements Closeable
 						// Newer versions use the IProgressMonitor parameter
 						//
 						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories",
-								new Class[] { IProgressMonitor.class });
+							new Class[] { IProgressMonitor.class });
 						s_getKnownRepositoriesArgs = new Object[] { new NullProgressMonitor() };
 					}
 					catch(NoSuchMethodException e)
 					{
 						// Older versions have no parameter.
-						s_getKnownRepositories = reposClass
-								.getMethod("getKnownRepositories", Trivial.EMPTY_CLASS_ARRAY);
+						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories",
+							Trivial.EMPTY_CLASS_ARRAY);
 						s_getKnownRepositoriesArgs = Trivial.EMPTY_OBJECT_ARRAY;
 					}
 				}
@@ -334,7 +340,7 @@ public class SvnSession implements Closeable
 
 	private final VersionSelector m_branchOrTag;
 
-	private ISVNClientAdapter m_clientAdapter;
+	private final ISVNClientAdapter m_clientAdapter;
 
 	private final IPath m_module;
 
@@ -494,23 +500,17 @@ public class SvnSession implements Closeable
 	private final Map<String, ISVNDirEntry[]> m_listCache;
 
 	/**
-	 * @param repositoryURI
-	 *            The string representation of the URI that appoints the trunk of repository module. No branch or tag
-	 *            information must be included.
-	 * @param branch
-	 *            The desired branch or <code>null</code> if not applicable.
-	 * @param tag
-	 *            The desired tag or <code>null</code> if not applicable.
-	 * @param revision
-	 *            The desired revision or <code>-1</code> of not applicable
-	 * @param timestamp
-	 *            The desired timestamp or <code>null</code> if not applicable
-	 * @param context
-	 *            The context used for the resolution/materialization operation
+	 * @param repositoryURI The string representation of the URI that appoints the trunk of
+	 *            repository module. No branch or tag information must be included.
+	 * @param branch The desired branch or <code>null</code> if not applicable.
+	 * @param tag The desired tag or <code>null</code> if not applicable.
+	 * @param revision The desired revision or <code>-1</code> of not applicable
+	 * @param timestamp The desired timestamp or <code>null</code> if not applicable
+	 * @param context The context used for the resolution/materialization operation
 	 * @throws CoreException
 	 */
 	public SvnSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
-			RMContext context) throws CoreException
+		RMContext context) throws CoreException
 	{
 		m_revision = getSVNRevision(revision, timestamp);
 		m_branchOrTag = branchOrTag;
@@ -650,8 +650,7 @@ public class SvnSession implements Closeable
 					continue;
 
 				if(!(repoProto.equals(ourProto) || (repoProto.equals("svn") && ourProto.equals("http"))
-						|| (repoProto.equals("http") && ourProto.equals("svn")) || ((ourProto.equals("svn") || ourProto
-						.equals("http")) && repoIsSSH)))
+					|| (repoProto.equals("http") && ourProto.equals("svn")) || ((ourProto.equals("svn") || ourProto.equals("http")) && repoIsSSH)))
 					continue;
 
 				String[] ourPath = ourRoot.getPathSegments();
@@ -679,9 +678,7 @@ public class SvnSession implements Closeable
 				int diff = top - repoPath.length;
 				if(diff > 0)
 				{
-					int myRank = (repoIsSSH
-							? 400
-							: 200) - diff;
+					int myRank = (repoIsSSH ? 400 : 200) - diff;
 					if(rank > myRank)
 						continue;
 
@@ -696,37 +693,41 @@ public class SvnSession implements Closeable
 					}
 					urlLeadIn = bld.toString();
 				}
-				rank = (repoIsSSH
-						? 400
-						: 200) - diff;
+				rank = (repoIsSSH ? 400 : 200) - diff;
 				bestMatch = location;
 				if(rank == 400)
 					break;
 			}
+
 			m_urlLeadIn = urlLeadIn;
 			synchronized(svnPlugin)
 			{
-				if(bestMatch == null)
-				{
-					m_clientAdapter = svnPlugin.createSVNClient();
-					addUnknownRoot(context.getBindingProperties(),
-							new RepositoryAccess(ourRoot, m_username, m_password));
-				}
-				else
-				{
-					m_clientAdapter = bestMatch.getSVNClient();
-					m_clientAdapter.removeNotifyListener(NotificationListener.getInstance());
-				}
-			}
-			if(m_clientAdapter == null)
-				throw BuckminsterException.fromMessage("Unable to obtain SVN client");
+				SVNClientManager clientManager = svnPlugin.getSVNClientManager();
+				ISVNClientAdapter client = Activator.getDefault().getClientAdapter(
+					clientManager.getSvnClientInterface());
 
-			// Add the UnattendedPromptUserPassword callback only in case
-			// the authentication data (at least the username) is actually
-			// specified in the URL
-			//
-			if(m_username != null)
-				m_clientAdapter.addPasswordCallback(new UnattendedPromptUserPassword());
+				if(client == null)
+				{
+					client = Activator.getDefault().getAnyClientAdapter();
+					if(client == null)
+						throw new SVNException("Unable to load default SVN Client");
+				}
+
+				// Add the UnattendedPromptUserPassword callback only in case
+				// the authentication data (at least the username) is actually
+				// specified in the URL
+				//
+				ISVNPromptUserPassword pwCb = (m_username == null) ? svnPlugin.getSvnPromptUserPassword()
+					: new UnattendedPromptUserPassword();
+
+				if(pwCb != null)
+					client.addPasswordCallback(svnPlugin.getSvnPromptUserPassword());
+
+				m_clientAdapter = client;
+				if(bestMatch == null)
+					addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username,
+						m_password));
+			}
 		}
 		catch(MalformedURLException e)
 		{
@@ -740,6 +741,7 @@ public class SvnSession implements Closeable
 
 	public void close()
 	{
+		m_clientAdapter.dispose();
 	}
 
 	public long getLastChangeNumber() throws CoreException
@@ -866,9 +868,7 @@ public class SvnSession implements Closeable
 
 	/**
 	 * Returns the directory where it's expected to find a list of branches or tags.
-	 * 
-	 * @param branches
-	 *            true if branches, false if tags.
+	 * @param branches true if branches, false if tags.
 	 * @return The SVNUrl appointing the branches or tags directory.
 	 * @throws MalformedURLException
 	 */
@@ -1084,11 +1084,8 @@ public class SvnSession implements Closeable
 
 	/**
 	 * Create a string in the form &quot;url[revision]&quot;
-	 * 
-	 * @param url
-	 *            The url to append
-	 * @param revision
-	 *            The revision to append
+	 * @param url The url to append
+	 * @param revision The revision to append
 	 * @return A string representation denoting an explicit revision of the URL
 	 */
 	static String cacheKey(SVNUrl url, SVNRevision revision)
@@ -1170,7 +1167,7 @@ public class SvnSession implements Closeable
 	}
 
 	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source)
-			throws CoreException
+	throws CoreException
 	{
 		Collection<RepositoryAccess> commonRoots = null;
 		for(RepositoryAccess repoAccess : source)
@@ -1182,8 +1179,7 @@ public class SvnSession implements Closeable
 					continue;
 
 				SVNUrl cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url
-						.getPort() == cmp.getPort()))
+				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url.getPort() == cmp.getPort()))
 					continue;
 
 				String[] urlSegs = url.getPathSegments();
@@ -1270,8 +1266,7 @@ public class SvnSession implements Closeable
 			for(RepositoryAccess repoAccessCmp : commonRoots)
 			{
 				SVNUrl cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url
-						.getPort() == cmp.getPort()))
+				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url.getPort() == cmp.getPort()))
 					continue;
 
 				String[] urlSegs = url.getPathSegments();
