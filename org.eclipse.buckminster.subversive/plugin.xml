@@ -6,7 +6,7 @@
       <readerType
             class="org.eclipse.buckminster.subversive.internal.SubversiveReaderType"
             id="svn"
-            teamRepositoryId="org.polarion.team.svn.core.svnnature"/>
+            teamRepositoryId="org.eclipse.team.svn.core.svnnature"/>
    </extension>
 
 	
