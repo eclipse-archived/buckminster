@@ -189,7 +189,7 @@ public class DonePage extends InstallWizardPage
 	{
 		String materializerID = getMaterializationSpecBuilder().getMaterializerID();
 
-		if(materializerID != IMaterializer.TARGET_PLATFORM && materializerID != IMaterializer.WORKSPACE)
+		if(!IMaterializer.TARGET_PLATFORM.equals(materializerID) && !IMaterializer.WORKSPACE.equals(materializerID))
 			m_tpWizardButton.setVisible(false);
 	}
 
