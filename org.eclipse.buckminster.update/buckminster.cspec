@@ -12,7 +12,6 @@
         <cs:dependency name="org.eclipse.buckminster.pde.headless.feature" componentType="eclipse.feature" versionDesignator="1.1.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.remote.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subclipse.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
-        <cs:dependency name="org.eclipse.buckminster.subclipse.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subversive.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
         <cs:dependency name="org.eclipse.buckminster.test.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
@@ -48,7 +47,7 @@
                 <cs:property key="site.name" value="buckminster.archivedsite"/>
             </cs:properties>
             <cs:prerequisites>
-                <cs:attribute name="bundle.jars" alias="plugins" excludePattern="org\.(polarion|tigris)\..*"/>
+                <cs:attribute name="bundle.jars" alias="plugins"/>
                 <cs:attribute name="feature.jars" alias="features"/>
                 <cs:attribute name="site.rootFiles" alias="rootFiles"/>
                 <cs:attribute name="site.template" alias="template"/>
@@ -82,9 +81,9 @@
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.remote.feature"/>
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subclipse.feature"/>
-            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.feature"/>
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.test.headless.feature"/>
         </cs:public>
         <cs:public name="core.category">
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.core.feature"/>
@@ -100,7 +99,6 @@
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.maven.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.p4.headless.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.pde.headless.feature"/>
-            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.test.headless.feature"/>
             <cs:attribute name="feature.jars" component="org.eclipse.buckminster.remote.feature"/>

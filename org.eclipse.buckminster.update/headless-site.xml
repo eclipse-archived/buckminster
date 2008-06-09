@@ -5,12 +5,4 @@
    <description url="http://download.eclipse.org/tools/buckminster/updates/headless-site.xml">
       The update site for Buckminster
    </description>
-
-    <archive path="plugins/org.tigris.subversion.clientadapter.javahl_1.3.13.jar" url="http://subclipse.tigris.org/update_1.4.x/plugins/org.tigris.subversion.clientadapter.javahl_1.3.13.jar"/>
-    <archive path="plugins/org.tigris.subversion.clientadapter.javahl.win32_1.3.13.jar" url="http://subclipse.tigris.org/update_1.4.x/plugins/org.tigris.subversion.clientadapter.javahl.win32_1.3.13.jar"/>
-    <archive path="plugins/org.tigris.subversion.clientadapter_1.3.8.jar" url="http://subclipse.tigris.org/update_1.4.x/plugins/org.tigris.subversion.clientadapter_1.3.8.jar"/>
-    <archive path="plugins/org.tigris.subversion.subclipse.core_1.3.16.jar" url="http://subclipse.tigris.org/update_1.4.x/plugins/org.tigris.subversion.subclipse.core_1.3.16.jar"/>
-
-    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080307.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080517/plugins/org.polarion.eclipse.team.svn.connector.javahl.win32_2.0.0.v20080307.jar"/>
-    <archive path="plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080517.jar" url="http://www.polarion.org/projects/subversive/download/eclipse/archive/v20080517/plugins/org.polarion.eclipse.team.svn.connector.javahl_2.0.0.v20080517.jar"/>
 </site>
