@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.core.helpers;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -19,6 +20,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class CryptoUtils
 {
+	private static String ENCODING_UTF8 = "UTF-8";
+
 	/**
 	 * Encrypts an input string using a given algorithm 
 	 * @param input
@@ -27,7 +30,26 @@ public class CryptoUtils
 	 */
 	public static String encrypt(String input, String algorithmName)
 	{
-		return encrypt(input.getBytes(), algorithmName);
+		return encrypt(input, ENCODING_UTF8, algorithmName);
+	}
+	
+	/**
+	 * Encrypts an input string using a given algorithm 
+	 * @param input
+	 * @param encodingCharsetName
+	 * @param algorithmName
+	 * @return
+	 */
+	public static String encrypt(String input, String encodingCharsetName, String algorithmName)
+	{
+		try
+		{
+			return encrypt(input.getBytes(encodingCharsetName), algorithmName);
+		}
+		catch(UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("Internal error: " + ENCODING_UTF8 + " is not supported encoding", e);
+		}
 	}
 	
 	/**
