@@ -20,10 +20,11 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
 
 /**
- * This logger will disptach all messages to two destinations; the eclipse logger and the console.
- * Depending on the settings, the message might be dispatched to none, one, or both destinations.
- * The logger can also be made to dispatch console messages through the eclipse logger. It does that
- * by adding an ILogListener to the platform that will dispatch all messages to standard out.
+ * This logger will disptach all messages to two destinations; the eclipse logger and the console. Depending on the
+ * settings, the message might be dispatched to none, one, or both destinations. The logger can also be made to dispatch
+ * console messages through the eclipse logger. It does that by adding an ILogListener to the platform that will
+ * dispatch all messages to standard out.
+ * 
  * @author Thomas Hallgren
  */
 public class Logger
@@ -135,32 +136,32 @@ public class Logger
 		this(Platform.getBundle(bundleId));
 	}
 
-	public void debug(String msg, Object ...args)
+	public void debug(String msg, Object... args)
 	{
 		log(DEBUG, msg, args);
 	}
 
-	public void debug(Throwable t, String msg, Object ...args)
+	public void debug(Throwable t, String msg, Object... args)
 	{
 		log(DEBUG, t, msg, args);
 	}
 
-	public void error(String msg, Object ...args)
+	public void error(String msg, Object... args)
 	{
 		log(ERROR, msg, args);
 	}
 
-	public void error(Throwable t, String msg, Object ...args)
+	public void error(Throwable t, String msg, Object... args)
 	{
 		log(ERROR, t, msg, args);
 	}
 
-	public void info(String msg, Object ...args)
+	public void info(String msg, Object... args)
 	{
 		log(INFO, msg, args);
 	}
 
-	public void info(Throwable t, String msg, Object ...args)
+	public void info(Throwable t, String msg, Object... args)
 	{
 		log(INFO, t, msg, args);
 	}
@@ -185,7 +186,7 @@ public class Logger
 		return s_consoleThreshold <= WARNING || s_eclipseLoggerThreshold <= WARNING;
 	}
 
-	public void log(int level, String msg, Object ...args)
+	public void log(int level, String msg, Object... args)
 	{
 		log(level, null, msg, args);
 	}
@@ -196,18 +197,24 @@ public class Logger
 
 	static
 	{
-		setOutStream(getLoggerStream(false));		
-		setErrStream(getLoggerStream(true));		
+		setOutStream(getLoggerStream(false));
+		setErrStream(getLoggerStream(true));
 	}
 
-	public void log(int level, Throwable t, String msg, Object ...args)
+	public void log(int level, Throwable t, String msg, Object... args)
 	{
 		if(level >= s_consoleThreshold && (s_eclipseLogListener == null || level < s_eclipseLoggerThreshold))
 		{
-			PrintStream logStream = (level == WARNING || level == ERROR) ? s_errStream : s_outStream;
+			PrintStream logStream = (level == WARNING || level == ERROR)
+					? s_errStream
+					: s_outStream;
 			synchronized(logStream)
 			{
-				logStream.format(msg, args);
+				if(args == null || args.length == 0)
+					logStream.print(msg);
+				else
+					logStream.format(msg, args);
+				
 				logStream.println();
 				if(t != null && level == DEBUG)
 					t.printStackTrace(logStream);
@@ -215,15 +222,17 @@ public class Logger
 			}
 		}
 		if(level >= s_eclipseLoggerThreshold)
-			m_log.log(new Status(level, m_log.getBundle().getSymbolicName(), MAGIC, String.format(msg, args), t));
+			m_log.log(new Status(level, m_log.getBundle().getSymbolicName(), MAGIC, (args == null || args.length == 0)
+					? msg
+					: String.format(msg, args), t));
 	}
 
-	public void warning(String msg, Object ...args)
+	public void warning(String msg, Object... args)
 	{
 		log(WARNING, msg, args);
 	}
 
-	public void warning(Throwable t, String msg, Object ...args)
+	public void warning(Throwable t, String msg, Object... args)
 	{
 		log(WARNING, t, msg, args);
 	}
@@ -289,7 +298,9 @@ public class Logger
 		// collect all implementors of a builder log receiver and hook them all
 		// up in a tee
 		//
-		PrintStream sysStream = errorStream ? System.err : System.out;
+		PrintStream sysStream = errorStream
+				? System.err
+				: System.out;
 		if(Buckminster.isHeadless())
 			return sysStream;
 
@@ -301,7 +312,7 @@ public class Logger
 
 		try
 		{
-			OutputStream[] streams = new OutputStream[idx+1];
+			OutputStream[] streams = new OutputStream[idx + 1];
 			streams[idx] = sysStream;
 			while(--idx >= 0)
 			{
