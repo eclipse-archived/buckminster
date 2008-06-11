@@ -77,6 +77,10 @@ import org.eclipse.ui.operations.RedoActionHandler;
 import org.eclipse.ui.operations.UndoActionHandler;
 
 /**
+ * Base class for Form Editors with support added for handling of editor input, undo/redo, clipboard global actions,
+ * and an editor event bus.
+ * 
+ * TODO: global support for copy/paste of objects - commented out.
  * @author Henrik Lindberg
  * 
  */
@@ -177,20 +181,20 @@ public abstract class RichFormEditor extends FormEditor implements IEditorMatchi
 
 				public void focusGained(FocusEvent e)
 				{
-					if(e.getSource() instanceof Text)
-						System.err.print("Focus gained to "+ ((Text)e.getSource()).getText() + "\n");
-					if(e.getSource() instanceof FormText)
-						System.err.print("Focus gained to FormText\n");
+//					if(e.getSource() instanceof Text)
+//						System.err.print("Focus gained to "+ ((Text)e.getSource()).getText() + "\n");
+//					if(e.getSource() instanceof FormText)
+//						System.err.print("Focus gained to FormText\n");
 					getEventBus().publishEvent(e);
 				}
 
 				public void focusLost(FocusEvent e)
 				{
-					if(e.getSource() instanceof Text)
-						System.err.print("Focus lost from "+ ((Text)e.getSource()).getText() + "\n");
-					if(e.getSource() instanceof FormText)
-						System.err.print("Focus lost from FormText\n");
-						
+//					if(e.getSource() instanceof Text)
+//						System.err.print("Focus lost from "+ ((Text)e.getSource()).getText() + "\n");
+//					if(e.getSource() instanceof FormText)
+//						System.err.print("Focus lost from FormText\n");
+//						
 					getEventBus().publishEvent(e);					
 				}
 				
