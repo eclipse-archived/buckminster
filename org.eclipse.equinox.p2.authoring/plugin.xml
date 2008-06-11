@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+     <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.buckminster"
+            name="Buckminster"/>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.distro.ui.wizards.NewDistroWizard"
+            icon="icons/bluebox16.png"
+            id="org.eclipse.buckminster.ui.wizards.NewDistroWizard"
+            name="Distro Definition file">
+      </wizard>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.distro.ui.wizards.NewDistroProjectWizard"
+            hasPages="true"
+            icon="icons/bluebox16.png"
+            id="org.eclipse.buckminster.distro.ui.distroProjectWizard"
+            name="Distro Project Wizard"
+            project="true">
+      </wizard>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.equinox.p2.authoring.wizards.NewP2IUWizard"
+            icon="icons/iu_obj.gif"
+            id="org.eclipse.buckminster.ui.wizards.NewDistroWizard"
+            name="Installable Unit File">
+      </wizard>
+   </extension>
+     <extension
+           id="org.eclipse.buckminster.distroNature"
+           name="Distro Nature"
+           point="org.eclipse.core.resources.natures">
+        <runtime>
+           <run
+                 class="org.eclipse.buckminster.distro.ui.DistroProjectNature">
+           </run>
+        </runtime>
+     </extension>
+     <extension
+           point="org.eclipse.ui.ide.projectNatureImages">
+        <image
+              icon="icons/ovr_distro.png"
+              id="org.eclipse.buckminster.distro.ui.image"
+              natureId="org.eclipse.buckminster.distroNature">
+        </image>
+     </extension>
+     <extension
+           point="org.eclipse.ui.editors">
+        <editor
+              class="org.eclipse.buckminster.distro.ui.editor.distro.DistroEditor"
+              contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+              default="true"
+              extensions="distro"
+              icon="icons/bluebox16.png"
+              id="org.eclipse.buckminster.distro.ui.editor"
+              matchingStrategy="org.eclipse.buckminster.distro.ui.editor.distro.DistroEditor"
+              name="Distro Editor">
+        </editor>
+        <editor
+              class="org.eclipse.equinox.p2.authoring.InstallableUnitEditor"
+              contributorClass="org.eclipse.equinox.p2.authoring.internal.IUEditorContributor"
+              default="true"
+              extensions="iu"
+              filenames="installable.xml"
+              icon="icons/iu_obj.gif"
+              id="org.eclipse.equinox.p2.authoring.iueditor"
+              matchingStrategy="org.eclipse.equinox.p2.authoring.InstallableUnitEditor"
+              name="Installable Unit Editor">
+        </editor>
+     </extension>
+
+</plugin>
