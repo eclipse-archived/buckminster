@@ -52,7 +52,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * A MasterDetails block for IU Required Capabilities that display's the capabilities in a list and allows for editing
- * of elements in the tree.
+ * of elements in the tree. Supports undo of operations.
  * 
  * @author Henrik Lindberg
  * 
@@ -91,6 +91,9 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 	{
 		return "Edit the capabilities required by this installable unit.";
 	}
+	/**
+	 * Adds a default required capability for editing. Operation can be undone.
+	 */
 	public void add()
 	{
 		RequiredCapabilityBuilder required = new RequiredCapabilityBuilder( //
@@ -102,7 +105,13 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 
 		addRemove(required, true);
 	}
-	public void addRemove(RequiredCapabilityBuilder required, boolean add)
+	
+	/**
+	 * Method common to both add and remove. Operation can be undone.
+	 * @param required what to add or remove
+	 * @param add true if required should be added, false to remove
+	 */
+	private void addRemove(RequiredCapabilityBuilder required, boolean add)
 	{
 		FormToolkit toolkit = m_formPage.getManagedForm().getToolkit();
 		if(toolkit instanceof IUndoOperationSupport)
@@ -148,7 +157,7 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 			public void widgetSelected(SelectionEvent e)
 			{
 				add();
-				// // example of add menu
+				// // example of add menu - keep if there should be more ways to add something...
 				// Object data = e.item.getData();
 				// if("link".equals(data))
 				// addLink();
@@ -173,15 +182,25 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 		// 	{ b.getMenu().setVisible(true);}
 		// });
 	}
+	/**
+	 * Moves selected required capability down in the list. Operation can be undone.
+	 */
 	public void down()
 	{
 		move(1);
 	}
+	/**
+	 * Moves selected required capability up in the list. Operation can be undone.
+	 */
 	public void up()
 	{
 		move(-1);
 	}
-	public void move(int delta)
+	
+	/**
+	 * Common move operation - moved required capability up or down in the list. Operation can be undone.
+	 */
+	private void move(int delta)
 	{
 		IStructuredSelection ssel = (IStructuredSelection)m_viewer.getSelection();
 		if(ssel == null || ssel.size() != 1)
@@ -205,36 +224,6 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 		}
 		
 	}
-//	public void down2()
-//	{
-//		
-//		IStructuredSelection ssel = (IStructuredSelection)m_viewer.getSelection();
-//		if(ssel == null || ssel.size() != 1)
-//			return; // nothing to move (or too many)
-//		Object selected = ssel.getFirstElement();
-//		
-//		InstallableUnitBuilder iu = ((InstallableUnitEditor)m_formPage.getEditor()).getInstallableUnit();
-//		RequiredCapabilityBuilder[] reqCap = iu.getRequiredCapabilities();
-//		ArrayList<RequiredCapabilityBuilder>rcaps = new ArrayList<RequiredCapabilityBuilder>(reqCap.length);
-//		for(int i = 0; i < reqCap.length;i++)
-//			rcaps.add(reqCap[i]);
-//		int index = rcaps.indexOf(selected);
-//		if(index < 0 || index == rcaps.size() -1)
-//			return; // not found, or last already
-//		// move it
-//		Collections.swap(rcaps, index, index+1);
-//				
-//		RequiredCapabilityBuilder[] reqCap2 = new RequiredCapabilityBuilder[rcaps.size()];
-//		rcaps.toArray(reqCap2);
-//		
-//		iu.setRequiredCapabilities(reqCap2);
-//		
-//		// notify that we made changes to the model without having updated the ui, but that the model also is dirty and
-//		// needs saving
-//		m_masterFormPart.markStale();
-//		m_masterFormPart.markDirty();
-//
-//	}
 
 	@Override
 	public IDetailsPageProvider getDetailsPageProvider()
@@ -244,12 +233,17 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 
 	public IDetailsPage getRequiredPage()
 	{
-		// TODO: no need to cache master detail editor creates this on demand and keeps it
+		// TODO: no need to cache?  Master detail editor creates this on demand and keeps it,
+		// but then the undo history may refer to deleted (and recreated elements).
+		//
 		if(m_requiredPage == null)
 			m_requiredPage = new RequiredCapabilityPage();
 		return m_requiredPage;
 	}
 
+	/**
+	 * Returns a content provider for required capabilities from the editors installable unit.
+	 */
 	@Override
 	public IStructuredContentProvider getMasterContentProvider()
 	{
@@ -283,6 +277,9 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 		return this;
 	}
 
+	/**
+	 * Returns a styled label provider using the {@link P2AuthoringLabelProvider} as the base label provider.
+	 */
 	@Override
 	public IBaseLabelProvider getMasterLabelProvider()
 	{
@@ -292,7 +289,8 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 	}
 
 	/**
-	 * Returns a page for a page key returned by {@link #getPageKey(Object)}.
+	 * Returns a page for a page key returned by {@link #getPageKey(Object)}. Currently, there is only one type of
+	 * details page.
 	 */
 	public IDetailsPage getPage(Object key)
 	{
@@ -300,13 +298,17 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 	}
 
 	/**
-	 * Selects a page key for the selected object. See {@link #getPage(Object)}.
+	 * Selects a page key for the selected object. See {@link #getPage(Object)}. Currently, there is only one type
+	 * of details page key - "required".
 	 */
 	public Object getPageKey(Object object)
 	{
 		return "required";
 	}
 
+	/**
+	 * Removes the selected required capability. The operation can be undone.
+	 */
 	public void remove()
 	{
 		// remove everything selected
@@ -314,44 +316,12 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 		if(ssel == null || ssel.getFirstElement() == null)
 			return; // nothing to remove
 		addRemove((RequiredCapabilityBuilder)ssel.getFirstElement(), false);
-		
-//		InstallableUnitBuilder iu = ((InstallableUnitEditor)m_formPage.getEditor()).getInstallableUnit();
-//		RequiredCapabilityBuilder[] reqCap = iu.getRequiredCapabilities();
-//		ArrayList<RequiredCapabilityBuilder>rcaps = new ArrayList<RequiredCapabilityBuilder>(reqCap.length);
-//		for(int i = 0; i < reqCap.length;i++)
-//			rcaps.add(reqCap[i]);
-//		Object[] selection = ssel.toArray();
-//		for(int i = 0; i < selection.length; i++)
-//			rcaps.remove(selection[i]);
-//		
-//		RequiredCapabilityBuilder[] reqCap2 = new RequiredCapabilityBuilder[rcaps.size()];
-//		rcaps.toArray(reqCap2);
-//		
-//		iu.setRequiredCapabilities(reqCap2);
-//		
-//		// notify that we made changes to the model without having updated the ui, but that the model also is dirty and
-//		// needs saving
-//		m_masterFormPart.markStale();
-//		m_masterFormPart.markDirty();
 	}
 
 	
 	private class MasterFormPart extends AbstractFormPart
 	{
 
-//		@Override
-//		public void commit(boolean onSave)
-//		{
-//			super.commit(onSave);
-//			RequiredBodyBlock.this.m_viewer.refresh();			
-//		}
-//
-//		public void dispose()
-//		{
-//			// TODO Auto-generated method stub
-//			
-//		}
-//
 		@Override
 		public void initialize(IManagedForm form)
 		{
@@ -370,18 +340,6 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 				});
 			}
 		}
-//
-//		public boolean isDirty()
-//		{
-//			// TODO Auto-generated method stub
-//			return false;
-//		}
-//
-//		public boolean isStale()
-//		{
-//			// TODO Auto-generated method stub
-//			return false;
-//		}
 
 		/**
 		 * Refreshes the viewer with stale model changes
@@ -394,10 +352,16 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 		}
 		
 	}
+	/**
+	 * Returns a memento that restores this page selection.
+	 */
 	public Object getPageMemento()
 	{
 		return ((IStructuredSelection)m_viewer.getSelection()).getFirstElement();
 	}
+	/**
+	 * Restores this page selection from the memento.
+	 */
 	public void setPageMemento(Object memento)
 	{
 		if(memento != null)
@@ -414,10 +378,14 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 			editor.setActivePage(m_formPage.getId());
 		if(select != null)
 			m_viewer.setSelection(new StructuredSelection(select), true);
-
 	}
 
-	public class AddRemoveOperation extends AbstractOperation
+	/**
+	 * Undoable operation for add/remove of required capability.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	private class AddRemoveOperation extends AbstractOperation
 	{
 		private RequiredCapabilityBuilder m_required;
 		private boolean  m_add;
@@ -470,7 +438,12 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 		}
 		
 	}
-	public class MoveOperation extends AbstractOperation
+	/**
+	 * Undoable operation class for moving required capability.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	private class MoveOperation extends AbstractOperation
 	{
 		private RequiredCapabilityBuilder m_required;
 		private int  m_delta;
