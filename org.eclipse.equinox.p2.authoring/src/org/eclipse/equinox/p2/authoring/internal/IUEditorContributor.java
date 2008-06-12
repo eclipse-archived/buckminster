@@ -183,7 +183,6 @@ public class IUEditorContributor extends EditorActionBarContributor
 		return m_sharedImages;
 	}
 	public void updateSelectableActions(ISelection selection) {
-		System.err.print("updateSelectableActions\n");
 		if (m_editor != null) {
 			m_cutAction.selectionChanged(selection);
 			m_copyAction.selectionChanged(selection);
