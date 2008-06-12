@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" componentType="buckminster" version="1.0.0" versionType="OSGi">
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" componentType="buckminster" version="1.1.0" versionType="OSGi">
     <cs:dependencies>
         <cs:dependency name="commons-net"/>
         <cs:dependency name="org.eclipse.buckminster.core.headless.feature" componentType="eclipse.feature"/>
@@ -66,6 +66,16 @@
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.update"/>
             </cs:prerequisites>
         </cs:public>
+        <cs:public name="digest.site" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="digest.jars"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="build.site" alias="requirement" component="org.eclipse.buckminster.update"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/site.d/" upToDatePolicy="MAPPER"/>
+        </cs:public>
         <cs:public name="local.sign.jnlp" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
@@ -82,9 +92,29 @@
                 <cs:property key="targets" value="normalize.jars"/>
             </cs:actorProperties>
             <cs:prerequisites>
-                <cs:attribute name="build.site" alias="requirement" component="org.eclipse.buckminster.update"/>
+                <cs:attribute name="digest.site" alias="requirement"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/site.n/" upToDatePolicy="MAPPER"/>
+        </cs:public>
+        <cs:public name="build.site" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="p2ize.site"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="pack.site" alias="requirement"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/site.final/" upToDatePolicy="MAPPER"/>
+        </cs:public>
+        <cs:public name="build.external.site" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="p2ize.site"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="build.site" alias="requirement" component="org.eclipse.buckminster.update.external"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/site.final/" upToDatePolicy="MAPPER"/>
         </cs:public>
         <cs:public name="pack.site" actor="ant">
             <cs:actorProperties>
@@ -215,18 +245,10 @@
     </cs:actions>
     <cs:groups>
         <cs:public name="build.all">
-            <cs:attribute name="build.site" component="org.eclipse.buckminster.update"/>
+            <cs:attribute name="build.site"/>
+            <cs:attribute name="build.external.site"/>
             <cs:attribute name="build.product"/>
-            <cs:attribute name="build.jnlp"/>
+            <cs:attribute name="build.core.product"/>
         </cs:public>
-        <cs:public name="sign.all">
-            <cs:attribute name="sign.site"/>
-            <cs:attribute name="sign.product"/>
-            <cs:attribute name="sign.jnlp"/>
-        </cs:public>
-        <cs:private name="site.source">
-            <cs:attribute name="feature.exports" component="org.eclipse.buckminster.update"/>
-            <cs:attribute name="site.files" component="org.eclipse.buckminster.update"/>
-        </cs:private>
     </cs:groups>
 </cs:cspec>

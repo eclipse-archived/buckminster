@@ -10,53 +10,59 @@
 	<property name="build.timestamp" value="" />
 	<property name="remote.queue.folder" value="${staging.area}" />
 	<property name="remote.output.folder" value="${staging.area}/out${build.timestamp}" />
-	<property name="verbose" value="true"/>
+	<property name="verbose" value="true" />
 
 	<!-- Convert the directory denoted by the requirement property into a property that
 		 appoints the file that it contains
 	-->
-	<buckminster.valuefileset value="${fs:requirement}" id="requirement.fileset"/>
+	<buckminster.valuefileset value="${fs:requirement}" id="requirement.fileset" />
 	<pathconvert property="input.file">
 		<path>
-			<fileset refid="requirement.fileset"/>
+			<fileset refid="requirement.fileset" />
 		</path>
 	</pathconvert>
 
-	<dirname file="${input.file}" property="input.folder"/>
-	<basename file="${input.file}" property="subject.file"/>
-	<buckminster.substitute pattern=".*\.(\w+)$" replacement="$1" value="${subject.file}" property="subject.extension"/>
-	<buckminster.substitute pattern="(.*)\.\w+$" replacement="$1" value="${subject.file}" property="subject.name"/>
-	<property name="output.folder" location="${sp:product.output}"/>
+	<pathconvert property="launcher.jar">
+		<path>
+			<fileset dir="${eclipse.home}/plugins" includes="org.eclipse.equinox.launcher_*.jar"/>
+		</path>
+	</pathconvert>
+
+	<dirname file="${input.file}" property="input.folder" />
+	<basename file="${input.file}" property="subject.file" />
+	<buckminster.substitute pattern=".*\.(\w+)$" replacement="$1" value="${subject.file}" property="subject.extension" />
+	<buckminster.substitute pattern="(.*)\.\w+$" replacement="$1" value="${subject.file}" property="subject.name" />
+	<property name="output.folder" location="${sp:product.output}" />
 
 	<target name="normalize.jars">
-		<property name="short.file.name" location="${output.folder}/z.${subject.extension}"/>
-		<property name="zip.temp" location="${buckminster.temp}/${subject.name}"/>
+		<property name="short.file.name" location="${output.folder}/z.${subject.extension}" />
+		<property name="zip.temp" location="${buckminster.temp}/${subject.name}" />
 
-		<delete dir="${output.folder}"/>
-		<mkdir dir="${output.folder}"/>
+		<delete dir="${output.folder}" />
+		<mkdir dir="${output.folder}" />
 
-		<delete dir="${zip.temp}"/>
-		<unzip dest="${zip.temp}" src="${input.file}"/>
+		<delete dir="${zip.temp}" />
+		<unzip dest="${zip.temp}" src="${input.file}" />
 
 		<path id="sign.excludes">
-			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse*.jar" excludes="**/org.eclipse.buckminster.*,**/org.eclipse.slf4j.*"/>
+			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse*.jar" excludes="**/org.eclipse.buckminster.*,**/org.eclipse.slf4j.*" />
 		</path>
 		<pathconvert property="sign.excludes" pathsep="," dirsep="/" refid="sign.excludes">
-			<globmapper from="${zip.temp}/" to="" handledirsep="true"/>
+			<globmapper from="${zip.temp}/" to="" handledirsep="true" />
 		</pathconvert>
 
 		<path id="pack.excludes">
-			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse.jdt.compiler*.jar"/>
+			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse.jdt.compiler*.jar" />
 		</path>
 		<pathconvert property="pack.excludes" pathsep="," dirsep="/" refid="pack.excludes">
-			<globmapper from="${zip.temp}/" to="" handledirsep="true"/>
+			<globmapper from="${zip.temp}/" to="" handledirsep="true" />
 		</pathconvert>
 
-		<echo message="sign.excludes=${sign.excludes}${line.separator}" file="${zip.temp}/pack.properties"/>
-		<echo message="pack.excludes=${pack.excludes}" file="${zip.temp}/pack.properties" append="true"/>
+		<echo message="sign.excludes=${sign.excludes}${line.separator}" file="${zip.temp}/pack.properties" />
+		<echo message="pack.excludes=${pack.excludes}" file="${zip.temp}/pack.properties" append="true" />
 
-		<zip destfile="${short.file.name}" basedir="${zip.temp}"/>
-		<eclipse.jarProcessor verbose="${verbose}" normalize="true" jar="${short.file.name}"/>
+		<zip destfile="${short.file.name}" basedir="${zip.temp}" />
+		<eclipse.jarProcessor verbose="${verbose}" normalize="true" jar="${short.file.name}" />
 		<move file="${short.file.name}" tofile="${output.folder}/${subject.file}" />
 	</target>
 
@@ -65,21 +71,21 @@
 			<condition>
 				<not>
 					<and>
-						<isset property="local.keystore.path"/>
-						<isset property="local.keystore.alias"/>
-						<isset property="local.keystore.password"/>
+						<isset property="local.keystore.path" />
+						<isset property="local.keystore.alias" />
+						<isset property="local.keystore.password" />
 					</and>
 				</not>
 			</condition>
 		</fail>
-		<delete dir="${output.folder}"/>
-		<mkdir dir="${output.folder}/unzipped"/>
-		<unzip src="${input.file}" dest="${output.folder}/unzipped"/>
+		<delete dir="${output.folder}" />
+		<mkdir dir="${output.folder}/unzipped" />
+		<unzip src="${input.file}" dest="${output.folder}/unzipped" />
 		<signjar keystore="${local.keystore.path}" alias="${local.keystore.alias}" storepass="${local.keystore.password}">
-			<fileset dir="${output.folder}/unzipped" includes="**/*.jar"/>
+			<fileset dir="${output.folder}/unzipped" includes="**/*.jar" />
 		</signjar>
-		<zip basedir="${output.folder}/unzipped" destfile="${output.folder}/${subject.file}"/>
-		<delete dir="${output.folder}/unzipped"/>
+		<zip basedir="${output.folder}/unzipped" destfile="${output.folder}/${subject.file}" />
+		<delete dir="${output.folder}/unzipped" />
 	</target>
 
 	<target name="queue.for.signing">
@@ -87,45 +93,90 @@
 			<condition>
 				<not>
 					<and>
-						<isset property="eclipse.committer.name"/>
-						<isset property="eclipse.committer.password"/>
+						<isset property="eclipse.committer.name" />
+						<isset property="eclipse.committer.password" />
 					</and>
 				</not>
 			</condition>
 		</fail>
 		<echo message="Queueing ${subject.file} for signing" />
-		<scp file="${input.folder}/${subject.file}" todir="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.queue.folder}" trust="true"/>
-		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="/usr/bin/sign ${remote.queue.folder}/${subject.file} nomail ${remote.output.folder}" timeout="10000" trust="true"/>
+		<scp file="${input.folder}/${subject.file}" todir="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.queue.folder}" trust="true" />
+		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="/usr/bin/sign ${remote.queue.folder}/${subject.file} nomail ${remote.output.folder}" timeout="10000" trust="true" />
 	</target>
 
 	<target name="wait.for.output" depends="queue.for.signing">
 		<echo message="Waiting for signing to complete. This may take more then 20 minutes. (Expect to see several 'Remote command failed' messages)" />
-		<sleep seconds="30"/>
+		<sleep seconds="30" />
 		<waitfor checkevery="1" checkeveryunit="minute" maxwait="40" maxwaitunit="minute">
-			<buckminster.antcallsuccess target="assert.output.present" trapPattern="(Remote command failed)|(Auth cancel)"/>
+			<buckminster.antcallsuccess target="assert.output.present" trapPattern="(Remote command failed)|(Auth cancel)" />
 		</waitfor>
 	</target>
 	<target name="assert.output.present">
-		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="ls ${remote.output.folder}/${subject.file}" outputproperty="ls.result" timeout="10000" trust="true"/>
-		<echo message="Signing host = ${signing.host}, ls.result = ${ls.result}"/>
+		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="ls ${remote.output.folder}/${subject.file}" outputproperty="ls.result" timeout="10000" trust="true" />
+		<echo message="Signing host = ${signing.host}, ls.result = ${ls.result}" />
 	</target>
 
 	<target name="pick.from.queue" depends="wait.for.output">
 		<echo message="Obtaining signed file from server" />
-		<delete dir="${output.folder}"/>
-		<mkdir dir="${output.folder}"/>
-		<scp file="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true"/>
-		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true"/>
+		<delete dir="${output.folder}" />
+		<mkdir dir="${output.folder}" />
+		<scp file="${eclipse.committer.name}:${eclipse.committer.password}@${signing.host}:${remote.output.folder}/${subject.file}" todir="${output.folder}" trust="true" />
+		<sshexec host="${signing.host}" username="${eclipse.committer.name}" password="${eclipse.committer.password}" command="rm -rf ${remote.queue.folder}/${subject.file} ${remote.output.folder}" timeout="10000" trust="true" />
 	</target>
 
-	<target name="sign.jars" depends="pick.from.queue"/>
+	<target name="sign.jars" depends="pick.from.queue" />
 
 	<target name="pack.jars">
-		<delete dir="${output.folder}"/>
-		<mkdir dir="${output.folder}"/>
-		<property name="short.file.name" value="${output.folder}/z.${subject.extension}"/>
-		<copy file="${input.file}" tofile="${short.file.name}"/>
-		<eclipse.jarProcessor verbose="${verbose}" pack="true" jar="${output.folder}/z.${subject.extension}"/>
+		<delete dir="${output.folder}" />
+		<mkdir dir="${output.folder}" />
+		<property name="short.file.name" value="${output.folder}/z.${subject.extension}" />
+		<copy file="${input.file}" tofile="${short.file.name}" />
+		<eclipse.jarProcessor verbose="${verbose}" pack="true" jar="${output.folder}/z.${subject.extension}" />
 		<move file="${short.file.name}" tofile="${output.folder}/${subject.file}" />
+	</target>
+
+	<target name="digest.jars">
+		<delete dir="${output.folder}" />
+		<mkdir dir="${output.folder}" />
+		<unzip src="${input.file}" dest="${output.folder}/unzipped" />
+		<java fork="true" failonerror="true" jar="${launcher.jar}">
+			<arg value="-application" />
+			<arg value="org.eclipse.update.core.siteOptimizer" />
+			<arg value="-digestBuilder" />
+			<arg value="-digestOutputDir=${output.folder}/unzipped" />
+			<arg value="-siteXML=${output.folder}/unzipped/site.xml" />
+		</java>
+		<zip basedir="${output.folder}/unzipped" destfile="${output.folder}/${subject.file}" />
+		<delete dir="${output.folder}/unzipped" />
+	</target>
+
+	<target name="p2ize.site">
+		<delete dir="${output.folder}" />
+		<mkdir dir="${output.folder}" />
+		<unzip src="${input.file}" dest="${output.folder}/unzipped" />
+		<delete file="${output.folder}/unzipped/pack.properties" />
+		<pathconvert property="siteURL" dirsep="/">
+			<path location="${output.folder}/unzipped/"/>
+		</pathconvert>
+		<java jar="${launcher.jar}" fork="true" failonerror="true">
+			<arg value="-application" />
+			<arg value="org.eclipse.equinox.p2.metadata.generator.EclipseGenerator" />
+			<arg value="-updatesite" />
+			<arg file="${output.folder}/unzipped" />			
+			<arg value="-site"/>
+			<arg value="file:${siteURL}/site.xml" />
+			<arg value="-metadataRepository"/>
+			<arg value="file:${siteURL}" />
+			<arg value="-metadataRepositoryName"/>
+			<arg value="Buckminster Update Site" />
+			<arg value="-artifactRepository"/>
+			<arg value="file:${siteURL}" />
+			<arg value="-artifactRepositoryName"/>
+			<arg value="Buckminster Artifacts" />
+			<arg value="-compress"/>
+			<arg value="-reusePack200Files" />
+		</java>
+		<zip basedir="${output.folder}/unzipped" destfile="${output.folder}/${subject.file}" />
+		<delete dir="${output.folder}/unzipped" />
 	</target>
 </project>
