@@ -12,6 +12,7 @@
         <cs:dependency name="org.eclipse.buckminster.pde.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.update" componentType="buckminster"/>
+        <cs:dependency name="org.eclipse.buckminster.update.external" componentType="buckminster"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="build.core.product" actor="ant">
