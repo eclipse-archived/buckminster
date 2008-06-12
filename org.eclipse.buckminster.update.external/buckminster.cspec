@@ -30,7 +30,13 @@
     </cs:actions>
     <cs:groups>
         <cs:public name="bundle.jars">
+            <cs:attribute name="subclipse"/>
+            <cs:attribute name="subversive"/>
+        </cs:public>
+         <cs:public name="subclipse">
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
+        </cs:public>
+         <cs:public name="subversive">
             <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
         </cs:public>
         <cs:public name="feature.jars">

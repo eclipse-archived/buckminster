@@ -5,6 +5,6 @@
    <description url="http://download.eclipse.org/tools/buckminster/updates">
       The update site for Buckminster
    </description>
-   <category-def name="core.category" label="Buckminster (core)"/>
-   <category-def name="optional.category" label="Buckminster (optional)"/>
+   <category-def name="subclipse" label="Headless Subclipse SVN integration"/>
+   <category-def name="subversive" label="Headless Subversive SVN integration"/>
 </site>
