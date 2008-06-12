@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.update.external" componentType="buckminster" version="1.0.0.qualifier" versionType="OSGi">
+    <cs:dependencies>
+        <cs:dependency name="org.eclipse.buckminster.subversive.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
+        <cs:dependency name="org.eclipse.buckminster.subclipse.headless.feature" componentType="eclipse.feature" versionDesignator="1.0.0" versionType="OSGi"/>
+    </cs:dependencies>
+    <cs:artifacts>
+        <cs:private name="root.artifacts">
+            <cs:path path="site.properties"/>
+        </cs:private>
+        <cs:private name="site.template" path="site.xml"/>
+    </cs:artifacts>
+    <cs:actions>
+        <cs:public name="build.site" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
+                <cs:property key="targets" value="create.site"/>
+            </cs:actorProperties>
+            <cs:properties>
+                <cs:property key="site.name" value="buckminster.externalsite"/>
+            </cs:properties>
+            <cs:prerequisites>
+                <cs:attribute name="bundle.jars" alias="plugins"/>
+                <cs:attribute name="feature.jars" alias="features"/>
+                <cs:attribute name="root.artifacts" alias="rootFiles"/>
+                <cs:attribute name="site.template" alias="template"/>
+            </cs:prerequisites>
+            <cs:products alias="action.output" base="site/" fileCount="1" upToDatePolicy="COUNT"/>
+        </cs:public>
+    </cs:actions>
+    <cs:groups>
+        <cs:public name="bundle.jars">
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
+            <cs:attribute name="bundle.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
+        </cs:public>
+        <cs:public name="feature.jars">
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subclipse.headless.feature"/>
+            <cs:attribute name="feature.jars" component="org.eclipse.buckminster.subversive.headless.feature"/>
+        </cs:public>
+    </cs:groups>
+</cs:cspec>
