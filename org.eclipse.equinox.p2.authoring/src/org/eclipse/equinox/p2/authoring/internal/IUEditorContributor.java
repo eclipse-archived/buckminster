@@ -19,7 +19,6 @@ import org.eclipse.equinox.p2.authoring.forms.RichFormEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
