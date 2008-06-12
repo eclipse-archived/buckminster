@@ -114,7 +114,7 @@
             <cs:prerequisites>
                 <cs:attribute name="build.site" alias="requirement" component="org.eclipse.buckminster.update.external"/>
             </cs:prerequisites>
-            <cs:products alias="product.output" base="${buckminster.output}/site.final/" upToDatePolicy="MAPPER"/>
+            <cs:products alias="product.output" base="${buckminster.output}/external.site.final/" upToDatePolicy="MAPPER"/>
         </cs:public>
         <cs:public name="pack.site" actor="ant">
             <cs:actorProperties>
