@@ -177,6 +177,12 @@ public class InstallableUnitBuilder
 			m_name = capability.getName();
 			m_version = capability.getVersion().toString();
 		}
+		public ProvidedCapabilityBuilder(String namespace, String name, String version)
+		{
+			m_name = name;
+			m_namespace = namespace;
+			m_version = version;
+		}
 		public ProvidedCapability createProvidedCapability()
 		{
 			return MetadataFactory.createProvidedCapability(m_namespace, m_name, new Version(m_version));
@@ -554,6 +560,99 @@ public class InstallableUnitBuilder
 	{
 		return m_providedCapabilities;
 	}
+	/**
+	 * Add a provided capability last.
+	 * @param provided
+	 * @return index where this capability was added
+	 */
+	public int addProvidedCapability(ProvidedCapabilityBuilder provided)
+	{
+		return addProvidedCapability(provided, -1);
+	}
+	/**
+	 * Adds a provided capability at a given index. If index is outsite of range (or more specificly is -1), the new
+	 * provided capability is added last.
+	 * @param provided
+	 * @param index
+	 * @return the index where the capability was added.
+	 */
+	public int addProvidedCapability(ProvidedCapabilityBuilder provided, int index)
+	{
+		ProvidedCapabilityBuilder[] reqCap2 = new ProvidedCapabilityBuilder[m_providedCapabilities.length+1];
+		int j = 0;
+		for(int i = 0; i < m_providedCapabilities.length;i++)
+		{
+			if(i == index)
+				reqCap2[j++] = provided;
+			reqCap2[j++] = m_providedCapabilities[i];
+		}
+		if(index < 0 || index >= m_providedCapabilities.length)
+		{
+			index = m_providedCapabilities.length;
+			reqCap2[index] = provided;
+		}
+		m_providedCapabilities = reqCap2;
+		return index;
+	}
+	/**
+	 * Removes the provided capability from the set of provided capabilities.
+	 * @param provided
+	 * @return the index where the provided capability was found, -1 if not found
+	 */
+	public int removeProvidedCapability(ProvidedCapabilityBuilder provided)
+	{
+		int index = -1; // not found (yet)
+		for(int i = 0; i < m_providedCapabilities.length;i++)
+			if(m_providedCapabilities[i] == provided)
+			{
+				index = i;
+				break;
+			}
+		if(index == -1)
+			return index; // not found
+
+		ProvidedCapabilityBuilder[] reqCap2 = new ProvidedCapabilityBuilder[m_providedCapabilities.length-1];
+		int j = 0;
+		for(int i = 0; i < m_providedCapabilities.length;i++)
+		{
+			if(i == index)
+				continue; // skip the item to remove
+			reqCap2[j++] = m_providedCapabilities[i];
+		}
+		m_providedCapabilities = reqCap2;
+		return index;
+		
+	}
+	/**
+	 * Moves the provided capability up (+1) or down(-1) in the array of provided capabilities
+	 * @param provided
+	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @return -1 if move was not made, else the position before the move is returned
+	 */
+	public int moveProvidedCapability(ProvidedCapabilityBuilder provided, int delta)
+	{
+		if(!(delta == 1 || delta == -1))
+			throw new IllegalArgumentException("can only move +1 or -1");
+		int index = -1; // not found (yet)
+		for(int i = 0; i < m_providedCapabilities.length;i++)
+			if(m_providedCapabilities[i] == provided)
+			{
+				index = i;
+				break;
+			}
+		if(index == -1)
+			return index; // not found
+		int swapIndex = index + delta;
+		if(swapIndex < 0 || swapIndex >= m_providedCapabilities.length)
+			return -1; // outsite of range - no move
+		
+		ProvidedCapabilityBuilder tmp = m_providedCapabilities[swapIndex];
+		m_providedCapabilities[swapIndex] = m_providedCapabilities[index];
+		m_providedCapabilities[index] = tmp;
+		return index;
+	}
+	
+
 	public RequiredCapabilityBuilder[] getRequiredCapabilities()
 	{
 		return m_requiredCapabilities;

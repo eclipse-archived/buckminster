@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.equinox.p2.authoring.P2AuthoringImages;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ProvidedCapabilityBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.RequiredCapabilityBuilder;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -205,6 +206,15 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 			StyledString bld = new StyledString(req.getName());
 			bld.append(" : ", StyledString.DECORATIONS_STYLER);
 			bld.append(req.getRange(), StyledString.DECORATIONS_STYLER);
+			return bld;
+			
+		}
+		if(element instanceof ProvidedCapabilityBuilder)
+		{
+			ProvidedCapabilityBuilder req = (ProvidedCapabilityBuilder)element;
+			StyledString bld = new StyledString(req.getName());
+			bld.append(" : ", StyledString.DECORATIONS_STYLER);
+			bld.append(req.getVersion(), StyledString.DECORATIONS_STYLER);
 			return bld;
 			
 		}
