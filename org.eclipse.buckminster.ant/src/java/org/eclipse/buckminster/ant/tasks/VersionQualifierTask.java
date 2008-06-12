@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.version.IQualifierGenerator;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 
@@ -50,7 +51,7 @@ public class VersionQualifierTask
 
 	private final String m_qualifier;
 
-	public VersionQualifierTask(File propertiesFile, String qualifier) throws IOException
+	public VersionQualifierTask(File propertiesFile, String qualifier) throws CoreException
 	{
 		m_qualifier = qualifier;
 		
@@ -66,6 +67,10 @@ public class VersionQualifierTask
 				input = new BufferedInputStream(new FileInputStream(propertiesFile));
 				m_properties = new BMProperties(input);
 				m_properties.putAll(globalProps);
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.fromMessage(e, "Unable to read properties from %s", propertiesFile);
 			}
 			finally
 			{

@@ -8,9 +8,9 @@
 package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Thomas Hallgren
@@ -19,7 +19,7 @@ abstract class VersionConsolidator extends VersionQualifierTask
 {
 	private final File m_outputFile;
 
-	VersionConsolidator(File outputFile, File propertiesFile, String qualifier) throws IOException
+	VersionConsolidator(File outputFile, File propertiesFile, String qualifier) throws CoreException
 	{
 		super(propertiesFile, qualifier);
 		m_outputFile = outputFile;

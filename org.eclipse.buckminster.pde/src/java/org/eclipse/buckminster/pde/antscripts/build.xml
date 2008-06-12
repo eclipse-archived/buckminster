@@ -87,6 +87,15 @@
 		</buckminster.jar>
 	</target>
 
+	<target name="recreate.jar" depends="create.output.dir">
+		<buckminster.copy todir="${buckminster.temp}">
+			<buckminster.filesetgroup value="${fs:action.requirements}"/>
+		</buckminster.copy>
+		<jar jarfile="${sp:action.output}" manifest="${buckminster.temp}/META-INF/MANIFEST.MF">
+			<fileset dir="${buckminster.temp}" excludes="META-INF/*"/>
+		</jar>
+	</target>
+
 	<target name="create.jar.with.manifest" depends="create.output.dir">
 		<buckminster.jar jarfile="${sp:action.output}" manifest="${manifest}" duplicate="preserve">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>

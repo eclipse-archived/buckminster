@@ -25,7 +25,9 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -39,14 +41,19 @@ public class BundleConsolidator extends VersionConsolidator
 	private final byte[] m_bytes;
 
 	public BundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier)
-			throws IOException
+			throws CoreException
 	{
 		super(outputFile, propertiesFile, qualifier);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		InputStream input = new FileInputStream(inputFile);
+		InputStream input = null;
 		try
 		{
+			input = new FileInputStream(inputFile);
 			IOUtils.copy(input, output, null);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.fromMessage("Unable to manifest from %s", inputFile);
 		}
 		finally
 		{

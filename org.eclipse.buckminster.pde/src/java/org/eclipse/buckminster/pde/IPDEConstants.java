@@ -169,6 +169,8 @@ public interface IPDEConstants
 
 	static final String TASK_CREATE_JAR = "create.jar";
 
+	static final String TASK_RECREATE_JAR = "recreate.jar";
+
 	static final String TASK_CREATE_ZIP = "create.zip";
 
 	static final String TASK_CREATE_ECLIPSE_PRODUCT = "create.eclipse.product";

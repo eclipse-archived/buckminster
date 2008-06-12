@@ -184,7 +184,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				// In order to create a jar of the unpackedPlugin, we need a temporary directory
 				// since this artifact is not a workspace artifact
 				//
-				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_CREATE_ZIP, true);	
+				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_RECREATE_JAR, true);	
 				bundleExport.addProductPath(Path.fromPortableString(jarName));
 				bundleExport.getPrerequisitesBuilder().addSelfRequirement();
 			}

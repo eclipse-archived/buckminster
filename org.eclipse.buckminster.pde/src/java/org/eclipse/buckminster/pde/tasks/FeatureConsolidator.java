@@ -28,9 +28,11 @@ import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.pde.core.IModelChangedEvent;
@@ -157,7 +159,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		return candidate;
 	}
 
-	private static InputStream getInput(File dirOrZip, String fileName) throws IOException
+	private static InputStream getInput(File dirOrZip, String fileName) throws CoreException, FileNotFoundException
 	{
 		if(dirOrZip.isDirectory())
 			return new BufferedInputStream(new FileInputStream(new File(dirOrZip, fileName)));
@@ -191,10 +193,27 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				}
 			};
 		}
+		catch (FileNotFoundException e)
+		{
+			throw e;
+		}
+		catch (Exception e)
+		{
+			throw BuckminsterException.fromMessage(e, "Unable to read %s", dirOrZip);
+		}
 		finally
 		{
 			if(jarFile != null)
-				jarFile.close();
+			{
+				try
+				{
+					jarFile.close();
+				}
+				catch(IOException e)
+				{
+					PDEPlugin.getLogger().error(e, "Error while closing %s", dirOrZip);
+				}
+			}
 		}
 	}
 
@@ -253,7 +272,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 	private final int m_significantDigits;
 
-	public FeatureConsolidator(File inputFile, File outputFile, File propertiesFile, List<File> featuresAndBundles, String qualifier, boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits) throws CoreException, IOException
+	public FeatureConsolidator(File inputFile, File outputFile, File propertiesFile, List<File> featuresAndBundles, String qualifier, boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits) throws CoreException
 	{
 		super(outputFile, propertiesFile, qualifier);
 		m_featureModel = FeatureModelReader.readEditableFeatureModel(inputFile);
