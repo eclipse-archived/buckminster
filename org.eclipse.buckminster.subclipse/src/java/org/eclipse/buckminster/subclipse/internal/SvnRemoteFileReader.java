@@ -82,6 +82,8 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		VersionSelector branchOrTag = vm.getBranchOrTag();
 		m_session = new SvnSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo.getNodeQuery().getContext());
 		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
+		if(m_topEntries.length == 0)
+			throw BuckminsterException.fromMessage("Unable to find artifacts at %s", m_session);
 	}
 
 	@Override
