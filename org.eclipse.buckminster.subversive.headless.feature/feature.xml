@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.subversive.headless.feature"
       label="Buckminster - Subversive based SVN support for headless operation"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org"
+      provider-name="Cloudsmith Inc."
       plugin="org.eclipse.buckminster.subversive">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -108,7 +108,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <url>
-      <update label="Buckminster" url="http://download.eclipse.org/tools/buckminster/updates"/>
+      <update label="Buckminster" url="http://download.cloudsmith.com/buckminster/external"/>
    </url>
 
    <requires>
