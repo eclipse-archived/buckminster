@@ -39,6 +39,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_U
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HOME_PAGE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDFEEDS_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_KEY;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
@@ -84,7 +85,6 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -185,6 +185,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_learnMoreURL;
 
+	private String m_learnMoreCloudfeedsURL;
+
 	private String m_basePathURL;
 
 	private String m_homePageURL;
@@ -231,7 +233,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private DonePage m_donePage;
 
-	private InfoPage m_infoPage;
+	private FeedsPage m_infoPage;
 
 	private IUnresolvedNodeHandler m_unresolvedNodeHandler;
 
@@ -437,6 +439,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			e.printStackTrace();
 		}
 
+/*		Starts Eclipse installation wizard - Eclipse SDK + Buckminster + Spaces + RSS Owl
 		if(isMaterializationFinished())
 		{
 			String materializerID = getMaterializationSpecBuilder().getMaterializerID();
@@ -447,7 +450,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			saveLocalProperties();
 		}
-
+*/
+		
 		return true;
 	}
 
@@ -599,7 +603,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			m_donePage = new DonePage();
 			addAdvancedPage(m_donePage);
 
-			m_infoPage = new InfoPage();
+			m_infoPage = new FeedsPage();
 			addAdvancedPage(m_infoPage);
 		}
 	}
@@ -741,6 +745,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	String getLearnMoreURL()
 	{
 		return m_learnMoreURL;
+	}
+
+	String getLearnMoreCloudfeedsURL()
+	{
+		return m_learnMoreCloudfeedsURL;
 	}
 
 	// // Seems to be never used
@@ -1461,6 +1470,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_eclipseDistroTools34UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL);
 		m_eclipseDistroTools33UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL);
 
+		m_learnMoreCloudfeedsURL = properties.get(PROP_LEARN_MORE_CLOUDFEEDS_URL);
+		
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;
@@ -1537,7 +1548,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return defaultLocalProperties;
 	}
 
-	private void saveLocalProperties()
+	protected void saveLocalProperties()
 	{
 		OutputStream out = null;
 		try

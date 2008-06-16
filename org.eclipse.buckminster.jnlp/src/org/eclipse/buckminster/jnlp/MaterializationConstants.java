@@ -28,7 +28,7 @@ public interface MaterializationConstants
 	
 	public static final String STEP_DONE = "DoneStep";
 	
-	public static final String STEP_INFO = "InfoStep";
+	public static final String STEP_FEEDS = "InfoStep";
 	
 	public static final String STEP_PUBLISH_LOGIN = "LoginStep";
 
@@ -93,6 +93,8 @@ public interface MaterializationConstants
 	public static final String PROP_LOGIN_REQUIRED = "loginRequired";
 
 	public static final String PROP_LEARN_MORE_URL = "learnMoreURL";
+	
+	public static final String PROP_LEARN_MORE_CLOUDFEEDS_URL = "learnMoreCloudfeedsURL";
 
 	public static final String PROP_HOME_PAGE_URL = "homePageURL";
 
