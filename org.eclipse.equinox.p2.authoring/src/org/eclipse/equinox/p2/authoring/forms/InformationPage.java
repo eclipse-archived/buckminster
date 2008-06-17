@@ -41,8 +41,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
- *
+ * An Information Page for editing Copyright, License, and Description of an Installable Unit.
+ * @author Henrik Lindberg
  */
+@SuppressWarnings("restriction")
 public class InformationPage extends RichFormPage
 {
 	public static final String PAGE_ID = "info.id"; //$NON-NLS-1$
@@ -208,7 +210,6 @@ public class InformationPage extends RichFormPage
 		{
 			m_urlMutator = new Mutator()
 			{
-				@SuppressWarnings("restriction")
 				@Override
 				public String getValue()
 				{
@@ -218,7 +219,6 @@ public class InformationPage extends RichFormPage
 					return checkedString(iu.getProperty(InstallableUnit.PROP_DESCRIPTION_URL));
 				}
 
-				@SuppressWarnings("restriction")
 				@Override
 				public void setValue(String input) throws Exception
 				{
@@ -230,7 +230,6 @@ public class InformationPage extends RichFormPage
 			};
 			m_textMutator = new Mutator()
 			{
-				@SuppressWarnings("restriction")
 				@Override
 				public String getValue()
 				{
@@ -240,7 +239,6 @@ public class InformationPage extends RichFormPage
 					return checkedString(iu.getProperty(InstallableUnit.PROP_DESCRIPTION));
 				}
 
-				@SuppressWarnings("restriction")
 				@Override
 				public void setValue(String input) throws Exception
 				{
@@ -327,32 +325,12 @@ public class InformationPage extends RichFormPage
 					public String getValue()
 					{
 						return m_currentAdapter.m_urlMutator.getValue();
-//						InstallableUnitBuilder iu = getIU();
-//						if(iu == null)
-//							return ""; //$NON-NLS-1$
-//						LicenseBuilder license = iu.getLicense();
-//						if(license == null)
-//							return "";
-//						String val = license.getUrl();
-//						return val != null
-//								? val
-//								: ""; //$NON-NLS-1$
 					}
 
 					@Override
 					public void setValue(String input) throws Exception
 					{
 						m_currentAdapter.m_urlMutator.setValue(input);
-//						InstallableUnitBuilder iu = getIU();
-//						if(iu == null)
-//							return;
-//						LicenseBuilder license = iu.getLicense();
-//						if(license == null)
-//						{
-//							license = new LicenseBuilder();
-//							iu.setLicense(license);
-//						}
-//						license.setUrl(input);
 					}
 				});
 
@@ -384,32 +362,12 @@ public class InformationPage extends RichFormPage
 					public String getValue()
 					{
 						return m_currentAdapter.m_textMutator.getValue();
-//						InstallableUnitBuilder iu = getIU();
-//						if(iu == null)
-//							return ""; //$NON-NLS-1$
-//						LicenseBuilder license = iu.getLicense();
-//						if(license == null)
-//							return "";
-//						String val = license.getBody();
-//						return val != null
-//								? val
-//								: ""; //$NON-NLS-1$
 					}
 
 					@Override
 					public void setValue(String input) throws Exception
 					{
 						m_currentAdapter.m_textMutator.setValue(input);
-//						InstallableUnitBuilder iu = getIU();
-//						if(iu == null)
-//							return;
-//						LicenseBuilder license = iu.getLicense();
-//						if(license == null)
-//						{
-//							license = new LicenseBuilder();
-//							iu.setLicense(license);
-//						}
-//						license.setBody(input);
 					}
 				});
 
@@ -417,29 +375,12 @@ public class InformationPage extends RichFormPage
 		item = new CTabItem(m_tabFolder, SWT.NULL);
 		item.setText("Copyright Notice");
 		item.setData(new CopyrightAdapter());
-		// tabComposite = toolkit.createComposite(m_tabFolder);
-		// item.setControl(tabComposite);
-		// layout = new TableWrapLayout();
-		// layout.numColumns = 2;
-		// tabComposite.setLayout(layout);
-		// tabComposite.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB));
-		// tabComposite.setBackground(headerColor);
 
 		// --DESCRIPTION
 		item = new CTabItem(m_tabFolder, SWT.NULL);
 		item.setText("Unit Description");
 		item.setData(new DescAdapter());
 		
-		// tabComposite = toolkit.createComposite(m_tabFolder);
-		// item.setControl(tabComposite);
-		// layout = new TableWrapLayout();
-		// layout.numColumns = 2;
-		// tabComposite.setLayout(layout);
-		// tabComposite.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB));
-		// tabComposite.setBackground(headerColor);
-
-		// createTabs(toolkit);
-		// createText(toolkit, form.getBody());
 		m_tabFolder.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -449,43 +390,8 @@ public class InformationPage extends RichFormPage
 			}
 		});
 		m_tabFolder.setSelection(0);
-		//updateSelection();
 	}
 
-	// private void createTabs(FormToolkit toolkit)
-	// {
-	// createTab(toolkit, "Copyright", "[Enter Copyright text here]");
-	// createTab(toolkit, "License Agreement", "[Enter Licnese agreement here]");
-	// createTab(toolkit, "Description", "[Enter unit description here]");
-	// }
-	//
-	// private void createText(FormToolkit toolkit, Composite parent)
-	// {
-	// Composite tabContent = toolkit.createComposite(parent);
-	// tabContent.setLayoutData(new GridData(GridData.FILL_BOTH));
-	// GridLayout layout = new GridLayout();
-	// tabContent.setLayout(layout);
-	// layout.numColumns = 2;
-	// layout.marginWidth = 0;
-	// GridData gd;
-	// text = toolkit.createText(tabContent, "", SWT.MULTI | SWT.WRAP);
-	// gd = new GridData(GridData.FILL_BOTH);
-	// gd.verticalSpan = 2;
-	// text.setLayoutData(gd);
-	// Button apply = toolkit.createButton(tabContent, "Apply", SWT.PUSH);
-	// apply.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-	// Button reset = toolkit.createButton(tabContent, "Reset", SWT.PUSH);
-	// reset.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-	// }
-	//
-	//
-	// private void createTab(FormToolkit toolkit, String title, String content)
-	// {
-	// CTabItem item = new CTabItem(m_tabFolder, SWT.NULL);
-	// TextSection section = new TextSection(content);
-	// item.setText(title);
-	// item.setData(section);
-	// }
 	private InstallableUnitBuilder getIU()
 	{
 		return ((InstallableUnitEditor)getEditor()).getInstallableUnit();
