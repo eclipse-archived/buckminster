@@ -39,9 +39,9 @@ import org.osgi.framework.Version;
  * 
  */
 @SuppressWarnings("restriction")
-public class InstallableUnitBuilder
+public class InstallableUnitBuilder extends ModelRoot
 {
-	public static class ArtifactKeyBuilder
+	public static class ArtifactKeyBuilder extends ModelPart
 	{
 		private String m_classifier;
 
@@ -79,18 +79,21 @@ public class InstallableUnitBuilder
 		public void setClassifier(String classifier)
 		{
 			m_classifier = classifier;
+			notifyChanged();
 		}
 		public void setId(String id)
 		{
 			m_id = id;
+			notifyChanged();
 		}
 
 		public void setVersion(Version version)
 		{
 			m_version = version;
+			notifyChanged();
 		}
 	}
-	public static class IUInfoBuilder
+	public static class IUInfoBuilder extends ModelPart
 	{
 		protected String m_body;
 		protected String m_url;
@@ -119,10 +122,12 @@ public class InstallableUnitBuilder
 		public void setBody(String body)
 		{
 			m_body = body;
+			notifyChanged();
 		}
 		public void setUrl(String url)
 		{
 			m_url = url;
+			notifyChanged();
 		}
 
 	}
@@ -168,7 +173,7 @@ public class InstallableUnitBuilder
 			return new License(m_url, m_body);
 		}
 	}
-	public static class ProvidedCapabilityBuilder
+	public static class ProvidedCapabilityBuilder extends ModelPart
 	{
 		private String m_name;
 		private String m_namespace;
@@ -206,17 +211,20 @@ public class InstallableUnitBuilder
 		public void setName(String name)
 		{
 			m_name = name;
+			notifyChanged();
 		}
 		public void setNamespace(String namespace)
 		{
 			m_namespace = namespace;
+			notifyChanged();
 		}
 		public void setVersion(String version)
 		{
 			m_version = version;
+			notifyChanged();
 		}
 	}
-	public static class RequiredCapabilityBuilder
+	public static class RequiredCapabilityBuilder extends ModelPart
 	{
 		private String m_capfilter;
 		private boolean m_greedy;
@@ -280,33 +288,40 @@ public class InstallableUnitBuilder
 		public void setCapfilter(String capfilter)
 		{
 			m_capfilter = capfilter;
+			notifyChanged();
 		}
 		public void setGreedy(boolean greedy)
 		{
 			m_greedy = greedy;
+			notifyChanged();
 		}
 		public void setMultiple(boolean multiple)
 		{
 			m_multiple = multiple;
+			notifyChanged();
 		}
 		public void setName(String name)
 		{
 			m_name = name;
+			notifyChanged();
 		}
 		public void setNamespace(String namespace)
 		{
 			m_namespace = namespace;
+			notifyChanged();
 		}
 		public void setOptional(boolean optional)
 		{
 			m_optional = optional;
+			notifyChanged();
 		}
 		public void setRange(String range)
 		{
 			m_range = range;
+			notifyChanged();
 		}
 	}
-	public static class TouchpointDataBuilder
+	public static class TouchpointDataBuilder extends ModelPart
 	{
 		LinkedHashMap<String, String>m_instructions;
 		@SuppressWarnings("unchecked")
@@ -332,13 +347,15 @@ public class InstallableUnitBuilder
 		public void putInstruction(String key, String value)
 		{
 			m_instructions.put(key, value);
+			notifyChanged();
 		}
 		public void removeInstruction(String key)
 		{
 			m_instructions.remove(key);
+			notifyChanged();
 		}
 	}
-	public static class TouchpointTypeBuilder
+	public static class TouchpointTypeBuilder extends ModelPart
 	{
 		private String m_typeid;
 		private String m_version;
@@ -363,13 +380,15 @@ public class InstallableUnitBuilder
 		public void setTypeid(String typeid)
 		{
 			m_typeid = typeid;
+			notifyChanged();
 		}
 		public void setVersion(String version)
 		{
 			m_version = version;
+			notifyChanged();
 		}
 	}
-	public static class UpdateDescriptorBuilder
+	public static class UpdateDescriptorBuilder extends ModelPart
 	{
 		private String m_description;
 		private String m_range;
@@ -416,19 +435,23 @@ public class InstallableUnitBuilder
 		public void setDescription(String description)
 		{
 			m_description = description;
+			notifyChanged();
 		}
 		public void setRange(String range)
 		{
 			m_range = range;
+			notifyChanged();
 		}
 
 		public void setSeverity(int severity)
 		{
 			m_severity = severity;
+			notifyChanged();
 		}
 		public void setUpdateid(String updateid)
 		{
 			m_updateid = updateid;
+			notifyChanged();
 		}
 	}
 	private ArtifactKeyBuilder[] m_artifacts;
@@ -452,9 +475,12 @@ public class InstallableUnitBuilder
 		IArtifactKey[] artifactKeys = unit.getArtifacts();
 		m_artifacts = new ArtifactKeyBuilder[artifactKeys.length];
 		for(int i = 0; i < artifactKeys.length; i++)
+		{
 			m_artifacts[i] = new ArtifactKeyBuilder(artifactKeys[i]);
-		
+			m_artifacts[i].setParent(this);
+		}
 		m_copyright = new CopyrightBuilder(unit.getCopyright());
+		m_copyright.setParent(this);
 		
 		m_filter = unit.getFilter();
 		
@@ -464,27 +490,37 @@ public class InstallableUnitBuilder
 		m_id = unit.getId();
 		
 		m_license = new LicenseBuilder(unit.getLicense());
+		m_license.setParent(this);
+		
 		m_properties = new LinkedHashMap();
 		m_properties.putAll(unit.getProperties());
 
 		ProvidedCapability[] providedCapabilities = unit.getProvidedCapabilities();
 		m_providedCapabilities = new ProvidedCapabilityBuilder[providedCapabilities.length];
 		for(int i = 0; i < providedCapabilities.length;i++)
+		{
 			m_providedCapabilities[i] = new ProvidedCapabilityBuilder(providedCapabilities[i]);
-
+			m_providedCapabilities[i].setParent(this);
+		}
 		RequiredCapability[] requiredCapabilities = unit.getRequiredCapabilities();
 		m_requiredCapabilities = new RequiredCapabilityBuilder[requiredCapabilities.length];
 		for(int i = 0; i < requiredCapabilities.length;i++)
+		{
 			m_requiredCapabilities[i] = new RequiredCapabilityBuilder(requiredCapabilities[i]);
-		
+			m_requiredCapabilities[i].setParent(this);
+		}
 		TouchpointData[] touchpointData = unit.getTouchpointData();
 		m_touchpointData = new TouchpointDataBuilder[touchpointData.length];
 		for(int i = 0; i < touchpointData.length;i++)
+		{
 			m_touchpointData[i] = new TouchpointDataBuilder(touchpointData[i]);
-		
+			m_touchpointData[i].setParent(this);
+		}
 		m_touchpointType = new TouchpointTypeBuilder(unit.getTouchpointType());
+		m_touchpointType.setParent(this);
 		
 		m_updateDescriptor = new UpdateDescriptorBuilder(unit.getUpdateDescriptor());
+		m_updateDescriptor.setParent(this);
 		
 		m_version = unit.getVersion().toString();
 		m_singleton = unit.isSingleton();
@@ -595,6 +631,8 @@ public class InstallableUnitBuilder
 			reqCap2[index] = provided;
 		}
 		m_providedCapabilities = reqCap2;
+		provided.setParent(this);
+		notifyChanged();
 		return index;
 	}
 	/**
@@ -623,6 +661,8 @@ public class InstallableUnitBuilder
 			reqCap2[j++] = m_providedCapabilities[i];
 		}
 		m_providedCapabilities = reqCap2;
+		provided.setParent(null);
+		notifyChanged();
 		return index;
 		
 	}
@@ -652,6 +692,7 @@ public class InstallableUnitBuilder
 		ProvidedCapabilityBuilder tmp = m_providedCapabilities[swapIndex];
 		m_providedCapabilities[swapIndex] = m_providedCapabilities[index];
 		m_providedCapabilities[index] = tmp;
+		notifyChanged();
 		return index;
 	}
 	
@@ -692,6 +733,8 @@ public class InstallableUnitBuilder
 			reqCap2[index] = required;
 		}
 		m_requiredCapabilities = reqCap2;
+		required.setParent(this);
+		notifyChanged();
 		return index;
 	}
 	/**
@@ -720,6 +763,8 @@ public class InstallableUnitBuilder
 			reqCap2[j++] = m_requiredCapabilities[i];
 		}
 		m_requiredCapabilities = reqCap2;
+		required.setParent(null);
+		notifyChanged();
 		return index;
 		
 	}
@@ -749,6 +794,7 @@ public class InstallableUnitBuilder
 		RequiredCapabilityBuilder tmp = m_requiredCapabilities[swapIndex];
 		m_requiredCapabilities[swapIndex] = m_requiredCapabilities[index];
 		m_requiredCapabilities[index] = tmp;
+		notifyChanged();
 		return index;
 	}
 	public Serializable getTouchpointData()
@@ -774,63 +820,128 @@ public class InstallableUnitBuilder
 	public void removeProperty(String key)
 	{
 		m_properties.remove(key);
+		notifyChanged();
 	}
 	public void setArtifacts(ArtifactKeyBuilder[] artifacts)
 	{
+		if(m_artifacts != null)
+			for(int i = 0; i < m_artifacts.length;i++)
+				m_artifacts[i].setParent(null);
 		m_artifacts = artifacts;
+		for(int i = 0; i < m_artifacts.length;i++)
+			m_artifacts[i].setParent(this);
+		notifyChanged();
 	}
 	public void setCopyright(CopyrightBuilder copyright)
 	{
+		if(m_copyright != null)
+			m_copyright.setParent(null);
 		m_copyright = copyright;
+		m_copyright.setParent(this);
+		notifyChanged();
 	}
 	public void setFilter(String filter)
 	{
 		m_filter = filter;
+		notifyChanged();
 	}
 
 	public void setId(String id)
 	{
 		m_id = id;
+		notifyChanged();
 	}
 	public void setLicense(LicenseBuilder license)
 	{
+		if(m_license != null)
+			m_license.setParent(null);
 		m_license = license;
+		m_license.setParent(this);
+		notifyChanged();
 	}
 	public void setProperties(LinkedHashMap<String, String> properties)
 	{
 		m_properties = properties;
+		notifyChanged();
 	}
 	
 	public void setProperty(String key, String value)
 	{
 		m_properties.put(key, value);
+		notifyChanged();
 	}
 	public void setProvidedCapabilities(ProvidedCapabilityBuilder[] providedCapabilities)
 	{
+		if(m_providedCapabilities != null)
+			for(int i = 0; i < m_providedCapabilities.length;i++)
+				m_providedCapabilities[i].setParent(null);
+		
 		m_providedCapabilities = providedCapabilities;
+		for(int i = 0; i < m_providedCapabilities.length;i++)
+			m_providedCapabilities[i].setParent(this);
+		notifyChanged();
 	}
 	public void setRequiredCapabilities(RequiredCapabilityBuilder[] requiredCapabilities)
 	{
+		if(m_requiredCapabilities != null)
+			for(int i = 0; i < m_requiredCapabilities.length;i++)
+				m_requiredCapabilities[i].setParent(null);
+		
 		m_requiredCapabilities = requiredCapabilities;
+		for(int i = 0; i < m_requiredCapabilities.length;i++)
+			m_requiredCapabilities[i].setParent(this);
+		notifyChanged();
 	}
 	public void setSingleton(boolean singleton)
 	{
 		m_singleton = singleton;
+		notifyChanged();
 	}
 	public void setTouchpointData(TouchpointDataBuilder[] touchpointData)
 	{
+		// remove old parenthood
+		if(m_touchpointData != null)
+			for(int i = 0; i < m_touchpointData.length;i++)
+				m_touchpointData[i].setParent(null);
+		// set new and set parenthood	
 		m_touchpointData = touchpointData;
+		for(int i = 0; i < touchpointData.length;i++)
+			touchpointData[i].setParent(this);
+		notifyChanged();
 	}
+	/**
+	 * Sets the touchpoint type, and the passed touchpointType's parent is set to this installable unit builder.
+	 * Any previously set touchpoint type's parent is set to null (to avoid change events from this instance to
+	 * propagate into the model).
+	 * 
+	 * @param touchpointType
+	 */
 	public void setTouchpointType(TouchpointTypeBuilder touchpointType)
 	{
+		if(m_touchpointType != null)
+			m_touchpointType.setParent(null);
 		m_touchpointType = touchpointType;
+		m_touchpointType.setParent(this);
+		notifyChanged();
 	}
+	/**
+	 * Sets the update descriptor, and the passed update descriptor's parent is set to this installable unit builder.
+	 * Any previously set update descriptor's parent is set to null (to avoid change events from this instance to
+	 * propagate into the model).
+	 * 
+	 * @param updateDescriptor
+	 */
 	public void setUpdateDescriptor(UpdateDescriptorBuilder updateDescriptor)
 	{
+		if(m_updateDescriptor != null)
+			m_updateDescriptor.setParent(null);
 		m_updateDescriptor = updateDescriptor;
+		m_updateDescriptor.setParent(this);
+		notifyChanged();
 	}
 	public void setVersion(String version)
 	{
 		m_version = version;
+		notifyChanged();
 	}
 }

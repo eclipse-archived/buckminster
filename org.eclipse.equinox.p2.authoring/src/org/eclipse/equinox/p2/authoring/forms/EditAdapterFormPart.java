@@ -79,7 +79,7 @@ public class EditAdapterFormPart extends AbstractFormPart
 	public void commit(boolean onSave)
 	{
 		for(EditAdapter e : m_editAdapters.values())
-			e.commit();
+			e.commit(onSave);
 		super.commit(onSave);
 	}
 

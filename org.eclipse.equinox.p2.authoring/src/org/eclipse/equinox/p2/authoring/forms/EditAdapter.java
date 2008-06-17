@@ -195,15 +195,15 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 	/**
 	 * Commit the data in the widget to the model.
 	 */
-	public void commit()
+	public void commit(boolean onSave)
 	{
 		if(m_control instanceof Text || m_control instanceof StyledText)
-			commitText();
+			commitText(onSave);
 		else if(m_control instanceof Button)
-			commitButton();
+			commitButton(onSave);
 	}
 
-	private void commitText()
+	private void commitText(boolean onSave)
 	{
 		// validate and set messages
 		String input;
@@ -229,7 +229,8 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 		try
 		{
 			m_mutator.setValue(input);
-			setDirty(false); // model is updated
+			if(onSave)
+				setDirty(false); // model is updated
 		}
 		catch(Exception e1)
 		{
@@ -249,7 +250,7 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 
 	}
 
-	private void commitButton()
+	private void commitButton(boolean onSave)
 	{
 		// validate and set messages
 		boolean input = ((Button)m_control).getSelection();
@@ -258,7 +259,8 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 		try
 		{
 			m_mutator.setValue(input);
-			setDirty(false); // model is updated
+			if(onSave)
+				setDirty(false); // model is updated
 		}
 		catch(Exception e1)
 		{
@@ -375,7 +377,7 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 				((Button)m_control).setSelection(m_mutator.getBooleanValue());
 			}
 			refreshEnablement();
-			setDirty(false);
+			// setDirty(false);
 		}
 		finally
 		{
