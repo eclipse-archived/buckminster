@@ -42,6 +42,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * An Information Page for editing Copyright, License, and Description of an Installable Unit.
+ * 
  * @author Henrik Lindberg
  */
 @SuppressWarnings("restriction")
@@ -54,26 +55,45 @@ public class InformationPage extends RichFormPage
 	private EditAdapterFormPart m_editAdapters = new EditAdapterFormPart();
 
 	private SwitchedAdapter m_currentAdapter;
-	
+
+	/**
+	 * Base class used to adapt between the shared text fields for URL and text and the data model.
+	 * 
+	 * @author Henrik Lindberg
+	 * 
+	 */
 	private abstract class SwitchedAdapter
 	{
 		protected IMutator m_urlMutator;
+
 		protected IMutator m_textMutator;
-		
+
 		IMutator getUrlMutator()
 		{
 			return m_urlMutator;
 		}
+
 		IMutator getTextMutator()
 		{
 			return m_textMutator;
 		}
+
 		protected String checkedString(String val)
 		{
-			return val == null ? "" : val; //$NON-NLS-1$
+			return val == null
+					? "" : val; //$NON-NLS-1$
 		}
 
 	}
+
+	/**
+	 * Switched adapter for adapting to License. TODO: this could probably be simplified more - but one of the types
+	 * being adapted two has very different access as Description info is set as properties, and the other two types are
+	 * via builders.
+	 * 
+	 * @author henrik
+	 * 
+	 */
 	private class LicenseAdapter extends SwitchedAdapter
 	{
 		private LicenseBuilder getLicenseBuilder()
@@ -83,6 +103,7 @@ public class InformationPage extends RichFormPage
 				return null; //$NON-NLS-1$
 			return iu.getLicense();
 		}
+
 		LicenseAdapter()
 		{
 			m_urlMutator = new Mutator()
@@ -92,8 +113,8 @@ public class InformationPage extends RichFormPage
 				{
 					LicenseBuilder license = getLicenseBuilder();
 					if(license == null)
-						return "";
-					return checkedString(license.getUrl()); 
+						return ""; //$NON-NLS-1$
+					return checkedString(license.getUrl());
 				}
 
 				@Override
@@ -118,7 +139,7 @@ public class InformationPage extends RichFormPage
 				{
 					LicenseBuilder license = getLicenseBuilder();
 					if(license == null)
-						return "";
+						return ""; //$NON-NLS-1$
 					return checkedString(license.getBody());
 				}
 
@@ -139,15 +160,23 @@ public class InformationPage extends RichFormPage
 			};
 		}
 	}
+
+	/**
+	 * Switched adapter for adapting to Copyright.
+	 * 
+	 * @author Henrik Lindberg
+	 * 
+	 */
 	private class CopyrightAdapter extends SwitchedAdapter
 	{
 		private CopyrightBuilder getCopyrightBuilder()
 		{
 			InstallableUnitBuilder iu = getIU();
 			if(iu == null)
-				return null; //$NON-NLS-1$
+				return null;
 			return iu.getCopyright();
 		}
+
 		CopyrightAdapter()
 		{
 			m_urlMutator = new Mutator()
@@ -157,8 +186,8 @@ public class InformationPage extends RichFormPage
 				{
 					CopyrightBuilder cpyr = getCopyrightBuilder();
 					if(cpyr == null)
-						return "";
-					return checkedString(cpyr.getUrl()); 
+						return ""; //$NON-NLS-1$
+					return checkedString(cpyr.getUrl());
 				}
 
 				@Override
@@ -183,7 +212,7 @@ public class InformationPage extends RichFormPage
 				{
 					CopyrightBuilder cpyr = getCopyrightBuilder();
 					if(cpyr == null)
-						return "";
+						return ""; //$NON-NLS-1$
 					return checkedString(cpyr.getBody());
 				}
 
@@ -204,6 +233,13 @@ public class InformationPage extends RichFormPage
 			};
 		}
 	}
+
+	/**
+	 * Switched adapter for adapting to Description.
+	 * 
+	 * @author Henrik Lindberg
+	 * 
+	 */
 	private class DescAdapter extends SwitchedAdapter
 	{
 		DescAdapter()
@@ -215,7 +251,7 @@ public class InformationPage extends RichFormPage
 				{
 					InstallableUnitBuilder iu = getIU();
 					if(iu == null)
-						return ""; 
+						return ""; //$NON-NLS-1$
 					return checkedString(iu.getProperty(InstallableUnit.PROP_DESCRIPTION_URL));
 				}
 
@@ -235,7 +271,7 @@ public class InformationPage extends RichFormPage
 				{
 					InstallableUnitBuilder iu = getIU();
 					if(iu == null)
-						return "";
+						return ""; //$NON-NLS-1$
 					return checkedString(iu.getProperty(InstallableUnit.PROP_DESCRIPTION));
 				}
 
@@ -343,7 +379,7 @@ public class InformationPage extends RichFormPage
 		rect.setLayout(new GridLayout(0, false)); // prevent layout from setting size
 		rect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		final Text licenseText = toolkit.createText(rect, "", SWT.MULTI | SWT.V_SCROLL);
+		final Text licenseText = toolkit.createText(rect, "", SWT.MULTI | SWT.V_SCROLL); //$NON-NLS-1$
 		rect.addControlListener(new ControlAdapter()
 		{
 			@Override
@@ -380,7 +416,7 @@ public class InformationPage extends RichFormPage
 		item = new CTabItem(m_tabFolder, SWT.NULL);
 		item.setText("Unit Description");
 		item.setData(new DescAdapter());
-		
+
 		m_tabFolder.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -396,18 +432,21 @@ public class InformationPage extends RichFormPage
 	{
 		return ((InstallableUnitEditor)getEditor()).getInstallableUnit();
 	}
-	 private void updateSelection()
-	 {
-		 // commit current values
-		 boolean dirty = m_editAdapters.isDirty();
-		 m_editAdapters.commit(false);
-		 // make the switch
-		 CTabItem item = m_tabFolder.getSelection();
-		 m_currentAdapter = (SwitchedAdapter)item.getData();
-		 // set stale data
-		 m_editAdapters.refresh();
-		 if(dirty)
-			 m_editAdapters.markDirty();
-	 }
+
+	private void updateSelection()
+	{
+		// commit current values
+		boolean dirty = m_editAdapters.isDirty();
+		m_editAdapters.commit(false);
+		// make the switch
+		CTabItem item = m_tabFolder.getSelection();
+		m_currentAdapter = (SwitchedAdapter)item.getData();
+		// set stale data
+		m_editAdapters.refresh();
+		// restate if it was dirty because the commit/refresh otherwise marks the form part as
+		// 'clean' and save has no effect
+		if(dirty)
+			m_editAdapters.markDirty();
+	}
 
 }
