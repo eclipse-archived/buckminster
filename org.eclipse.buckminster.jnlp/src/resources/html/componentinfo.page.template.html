@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content=
 "text/html; charset=UTF-8" />
-<title>Cloudsmith - Distro Page</title>
+<title>Cloudsmith - Cloudfeed Page</title>
 <link rel="icon" href=
 "img/favicon.ico" type=
 "image/x-icon" />
@@ -31,7 +31,7 @@ img.MaterializeProfileImage {
 }
 
 label {
-        color:#939392;
+        color: 	#939392;
         font-family:Verdana;
         font-size:x-small;
         font-weight:700;
@@ -151,6 +151,27 @@ a.BlueLink:hover {
         text-decoration: underline;
 }
 
+table.Border
+{
+    border-color: #939392;
+    border-width: 0 0 1px 1px;
+    border-style: solid;
+}
+
+.Border td
+{
+    border-color: #939392;
+    border-width: 1px 1px 0 0;
+    border-style: solid;
+    margin: 0;
+    padding: 10px;  
+    color: 	#939392;
+    font-family:Verdana;
+    font-size:x-small;
+    font-weight:700;
+    letter-spacing:0em;
+}
+
 /*]]>*/
 </style>
 </head>
@@ -168,13 +189,8 @@ cellpadding="0">
 "cloudsmith logo" /></a></td>
 </tr>
 <tr>
-<td style="padding-top:30px;"><label class="PageHeader">DISTRO
+<td style="padding-top:30px;"><label class="PageHeader">CLOUDFEED
 PAGE</label></td>
-<td style="text-align: right; vertical-align: bottom;"><a id=
-"cloudpageLink" class="BlueLink" href=
-"#{basePath}/dynamic/view/81428336.component" name=
-"cloudpageLink">go to Cloudpage&nbsp;<img src=
-"img/arrow.blue2.png" alt="blue arrow" /></a></td>
 </tr>
 <tr>
 <td colspan="2">
@@ -184,112 +200,67 @@ PAGE</label></td>
 <tr>
 <td style="vertical-align:top;">
 <table cellpadding="0" cellspacing="0">
-<tr>
-<td colspan="2">
-<h2>General Information</h2>
-</td>
-</tr>
 <tr class="DistroRow1">
-<td class="DistroNameLabelCell"><label id="distroNameLabel" for=
-"distroNameField">Distro</label></td>
-<td><input id="distroNameField" name="distroNameField" value=
-"" class="DistroNameCell OutputField Important"
-readonly="readonly" type="text" /></td>
-</tr>
-<tr class="DistroRow1">
-<td class="DistroNameLabelCell"><label id="distroVersionLabel" for=
-"distroVersionField">Version</label></td>
-<td><input id="distroVersionField" name="distroVersionField" value=
-"" class="DistroNameCell OutputField Important"
-readonly="readonly" type="text" /></td>
-</tr>
-<tr class="DistroRow1">
-<td class="DistroNameLabelCell"><label id=
-"distroComponentDescLabel" for=
-"distroComponentDescField">Description</label></td>
-<td><input id="distroComponentDescField" name=
-"distroComponentDescField" value="" class=
-"DistroNameCell OutputField Important" readonly="readonly" type=
-"text" /></td>
-</tr>
-<tr class="DistroRow1">
-<td style="vertical-align:top; padding-top:8px;" class=
-"DistroNameLabelCell"><label id="distroComponentDocLabel" for=
-"distroComponentDocField">Documentation</label></td>
-<td>
-<textarea id="distroComponentDocField" name=
-"distroComponentDocField" rows="4" cols="5" class=
-"DistroNameCell OutputField Important" readonly="readonly">
-</textarea></td>
-</tr>
+<td class="DistroNameLabelCell">
+<table class="Border" cellpadding="0" cellspacing="0">
+	<tr>
+	<td style="background-color: #ECECEC;">
+		Distro
+	</td>
+	<td style="width: 200px;">
+	<span id="distroNameField">
+	</span>
+	</td>
+	</tr>
 </table>
-</td>
-<td style="vertical-align:top;">
-<table cellpadding="0" cellspacing="0">
-<tr>
-<td colspan="2">
-<h2>Publisher Information</h2>
-</td>
-</tr>
-<tr>
-<td>
-<table cellpadding="0" cellspacing="0">
-<tr>
-<td><img id="publisherImage" src="img/avatar.fpo.png"
-class="MaterializeProfileImage" alt="publisher image" /></td>
-<td style="vertical-align: top;">
-<h3 id="publisherName" class="PublisherSubHeading"></h3>
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<td>
-<h3 class="PublisherSubHeading">Information from the publisher</h3>
-<span id="publisherInfo"></span></td>
+<td colspan="2">
+<h2 style="margin-top: 30px;">Available Feeds</h2>
+</td>
 </tr>
 <tr>
-<td>
-<h3 class="PublisherSubHeading">Link to more info from
-publisher</h3>
-<a id="publisherURL" href="" class="BlueLink"></a></td>
-</tr>
+<td colspan="2">
+<div id="distroInfo" style="width: 818px;">
+<table id="feedTable" class="Border" cellpadding="0" cellspacing="0">
+	<tr style="background-color: #ECECEC;">
+	<td>
+		Label
+	</td>
+	<td>
+		Description
+	</td>
+	<td></td>
+	<td></td>
+	</tr>
 </table>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<div class="Divider HeadingDivider"></div>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<h2>Additional Distro Information</h2>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<div id="distroInfo" style="width: 818px; max-height: 280px; overflow: auto;">
 </div>
 </td>
 </tr>
 <tr>
+<td><div style="margin-top: 5px; color: #424242;">More information about <a id=
+"cloudpageLink" class="BlueLink" href=
+"#{basePath}/dynamic/view/81428336.component" name=
+"cloudpageLink">this distro</a></div></td>
+</tr>
+<tr>
+<td><div style="margin-top: 10px; color: #424242;">More information about <a id=
+"cloudfeedsLink" class="BlueLink" href=
+"#{basePath}/" name=
+"cloudfeedsLink">Cloudfeeds</a></div></td>
+</tr>
+<tr>
 <td colspan="2">
-<div style="margin-top: 80px;"><a class="FooterLink" href=
-"#{basePath}/INFO-aboutus.html">about
-us</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class=
-"FooterLink" href=
-"#{basePath}/INFO-terms.html">terms</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class="FooterLink"
-href=
-"#{basePath}/INFO-news.html">news</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class="FooterLink"
-href="http://blog.cloudsmith.com">blog</a>&nbsp;<span style=
-"color:#ececec;">|</span>&nbsp;<a class="FooterLink" href=
-"#{basePath}/INFO-press.html">press</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;<a class="FooterLink"
-href=
-"#{basePath}/INFO-contact.html">contact</a>&nbsp;<span style="color:#ececec;">|</span>&nbsp;
-<a class="FooterLink" href="http://127.0.0.1/forum">forum</a><br />
-<img class="Cloudbar2" src=
+<div style="margin-top: 40px;">
+<a id=
+"homeLinkBottom" class="BlueLink" href=
+"#{basePath}/home.seam" name=
+"homeLinkBottom" style="margin-left: 10px;">Cloudsmith</a><br />
+<img src=
 "img/footer.bar.2.png" height=
 "10" width="210" alt="cloudbar" /><br />
 </div>

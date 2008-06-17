@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -31,6 +30,7 @@ import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.opml.IBody;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.IOutline;
+import org.eclipse.buckminster.opml.OutlineType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -44,123 +44,71 @@ import org.w3c.dom.Text;
  */
 public class ComponentInfoProvider implements IComponentInfoProvider
 {
-	public static final String SRC_HTML_FOLDER = "html";
+	private static final String SRC_HTML_FOLDER = "html";
 
-	public static final String SRC_HTML_IMG_FOLDER = "html" + IPath.SEPARATOR + "img";
+	private static final String SRC_HTML_IMG_FOLDER = "html" + IPath.SEPARATOR + "img";
 
-	public static final String IMG_FOLDER = "img";
+	private static final String IMG_FOLDER = "img";
 	
-	public static final String HTML_TEMPLATE = "componentinfo.page.template.html";
+	private static final String HTML_TEMPLATE = "componentinfo.page.template.html";
 
-	public static final String HTML_ENCODING = "UTF-8";
+	private static final String HTML_ENCODING = "UTF-8";
 
-	public static final String HTML_DOCTYPE_PUBLIC = "-//W3C//DTD XHTML 1.0 Strict//EN";
+	private static final String HTML_DOCTYPE_PUBLIC = "-//W3C//DTD XHTML 1.0 Strict//EN";
 
-	public static final String HTML_DOCTYPE_SYSTEM = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd";
+	private static final String HTML_DOCTYPE_SYSTEM = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd";
 
-	public static final String HTML_BASEPATH_PLACEHOLDER = "#{basePath}";
+	private static final String HTML_BASEPATH_PLACEHOLDER = "#{basePath}";
 
-	public static final String IMG_ARROW = "arrow.blue2.png";
+	private static final String IMG_FOOTER = "footer.bar.2.png";
 
-	public static final String IMG_FOOTER = "footer.bar.2.png";
+	private static final String IMG_FAVICON = "favicon.ico";
 
-	public static final String IMG_EMPTY_PROFILE = "avatar.fpo.png";
+	private static final String IMG_LOGO = "logotype.2.png";
 
-	public static final String IMG_FAVICON = "favicon.ico";
+	private static final String IMG_RSS = "rsslink.gif";
 
-	public static final String IMG_LOGO = "logotype.2.png";
-
-	public static final String IMG_RSS = "rsslink.gif";
-
-	public static final String GIF_CONTENT_TYPE = "image/gif";
-
-	public static final String GIF_FILE_EXTENSION = "gif";
-
-	public static final String PNG_CONTENT_TYPE = "image/png";
-
-	public static final String PNG_FILE_EXTENSION = "png";
-
-	public static final String JPG_CONTENT_TYPE = "image/jpg";
-
-	public static final String JPG_FILE_EXTENSION = "jpg";
-
-	public static final String PROP_PROVIDER_LOGO_URL = "providerLogo";
+	private static final String PROP_PROVIDER_LOGO_URL = "providerLogo";
 	
-	public static final String PROP_PROFILE_IMAGE_ID = "profileImageID";
+	private static final String PROP_ARTIFACT_NAME = "artifactName";
 
-	public static final String PROP_PROFILE_IMAGE_URL = "profileImageURL";
+	private static final String PROP_CSPEC_NAME = "cspecName";
 
-	public static final String PROP_PROFILE_IMAGE_FILE_NAME = "profileImageFileName";
+	private static final String PROP_CSPEC_VERSION_STRING = "cspecVersionString";
 
-	public static final String PROP_PUBLISHER_NAME = "publisherName";
+	private static final String PROP_BASE_PATH_URL = "basePathURL";
 
-	public static final String PROP_PROFILE_TEXT = "profileText";
+	private static final String PROP_HOME_PAGE_URL = "homePageURL";
 
-	public static final String PROP_MORE_INFO_URL = "moreInfoURL";
+	private static final String PROP_CLOUDPAGE_URL = "cloudpageURL";
 
-	public static final String PROP_ARTIFACT_NAME = "artifactName";
+	private static final String ID_HOME_PAGE_URL = "homeLink";
 
-	public static final String PROP_ARTIFACT_VERSION = "artifactVersion";
+	private static final String ID_CLOUDPAGE_URL = "cloudpageLink";
 
-	public static final String PROP_ARTIFACT_DESCRIPTION = "artifactDescription";
+	private static final String ID_DISTRO_NAME = "distroNameField";
 
-	public static final String PROP_ARTIFACT_DOCUMENTATION = "artifactDocumentation";
+	private static final String ID_FEED_TABLE = "feedTable";
 
-	public static final String PROP_CSPEC_NAME = "cspecName";
+	private static final String TAG_TR = "tr";
 
-	public static final String PROP_CSPEC_VERSION_STRING = "cspecVersionString";
+	private static final String TAG_TD = "td";
 
-	public static final String PROP_BASE_PATH_URL = "basePathURL";
+	private static final String TAG_A = "a";
 
-	public static final String PROP_HOME_PAGE_URL = "homePageURL";
+	private static final String TAG_IMG = "img";
 
-	public static final String PROP_CLOUDPAGE_URL = "cloudpageURL";
+	private static final String ATTR_HREF = "href";
 
-	public static final String ID_HOME_PAGE_URL = "homeLink";
+	private static final String ATTR_SRC = "src";
 
-	public static final String ID_CLOUDPAGE_URL = "cloudpageLink";
+	private static final String ATTR_CLASS = "class";
 
-	public static final String ID_DISTRO_NAME = "distroNameField";
+	private static final String ATTR_ALT = "alt";
 
-	public static final String ID_DISTRO_VERSION = "distroVersionField";
+	private static final String ATTR_TITLE = "title";
 
-	public static final String ID_DISTRO_DESC = "distroComponentDescField";
-
-	public static final String ID_DISTRO_DOC = "distroComponentDocField";
-
-	public static final String ID_PUBLISHER_IMG = "publisherImage";
-
-	public static final String ID_PUBLISHER_NAME = "publisherName";
-
-	public static final String ID_PUBLISHER_INFO = "publisherInfo";
-
-	public static final String ID_PUBLISHER_LINK = "publisherURL";
-
-	public static final String ID_DISTRO_INFO = "distroInfo";
-
-	public static final String TAG_UL = "ul";
-
-	public static final String TAG_LI = "li";
-
-	public static final String TAG_SPAN = "span";
-
-	public static final String TAG_A = "a";
-
-	public static final String TAG_IMG = "img";
-
-	public static final String ATTR_HREF = "href";
-
-	public static final String ATTR_VALUE = "value";
-
-	public static final String ATTR_SRC = "src";
-
-	public static final String ATTR_CLASS = "class";
-
-	public static final String ATTR_ALT = "alt";
-
-	public static final String ATTR_TITLE = "title";
-
-	public static final String CLASS_BLUE_LINK = "BlueLink";
+	private static final String CLASS_BLUE_LINK = "BlueLink";
 
 	private static InputStream getResource(String resourcePath)
 	{
@@ -203,33 +151,6 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		m_xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
 				new ByteArrayInputStream(string.getBytes(HTML_ENCODING)));
 
-		String profileImgName = null;
-		m_properties.put(PROP_PROFILE_IMAGE_FILE_NAME, IMG_FOLDER + IPath.SEPARATOR + IMG_EMPTY_PROFILE);
-
-		String imageID = m_properties.get(PROP_PROFILE_IMAGE_ID);
-		if(imageID != null)
-		{
-			URLConnection connection = new URL(m_properties.get(PROP_PROFILE_IMAGE_URL)).openConnection();
-			String contentType = connection.getContentType();
-			String fileExt = null;
-
-			if(contentType != null)
-			{
-				if(contentType.contains(GIF_CONTENT_TYPE))
-					fileExt = GIF_FILE_EXTENSION;
-				else if(contentType.contains(PNG_CONTENT_TYPE))
-					fileExt = PNG_FILE_EXTENSION;
-				else if(contentType.contains(JPG_CONTENT_TYPE))
-					fileExt = JPG_FILE_EXTENSION;
-			}
-
-			if(fileExt != null)
-			{
-				profileImgName = "profile" + imageID + "." + fileExt;
-				m_properties.put(PROP_PROFILE_IMAGE_FILE_NAME, IMG_FOLDER + IPath.SEPARATOR + profileImgName);
-			}
-		}
-
 		fillTemplate();
 
 		File htmlDestDir = new File(destination);
@@ -258,15 +179,9 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 
 		FileUtils.copyFile(new ByteArrayInputStream(stream.toByteArray()), htmlDestDir, htmlFileName, m_nullMonitor);
 
-		if(!new File(imgDestDir, IMG_ARROW).exists())
-			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_ARROW), imgDestDir,
-					IMG_ARROW, m_nullMonitor);
 		if(!new File(imgDestDir, IMG_FOOTER).exists())
 			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_FOOTER), imgDestDir,
 					IMG_FOOTER, m_nullMonitor);
-		if(!new File(imgDestDir, IMG_EMPTY_PROFILE).exists())
-			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_EMPTY_PROFILE),
-					imgDestDir, IMG_EMPTY_PROFILE, m_nullMonitor);
 		if(!new File(imgDestDir, IMG_FAVICON).exists())
 			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_FAVICON), imgDestDir,
 					IMG_FAVICON, m_nullMonitor);
@@ -276,74 +191,62 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		if(!new File(imgDestDir, IMG_LOGO).exists())
 			FileUtils.copyFile(new URL(m_properties.get(PROP_PROVIDER_LOGO_URL)).openStream(), imgDestDir,
 					IMG_LOGO, m_nullMonitor);
-		if(profileImgName != null)
-			if(!new File(imgDestDir, profileImgName).exists())
-				FileUtils.copyFile(new URL(m_properties.get(PROP_PROFILE_IMAGE_URL)).openStream(), imgDestDir,
-						profileImgName, m_nullMonitor);
 
 		return htmlURL;
 	}
 
 	private Element addOutline(IOutline outline)
 	{
-		Element childElement = null;
-
-		switch(outline.getType())
+		Element tr = null;
+		
+		if(outline.getType() == OutlineType.RSS)
 		{
-		case RSS:
-			childElement = m_xml.createElement(TAG_A);
-			childElement.setAttribute(ATTR_HREF, outline.getXmlUrl().toString());
-			childElement.setAttribute(ATTR_CLASS, CLASS_BLUE_LINK);
-			childElement.setAttribute(ATTR_TITLE, outline.getTitle());
+			tr = m_xml.createElement(TAG_TR);
+			
+			Element td = m_xml.createElement(TAG_TD);
+			tr.appendChild(td);
+			td.setTextContent(outline.getText());
+			
+			td = m_xml.createElement(TAG_TD);
+			tr.appendChild(td);
+			td.setTextContent(outline.getDescription());
+			
+			td = m_xml.createElement(TAG_TD);
+			tr.appendChild(td);
+			Element a = m_xml.createElement(TAG_A);
+			td.appendChild(a);
+			a.setAttribute(ATTR_HREF, outline.getXmlUrl().toString());
+			a.setAttribute(ATTR_CLASS, CLASS_BLUE_LINK);
+			a.setAttribute(ATTR_TITLE, outline.getDescription());
 			Element rssImg = m_xml.createElement(TAG_IMG);
+			a.appendChild(rssImg);
 			rssImg.setAttribute(ATTR_ALT, "rss icon");
 			rssImg.setAttribute(ATTR_SRC, IMG_FOLDER + IPath.SEPARATOR + IMG_RSS);
-			Text linkText = m_xml.createTextNode(" " + outline.getText());
-			childElement.appendChild(rssImg);
-			childElement.appendChild(linkText);
-			break;
-		case LINK:
-			childElement = m_xml.createElement(TAG_A);
-			childElement.setAttribute(ATTR_HREF, outline.getUrl().toString());
-			childElement.setAttribute(ATTR_CLASS, CLASS_BLUE_LINK);
-			childElement.setAttribute(ATTR_TITLE, outline.getTitle());
-			childElement.setTextContent(outline.getText());
-			break;
-		case TEXT:
-			childElement = m_xml.createElement(TAG_SPAN);
-			childElement.setAttribute(ATTR_TITLE, outline.getTitle());
-			childElement.setTextContent(outline.getText());
-			break;
+			
+			td = m_xml.createElement(TAG_TD);
+			tr.appendChild(td);
+			a = m_xml.createElement(TAG_A);
+			td.appendChild(a);
+			a.setAttribute(ATTR_HREF, outline.getXmlUrl().toString());
+			a.setAttribute(ATTR_CLASS, CLASS_BLUE_LINK);
+			a.setAttribute(ATTR_TITLE, outline.getDescription());
+			Text linkText = m_xml.createTextNode("subscribe");
+			a.appendChild(linkText);
 		}
 
-		if(childElement == null)
-			return null;
-
-		Element li = m_xml.createElement(TAG_LI);
-		li.appendChild(childElement);
-
-		return li;
+		return tr;
 	}
 
-	private void addOutlines(Element element, IBody body, int level)
+	private void addOutlines(Element tableElement, IBody body, int level)
 	{
-		Element ul = null;
-
 		if(body != null && body.getOutlines() != null)
 			for(IOutline outline : body.getOutlines())
 			{
 				Element childElement = addOutline(outline);
 
-				if(childElement == null)
-					continue;
+				if(childElement != null)
+					tableElement.appendChild(childElement);
 
-				if(ul == null)
-				{
-					ul = m_xml.createElement(TAG_UL);
-					element.appendChild(ul);
-				}
-
-				ul.appendChild(childElement);
 				addOutlines(childElement, outline, level + 1);
 			}
 	}
@@ -352,42 +255,9 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	{
 		setAttribute(ID_HOME_PAGE_URL, ATTR_HREF, PROP_HOME_PAGE_URL, false);
 		setAttribute(ID_CLOUDPAGE_URL, ATTR_HREF, PROP_CLOUDPAGE_URL, false);
-		setAttribute(ID_DISTRO_NAME, ATTR_VALUE, PROP_ARTIFACT_NAME, false);
-		setAttribute(ID_DISTRO_VERSION, ATTR_VALUE, PROP_ARTIFACT_VERSION, false);
-		setAttribute(ID_DISTRO_DESC, ATTR_VALUE, PROP_ARTIFACT_DESCRIPTION, true);
+		setAttribute(ID_DISTRO_NAME, null, PROP_ARTIFACT_NAME, false);
 
-		// textarea tag needs a closing tag - cannot generalize
-		// setAttribute(ID_DISTRO_DOC, null, PROP_ARTIFACT_DOCUMENTATION);
-		Element element = m_xml.getElementById(ID_DISTRO_DOC);
-		if(element != null)
-		{
-			String doc = m_properties.get(PROP_ARTIFACT_DOCUMENTATION);
-			if(doc == null || doc.length() == 0)
-			{
-				doc = " ";
-			}
-			else
-			{
-				try
-				{
-					doc = new String(Base64.decodeBase64(doc.getBytes()), "UTF-8");
-				}
-				catch(UnsupportedEncodingException e)
-				{
-					doc = " ";
-					e.printStackTrace();
-				}
-			}
-			element.setTextContent(doc);
-		}
-
-		setAttribute(ID_PUBLISHER_NAME, null, PROP_PUBLISHER_NAME, false);
-		setAttribute(ID_PUBLISHER_INFO, null, PROP_PROFILE_TEXT, false);
-		setAttribute(ID_PUBLISHER_LINK, ATTR_HREF, PROP_MORE_INFO_URL, false);
-		setAttribute(ID_PUBLISHER_LINK, null, PROP_MORE_INFO_URL, false);
-		setAttribute(ID_PUBLISHER_IMG, ATTR_SRC, PROP_PROFILE_IMAGE_FILE_NAME, false);
-
-		element = m_xml.getElementById(ID_DISTRO_INFO);
+		Element element = m_xml.getElementById(ID_FEED_TABLE);
 		if(element != null)
 			if(m_opml != null)
 				addOutlines(element, m_opml.getBody(), 0);
