@@ -229,8 +229,7 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 		try
 		{
 			m_mutator.setValue(input);
-			if(onSave)
-				setDirty(false); // model is updated
+			setDirty(false); // model is updated
 		}
 		catch(Exception e1)
 		{
@@ -259,8 +258,7 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 		try
 		{
 			m_mutator.setValue(input);
-			if(onSave)
-				setDirty(false); // model is updated
+			setDirty(false); // model is updated
 		}
 		catch(Exception e1)
 		{
@@ -377,7 +375,7 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 				((Button)m_control).setSelection(m_mutator.getBooleanValue());
 			}
 			refreshEnablement();
-			// setDirty(false);
+			setDirty(false);
 		}
 		finally
 		{

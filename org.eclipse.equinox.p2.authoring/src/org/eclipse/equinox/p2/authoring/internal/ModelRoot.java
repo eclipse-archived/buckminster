@@ -64,11 +64,13 @@ public class ModelRoot extends ModelPart
 	/**
 	 * Registers the event bus to use for this model object. Events from the model are sent to this bus. (And if no
 	 * bus is registers, no events are sent).
+	 * As a side effect, the changed flag is set to false, but no notification is sent.
 	 * @param eventBus
 	 */
 	public void setEventBus(IEditorEventBus eventBus)
 	{
 		m_eventBus = eventBus;
+		m_changed = false;
 	}
 	/**
 	 * Typically called from model parts of the overall model (i.e. getParent().notifyChanged()) to notify that a sub part

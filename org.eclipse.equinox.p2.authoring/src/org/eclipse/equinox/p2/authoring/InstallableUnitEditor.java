@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.p2.authoring.forms.RichFormEditor;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitEditorInput;
+import org.eclipse.equinox.p2.authoring.internal.ModelChangeEvent;
 import org.eclipse.equinox.p2.authoring.internal.P2MetadataReader;
 import org.eclipse.equinox.p2.authoring.internal.SaveIURunnable;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -43,6 +44,19 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 
 /**
  * A multi page Eclipse form based editor for p2 Installable Unit.
+ * 
+ * The editor keeps track of two types of "dirty" state - a) the dirty state in the editor pages (and sub editors), which
+ * reflect the dirty state in relation to the model object b) the model's dirty state.
+ * Editor pages are marked as "clean" when the data in the editor has been "comitted" to the model object. This happens
+ * frequently when the user switches between pages in the editor, or when switching between details in a master
+ * detail setup.
+ * 
+ * Changes to the model marks the model as "changed" (i.e. dirty), until the changed-state is cleared. The editor
+ * clears this state when the model is saved to file.
+ * 
+ * The Editor provides an event bus see {@link RichFormEditor#getEventBus()}. This event bus is also given to the 
+ * model object, and listeners interested in model change events can subscribe to these via the bus. The model emits 
+ * {@link ModelChangeEvent} event object instances.
  * 
  * @author Henrik Lindberg
  * 
@@ -143,7 +157,10 @@ public class InstallableUnitEditor extends RichFormEditor
 							site.getActionBars().getStatusLineManager().getProgressMonitor()));
 				}
 			}
-			
+			// If we got a model object, set the event bus to use to send model change events.
+			//
+			if(m_iu != null)
+				m_iu.setEventBus(getEventBus());
 			setInputWithNotify(input);
 			setPartName(input.getName() + (m_readOnly ? " (read only)" : ""));
 		}
@@ -163,7 +180,18 @@ public class InstallableUnitEditor extends RichFormEditor
 			}
 		}
 	}
-	
+	/**
+	 * Overrides the default implementation by checking if the model object (the installable unit) is
+	 * dirty. The default implementation only checks if the editor pages are dirty, and they are marked as
+	 * clean as soon as the model object has been updated (comitted).
+	 */
+	@Override
+	public boolean isDirty()
+	{
+		if(m_iu != null && m_iu.isChanged())
+			return true;
+		return super.isDirty();
+	}
 	public boolean isReadOnly()
 	{
 		return m_readOnly;
@@ -177,9 +205,11 @@ public class InstallableUnitEditor extends RichFormEditor
 			SaveIURunnable sr = new SaveIURunnable(m_iu.createInstallableUnit(), path);
 			getSite().getWorkbenchWindow().run(true, true, sr);
 			setInputWithNotify(sr.getSavedInput());
-
+			// mark the model object as unchanged
+			m_iu.setChanged(false);
 			setPartName(path.lastSegment());
 			firePropertyChange(IWorkbenchPart.PROP_TITLE);
+			editorDirtyStateChanged();
 		}
 		catch(InvocationTargetException e)
 		{
