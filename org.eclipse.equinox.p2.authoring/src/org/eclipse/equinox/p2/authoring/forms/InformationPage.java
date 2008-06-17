@@ -46,7 +46,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  * @author Henrik Lindberg
  */
 @SuppressWarnings("restriction")
-public class InformationPage extends RichFormPage
+public class InformationPage extends RichFormPage implements IPageMementoProvider
 {
 	public static final String PAGE_ID = "info.id"; //$NON-NLS-1$
 
@@ -447,6 +447,15 @@ public class InformationPage extends RichFormPage
 		// 'clean' and save has no effect
 		if(dirty)
 			m_editAdapters.markDirty();
+	}
+	public Object getPageMemento()
+	{
+		return new Integer(m_tabFolder.getSelectionIndex());
+	}
+
+	public void setPageMemento(Object memento)
+	{
+		m_tabFolder.setSelection(((Integer)memento).intValue());
 	}
 
 }
