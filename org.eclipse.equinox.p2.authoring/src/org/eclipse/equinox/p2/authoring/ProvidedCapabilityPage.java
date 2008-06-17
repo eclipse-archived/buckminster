@@ -17,12 +17,12 @@ import javax.swing.event.ChangeEvent;
 
 import org.eclipse.equinox.p2.authoring.forms.EditAdapterFormPart;
 import org.eclipse.equinox.p2.authoring.forms.Mutator;
+import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.RequiredValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.StructuredNameValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.VersionValidator;
 import org.eclipse.equinox.p2.authoring.internal.IEditEventBusProvider;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ProvidedCapabilityBuilder;
-import org.eclipse.equinx.p2.authoring.forms.validators.NullValidator;
-import org.eclipse.equinx.p2.authoring.forms.validators.RequiredValidator;
-import org.eclipse.equinx.p2.authoring.forms.validators.StructuredNameValidator;
-import org.eclipse.equinx.p2.authoring.forms.validators.VersionValidator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;

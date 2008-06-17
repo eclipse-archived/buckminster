@@ -16,9 +16,9 @@ import java.net.URI;
 
 import org.eclipse.equinox.p2.authoring.forms.IMutator;
 import org.eclipse.equinox.p2.authoring.forms.Mutator;
-import org.eclipse.equinx.p2.authoring.forms.validators.NullValidator;
-import org.eclipse.equinx.p2.authoring.forms.validators.RequiredValidator;
-import org.eclipse.equinx.p2.authoring.forms.validators.URIEditValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.RequiredValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.URIEditValidator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;

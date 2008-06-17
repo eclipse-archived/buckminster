@@ -10,48 +10,34 @@
  * 		Henrik Lindberg
  *******************************************************************************/
 
-
-package org.eclipse.equinx.p2.authoring.forms.validators;
+package org.eclipse.equinox.p2.authoring.forms.validators;
 
 import org.eclipse.equinox.p2.authoring.forms.EditAdapter;
-import org.osgi.framework.Version;
 
 /**
- * Validates that the input string can represent an instance of {@link Version}
- * 
- * This validator accepts empty input as valid. See {@link RequiredValidator} if a warning or error
- * is needed on empty input.
+ * Always validates as true.
  * 
  * @author Henrik Lindberg
  * 
  */
-public class VersionValidator implements IEditValidator
-{		
-	private static VersionValidator s_instance;
-	public static VersionValidator instance()
+public class NullValidator implements IEditValidator
+{
+	private static NullValidator s_instance;
+
+	public static NullValidator instance()
 	{
 		if(s_instance == null)
-			s_instance = new VersionValidator();
+			s_instance = new NullValidator();
 		return s_instance;
 	}
+
 	public boolean isValid(String input, EditAdapter editAdapter)
 	{
-		if(input != null && input.length() > 0)
-		{
-			try {
-				Version.parseVersion(input);
-			}
-			catch(IllegalArgumentException e)
-			{
-				editAdapter.setErrorMessage("Invalid format");
-				return false;
-			}
-			
-		}
 		editAdapter.clearMessages();
 		return true;
 	}
-	public String inputFilter(String inputString)
+
+	public String inputFilter(String input)
 	{
 		return null;
 	}

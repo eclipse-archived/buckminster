@@ -10,7 +10,7 @@
  * 		Henrik Lindberg
  *******************************************************************************/
 
-package org.eclipse.equinx.p2.authoring.forms.validators;
+package org.eclipse.equinox.p2.authoring.forms.validators;
 
 /**
  * Validates that the input string represents a structured name on the form "namepart[.namepart]+". A namepart must

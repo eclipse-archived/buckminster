@@ -25,6 +25,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.p2.authoring.forms.InformationPage;
 import org.eclipse.equinox.p2.authoring.forms.RichFormEditor;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitEditorInput;
@@ -65,6 +66,7 @@ public class InstallableUnitEditor extends RichFormEditor
 			addPage(new OverviewPage(this));
 			addPage(new RequiredCapabilitiesPage(this));
 			addPage(new ProvidedCapabilitiesPage(this));
+			addPage(new InformationPage(this));
 			addPage(new FeedsPage2(this));
 //			addPage(new ThirdPage(this));
 //			addPage(new MasterDetailsPage(this));

@@ -90,24 +90,20 @@ public class InstallableUnitBuilder
 			m_version = version;
 		}
 	}
-	public static class CopyrightBuilder
+	public static class IUInfoBuilder
 	{
-		private String m_body;
-		private String m_url;
+		protected String m_body;
+		protected String m_url;
 
-		public CopyrightBuilder(Copyright copyright)
+		public IUInfoBuilder()
 		{
-			this(copyright.getURL() != null ? copyright.getURL().toString() : "", copyright.getBody()); //$NON-NLS-1$
+			m_body = ""; //$NON-NLS-1$
+			m_url = ""; //$NON-NLS-1$
 		}
-		public CopyrightBuilder(String url, String body)
+		public IUInfoBuilder(String url, String body)
 		{
 			m_url = url;
 			m_body = body;
-		}
-
-		public Copyright createCopyright()
-		{
-			return new Copyright(m_url, m_body);
 		}
 
 		public String getBody()
@@ -130,39 +126,46 @@ public class InstallableUnitBuilder
 		}
 
 	}
-	public static class LicenseBuilder
-	{
-		private String m_body;
 
-		private String m_url;
+	public static class CopyrightBuilder extends IUInfoBuilder
+	{
+		public CopyrightBuilder(Copyright copyright)
+		{
+			this(copyright.getURL() != null ? copyright.getURL().toString() : "", copyright.getBody()); //$NON-NLS-1$
+		}
+		public CopyrightBuilder(String url, String body)
+		{
+			super(url, body);
+		}
+		public CopyrightBuilder()
+		{
+			super();
+		}
+		public Copyright createCopyright()
+		{
+			return new Copyright(m_url, m_body);
+		}
+
+	}
+	public static class LicenseBuilder extends IUInfoBuilder
+	{
 
 		public LicenseBuilder(License license)
 		{
 			m_url = license.getURL() != null ? license.getURL().toString() : ""; //$NON-NLS-1$
 			m_body = license.getBody();
 		}
-
+		public LicenseBuilder()
+		{
+			super();
+		}
+		public LicenseBuilder(String url, String body)
+		{
+			super(url, body);
+		}
 		public License createLicense()
 		{
 			return new License(m_url, m_body);
-		}
-
-		public String getBody()
-		{
-			return m_body;
-		}
-		public String getUrl()
-		{
-			return m_url;
-		}
-
-		public void setBody(String body)
-		{
-			m_body = body;
-		}
-		public void setUrl(String url)
-		{
-			m_url = url;
 		}
 	}
 	public static class ProvidedCapabilityBuilder

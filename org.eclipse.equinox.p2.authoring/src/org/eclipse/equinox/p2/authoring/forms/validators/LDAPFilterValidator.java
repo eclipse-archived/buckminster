@@ -10,7 +10,7 @@
  * 		Henrik Lindberg
  *******************************************************************************/
 
-package org.eclipse.equinx.p2.authoring.forms.validators;
+package org.eclipse.equinox.p2.authoring.forms.validators;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;

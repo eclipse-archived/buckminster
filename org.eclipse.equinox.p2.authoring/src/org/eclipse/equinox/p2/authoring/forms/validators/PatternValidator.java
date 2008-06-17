@@ -10,13 +10,14 @@
  * 		Henrik Lindberg
  *******************************************************************************/
 
-package org.eclipse.equinx.p2.authoring.forms.validators;
+package org.eclipse.equinox.p2.authoring.forms.validators;
+
+import java.util.regex.Pattern;
 
 import org.eclipse.equinox.p2.authoring.forms.EditAdapter;
-import org.eclipse.osgi.service.resolver.VersionRange;
 
 /**
- * Validates that the input string can represent an instance of {@link VersionRange}
+ * Validates that the input string matches a pattern
  * 
  * This validator accepts empty input as valid. See {@link RequiredValidator} if a warning or error is needed on empty
  * input.
@@ -24,31 +25,24 @@ import org.eclipse.osgi.service.resolver.VersionRange;
  * @author Henrik Lindberg
  * 
  */
-public class RangeValidator implements IEditValidator
+public class PatternValidator implements IEditValidator
 {
-	private static RangeValidator s_instance;
+	private Pattern m_pattern;
 
-	public static RangeValidator instance()
+	public PatternValidator(String pattern)
 	{
-		if(s_instance == null)
-			s_instance = new RangeValidator();
-		return s_instance;
+		m_pattern = Pattern.compile(pattern);
 	}
 
 	public boolean isValid(String input, EditAdapter editAdapter)
 	{
-		if(input != null && input.trim().length() > 0)
+		if(input != null && input.length() > 0)
 		{
-			try
-			{
-				new VersionRange(input);
-			}
-			catch(IllegalArgumentException e)
+			if(!m_pattern.matcher(input).matches())
 			{
 				editAdapter.setErrorMessage("Invalid format");
 				return false;
 			}
-
 		}
 		editAdapter.clearMessages();
 		return true;

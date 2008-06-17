@@ -19,10 +19,11 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.p2.authoring.forms.validators.IEditValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
 import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
-import org.eclipse.equinx.p2.authoring.forms.validators.IEditValidator;
-import org.eclipse.equinx.p2.authoring.forms.validators.NullValidator;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -127,11 +128,15 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 		if(m_control instanceof Text)
 		{
 			((Text)m_control).addModifyListener(this);
-			((Text)m_control).addVerifyListener(this);
+//			((Text)m_control).addVerifyListener(this);
 		}
 		else if(m_control instanceof Button)
 		{
 			((Button)m_control).addSelectionListener(this);
+		}
+		else if(m_control instanceof StyledText)
+		{
+			((StyledText)m_control).addModifyListener(this);
 		}
 	}
 
@@ -151,7 +156,13 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 	public void modifyText(ModifyEvent e)
 	{
 		// validate and set messages
-		String input = ((Text)m_control).getText();
+		String input;
+		if(m_control instanceof Text)
+			input = ((Text)m_control).getText();
+		else if(m_control instanceof StyledText)
+			input = ((StyledText)m_control).getText();
+		else
+			throw new IllegalArgumentException("EditAdapter not attached to Text or StyledText");
 
 		// If the validator filters out characters, do that before input is validated
 		// by setting the filtered text in the control.
@@ -186,7 +197,7 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 	 */
 	public void commit()
 	{
-		if(m_control instanceof Text)
+		if(m_control instanceof Text || m_control instanceof StyledText)
 			commitText();
 		else if(m_control instanceof Button)
 			commitButton();
@@ -195,7 +206,13 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 	private void commitText()
 	{
 		// validate and set messages
-		String input = ((Text)m_control).getText();
+		String input;
+		if(m_control instanceof Text)
+			input = ((Text)m_control).getText();
+		else if(m_control instanceof StyledText)
+			input = ((StyledText)m_control).getText();
+		else
+			throw new IllegalArgumentException("EditAdapter not attached to Text or StyledText");
 
 		// If the validator filters out characters, do that before input is validated
 		// by setting the filtered text in the control.
@@ -345,6 +362,14 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 				// make sure the value is validated (i.e. that appropriate messages are set/cleared).
 				validate(input);
 			}
+			else if(m_control instanceof StyledText)
+			{
+				String input = m_mutator.getValue();
+				m_currentStringValue = input;
+				((StyledText)m_control).setText(input);
+				// make sure the value is validated (i.e. that appropriate messages are set/cleared).
+				validate(input);
+			}
 			else if(m_control instanceof Button)
 			{
 				((Button)m_control).setSelection(m_mutator.getBooleanValue());
@@ -368,7 +393,10 @@ public class EditAdapter implements ModifyListener, SelectionListener, VerifyLis
 				switchFocus(memento);
 				String input = val;
 				m_currentStringValue = input;
-				((Text)m_control).setText(input);
+				if(m_control instanceof Text)
+					((Text)m_control).setText(input);
+				else if(m_control instanceof StyledText)
+					((StyledText)m_control).setText(input);
 				// make sure the value is validated (i.e. that appropriate messages are set/cleared).
 				validate(input);
 			}

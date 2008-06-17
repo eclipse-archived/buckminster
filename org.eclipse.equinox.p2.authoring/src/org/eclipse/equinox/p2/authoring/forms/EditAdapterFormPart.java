@@ -14,7 +14,7 @@ package org.eclipse.equinox.p2.authoring.forms;
 
 import java.util.HashMap;
 
-import org.eclipse.equinx.p2.authoring.forms.validators.IEditValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.IEditValidator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.AbstractFormPart;
 
