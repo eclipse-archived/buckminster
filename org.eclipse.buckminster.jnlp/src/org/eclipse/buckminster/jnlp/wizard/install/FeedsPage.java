@@ -14,12 +14,16 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
@@ -31,7 +35,7 @@ public class FeedsPage extends InstallWizardPage
 
 	private static final int HORIZONTAL_INDENT = 20;
 
-	private static final String ICON_LEARN = "library_wiz.png";
+	private static final String ICON_ARROW = "incom_stat.gif";
 
 	private Label m_heading;
 	
@@ -78,7 +82,7 @@ public class FeedsPage extends InstallWizardPage
 		new Label(pageComposite, SWT.NONE);
 		
 		Label label = new Label(pageComposite, SWT.NONE);
-		label.setImage(MaterializationUtils.getImage(ICON_LEARN));
+		label.setImage(MaterializationUtils.getImage(ICON_ARROW));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.verticalAlignment = GridData.CENTER;
@@ -104,17 +108,41 @@ public class FeedsPage extends InstallWizardPage
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 
+		label = new Label(pageComposite, SWT.NONE);
+		label.setImage(MaterializationUtils.getImage(ICON_ARROW));
+		layoutData = new GridData();
+		layoutData.horizontalIndent = HORIZONTAL_INDENT;
+		layoutData.verticalAlignment = GridData.CENTER;
+		label.setLayoutData(layoutData);
+
 		Label cloudreaderHeading = new Label(pageComposite, SWT.NONE);
+		cloudreaderHeading.setText("To get the Cloudreader, use the following update site URLs (Eclipse 3.3 or later required):");
+		layoutData = new GridData();
+		layoutData.horizontalIndent = HORIZONTAL_INDENT;
+		cloudreaderHeading.setLayoutData(layoutData);
+		
+		Composite sitesComposite = new Composite(pageComposite, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.marginWidth = gridLayout.marginHeight = 0;
+		gridLayout.marginLeft = 100;
+		sitesComposite.setLayout(gridLayout);
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
-		cloudreaderHeading.setLayoutData(layoutData);
-		cloudreaderHeading.setText("To get the Cloudreader, use the following update site URLs (Eclipse 3.3 or later required):");
+		sitesComposite.setLayoutData(layoutData);
+		
+		Text updateSite33Text = getSelectableItalicText(sitesComposite);
+		updateSite33Text.setText(getInstallWizard().getEclipseDistroTools33UpdateSiteURL());			
+		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.3");
+		
+		Text updateSite34Text = getSelectableItalicText(sitesComposite);
+		updateSite34Text.setText(getInstallWizard().getEclipseDistroTools34UpdateSiteURL());			
+		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.4");
 		
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 
 		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(MaterializationUtils.getImage(ICON_LEARN));
+		label.setImage(MaterializationUtils.getImage(ICON_ARROW));
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		layoutData.verticalAlignment = GridData.CENTER;
@@ -138,6 +166,17 @@ public class FeedsPage extends InstallWizardPage
 		});
 		
 		setControl(pageComposite);
+	}
+
+	private Text getSelectableItalicText(Composite composite)
+	{
+		Text text = new Text(composite, SWT.NO_FOCUS | SWT.READ_ONLY);
+		FontData[] fontDadas = text.getFont().getFontData();
+		if(fontDadas.length > 0)
+			fontDadas[0].setStyle(SWT.ITALIC);
+		text.setFont(new Font(Display.getCurrent(), fontDadas));
+		
+		return text;
 	}
 
 	@Override
