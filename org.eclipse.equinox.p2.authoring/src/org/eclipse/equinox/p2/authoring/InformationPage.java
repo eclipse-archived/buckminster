@@ -9,11 +9,14 @@
  * Contributors:
  * 		Henrik Lindberg
  *******************************************************************************/
-package org.eclipse.equinox.p2.authoring.forms;
+package org.eclipse.equinox.p2.authoring;
 
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
-import org.eclipse.equinox.p2.authoring.InstallableUnitEditor;
-import org.eclipse.equinox.p2.authoring.P2AuthoringImages;
+import org.eclipse.equinox.p2.authoring.forms.EditAdapterFormPart;
+import org.eclipse.equinox.p2.authoring.forms.IMutator;
+import org.eclipse.equinox.p2.authoring.forms.IPageMementoProvider;
+import org.eclipse.equinox.p2.authoring.forms.Mutator;
+import org.eclipse.equinox.p2.authoring.forms.RichFormPage;
 import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.URIEditValidator;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;

@@ -25,7 +25,6 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.p2.authoring.forms.InformationPage;
 import org.eclipse.equinox.p2.authoring.forms.RichFormEditor;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitEditorInput;
