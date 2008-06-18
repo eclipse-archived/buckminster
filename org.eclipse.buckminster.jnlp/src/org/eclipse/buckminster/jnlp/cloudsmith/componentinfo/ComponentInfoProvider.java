@@ -88,6 +88,8 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 
 	private static final String ID_DISTRO_NAME = "distroNameField";
 
+	private static final String ID_DISTRO_VERSION = "distroVersionField";
+
 	private static final String ID_FEED_TABLE = "feedTable";
 
 	private static final String TAG_TR = "tr";
@@ -256,6 +258,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		setAttribute(ID_HOME_PAGE_URL, ATTR_HREF, PROP_HOME_PAGE_URL, false);
 		setAttribute(ID_CLOUDPAGE_URL, ATTR_HREF, PROP_CLOUDPAGE_URL, false);
 		setAttribute(ID_DISTRO_NAME, null, PROP_ARTIFACT_NAME, false);
+		setAttribute(ID_DISTRO_VERSION, null, PROP_CSPEC_VERSION_STRING, false);
 
 		Element element = m_xml.getElementById(ID_FEED_TABLE);
 		if(element != null)
