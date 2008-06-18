@@ -47,19 +47,24 @@ public class InstallableUnitBuilder extends ModelRoot
 
 		private String m_id;
 
-		private Version m_version;
+		private String m_version;
 
 		public ArtifactKeyBuilder(IArtifactKey key)
 		{
 			m_classifier = key.getClassifier();
 			m_id = key.getId();
-			m_version = key.getVersion();
+			m_version = key.getVersion().toString();
 			
 		}
-
+		public ArtifactKeyBuilder(String classifier, String id, String version)
+		{
+			m_classifier = classifier;
+			m_id = id;
+			m_version = version;
+		}
 		public IArtifactKey createArtifactKey()
 		{
-			return new ArtifactKey(m_classifier, m_id, m_version);
+			return new ArtifactKey(m_classifier, m_id, new Version(m_version));
 		}
 
 		public String getClassifier()
@@ -72,7 +77,7 @@ public class InstallableUnitBuilder extends ModelRoot
 			return m_id;
 		}
 
-		public Version getVersion()
+		public String getVersion()
 		{
 			return m_version;
 		}
@@ -87,7 +92,7 @@ public class InstallableUnitBuilder extends ModelRoot
 			notifyChanged();
 		}
 
-		public void setVersion(Version version)
+		public void setVersion(String version)
 		{
 			m_version = version;
 			notifyChanged();
@@ -533,7 +538,8 @@ public class InstallableUnitBuilder extends ModelRoot
 		// Artifact keys
 		IArtifactKey[] keys = new IArtifactKey[m_artifacts.length];
 		for(int i = 0; i < m_artifacts.length;i++)
-			keys[i++] = m_artifacts[i].createArtifactKey();
+			keys[i] = m_artifacts[i].createArtifactKey();
+
 		iud.setArtifacts(keys);
 		
 		iud.setCopyright(m_copyright.createCopyright());		
@@ -571,6 +577,151 @@ public class InstallableUnitBuilder extends ModelRoot
 	{
 		return m_artifacts;
 	}
+	/**
+	 * Add a provided capability last.
+	 * @param provided
+	 * @return index where this capability was added
+	 */
+	public int addArtifactKey(ArtifactKeyBuilder provided)
+	{
+		return addArtifactKey(provided, -1);
+	}
+	/**
+	 * Adds a provided capability at a given index. If index is outsite of range (or more specificly is -1), the new
+	 * provided capability is added last.
+	 * @param artifact
+	 * @param index
+	 * @return the index where the capability was added.
+	 */
+	public int addArtifactKey(ArtifactKeyBuilder artifact, int index)
+	{
+		int[] ix = { index };
+		m_artifacts = (ArtifactKeyBuilder[])addModelPart(m_artifacts, artifact, ix);
+		notifyChanged();
+		return ix[0];
+	}
+	/**
+	 * Removes the artifact key from the set of provided capabilities.
+	 * @param artifact
+	 * @return the index where the artifact key was found, -1 if not found
+	 */
+	public int removeArtifactKey(ArtifactKeyBuilder artifact)
+	{
+		int[] index = { 0 };
+		m_artifacts = (ArtifactKeyBuilder[])removeModelPart(m_artifacts, artifact, index);
+		if(index[0] == -1)
+			return -1;
+		notifyChanged();
+		return index[0];		
+	}
+	
+	/**
+	 * Moves the artifact key up (+1) or down(-1) in the array of artifact keys
+	 * @param provided
+	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @return -1 if move was not made, else the position before the move is returned
+	 */
+	public int moveArtifactKey(ArtifactKeyBuilder provided, int delta)
+	{
+		int index = moveModelPart(m_artifacts, provided, delta);
+		notifyChanged();
+		return index;
+	}
+
+	/**
+	 * Adds a model part at a given index. If index is outsite of range (or explicit -1), the new
+	 * part is added last. The modified model part array is returned, and the index array is updated with the index
+	 * where the part was added.
+	 * @param provided
+	 * @param index
+	 * @return the index where the capability was added.
+	 */
+	private ModelPart[] addModelPart(ModelPart[] array, ModelPart part, int[] index)
+	{
+		Class<?> clazz = array.getClass().getComponentType();
+		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length+1);
+		int idx = index[0];
+		int j = 0;
+		for(int i = 0; i < array.length;i++)
+		{
+			if(i == idx)
+				tmp[j++] = part;
+			tmp[j++] = array[i];
+		}
+		if(idx < 0 || idx >= array.length)
+		{
+			idx = array.length;
+			tmp[idx] = part;
+		}
+		part.setParent(this);
+		index[0] = idx;
+		return tmp;
+	}
+	/**
+	 * Removes the model part from the array of parts.
+	 * @param array the model part array to remove the part from
+	 * @param part the part to remove
+	 * @param index an array of size 1 where the index to the removed artifact was found is returned
+	 * @return the array of model parts with the part removed - same array is returned if part was not found and index returned is then -1
+	 */
+	public ModelPart[] removeModelPart(ModelPart[] array, ModelPart part, int[] index)
+	{
+		int idx = -1; // not found (yet)
+		for(int i = 0; i < array.length;i++)
+			if(array[i] == part)
+			{
+				idx = i;
+				break;
+			}
+		if(idx == -1)
+		{
+			index[0] = idx;
+			return array; // not found
+		}
+		Class<?> clazz = array.getClass().getComponentType();
+		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length-1);
+
+		int j = 0;
+		for(int i = 0; i < array.length;i++)
+		{
+			if(i == idx)
+				continue; // skip the item to remove
+			tmp[j++] = array[i];
+		}
+		index[0] = idx;
+		part.setParent(null);
+		return tmp;
+	}
+	
+	/**
+	 * Moves the model part up (+1) or down(-1) in the array of model parts
+	 * @param part
+	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @return -1 if move was not made, else the position before the move is returned
+	 */
+	public static int moveModelPart(ModelPart[] array, ModelPart part, int delta)
+	{
+		if(!(delta == 1 || delta == -1))
+			throw new IllegalArgumentException("can only move +1 or -1");
+		int index = -1; // not found (yet)
+		for(int i = 0; i < array.length;i++)
+			if(array[i] == part)
+			{
+				index = i;
+				break;
+			}
+		if(index == -1)
+			return index; // not found
+		int swapIndex = index + delta;
+		if(swapIndex < 0 || swapIndex >= array.length)
+			return -1; // outsite of range - no move
+		
+		ModelPart tmp = array[swapIndex];
+		array[swapIndex] = array[index];
+		array[index] = tmp;
+		return index;
+	}
+
 	public CopyrightBuilder getCopyright()
 	{
 		return m_copyright;
@@ -674,26 +825,30 @@ public class InstallableUnitBuilder extends ModelRoot
 	 */
 	public int moveProvidedCapability(ProvidedCapabilityBuilder provided, int delta)
 	{
-		if(!(delta == 1 || delta == -1))
-			throw new IllegalArgumentException("can only move +1 or -1");
-		int index = -1; // not found (yet)
-		for(int i = 0; i < m_providedCapabilities.length;i++)
-			if(m_providedCapabilities[i] == provided)
-			{
-				index = i;
-				break;
-			}
-		if(index == -1)
-			return index; // not found
-		int swapIndex = index + delta;
-		if(swapIndex < 0 || swapIndex >= m_providedCapabilities.length)
-			return -1; // outsite of range - no move
-		
-		ProvidedCapabilityBuilder tmp = m_providedCapabilities[swapIndex];
-		m_providedCapabilities[swapIndex] = m_providedCapabilities[index];
-		m_providedCapabilities[index] = tmp;
+		int index = moveModelPart(m_providedCapabilities, provided, delta);
 		notifyChanged();
 		return index;
+		
+//		if(!(delta == 1 || delta == -1))
+//			throw new IllegalArgumentException("can only move +1 or -1");
+//		int index = -1; // not found (yet)
+//		for(int i = 0; i < m_providedCapabilities.length;i++)
+//			if(m_providedCapabilities[i] == provided)
+//			{
+//				index = i;
+//				break;
+//			}
+//		if(index == -1)
+//			return index; // not found
+//		int swapIndex = index + delta;
+//		if(swapIndex < 0 || swapIndex >= m_providedCapabilities.length)
+//			return -1; // outsite of range - no move
+//		
+//		ProvidedCapabilityBuilder tmp = m_providedCapabilities[swapIndex];
+//		m_providedCapabilities[swapIndex] = m_providedCapabilities[index];
+//		m_providedCapabilities[index] = tmp;
+//		notifyChanged();
+//		return index;
 	}
 	
 
@@ -776,26 +931,30 @@ public class InstallableUnitBuilder extends ModelRoot
 	 */
 	public int moveRequiredCapability(RequiredCapabilityBuilder required, int delta)
 	{
-		if(!(delta == 1 || delta == -1))
-			throw new IllegalArgumentException("can only move +1 or -1");
-		int index = -1; // not found (yet)
-		for(int i = 0; i < m_requiredCapabilities.length;i++)
-			if(m_requiredCapabilities[i] == required)
-			{
-				index = i;
-				break;
-			}
-		if(index == -1)
-			return index; // not found
-		int swapIndex = index + delta;
-		if(swapIndex < 0 || swapIndex >= m_requiredCapabilities.length)
-			return -1; // outsite of range - no move
-		
-		RequiredCapabilityBuilder tmp = m_requiredCapabilities[swapIndex];
-		m_requiredCapabilities[swapIndex] = m_requiredCapabilities[index];
-		m_requiredCapabilities[index] = tmp;
+		int index = moveModelPart(m_requiredCapabilities, required, delta);
 		notifyChanged();
 		return index;
+		
+//		if(!(delta == 1 || delta == -1))
+//			throw new IllegalArgumentException("can only move +1 or -1");
+//		int index = -1; // not found (yet)
+//		for(int i = 0; i < m_requiredCapabilities.length;i++)
+//			if(m_requiredCapabilities[i] == required)
+//			{
+//				index = i;
+//				break;
+//			}
+//		if(index == -1)
+//			return index; // not found
+//		int swapIndex = index + delta;
+//		if(swapIndex < 0 || swapIndex >= m_requiredCapabilities.length)
+//			return -1; // outsite of range - no move
+//		
+//		RequiredCapabilityBuilder tmp = m_requiredCapabilities[swapIndex];
+//		m_requiredCapabilities[swapIndex] = m_requiredCapabilities[index];
+//		m_requiredCapabilities[index] = tmp;
+//		notifyChanged();
+//		return index;
 	}
 	public Serializable getTouchpointData()
 	{
