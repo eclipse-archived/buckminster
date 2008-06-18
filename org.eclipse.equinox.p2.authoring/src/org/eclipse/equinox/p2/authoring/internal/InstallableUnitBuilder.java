@@ -54,14 +54,16 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_classifier = key.getClassifier();
 			m_id = key.getId();
 			m_version = key.getVersion().toString();
-			
+
 		}
+
 		public ArtifactKeyBuilder(String classifier, String id, String version)
 		{
 			m_classifier = classifier;
 			m_id = id;
 			m_version = version;
 		}
+
 		public IArtifactKey createArtifactKey()
 		{
 			return new ArtifactKey(m_classifier, m_id, new Version(m_version));
@@ -81,11 +83,13 @@ public class InstallableUnitBuilder extends ModelRoot
 		{
 			return m_version;
 		}
+
 		public void setClassifier(String classifier)
 		{
 			m_classifier = classifier;
 			notifyChanged();
 		}
+
 		public void setId(String id)
 		{
 			m_id = id;
@@ -98,9 +102,11 @@ public class InstallableUnitBuilder extends ModelRoot
 			notifyChanged();
 		}
 	}
+
 	public static class IUInfoBuilder extends ModelPart
 	{
 		protected String m_body;
+
 		protected String m_url;
 
 		public IUInfoBuilder()
@@ -108,6 +114,7 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_body = ""; //$NON-NLS-1$
 			m_url = ""; //$NON-NLS-1$
 		}
+
 		public IUInfoBuilder(String url, String body)
 		{
 			m_url = url;
@@ -129,6 +136,7 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_body = body;
 			notifyChanged();
 		}
+
 		public void setUrl(String url)
 		{
 			m_url = url;
@@ -141,47 +149,61 @@ public class InstallableUnitBuilder extends ModelRoot
 	{
 		public CopyrightBuilder(Copyright copyright)
 		{
-			this(copyright.getURL() != null ? copyright.getURL().toString() : "", copyright.getBody()); //$NON-NLS-1$
+			this(copyright.getURL() != null
+					? copyright.getURL().toString()
+					: "", copyright.getBody()); //$NON-NLS-1$
 		}
+
 		public CopyrightBuilder(String url, String body)
 		{
 			super(url, body);
 		}
+
 		public CopyrightBuilder()
 		{
 			super();
 		}
+
 		public Copyright createCopyright()
 		{
 			return new Copyright(m_url, m_body);
 		}
 
 	}
+
 	public static class LicenseBuilder extends IUInfoBuilder
 	{
 
 		public LicenseBuilder(License license)
 		{
-			m_url = license.getURL() != null ? license.getURL().toString() : ""; //$NON-NLS-1$
+			m_url = license.getURL() != null
+					? license.getURL().toString()
+					: ""; //$NON-NLS-1$
 			m_body = license.getBody();
 		}
+
 		public LicenseBuilder()
 		{
 			super();
 		}
+
 		public LicenseBuilder(String url, String body)
 		{
 			super(url, body);
 		}
+
 		public License createLicense()
 		{
 			return new License(m_url, m_body);
 		}
 	}
+
 	public static class ProvidedCapabilityBuilder extends ModelPart
 	{
 		private String m_name;
+
 		private String m_namespace;
+
 		private String m_version;
 
 		public ProvidedCapabilityBuilder(ProvidedCapability capability)
@@ -190,54 +212,69 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_name = capability.getName();
 			m_version = capability.getVersion().toString();
 		}
+
 		public ProvidedCapabilityBuilder(String namespace, String name, String version)
 		{
 			m_name = name;
 			m_namespace = namespace;
 			m_version = version;
 		}
+
 		public ProvidedCapability createProvidedCapability()
 		{
 			return MetadataFactory.createProvidedCapability(m_namespace, m_name, new Version(m_version));
 		}
+
 		public String getName()
 		{
 			return m_name;
 		}
+
 		public String getNamespace()
 		{
 			return m_namespace;
 		}
+
 		public String getVersion()
 		{
 			return m_version;
 		}
-		
+
 		public void setName(String name)
 		{
 			m_name = name;
 			notifyChanged();
 		}
+
 		public void setNamespace(String namespace)
 		{
 			m_namespace = namespace;
 			notifyChanged();
 		}
+
 		public void setVersion(String version)
 		{
 			m_version = version;
 			notifyChanged();
 		}
 	}
+
 	public static class RequiredCapabilityBuilder extends ModelPart
 	{
 		private String m_capfilter;
+
 		private boolean m_greedy;
+
 		private boolean m_multiple;
+
 		private String m_name;
+
 		private String m_namespace;
+
 		private boolean m_optional;
+
 		private String m_range;
+
 		public RequiredCapabilityBuilder(RequiredCapability capability)
 		{
 			m_capfilter = capability.getFilter();
@@ -248,7 +285,9 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_multiple = capability.isMultiple();
 			m_optional = capability.isOptional();
 		}
-		public RequiredCapabilityBuilder(String filter, String name, String namespace, String range, boolean greedy, boolean multiple, boolean optional)
+
+		public RequiredCapabilityBuilder(String filter, String name, String namespace, String range, boolean greedy,
+				boolean multiple, boolean optional)
 		{
 			m_capfilter = filter;
 			m_name = name;
@@ -258,125 +297,153 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_multiple = multiple;
 			m_optional = optional;
 		}
+
 		public RequiredCapability createRequiredCapability()
 		{
-			return MetadataFactory.createRequiredCapability(m_namespace, m_name, new VersionRange(m_range), m_capfilter, m_optional, m_multiple, m_greedy);
+			return MetadataFactory.createRequiredCapability(m_namespace, m_name, new VersionRange(m_range),
+					m_capfilter, m_optional, m_multiple, m_greedy);
 		}
+
 		public String getCapfilter()
 		{
 			return m_capfilter;
 		}
+
 		public String getName()
 		{
 			return m_name;
 		}
+
 		public String getNamespace()
 		{
 			return m_namespace;
 		}
+
 		public String getRange()
 		{
 			return m_range;
 		}
+
 		public boolean isGreedy()
 		{
 			return m_greedy;
 		}
+
 		public boolean isMultiple()
 		{
 			return m_multiple;
 		}
+
 		public boolean isOptional()
 		{
 			return m_optional;
 		}
+
 		public void setCapfilter(String capfilter)
 		{
 			m_capfilter = capfilter;
 			notifyChanged();
 		}
+
 		public void setGreedy(boolean greedy)
 		{
 			m_greedy = greedy;
 			notifyChanged();
 		}
+
 		public void setMultiple(boolean multiple)
 		{
 			m_multiple = multiple;
 			notifyChanged();
 		}
+
 		public void setName(String name)
 		{
 			m_name = name;
 			notifyChanged();
 		}
+
 		public void setNamespace(String namespace)
 		{
 			m_namespace = namespace;
 			notifyChanged();
 		}
+
 		public void setOptional(boolean optional)
 		{
 			m_optional = optional;
 			notifyChanged();
 		}
+
 		public void setRange(String range)
 		{
 			m_range = range;
 			notifyChanged();
 		}
 	}
+
 	public static class TouchpointDataBuilder extends ModelPart
 	{
-		LinkedHashMap<String, String>m_instructions;
+		LinkedHashMap<String, String> m_instructions;
+
 		@SuppressWarnings("unchecked")
 		public TouchpointDataBuilder(TouchpointData touchpointData)
 		{
 			Map m = touchpointData.getInstructions();
 			m_instructions = new LinkedHashMap<String, String>(m.size());
-			m_instructions.putAll(m);	
+			m_instructions.putAll(m);
 		}
+
 		public TouchpointData createTouchpointData()
 		{
 			return MetadataFactory.createTouchpointData(m_instructions);
 		}
+
 		public String getInstruction(String key)
 		{
 			return m_instructions.get(key);
 		}
-		
+
 		public LinkedHashMap<String, String> getInstructions()
 		{
 			return m_instructions;
 		}
+
 		public void putInstruction(String key, String value)
 		{
 			m_instructions.put(key, value);
 			notifyChanged();
 		}
+
 		public void removeInstruction(String key)
 		{
 			m_instructions.remove(key);
 			notifyChanged();
 		}
 	}
+
 	public static class TouchpointTypeBuilder extends ModelPart
 	{
 		private String m_typeid;
+
 		private String m_version;
+
 		public TouchpointTypeBuilder(TouchpointType type)
 		{
 			m_typeid = type.getId();
 			m_version = type.getVersion().toString();
 		}
+
 		public TouchpointType createTouchpointType()
 		{
 			return MetadataFactory.createTouchpointType(m_typeid, new Version(m_version));
 		}
+
 		public String getTypeid()
 		{
 			return m_typeid;
 		}
+
 		public String getVersion()
 		{
 			return m_version;
@@ -387,61 +454,75 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_typeid = typeid;
 			notifyChanged();
 		}
+
 		public void setVersion(String version)
 		{
 			m_version = version;
 			notifyChanged();
 		}
 	}
+
 	public static class UpdateDescriptorBuilder extends ModelPart
 	{
 		private String m_description;
+
 		private String m_range;
+
 		private int m_severity;
+
 		private String m_updateid;
-		
+
 		public UpdateDescriptorBuilder(IUpdateDescriptor updateDescriptor)
 		{
 			if(updateDescriptor == null)
 				return;
-			
+
 			m_description = updateDescriptor.getDescription();
 			m_updateid = updateDescriptor.getId();
 			m_range = updateDescriptor.getRange().toString();
 			m_severity = updateDescriptor.getSeverity();
 		}
+
 		public IUpdateDescriptor createUpdateDescriptor()
 		{
-			return MetadataFactory.createUpdateDescriptor(m_updateid, new VersionRange(m_range), m_severity, m_description);
+			return MetadataFactory.createUpdateDescriptor(m_updateid, new VersionRange(m_range), m_severity,
+					m_description);
 		}
+
 		public String getDescription()
 		{
 			return m_description;
 		}
+
 		public String getRange()
 		{
 			return m_range;
 		}
+
 		public int getSeverity()
 		{
 			return m_severity;
 		}
+
 		public String getUpdateid()
 		{
 			return m_updateid;
 		}
+
 		public boolean isEmpty()
 		{
 			if((m_description == null || m_description.length() < 1) && (m_range == null || m_range.length() < 1)
-			&& (m_updateid == null || m_updateid.length() < 1))
+					&& (m_updateid == null || m_updateid.length() < 1))
 				return true;
 			return false;
 		}
+
 		public void setDescription(String description)
 		{
 			m_description = description;
 			notifyChanged();
 		}
+
 		public void setRange(String range)
 		{
 			m_range = range;
@@ -453,26 +534,40 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_severity = severity;
 			notifyChanged();
 		}
+
 		public void setUpdateid(String updateid)
 		{
 			m_updateid = updateid;
 			notifyChanged();
 		}
 	}
+
 	private ArtifactKeyBuilder[] m_artifacts;
+
 	private CopyrightBuilder m_copyright;
+
 	private String m_filter;
+
 	private String m_id;
+
 	private LicenseBuilder m_license;
+
 	private LinkedHashMap<String, String> m_properties;
+
 	private ProvidedCapabilityBuilder[] m_providedCapabilities;
+
 	private RequiredCapabilityBuilder[] m_requiredCapabilities;
-	private boolean  m_singleton;
+
+	private boolean m_singleton;
+
 	private TouchpointDataBuilder[] m_touchpointData;
+
 	private TouchpointTypeBuilder m_touchpointType;
+
 	private UpdateDescriptorBuilder m_updateDescriptor;
+
 	private String m_version;
-	
+
 	@SuppressWarnings("unchecked")
 	public InstallableUnitBuilder(IInstallableUnit unit)
 	{
@@ -486,112 +581,118 @@ public class InstallableUnitBuilder extends ModelRoot
 		}
 		m_copyright = new CopyrightBuilder(unit.getCopyright());
 		m_copyright.setParent(this);
-		
+
 		m_filter = unit.getFilter();
-		
+
 		// Editing of bound fragments not supported - this is only for resolved IUs
 		// unit.getFragments();
-		
+
 		m_id = unit.getId();
-		
+
 		m_license = new LicenseBuilder(unit.getLicense());
 		m_license.setParent(this);
-		
+
 		m_properties = new LinkedHashMap();
 		m_properties.putAll(unit.getProperties());
 
 		ProvidedCapability[] providedCapabilities = unit.getProvidedCapabilities();
 		m_providedCapabilities = new ProvidedCapabilityBuilder[providedCapabilities.length];
-		for(int i = 0; i < providedCapabilities.length;i++)
+		for(int i = 0; i < providedCapabilities.length; i++)
 		{
 			m_providedCapabilities[i] = new ProvidedCapabilityBuilder(providedCapabilities[i]);
 			m_providedCapabilities[i].setParent(this);
 		}
 		RequiredCapability[] requiredCapabilities = unit.getRequiredCapabilities();
 		m_requiredCapabilities = new RequiredCapabilityBuilder[requiredCapabilities.length];
-		for(int i = 0; i < requiredCapabilities.length;i++)
+		for(int i = 0; i < requiredCapabilities.length; i++)
 		{
 			m_requiredCapabilities[i] = new RequiredCapabilityBuilder(requiredCapabilities[i]);
 			m_requiredCapabilities[i].setParent(this);
 		}
 		TouchpointData[] touchpointData = unit.getTouchpointData();
 		m_touchpointData = new TouchpointDataBuilder[touchpointData.length];
-		for(int i = 0; i < touchpointData.length;i++)
+		for(int i = 0; i < touchpointData.length; i++)
 		{
 			m_touchpointData[i] = new TouchpointDataBuilder(touchpointData[i]);
 			m_touchpointData[i].setParent(this);
 		}
 		m_touchpointType = new TouchpointTypeBuilder(unit.getTouchpointType());
 		m_touchpointType.setParent(this);
-		
+
 		m_updateDescriptor = new UpdateDescriptorBuilder(unit.getUpdateDescriptor());
 		m_updateDescriptor.setParent(this);
-		
+
 		m_version = unit.getVersion().toString();
 		m_singleton = unit.isSingleton();
-		
+
 	}
+
 	public InstallableUnit createInstallableUnit()
 	{
 		InstallableUnit iud = new InstallableUnit();
-		
+
 		// Artifact keys
 		IArtifactKey[] keys = new IArtifactKey[m_artifacts.length];
-		for(int i = 0; i < m_artifacts.length;i++)
+		for(int i = 0; i < m_artifacts.length; i++)
 			keys[i] = m_artifacts[i].createArtifactKey();
 
 		iud.setArtifacts(keys);
-		
-		iud.setCopyright(m_copyright.createCopyright());		
+
+		iud.setCopyright(m_copyright.createCopyright());
 		iud.setFilter(m_filter);
 		iud.setId(m_id);
 		iud.setLicense(m_license.createLicense());
 		iud.setSingleton(m_singleton);
 
 		// properties can not be set in bulk
-		for( Entry<String, String> entry : m_properties.entrySet())
+		for(Entry<String, String> entry : m_properties.entrySet())
 			iud.setProperty(entry.getKey(), entry.getValue());
 
 		// provided capabilities
 		ProvidedCapability[] providedCapabilities = new ProvidedCapability[m_providedCapabilities.length];
-		for(int i = 0; i < m_providedCapabilities.length;i++)
+		for(int i = 0; i < m_providedCapabilities.length; i++)
 			providedCapabilities[i] = m_providedCapabilities[i].createProvidedCapability();
 		iud.setCapabilities(providedCapabilities);
-		
+
 		// required capabilities
 		RequiredCapability[] requiredCapabilities = new RequiredCapability[m_requiredCapabilities.length];
-		for(int i = 0; i <  m_requiredCapabilities.length; i++)
+		for(int i = 0; i < m_requiredCapabilities.length; i++)
 			requiredCapabilities[i] = m_requiredCapabilities[i].createRequiredCapability();
 		iud.setRequiredCapabilities(requiredCapabilities);
-		
+
 		for(int i = 0; i < m_touchpointData.length; i++)
 			iud.addTouchpointData(m_touchpointData[i].createTouchpointData());
-		
+
 		iud.setUpdateDescriptor(m_updateDescriptor.createUpdateDescriptor());
 		iud.setTouchpointType(m_touchpointType.createTouchpointType());
-		
+
 		iud.setVersion(new Version(m_version));
 		return iud;
 	}
+
 	public ArtifactKeyBuilder[] getArtifacts()
 	{
 		return m_artifacts;
 	}
+
 	/**
-	 * Add a provided capability last.
-	 * @param provided
-	 * @return index where this capability was added
+	 * Add artifact key last.
+	 * 
+	 * @param artifact
+	 * @return index where this artifact key was added
 	 */
-	public int addArtifactKey(ArtifactKeyBuilder provided)
+	public int addArtifactKey(ArtifactKeyBuilder artifact)
 	{
-		return addArtifactKey(provided, -1);
+		return addArtifactKey(artifact, -1);
 	}
+
 	/**
-	 * Adds a provided capability at a given index. If index is outsite of range (or more specificly is -1), the new
-	 * provided capability is added last.
+	 * Adds a artifact key at a given index. If index is outside of range (or more specifically is -1), the new artifact
+	 * key is added last.
+	 * 
 	 * @param artifact
 	 * @param index
-	 * @return the index where the capability was added.
+	 * @return the index where the artifact key was added.
 	 */
 	public int addArtifactKey(ArtifactKeyBuilder artifact, int index)
 	{
@@ -600,8 +701,10 @@ public class InstallableUnitBuilder extends ModelRoot
 		notifyChanged();
 		return ix[0];
 	}
+
 	/**
-	 * Removes the artifact key from the set of provided capabilities.
+	 * Removes the artifact key from the set of artifact keys
+	 * 
 	 * @param artifact
 	 * @return the index where the artifact key was found, -1 if not found
 	 */
@@ -612,13 +715,15 @@ public class InstallableUnitBuilder extends ModelRoot
 		if(index[0] == -1)
 			return -1;
 		notifyChanged();
-		return index[0];		
+		return index[0];
 	}
-	
+
 	/**
 	 * Moves the artifact key up (+1) or down(-1) in the array of artifact keys
+	 * 
 	 * @param provided
-	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @param delta
+	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
 	 * @return -1 if move was not made, else the position before the move is returned
 	 */
 	public int moveArtifactKey(ArtifactKeyBuilder provided, int delta)
@@ -629,20 +734,25 @@ public class InstallableUnitBuilder extends ModelRoot
 	}
 
 	/**
-	 * Adds a model part at a given index. If index is outsite of range (or explicit -1), the new
-	 * part is added last. The modified model part array is returned, and the index array is updated with the index
-	 * where the part was added.
-	 * @param provided
+	 * Adds a model part at a given index. If index is outside of range (or specifically -1), the new part is added
+	 * last. The modified model part array is returned, and the index array is updated with the index where the part was
+	 * added.
+	 * 
+	 * @param array
+	 *            the array where the add takes place
+	 * @param part
+	 *            the part to add
 	 * @param index
-	 * @return the index where the capability was added.
+	 *            in/out array with wanted index (in), and resulting index (out)
+	 * @return the index where the part was added in index[], and the resulting array
 	 */
 	private ModelPart[] addModelPart(ModelPart[] array, ModelPart part, int[] index)
 	{
 		Class<?> clazz = array.getClass().getComponentType();
-		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length+1);
+		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length + 1);
 		int idx = index[0];
 		int j = 0;
-		for(int i = 0; i < array.length;i++)
+		for(int i = 0; i < array.length; i++)
 		{
 			if(i == idx)
 				tmp[j++] = part;
@@ -657,17 +767,23 @@ public class InstallableUnitBuilder extends ModelRoot
 		index[0] = idx;
 		return tmp;
 	}
+
 	/**
 	 * Removes the model part from the array of parts.
-	 * @param array the model part array to remove the part from
-	 * @param part the part to remove
-	 * @param index an array of size 1 where the index to the removed artifact was found is returned
-	 * @return the array of model parts with the part removed - same array is returned if part was not found and index returned is then -1
+	 * 
+	 * @param array
+	 *            the model part array to remove the part from
+	 * @param part
+	 *            the part to remove
+	 * @param index
+	 *            an array of size 1 where the index to the removed artifact was found is returned
+	 * @return the array of model parts with the part removed - same array is returned if part was not found and index
+	 *         returned is then -1
 	 */
-	public ModelPart[] removeModelPart(ModelPart[] array, ModelPart part, int[] index)
+	private ModelPart[] removeModelPart(ModelPart[] array, ModelPart part, int[] index)
 	{
 		int idx = -1; // not found (yet)
-		for(int i = 0; i < array.length;i++)
+		for(int i = 0; i < array.length; i++)
 			if(array[i] == part)
 			{
 				idx = i;
@@ -679,10 +795,10 @@ public class InstallableUnitBuilder extends ModelRoot
 			return array; // not found
 		}
 		Class<?> clazz = array.getClass().getComponentType();
-		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length-1);
+		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length - 1);
 
 		int j = 0;
-		for(int i = 0; i < array.length;i++)
+		for(int i = 0; i < array.length; i++)
 		{
 			if(i == idx)
 				continue; // skip the item to remove
@@ -692,19 +808,21 @@ public class InstallableUnitBuilder extends ModelRoot
 		part.setParent(null);
 		return tmp;
 	}
-	
+
 	/**
 	 * Moves the model part up (+1) or down(-1) in the array of model parts
+	 * 
 	 * @param part
-	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @param delta
+	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
 	 * @return -1 if move was not made, else the position before the move is returned
 	 */
-	public static int moveModelPart(ModelPart[] array, ModelPart part, int delta)
+	private static int moveModelPart(ModelPart[] array, ModelPart part, int delta)
 	{
 		if(!(delta == 1 || delta == -1))
 			throw new IllegalArgumentException("can only move +1 or -1");
 		int index = -1; // not found (yet)
-		for(int i = 0; i < array.length;i++)
+		for(int i = 0; i < array.length; i++)
 			if(array[i] == part)
 			{
 				index = i;
@@ -714,8 +832,8 @@ public class InstallableUnitBuilder extends ModelRoot
 			return index; // not found
 		int swapIndex = index + delta;
 		if(swapIndex < 0 || swapIndex >= array.length)
-			return -1; // outsite of range - no move
-		
+			return -1; // outside of range - no move
+
 		ModelPart tmp = array[swapIndex];
 		array[swapIndex] = array[index];
 		array[index] = tmp;
@@ -726,32 +844,40 @@ public class InstallableUnitBuilder extends ModelRoot
 	{
 		return m_copyright;
 	}
+
 	public String getFilter()
 	{
 		return m_filter;
 	}
+
 	public String getId()
 	{
 		return m_id;
 	}
+
 	public LicenseBuilder getLicense()
 	{
 		return m_license;
 	}
+
 	public LinkedHashMap<String, String> getProperties()
 	{
 		return m_properties;
 	}
+
 	public String getProperty(String key)
 	{
 		return m_properties.get(key);
 	}
+
 	public ProvidedCapabilityBuilder[] getProvidedCapabilities()
 	{
 		return m_providedCapabilities;
 	}
+
 	/**
 	 * Add a provided capability last.
+	 * 
 	 * @param provided
 	 * @return index where this capability was added
 	 */
@@ -759,68 +885,45 @@ public class InstallableUnitBuilder extends ModelRoot
 	{
 		return addProvidedCapability(provided, -1);
 	}
+
 	/**
-	 * Adds a provided capability at a given index. If index is outsite of range (or more specificly is -1), the new
+	 * Adds a provided capability at a given index. If index is outside of range (or more specifically is -1), the new
 	 * provided capability is added last.
-	 * @param provided
+	 * 
+	 * @param artifact
 	 * @param index
 	 * @return the index where the capability was added.
 	 */
 	public int addProvidedCapability(ProvidedCapabilityBuilder provided, int index)
 	{
-		ProvidedCapabilityBuilder[] reqCap2 = new ProvidedCapabilityBuilder[m_providedCapabilities.length+1];
-		int j = 0;
-		for(int i = 0; i < m_providedCapabilities.length;i++)
-		{
-			if(i == index)
-				reqCap2[j++] = provided;
-			reqCap2[j++] = m_providedCapabilities[i];
-		}
-		if(index < 0 || index >= m_providedCapabilities.length)
-		{
-			index = m_providedCapabilities.length;
-			reqCap2[index] = provided;
-		}
-		m_providedCapabilities = reqCap2;
-		provided.setParent(this);
+		int[] ix = { index };
+		m_providedCapabilities = (ProvidedCapabilityBuilder[])addModelPart(m_providedCapabilities, provided, ix);
 		notifyChanged();
-		return index;
+		return ix[0];
 	}
+
 	/**
 	 * Removes the provided capability from the set of provided capabilities.
-	 * @param provided
+	 * 
+	 * @param artifact
 	 * @return the index where the provided capability was found, -1 if not found
 	 */
 	public int removeProvidedCapability(ProvidedCapabilityBuilder provided)
 	{
-		int index = -1; // not found (yet)
-		for(int i = 0; i < m_providedCapabilities.length;i++)
-			if(m_providedCapabilities[i] == provided)
-			{
-				index = i;
-				break;
-			}
-		if(index == -1)
-			return index; // not found
-
-		ProvidedCapabilityBuilder[] reqCap2 = new ProvidedCapabilityBuilder[m_providedCapabilities.length-1];
-		int j = 0;
-		for(int i = 0; i < m_providedCapabilities.length;i++)
-		{
-			if(i == index)
-				continue; // skip the item to remove
-			reqCap2[j++] = m_providedCapabilities[i];
-		}
-		m_providedCapabilities = reqCap2;
-		provided.setParent(null);
+		int[] index = { 0 };
+		m_providedCapabilities = (ProvidedCapabilityBuilder[])removeModelPart(m_providedCapabilities, provided, index);
+		if(index[0] == -1)
+			return -1;
 		notifyChanged();
-		return index;
-		
+		return index[0];
 	}
+
 	/**
-	 * Moves the provided capability up (+1) or down(-1) in the array of provided capabilities
+	 * Moves the provided capability (+1) or down(-1) in the array of provided capabilities
+	 * 
 	 * @param provided
-	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @param delta
+	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
 	 * @return -1 if move was not made, else the position before the move is returned
 	 */
 	public int moveProvidedCapability(ProvidedCapabilityBuilder provided, int delta)
@@ -828,105 +931,62 @@ public class InstallableUnitBuilder extends ModelRoot
 		int index = moveModelPart(m_providedCapabilities, provided, delta);
 		notifyChanged();
 		return index;
-		
-//		if(!(delta == 1 || delta == -1))
-//			throw new IllegalArgumentException("can only move +1 or -1");
-//		int index = -1; // not found (yet)
-//		for(int i = 0; i < m_providedCapabilities.length;i++)
-//			if(m_providedCapabilities[i] == provided)
-//			{
-//				index = i;
-//				break;
-//			}
-//		if(index == -1)
-//			return index; // not found
-//		int swapIndex = index + delta;
-//		if(swapIndex < 0 || swapIndex >= m_providedCapabilities.length)
-//			return -1; // outsite of range - no move
-//		
-//		ProvidedCapabilityBuilder tmp = m_providedCapabilities[swapIndex];
-//		m_providedCapabilities[swapIndex] = m_providedCapabilities[index];
-//		m_providedCapabilities[index] = tmp;
-//		notifyChanged();
-//		return index;
 	}
-	
 
 	public RequiredCapabilityBuilder[] getRequiredCapabilities()
 	{
 		return m_requiredCapabilities;
 	}
+
 	/**
-	 * Add a required capability last.
+	 * Adds a required capability last.
+	 * 
 	 * @param required
-	 * @return index where this capability was added
+	 * @return index where this required capability was added
 	 */
 	public int addRequiredCapability(RequiredCapabilityBuilder required)
 	{
 		return addRequiredCapability(required, -1);
 	}
+
 	/**
-	 * Adds a required capability at a given index. If index is outsite of range (or more specificly is -1), the new
+	 * Adds a required capability at a given index. If index is outside of range (or more specifically is -1), the new
 	 * required capability is added last.
-	 * @param required
+	 * 
+	 * @param artifact
 	 * @param index
-	 * @return the index where the capability was added.
+	 * @return the index where the required capability was added.
 	 */
 	public int addRequiredCapability(RequiredCapabilityBuilder required, int index)
 	{
-		RequiredCapabilityBuilder[] reqCap2 = new RequiredCapabilityBuilder[m_requiredCapabilities.length+1];
-		int j = 0;
-		for(int i = 0; i < m_requiredCapabilities.length;i++)
-		{
-			if(i == index)
-				reqCap2[j++] = required;
-			reqCap2[j++] = m_requiredCapabilities[i];
-		}
-		if(index < 0 || index >= m_requiredCapabilities.length)
-		{
-			index = m_requiredCapabilities.length;
-			reqCap2[index] = required;
-		}
-		m_requiredCapabilities = reqCap2;
-		required.setParent(this);
+		int[] ix = { index };
+		m_requiredCapabilities = (RequiredCapabilityBuilder[])addModelPart(m_requiredCapabilities, required, ix);
 		notifyChanged();
-		return index;
+		return ix[0];
 	}
+
 	/**
 	 * Removes the required capability from the set of required capabilities.
-	 * @param required
+	 * 
+	 * @param artifact
 	 * @return the index where the required capability was found, -1 if not found
 	 */
 	public int removeRequiredCapability(RequiredCapabilityBuilder required)
 	{
-		int index = -1; // not found (yet)
-		for(int i = 0; i < m_requiredCapabilities.length;i++)
-			if(m_requiredCapabilities[i] == required)
-			{
-				index = i;
-				break;
-			}
-		if(index == -1)
-			return index; // not found
-
-		RequiredCapabilityBuilder[] reqCap2 = new RequiredCapabilityBuilder[m_requiredCapabilities.length-1];
-		int j = 0;
-		for(int i = 0; i < m_requiredCapabilities.length;i++)
-		{
-			if(i == index)
-				continue; // skip the item to remove
-			reqCap2[j++] = m_requiredCapabilities[i];
-		}
-		m_requiredCapabilities = reqCap2;
-		required.setParent(null);
+		int[] index = { 0 };
+		m_requiredCapabilities = (RequiredCapabilityBuilder[])removeModelPart(m_requiredCapabilities, required, index);
+		if(index[0] == -1)
+			return -1;
 		notifyChanged();
-		return index;
-		
+		return index[0];
 	}
+
 	/**
-	 * Moves the required capability up (+1) or down(-1) in the array of required capabilities
+	 * Moves the required capability (+1) or down(-1) in the array of required capabilities
+	 * 
 	 * @param required
-	 * @param delta - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @param delta
+	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
 	 * @return -1 if move was not made, else the position before the move is returned
 	 */
 	public int moveRequiredCapability(RequiredCapabilityBuilder required, int delta)
@@ -934,63 +994,50 @@ public class InstallableUnitBuilder extends ModelRoot
 		int index = moveModelPart(m_requiredCapabilities, required, delta);
 		notifyChanged();
 		return index;
-		
-//		if(!(delta == 1 || delta == -1))
-//			throw new IllegalArgumentException("can only move +1 or -1");
-//		int index = -1; // not found (yet)
-//		for(int i = 0; i < m_requiredCapabilities.length;i++)
-//			if(m_requiredCapabilities[i] == required)
-//			{
-//				index = i;
-//				break;
-//			}
-//		if(index == -1)
-//			return index; // not found
-//		int swapIndex = index + delta;
-//		if(swapIndex < 0 || swapIndex >= m_requiredCapabilities.length)
-//			return -1; // outsite of range - no move
-//		
-//		RequiredCapabilityBuilder tmp = m_requiredCapabilities[swapIndex];
-//		m_requiredCapabilities[swapIndex] = m_requiredCapabilities[index];
-//		m_requiredCapabilities[index] = tmp;
-//		notifyChanged();
-//		return index;
 	}
+
 	public Serializable getTouchpointData()
 	{
 		return m_touchpointData;
 	}
+
 	public TouchpointTypeBuilder getTouchpointType()
 	{
 		return m_touchpointType;
 	}
+
 	public UpdateDescriptorBuilder getUpdateDescriptor()
 	{
 		return m_updateDescriptor;
 	}
+
 	public String getVersion()
 	{
 		return m_version;
 	}
+
 	public boolean isSingleton()
 	{
 		return m_singleton;
 	}
+
 	public void removeProperty(String key)
 	{
 		m_properties.remove(key);
 		notifyChanged();
 	}
+
 	public void setArtifacts(ArtifactKeyBuilder[] artifacts)
 	{
 		if(m_artifacts != null)
-			for(int i = 0; i < m_artifacts.length;i++)
+			for(int i = 0; i < m_artifacts.length; i++)
 				m_artifacts[i].setParent(null);
 		m_artifacts = artifacts;
-		for(int i = 0; i < m_artifacts.length;i++)
+		for(int i = 0; i < m_artifacts.length; i++)
 			m_artifacts[i].setParent(this);
 		notifyChanged();
 	}
+
 	public void setCopyright(CopyrightBuilder copyright)
 	{
 		if(m_copyright != null)
@@ -999,6 +1046,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		m_copyright.setParent(this);
 		notifyChanged();
 	}
+
 	public void setFilter(String filter)
 	{
 		m_filter = filter;
@@ -1010,6 +1058,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		m_id = id;
 		notifyChanged();
 	}
+
 	public void setLicense(LicenseBuilder license)
 	{
 		if(m_license != null)
@@ -1018,60 +1067,66 @@ public class InstallableUnitBuilder extends ModelRoot
 		m_license.setParent(this);
 		notifyChanged();
 	}
+
 	public void setProperties(LinkedHashMap<String, String> properties)
 	{
 		m_properties = properties;
 		notifyChanged();
 	}
-	
+
 	public void setProperty(String key, String value)
 	{
 		m_properties.put(key, value);
 		notifyChanged();
 	}
+
 	public void setProvidedCapabilities(ProvidedCapabilityBuilder[] providedCapabilities)
 	{
 		if(m_providedCapabilities != null)
-			for(int i = 0; i < m_providedCapabilities.length;i++)
+			for(int i = 0; i < m_providedCapabilities.length; i++)
 				m_providedCapabilities[i].setParent(null);
-		
+
 		m_providedCapabilities = providedCapabilities;
-		for(int i = 0; i < m_providedCapabilities.length;i++)
+		for(int i = 0; i < m_providedCapabilities.length; i++)
 			m_providedCapabilities[i].setParent(this);
 		notifyChanged();
 	}
+
 	public void setRequiredCapabilities(RequiredCapabilityBuilder[] requiredCapabilities)
 	{
 		if(m_requiredCapabilities != null)
-			for(int i = 0; i < m_requiredCapabilities.length;i++)
+			for(int i = 0; i < m_requiredCapabilities.length; i++)
 				m_requiredCapabilities[i].setParent(null);
-		
+
 		m_requiredCapabilities = requiredCapabilities;
-		for(int i = 0; i < m_requiredCapabilities.length;i++)
+		for(int i = 0; i < m_requiredCapabilities.length; i++)
 			m_requiredCapabilities[i].setParent(this);
 		notifyChanged();
 	}
+
 	public void setSingleton(boolean singleton)
 	{
 		m_singleton = singleton;
 		notifyChanged();
 	}
+
 	public void setTouchpointData(TouchpointDataBuilder[] touchpointData)
 	{
 		// remove old parenthood
 		if(m_touchpointData != null)
-			for(int i = 0; i < m_touchpointData.length;i++)
+			for(int i = 0; i < m_touchpointData.length; i++)
 				m_touchpointData[i].setParent(null);
-		// set new and set parenthood	
+		// set new and set parenthood
 		m_touchpointData = touchpointData;
-		for(int i = 0; i < touchpointData.length;i++)
+		for(int i = 0; i < touchpointData.length; i++)
 			touchpointData[i].setParent(this);
 		notifyChanged();
 	}
+
 	/**
-	 * Sets the touchpoint type, and the passed touchpointType's parent is set to this installable unit builder.
-	 * Any previously set touchpoint type's parent is set to null (to avoid change events from this instance to
-	 * propagate into the model).
+	 * Sets the touchpoint type, and the passed touchpointType's parent is set to this installable unit builder. Any
+	 * previously set touchpoint type's parent is set to null (to avoid change events from this instance to propagate
+	 * into the model).
 	 * 
 	 * @param touchpointType
 	 */
@@ -1083,6 +1138,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		m_touchpointType.setParent(this);
 		notifyChanged();
 	}
+
 	/**
 	 * Sets the update descriptor, and the passed update descriptor's parent is set to this installable unit builder.
 	 * Any previously set update descriptor's parent is set to null (to avoid change events from this instance to
@@ -1098,6 +1154,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		m_updateDescriptor.setParent(this);
 		notifyChanged();
 	}
+
 	public void setVersion(String version)
 	{
 		m_version = version;
