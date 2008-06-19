@@ -44,5 +44,12 @@
             class="org.eclipse.buckminster.rssowl.ui.BuckminsterURIRewriter">
       </RequestRewriter>
    </extension>
+   <extension
+         point="org.eclipse.buckminster.core.forcedActivations">
+      <forcedActivation
+            class="org.eclipse.buckminster.rssowl.ui.BuckminsterRssOwlUiPlugin"
+            pluginId="org.eclipse.buckminster.rssowl.ui">
+      </forcedActivation>
+   </extension>
 
 </plugin>
