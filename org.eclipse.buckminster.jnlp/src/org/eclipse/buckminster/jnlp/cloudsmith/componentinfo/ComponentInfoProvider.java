@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
+import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.buckminster.opml.IBody;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.IOutline;
@@ -109,6 +110,8 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private static final String ATTR_ALT = "alt";
 
 	private static final String ATTR_TITLE = "title";
+	
+	private static final String NBSP_VALUE = "\u00A0";
 
 	private static final String CLASS_BLUE_LINK = "BlueLink";
 
@@ -211,7 +214,8 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 			
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
-			td.setTextContent(outline.getDescription());
+			String string = UiUtils.trimmedValue(outline.getDescription());
+			td.setTextContent(string == null ? NBSP_VALUE : string);
 			
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
