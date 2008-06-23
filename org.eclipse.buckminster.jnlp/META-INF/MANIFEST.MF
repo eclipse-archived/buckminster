@@ -15,9 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.opml,
  org.eclipse.pde.core,
  org.eclipse.core.resources,
- com.ibm.icu.base;bundle-version="3.8.1",
  org.eclipse.buckminster.slf4j;bundle-version="1.0.0",
- org.slf4j.extendable;bundle-version="1.4.3" 
+ org.slf4j.extendable;bundle-version="1.4.3"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.buckminster.jnlp.accountservice,
  org.eclipse.buckminster.jnlp.componentinfo,
