@@ -103,6 +103,8 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 
 	private static final String ATTR_HREF = "href";
 
+	private static final String ATTR_VALUE = "value";
+	
 	private static final String ATTR_SRC = "src";
 
 	private static final String ATTR_CLASS = "class";
@@ -110,6 +112,10 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private static final String ATTR_ALT = "alt";
 
 	private static final String ATTR_TITLE = "title";
+	
+	private static final String CELL_1 = "Cell-1";
+	
+	private static final String CELL_N = "Cell-n";
 	
 	private static final String NBSP_VALUE = "\u00A0";
 
@@ -210,15 +216,18 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 			
 			Element td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
+			td.setAttribute(ATTR_CLASS, CELL_1);
 			td.setTextContent(outline.getText());
 			
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
+			td.setAttribute(ATTR_CLASS, CELL_N);
 			String string = UiUtils.trimmedValue(outline.getDescription());
 			td.setTextContent(string == null ? NBSP_VALUE : string);
 			
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
+			td.setAttribute(ATTR_CLASS, CELL_N);
 			Element a = m_xml.createElement(TAG_A);
 			td.appendChild(a);
 			a.setAttribute(ATTR_HREF, outline.getXmlUrl().toString());
@@ -231,6 +240,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 			
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
+			td.setAttribute(ATTR_CLASS, CELL_N);
 			a = m_xml.createElement(TAG_A);
 			td.appendChild(a);
 			a.setAttribute(ATTR_HREF, outline.getXmlUrl().toString());
@@ -261,8 +271,8 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	{
 		setAttribute(ID_HOME_PAGE_URL, ATTR_HREF, PROP_HOME_PAGE_URL, false);
 		setAttribute(ID_CLOUDPAGE_URL, ATTR_HREF, PROP_CLOUDPAGE_URL, false);
-		setAttribute(ID_DISTRO_NAME, null, PROP_ARTIFACT_NAME, false);
-		setAttribute(ID_DISTRO_VERSION, null, PROP_CSPEC_VERSION_STRING, false);
+		setAttribute(ID_DISTRO_NAME, ATTR_VALUE, PROP_ARTIFACT_NAME, false);
+		setAttribute(ID_DISTRO_VERSION, ATTR_VALUE, PROP_CSPEC_VERSION_STRING, false);
 
 		Element element = m_xml.getElementById(ID_FEED_TABLE);
 		if(element != null)

@@ -83,7 +83,7 @@ h3 {
 .DistroNameCell {
         margin-bottom:0px;
         margin-top:2px;
-        width:380px;
+        width:200px;
 }
 
 .HeadingDivider {
@@ -172,6 +172,61 @@ table.Border
     letter-spacing:0em;
 }
 
+.fence th
+{
+    margin: 0;
+    padding: 0px 10px 10px 10px;  
+    color: 	#939392;
+    font-family:Verdana;
+    font-size:x-small;
+    font-weight:700;
+    letter-spacing:0em;
+}
+
+.fence td
+{
+    margin: 0;
+    padding: 10px;  
+    color: 	#727272;
+    font-family:Verdana;
+    font-size:x-small;
+    font-weight:700;
+    letter-spacing:0em;
+}
+
+.fence th, .fence thead td {
+	text-align:left;
+	color:#939392;
+	border-top:solid 1px white;
+	background-color:white;
+	border-right:0px;
+}
+	
+.fence td {
+	border-top:solid 1px #ececec;
+	border-bottom:0px;
+}
+
+.fence .Cell-n {
+	border-left:solid 1px #ececec;
+	border-right:0px;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+.fence td {
+	padding-top:2px;
+	padding-bottom:1px;
+	font-weight:bold;
+	color:#424242;
+}
+
+/* Only works in CSS2 compliant browsers, others get no border in heading */
+.fence th + th, .fence thead td + td {
+	border-left:1px solid #ececec;
+	padding-left:5px;
+}
+
 /*]]>*/
 </style>
 </head>
@@ -201,28 +256,18 @@ PAGE</label></td>
 <td style="vertical-align:top;">
 <table cellpadding="0" cellspacing="0">
 <tr class="DistroRow1">
-<td class="DistroNameLabelCell">
-<table class="Border" cellpadding="0" cellspacing="0">
-	<tr>
-	<td style="background-color: #ECECEC;">
-		Distro
-	</td>
-	<td style="width: 200px;">
-	<span id="distroNameField">
-	</span>
-	</td>
-	</tr>
-	<tr>
-	<td style="background-color: #ECECEC;">
-		Version
-	</td>
-	<td style="width: 200px;">
-	<span id="distroVersionField">
-	</span>
-	</td>
-	</tr>
-</table>
-</td>
+<td class="DistroNameLabelCell"><label id="distroNameLabel" for=
+"distroNameField">Distro</label></td>
+<td><input id="distroNameField" name="distroNameField" value=
+"" class="DistroNameCell OutputField Important"
+readonly="readonly" type="text" /></td>
+</tr>
+<tr class="DistroRow1">
+<td class="DistroNameLabelCell"><label id="distroVersionLabel" for=
+"distroVersionField">Version</label></td>
+<td><input id="distroVersionField" name="distroVersionField" value=
+"" class="DistroNameCell OutputField Important"
+readonly="readonly" type="text" /></td>
 </tr>
 </table>
 </td>
@@ -235,16 +280,12 @@ PAGE</label></td>
 <tr>
 <td colspan="2">
 <div id="distroInfo" style="width: 818px;">
-<table id="feedTable" class="Border" cellpadding="0" cellspacing="0">
+<table id="feedTable" class="fence" cellpadding="0" cellspacing="0">
 	<tr style="background-color: #ECECEC;">
-	<td>
-		Label
-	</td>
-	<td>
-		Description
-	</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
+	<th scope="col">label</th>
+<th scope="col">description</th>
+<th scope="col">&nbsp;</th>
+<th scope="col">&nbsp;</th>
 	</tr>
 </table>
 </div>
