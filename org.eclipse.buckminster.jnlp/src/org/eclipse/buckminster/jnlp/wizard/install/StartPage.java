@@ -14,9 +14,6 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -50,15 +47,6 @@ public class StartPage extends InstallWizardPage
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 
-		FocusListener focusNextButtonListener = new FocusAdapter()
-		{
-			@Override
-			public void focusGained(FocusEvent e)
-			{
-				focusNextButton();
-			}
-		};
-		
 		Group productGroup = new Group(pageComposite, SWT.NONE);
 		productGroup.setText("Product Summary");
 		productGroup.setLayout(new GridLayout(2, false));
@@ -69,19 +57,16 @@ public class StartPage extends InstallWizardPage
 		m_artifactNameText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
 		m_artifactNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		m_artifactNameText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		m_artifactNameText.addFocusListener(focusNextButtonListener);
 		
 		new Label(productGroup, SWT.NONE).setText("Version:");
 		m_artifactVersionText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
 		m_artifactVersionText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		m_artifactVersionText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		m_artifactVersionText.addFocusListener(focusNextButtonListener);
 		
 		new Label(productGroup, SWT.NONE).setText("Description:");
 		m_artifactDescriptionText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
 		m_artifactDescriptionText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		m_artifactDescriptionText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		m_artifactDescriptionText.addFocusListener(focusNextButtonListener);
 		
 		Label label = new Label(productGroup, SWT.NONE);
 		gridData = new GridData();
@@ -94,7 +79,6 @@ public class StartPage extends InstallWizardPage
 		gridData.heightHint = 60;
 		m_artifactDocumentationText.setLayoutData(gridData);
 		m_artifactDocumentationText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		m_artifactDocumentationText.addFocusListener(focusNextButtonListener);
 
 		new Label(pageComposite, SWT.NONE);
 		
@@ -109,7 +93,6 @@ public class StartPage extends InstallWizardPage
 		gridData.heightHint = 30;
 		m_publisherInfoText.setLayoutData(gridData);
 		m_publisherInfoText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		m_publisherInfoText.addFocusListener(focusNextButtonListener);
 		
 		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
 		{
