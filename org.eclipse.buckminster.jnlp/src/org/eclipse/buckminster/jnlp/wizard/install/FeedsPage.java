@@ -38,18 +38,16 @@ public class FeedsPage extends InstallWizardPage
 	private static final String ICON_ARROW = "incom_stat.gif";
 
 	private Label m_heading;
-	
-	private Label m_heading2;
-	
-	private Label m_heading3;
-	
+
+	private Link m_heading2;
+
 	private Link m_openHTML;
-	
+
 	private String m_infoPageURL;
-	
+
 	protected FeedsPage()
 	{
-		super(MaterializationConstants.STEP_FEEDS, "Cloudfeeds", "Use cloudfeeds to stay current with this distro.",
+		super(MaterializationConstants.STEP_FEEDS, "Cloudfeeds", "Use Cloudfeeds to stay current with this distro.",
 				null);
 		setPreviousPage(this);
 	}
@@ -62,25 +60,31 @@ public class FeedsPage extends InstallWizardPage
 		pageComposite.setLayout(layout);
 		GridData layoutData = new GridData();
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		m_heading = new Label(pageComposite, SWT.WRAP);
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		m_heading.setLayoutData(layoutData);
-		
-		m_heading2 = new Label(pageComposite, SWT.WRAP);
+
+		m_heading2 = new Link(pageComposite, SWT.WRAP);
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		m_heading2.setLayoutData(layoutData);
-		
-		m_heading3 = new Label(pageComposite, SWT.WRAP);
-		layoutData = new GridData();
-		layoutData.horizontalSpan = 2;
-		m_heading3.setLayoutData(layoutData);
-		
+		m_heading2.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if(m_infoPageURL != null)
+				{
+					Program.launch(getInstallWizard().getLearnMoreCloudfeedsURL());
+				}
+			}
+		});
+
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
-		
+
 		Label label = new Label(pageComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_ARROW));
 		layoutData = new GridData();
@@ -89,7 +93,8 @@ public class FeedsPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		m_openHTML = new Link(pageComposite, SWT.NONE);
-		m_openHTML.setText("Click <a>here</a> to see what feeds are available for this distro and add them to your reader.");
+		m_openHTML
+				.setText("Click <a>here</a> to see what feeds are available for this distro and add them to your reader.");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		m_openHTML.setLayoutData(layoutData);
@@ -104,7 +109,7 @@ public class FeedsPage extends InstallWizardPage
 				}
 			}
 		});
-		
+
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 
@@ -116,11 +121,12 @@ public class FeedsPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		Label cloudreaderHeading = new Label(pageComposite, SWT.NONE);
-		cloudreaderHeading.setText("To get the Cloudreader, use the following update site URLs (Eclipse 3.3 or later required):");
+		cloudreaderHeading
+				.setText("To get the Cloudreader, use the following update site URLs (Eclipse 3.3 or later required):");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		cloudreaderHeading.setLayoutData(layoutData);
-		
+
 		Composite sitesComposite = new Composite(pageComposite, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.marginWidth = gridLayout.marginHeight = 0;
@@ -129,15 +135,15 @@ public class FeedsPage extends InstallWizardPage
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		sitesComposite.setLayoutData(layoutData);
-		
+
 		Text updateSite33Text = getSelectableItalicText(sitesComposite);
-		updateSite33Text.setText(getInstallWizard().getEclipseDistroTools33UpdateSiteURL());			
+		updateSite33Text.setText(getInstallWizard().getEclipseDistroTools33UpdateSiteURL());
 		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.3");
-		
+
 		Text updateSite34Text = getSelectableItalicText(sitesComposite);
-		updateSite34Text.setText(getInstallWizard().getEclipseDistroTools34UpdateSiteURL());			
+		updateSite34Text.setText(getInstallWizard().getEclipseDistroTools34UpdateSiteURL());
 		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.4");
-		
+
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
 
@@ -149,7 +155,7 @@ public class FeedsPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		Link learnMore = new Link(pageComposite, SWT.NONE);
-		learnMore.setText("Learn <a>more</a> about cloudfeeds.");
+		learnMore.setText("Learn <a>more</a> about Cloudfeeds.");
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		learnMore.setLayoutData(layoutData);
@@ -164,7 +170,7 @@ public class FeedsPage extends InstallWizardPage
 				}
 			}
 		});
-		
+
 		setControl(pageComposite);
 	}
 
@@ -175,7 +181,7 @@ public class FeedsPage extends InstallWizardPage
 		if(fontDadas.length > 0)
 			fontDadas[0].setStyle(SWT.ITALIC);
 		text.setFont(new Font(Display.getCurrent(), fontDadas));
-		
+
 		return text;
 	}
 
@@ -183,19 +189,17 @@ public class FeedsPage extends InstallWizardPage
 	protected void beforeDisplaySetup()
 	{
 
-		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer 
-		m_heading.setText("Cloudfeeds are standard web feeds for updates of this distro, new distros building on it and any other content its publisher wants to share.");
+		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
+		m_heading
+				.setText("Cloudfeeds are web feeds providing updates, new dependents and other content a distro's publisher wants to share.");
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 25;
 
-		m_heading2.setText("Feed entries contain materialization links (cloudlinks), so you can get new distros directly from your feed reader!");
-		layoutData = (GridData)m_heading.getLayoutData();
-		layoutData.widthHint = m_heading.getShell().getSize().x - 25;
+		m_heading2
+				.setText("View cloudfeeds in any reader supporting RSS/Atom, including the <a>Cloudreader</a> plug-in for Eclipse.  Feeds contain materialization links (cloudlinks), so you can get new distros directly from your reader!");
+		layoutData = (GridData)m_heading2.getLayoutData();
+		layoutData.widthHint = m_heading2.getShell().getSize().x - 25;
 
-		m_heading3.setText("You can view cloudfeeds in any reader supporting RSS/Atom, including the Cloudreader plug-in for Eclipse.");
-		layoutData = (GridData)m_heading.getLayoutData();
-		layoutData.widthHint = m_heading.getShell().getSize().x - 25;
-		
 		m_heading.getParent().layout();
 
 		m_infoPageURL = getInstallWizard().getComponentInfoPageURL();
