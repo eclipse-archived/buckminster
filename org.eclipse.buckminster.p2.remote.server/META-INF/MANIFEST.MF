@@ -3,14 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Server Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.p2.remote.server;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.buckminster.p2.remote.server.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.p2.remote;bundle-version="1.0.0",
  org.eclipse.buckminster.runtime;bundle-version="1.1.0",
  org.eclipse.equinox.p2.console
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet,
  javax.servlet.http,
  org.eclipse.equinox.internal.p2.artifact.repository,

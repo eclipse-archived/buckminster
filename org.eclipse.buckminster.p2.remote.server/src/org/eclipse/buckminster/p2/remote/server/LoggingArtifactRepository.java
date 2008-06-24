@@ -10,7 +10,6 @@ package org.eclipse.buckminster.p2.remote.server;
 import java.io.File;
 import java.io.OutputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
@@ -21,10 +20,10 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 
 public class LoggingArtifactRepository extends LoggingRepository implements IArtifactRepository
 {
-	public LoggingArtifactRepository(IArtifactRepository remoteRepository, File changeLogFile)
-	throws CoreException
+	public LoggingArtifactRepository(RepositoryServer server, IArtifactRepository remoteRepository,
+		File changeLogFile) throws ProvisionException
 	{
-		super(remoteRepository, changeLogFile);
+		super(server, remoteRepository, changeLogFile);
 	}
 
 	public void addDescriptor(IArtifactDescriptor descriptor)

@@ -27,63 +27,90 @@
 package org.eclipse.buckminster.p2.remote.marshall;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.jabsorb.serializer.AbstractSerializer;
 import org.jabsorb.serializer.MarshallException;
 import org.jabsorb.serializer.ObjectMatch;
 import org.jabsorb.serializer.SerializerState;
 import org.jabsorb.serializer.UnmarshallException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Serialises URI's
  */
 public class URISerializer extends AbstractSerializer
 {
-	private static Class[] s_serializableClasses = new Class[] { URI.class };
+	private static final long serialVersionUID = 4563455823730868040L;
 
-	private static Class[] s_JSONClasses = new Class[] { String.class };
+	private static Class<?>[] s_serializableClasses = new Class[] { URI.class };
 
-	public Class[] getJSONClasses()
+	private static Class<?>[] s_JSONClasses = new Class[] { JSONObject.class };
+
+	public Class<?>[] getJSONClasses()
 	{
 		return s_JSONClasses;
 	}
 
-	public Class[] getSerializableClasses()
+	public Class<?>[] getSerializableClasses()
 	{
 		return s_serializableClasses;
 	}
 
 	public Object marshall(SerializerState state, Object p, Object o) throws MarshallException
 	{
-		if(o instanceof URI)
-			return o.toString();
-		throw new MarshallException("cannot marshall URI using class " + o.getClass());
+		if(!(o instanceof URI))
+			throw new MarshallException("cannot marshall URI using class " + o.getClass());
+
+		JSONObject obj = new JSONObject();
+		try
+		{
+			if(ser.getMarshallClassHints())
+				obj.put("javaClass", o.getClass().getName());
+			obj.put("uri", o.toString());
+		}
+		catch(JSONException e)
+		{
+			throw new MarshallException(e.getMessage(), e);
+		}
+		return obj;
 	}
 
+	@SuppressWarnings("unchecked")
 	public ObjectMatch tryUnmarshall(SerializerState state, Class clazz, Object o) throws UnmarshallException
 	{
+		JSONObject jso = (JSONObject)o;
 		try
 		{
-			new URI((String)o);
-			state.setSerialized(o, ObjectMatch.OKAY);
-			return ObjectMatch.OKAY;
+			jso.getString("uri");
 		}
-		catch(Exception e)
+		catch(JSONException e)
 		{
-			throw new UnmarshallException("not an URI");
+			throw new UnmarshallException("no uri", e);
 		}
+		state.setSerialized(o, ObjectMatch.OKAY);
+		return ObjectMatch.OKAY;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object unmarshall(SerializerState state, Class clazz, Object o) throws UnmarshallException
 	{
+		URI returnValue;
 		try
 		{
-			return new URI((String)o);
+			returnValue = new URI(((JSONObject)o).getString("uri"));
 		}
-		catch(Exception e)
+		catch(JSONException e)
 		{
-			throw new UnmarshallException("not an URI");
+			throw new UnmarshallException("no uri", e);
 		}
+		catch(URISyntaxException e)
+		{
+			throw new UnmarshallException("Could not convert into URI", e);
+		}
+		state.setSerialized(o, returnValue);
+		return returnValue;
 	}
 
 }

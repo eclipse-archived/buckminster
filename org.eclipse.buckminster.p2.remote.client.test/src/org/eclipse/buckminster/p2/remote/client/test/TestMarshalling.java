@@ -34,6 +34,12 @@ public class TestMarshalling extends TestCase
 		return suite;
 	}
 
+	@SuppressWarnings("unchecked")
+	private static Iterator<IInstallableUnit> getCollectorIterator(Collector collector)
+	{
+		return collector.iterator();
+	}
+
 	public TestMarshalling(String testName)
 	{
 		super(testName);
@@ -47,10 +53,10 @@ public class TestMarshalling extends TestCase
 
 		JSONSerializer serializer = JSONRPCBridge.getSerializer();
 		serializer.registerSerializer(new IUMarshaller());
-		Iterator unitIterator = repoRoots.iterator();
+		Iterator<IInstallableUnit> unitIterator = getCollectorIterator(repoRoots);
 		while(unitIterator.hasNext())
 		{
-			IInstallableUnit iu = (IInstallableUnit)unitIterator.next();
+			IInstallableUnit iu = unitIterator.next();
 			String jsonString = serializer.toJSON(iu);
 			iu = (IInstallableUnit)serializer.fromJSON(jsonString);
 			System.out.println(iu.getId());

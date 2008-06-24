@@ -12,6 +12,8 @@ import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
 
 public class SetDescription extends RepositoryChange
 {
+	private static final long serialVersionUID = -7626483755852814672L;
+
 	private String m_description;
 
 	@Override

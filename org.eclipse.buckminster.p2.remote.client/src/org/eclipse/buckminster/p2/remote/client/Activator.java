@@ -13,6 +13,9 @@ import org.jabsorb.client.TransportRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * @author Thomas Hallgren
+ */
 public class Activator implements BundleActivator
 {
 	public static final String ID = "org.eclipse.buckminster.p2.remote.client"; //$NON-NLS-1$

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.eclipse.buckminster.p2.remote.Activator;
 import org.eclipse.buckminster.p2.remote.FacadeAlreadyExistsException;
 import org.eclipse.buckminster.p2.remote.IRepositoryFacade;
 import org.eclipse.buckminster.p2.remote.IRepositoryServer;
@@ -44,6 +45,7 @@ import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifact
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
+import org.jabsorb.JSONSerializer;
 
 /**
  * @author Thomas Hallgren
@@ -54,14 +56,14 @@ public class RepositoryServer implements IRepositoryServer
 
 	private static final String PROP_ARTIFACTREPOSITORY_PREFIX = "artifactRepository.";
 
-	public static IRepositoryServer getServer(URI uri) throws IOException
+	public static IRepositoryServer getServer(URI uri, JSONSerializer serializer) throws IOException
 	{
 		synchronized(s_servers)
 		{
 			RepositoryServer server = s_servers.get(uri);
 			if(server == null)
 			{
-				server = new RepositoryServer(uri);
+				server = new RepositoryServer(uri, serializer);
 				s_servers.put(uri, server);
 			}
 			return server;
@@ -86,11 +88,14 @@ public class RepositoryServer implements IRepositoryServer
 
 	private final Map<String, URI> m_knownMetadataRepos = new HashMap<String, URI>();
 
+	private final JSONSerializer m_serializer;
+
 	private static final Map<URI, RepositoryServer> s_servers = new HashMap<URI, RepositoryServer>();
 
-	private RepositoryServer(URI uri) throws IOException
+	private RepositoryServer(URI uri, JSONSerializer serializer) throws IOException
 	{
 		m_uri = uri;
+		m_serializer = serializer;
 		load();
 	}
 
@@ -101,9 +106,7 @@ public class RepositoryServer implements IRepositoryServer
 			throw new FacadeAlreadyExistsException(m_uri, facadeName);
 
 		File facadeArea = getFacadeArea(facadeName, false);
-		File repoFile = new File(facadeArea, "artifacts.xml");
-		File changeLogFile = new File(facadeArea, "changelog");
-		URI repoURI = repoFile.toURI();
+		URI repoURI = new File(facadeArea, "artifacts").toURI();
 		IArtifactRepository repo = Activator.getArtifactRepositoryManager().createRepository(url(repoURI),
 			facadeName, IArtifactRepositoryManager.TYPE_SIMPLE_REPOSITORY, null);
 
@@ -111,8 +114,8 @@ public class RepositoryServer implements IRepositoryServer
 		try
 		{
 			save();
-			return new ArtifactRepositoryFacade(facadeName,
-				new LoggingArtifactRepository(repo, changeLogFile));
+			return new ArtifactRepositoryFacade(facadeName, new LoggingArtifactRepository(this, repo,
+				facadeArea));
 		}
 		catch(CoreException e)
 		{
@@ -127,23 +130,13 @@ public class RepositoryServer implements IRepositoryServer
 			throw new FacadeAlreadyExistsException(m_uri, facadeName);
 
 		File facadeArea = getFacadeArea(facadeName, true);
-		File repoFile = new File(facadeArea, "content.xml");
-		File changeLogFile = new File(facadeArea, "changelog");
-		URI repoURI = repoFile.toURI();
+		URI repoURI = new File(facadeArea, "content").toURI();
 		IMetadataRepository repo = Activator.getMetadataRepositoryManager().createRepository(url(repoURI),
 			facadeName, IMetadataRepositoryManager.TYPE_SIMPLE_REPOSITORY, null);
 
 		m_knownMetadataRepos.put(facadeName, repoURI);
-		try
-		{
-			save();
-			return new MetadataRepositoryFacade(facadeName,
-				new LoggingMetadataRepository(repo, changeLogFile));
-		}
-		catch(CoreException e)
-		{
-			throw new ProvisionException(e.getStatus());
-		}
+		save();
+		return new MetadataRepositoryFacade(facadeName, new LoggingMetadataRepository(this, repo, facadeArea));
 	}
 
 	public synchronized boolean deleteArtifactRepositoryFacade(String facadeName) throws ProvisionException
@@ -165,9 +158,8 @@ public class RepositoryServer implements IRepositoryServer
 
 		try
 		{
-			File changeLogFile = new File(getFacadeArea(facadeName, false), "changelog");
-			return new ArtifactRepositoryFacade(facadeName, new LoggingArtifactRepository(
-				ProvisioningHelper.getArtifactRepository(url(repoURI)), changeLogFile));
+			return new ArtifactRepositoryFacade(facadeName, new LoggingArtifactRepository(this,
+				ProvisioningHelper.getArtifactRepository(url(repoURI)), getFacadeArea(facadeName, false)));
 		}
 		catch(CoreException e)
 		{
@@ -187,21 +179,30 @@ public class RepositoryServer implements IRepositoryServer
 		if(repoURI == null)
 			throw new NoSuchFacadeException(m_uri, facadeName);
 
-		try
-		{
-			File changeLogFile = new File(getFacadeArea(facadeName, true), "changelog");
-			return new MetadataRepositoryFacade(facadeName, new LoggingMetadataRepository(
-				ProvisioningHelper.getMetadataRepository(url(repoURI)), changeLogFile));
-		}
-		catch(CoreException e)
-		{
-			throw new ProvisionException(e.getStatus());
-		}
+		return new MetadataRepositoryFacade(facadeName, new LoggingMetadataRepository(this,
+			ProvisioningHelper.getMetadataRepository(url(repoURI)), getFacadeArea(facadeName, true)));
 	}
 
 	public synchronized List<String> getMetadataRepositoryFacadeNames()
 	{
 		return getRepositoryFacadeNames(m_knownMetadataRepos);
+	}
+
+	public JSONSerializer getSerializer()
+	{
+		return m_serializer;
+	}
+
+	public void hardReset() throws ProvisionException
+	{
+		synchronized(s_servers)
+		{
+			deleteRecursive(Activator.getAgentLocation());
+			s_servers.clear();
+			m_knownArtifactRepos.clear();
+			m_knownMetadataRepos.clear();
+			s_servers.put(m_uri, this);
+		}
 	}
 
 	private void deleteRecursive(File file)
@@ -240,7 +241,7 @@ public class RepositoryServer implements IRepositoryServer
 
 	private File getFacadeArea(String facadeName, boolean isMetadata)
 	{
-		return new File(new File(Activator.getStateLocation(), isMetadata ? "metadata" : "artifact"),
+		return new File(new File(Activator.getAgentLocation(), isMetadata ? "metadata" : "artifact"),
 			facadeName);
 	}
 
@@ -253,7 +254,7 @@ public class RepositoryServer implements IRepositoryServer
 
 	private File getStateFile()
 	{
-		File repoArea = Activator.getStateLocation();
+		File repoArea = Activator.getAgentLocation();
 		byte[] repoIDBytes;
 		try
 		{
@@ -314,7 +315,7 @@ public class RepositoryServer implements IRepositoryServer
 		}
 	}
 
-	private void save() throws CoreException
+	private void save() throws ProvisionException
 	{
 		Properties props = new Properties();
 		for(Map.Entry<String, URI> entry : m_knownMetadataRepos.entrySet())
@@ -331,7 +332,7 @@ public class RepositoryServer implements IRepositoryServer
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.wrap(e);
+			throw new ProvisionException(BuckminsterException.createStatus(e));
 		}
 		finally
 		{

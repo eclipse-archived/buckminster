@@ -27,6 +27,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Thomas Hallgren
  */
+@SuppressWarnings("serial")
 public abstract class BuckminsterException extends CoreException
 {
 	protected BuckminsterException(IStatus status)
@@ -34,32 +35,23 @@ public abstract class BuckminsterException extends CoreException
 		super(status);
 	}
 
-	private static final long serialVersionUID = -3152601911941317801L;
-
-	// Special class that gives us access to the setMessage
-	//
-	private static class BMStatus extends Status
+	public static IStatus createStatus(String message, Object...args)
 	{
-		public BMStatus(int severity, String pluginId, int code, String message, Throwable exception)
-		{
-			super(severity, pluginId, code, message, exception);
-		}
-
-		@Override
-		protected void setMessage(String message)
-		{
-			super.setMessage(message);
-		}
+		return createStatus(null, message, args);
 	}
 
-	public static IStatus createStatus(String message, Throwable cause)
+	public static IStatus createStatus(Throwable cause, String message, Object...args)
 	{
-		return new BMStatus(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, message, cause);
+		if(args.length > 0)
+			message = String.format(message, args);
+		return new Status(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, message, cause);
 	}
 
-	public static void setMessageStatus(IStatus status, String message, Object...args)
+	public static IStatus createStatus(Throwable cause)
 	{
-		((BMStatus)status).setMessage(String.format(message, args));
+		return (cause instanceof CoreException)
+			? ((CoreException)cause).getStatus()
+			: new Status(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
 	}
 
 	public static void deeplyPrint(Throwable e, PrintStream strm, boolean stackTrace)
@@ -74,7 +66,7 @@ public abstract class BuckminsterException extends CoreException
 
 	public static CoreException fromMessage(Throwable cause, String message, Object...args)
 	{
-		CoreException ce = new CoreException(createStatus(String.format(message, args), cause));
+		CoreException ce = new CoreException(createStatus(cause, message, args));
 		if(cause != null)
 			ce.initCause(cause);
 		return ce;

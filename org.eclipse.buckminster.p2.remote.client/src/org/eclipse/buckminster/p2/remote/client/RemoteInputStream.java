@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.p2.remote.IRepositoryDataStream;
+import org.eclipse.buckminster.p2.remote.marshall.Base64;
 
 /**
  * @author Thomas Hallgren
@@ -42,12 +43,7 @@ public class RemoteInputStream extends InputStream
 	@Override
 	public int read(byte[] buffer, int offset, int count) throws IOException
 	{
-		byte[] data = m_remoteStream.read(count);
-		if(data == null)
-			return -1;
-
-		System.arraycopy(data, 0, buffer, offset, data.length);
-		return data.length;
+		return Base64.decode(m_remoteStream.read(count), buffer, offset);
 	}
 
 	@Override

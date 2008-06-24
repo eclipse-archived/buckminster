@@ -15,6 +15,8 @@ import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
  */
 public class SetName extends RepositoryChange
 {
+	private static final long serialVersionUID = -2115889534137165334L;
+
 	private String m_name;
 
 	@Override

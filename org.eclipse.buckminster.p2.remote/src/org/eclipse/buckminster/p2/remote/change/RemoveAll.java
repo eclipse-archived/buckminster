@@ -16,6 +16,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
  */
 public class RemoveAll extends RepositoryChange
 {
+	private static final long serialVersionUID = 808635763319242879L;
+
 	@Override
 	public void apply(IRepository repository)
 	{

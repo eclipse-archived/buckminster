@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.p2.remote.IRepositoryDataStream;
+import org.eclipse.buckminster.p2.remote.marshall.Base64;
 
 public class RepositoryDataStream implements IRepositoryDataStream
 {
@@ -32,26 +33,18 @@ public class RepositoryDataStream implements IRepositoryDataStream
 		m_input.close();
 	}
 
-	public long getLastChangeNumber() throws IOException
+	public long getLastChangeNumber()
 	{
 		return m_lastChangeNumber;
 	}
 
-	public byte[] read(int nbytes) throws IOException
+	public String read(int nbytes) throws IOException
 	{
 		if(buffer == null || buffer.length < nbytes)
 			buffer = new byte[nbytes];
 
 		int count = m_input.read(buffer, 0, nbytes);
-		if(count == buffer.length)
-			return buffer;
-
-		if(count <= 0)
-			return null;
-
-		byte[] truncated = new byte[count];
-		System.arraycopy(buffer, 0, truncated, 0, count);
-		return truncated;
+		return new String(Base64.encode(buffer, 0, count));
 	}
 
 	public long skip(long nbytes) throws IOException

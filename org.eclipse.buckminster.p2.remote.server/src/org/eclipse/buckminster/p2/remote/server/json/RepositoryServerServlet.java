@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.buckminster.p2.remote.IRepositoryDataStream;
 import org.eclipse.buckminster.p2.remote.IRepositoryFacade;
 import org.eclipse.buckminster.p2.remote.IRepositoryServer;
+import org.eclipse.buckminster.p2.remote.marshall.IUMarshaller;
+import org.eclipse.buckminster.p2.remote.marshall.URISerializer;
 import org.eclipse.buckminster.p2.remote.server.MetadataRepositoryFacade;
 import org.eclipse.buckminster.p2.remote.server.RepositoryDataStream;
 import org.eclipse.buckminster.p2.remote.server.RepositoryServer;
@@ -205,7 +207,7 @@ public class RepositoryServerServlet extends HttpServlet
 			JSONObject jsonRequest = new JSONObject(receiveString);
 			jsonResponse = bridge.call(new Object[] { request, response }, jsonRequest);
 		}
-		catch(Exception e)
+		catch(JSONException e)
 		{
 			jsonResponse = new JSONRPCResult(JSONRPCResult.CODE_ERR_PARSE, null, JSONRPCResult.MSG_ERR_PARSE);
 		}
@@ -230,12 +232,19 @@ public class RepositoryServerServlet extends HttpServlet
 		final JSONRPCBridge bridge = new JSONRPCBridge();
 		try
 		{
-			bridge.registerObject(IRepositoryServer.SERVICE_NAME,
-				RepositoryServer.getServer(getRequestURI(request)), IRepositoryServer.class);
 			bridge.registerReference(MetadataRepositoryFacade.class);
 			bridge.registerReference(IRepositoryFacade.class);
 			bridge.registerReference(IRepositoryDataStream.class);
 			bridge.registerSerializer(new CallableInterfaceSerializer(bridge));
+			bridge.registerSerializer(new IUMarshaller());
+			bridge.registerSerializer(new URISerializer());
+			bridge.registerObject(IRepositoryServer.SERVICE_NAME, RepositoryServer.getServer(
+				getRequestURI(request), JSONRPCBridge.getSerializer()), IRepositoryServer.class);
+
+		}
+		catch(RuntimeException e)
+		{
+			throw e;
 		}
 		catch(Exception e)
 		{

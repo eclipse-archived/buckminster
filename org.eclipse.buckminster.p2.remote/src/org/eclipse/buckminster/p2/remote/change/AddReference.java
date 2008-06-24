@@ -18,6 +18,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
  */
 public class AddReference extends RepositoryChange
 {
+	private static final long serialVersionUID = 4143309261875036277L;
+
 	private URL m_location;
 
 	private int m_type;

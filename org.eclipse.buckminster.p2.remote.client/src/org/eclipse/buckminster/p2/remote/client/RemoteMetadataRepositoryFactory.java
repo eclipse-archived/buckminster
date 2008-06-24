@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2006-2008, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -8,20 +8,23 @@
 
 package org.eclipse.buckminster.p2.remote.client;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.eclipse.buckminster.p2.remote.IRepositoryDataStream;
 import org.eclipse.buckminster.p2.remote.IRepositoryFacade;
 import org.eclipse.buckminster.p2.remote.IRepositoryServer;
+import org.eclipse.buckminster.p2.remote.change.RepositoryChange;
+import org.eclipse.buckminster.p2.remote.change.SynchronizationBlock;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -35,44 +38,13 @@ import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.spi.p2.metadata.repository.IMetadataRepositoryFactory;
 import org.eclipse.osgi.util.NLS;
-import org.jabsorb.client.ErrorResponse;
-import org.jabsorb.client.HTTPSession;
 
-public class RemoteMetadataRepositoryFactory implements IMetadataRepositoryFactory
+/**
+ * @author Thomas Hallgren
+ */
+public class RemoteMetadataRepositoryFactory extends RemoteRepositoryFactory implements
+	IMetadataRepositoryFactory
 {
-	public static IRepositoryServer connect(URI location) throws ProvisionException
-	{
-		HttpClient client = new HttpClient();
-		HttpState httpState = new HttpState();
-		client.setState(httpState);
-
-		GetMethod method = null;
-		String locationStr = location.toString();
-		try
-		{
-			method = new GetMethod(locationStr);
-			int status = client.executeMethod(method);
-			if(status != HttpStatus.SC_OK)
-				throw new IOException("Setup did not succeed");
-
-			HTTPSession session = (HTTPSession)Activator.getRegistry().createSession(location.toString());
-			session.setState(httpState);
-			Client jsonClient = Client.create(session);
-			return (IRepositoryServer)jsonClient.openProxy(IRepositoryServer.SERVICE_NAME,
-				IRepositoryServer.class);
-		}
-		catch(Exception e)
-		{
-			throw new ProvisionException(BuckminsterException.wrap(e).getStatus());
-		}
-		finally
-		{
-			if(method != null)
-				method.releaseConnection();
-		}
-
-	}
-
 	@SuppressWarnings("unchecked")
 	public IMetadataRepository create(URL location, String name, String type, Map properties)
 	{
@@ -80,15 +52,32 @@ public class RemoteMetadataRepositoryFactory implements IMetadataRepositoryFacto
 		return null;
 	}
 
-	public IMetadataRepository load(URL location, IProgressMonitor monitor) throws ProvisionException
+	public IMetadataRepository load(URL locationURL, IProgressMonitor monitor) throws ProvisionException
 	{
-		InputStream input = null;
+		URI location = IOUtils.uri(locationURL);
+		File localRepoCache = getCacheLocation(location);
+		URI localRepoLoc = localRepoCache.toURI();
+		File realLocation = LocalMetadataRepository.getActualLocation(IOUtils.url(localRepoLoc));
+
+		MetadataRepositoryIO repositoryIO = new MetadataRepositoryIO();
 		IMetadataRepository result;
+		IRepositoryDataStream rds = null;
+		IRepositoryFacade facade = getRepositoryFacade(location, monitor);
+
+		InputStream input = null;
 		try
 		{
-			input = new GZIPInputStream(new RemoteInputStream(
-				getRepositoryFacade(location, monitor).getRepositoryData()));
-			result = new MetadataRepositoryIO().read(location, input, monitor);
+			try
+			{
+				input = new BufferedInputStream(new FileInputStream(realLocation));
+				result = repositoryIO.read(IOUtils.url(realLocation), input, monitor);
+			}
+			catch(FileNotFoundException e)
+			{
+				rds = facade.getRepositoryData();
+				input = new GZIPInputStream(new BufferedInputStream(new RemoteInputStream(rds)));
+				result = repositoryIO.read(IOUtils.url(realLocation), input, monitor);
+			}
 		}
 		catch(IOException e)
 		{
@@ -102,9 +91,23 @@ public class RemoteMetadataRepositoryFactory implements IMetadataRepositoryFacto
 		}
 
 		if(result instanceof LocalMetadataRepository)
-			((LocalMetadataRepository)result).initializeAfterLoad(location);
-		if(result instanceof URLMetadataRepository)
-			((URLMetadataRepository)result).initializeAfterLoad(location);
+			((LocalMetadataRepository)result).initializeAfterLoad(IOUtils.url(localRepoLoc));
+		else if(result instanceof URLMetadataRepository)
+			((URLMetadataRepository)result).initializeAfterLoad(IOUtils.url(localRepoLoc));
+
+		if(rds != null)
+			result.setProperty(PROP_CHANGE_NUMBER, Long.toString(rds.getLastChangeNumber()));
+		else
+		{
+			// We found a cache so let's refresh it.
+			//
+			Object cns = result.getProperties().get(PROP_CHANGE_NUMBER);
+			long cn = cns == null ? 0L : Long.parseLong(cns.toString());
+			SynchronizationBlock sb = facade.getChanges(cn);
+			for(RepositoryChange c : sb.getChanges())
+				c.apply(result);
+			result.setProperty(PROP_CHANGE_NUMBER, Long.toString(sb.getLastChangeNumber()));
+		}
 		return result;
 	}
 
@@ -112,50 +115,23 @@ public class RemoteMetadataRepositoryFactory implements IMetadataRepositoryFacto
 	{
 		try
 		{
-			getRepositoryFacade(location, monitor);
+			getRepositoryFacade(location.toURI(), monitor);
 			return Status.OK_STATUS;
 		}
 		catch(CoreException e)
 		{
 			return e.getStatus();
 		}
+		catch(URISyntaxException e)
+		{
+			return BuckminsterException.createStatus(e);
+		}
 	}
 
-	private IRepositoryFacade getRepositoryFacade(URL location, IProgressMonitor monitor)
+	@Override
+	protected IRepositoryFacade getFacadeFromServer(IRepositoryServer server, String repoName)
 	throws ProvisionException
 	{
-		try
-		{
-			URI repoURI = location.toURI();
-			String path = repoURI.getPath();
-			String repoName = repoURI.getFragment();
-			if(repoName == null || !path.endsWith("content.json"))
-				throw new FileNotFoundException(repoURI.toString());
-
-			IRepositoryServer repoServer = connect(new URI(repoURI.getScheme(), repoURI.getAuthority(), path,
-				repoURI.getQuery(), null));
-			return repoServer.getMetadataRepositoryFacade(repoName);
-		}
-		catch(ErrorResponse e)
-		{
-			throw new ProvisionException(new Status(IStatus.ERROR, Activator.ID,
-				ProvisionException.REPOSITORY_FAILED_READ, e.getMessage(), null));
-		}
-		catch(ProvisionException e)
-		{
-			throw e;
-		}
-		catch(FileNotFoundException e)
-		{
-			String msg = NLS.bind(Messages.io_failedRead, location);
-			throw new ProvisionException(new Status(IStatus.ERROR, Activator.ID,
-				ProvisionException.REPOSITORY_NOT_FOUND, msg, e));
-		}
-		catch(Exception e)
-		{
-			String msg = NLS.bind(Messages.io_failedRead, location);
-			throw new ProvisionException(new Status(IStatus.ERROR, Activator.ID,
-				ProvisionException.REPOSITORY_FAILED_READ, msg, e));
-		}
+		return server.getMetadataRepositoryFacade(repoName);
 	}
 }

@@ -11,9 +11,8 @@ package org.eclipse.buckminster.p2.remote.server;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Hashtable;
-import java.util.Map;
 
+import org.eclipse.buckminster.p2.remote.Activator;
 import org.eclipse.buckminster.p2.remote.Messages;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,47 +24,20 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.Filter;
-import org.osgi.framework.Version;
 
 /**
  * @author Thomas Hallgren
  */
 public class MetadataRepositoryFacade extends RepositoryFacade
 {
-	private static final class LDAPQuery extends Query
+	private static final Query s_matchAll = new Query()
 	{
-		private final Filter m_filter;
-
-		public LDAPQuery(Filter filter)
-		{
-			m_filter = filter;
-		}
-
 		@Override
 		public boolean isMatch(Object candidate)
 		{
-			if(!(candidate instanceof IInstallableUnit))
-				return false;
-
-			IInstallableUnit iu = (IInstallableUnit)candidate;
-			Hashtable<String, String> filterProps = new Hashtable<String, String>();
-			filterProps.putAll(getIUProperties(iu));
-			filterProps.put("id", iu.getId());
-
-			Version version = iu.getVersion();
-			if(version != null)
-				filterProps.put("version", version.toString());
-
-			return m_filter.match(filterProps);
+			return true;
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Map<String, String> getIUProperties(IInstallableUnit iu)
-	{
-		return iu.getProperties();
-	}
+	};
 
 	public MetadataRepositoryFacade(String name, LoggingMetadataRepository repository)
 	{
@@ -73,27 +45,15 @@ public class MetadataRepositoryFacade extends RepositoryFacade
 	}
 
 	@Override
-	protected void refreshMirror(URI uri, Filter filter) throws ProvisionException
+	protected void refreshMirror(URI uri, Query query) throws ProvisionException
 	{
-		Query query;
-		if(filter != null)
-			query = new LDAPQuery(filter);
-		else
-		{
-			query = new Query()
-			{
-				@Override
-				public boolean isMatch(Object candidate)
-				{
-					return true;
-				}
-			};
-		}
+		if(query == null)
+			query = s_matchAll;
 
 		IMetadataRepository source = ProvisioningHelper.getMetadataRepository(RepositoryServer.url(uri));
 		if(source == null)
 			throw new ProvisionException(new Status(IStatus.ERROR, Activator.ID, NLS.bind(
-				Messages.noSuchArtifactRepository, uri), null));
+				Messages.noSuchMetadataRepository, uri), null));
 
 		Collector result = source.query(query, new Collector(), null);
 		((IMetadataRepository)getRepository()).addInstallableUnits((IInstallableUnit[])result.toArray(IInstallableUnit.class));

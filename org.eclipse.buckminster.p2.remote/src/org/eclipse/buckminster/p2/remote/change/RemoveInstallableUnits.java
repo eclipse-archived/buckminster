@@ -22,6 +22,8 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
  */
 public class RemoveInstallableUnits extends RepositoryChange
 {
+	private static final long serialVersionUID = 2305479486943678783L;
+
 	private static String makeKey(IInstallableUnit iu)
 	{
 		return iu.getId() + '/' + iu.getVersion();

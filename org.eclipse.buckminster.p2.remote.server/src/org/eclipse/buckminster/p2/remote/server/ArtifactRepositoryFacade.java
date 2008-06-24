@@ -15,7 +15,7 @@ import java.net.URI;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepositoryIO;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
-import org.osgi.framework.Filter;
+import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 /**
  * @author Thomas Hallgren
@@ -28,7 +28,7 @@ public class ArtifactRepositoryFacade extends RepositoryFacade
 	}
 
 	@Override
-	protected void refreshMirror(URI repoURI, Filter filter) throws ProvisionException
+	protected void refreshMirror(URI repoURI, Query query) throws ProvisionException
 	{
 		// TODO Auto-generated method stub
 	}

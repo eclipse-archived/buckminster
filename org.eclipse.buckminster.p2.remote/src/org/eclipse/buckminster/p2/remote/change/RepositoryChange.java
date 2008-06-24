@@ -8,12 +8,15 @@
 
 package org.eclipse.buckminster.p2.remote.change;
 
+import java.io.Serializable;
+
 import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
 
 /**
  * @author Thomas Hallgren
  */
-public abstract class RepositoryChange
+@SuppressWarnings("serial")
+public abstract class RepositoryChange implements Serializable
 {
 	private long m_timestamp;
 

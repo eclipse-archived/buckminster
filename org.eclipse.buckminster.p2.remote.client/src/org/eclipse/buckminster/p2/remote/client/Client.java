@@ -12,10 +12,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.WeakHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.p2.remote.IRepositoryDataStream;
 import org.eclipse.buckminster.p2.remote.IRepositoryFacade;
+import org.eclipse.buckminster.p2.remote.marshall.IUMarshaller;
+import org.eclipse.buckminster.p2.remote.marshall.URISerializer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.jabsorb.JSONRPCBridge;
@@ -39,12 +45,16 @@ public class Client extends AbstractSerializer implements InvocationHandler
 {
 	private static final long serialVersionUID = 6731191127498719759L;
 
+	private static Pattern s_stacktraceLine = Pattern.compile("^\\s+at\\s([A-Za-z0-9_.-]+)\\.([A-Za-z0-9_-]+)\\(([A-Za-z0-9_.-]+):([0-9]+)\\)$");
+
 	public static Client create(Session session) throws Exception
 	{
 		JSONSerializer serializer = new JSONSerializer();
 		serializer.registerDefaultSerializers();
 		Client client = new Client(session, serializer);
 		serializer.registerSerializer(client);
+		serializer.registerSerializer(new IUMarshaller());
+		serializer.registerSerializer(new URISerializer());
 		return client;
 	}
 
@@ -169,11 +179,12 @@ public class Client extends AbstractSerializer implements InvocationHandler
 			throw er;
 		}
 
-		Constructor<? extends Exception> exCtorMsg = null;
+		Constructor<? extends Exception> exCtorMsgEx = null;
 		Constructor<? extends Exception> exCtorStatus = null;
+		Constructor<? extends Exception> exCtorMsg = null;
 		try
 		{
-			exCtorMsg = exClass.getConstructor(String.class, Throwable.class);
+			exCtorMsgEx = exClass.getConstructor(String.class, Throwable.class);
 		}
 		catch(Exception e)
 		{
@@ -183,13 +194,43 @@ public class Client extends AbstractSerializer implements InvocationHandler
 			}
 			catch(Exception e2)
 			{
+				try
+				{
+					exCtorMsg = exClass.getConstructor(String.class);
+				}
+				catch(Exception e3)
+				{
+				}
 			}
 		}
-		if(exCtorMsg != null)
-			throw exCtorMsg.newInstance(msg, er);
 
-		if(exCtorStatus != null)
-			throw exCtorStatus.newInstance(new Status(IStatus.ERROR, Activator.ID, msg, er));
+		Exception ex = null;
+		if(exCtorMsgEx != null)
+			ex = exCtorMsgEx.newInstance(msg, er);
+		else if(exCtorStatus != null)
+			ex = exCtorStatus.newInstance(new Status(IStatus.ERROR, Activator.ID, msg, er));
+		else if(exCtorMsg != null)
+			ex = exCtorMsg.newInstance(msg);
+		else
+			throw er;
+
+		ArrayList<StackTraceElement> traces = new ArrayList<StackTraceElement>();
+		StringTokenizer tokens = new StringTokenizer(trace, "\n");
+		if(tokens.hasMoreTokens())
+		{
+			tokens.nextToken(); // Skip first line
+			while(tokens.hasMoreTokens())
+			{
+				Matcher m = s_stacktraceLine.matcher(tokens.nextToken());
+				if(!m.matches())
+					break;
+
+				traces.add(new StackTraceElement(m.group(1), m.group(2), m.group(3),
+					Integer.parseInt(m.group(4))));
+			}
+		}
+		ex.setStackTrace(traces.toArray(new StackTraceElement[traces.size()]));
+		throw ex;
 	}
 
 	private Object invoke(JSONObject jso, String methodName, Object[] args, Class<?> returnType)

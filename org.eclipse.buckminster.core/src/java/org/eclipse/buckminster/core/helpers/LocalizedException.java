@@ -69,7 +69,7 @@ public abstract class LocalizedException extends CoreException
 
 	protected LocalizedException(Throwable cause, String defaultMessageFormat, Object...args)
 	{
-		super(BuckminsterException.createStatus(String.format(defaultMessageFormat, args), null));
+		super(BuckminsterException.createStatus(defaultMessageFormat, args));
 		m_defaultMessageFormat = defaultMessageFormat;
 		m_arguments = args;
 	}

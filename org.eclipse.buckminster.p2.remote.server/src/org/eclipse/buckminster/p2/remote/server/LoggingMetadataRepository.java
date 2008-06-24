@@ -14,9 +14,9 @@ import org.eclipse.buckminster.p2.remote.change.AddInstallableUnits;
 import org.eclipse.buckminster.p2.remote.change.AddReference;
 import org.eclipse.buckminster.p2.remote.change.RemoveAll;
 import org.eclipse.buckminster.p2.remote.change.RemoveInstallableUnits;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
@@ -24,10 +24,10 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 public class LoggingMetadataRepository extends LoggingRepository implements IMetadataRepository
 {
-	public LoggingMetadataRepository(IMetadataRepository remoteRepository, File changeLogFile)
-	throws CoreException
+	public LoggingMetadataRepository(RepositoryServer server, IMetadataRepository remoteRepository,
+		File facadeArea) throws ProvisionException
 	{
-		super(remoteRepository, changeLogFile);
+		super(server, remoteRepository, facadeArea);
 	}
 
 	public void addInstallableUnits(IInstallableUnit[] installableUnits)

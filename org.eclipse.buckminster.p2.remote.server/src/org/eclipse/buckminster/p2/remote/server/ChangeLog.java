@@ -2,27 +2,23 @@ package org.eclipse.buckminster.p2.remote.server;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.buckminster.p2.remote.change.RepositoryChange;
 import org.eclipse.buckminster.p2.remote.change.SynchronizationBlock;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.jabsorb.JSONRPCBridge;
-import org.jabsorb.JSONSerializer;
-import org.jabsorb.serializer.UnmarshallException;
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 
 public class ChangeLog
 {
@@ -30,37 +26,27 @@ public class ChangeLog
 
 	private final File m_logFile;
 
-	public ChangeLog(File logFile, long sequenceStart) throws CoreException
+	public ChangeLog(File logFile, long sequenceStart, RepositoryServer server) throws ProvisionException
 	{
-		DataInputStream input = null;
+		ObjectInputStream input = null;
 		try
 		{
-			input = new DataInputStream(new BufferedInputStream(new FileInputStream(logFile), 0x8000));
-			if(input.readLong() != CHANGELOG_MAGIC)
-				throw BuckminsterException.fromMessage("Not a changelog file: %s", logFile);
-
-			short major = input.readShort();
-			short minor = input.readShort();
-			if(!(major == 1 && minor == 0))
-				throw BuckminsterException.fromMessage(
-					"Unsupported version %d.%d in changelog file: %s. Only 1.0 is supported", new Integer(
-						major), new Integer(minor), logFile);
+			input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(logFile), 0x8000));
+			assertMagic(input);
 		}
 		catch(FileNotFoundException e)
 		{
-			DataOutputStream output = null;
+			ObjectOutputStream output = null;
 			try
 			{
-				output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(logFile), 16));
+				output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(logFile), 26));
 				output.writeLong(CHANGELOG_MAGIC);
-				output.writeShort(1);
-				output.writeShort(0);
 				output.writeLong(sequenceStart);
-				output.writeLong(0);
+				output.writeInt(0);
 			}
 			catch(IOException e2)
 			{
-				throw BuckminsterException.wrap(e2);
+				throw new ProvisionException(BuckminsterException.createStatus(e2));
 			}
 			finally
 			{
@@ -69,7 +55,7 @@ public class ChangeLog
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.wrap(e);
+			throw new ProvisionException(BuckminsterException.createStatus(e));
 		}
 		finally
 		{
@@ -80,20 +66,42 @@ public class ChangeLog
 
 	public void addChange(RepositoryChange change)
 	{
-		RandomAccessFile log = null;
 		try
 		{
-			change.setTimestamp(System.currentTimeMillis());
-			String entryString = JSONRPCBridge.getSerializer().toJSON(change);
-			log = new RandomAccessFile(m_logFile, "rw");
-			log.seek(log.length());
-			byte[] entryBytes = entryString.getBytes("US-ASCII");
-			log.writeInt(entryBytes.length);
-			log.write(entryBytes);
-			log.seek(20);
-			long entryCount = log.readLong();
-			log.seek(20);
-			log.writeLong(entryCount + 1);
+			ObjectOutputStream output = null;
+			try
+			{
+				change.setTimestamp(System.currentTimeMillis());
+				output = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(m_logFile, true), 0x8000))
+				{
+					@Override
+					protected void writeStreamHeader() throws IOException
+					{
+						super.reset();
+					}
+				};
+				output.writeObject(change);
+			}
+			finally
+			{
+				IOUtils.close(output);
+			}
+
+			// Bump sequence number
+			RandomAccessFile updater = null;
+			try
+			{
+				updater = new RandomAccessFile(m_logFile, "rw");
+				updater.seek(22);
+				int entryCount = updater.readInt();
+				updater.seek(22);
+				updater.writeInt(entryCount + 1);
+			}
+			finally
+			{
+				IOUtils.close(updater);
+			}
 		}
 		catch(RuntimeException e)
 		{
@@ -103,66 +111,49 @@ public class ChangeLog
 		{
 			Buckminster.getLogger().error(e, e.getMessage());
 		}
-		finally
-		{
-			IOUtils.close(log);
-		}
 	}
 
-	public SynchronizationBlock getChangesSince(long sequenceNumber) throws CoreException
+	public SynchronizationBlock getChangesSince(long sequenceNumber) throws ProvisionException
 	{
-		DataInputStream input = null;
+		ObjectInputStream input = null;
 		try
 		{
-			input = new DataInputStream(new BufferedInputStream(new FileInputStream(m_logFile), 0x8000));
-			input.skip(12);
-			final long sequenceStart = input.readLong();
+			input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(m_logFile), 0x8000));
+			assertMagic(input);
+			long sequenceStart = input.readLong();
+			int entryCount = input.readInt();
 			SynchronizationBlock syncBlock = new SynchronizationBlock();
-			if(sequenceStart >= sequenceNumber)
+			if(sequenceStart + entryCount < sequenceNumber)
 			{
-				syncBlock.setLastChangeNumber(sequenceStart);
-				syncBlock.setChanges(Collections.<RepositoryChange> emptyList());
+				syncBlock.setLastChangeNumber(sequenceStart + entryCount);
 				return syncBlock;
 			}
 
-			final long entryCount = input.readLong();
-			if(sequenceNumber > sequenceStart + entryCount)
+			List<RepositoryChange> changes = syncBlock.getChanges();
+			long currentNumber;
+			for(currentNumber = sequenceStart;; ++currentNumber)
 			{
-				syncBlock.setLastChangeNumber(sequenceStart + entryCount);
-				syncBlock.setChanges(Collections.<RepositoryChange> emptyList());
-			}
-
-			ArrayList<RepositoryChange> changes = new ArrayList<RepositoryChange>();
-			JSONSerializer serializer = JSONRPCBridge.getSerializer();
-			byte[] buffer = new byte[0x200];
-			long currentNumber = sequenceStart - 1;
-			try
-			{
-				int entrySize = input.readInt();
-				if(++currentNumber > sequenceNumber)
+				try
 				{
-					if(entrySize > buffer.length)
-						buffer = new byte[entrySize];
-					input.readFully(buffer, 0, entrySize);
-					changes.add((RepositoryChange)serializer.fromJSON(new String(buffer, 0, entrySize)));
+					RepositoryChange change = (RepositoryChange)input.readObject();
+					if(currentNumber > sequenceNumber)
+						changes.add(change);
 				}
-				else
-					input.skip(entrySize);
-			}
-			catch(EOFException e)
-			{
-			}
-			catch(UnmarshallException e)
-			{
-				throw BuckminsterException.wrap(e);
+				catch(EOFException e)
+				{
+					break;
+				}
+				catch(ClassNotFoundException e)
+				{
+					throw new ProvisionException(BuckminsterException.createStatus(e));
+				}
 			}
 			syncBlock.setLastChangeNumber(currentNumber);
-			syncBlock.setChanges(changes);
 			return syncBlock;
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.wrap(e);
+			throw new ProvisionException(BuckminsterException.createStatus(e));
 		}
 		finally
 		{
@@ -170,15 +161,15 @@ public class ChangeLog
 		}
 	}
 
-	public long getLastChangeNumber() throws IOException
+	public long getLastChangeNumber() throws IOException, ProvisionException
 	{
-		DataInputStream input = null;
+		ObjectInputStream input = null;
 		try
 		{
-			input = new DataInputStream(new BufferedInputStream(new FileInputStream(m_logFile), 0x8000));
-			input.skip(12);
+			input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(m_logFile), 0x8000));
+			assertMagic(input);
 			final long sequenceStart = input.readLong();
-			final long entryCount = input.readLong();
+			final int entryCount = input.readInt();
 			return sequenceStart + entryCount;
 		}
 		catch(FileNotFoundException e)
@@ -189,5 +180,12 @@ public class ChangeLog
 		{
 			IOUtils.close(input);
 		}
+	}
+
+	private void assertMagic(ObjectInputStream input) throws ProvisionException, IOException
+	{
+		if(input.readLong() != CHANGELOG_MAGIC)
+			throw new ProvisionException(BuckminsterException.createStatus("Not a changelog file: %s",
+				m_logFile));
 	}
 }

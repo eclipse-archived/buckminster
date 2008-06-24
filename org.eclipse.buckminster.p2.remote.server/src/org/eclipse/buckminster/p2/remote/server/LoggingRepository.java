@@ -16,8 +16,8 @@ import org.eclipse.buckminster.p2.remote.change.SetDescription;
 import org.eclipse.buckminster.p2.remote.change.SetName;
 import org.eclipse.buckminster.p2.remote.change.SetProperty;
 import org.eclipse.buckminster.p2.remote.change.SetProvider;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
 
 public class LoggingRepository extends PlatformObject implements IRepository
@@ -26,10 +26,17 @@ public class LoggingRepository extends PlatformObject implements IRepository
 
 	private final ChangeLog m_changeLog;
 
-	public LoggingRepository(IRepository repository, File changeLogFile) throws CoreException
+	private final Mirrors m_mirrors;
+
+	private final RepositoryServer m_server;
+
+	public LoggingRepository(RepositoryServer server, IRepository repository, File facadeArea)
+	throws ProvisionException
 	{
 		wrappedRepository = repository;
-		m_changeLog = new ChangeLog(changeLogFile, 0L);
+		m_changeLog = new ChangeLog(new File(facadeArea, "changelog"), 1L, server);
+		m_mirrors = new Mirrors(new File(facadeArea, "mirrors"), server);
+		m_server = server;
 	}
 
 	@Override
@@ -56,6 +63,11 @@ public class LoggingRepository extends PlatformObject implements IRepository
 		return wrappedRepository.getLocation();
 	}
 
+	public Mirrors getMirrors()
+	{
+		return m_mirrors;
+	}
+
 	public String getName()
 	{
 		return wrappedRepository.getName();
@@ -70,6 +82,11 @@ public class LoggingRepository extends PlatformObject implements IRepository
 	public String getProvider()
 	{
 		return wrappedRepository.getProvider();
+	}
+
+	public RepositoryServer getServer()
+	{
+		return m_server;
 	}
 
 	public String getType()

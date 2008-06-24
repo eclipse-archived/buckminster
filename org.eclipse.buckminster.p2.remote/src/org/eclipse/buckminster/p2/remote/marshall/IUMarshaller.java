@@ -27,11 +27,9 @@ public class IUMarshaller extends AbstractSerializer
 {
 	private static final long serialVersionUID = 7858338218473381962L;
 
-	@SuppressWarnings("unchecked")
-	private static final Class[] jsonClasses = new Class[] { JSONObject.class };
+	private static final Class<?>[] jsonClasses = new Class[] { JSONObject.class };
 
-	@SuppressWarnings("unchecked")
-	private static final Class[] javaClasses = new Class[] { Version.class, VersionRange.class,
+	private static final Class<?>[] javaClasses = new Class[] { Version.class, VersionRange.class,
 		TouchpointType.class, IArtifactKey.class, ArtifactKey.class, ProvidedCapability.class,
 		RequiredCapability.class, IUpdateDescriptor.class, UpdateDescriptor.class, Copyright.class,
 		License.class };
@@ -76,14 +74,12 @@ public class IUMarshaller extends AbstractSerializer
 
 	private static final String PROP_URL = "url";
 
-	@SuppressWarnings("unchecked")
-	public Class[] getJSONClasses()
+	public Class<?>[] getJSONClasses()
 	{
 		return jsonClasses;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class[] getSerializableClasses()
+	public Class<?>[] getSerializableClasses()
 	{
 		return javaClasses;
 	}

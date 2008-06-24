@@ -75,4 +75,12 @@ public interface IRepositoryServer
 	 *         <code>null</code>.
 	 */
 	List<String> getMetadataRepositoryFacadeNames();
+
+	/**
+	 * This method resets the server to default values. All registered repositories etc. are lost.
+	 * This method should normally never be called from a client. Its primary purpose is for unit
+	 * testing.
+	 * @throws ProvisionException
+	 */
+	void hardReset() throws ProvisionException;
 }
