@@ -137,11 +137,13 @@ public class FeedsPage extends InstallWizardPage
 		sitesComposite.setLayoutData(layoutData);
 
 		Text updateSite33Text = getSelectableItalicText(sitesComposite);
-		updateSite33Text.setText(getInstallWizard().getEclipseDistroTools33UpdateSiteURL());
+		String u = getInstallWizard().getEclipseDistroTools33UpdateSiteURL();
+		updateSite33Text.setText(u == null ? "missing in input" : u);			
 		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.3");
 
+		u = getInstallWizard().getEclipseDistroTools34UpdateSiteURL();
 		Text updateSite34Text = getSelectableItalicText(sitesComposite);
-		updateSite34Text.setText(getInstallWizard().getEclipseDistroTools34UpdateSiteURL());
+		updateSite34Text.setText(u == null ? "missing in input" : u);			
 		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.4");
 
 		new Label(pageComposite, SWT.NONE);
