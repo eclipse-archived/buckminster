@@ -147,7 +147,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			// An outline that has sub-outlines is shown as a folder
 			//
 			List<? extends IOutline> outlines = ((IOutline)element).getOutlines();
-			if(((IOutline)element).getType() == OutlineType.UNKNOWN || (outlines != null && outlines.size() > 0))
+			if(((IOutline)element).getType() == OutlineType.UNKNOWN || ((IOutline)element).getType() == OutlineType.TEXT || (outlines != null && outlines.size() > 0))
 				return getFolderImage();
 			// An outline that is a link is shown as a browseable image
 			if(((IOutline)element).getType() == OutlineType.LINK)
