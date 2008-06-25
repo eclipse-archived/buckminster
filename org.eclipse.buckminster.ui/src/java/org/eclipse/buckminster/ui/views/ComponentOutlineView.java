@@ -111,8 +111,10 @@ public class ComponentOutlineView extends ComponentBrowserView
 			}
 			
 		}
-
-		m_viewer.setInput(r == null ? getViewSite() : r);
+		Object input = r == null ? getViewSite() : r;
+		if(m_viewer.getInput() == input)
+			return;
+		m_viewer.setInput(input);
 		m_viewer.expandAll();
 	}
 
