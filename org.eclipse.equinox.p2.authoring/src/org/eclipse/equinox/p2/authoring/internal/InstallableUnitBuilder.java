@@ -12,9 +12,13 @@
 
 package org.eclipse.equinox.p2.authoring.internal;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
@@ -103,6 +107,11 @@ public class InstallableUnitBuilder extends ModelRoot
 		}
 	}
 
+	/**
+	 * Common subclass for license, and copyright
+	 * @author Henrik Lindberg
+	 *
+	 */
 	public static class IUInfoBuilder extends ModelPart
 	{
 		protected String m_body;
@@ -381,35 +390,94 @@ public class InstallableUnitBuilder extends ModelRoot
 			notifyChanged();
 		}
 	}
-
+	/**
+	 * TouchpointDataBuilder manages actions for a set of p2 engine phases. Note that no attempt
+	 * is made to validate if instructons are valid for the touchpoint type, or if actions have
+	 * the correct set of parameters etc.
+	 * 
+	 * TODO: Supports named touchpoint data, but this is not supported in the meta data format, so now names are generated
+	 * by the InstallableUnitBuilder.
+	 * TODO: Does not handle the phases COLLECT, and CHECKTRUST (don't know if such support is needed).
+	 * @author Henrik Lindberg
+	 *
+	 */
 	public static class TouchpointDataBuilder extends ModelPart
 	{
-		LinkedHashMap<String, String> m_instructions;
+		LinkedHashMap<String, TouchpointInstructionBuilder> m_instructions;
+		private String m_name; 
 
+		public static final String INSTALL = "install"; //$NON-NLS-1$
+		public static final String UNINSTALL = "uninstall"; //$NON-NLS-1$
+		public static final String CONFIGURE = "configure"; //$NON-NLS-1$
+		public static final String UNCONFIGURE = "unconfigure"; //$NON-NLS-1$
+		
+		/**
+		 * Creates a TouchpointDataBuilder from TouchpointData. Adds one TouchpointInstructionBuilder 
+		 * per possible instruction and replaces it with instructions from the TouchpointData.
+		 * (This way, there is no need to explicitly add an instruction - it is enough to edit
+		 * the actions per instruction).
+		 * @param touchpointData
+		 */
 		@SuppressWarnings("unchecked")
 		public TouchpointDataBuilder(TouchpointData touchpointData)
 		{
 			Map m = touchpointData.getInstructions();
-			m_instructions = new LinkedHashMap<String, String>(m.size());
-			m_instructions.putAll(m);
+			m_instructions = new LinkedHashMap<String, TouchpointInstructionBuilder>(m.size());
+			
+			// initialize with default instructions
+			m_instructions.put(INSTALL, new TouchpointInstructionBuilder(this, INSTALL));
+			m_instructions.put(UNINSTALL, new TouchpointInstructionBuilder(this, UNINSTALL));
+			m_instructions.put(CONFIGURE, new TouchpointInstructionBuilder(this, CONFIGURE));
+			m_instructions.put(UNCONFIGURE, new TouchpointInstructionBuilder(this, UNCONFIGURE));
+			
+			// Replace with the instructions set in the TouchpointData
+			for(Object e : m.entrySet())
+			{
+				String phaseId = (String)((Map.Entry)e).getKey();				
+				String statements = (String)((Map.Entry)e).getValue();
+				TouchpointInstructionBuilder instruction = new TouchpointInstructionBuilder(phaseId, statements);
+				m_instructions.put(phaseId, instruction);
+				instruction.setParent(this);
+			}
+			// TODO: should set the name when that is supported in TouchpointData - now the InstallableUnitBuilder
+			// sets the name.
 		}
 
+		/**
+		 * Creates the TouchpointData by re-assembling the TouchpointInstructionBuilder and
+		 * TouchpointActionBuilder(s) to the required form <"instructionKey", "action(...);action(...);"
+		 * @return a new TouchpointData
+		 */
 		public TouchpointData createTouchpointData()
 		{
-			return MetadataFactory.createTouchpointData(m_instructions);
+			Map<String, String> m = new LinkedHashMap<String, String>();
+			// Create a new map with all non empty instructions
+			for(TouchpointInstructionBuilder instruction : m_instructions.values())
+			{
+				// Do not output empty instructions
+				TouchpointActionBuilder[] actions = instruction.getActions();
+				if(actions == null || actions.length < 1)
+					continue;
+				StringBuilder builder = new StringBuilder();
+				for(int i = 0; i < actions.length; i++)
+					actions[i].append(builder);
+				m.put(instruction.getPhaseId(), builder.toString());
+			}
+			// create the TouchpointData from the constructed map
+			return MetadataFactory.createTouchpointData(m);
 		}
 
-		public String getInstruction(String key)
+		public TouchpointInstructionBuilder getInstruction(String key)
 		{
 			return m_instructions.get(key);
 		}
 
-		public LinkedHashMap<String, String> getInstructions()
+		public LinkedHashMap<String, TouchpointInstructionBuilder> getInstructions()
 		{
 			return m_instructions;
 		}
 
-		public void putInstruction(String key, String value)
+		public void putInstruction(String key, TouchpointInstructionBuilder value)
 		{
 			m_instructions.put(key, value);
 			notifyChanged();
@@ -420,8 +488,263 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_instructions.remove(key);
 			notifyChanged();
 		}
-	}
+		public String getName()
+		{
+			return m_name;
+		}
 
+		public void setName(String name)
+		{
+			m_name = name;
+			notifyChanged();
+		}
+
+	}
+	/**
+	 * The TouchpointInstructionBuilder manages one instruction (i.e. actions to execute
+	 * in a p2 engine phase like INSTALL, UNINSTALL,...). A TouchpointDataBuilder has one instance
+	 * of TouchpointInstructionBuilder per engine phase.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	public static class TouchpointInstructionBuilder extends ModelPart
+	{
+		private String m_phaseId;
+		private TouchpointActionBuilder[] m_actions;
+		
+		/**
+		 * Create an instruction with no actions.
+		 * @param phaseId
+		 */
+		public TouchpointInstructionBuilder(ModelPart parent, String phaseId)
+		{
+			m_phaseId = phaseId;
+			m_actions = null;
+			setParent(parent);
+		}
+		/**
+		 * Create an instruction with actions described in the 'statements' parameter.
+		 * @param phaseId - the instruction/phase id (INSTALL, UNINSTALL, ... etc)
+		 * @param statements - a sequence of action statements "action(...);action(...);"
+		 */
+		public TouchpointInstructionBuilder(String phaseId, String statements)
+		{
+			m_phaseId = phaseId;
+			// parse the statements
+			List<TouchpointActionBuilder> actions = new ArrayList<TouchpointActionBuilder>();
+			StringTokenizer tokenizer = new StringTokenizer(statements, ";");
+			while(tokenizer.hasMoreTokens())
+				actions.add(TouchpointActionBuilder.parse(this, tokenizer.nextToken()));
+			// keep the list (they are all now parented by this TouchpointInstructionBuilder)
+			m_actions = (TouchpointActionBuilder[]) actions.toArray();
+		}
+		public String getPhaseId()
+		{
+			return m_phaseId;
+		}
+		public TouchpointActionBuilder[] getActions()
+		{
+			return m_actions;
+		}
+		/**
+		 * Add action last.
+		 * 
+		 * @param action
+		 * @return index where this artifact key was added
+		 */
+		public int addAction(TouchpointActionBuilder action)
+		{
+			return addAction(action, -1);
+		}
+
+		/**
+		 * Adds an action at a given index. If index is outside of range (or more specifically is -1), the new action
+		 * is added last.
+		 * 
+		 * @param artifact
+		 * @param index
+		 * @return the index where the artifact key was added.
+		 */
+		public int addAction(TouchpointActionBuilder action, int index)
+		{
+			int[] ix = { index };
+			m_actions = (TouchpointActionBuilder[])addModelPart(m_actions, action, ix);
+			notifyChanged();
+			return ix[0];
+		}
+
+		/**
+		 * Removes the action from the set of actions
+		 * 
+		 * @param action
+		 * @return the index where the action was found, -1 if not found
+		 */
+		public int removeAction(TouchpointActionBuilder action)
+		{
+			int[] index = { 0 };
+			m_actions = (TouchpointActionBuilder[])removeModelPart(m_actions, action, index);
+			if(index[0] == -1)
+				return -1;
+			notifyChanged();
+			return index[0];
+		}
+
+		/**
+		 * Moves the action up (+1) or down(-1) in the array of actions
+		 * 
+		 * @param action
+		 * @param delta
+		 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+		 * @return -1 if move was not made, else the position before the move is returned
+		 */
+		public int moveAction(TouchpointActionBuilder action, int delta)
+		{
+			int index = moveModelPart(m_actions, action, delta);
+			notifyChanged();
+			return index;
+		}
+	}
+	/**
+	 * A TouchpointActionBuilder manages the parameters and parameter values for one action
+	 * being part of a TouchpointInstructionBuilder.
+	 * TODO: it suffers from the same problem as the rest of p2 - A "," is not allowed in a parameter value
+	 * @author Henrik Lindberg
+	 */
+	public static class TouchpointActionBuilder extends ModelPart
+	{
+		private String m_actionKey;
+		private Map<String, ParameterValue>m_actionParams;
+		/**
+		 * Creates an TouchpointActionBuilder from a statement on the form:
+		 * "action(param:value,param:value,param:value)"
+		 * and sets the parent of the created object to 'parent'
+		 * @param parent - the parent of the newly created object
+		 * @param statement - the statement to parse
+		 * @return a newly created TouchpointActionBuilder
+		 */
+		public static TouchpointActionBuilder parse(ModelPart parent, String statement)
+		{
+			int openBracket = statement.indexOf('(');
+			int closeBracket = statement.lastIndexOf(')');
+			String actionName = statement.substring(0, openBracket).trim();
+			String nameValuePairs = statement.substring(openBracket + 1, closeBracket);
+			// TODO: Fix comma problem
+			StringTokenizer tokenizer = new StringTokenizer(nameValuePairs, ","); //$NON-NLS-1$
+			Map<String, ParameterValue> parameters = new HashMap<String, ParameterValue>();
+			while (tokenizer.hasMoreTokens()) {
+				String nameValuePair = tokenizer.nextToken();
+				int colonIndex = nameValuePair.indexOf(":"); //$NON-NLS-1$
+				String name = nameValuePair.substring(0, colonIndex).trim();
+				String value = nameValuePair.substring(colonIndex + 1).trim();	
+				parameters.put(name, new ParameterValue(value));
+			}
+			TouchpointActionBuilder a = new TouchpointActionBuilder(actionName, parameters);
+			a.setParent(parent);
+			return a;
+		}
+		
+		public TouchpointActionBuilder(String actionKey)
+		{
+			m_actionKey = actionKey;
+			m_actionParams = null;
+		}
+		public TouchpointActionBuilder(String actionKey, Map<String, ParameterValue> parameters)
+		{
+			m_actionKey = actionKey;
+			m_actionParams = parameters;
+		}
+		public String getActionKey()
+		{
+			return m_actionKey;
+		}
+		public void setActionKey(String actionKey)
+		{
+			m_actionKey = actionKey;
+			notifyChanged();
+		}
+		public void setParameters(Map <String, ParameterValue> parameters)
+		{
+			m_actionParams = parameters;
+			notifyChanged();
+		}
+		public void append(StringBuilder builder)
+		{
+			builder.append(m_actionKey);
+			builder.append("(");
+			for(Entry<String, ParameterValue>e : m_actionParams.entrySet())
+			{
+				ParameterValue v = e.getValue();
+				if(v.getValue() == null)
+					continue; // do not output parameters that have null value
+				builder.append(e.getKey());
+				builder.append(":");
+				builder.append(v.getValue());
+			}
+			builder.append(");");
+		}
+		/**
+		 * Returns the value of a parameter. Throws IllegalArgumentException if the parameter is not
+		 * specified for the action.
+		 * @param parameterName
+		 * @return a string value (can be ""), or is null if parameter is not set
+		 */
+		public String getParameter(String parameterName)
+		{
+			if(m_actionParams == null)
+				throw new IllegalArgumentException("No such parameter: " + parameterName);
+			ParameterValue v = m_actionParams.get(parameterName);
+			if(v == null)
+				throw new IllegalArgumentException("No such parameter: " + parameterName);
+			return v.getValue();
+		}
+		/**
+		 * Sets the value of a parameter. Throws IllegalArgumentException if the parameter is not
+		 * specified for the action.
+		 * @param parameterName
+		 * @param parameterValue
+		 */
+		public void setParameter(String parameterName, String parameterValue)
+		{
+			if(m_actionParams == null)
+				throw new IllegalArgumentException("Action has no parameters");
+			if(m_actionParams.get(parameterName) == null)
+				throw new IllegalArgumentException("Action does not have a parameter called: " + parameterName);
+			m_actionParams.get(parameterName).setValue(parameterValue);
+			notifyChanged();
+		}
+		public Set<String> getParameterNames()
+		{
+			return m_actionParams.keySet();
+		}
+	}
+	/**
+	 * Value holder class used to differentiate between a null value and non existing parameter.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	public static class ParameterValue
+	{
+		private String m_value;
+
+		public ParameterValue()
+		{
+			m_value = null;
+		}
+		public ParameterValue(String value)
+		{
+			m_value = value;
+		}
+
+		public String getValue()
+		{
+			return m_value;
+		}
+
+		public void setValue(String value)
+		{
+			m_value = value;
+		}
+	}
 	public static class TouchpointTypeBuilder extends ModelPart
 	{
 		private String m_typeid;
@@ -614,6 +937,8 @@ public class InstallableUnitBuilder extends ModelRoot
 		for(int i = 0; i < touchpointData.length; i++)
 		{
 			m_touchpointData[i] = new TouchpointDataBuilder(touchpointData[i]);
+			// TODO: Replace this when IU meta data contains a name/label - for now generate a name
+			m_touchpointData[i].setName("Instruction Block "+Integer.toString(i+1));
 			m_touchpointData[i].setParent(this);
 		}
 		m_touchpointType = new TouchpointTypeBuilder(unit.getTouchpointType());
@@ -733,112 +1058,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		return index;
 	}
 
-	/**
-	 * Adds a model part at a given index. If index is outside of range (or specifically -1), the new part is added
-	 * last. The modified model part array is returned, and the index array is updated with the index where the part was
-	 * added.
-	 * 
-	 * @param array
-	 *            the array where the add takes place
-	 * @param part
-	 *            the part to add
-	 * @param index
-	 *            in/out array with wanted index (in), and resulting index (out)
-	 * @return the index where the part was added in index[], and the resulting array
-	 */
-	private ModelPart[] addModelPart(ModelPart[] array, ModelPart part, int[] index)
-	{
-		Class<?> clazz = array.getClass().getComponentType();
-		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length + 1);
-		int idx = index[0];
-		int j = 0;
-		for(int i = 0; i < array.length; i++)
-		{
-			if(i == idx)
-				tmp[j++] = part;
-			tmp[j++] = array[i];
-		}
-		if(idx < 0 || idx >= array.length)
-		{
-			idx = array.length;
-			tmp[idx] = part;
-		}
-		part.setParent(this);
-		index[0] = idx;
-		return tmp;
-	}
 
-	/**
-	 * Removes the model part from the array of parts.
-	 * 
-	 * @param array
-	 *            the model part array to remove the part from
-	 * @param part
-	 *            the part to remove
-	 * @param index
-	 *            an array of size 1 where the index to the removed artifact was found is returned
-	 * @return the array of model parts with the part removed - same array is returned if part was not found and index
-	 *         returned is then -1
-	 */
-	private ModelPart[] removeModelPart(ModelPart[] array, ModelPart part, int[] index)
-	{
-		int idx = -1; // not found (yet)
-		for(int i = 0; i < array.length; i++)
-			if(array[i] == part)
-			{
-				idx = i;
-				break;
-			}
-		if(idx == -1)
-		{
-			index[0] = idx;
-			return array; // not found
-		}
-		Class<?> clazz = array.getClass().getComponentType();
-		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length - 1);
-
-		int j = 0;
-		for(int i = 0; i < array.length; i++)
-		{
-			if(i == idx)
-				continue; // skip the item to remove
-			tmp[j++] = array[i];
-		}
-		index[0] = idx;
-		part.setParent(null);
-		return tmp;
-	}
-
-	/**
-	 * Moves the model part up (+1) or down(-1) in the array of model parts
-	 * 
-	 * @param part
-	 * @param delta
-	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
-	 * @return -1 if move was not made, else the position before the move is returned
-	 */
-	private static int moveModelPart(ModelPart[] array, ModelPart part, int delta)
-	{
-		if(!(delta == 1 || delta == -1))
-			throw new IllegalArgumentException("can only move +1 or -1");
-		int index = -1; // not found (yet)
-		for(int i = 0; i < array.length; i++)
-			if(array[i] == part)
-			{
-				index = i;
-				break;
-			}
-		if(index == -1)
-			return index; // not found
-		int swapIndex = index + delta;
-		if(swapIndex < 0 || swapIndex >= array.length)
-			return -1; // outside of range - no move
-
-		ModelPart tmp = array[swapIndex];
-		array[swapIndex] = array[index];
-		array[index] = tmp;
-		return index;
-	}
 
 	public CopyrightBuilder getCopyright()
 	{
@@ -996,11 +1216,69 @@ public class InstallableUnitBuilder extends ModelRoot
 		return index;
 	}
 
-	public Serializable getTouchpointData()
+	public  TouchpointDataBuilder[] getTouchpointData()
 	{
 		return m_touchpointData;
 	}
 
+	/**
+	 * Adds a touchpoint data last.
+	 * 
+	 * @param data the touchpoint to add
+	 * @return index where this touchpoint data was added
+	 */
+	public int addTouchpointData(TouchpointDataBuilder data)
+	{
+		return addTouchpointData(data, -1);
+	}
+
+	/**
+	 * Adds a touchpoint data at a given index. If index is outside of range (or more specifically is -1), the new
+	 * touchpoint data is added last.
+	 * 
+	 * @param data
+	 * @param index
+	 * @return the index where the touchpoint data was added.
+	 */
+	public int addTouchpointData(TouchpointDataBuilder data, int index)
+	{
+		int[] ix = { index };
+		m_touchpointData = (TouchpointDataBuilder[])addModelPart(m_touchpointData, data, ix);
+		notifyChanged();
+		return ix[0];
+	}
+
+	/**
+	 * Removes the touchpoint data from the set of touchpoint data.
+	 * 
+	 * @param artifact
+	 * @return the index where the required capability was found, -1 if not found
+	 */
+	public int removeTouchpointData(TouchpointDataBuilder data)
+	{
+		int[] index = { 0 };
+		m_touchpointData = (TouchpointDataBuilder[])removeModelPart(m_touchpointData, data, index);
+		if(index[0] == -1)
+			return -1;
+		notifyChanged();
+		return index[0];
+	}
+
+	/**
+	 * Moves the touchpoint data (+1) or down(-1) in the array of touchpoint data.
+	 * 
+	 * @param data the touchpoint data to move
+	 * @param delta
+	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @return -1 if move was not made, else the position before the move is returned
+	 */
+	public int moveTouchpointData(TouchpointDataBuilder data, int delta)
+	{
+		int index = moveModelPart(m_touchpointData, data, delta);
+		notifyChanged();
+		return index;
+	}
+	
 	public TouchpointTypeBuilder getTouchpointType()
 	{
 		return m_touchpointType;

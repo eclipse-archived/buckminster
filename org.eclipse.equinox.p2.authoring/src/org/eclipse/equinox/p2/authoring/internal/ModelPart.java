@@ -55,6 +55,112 @@ public class ModelPart implements IAdaptable
 		if(adapter.isInstance(this))
 			return this;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}		
+	}
+	
+	/**
+	 * Adds a model part at a given index. If index is outside of range (or specifically -1), the new part is added
+	 * last. The modified model part array is returned, and the index array is updated with the index where the part was
+	 * added.
+	 * 
+	 * @param array
+	 *            the array where the add takes place
+	 * @param part
+	 *            the part to add
+	 * @param index
+	 *            in/out array with wanted index (in), and resulting index (out)
+	 * @return the index where the part was added in index[], and the resulting array
+	 */
+	protected ModelPart[] addModelPart(ModelPart[] array, ModelPart part, int[] index)
+	{
+		Class<?> clazz = array.getClass().getComponentType();
+		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length + 1);
+		int idx = index[0];
+		int j = 0;
+		for(int i = 0; i < array.length; i++)
+		{
+			if(i == idx)
+				tmp[j++] = part;
+			tmp[j++] = array[i];
+		}
+		if(idx < 0 || idx >= array.length)
+		{
+			idx = array.length;
+			tmp[idx] = part;
+		}
+		part.setParent(this);
+		index[0] = idx;
+		return tmp;
+	}
+	/**
+	 * Removes the model part from the array of parts.
+	 * 
+	 * @param array
+	 *            the model part array to remove the part from
+	 * @param part
+	 *            the part to remove
+	 * @param index
+	 *            an array of size 1 where the index to the removed artifact was found is returned
+	 * @return the array of model parts with the part removed - same array is returned if part was not found and index
+	 *         returned is then -1
+	 */
+	protected static ModelPart[] removeModelPart(ModelPart[] array, ModelPart part, int[] index)
+	{
+		int idx = -1; // not found (yet)
+		for(int i = 0; i < array.length; i++)
+			if(array[i] == part)
+			{
+				idx = i;
+				break;
+			}
+		if(idx == -1)
+		{
+			index[0] = idx;
+			return array; // not found
+		}
+		Class<?> clazz = array.getClass().getComponentType();
+		ModelPart[] tmp = (ModelPart[])java.lang.reflect.Array.newInstance(clazz, array.length - 1);
+
+		int j = 0;
+		for(int i = 0; i < array.length; i++)
+		{
+			if(i == idx)
+				continue; // skip the item to remove
+			tmp[j++] = array[i];
+		}
+		index[0] = idx;
+		part.setParent(null);
+		return tmp;
+	}
+
+	/**
+	 * Moves the model part up (+1) or down(-1) in the array of model parts
+	 * 
+	 * @param part
+	 * @param delta
+	 *            - +1 or -1 (throws IllegalArgumentException of not +1 or -1)
+	 * @return -1 if move was not made, else the position before the move is returned
+	 */
+	protected static int moveModelPart(ModelPart[] array, ModelPart part, int delta)
+	{
+		if(!(delta == 1 || delta == -1))
+			throw new IllegalArgumentException("can only move +1 or -1");
+		int index = -1; // not found (yet)
+		for(int i = 0; i < array.length; i++)
+			if(array[i] == part)
+			{
+				index = i;
+				break;
+			}
+		if(index == -1)
+			return index; // not found
+		int swapIndex = index + delta;
+		if(swapIndex < 0 || swapIndex >= array.length)
+			return -1; // outside of range - no move
+
+		ModelPart tmp = array[swapIndex];
+		array[swapIndex] = array[index];
+		array[index] = tmp;
+		return index;
+	}
 	
 }
