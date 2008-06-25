@@ -79,8 +79,9 @@ public class BuckminsterURIRewriter implements IRewriter
 				//
 				if(!path.contains("dynamic/view") || !path.contains("component")) //$NON-NLS-1$ //$NON-NLS-2$
 					break rule;
-
-				StringBuilder bld = new StringBuilder(location + 10);
+				if(location.contains("eclipse=1"))
+					break rule; // already appended "eclipse=1"
+				StringBuilder bld = new StringBuilder(location.length() + 10);
 				bld.append(location);
 				// if there was a query string already, the added parameter must have & separator
 				bld.append(uri.getRawQuery() == null
