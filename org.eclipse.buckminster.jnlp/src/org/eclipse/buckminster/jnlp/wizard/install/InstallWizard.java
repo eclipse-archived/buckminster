@@ -144,6 +144,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	static private final String ATTRIBUTE_URL = "url";
 
+	static private final String UNIVERSAL_ERROR_MESSAGE =
+		"The materialization encountered [an error/errors] which can be caused by a wide range of issues" +
+		" such as temporary internet outages, or distro not maintained by publisher. Look at detailed message" +
+		" for more information, and try again as the issue may be temporary.";
+
 	private static MultiStatus createMultiStatusFromStatus(IStatus status)
 	{
 		return new MultiStatus(status.getPlugin(), status.getCode(), status.getMessage(), status.getException());
@@ -214,9 +219,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_eclipseDistroTools34URL;
 
 	private String m_eclipseDistroTools33URL;
-	
+
 	private String m_eclipseDistroTools34UpdateSiteURL;
-	
+
 	private String m_eclipseDistroTools33UpdateSiteURL;
 
 	private boolean m_loginPageRequested = false;
@@ -439,19 +444,18 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			e.printStackTrace();
 		}
 
-/*		Starts Eclipse installation wizard - Eclipse SDK + Buckminster + Spaces + RSS Owl
-		if(isMaterializationFinished())
-		{
-			String materializerID = getMaterializationSpecBuilder().getMaterializerID();
+		/*
+		 * Starts Eclipse installation wizard - Eclipse SDK + Buckminster + Spaces + RSS Owl
+		 * if(isMaterializationFinished()) { String materializerID =
+		 * getMaterializationSpecBuilder().getMaterializerID();
+		 * 
+		 * if((materializerID == IMaterializer.TARGET_PLATFORM || materializerID == IMaterializer.WORKSPACE) &&
+		 * VALUE_TRUE.equals(m_localProperties.get(LOCALPROP_ENABLE_TP_WIZARD)))
+		 * MaterializationUtils.startTPWizard(this, getShell());
+		 * 
+		 * saveLocalProperties(); }
+		 */
 
-			if((materializerID == IMaterializer.TARGET_PLATFORM || materializerID == IMaterializer.WORKSPACE)
-					&& VALUE_TRUE.equals(m_localProperties.get(LOCALPROP_ENABLE_TP_WIZARD)))
-				MaterializationUtils.startTPWizard(this, getShell());
-
-			saveLocalProperties();
-		}
-*/
-		
 		return true;
 	}
 
@@ -532,7 +536,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			showOriginalPage(originalPage);
 
-			final IStatus status = BuckminsterException.wrap(e).getStatus();
+			// final IStatus status = BuckminsterException.wrap(e).getStatus();
+			final IStatus status = BuckminsterException.fromMessage(BuckminsterException.wrap(e), UNIVERSAL_ERROR_MESSAGE).getStatus();
+
 			CorePlugin.logWarningsAndErrors(status);
 			HelpLinkErrorDialog.openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
 					"Materialization failed", MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
@@ -1471,7 +1477,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_eclipseDistroTools33UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL);
 
 		m_learnMoreCloudfeedsURL = properties.get(PROP_LEARN_MORE_CLOUDFEEDS_URL);
-		
+
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;
