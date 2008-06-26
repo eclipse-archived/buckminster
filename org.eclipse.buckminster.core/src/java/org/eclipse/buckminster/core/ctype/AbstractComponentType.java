@@ -139,7 +139,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 	private Pattern m_substituteNamePattern;
 
-	public final IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	public IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		DepNode node = getResolution(rInfo, true, monitor);
 		return node.getResolution().getComponentIdentifier().getVersion();
