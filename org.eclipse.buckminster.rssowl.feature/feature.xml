@@ -231,14 +231,14 @@ litigation.
       <import plugin="org.eclipse.buckminster.rssowl" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.generic.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.jnlp" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.download" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.buckminster.sax"/>
       <import plugin="org.eclipse.core.net"/>
-      <import plugin="org.eclipse.pde.core" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.core" version="3.3.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
