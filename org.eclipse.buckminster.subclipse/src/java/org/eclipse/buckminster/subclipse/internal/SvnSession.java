@@ -987,10 +987,20 @@ public class SvnSession implements Closeable
 			// will save us a lot of calls since the list is cached.
 			//
 			String lastEntry = url.getLastPathSegment();
-			for(ISVNDirEntry dirEntry : listFolder(url.getParent(), monitor))
+			ISVNDirEntry[] dirEntries;
+			try
+			{
+				dirEntries = listFolder(url.getParent(), monitor);
+			}
+			catch(CoreException e)
+			{
+				dirEntries = s_emptyFolder;
+			}
+			for(ISVNDirEntry dirEntry : dirEntries)
 				if(dirEntry.getPath().equals(lastEntry))
 					return dirEntry;
-			return null;
+			
+			// Parent was not accessible. Perhaps we have no permissions.
 		}
 
 		SVNRevision revision = getRevision();
