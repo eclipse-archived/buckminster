@@ -146,9 +146,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	static private final String ATTRIBUTE_URL = "url";
 
 	static private final String UNIVERSAL_ERROR_MESSAGE =
-		"The materialization encountered error(s) which can be caused by a wide range of issues" +
-		" such as temporary internet outages, or distro not maintained by publisher. Look at detailed message" +
-		" for more information, and try again as the issue may be temporary.";
+		"Materialization failures typically occur because a distro's publisher failed to keep it current," +
+		" or because you experienced a network interruption while downloading.";
 
 	private static MultiStatus createMultiStatusFromStatus(IStatus status)
 	{
@@ -194,7 +193,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_learnMoreCloudfeedsURL;
 
 	private String m_learnMoreCloudreaderURL;
-	
+
 	private String m_basePathURL;
 
 	private String m_homePageURL;
@@ -540,11 +539,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			showOriginalPage(originalPage);
 
 			// final IStatus status = BuckminsterException.wrap(e).getStatus();
-			final IStatus status = BuckminsterException.fromMessage(BuckminsterException.wrap(e), UNIVERSAL_ERROR_MESSAGE).getStatus();
+			final IStatus status = BuckminsterException.fromMessage(BuckminsterException.wrap(e),
+					UNIVERSAL_ERROR_MESSAGE).getStatus();
 
 			CorePlugin.logWarningsAndErrors(status);
 			HelpLinkErrorDialog.openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
-					"Materialization failed", MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
+					"This distro failed to materialize", MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
 					ERROR_CODE_MATERIALIZATION_EXCEPTION, status);
 		}
 		finally
@@ -1486,7 +1486,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_learnMoreCloudfeedsURL = properties.get(PROP_LEARN_MORE_CLOUDFEEDS_URL);
 		m_learnMoreCloudreaderURL = properties.get(PROP_LEARN_MORE_CLOUDREADER_URL);
-		
+
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;
