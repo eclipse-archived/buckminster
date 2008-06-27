@@ -13,6 +13,7 @@
 package org.eclipse.equinox.p2.authoring.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -412,16 +413,32 @@ public class InstallableUnitBuilder extends ModelRoot
 		public static final String UNCONFIGURE = "unconfigure"; //$NON-NLS-1$
 		
 		/**
+		 * Creates a TouchpointDataBuilder. Adds one TouchpointInstructionBuilder 
+		 * per possible instruction
+		 * (This way, there is no need to explicitly add an instruction - it is enough to edit
+		 * the actions per instruction).
+		 * @param touchpointData
+		 */
+		public TouchpointDataBuilder()
+		{
+			initializeFromMap(Collections.EMPTY_MAP);
+		}
+		
+		/**
 		 * Creates a TouchpointDataBuilder from TouchpointData. Adds one TouchpointInstructionBuilder 
 		 * per possible instruction and replaces it with instructions from the TouchpointData.
 		 * (This way, there is no need to explicitly add an instruction - it is enough to edit
 		 * the actions per instruction).
 		 * @param touchpointData
 		 */
-		@SuppressWarnings("unchecked")
 		public TouchpointDataBuilder(TouchpointData touchpointData)
+		{	
+			initializeFromMap(touchpointData.getInstructions());
+		}
+
+		@SuppressWarnings("unchecked")
+		private void initializeFromMap(Map m)
 		{
-			Map m = touchpointData.getInstructions();
 			m_instructions = new LinkedHashMap<String, TouchpointInstructionBuilder>(m.size());
 			
 			// initialize with default instructions
@@ -441,6 +458,7 @@ public class InstallableUnitBuilder extends ModelRoot
 			}
 			// TODO: should set the name when that is supported in TouchpointData - now the InstallableUnitBuilder
 			// sets the name.
+			m_name = "";
 		}
 
 		/**
@@ -519,7 +537,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		public TouchpointInstructionBuilder(ModelPart parent, String phaseId)
 		{
 			m_phaseId = phaseId;
-			m_actions = null;
+			m_actions = new TouchpointActionBuilder[0];
 			setParent(parent);
 		}
 		/**
@@ -536,7 +554,7 @@ public class InstallableUnitBuilder extends ModelRoot
 			while(tokenizer.hasMoreTokens())
 				actions.add(TouchpointActionBuilder.parse(this, tokenizer.nextToken()));
 			// keep the list (they are all now parented by this TouchpointInstructionBuilder)
-			m_actions = (TouchpointActionBuilder[]) actions.toArray();
+			m_actions = actions.toArray(new TouchpointActionBuilder[actions.size()]);
 		}
 		public String getPhaseId()
 		{
@@ -670,17 +688,21 @@ public class InstallableUnitBuilder extends ModelRoot
 		public void append(StringBuilder builder)
 		{
 			builder.append(m_actionKey);
-			builder.append("(");
+			builder.append('(');
+			boolean first = true;
 			for(Entry<String, ParameterValue>e : m_actionParams.entrySet())
-			{
+			{					
 				ParameterValue v = e.getValue();
 				if(v.getValue() == null)
 					continue; // do not output parameters that have null value
+				if(!first)
+					builder.append(", ");//$NON-NLS-1$
+				first = false;
 				builder.append(e.getKey());
-				builder.append(":");
+				builder.append(':');
 				builder.append(v.getValue());
 			}
-			builder.append(");");
+			builder.append(");"); //$NON-NLS-1$
 		}
 		/**
 		 * Returns the value of a parameter. Throws IllegalArgumentException if the parameter is not
@@ -938,7 +960,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		{
 			m_touchpointData[i] = new TouchpointDataBuilder(touchpointData[i]);
 			// TODO: Replace this when IU meta data contains a name/label - for now generate a name
-			m_touchpointData[i].setName("Instruction Block "+Integer.toString(i+1));
+			m_touchpointData[i].setName("Instruction block "+Integer.toString(i+1));
 			m_touchpointData[i].setParent(this);
 		}
 		m_touchpointType = new TouchpointTypeBuilder(unit.getTouchpointType());

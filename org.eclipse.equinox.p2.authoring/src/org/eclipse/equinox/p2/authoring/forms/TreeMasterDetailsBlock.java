@@ -36,7 +36,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public abstract class TreeMasterDetailsBlock extends AbstractMasterDetailsBlock
 {
-	private TreeViewer m_viewer;
+	protected TreeViewer m_viewer;
 	
 	public TreeMasterDetailsBlock(FormPage page, Object layoutData)
 	{

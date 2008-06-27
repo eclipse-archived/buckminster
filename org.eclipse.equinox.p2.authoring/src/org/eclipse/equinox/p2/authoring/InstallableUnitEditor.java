@@ -81,6 +81,7 @@ public class InstallableUnitEditor extends RichFormEditor
 			addPage(new ProvidedCapabilitiesPage(this));
 			addPage(new ArtifactsPage(this));
 			addPage(new InformationPage(this));
+			addPage(new TouchpointPage(this));
 			addPage(new FeedsPage2(this));
 //			addPage(new ThirdPage(this));
 //			addPage(new MasterDetailsPage(this));

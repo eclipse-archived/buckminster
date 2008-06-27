@@ -9,7 +9,6 @@
 package org.eclipse.equinox.p2.authoring.internal;
 
 import java.util.List;
-
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -29,6 +28,9 @@ import org.eclipse.equinox.p2.authoring.P2AuthoringImages;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ArtifactKeyBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ProvidedCapabilityBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.RequiredCapabilityBuilder;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointDataBuilder;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -121,6 +123,9 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 		if(element instanceof ArtifactKeyBuilder)
 			return P2AuthoringImages.getIMG_FILE();
 		
+		if(element instanceof TouchpointDataBuilder || element instanceof TouchpointInstructionBuilder)
+			return P2AuthoringImages.getIMG_FOLDER();
+			
 		// OPML stuff
 		if(element instanceof IOPML)
 			return P2AuthoringImages.getIMG_FOLDER();
@@ -227,6 +232,53 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 			StyledString bld = new StyledString(artifact.getId());
 			bld.append(" : ", StyledString.DECORATIONS_STYLER);
 			bld.append(artifact.getVersion(), StyledString.DECORATIONS_STYLER);
+			return bld;
+			
+		}
+		if(element instanceof TouchpointDataBuilder)
+		{
+			StyledString bld = new StyledString(((TouchpointDataBuilder)element).getName());
+			return bld;
+		}
+		if(element instanceof TouchpointInstructionBuilder)
+		{
+			StyledString bld = new StyledString(((TouchpointInstructionBuilder)element).getPhaseId());
+			bld.append(" (", StyledString.COUNTER_STYLER);
+			TouchpointActionBuilder[] actions = ((TouchpointInstructionBuilder)element).getActions();
+			bld.append(Integer.toString(actions == null ? 0 : actions.length), StyledString.COUNTER_STYLER);
+			bld.append(")", StyledString.COUNTER_STYLER);			
+			return bld;			
+		}
+		if(element instanceof TouchpointActionBuilder)
+		{
+			TouchpointActionBuilder action = (TouchpointActionBuilder)element;
+			StringBuilder buffer = new StringBuilder();
+			action.append(buffer);
+			StyledString bld = new StyledString();
+			// if string > limit, output "..." instead of parameter:value sequence
+			if(buffer.length() > 40)
+			{
+				bld.append(action.getActionKey());
+				bld.append("(");
+				bld.append("...", StyledString.DECORATIONS_STYLER);
+				bld.append(")");
+			}
+			else
+			{
+				bld.append(action.getActionKey());
+				bld.append("(");
+				boolean first = true;
+				for(String param : action.getParameterNames())
+				{
+					if(!first)
+						bld.append(", ");
+					bld.append(param, StyledString.QUALIFIER_STYLER);
+					bld.append(": ", StyledString.QUALIFIER_STYLER);
+					bld.append(action.getParameter(param));
+					first = false;
+				}
+				bld.append(")");
+			}
 			return bld;
 			
 		}
