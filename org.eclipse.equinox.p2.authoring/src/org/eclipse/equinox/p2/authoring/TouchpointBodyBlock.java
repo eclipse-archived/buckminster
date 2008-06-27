@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.p2.authoring.forms.IMasterDetailsController;
 import org.eclipse.equinox.p2.authoring.forms.IPageMementoProvider;
 import org.eclipse.equinox.p2.authoring.forms.TreeMasterDetailsBlock;
+
 import org.eclipse.equinox.p2.authoring.internal.IEditEventBusProvider;
 import org.eclipse.equinox.p2.authoring.internal.IEditorListener;
 import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
@@ -246,6 +247,8 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 						return ((TouchpointDataBuilder)parentElement).getInstructions().values().toArray();
 					if(parentElement instanceof TouchpointInstructionBuilder)
 						return ((TouchpointInstructionBuilder)parentElement).getActions();
+					if(parentElement instanceof InstallableUnitBuilder)
+						return ((InstallableUnitBuilder)parentElement).getTouchpointData();
 					return null;
 				}
 
@@ -515,6 +518,26 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 			editor.setActivePage(m_formPage.getId());
 		if(select != null)
 			m_viewer.setSelection(new StructuredSelection(select), true);
+	}
+	/**
+	 * Overrides default handling of enablement of up/down/remove buttons since it is
+	 * not possible to remove or move an instruction node.
+	 */
+	@Override
+	protected void setStandardButtonEnablement(StandardButtons buttons, IStructuredSelection selection)
+	{
+		if(selection != null && selection.size() > 0)
+		{
+			Object selected = selection.getFirstElement();
+			if(selected instanceof TouchpointInstructionBuilder)
+			{
+				buttons.up.setEnabled(false);
+				buttons.down.setEnabled(false);
+				buttons.remove.setEnabled(false);
+				return;
+			}
+		}
+		super.setStandardButtonEnablement(buttons, selection);
 	}
 
 }
