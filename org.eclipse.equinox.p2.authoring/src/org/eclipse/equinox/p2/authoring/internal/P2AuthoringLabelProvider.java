@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.equinox.p2.authoring.P2AuthoringImages;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ArtifactKeyBuilder;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Parameter;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ProvidedCapabilityBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.RequiredCapabilityBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
@@ -268,13 +269,14 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 				bld.append(action.getActionKey());
 				bld.append("(");
 				boolean first = true;
-				for(String param : action.getParameterNames())
+				Parameter[] params = action.getParameters();
+				for(int i = 0; i < params.length; i++)
 				{
 					if(!first)
 						bld.append(", ");
-					bld.append(param, StyledString.QUALIFIER_STYLER);
+					bld.append(params[i].getName(), StyledString.QUALIFIER_STYLER);
 					bld.append(": ", StyledString.QUALIFIER_STYLER);
-					bld.append(action.getParameter(param));
+					bld.append(params[i].getValue());
 					first = false;
 				}
 				bld.append(")");

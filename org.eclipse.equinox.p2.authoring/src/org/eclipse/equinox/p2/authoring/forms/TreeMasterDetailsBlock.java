@@ -15,6 +15,8 @@ package org.eclipse.equinox.p2.authoring.forms;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -73,7 +75,7 @@ public abstract class TreeMasterDetailsBlock extends AbstractMasterDetailsBlock
 		t.setLayoutData(gd);
 		toolkit.paintBordersFor(client);
 
-		createStandardButtonBar(toolkit, client);
+		final StandardButtons buttons = createStandardButtonBar(toolkit, client);
 
 		section.setClient(client);
 		final SectionPart spart = new SectionPart(section);
@@ -84,6 +86,7 @@ public abstract class TreeMasterDetailsBlock extends AbstractMasterDetailsBlock
 		m_viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(spart, event.getSelection());
+				setStandardButtonEnablement(buttons, (IStructuredSelection)event.getSelection());
 			}
 		});
 
@@ -91,6 +94,33 @@ public abstract class TreeMasterDetailsBlock extends AbstractMasterDetailsBlock
 		m_viewer.setLabelProvider(getMasterLabelProvider());
 		m_viewer.setInput(m_formPage.getEditor().getEditorInput());
 	}
+	/**
+	 * Sets enablement of buttons based on position of selected element in tree.
+	 * Assumes that everything is moveable (within parent), and that remove is available for all
+	 * selected elements). 
+	 * @param buttons
+	 * @param selection
+	 */
+	protected void setStandardButtonEnablement(StandardButtons buttons, IStructuredSelection selection)
+	{
+		buttons.remove.setEnabled(selection != null && selection.size() > 0);
+		ITreeContentProvider provider = (ITreeContentProvider)getMasterContentProvider();
+		Object selected = selection.getFirstElement();
+		Object parent = provider.getParent(selected);
+		Object[] elements = provider.getChildren(parent);
+		
+		if(elements == null || elements.length < 2)
+		{
+			buttons.down.setEnabled(false);
+			buttons.up.setEnabled(false);
+			return;
+		}
+		// down is enabled if selected is not the last
+		buttons.down.setEnabled(elements[elements.length-1] != selected);
+		// up is enabled if selected is not the first
+		buttons.up.setEnabled(elements[0] != selected);
+	}
+
 	@Override
 	public void setSelected(ISelection selection)
 	{

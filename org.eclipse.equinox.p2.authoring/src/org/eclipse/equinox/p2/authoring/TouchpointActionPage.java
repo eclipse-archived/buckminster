@@ -14,8 +14,8 @@ package org.eclipse.equinox.p2.authoring;
 
 import org.eclipse.equinox.p2.authoring.forms.Mutator;
 import org.eclipse.equinox.p2.authoring.forms.RichDetailsPage;
-import org.eclipse.equinox.p2.authoring.forms.validators.RequiredValidator;
-import org.eclipse.equinox.p2.authoring.forms.validators.StructuredNameValidator;
+import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Parameter;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -89,7 +89,7 @@ public class TouchpointActionPage extends RichDetailsPage
 		Text actionText = toolkit.createText(sectionClient, "");
 		actionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		m_editAdapters.createEditAdapter(ACTION_TEXT, actionText, //$NON-NLS-1$
-				new RequiredValidator(StructuredNameValidator.instance()),
+				NullValidator.instance(),
 				new Mutator()
 				{
 					@Override
@@ -118,14 +118,18 @@ public class TouchpointActionPage extends RichDetailsPage
 		m_texts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		// TODO: all parameters now get the RequiredValidator - much check if parameter is
 		// optional (none for touchpoint types 1.0 are though).
-		m_editAdapters.createEditAdapter("text"+Integer.toString(i), m_texts[i], //$NON-NLS-1$
-				new RequiredValidator(StructuredNameValidator.instance()),
-				new IndexedMutator(0));
+		m_editAdapters.createEditAdapter(getIndexedEditAdapterKey(i), m_texts[i], //$NON-NLS-1$
+				NullValidator.instance(),
+				new IndexedMutator(i));
 		}
 	
 		// TODO: Add text from extension for the touchpoint type that explains the phase
 		//
 		section.setClient(sectionClient);
+	}
+	private String getIndexedEditAdapterKey(int index)
+	{
+		return "text"+Integer.toString(index);
 	}
 	/**
 	 * Mutator for an indexed parameter
@@ -142,6 +146,9 @@ public class TouchpointActionPage extends RichDetailsPage
 		@Override
 		public String getValue()
 		{
+			// disabled fields are not in use.
+			if(!m_editAdapters.getAdapter(getIndexedEditAdapterKey(m_index)).isEnabled())
+				return "";
 			return m_input != null && m_input.getParameter(m_parameterNames[m_index]) != null
 					? m_input.getParameter(m_parameterNames[m_index])
 					: ""; //$NON-NLS-1$
@@ -151,6 +158,9 @@ public class TouchpointActionPage extends RichDetailsPage
 		public void setValue(String input) throws Exception
 		{
 			if(m_input == null)
+				return;
+			// disabled fiels are not in use
+			if(!m_editAdapters.getAdapter(getIndexedEditAdapterKey(m_index)).isEnabled())
 				return;
 			m_input.setParameter(m_parameterNames[m_index], input == null ? "" : input); //$NON-NLS-1$
 		}
@@ -179,21 +189,24 @@ public class TouchpointActionPage extends RichDetailsPage
 	 */
 	private void refreshLabels()
 	{		
-		String[] parameterNames = (String[])m_input.getParameterNames().toArray();
+		Parameter[] parameters = m_input.getParameters();
 		int i = 0;
-		for(; i < parameterNames.length && i < MAX_PARAMETERS; i++)
+		for(; i < parameters.length && i < MAX_PARAMETERS; i++)
 		{
 			// TODO: set the text for the label from the extension point information
 			// TODO: set the validation type for the text field
 			// TODO: hook advanced (browse) function to applicable types
-			m_labels[i].setText(parameterNames[i]);
+			m_labels[i].setText(parameters[i].getName());
 			m_labels[i].setVisible(true);
 			m_texts[i].setVisible(true);
+			m_editAdapters.getAdapter(getIndexedEditAdapterKey(i)).setEnabled(true);
+			m_parameterNames[i] = parameters[i].getName();
 		}
 		for(; i < MAX_PARAMETERS; i++)
 		{
 			m_labels[i].setVisible(false);
 			m_texts[i].setVisible(false);
+			m_editAdapters.getAdapter(getIndexedEditAdapterKey(i)).setEnabled(false);
 		}
 	}
 	

@@ -12,10 +12,9 @@
 
 package org.eclipse.equinox.p2.authoring;
 
+import java.util.ArrayList;
 import java.util.EventObject;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import java.util.List;
 import javax.swing.event.ChangeEvent;
 
 import org.eclipse.core.commands.ExecutionException;
@@ -33,7 +32,7 @@ import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.ModelPart;
 import org.eclipse.equinox.p2.authoring.internal.P2AuthoringLabelProvider;
-import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ParameterValue;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Parameter;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointDataBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
@@ -131,10 +130,10 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		data.setName("Instruction block "+Integer.toString(getIU().getTouchpointData().length+1));
 
 		TouchpointInstructionBuilder instruction = data.getInstruction("install");
-		Map<String, ParameterValue>map = new LinkedHashMap<String, ParameterValue>();
-		map.put("source", new ParameterValue("some source value"));
-		map.put("target", new ParameterValue("some target value"));
-		TouchpointActionBuilder action = new TouchpointActionBuilder("doSomething", map);
+		List<Parameter>params = new ArrayList<Parameter>();
+		params.add(new Parameter("source", "some source value"));
+		params.add(new Parameter("target","some target value"));
+		TouchpointActionBuilder action = new TouchpointActionBuilder("doSomething", params);
 		instruction.addAction(action);
 		addRemoveTouchpointData(data, true);
 	}
@@ -253,7 +252,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 				public Object getParent(Object element)
 				{
 					if(element instanceof ModelPart)
-						((ModelPart)element).getParent();
+						return ((ModelPart)element).getParent();
 					return null;
 				}
 
@@ -278,7 +277,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 
 				public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 				{
-					System.err.print("Input to IU/Touchpoint content provider changed... What to do?\n");
+					// nothing is needed
 				}
 
 			};

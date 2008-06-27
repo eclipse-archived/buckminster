@@ -631,7 +631,8 @@ public class InstallableUnitBuilder extends ModelRoot
 	public static class TouchpointActionBuilder extends ModelPart
 	{
 		private String m_actionKey;
-		private Map<String, ParameterValue>m_actionParams;
+		private Parameter m_parameters[];
+//		private Map<String, Parameter>m_actionParams;
 		/**
 		 * Creates an TouchpointActionBuilder from a statement on the form:
 		 * "action(param:value,param:value,param:value)"
@@ -648,13 +649,13 @@ public class InstallableUnitBuilder extends ModelRoot
 			String nameValuePairs = statement.substring(openBracket + 1, closeBracket);
 			// TODO: Fix comma problem
 			StringTokenizer tokenizer = new StringTokenizer(nameValuePairs, ","); //$NON-NLS-1$
-			Map<String, ParameterValue> parameters = new HashMap<String, ParameterValue>();
+			List<Parameter> parameters = new ArrayList<Parameter>(5);
 			while (tokenizer.hasMoreTokens()) {
 				String nameValuePair = tokenizer.nextToken();
 				int colonIndex = nameValuePair.indexOf(":"); //$NON-NLS-1$
 				String name = nameValuePair.substring(0, colonIndex).trim();
 				String value = nameValuePair.substring(colonIndex + 1).trim();	
-				parameters.put(name, new ParameterValue(value));
+				parameters.add(new Parameter(name, value));
 			}
 			TouchpointActionBuilder a = new TouchpointActionBuilder(actionName, parameters);
 			a.setParent(parent);
@@ -664,12 +665,12 @@ public class InstallableUnitBuilder extends ModelRoot
 		public TouchpointActionBuilder(String actionKey)
 		{
 			m_actionKey = actionKey;
-			m_actionParams = null;
+			m_parameters = null;
 		}
-		public TouchpointActionBuilder(String actionKey, Map<String, ParameterValue> parameters)
+		public TouchpointActionBuilder(String actionKey, List<Parameter> parameters)
 		{
 			m_actionKey = actionKey;
-			m_actionParams = parameters;
+			m_parameters = parameters.toArray(new Parameter[parameters.size()]);
 		}
 		public String getActionKey()
 		{
@@ -680,9 +681,9 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_actionKey = actionKey;
 			notifyChanged();
 		}
-		public void setParameters(Map <String, ParameterValue> parameters)
+		public void setParameters(List<Parameter> parameters)
 		{
-			m_actionParams = parameters;
+			m_parameters = parameters.toArray(new Parameter[parameters.size()]);
 			notifyChanged();
 		}
 		public void append(StringBuilder builder)
@@ -690,17 +691,17 @@ public class InstallableUnitBuilder extends ModelRoot
 			builder.append(m_actionKey);
 			builder.append('(');
 			boolean first = true;
-			for(Entry<String, ParameterValue>e : m_actionParams.entrySet())
+			for(int i = 0; i < m_parameters.length; i++)
 			{					
-				ParameterValue v = e.getValue();
-				if(v.getValue() == null)
+				Parameter p = m_parameters[i];
+				if(p.getValue() == null)
 					continue; // do not output parameters that have null value
 				if(!first)
 					builder.append(", ");//$NON-NLS-1$
 				first = false;
-				builder.append(e.getKey());
+				builder.append(p.getName());
 				builder.append(':');
-				builder.append(v.getValue());
+				builder.append(p.getValue());
 			}
 			builder.append(");"); //$NON-NLS-1$
 		}
@@ -712,12 +713,13 @@ public class InstallableUnitBuilder extends ModelRoot
 		 */
 		public String getParameter(String parameterName)
 		{
-			if(m_actionParams == null)
+			if(m_parameters == null)
 				throw new IllegalArgumentException("No such parameter: " + parameterName);
-			ParameterValue v = m_actionParams.get(parameterName);
-			if(v == null)
-				throw new IllegalArgumentException("No such parameter: " + parameterName);
-			return v.getValue();
+			for(int i = 0; i < m_parameters.length;i++)
+				if(m_parameters[i].getName().equals(parameterName))
+					return m_parameters[i].getValue();
+			
+			throw new IllegalArgumentException("No such parameter: " + parameterName);
 		}
 		/**
 		 * Sets the value of a parameter. Throws IllegalArgumentException if the parameter is not
@@ -727,16 +729,21 @@ public class InstallableUnitBuilder extends ModelRoot
 		 */
 		public void setParameter(String parameterName, String parameterValue)
 		{
-			if(m_actionParams == null)
-				throw new IllegalArgumentException("Action has no parameters");
-			if(m_actionParams.get(parameterName) == null)
-				throw new IllegalArgumentException("Action does not have a parameter called: " + parameterName);
-			m_actionParams.get(parameterName).setValue(parameterValue);
-			notifyChanged();
+
+			if(m_parameters == null)
+				throw new IllegalArgumentException("Action has no parameters - can not set parameter: " + parameterName);
+			for(int i = 0; i < m_parameters.length;i++)
+				if(m_parameters[i].getName().equals(parameterName))
+				{
+					m_parameters[i].setValue(parameterValue);
+					return;
+				}
+			notifyChanged();			
+			throw new IllegalArgumentException("No such parameter: " + parameterName);
 		}
-		public Set<String> getParameterNames()
+		public Parameter[] getParameters()
 		{
-			return m_actionParams.keySet();
+			return m_parameters;
 		}
 	}
 	/**
@@ -744,16 +751,23 @@ public class InstallableUnitBuilder extends ModelRoot
 	 * @author Henrik Lindberg
 	 *
 	 */
-	public static class ParameterValue
+	public static class Parameter extends ModelPart
 	{
 		private String m_value;
+		private String m_name;
 
-		public ParameterValue()
+		public String getName()
 		{
-			m_value = null;
+			return m_name;
 		}
-		public ParameterValue(String value)
+		public void setName(String name)
 		{
+			m_name = name;
+			notifyChanged();
+		}
+		public Parameter(String name, String value)
+		{
+			m_name = name;
 			m_value = value;
 		}
 
@@ -765,6 +779,7 @@ public class InstallableUnitBuilder extends ModelRoot
 		public void setValue(String value)
 		{
 			m_value = value;
+			notifyChanged();
 		}
 	}
 	public static class TouchpointTypeBuilder extends ModelPart
