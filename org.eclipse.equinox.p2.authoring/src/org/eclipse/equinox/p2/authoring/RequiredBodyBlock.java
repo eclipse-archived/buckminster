@@ -157,30 +157,10 @@ public class RequiredBodyBlock extends TableMasterDetailsBlock implements IDetai
 			public void widgetSelected(SelectionEvent e)
 			{
 				add();
-				// // example of add menu - keep if there should be more ways to add something...
-				// Object data = e.item.getData();
-				// if("link".equals(data))
-				// addLink();
 			}
 
 		};
 		b.addSelectionListener(listener);
-		// // example of add menu
-		// Menu addMenu = new Menu(b.getShell(), SWT.POP_UP);
-		// mi = new MenuItem(addMenu, SWT.PUSH);
-		// mi.setText("Add Link");
-		// mi.setData("link");
-		// mi.addSelectionListener(listener);
-		//
-		// // attach menu to button (pops up on right mouse click)
-		// b.setMenu(addMenu);
-		// // attach listener to button so menu pops up on button click (left click)
-		// b.addSelectionListener(new SelectionListener()
-		// { public void widgetDefaultSelected(SelectionEvent e)
-		// 	{ widgetSelected(e); }
-		// 	public void widgetSelected(SelectionEvent e)
-		// 	{ b.getMenu().setVisible(true);}
-		// });
 	}
 	/**
 	 * Moves selected required capability down in the list. Operation can be undone.
