@@ -95,6 +95,8 @@ public interface MaterializationConstants
 	public static final String PROP_LEARN_MORE_URL = "learnMoreURL";
 	
 	public static final String PROP_LEARN_MORE_CLOUDFEEDS_URL = "learnMoreCloudfeedsURL";
+	
+	public static final String PROP_LEARN_MORE_CLOUDREADER_URL = "learnMoreCloudreaderURL";
 
 	public static final String PROP_HOME_PAGE_URL = "homePageURL";
 

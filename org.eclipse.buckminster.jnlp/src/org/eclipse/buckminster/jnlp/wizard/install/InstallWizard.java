@@ -40,6 +40,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_UR
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HOME_PAGE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDFEEDS_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDREADER_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_KEY;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
@@ -145,7 +146,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	static private final String ATTRIBUTE_URL = "url";
 
 	static private final String UNIVERSAL_ERROR_MESSAGE =
-		"The materialization encountered [an error/errors] which can be caused by a wide range of issues" +
+		"The materialization encountered error(s) which can be caused by a wide range of issues" +
 		" such as temporary internet outages, or distro not maintained by publisher. Look at detailed message" +
 		" for more information, and try again as the issue may be temporary.";
 
@@ -192,6 +193,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_learnMoreCloudfeedsURL;
 
+	private String m_learnMoreCloudreaderURL;
+	
 	private String m_basePathURL;
 
 	private String m_homePageURL;
@@ -756,6 +759,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	String getLearnMoreCloudfeedsURL()
 	{
 		return m_learnMoreCloudfeedsURL;
+	}
+
+	String getLearnMoreCloudreaderURL()
+	{
+		return m_learnMoreCloudreaderURL;
 	}
 
 	// // Seems to be never used
@@ -1477,7 +1485,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_eclipseDistroTools33UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL);
 
 		m_learnMoreCloudfeedsURL = properties.get(PROP_LEARN_MORE_CLOUDFEEDS_URL);
-
+		m_learnMoreCloudreaderURL = properties.get(PROP_LEARN_MORE_CLOUDREADER_URL);
+		
 		if(errorList.size() > 0)
 		{
 			m_problemInProperties = true;

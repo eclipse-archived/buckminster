@@ -75,9 +75,9 @@ public class FeedsPage extends InstallWizardPage
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				if(m_infoPageURL != null)
+				if(getInstallWizard().getLearnMoreCloudreaderURL() != null)
 				{
-					Program.launch(getInstallWizard().getLearnMoreCloudfeedsURL());
+					Program.launch(getInstallWizard().getLearnMoreCloudreaderURL());
 				}
 			}
 		});
