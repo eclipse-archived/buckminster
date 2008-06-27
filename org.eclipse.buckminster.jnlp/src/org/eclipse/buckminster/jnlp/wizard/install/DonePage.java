@@ -40,8 +40,6 @@ public class DonePage extends InstallWizardPage
 
 	private static final String ICON_LEARN = "library_wiz.png";
 
-	private static final String ICON_PUBLISH = "xhtml_wiz.png";
-
 	private ComponentListPanel m_componentListPanel;
 
 	protected DonePage()
@@ -85,37 +83,6 @@ public class DonePage extends InstallWizardPage
 		{
 			createLink(pageComposite, item.getString(), item.getUrl());
 		}
-
-		new Label(pageComposite, SWT.NONE);
-		new Label(pageComposite, SWT.NONE);
-
-		label = new Label(pageComposite, SWT.NONE);
-		label.setText("Distro Actions:");
-		layoutData = new GridData();
-		layoutData.horizontalSpan = 2;
-		label.setLayoutData(layoutData);
-
-		label = new Label(pageComposite, SWT.NONE);
-		label.setImage(MaterializationUtils.getImage(ICON_PUBLISH));
-		layoutData = new GridData();
-		layoutData.horizontalIndent = HORIZONTAL_INDENT;
-		layoutData.verticalAlignment = GridData.CENTER;
-		label.setLayoutData(layoutData);
-
-		Link publishMSPECLink = new Link(pageComposite, SWT.NONE);
-		publishMSPECLink.setText("<a>Publish changed settings as a distro</a>");
-		layoutData = new GridData();
-		layoutData.horizontalIndent = HORIZONTAL_INDENT;
-		//layoutData.widthHint = BUTTON_WIDTH;
-		publishMSPECLink.setLayoutData(layoutData);
-		publishMSPECLink.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				MaterializationUtils.startPublishingWizard(getInstallWizard(), getShell());
-			}
-		});
 
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);

@@ -14,13 +14,9 @@ import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
@@ -55,28 +51,6 @@ public class SimpleAdvancedPage extends InstallWizardPage
 				true);
 		
 		m_detailsPanel.createControl(pageComposite);
-		
-		new Label(pageComposite, SWT.NONE);
-
-		Composite publishComposite = new Composite(pageComposite, SWT.NONE);
-		gridLayout = new GridLayout(1, false);
-		gridLayout.marginHeight = gridLayout.marginWidth = 0;
-		publishComposite.setLayout(gridLayout);
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gridData.horizontalSpan = 3;
-		publishComposite.setLayoutData(gridData);
-		
-		Button publishButton = new Button(publishComposite, SWT.PUSH);
-		publishButton.setText("Publish as a Distro");
-		gridData = new GridData(SWT.END, SWT.CENTER, true, false);
-		publishButton.setLayoutData(gridData);
-		publishButton.addSelectionListener(new SelectionAdapter(){
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				MaterializationUtils.startPublishingWizard(getInstallWizard(), getShell());
-			}});
 		
 		setControl(pageComposite);
 	}
