@@ -398,7 +398,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 							unpack = (top > 0);
 							for(int idx = 0; idx < top; ++idx)
 							{
-								if(classPath[idx].equals("."))
+								if(classPath[idx].trim().equals("."))
 								{
 									unpack = false;
 									break;

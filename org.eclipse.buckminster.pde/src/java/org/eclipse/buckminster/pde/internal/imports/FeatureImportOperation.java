@@ -25,8 +25,11 @@ import org.eclipse.buckminster.pde.internal.datatransfer.ImportOperation;
 import org.eclipse.buckminster.pde.internal.dialogs.IOverwriteQuery;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -41,7 +44,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.internal.core.build.WorkspaceBuildModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureInstallHandler;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.team.core.RepositoryProvider;
@@ -54,7 +59,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 
 	private final NodeQuery m_query;
 
-	private final EclipseImportReaderType  m_classpathCollector;
+	private final EclipseImportReaderType m_classpathCollector;
 
 	private final boolean m_binary;
 
@@ -63,13 +68,12 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 	private final IPath m_destination;
 
 	/**
-	 * 
 	 * @param models
-	 * @param targetPath
-	 *            a parent of external project or null
+	 * @param targetPath a parent of external project or null
 	 * @param replaceQuery
 	 */
-	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model, NodeQuery query, IPath destination, boolean binary)
+	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model,
+		NodeQuery query, IPath destination, boolean binary)
 	{
 		m_classpathCollector = classpathCollector;
 		m_model = model;
@@ -97,7 +101,8 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		IProject project = m_root.getProject(projectName);
 		try
 		{
-			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
+			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(
+				request);
 			if(project.exists())
 			{
 				switch(conflictResolution)
@@ -108,7 +113,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 					return;
 				default:
 				}
-				
+
 				// Overwrite, i.e. remove current contents.
 				//
 				project.delete(true, true, MonitorUtils.subMonitor(monitor, 10));
@@ -121,20 +126,24 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				}
 			}
 			else
-    			MonitorUtils.worked(monitor, 10);
+				MonitorUtils.worked(monitor, 10);
 
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
-			FileUtils.prepareDestination(m_destination.toFile(),
-					conflictResolution, MonitorUtils.subMonitor(monitor, 10));
+			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution, MonitorUtils.subMonitor(
+				monitor, 10));
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));
 			File featureDir = new File(m_model.getInstallLocation());
 
 			importContent(featureDir, project.getFullPath(),
-					org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider.INSTANCE, null,
-					MonitorUtils.subMonitor(monitor, 50));
+				org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider.INSTANCE, null,
+				MonitorUtils.subMonitor(monitor, 50));
+
+			IFolder folder = project.getFolder("META-INF"); //$NON-NLS-1$
+			if(folder.exists())
+				folder.delete(true, null);
 
 			if(m_binary)
 			{
@@ -142,7 +151,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				// using the label decorator
 				project.setPersistentProperty(PDECore.EXTERNAL_PROJECT_PROPERTY, PDECore.BINARY_PROJECT_VALUE);
 			}
-
+			createBuildProperties(project);
 			setProjectNatures(project, m_model, MonitorUtils.subMonitor(monitor, 20));
 			if(project.hasNature(JavaCore.NATURE_ID))
 				m_classpathCollector.addProjectClasspath(project, getClasspath(project, m_model));
@@ -155,8 +164,8 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	private void importContent(Object source, IPath destPath, IImportStructureProvider provider, List<?> filesToImport,
-			IProgressMonitor monitor) throws CoreException
+	private void importContent(Object source, IPath destPath, IImportStructureProvider provider,
+		List<?> filesToImport, IProgressMonitor monitor) throws CoreException
 	{
 		IOverwriteQuery query = new IOverwriteQuery()
 		{
@@ -168,40 +177,35 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		ImportOperation op = new ImportOperation(destPath, source, provider, query);
 		op.setCreateContainerStructure(false);
 		if(filesToImport != null)
-		{
 			op.setFilesToImport(filesToImport);
-		}
 
-		IStatus status = op.execute(monitor);
+		IStatus status = op.runInWorkspace(monitor);
 		if(status == Status.CANCEL_STATUS || monitor.isCanceled())
 			throw new OperationCanceledException(status.getMessage());
 
-		if(!status.isOK())
+		if(status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);
 	}
 
 	private void setProjectNatures(IProject project, IFeatureModel model, IProgressMonitor monitor)
-			throws CoreException
+	throws CoreException
 	{
 		IProjectDescription desc = project.getDescription();
 		if(needsJavaNature(model))
-		{
 			desc.setNatureIds(new String[] { JavaCore.NATURE_ID, IPDEConstants.FEATURE_NATURE });
-		}
 		else
-		{
 			desc.setNatureIds(new String[] { IPDEConstants.FEATURE_NATURE });
-		}
 		project.setDescription(desc, monitor);
 	}
 
-	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel model)
-			throws JavaModelException
+	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel model) throws JavaModelException
 	{
-		IClasspathEntry jreCPEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+		IClasspathEntry jreCPEntry = JavaCore.newContainerEntry(new Path(
+			"org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
 
 		String libName = model.getFeature().getInstallHandler().getLibrary();
-		IClasspathEntry handlerCPEntry = JavaCore.newLibraryEntry(project.getFullPath().append(libName), null, null);
+		IClasspathEntry handlerCPEntry = JavaCore.newLibraryEntry(project.getFullPath().append(libName),
+			null, null);
 
 		return new IClasspathEntry[] { jreCPEntry, handlerCPEntry };
 	}
@@ -210,16 +214,38 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 	{
 		IFeatureInstallHandler handler = model.getFeature().getInstallHandler();
 		if(handler == null)
-		{
 			return false;
-		}
+
 		String libName = handler.getLibrary();
-		if(libName == null || libName.length() <= 0)
-		{
+		if(libName == null || libName.length() == 0)
 			return false;
-		}
+
 		File lib = new File(model.getInstallLocation(), libName);
 		return lib.exists();
 	}
 
+	private void createBuildProperties(IProject project)
+	{
+		IFile file = project.getFile("build.properties"); //$NON-NLS-1$
+		if(file.exists())
+			return;
+
+		WorkspaceBuildModel model = new WorkspaceBuildModel(file);
+		IBuildEntry ientry = model.getFactory().createEntry("bin.includes"); //$NON-NLS-1$
+		try
+		{
+			IResource[] res = project.members();
+			for(int i = 0; i < res.length; i++)
+			{
+				String path = res[i].getProjectRelativePath().toString();
+				if(!path.equals(".project")) //$NON-NLS-1$
+					ientry.addToken(path);
+			}
+			model.getBuild().add(ientry);
+			model.save();
+		}
+		catch(CoreException e)
+		{
+		}
+	}
 }

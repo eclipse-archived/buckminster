@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.dialogs.ContainerGenerator;
 import org.eclipse.buckminster.pde.internal.dialogs.IOverwriteQuery;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -30,6 +29,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -49,8 +50,7 @@ import org.eclipse.osgi.util.NLS;
  * </p>
  */
 @SuppressWarnings("unchecked")
-public class ImportOperation
-{
+public class ImportOperation extends WorkspaceJob {
     private static final int POLICY_DEFAULT = 0;
 
     private static final int POLICY_SKIP_CHILDREN = 1;
@@ -73,7 +73,7 @@ public class ImportOperation
 
     protected IOverwriteQuery overwriteCallback;
 
-    private Object context;
+    // private Shell context;
 
     private List errorTable = new ArrayList();
 
@@ -114,13 +114,13 @@ public class ImportOperation
      * @param provider the file system structure provider to use
      * @param overwriteImplementor the overwrite strategy to use
      */
-    public ImportOperation(IPath containerPath, Object src,
-            IImportStructureProvider prv,
-            IOverwriteQuery overwriteImplementor)
-    {
-         this.destinationPath = containerPath;
-        this.source = src;
-        this.provider = prv;
+    public ImportOperation(IPath containerPath, Object source,
+            IImportStructureProvider provider,
+            IOverwriteQuery overwriteImplementor) {
+    	super("ImportOperation");
+        this.destinationPath = containerPath;
+        this.source = source;
+        this.provider = provider;
         overwriteCallback = overwriteImplementor;
     }
 
@@ -160,10 +160,10 @@ public class ImportOperation
      * @param filesToImport the list of file system objects to be imported
      *  (element type: <code>Object</code>)
      */
-    public ImportOperation(IPath containerPath, Object src,
-            IImportStructureProvider prv,
+    public ImportOperation(IPath containerPath, Object source,
+            IImportStructureProvider provider,
             IOverwriteQuery overwriteImplementor, List filesToImport) {
-        this(containerPath, src, prv, overwriteImplementor);
+        this(containerPath, source, provider, overwriteImplementor);
         setFilesToImport(filesToImport);
     }
 
@@ -193,9 +193,9 @@ public class ImportOperation
      *  (element type: <code>Object</code>)
      */
     public ImportOperation(IPath containerPath,
-            IImportStructureProvider prv,
+            IImportStructureProvider provider,
             IOverwriteQuery overwriteImplementor, List filesToImport) {
-        this(containerPath, null, prv, overwriteImplementor);
+        this(containerPath, null, provider, overwriteImplementor);
         setFilesToImport(filesToImport);
     }
 
@@ -240,8 +240,9 @@ public class ImportOperation
                         .append(relativeSourcePath);
             }
             newDestination = workspaceRoot.findMember(newDestinationPath);
-            if (newDestination == null)
-                continue;
+            if (newDestination == null) {
+				continue;
+			}
 
             IFolder folder = getFolder(newDestination);
             if (folder != null) {
@@ -252,18 +253,20 @@ public class ImportOperation
                         continue;
                     }
                 }
-                if (provider.isFolder(nextSource))//Recurse into children
-                    collectExistingReadonlyFiles(newDestinationPath, provider
+                if (provider.isFolder(nextSource)) {
+					collectExistingReadonlyFiles(newDestinationPath, provider
                             .getChildren(nextSource), noOverwrite,
                             overwriteReadonly, POLICY_FORCE_OVERWRITE);
+				}
             } else {
                 IFile file = getFile(newDestination);
 
                 if (file != null) {
-                    if (!queryOverwriteFile(file, policy))
-                        noOverwrite.add(file.getFullPath());
-                    else if (file.isReadOnly())
-                        overwriteReadonly.add(file);
+                    if (!queryOverwriteFile(file, policy)) {
+						noOverwrite.add(file.getFullPath());
+					} else if (file.isReadOnly()) {
+						overwriteReadonly.add(file);
+					}
                 }
             }
         }
@@ -284,17 +287,20 @@ public class ImportOperation
         int segmentCount = path.segmentCount();
 
         //No containers to create
-        if (segmentCount == 0)
-            return currentFolder;
+        if (segmentCount == 0) {
+			return currentFolder;
+		}
 
         //Needs to be handles differently at the root
-        if (currentFolder.getType() == IResource.ROOT)
-            return createFromRoot(path);
+        if (currentFolder.getType() == IResource.ROOT) {
+			return createFromRoot(path);
+		}
 
         for (int i = 0; i < segmentCount; i++) {
             currentFolder = currentFolder.getFolder(new Path(path.segment(i)));
-            if (!currentFolder.exists())
-                ((IFolder) currentFolder).create(false, true, null);
+            if (!currentFolder.exists()) {
+				((IFolder) currentFolder).create(false, true, null);
+			}
         }
 
         return currentFolder;
@@ -318,8 +324,9 @@ public class ImportOperation
 
         for (int i = 1; i < segmentCount; i++) {
             currentFolder = currentFolder.getFolder(new Path(path.segment(i)));
-            if (!currentFolder.exists())
-                ((IFolder) currentFolder).create(false, true, null);
+            if (!currentFolder.exists()) {
+				((IFolder) currentFolder).create(false, true, null);
+			}
         }
 
         return currentFolder;
@@ -339,8 +346,12 @@ public class ImportOperation
         }
     }
 
-    public IStatus execute(IProgressMonitor progressMonitor) {
-    	IStatus status = Status.OK_STATUS;
+    /* (non-Javadoc)
+     * Method declared on WorkbenchModifyOperation.
+     * Imports the specified file system objects from the file system.
+     */
+    public IStatus runInWorkspace(IProgressMonitor progressMonitor) {
+
         monitor = progressMonitor;
 
         try {
@@ -349,35 +360,34 @@ public class ImportOperation
                 monitor.beginTask(DataTransferMessages.DataTransfer_importTask, 1000);
                 ContainerGenerator generator = new ContainerGenerator(
                         destinationPath);
-    			MonitorUtils.worked(monitor, 30);
+                monitor.worked(30);
                 validateFiles(Arrays.asList(new Object[] { source }));
-    			MonitorUtils.worked(monitor, 50);
+                monitor.worked(50);
                 destinationContainer = generator
-                        .generateContainer(MonitorUtils.subMonitor(monitor, 50));
+                        .generateContainer(new SubProgressMonitor(monitor, 50));
                 importRecursivelyFrom(source, POLICY_DEFAULT);
                 //Be sure it finishes
-    			MonitorUtils.worked(monitor, 90);
+                monitor.worked(90);
             } else {
                 // Choose twice the selected files size to take folders into account
                 int creationCount = selectedFiles.size();
                 monitor.beginTask(DataTransferMessages.DataTransfer_importTask, creationCount + 100);
                 ContainerGenerator generator = new ContainerGenerator(
                         destinationPath);
-    			MonitorUtils.worked(monitor, 30);
+                monitor.worked(30);
                 validateFiles(selectedFiles);
-    			MonitorUtils.worked(monitor, 50);
+                monitor.worked(50);
                 destinationContainer = generator
-                        .generateContainer(MonitorUtils.subMonitor(monitor, 50));
+                        .generateContainer(new SubProgressMonitor(monitor, 50));
                 importFileSystemObjects(selectedFiles);
                 monitor.done();
             }
         } catch (CoreException e) {
-        	status = e.getStatus();
-            errorTable.add(status);
+            errorTable.add(e.getStatus());
         } finally {
             monitor.done();
         }
-        return status;
+        return (errorTable.size() == 0) ? Status.OK_STATUS : getStatus();
     }
 
     /**
@@ -393,10 +403,12 @@ public class ImportOperation
             throws CoreException {
         IPath pathname = new Path(provider.getFullPath(fileSystemObject));
 
-        if (createContainerStructure)
-            return createContainersFor(pathname.removeLastSegments(1));
-        if (source == fileSystemObject)
-                return null;
+        if (createContainerStructure) {
+			return createContainersFor(pathname.removeLastSegments(1));
+		}
+        if (source == fileSystemObject) {
+			return null;
+		}
         IPath sourcePath = new Path(provider.getFullPath(source));
         IPath destContainerPath = pathname.removeLastSegments(1);
         IPath relativePath = destContainerPath.removeFirstSegments(
@@ -417,8 +429,9 @@ public class ImportOperation
             return (IFile) resource;
         }
         Object adapted = ((IAdaptable) resource).getAdapter(IFile.class);
-        if(adapted == null)
-        	return null;
+        if(adapted == null) {
+			return null;
+		}
         return (IFile) adapted;
       
     }
@@ -435,8 +448,9 @@ public class ImportOperation
             return (IFolder) resource;
         }
         Object adapted = ((IAdaptable) resource).getAdapter(IFolder.class);
-        if(adapted == null)
-        	return null;
+        if(adapted == null) {
+			return null;
+		}
         return (IFolder) adapted;
     }
 
@@ -501,10 +515,11 @@ public class ImportOperation
         monitor.subTask(fileObjectPath);
         IFile targetResource = containerResource.getFile(new Path(provider
                 .getLabel(fileObject)));
-		MonitorUtils.worked(monitor, 1);
+        monitor.worked(1);
 
-        if (rejectedFiles.contains(targetResource.getFullPath()))
-            return;
+        if (rejectedFiles.contains(targetResource.getFullPath())) {
+			return;
+		}
 
         // ensure that the source and target are not the same
         IPath targetPath = targetResource.getLocation();
@@ -529,12 +544,21 @@ public class ImportOperation
         }
 
         try {
-            if (targetResource.exists())
-                targetResource.setContents(contentStream,
+            if (targetResource.exists()) {
+				targetResource.setContents(contentStream,
                         IResource.KEEP_HISTORY, null);
-            else
-                targetResource.create(contentStream, false, null);
+			} else {
+				targetResource.create(contentStream, false, null);
+			}
             setResourceAttributes(targetResource,fileObject);
+            
+/*            if (provider instanceof TarLeveledStructureProvider) {
+            	try {
+            		targetResource.setResourceAttributes(((TarLeveledStructureProvider) provider).getResourceAttributes(fileObject));
+            	} catch (CoreException e) {
+            		errorTable.add(e.getStatus());
+            	}
+            } */
         } catch (CoreException e) {
             errorTable.add(e.getStatus());
         } finally {
@@ -553,19 +577,20 @@ public class ImportOperation
     }
 
     /**
-     * Reuse the file atttributes set in the import.
+     * Reuse the file attributes set in the import.
      * @param targetResource
      * @param fileObject
      */
     private void setResourceAttributes(IFile targetResource, Object fileObject) {
     	
-    	if(fileObject instanceof File)
+    	if(fileObject instanceof File) {
 			try {
 				targetResource.setResourceAttributes(ResourceAttributes.fromFile((File) fileObject));
 			} catch (CoreException e) {
 				//Inform the log that the attributes reading failed
-				PDEPlugin.getDefault().getLog().log(e.getStatus());
+				PDEPlugin.getLogger().error(e, e.getStatus().getMessage());
 			}
+		}
 		
 	}
 
@@ -591,7 +616,7 @@ public class ImportOperation
                     // file systems root. Roots can't copied (at least not
                     // under windows).
                     errorTable.add(new Status(IStatus.INFO,
-                    		PDEPlugin.getPluginId(), 0, DataTransferMessages.ImportOperation_cannotCopy,
+                            PDEPlugin.getPluginId(), 0, DataTransferMessages.ImportOperation_cannotCopy,
                             null));
                     continue;
                 }
@@ -619,8 +644,9 @@ public class ImportOperation
             return policy;
         }
 
-        if (containerResource == null)
-            return policy;
+        if (containerResource == null) {
+			return policy;
+		}
 
         monitor.subTask(provider.getFullPath(folderObject));
         IWorkspace workspace = destinationContainer.getWorkspace();
@@ -630,12 +656,14 @@ public class ImportOperation
 
         // Do not attempt the import if the resource path is unchanged. This may happen
         // when importing from a zip file.
-        if (resourcePath.equals(containerPath))
-            return policy;
+        if (resourcePath.equals(containerPath)) {
+			return policy;
+		}
 
         if (workspace.getRoot().exists(resourcePath)) {
-            if (rejectedFiles.contains(resourcePath))
-                return POLICY_SKIP_CHILDREN;
+            if (rejectedFiles.contains(resourcePath)) {
+				return POLICY_SKIP_CHILDREN;
+			}
 
             return POLICY_FORCE_OVERWRITE;
         }
@@ -660,7 +688,10 @@ public class ImportOperation
      * @exception OperationCanceledException if canceled
      */
     void importRecursivelyFrom(Object fileSystemObject, int policy) {
-        MonitorUtils.testCancelStatus(monitor);
+        if (monitor.isCanceled()) {
+			throw new OperationCanceledException();
+		}
+
         if (!provider.isFolder(fileSystemObject)) {
             importFile(fileSystemObject, policy);
             return;
@@ -670,8 +701,9 @@ public class ImportOperation
         if (childPolicy != POLICY_SKIP_CHILDREN) {
             Iterator children = provider.getChildren(fileSystemObject)
                     .iterator();
-            while (children.hasNext())
-                importRecursivelyFrom(children.next(), childPolicy);
+            while (children.hasNext()) {
+				importRecursivelyFrom(children.next(), childPolicy);
+			}
         }
     }
 
@@ -688,8 +720,9 @@ public class ImportOperation
         String overwriteAnswer = overwriteCallback.queryOverwrite(resourcePath
                 .makeRelative().toString());
 
-        if (overwriteAnswer.equals(IOverwriteQuery.CANCEL))
-            throw new OperationCanceledException(DataTransferMessages.DataTransfer_emptyString);
+        if (overwriteAnswer.equals(IOverwriteQuery.CANCEL)) {
+			throw new OperationCanceledException(DataTransferMessages.DataTransfer_emptyString);
+		}
 
         if (overwriteAnswer.equals(IOverwriteQuery.NO)) {
             return false;
@@ -700,8 +733,9 @@ public class ImportOperation
             return false;
         }
 
-        if (overwriteAnswer.equals(IOverwriteQuery.ALL))
-            this.overwriteState = OVERWRITE_ALL;
+        if (overwriteAnswer.equals(IOverwriteQuery.ALL)) {
+			this.overwriteState = OVERWRITE_ALL;
+		}
 
         return true;
     }
@@ -718,10 +752,12 @@ public class ImportOperation
         //If force overwrite is on don't bother
         if (policy != POLICY_FORCE_OVERWRITE) {
             if (this.overwriteState == OVERWRITE_NOT_SET
-                    && !queryOverwrite(targetFile.getFullPath()))
-                return false;
-            if (this.overwriteState == OVERWRITE_NONE)
-                return false;
+                    && !queryOverwrite(targetFile.getFullPath())) {
+				return false;
+			}
+            if (this.overwriteState == OVERWRITE_NONE) {
+				return false;
+			}
         }
         return true;
     }
@@ -734,10 +770,10 @@ public class ImportOperation
      * 	for check-out. The user will not be prompted if set to <code>null</code>.
      * @see IWorkspace#validateEdit(org.eclipse.core.resources.IFile[], java.lang.Object)
      * @since 2.1
-     */
-    public void setContext(Object shell) {
+    public void setContext(Shell shell) {
         context = shell;
     }
+     */
 
     /**
      * Sets whether the containment structures that are implied from the full paths
@@ -768,8 +804,9 @@ public class ImportOperation
      *   <code>false</code> otherwise
      */
     public void setOverwriteResources(boolean value) {
-        if (value)
-            this.overwriteState = OVERWRITE_ALL;
+        if (value) {
+			this.overwriteState = OVERWRITE_ALL;
+		}
     }
 
     /**
@@ -785,11 +822,12 @@ public class ImportOperation
             IFile[] files = (IFile[]) existingFiles
                     .toArray(new IFile[existingFiles.size()]);
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            IStatus status = workspace.validateEdit(files, context);
+            IStatus status = workspace.validateEdit(files, null);
 
             //If there was a mix return the bad ones
-            if (status.isMultiStatus())
-                return getRejectedFiles(status, files);
+            if (status.isMultiStatus()) {
+				return getRejectedFiles(status, files);
+			}
             
            if(!status.isOK()){
            		//If just a single status reject them all
