@@ -43,7 +43,7 @@ import org.eclipse.ui.IWorkbench;
 
 
 /**
- * A default LabelProvider for data elements found in Buckminster artifacts and views.
+ * A default LabelProvider for data elements found in P2 authoring artifacts and views.
  * 
  * @author Henrik Lindberg
  *
