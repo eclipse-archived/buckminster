@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.build.IBuildEntry;
+import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -257,7 +258,7 @@ public class CSpecFromSource extends CSpecGenerator
 	DependencyBuilder createDependency(IFeaturePlugin plugin) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
-		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), filter);
+		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.PERFECT, filter);
 	}
 
 	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException

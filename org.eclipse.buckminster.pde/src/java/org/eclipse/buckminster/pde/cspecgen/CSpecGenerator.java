@@ -42,6 +42,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -73,7 +74,6 @@ import org.eclipse.pde.internal.core.iproduct.IProductPlugin;
 import org.eclipse.pde.internal.core.product.ProductModel;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.Version;
 
 /**
  * @author Thomas Hallgren
@@ -90,7 +90,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final IPath OUTPUT_DIR_TEMP = OUTPUT_DIR.append("temp");
 
-	public static String convertMatchRule(int pdeMatchRule, String version)
+	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
 		if(version == null || version.length() == 0 || version.equals("0.0.0"))
 			return null;
@@ -98,11 +98,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		char c = version.charAt(0);
 		if(c == '[' || c == '(')
 			//
-			// Already an OSGi range, just ignor the rule then.
+			// Already an OSGi range, just ignore the rule then.
 			//
 			return version;
 
-		Version v;
+		OSGiVersion v = (OSGiVersion)VersionFactory.OSGiType.fromString(version);
+		if("qualifier".equals(v.getQualifier()))
+			v = (OSGiVersion)v.replaceQualifier(null);
+
 		StringBuilder vbld;
 		switch(pdeMatchRule)
 		{
@@ -112,22 +115,21 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			// If the version was sanitized, a perfect match will not find
 			// it.
 			//
-			version = "[" + version + ',' + version + "]";
+			version = "[" + v + ',' + v + "]";
 			break;
 		case IMatchRules.EQUIVALENT:
 			//
 			// Create a range that requires major and minor numbers
 			// to be equal.
 			//
-			v = Version.parseVersion(version);
 			vbld = new StringBuilder();
 			vbld.append('[');
-			vbld.append(version);
+			vbld.append(v);
 			vbld.append(',');
 			vbld.append(v.getMajor());
 			vbld.append('.');
 			vbld.append(v.getMinor() + 1);
-			vbld.append(')');
+			vbld.append(".0)");
 			version = vbld.toString();
 			break;
 		case IMatchRules.COMPATIBLE:
@@ -135,13 +137,12 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			// Create a range that requires major and minor numbers
 			// to be equal.
 			//
-			v = Version.parseVersion(version);
 			vbld = new StringBuilder();
 			vbld.append('[');
-			vbld.append(version);
+			vbld.append(v);
 			vbld.append(',');
 			vbld.append(v.getMajor() + 1);
-			vbld.append(')');
+			vbld.append(".0.0)");
 			version = vbld.toString();
 		}
 		return version;
@@ -253,7 +254,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				for(IProductFeature feature : product.getFeatures())
 				{
 					DependencyBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature
-							.getVersion(), null);
+							.getVersion(), IMatchRules.PERFECT, null);
 					if(dep.getName().equals(cspec.getName()))
 						createProduct.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORTS);
 					else if(!skipComponent(query, dep))
@@ -292,7 +293,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
 					DependencyBuilder dep = createDependency("org.eclipse.equinox.executable",
 							IComponentType.ECLIPSE_FEATURE,
-							version.replaceQualifier(null).toString(),
+							version.toString(), IMatchRules.PERFECT,
 							null);
 
 					if(addDependency(dep))
