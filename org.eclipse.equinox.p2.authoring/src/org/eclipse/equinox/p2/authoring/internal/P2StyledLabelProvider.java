@@ -25,7 +25,10 @@ import org.eclipse.jface.viewers.ILabelProvider;
 
 
 /**
- * @author henrik
+ * A {@link DelegatingStyledCellLabelProvider} wrapping a {@link P2AuthoringLabelProvider} and
+ * with implementation of (plain) {@link ILabelProvier}.
+ * 
+ * @author Henrik Lindberg
  *
  */
 public class P2StyledLabelProvider extends DelegatingStyledCellLabelProvider implements ILabelProvider
