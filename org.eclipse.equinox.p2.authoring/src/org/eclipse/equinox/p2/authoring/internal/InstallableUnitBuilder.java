@@ -14,11 +14,9 @@ package org.eclipse.equinox.p2.authoring.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
@@ -793,7 +791,11 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_typeid = type.getId();
 			m_version = type.getVersion().toString();
 		}
-
+		public TouchpointTypeBuilder(String typeId, String version)
+		{
+			m_typeid = typeId;
+			m_version = version;
+		}
 		public TouchpointType createTouchpointType()
 		{
 			return MetadataFactory.createTouchpointType(m_typeid, new Version(m_version));
