@@ -14,9 +14,16 @@ package org.eclipse.equinox.p2.authoring;
 
 import org.eclipse.equinox.p2.authoring.forms.IPageMementoProvider;
 import org.eclipse.equinox.p2.authoring.forms.RichFormPage;
+import org.eclipse.equinox.p2.authoring.internal.P2AuthoringLabelProvider;
+import org.eclipse.equinox.p2.authoring.internal.P2StyledLabelProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -89,9 +96,34 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		FormColors colors = toolkit.getColors();
 		Label label = toolkit.createLabel(sectionClient, "Type:");
 		label.setForeground(colors.getColor("org.eclipse.ui.forms.TITLE"));
+		
+		Combo ttype = new Combo(sectionClient, SWT.READ_ONLY);
+		ttype.setLayoutData(new GridData(SWT.FILL,SWT.CENTER, true,false));
+		final ComboViewer comboViewer = new ComboViewer(ttype);
+		comboViewer.setLabelProvider(new P2StyledLabelProvider());
+		comboViewer.setContentProvider(new IStructuredContentProvider(){
+
+			public Object[] getElements(Object inputElement)
+			{
+				return P2AuthoringUIPlugin.getDefault().getTouchpointTypes();
+			}
+
+			public void dispose()
+			{
+			}
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+			{
+				comboViewer.refresh();
+			}
+			
+		});
+		comboViewer.setInput("foo"); // irrelevant - the view shows static data
+		toolkit.adapt(ttype, true, true);
+		
 		// TODD: Change to a drop down selection
-		Text text = toolkit.createText(sectionClient, "");
-		text.setLayoutData(new GridData(SWT.FILL,SWT.CENTER, true,false));
+//		Text text = toolkit.createText(sectionClient, "");
+//		text.setLayoutData(new GridData(SWT.FILL,SWT.CENTER, true,false));
 //		text.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
 		
 		section.setClient(sectionClient);

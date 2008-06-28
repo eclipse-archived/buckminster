@@ -203,8 +203,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 
 	public void down()
 	{
-		// TODO move selected element down
-
+		move(1);
 	}
 
 	@Override
@@ -350,7 +349,35 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 
 	public void up()
 	{
-		// TODO move selected element up
+		move(-1);
+	}
+	
+	/**
+	 * Common move operation - moves model part up or down in the list. Operation can be undone.
+	 */
+	private void move(int delta)
+	{
+		IStructuredSelection ssel = (IStructuredSelection)m_viewer.getSelection();
+		if(ssel == null || ssel.size() != 1)
+			return; // nothing to move (or too many)
+		ModelPart selected = (ModelPart)ssel.getFirstElement();
+		
+		FormToolkit toolkit = m_formPage.getManagedForm().getToolkit();
+		if(toolkit instanceof IUndoOperationSupport)
+		{
+			MoveOperation op = new MoveOperation(selected, delta);
+			op.addContext(((IUndoOperationSupport)toolkit).getUndoContext());
+			try
+			{
+				((IUndoOperationSupport)toolkit).getOperationHistory().execute(op, null, null);
+			}
+			catch(ExecutionException e)
+			{
+				// TODO Proper logging
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	/**
@@ -452,6 +479,59 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 			return Status.OK_STATUS;
 		}
 
+	}
+	/**
+	 * Undoable operation class for moving touchpoint data, and touchpoint action nodes.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	private class MoveOperation extends AbstractOperation
+	{
+		private ModelPart m_moved;
+		private int  m_delta;
+		
+		public MoveOperation(ModelPart moved, int delta)
+		{
+			super(moved instanceof TouchpointDataBuilder ? "Move Instruction Block" : "Move Action"); 
+			m_moved = moved;
+			m_delta = delta;
+		}
+		private void updatePageState()
+		{
+			m_masterFormPart.markStale();
+			m_masterFormPart.markDirty();
+			switchFocus(m_moved); // switch focus if on another page
+		}
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+		{
+			return redo(monitor, info);
+		}
+
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+		{
+			return xxdo(monitor, info, m_delta);
+		}
+		public IStatus xxdo(IProgressMonitor monitor, IAdaptable info, int delta) throws ExecutionException
+		{
+			InstallableUnitBuilder iu = ((InstallableUnitEditor)m_formPage.getEditor()).getInstallableUnit();
+			if(m_moved instanceof TouchpointDataBuilder)
+				iu.moveTouchpointData((TouchpointDataBuilder)m_moved, delta);
+			else
+				((TouchpointInstructionBuilder)m_moved.getParent()).moveAction((TouchpointActionBuilder)m_moved, delta);
+			updatePageState();
+			if(monitor != null)
+				monitor.done();
+			return Status.OK_STATUS;
+		}
+
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+		{
+			return xxdo(monitor, info, -m_delta);		
+		}
+		
 	}
 
 	private class MasterFormPart extends AbstractFormPart

@@ -32,8 +32,10 @@ import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Required
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointDataBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -46,7 +48,7 @@ import org.eclipse.ui.IWorkbench;
  * @author Henrik Lindberg
  *
  */
-public class P2AuthoringLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider
+public class P2AuthoringLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider, ILabelProvider
 {
 	public static final String NS_JAVA_PACKAGE = "java.package"; //$NON-NLS-1$
 	public static final String NS_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
@@ -283,6 +285,15 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 			}
 			return bld;
 			
+		}
+		if(element instanceof ITouchpointTypeDescriptor)
+		{
+			ITouchpointTypeDescriptor ttd = (ITouchpointTypeDescriptor)element;
+			StyledString bld = new StyledString(ttd.getTypeId());
+			bld.append(" (", StyledString.DECORATIONS_STYLER);
+			bld.append(ttd.getVersionString(), StyledString.DECORATIONS_STYLER);
+			bld.append(")", StyledString.DECORATIONS_STYLER);
+			return bld;
 		}
 		if(element instanceof CSpec)
 		{

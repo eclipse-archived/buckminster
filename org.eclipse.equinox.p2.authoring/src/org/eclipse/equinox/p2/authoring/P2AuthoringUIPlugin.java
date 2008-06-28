@@ -12,10 +12,16 @@
 package org.eclipse.equinox.p2.authoring;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
+import org.eclipse.equinox.p2.authoring.internal.touchpoints.EclipseTouchpoint_1_0;
+import org.eclipse.equinox.p2.authoring.internal.touchpoints.NativeTouchpoint_1_0;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.widgets.Display;
@@ -32,12 +38,13 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.distro.ui"; //$NON-NLS-1$
 
-
 	// The shared instance
 	private static P2AuthoringUIPlugin plugin;
 
 	// Form colors shared by all forms in this plugin
 	private FormColors m_formColors;
+
+	private Map<String, ITouchpointTypeDescriptor> m_touchpointTypeDescs;
 
 	/**
 	 * The constructor
@@ -87,36 +94,36 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 	{
 		registerImage(registry, P2AuthoringImages.IMG_HORIZONTAL, "th_horizontal.gif"); //$NON-NLS-1$
 		registerImage(registry, P2AuthoringImages.IMG_VERTICAL, "th_vertical.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_IU, "iu_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_FRAGMENT, "frgmt_obj.gif"); //$NON-NLS-1$
 		registerImage(registry, P2AuthoringImages.IMG_FRAGMENTS, "frgmts_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_BUNDLE, "bundle_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_REQ_CAPABILITY, "req_plugin_obj.gif"); //$NON-NLS-1$
 		registerImage(registry, P2AuthoringImages.IMG_REQ_CAPABILITIES, "req_plugins_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_PROV_CAPABILITY, "prov_plugin_obj.gif"); //$NON-NLS-1$
 		registerImage(registry, P2AuthoringImages.IMG_PROV_CAPABILITIES, "prov_plugins_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_OVERVIEW, "overview_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_JAR, "jar010_obj.gif"); //$NON-NLS-1$
 
 		registerImage(registry, P2AuthoringImages.IMG_LIB, "java_lib_obj.gif"); //$NON-NLS-1$
 
 		registerImage(registry, P2AuthoringImages.IMG_PLUGIN, "plugins.gif"); //$NON-NLS-1$
 		registerImage(registry, P2AuthoringImages.IMG_FEATURE, "feature_obj.gif"); //$NON-NLS-1$
-		
+
 		registerImage(registry, P2AuthoringImages.IMG_CATEGORY, "category_obj.gif"); //$NON-NLS-1$	
 		registerImage(registry, P2AuthoringImages.IMG_FILE, "file_obj.gif"); //$NON-NLS-1$	
 		registerImage(registry, P2AuthoringImages.IMG_FOLDER, "fldr_obj.gif"); //$NON-NLS-1$	
 		registerImage(registry, P2AuthoringImages.IMG_PROJECT, "prj_obj.gif"); //$NON-NLS-1$	
 		registerImage(registry, P2AuthoringImages.IMG_RSS, "rsslink.gif"); //$NON-NLS-1$	
 		registerImage(registry, P2AuthoringImages.IMG_PACKAGE, "package_obj.gif"); //$NON-NLS-1$	
-		
+
 	}
 
 	private void registerImage(ImageRegistry registry, String key, String fileName)
@@ -135,5 +142,34 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 		{
 		}
 	}
-
+	private synchronized void initializeTouchpointType()
+	{
+		if(m_touchpointTypeDescs != null)
+			return;
+		m_touchpointTypeDescs = new HashMap<String, ITouchpointTypeDescriptor>(2);
+		EclipseTouchpoint_1_0 e = new EclipseTouchpoint_1_0();
+		m_touchpointTypeDescs.put(e.getTypeId() + " " + e.getVersionString(), e);
+		NativeTouchpoint_1_0 n = new NativeTouchpoint_1_0();
+		m_touchpointTypeDescs.put(n.getTypeId() + " " + n.getVersionString(), n);	
+		
+		// TODO: Pick up from extension point
+	}
+	public ITouchpointTypeDescriptor getTouchpointType(String typeKey, String versionString)
+	{
+		if(m_touchpointTypeDescs == null)
+			initializeTouchpointType();
+		
+		String key = typeKey.trim() + " " + versionString.trim();
+		return m_touchpointTypeDescs.get(key);
+	}
+	public ITouchpointTypeDescriptor getTouchpointType(TouchpointTypeBuilder builder)
+	{
+		return getTouchpointType(builder.getTypeid(), builder.getVersion());
+	}
+	ITouchpointTypeDescriptor[] getTouchpointTypes()
+	{
+		if(m_touchpointTypeDescs == null)
+			initializeTouchpointType();
+		return m_touchpointTypeDescs.values().toArray(new ITouchpointTypeDescriptor[m_touchpointTypeDescs.size()]);
+	}
 }
