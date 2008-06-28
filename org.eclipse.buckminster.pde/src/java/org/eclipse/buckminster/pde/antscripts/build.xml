@@ -91,9 +91,10 @@
 		<buckminster.copy todir="${buckminster.temp}">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
 		</buckminster.copy>
-		<jar jarfile="${sp:action.output}" manifest="${buckminster.temp}/META-INF/MANIFEST.MF">
+		<zip zipfile="${sp:action.output}">
+			<fileset dir="${buckminster.temp}" includes="META-INF/*" excludes="META-INF/*.RSA,META-INF/*.DSA,META-INF/*.SF"/>
 			<fileset dir="${buckminster.temp}" excludes="META-INF/*"/>
-		</jar>
+		</zip>
 	</target>
 
 	<target name="create.jar.with.manifest" depends="create.output.dir">
