@@ -14,8 +14,6 @@ package org.eclipse.equinox.p2.authoring;
 
 import java.util.EventObject;
 
-import javax.swing.event.ChangeEvent;
-
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -29,6 +27,7 @@ import org.eclipse.equinox.p2.authoring.internal.IEditEventBusProvider;
 import org.eclipse.equinox.p2.authoring.internal.IEditorListener;
 import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
+import org.eclipse.equinox.p2.authoring.internal.ModelChangeEvent;
 import org.eclipse.equinox.p2.authoring.internal.P2AuthoringLabelProvider;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.ProvidedCapabilityBuilder;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
@@ -331,8 +330,10 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 
 					public void notify(EventObject o)
 					{
-						if(o instanceof ChangeEvent && o.getSource() instanceof ProvidedCapabilityBuilder)
-							ProvidedBodyBlock.this.m_viewer.refresh(o.getSource(), true);
+						if(!(o instanceof ModelChangeEvent))
+							return;
+						if(((ModelChangeEvent)o).getDetail() instanceof ProvidedCapabilityBuilder)
+							ProvidedBodyBlock.this.m_viewer.refresh(((ModelChangeEvent)o).getDetail(), true);
 					}
 					
 				});
