@@ -230,6 +230,8 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 	public void addTouchpointData()
 	{
 		ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(getIU().getTouchpointType());
+		// No meaningful to add instruction blocks for unknown (don't know the available phases), and
+		// null (should not have any instructions/actions at all anyway).
 		if(desc.isNull() || desc.isUnknown())
 		{
 			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -237,19 +239,11 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 					"Not possible to add an instruction block for missing or unknown touchpoint types. "+
 					"Select a different touchpoint type.");
 			return;
-
 		}
 		
 		TouchpointDataBuilder data = new TouchpointDataBuilder();
 		// give the new block a default name
 		data.setName("Instruction block " + Integer.toString(getIU().getTouchpointData().length + 1));
-
-//		TouchpointInstructionBuilder instruction = data.getInstruction("install");
-//		List<Parameter> params = new ArrayList<Parameter>();
-//		params.add(new Parameter("source", "some source value"));
-//		params.add(new Parameter("target", "some target value"));
-//		TouchpointActionBuilder action = new TouchpointActionBuilder("doSomething", params);
-//		instruction.addAction(action);
 		addRemoveTouchpointData(data, true);
 	}
 
