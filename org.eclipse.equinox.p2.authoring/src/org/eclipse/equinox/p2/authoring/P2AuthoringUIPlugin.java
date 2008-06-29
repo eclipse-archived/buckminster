@@ -12,7 +12,7 @@
 package org.eclipse.equinox.p2.authoring;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
 import org.eclipse.equinox.p2.authoring.internal.touchpoints.EclipseTouchpoint_1_0;
 import org.eclipse.equinox.p2.authoring.internal.touchpoints.NativeTouchpoint_1_0;
+import org.eclipse.equinox.p2.authoring.internal.touchpoints.NullTouchpoint;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -45,6 +46,8 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 	private FormColors m_formColors;
 
 	private Map<String, ITouchpointTypeDescriptor> m_touchpointTypeDescs;
+
+	private NullTouchpoint m_none;
 
 	/**
 	 * The constructor
@@ -146,9 +149,14 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 	{
 		if(m_touchpointTypeDescs != null)
 			return;
-		m_touchpointTypeDescs = new HashMap<String, ITouchpointTypeDescriptor>(2);
+		m_touchpointTypeDescs = new LinkedHashMap<String, ITouchpointTypeDescriptor>(2);
+
+		m_none = new NullTouchpoint();
+		m_touchpointTypeDescs.put(m_none.getTypeId() + " " + m_none.getVersionString(), m_none);
+		
 		EclipseTouchpoint_1_0 e = new EclipseTouchpoint_1_0();
 		m_touchpointTypeDescs.put(e.getTypeId() + " " + e.getVersionString(), e);
+		
 		NativeTouchpoint_1_0 n = new NativeTouchpoint_1_0();
 		m_touchpointTypeDescs.put(n.getTypeId() + " " + n.getVersionString(), n);	
 		
@@ -162,8 +170,16 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 		String key = typeKey.trim() + " " + versionString.trim();
 		return m_touchpointTypeDescs.get(key);
 	}
+	/**
+	 * Returns descriptor for the touchpoint type. If type is null, the "null type" is returned. Null
+	 * is returned for unknown types.
+	 * @param builder
+	 * @return null if type is unknown, else a type, or the special "null type"
+	 */
 	public ITouchpointTypeDescriptor getTouchpointType(TouchpointTypeBuilder builder)
 	{
+		if(builder == null)
+			return m_none;
 		return getTouchpointType(builder.getTypeid(), builder.getVersion());
 	}
 	ITouchpointTypeDescriptor[] getTouchpointTypes()

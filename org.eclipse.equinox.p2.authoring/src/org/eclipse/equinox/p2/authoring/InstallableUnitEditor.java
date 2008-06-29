@@ -10,7 +10,6 @@
  * 		Henrik Lindberg
  *******************************************************************************/
 
-
 package org.eclipse.equinox.p2.authoring;
 
 import java.io.File;
@@ -31,6 +30,9 @@ import org.eclipse.equinox.p2.authoring.internal.InstallableUnitEditorInput;
 import org.eclipse.equinox.p2.authoring.internal.ModelChangeEvent;
 import org.eclipse.equinox.p2.authoring.internal.P2MetadataReader;
 import org.eclipse.equinox.p2.authoring.internal.SaveIURunnable;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
+import org.eclipse.equinox.p2.authoring.internal.touchpoints.UnknownTouchpoint;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -45,17 +47,16 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 /**
  * A multi page Eclipse form based editor for p2 Installable Unit.
  * 
- * The editor keeps track of two types of "dirty" state - a) the dirty state in the editor pages (and sub editors), which
- * reflect the dirty state in relation to the model object b) the model's dirty state.
- * Editor pages are marked as "clean" when the data in the editor has been "comitted" to the model object. This happens
- * frequently when the user switches between pages in the editor, or when switching between details in a master
- * detail setup.
+ * The editor keeps track of two types of "dirty" state - a) the dirty state in the editor pages (and sub editors),
+ * which reflect the dirty state in relation to the model object b) the model's dirty state. Editor pages are marked as
+ * "clean" when the data in the editor has been "comitted" to the model object. This happens frequently when the user
+ * switches between pages in the editor, or when switching between details in a master detail setup.
  * 
- * Changes to the model marks the model as "changed" (i.e. dirty), until the changed-state is cleared. The editor
- * clears this state when the model is saved to file.
+ * Changes to the model marks the model as "changed" (i.e. dirty), until the changed-state is cleared. The editor clears
+ * this state when the model is saved to file.
  * 
- * The Editor provides an event bus see {@link RichFormEditor#getEventBus()}. This event bus is also given to the 
- * model object, and listeners interested in model change events can subscribe to these via the bus. The model emits 
+ * The Editor provides an event bus see {@link RichFormEditor#getEventBus()}. This event bus is also given to the model
+ * object, and listeners interested in model change events can subscribe to these via the bus. The model emits
  * {@link ModelChangeEvent} event object instances.
  * 
  * @author Henrik Lindberg
@@ -64,12 +65,19 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 public class InstallableUnitEditor extends RichFormEditor
 {
 	private InstallableUnitBuilder m_iu;
+
 	private boolean m_readOnly = false;
+
+	private TouchpointTypeBuilder m_originalTouchpointType;
+
+	private ITouchpointTypeDescriptor[] m_touchpointTypes;
+
 	public InstallableUnitEditor()
 	{
 		setTmpPrefix("p2iu-");
 		setTmpSuffix("iu");
 	}
+
 	@Override
 	protected void addPages()
 	{
@@ -83,9 +91,9 @@ public class InstallableUnitEditor extends RichFormEditor
 			addPage(new InformationPage(this));
 			addPage(new TouchpointPage(this));
 			addPage(new FeedsPage2(this));
-//			addPage(new ThirdPage(this));
-//			addPage(new MasterDetailsPage(this));
-//			addPage(new PageWithSubPages(this));
+			// addPage(new ThirdPage(this));
+			// addPage(new MasterDetailsPage(this));
+			// addPage(new PageWithSubPages(this));
 		}
 		catch(PartInitException e)
 		{
@@ -93,6 +101,7 @@ public class InstallableUnitEditor extends RichFormEditor
 			e.printStackTrace();
 		}
 	}
+
 	public void doExternalSaveAs()
 	{
 		if(!commitChanges())
@@ -109,11 +118,12 @@ public class InstallableUnitEditor extends RichFormEditor
 	{
 		return m_iu;
 	}
+
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException
-	{ 
+	{
 		// super version sets the site, sets the input (without notify), and then installs a selection provider.
-		// 
+		//
 		super.init(site, input);
 		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || //
 				input instanceof IURIEditorInput || input instanceof InstallableUnitEditorInput))
@@ -146,25 +156,30 @@ public class InstallableUnitEditor extends RichFormEditor
 				IPath path = (input instanceof ILocationProvider)
 						? ((ILocationProvider)input).getPath(input)
 						: ((IPathEditorInput)input).getPath();
-	
+
 				// Always allow edit of a file TODO: should perhaps check for extension = ".iu"
 				m_readOnly = false;
-						
+
 				File file = path.toFile();
 				if(file.length() != 0)
 				{
 					stream = new FileInputStream(file);
 					// note url passed is only for information - creates mutable copy for editing
-					m_iu = new InstallableUnitBuilder(P2MetadataReader.readInstallableUnit(file.toURL(), stream, 
-							site.getActionBars().getStatusLineManager().getProgressMonitor()));
+					m_iu = new InstallableUnitBuilder(P2MetadataReader.readInstallableUnit(file.toURL(), stream, site
+							.getActionBars().getStatusLineManager().getProgressMonitor()));
 				}
 			}
 			// If we got a model object, set the event bus to use to send model change events.
 			//
 			if(m_iu != null)
+			{
 				m_iu.setEventBus(getEventBus());
+				m_originalTouchpointType = m_iu.getTouchpointType();
+			}
 			setInputWithNotify(input);
-			setPartName(input.getName() + (m_readOnly ? " (read only)" : ""));
+			setPartName(input.getName() + (m_readOnly
+					? " (read only)"
+					: ""));
 		}
 		catch(Exception e)
 		{
@@ -182,10 +197,21 @@ public class InstallableUnitEditor extends RichFormEditor
 			}
 		}
 	}
+
 	/**
-	 * Overrides the default implementation by checking if the model object (the installable unit) is
-	 * dirty. The default implementation only checks if the editor pages are dirty, and they are marked as
-	 * clean as soon as the model object has been updated (comitted).
+	 * Returns the original TouchpointType from the IU when read from the .iu file. This type is preserved as it may
+	 * represent an unknown type, and the user should be able to select this (i.e. keep it after changing to some other
+	 * type when editing).
+	 */
+	public TouchpointTypeBuilder getOriginalTouchpointType()
+	{
+		return m_originalTouchpointType;
+	}
+
+	/**
+	 * Overrides the default implementation by checking if the model object (the installable unit) is dirty. The default
+	 * implementation only checks if the editor pages are dirty, and they are marked as clean as soon as the model
+	 * object has been updated (comitted).
 	 */
 	@Override
 	public boolean isDirty()
@@ -194,11 +220,12 @@ public class InstallableUnitEditor extends RichFormEditor
 			return true;
 		return super.isDirty();
 	}
+
 	public boolean isReadOnly()
 	{
 		return m_readOnly;
 	}
-	
+
 	@Override
 	public final void saveToPath(IPath path)
 	{
@@ -223,5 +250,48 @@ public class InstallableUnitEditor extends RichFormEditor
 		catch(InterruptedException e)
 		{
 		}
-	}	
+	}
+
+	/**
+	 * Returns the available touchpoint type descriptors from the plugin plus an Unknown type descriptor with the
+	 * original typeId and version from the IU when read from file.
+	 * 
+	 * @return
+	 */
+	public ITouchpointTypeDescriptor[] getTouchpointTypes()
+	{
+		if(m_touchpointTypes == null)
+		{
+			m_touchpointTypes = P2AuthoringUIPlugin.getDefault().getTouchpointTypes();
+			if(m_originalTouchpointType != null)
+			{
+				ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(
+						m_originalTouchpointType);
+				if(desc == null)
+				{
+					ITouchpointTypeDescriptor[] result2 = new ITouchpointTypeDescriptor[m_touchpointTypes.length + 1];
+					System.arraycopy(m_touchpointTypes, 0, result2, 1, m_touchpointTypes.length);
+					result2[0] = new UnknownTouchpoint(m_originalTouchpointType);
+					m_touchpointTypes = result2;
+				}
+			}
+		}
+		return m_touchpointTypes;
+	}
+
+	/**
+	 * Returns the touchpoint type descriptor for the type.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public ITouchpointTypeDescriptor getTouchpointType(TouchpointTypeBuilder type)
+	{
+		// null/none type, or a known type
+		ITouchpointTypeDescriptor ttd = P2AuthoringUIPlugin.getDefault().getTouchpointType(type);
+		// If not found, it must be the unknown type.
+		if(ttd == null)
+			return getTouchpointTypes()[0];
+		return ttd;
+	}
 }

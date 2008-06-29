@@ -36,7 +36,7 @@ public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
 									"Target Path", "", TYPE_PATH, true) }), //
 
 			new TouchpointInstruction("unzip", //$NON-NLS-1$
-					"Cleanup Zip", new TouchpointParameter[] { //
+					"Unzip", new TouchpointParameter[] { //
 					new TouchpointParameter("source", //$NON-NLS-1$
 							"Source Path", "", TYPE_PATH, true), //
 							new TouchpointParameter("target", //$NON-NLS-1$
@@ -88,6 +88,14 @@ public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	public String getVersionString()
 	{
 		return "1.0.0"; //$NON-NLS-1$
+	}
+	public boolean isNull()
+	{
+		return false;
+	}
+	public boolean isUnknown()
+	{
+		return false;
 	}
 
 }

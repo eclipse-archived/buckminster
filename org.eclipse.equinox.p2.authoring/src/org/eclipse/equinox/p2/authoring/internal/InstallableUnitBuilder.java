@@ -1452,7 +1452,8 @@ public class InstallableUnitBuilder extends ModelRoot
 		if(m_touchpointType != null)
 			m_touchpointType.setParent(null);
 		m_touchpointType = touchpointType;
-		m_touchpointType.setParent(this);
+		if(m_touchpointType != null)
+			m_touchpointType.setParent(this);
 		notifyChanged();
 	}
 

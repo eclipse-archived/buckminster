@@ -40,4 +40,14 @@ public interface ITouchpointTypeDescriptor extends ITouchpointInstructionParamet
 	 * @return An array of ITouchpointInstructionDescriptor that describes the available instructions.
 	 */
 	ITouchpointInstructionDescriptor[] getInstructions();
+	
+	/**
+	 * @return true if this description has the meaning "no touchpoint type"
+	 */
+	boolean isNull();
+	
+	/**
+	 * @return true if this description has the meaning "touchpoint type unknown to p2 authoring"
+	 */
+	boolean isUnknown();
 }

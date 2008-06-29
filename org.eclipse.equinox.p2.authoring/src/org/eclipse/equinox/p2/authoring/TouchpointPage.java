@@ -24,6 +24,7 @@ import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.P2StyledLabelProvider;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
+import org.eclipse.equinox.p2.authoring.internal.touchpoints.UnknownTouchpoint;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -49,23 +50,28 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 
 /**
  * A Page for editing touchpoint type and touchpoint data for a p2 IU.
+ * 
  * @author Henrik Lindberg
  * 
  */
 public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 {
 	public static final String PAGE_ID = "touchpoint.id";
+
 	private final TouchpointBodyBlock m_touchpointBodyBlock;
+
 	private ComboViewer m_touchpointTypeViewer;
+
 	private org.eclipse.equinox.p2.authoring.TouchpointPage.MasterFormPart m_masterFormPart;
+
 	private boolean m_loopLock;
-	
+
 	public TouchpointPage(FormEditor editor)
 	{
 		super(editor, PAGE_ID, "Touchpoint");
 		m_header = "Touchpoint";
 		m_numColumns = 1;
-		TableWrapData wrapData = new TableWrapData(TableWrapData.FILL_GRAB,TableWrapData.FILL_GRAB);
+		TableWrapData wrapData = new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB);
 		wrapData.indent = 0;
 
 		m_touchpointBodyBlock = new TouchpointBodyBlock(this, wrapData);
@@ -77,16 +83,17 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 	{
 		final ScrolledForm scrolledForm = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
-		
+
 		Section section = createGeneralSection(toolkit, scrolledForm.getBody());
 		section.addExpansionListener(getReflowListener());
-		
+
 		m_touchpointBodyBlock.createContent(managedForm);
-		getManagedForm().addPart(m_masterFormPart); // and make it part of the overall lifecycle				
+		getManagedForm().addPart(m_masterFormPart); // and make it part of the overall lifecycle
 	}
+
 	/**
-	 * Creates a general section above the master detail to allow setting the touchpoint type from 
-	 * a selection of available touchpoint type/versions.
+	 * Creates a general section above the master detail to allow setting the touchpoint type from a selection of
+	 * available touchpoint type/versions.
 	 * 
 	 * @param toolkit
 	 * @param parent
@@ -96,9 +103,9 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 	{
 		Section section = toolkit.createSection(parent, //
 				Section.DESCRIPTION | //
-				Section.TITLE_BAR | //
-				Section.TWISTIE | // Expandable by user
-				Section.EXPANDED);
+						Section.TITLE_BAR | //
+						Section.TWISTIE | // Expandable by user
+						Section.EXPANDED);
 
 		TableWrapData td = new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.TOP);
 		td.colspan = 1;
@@ -108,20 +115,23 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		Composite sectionClient = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout(2, false);
 		sectionClient.setLayout(layout);
-		
+
 		FormColors colors = toolkit.getColors();
 		Label label = toolkit.createLabel(sectionClient, "Type:");
 		label.setForeground(colors.getColor("org.eclipse.ui.forms.TITLE"));
-		
+
 		final Combo ttype = new Combo(sectionClient, SWT.READ_ONLY);
-		ttype.setLayoutData(new GridData(SWT.FILL,SWT.CENTER, true,false));
+		ttype.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		m_touchpointTypeViewer = new ComboViewer(ttype);
 		m_touchpointTypeViewer.setLabelProvider(new P2StyledLabelProvider());
-		m_touchpointTypeViewer.setContentProvider(new IStructuredContentProvider(){
+		m_touchpointTypeViewer.setContentProvider(new IStructuredContentProvider()
+		{
 
 			public Object[] getElements(Object inputElement)
 			{
-				return P2AuthoringUIPlugin.getDefault().getTouchpointTypes();
+				// get type descriptors (including configured unknown instance)
+				return ((InstallableUnitEditor)getEditor()).getTouchpointTypes();
+				// return P2AuthoringUIPlugin.getDefault().getTouchpointTypes();
 			}
 
 			public void dispose()
@@ -132,27 +142,32 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 			{
 				m_touchpointTypeViewer.refresh();
 			}
-			
+
 		});
 		m_touchpointTypeViewer.setInput(this); // input irrelevant - the view shows static data
-		m_touchpointTypeViewer.addSelectionChangedListener(new ISelectionChangedListener(){
+		m_touchpointTypeViewer.addSelectionChangedListener(new ISelectionChangedListener()
+		{
 
 			public void selectionChanged(SelectionChangedEvent event)
 			{
 				if(m_loopLock)
 					return;
 				int index = ttype.getSelectionIndex();
-				ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointTypes()[index];
-				TouchpointTypeBuilder ttb = new TouchpointTypeBuilder(desc.getTypeId(), desc.getVersionString());
+				ITouchpointTypeDescriptor desc = ((InstallableUnitEditor)getEditor()).getTouchpointTypes()[index];
+
+				TouchpointTypeBuilder ttb = desc instanceof UnknownTouchpoint
+						? ((InstallableUnitEditor)getEditor()).getOriginalTouchpointType()
+						: new TouchpointTypeBuilder(desc.getTypeId(), desc.getVersionString());
 				setTouchpointType(ttb);
 			}
-			
+
 		});
 		toolkit.adapt(ttype, true, true);
 
 		section.setClient(sectionClient);
 		return section;
 	}
+
 	public Object getPageMemento()
 	{
 		return m_touchpointBodyBlock.getPageMemento();
@@ -162,8 +177,9 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 	{
 		m_touchpointBodyBlock.setPageMemento(memento);
 	}
+
 	/**
-	 * Common move operation - moved required capability up or down in the list. Operation can be undone.
+	 * Sets the touchpoint type in the IU - operation can be undone.
 	 */
 	private void setTouchpointType(TouchpointTypeBuilder touchpointType)
 	{
@@ -182,37 +198,11 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
-	
+
 	private class MasterFormPart extends AbstractFormPart
 	{
-// Possibly listen to IU, and change selection if touchpoint type changed in the model,
-// But not needed yet since only change comes from the UI.
-//		@Override
-//		public void initialize(IManagedForm form)
-//		{
-//			super.initialize(form);
-//			// register a listener to Required Capability change events
-//			if(form.getToolkit() instanceof IEditEventBusProvider)
-//			{
-//				((IEditEventBusProvider)form.getToolkit()).getEventBus().addListener(new IEditorListener()
-//				{
-//
-//					public void notify(EventObject o)
-//					{
-//						if(!(o instanceof ChangeEvent))
-//							return;
-//						Object source = o.getSource();
-//						if(source instanceof TouchpointDataBuilder 
-//								|| source instanceof TouchpointInstructionBuilder
-//								|| source instanceof TouchpointActionBuilder)
-//							m_touchpointTypeViewer.refresh(o.getSource(), true);
-//					}
-//
-//				});
-//			}
-//		}
 		/**
 		 * Refreshes the viewer with stale model changes
 		 */
@@ -220,10 +210,12 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		public void refresh()
 		{
 			TouchpointTypeBuilder type = ((InstallableUnitEditor)getEditor()).getInstallableUnit().getTouchpointType();
-			ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(type);
-			try {
+			ITouchpointTypeDescriptor desc = ((InstallableUnitEditor)getEditor()).getTouchpointType(type);
+			
+			try
+			{
 				m_loopLock = true;
-				m_touchpointTypeViewer.setSelection(new StructuredSelection(new Object[]{desc}), true);
+				m_touchpointTypeViewer.setSelection(new StructuredSelection(new Object[] { desc }), true);
 			}
 			finally
 			{
@@ -233,6 +225,7 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		}
 
 	}
+
 	/**
 	 * Switches focus in the editor to this page, and sets focus to the touchpoint type viewer's control.
 	 */
@@ -242,40 +235,45 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		IFormPage currentPage = editor.getActivePageInstance();
 		if(!getId().equals(currentPage.getId()))
 			editor.setActivePage(getId());
-		ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(type);
+		ITouchpointTypeDescriptor desc = ((InstallableUnitEditor)getEditor()).getTouchpointType(type);
 		m_touchpointTypeViewer.getControl().setFocus();
-		try {
+		try
+		{
 			m_loopLock = true;
-			m_touchpointTypeViewer.setSelection(new StructuredSelection(new Object[]{desc}), true);
+			m_touchpointTypeViewer.setSelection(new StructuredSelection(new Object[] { desc }), true);
 		}
 		finally
 		{
 			m_loopLock = false;
 		}
 	}
-	
+
 	/**
 	 * Undoable operation class for Changing TouchpointType.
+	 * 
 	 * @author Henrik Lindberg
-	 *
+	 * 
 	 */
 	private class SetTouchpointTypeOperation extends AbstractOperation
 	{
 		private TouchpointTypeBuilder m_old;
+
 		private TouchpointTypeBuilder m_new;
-		
+
 		public SetTouchpointTypeOperation(TouchpointTypeBuilder theNew)
 		{
-			super("Touchpoint Type Change"); 
+			super("Touchpoint Type Change");
 			m_new = theNew;
 			m_old = null;
 		}
+
 		private void updatePageState(TouchpointTypeBuilder type)
 		{
 			m_masterFormPart.markStale();
 			m_masterFormPart.markDirty();
 			switchFocus(type); // switch focus if on another page
 		}
+
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
@@ -283,17 +281,20 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 			m_old = iu.getTouchpointType();
 			return redo(monitor, info);
 		}
+
 		private InstallableUnitBuilder getIU()
 		{
 			return ((InstallableUnitEditor)getEditor()).getInstallableUnit();
 		}
+
 		@Override
 		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
 			return xxdo(m_new, monitor, info);
 		}
-		
-		private IStatus xxdo(TouchpointTypeBuilder t, IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+
+		private IStatus xxdo(TouchpointTypeBuilder t, IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException
 		{
 			InstallableUnitBuilder iu = getIU();
 			iu.setTouchpointType(t);
@@ -308,7 +309,7 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		{
 			return xxdo(m_old, monitor, info);
 		}
-		
+
 	}
 
 }

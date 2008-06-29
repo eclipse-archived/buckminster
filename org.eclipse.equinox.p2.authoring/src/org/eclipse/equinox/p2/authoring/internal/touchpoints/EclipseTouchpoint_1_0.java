@@ -179,5 +179,12 @@ public final class EclipseTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	{
 		return "1.0.0";
 	}
-
+	public boolean isNull()
+	{
+		return false;
+	}
+	public boolean isUnknown()
+	{
+		return false;
+	}
 }

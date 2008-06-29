@@ -33,10 +33,15 @@ import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.ModelPart;
 import org.eclipse.equinox.p2.authoring.internal.P2AuthoringLabelProvider;
+import org.eclipse.equinox.p2.authoring.internal.P2StyledLabelProvider;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Parameter;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointDataBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointInstructionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointInstructionParameterDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -51,6 +56,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IDetailsPageProvider;
@@ -121,19 +128,116 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 
 	public void addAction()
 	{
-		// TODO: add a link
-	}
+		// An instruciton or action must be selected to find the correct place to add
+		// the action
+		IStructuredSelection ssel = (IStructuredSelection)m_viewer.getSelection();
+		Object element = ssel.getFirstElement();
+		TouchpointInstructionBuilder tib = null;
+		if(element != null)
+		{
+			if(element instanceof TouchpointInstructionBuilder)
+				tib = (TouchpointInstructionBuilder)element;
+			else if(element instanceof TouchpointActionBuilder)
+				tib = (TouchpointInstructionBuilder)((TouchpointActionBuilder)element).getParent();
+		}
+		InstallableUnitEditor editor = ((InstallableUnitEditor)m_formPage.getEditor());
+		final ITouchpointTypeDescriptor desc = editor.getTouchpointType(editor.getInstallableUnit().getTouchpointType());
+		if(desc.isNull())
+		{
+			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Select Touchpoint Type first",
+					"This unit has no touchpoint type. Please select the Touchpoint Type.");
+			return;
+		}
+		if(desc.isUnknown())
+		{
+			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Unknown Touchpoint Type",
+					"This unit has an unknown touchpoint type. Actions can not be added.");
+			return;
+		}
+	
+		if(tib == null)
+		{
+			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Select instruction first",
+					"Please select the instruction where the action should be added and try again.");
+			return;
+		}
+		// Let user select an action
+		ListDialog listDialog = new ListDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+		listDialog.setTitle("Select Action to Add");
+		listDialog.setContentProvider(new IStructuredContentProvider(){
 
+			public Object[] getElements(Object inputElement)
+			{
+				return desc.getInstructions();
+			}
+
+			public void dispose()
+			{				
+			}
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+			{
+			}
+			
+		});
+		listDialog.setLabelProvider(new P2StyledLabelProvider());
+		listDialog.setInput(this); 
+		listDialog.open();
+		Object[] result = listDialog.getResult();
+		// Add the actions to the instruction
+		if(result == null || result.length < 1)
+			return;
+		ITouchpointInstructionDescriptor instr = (ITouchpointInstructionDescriptor)result[0];
+		String actionKey = instr.getKey();
+		ITouchpointInstructionParameterDescriptor[] p = instr.getParameters();
+		List<Parameter> params = new ArrayList<Parameter>(p.length);
+		for(int i = 0; i < p.length;i++)
+			params.add(new Parameter(p[i].getKey(), p[i].getDefaultValue()));
+		TouchpointActionBuilder action = new TouchpointActionBuilder(actionKey, params);
+		// Execute the undoable add action
+		addRemoveTouchpointInstruction(tib, action, true);
+		
+	}
+	public void addRemoveTouchpointInstruction(TouchpointInstructionBuilder instruction, TouchpointActionBuilder action, boolean add)
+	{
+		FormToolkit toolkit = m_formPage.getManagedForm().getToolkit();
+		if(toolkit instanceof IUndoOperationSupport)
+		{
+			AddRemoveActionOperation op = new AddRemoveActionOperation(instruction, action, add);
+			op.addContext(((IUndoOperationSupport)toolkit).getUndoContext());
+			try
+			{
+				((IUndoOperationSupport)toolkit).getOperationHistory().execute(op, null, null);
+			}
+			catch(ExecutionException e)
+			{
+				// TODO Proper logging
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			// without undo support - just add it... (should not happen)
+			if(add)
+				instruction.addAction(action);
+			else
+				instruction.removeAction(action);
+		}
+
+	}
 	public void addTouchpointData()
 	{
 		TouchpointDataBuilder data = new TouchpointDataBuilder();
 		// give the new block a default name
-		data.setName("Instruction block "+Integer.toString(getIU().getTouchpointData().length+1));
+		data.setName("Instruction block " + Integer.toString(getIU().getTouchpointData().length + 1));
 
 		TouchpointInstructionBuilder instruction = data.getInstruction("install");
-		List<Parameter>params = new ArrayList<Parameter>();
+		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(new Parameter("source", "some source value"));
-		params.add(new Parameter("target","some target value"));
+		params.add(new Parameter("target", "some target value"));
 		TouchpointActionBuilder action = new TouchpointActionBuilder("doSomething", params);
 		instruction.addAction(action);
 		addRemoveTouchpointData(data, true);
@@ -173,7 +277,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		};
 		Menu addMenu = new Menu(b.getShell(), SWT.POP_UP);
 		MenuItem mi = new MenuItem(addMenu, SWT.PUSH);
-		mi.setText("Add Action");
+		mi.setText("Add Action...");
 		mi.setData("action");
 		mi.addSelectionListener(listener);
 
@@ -351,7 +455,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 	{
 		move(-1);
 	}
-	
+
 	/**
 	 * Common move operation - moves model part up or down in the list. Operation can be undone.
 	 */
@@ -361,7 +465,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		if(ssel == null || ssel.size() != 1)
 			return; // nothing to move (or too many)
 		ModelPart selected = (ModelPart)ssel.getFirstElement();
-		
+
 		FormToolkit toolkit = m_formPage.getManagedForm().getToolkit();
 		if(toolkit instanceof IUndoOperationSupport)
 		{
@@ -377,7 +481,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	/**
@@ -480,28 +584,35 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		}
 
 	}
+
 	/**
 	 * Undoable operation class for moving touchpoint data, and touchpoint action nodes.
+	 * 
 	 * @author Henrik Lindberg
-	 *
+	 * 
 	 */
 	private class MoveOperation extends AbstractOperation
 	{
 		private ModelPart m_moved;
-		private int  m_delta;
-		
+
+		private int m_delta;
+
 		public MoveOperation(ModelPart moved, int delta)
 		{
-			super(moved instanceof TouchpointDataBuilder ? "Move Instruction Block" : "Move Action"); 
+			super(moved instanceof TouchpointDataBuilder
+					? "Move Instruction Block"
+					: "Move Action");
 			m_moved = moved;
 			m_delta = delta;
 		}
+
 		private void updatePageState()
 		{
 			m_masterFormPart.markStale();
 			m_masterFormPart.markDirty();
 			switchFocus(m_moved); // switch focus if on another page
 		}
+
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
@@ -513,6 +624,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		{
 			return xxdo(monitor, info, m_delta);
 		}
+
 		public IStatus xxdo(IProgressMonitor monitor, IAdaptable info, int delta) throws ExecutionException
 		{
 			InstallableUnitBuilder iu = ((InstallableUnitEditor)m_formPage.getEditor()).getInstallableUnit();
@@ -529,9 +641,76 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
-			return xxdo(monitor, info, -m_delta);		
+			return xxdo(monitor, info, -m_delta);
 		}
+
+	}
+	/**
+	 * Undoable operation for add/remove of TouchpointData
+	 * 
+	 * @author Henrik Lindberg
+	 * 
+	 */
+	private class AddRemoveActionOperation extends AbstractOperation
+	{
+		private TouchpointInstructionBuilder m_instruction;
+		private TouchpointActionBuilder m_action;
 		
+		private boolean m_add;
+
+		private int m_index;
+
+		public AddRemoveActionOperation(TouchpointInstructionBuilder instruction, TouchpointActionBuilder action, boolean add)
+		{
+			super((add
+					? "Add"
+					: "Remove") + " Touchpoint Action");
+			m_instruction = instruction;
+			m_action = action;
+			m_add = add;
+		}
+
+		private void updatePageState(boolean select)
+		{
+			m_masterFormPart.markStale();
+			m_masterFormPart.markDirty();
+			switchFocus(select
+					? m_action
+					: null); // switch focus if on another page
+		}
+
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+		{
+			return redo(monitor, info);
+		}
+
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+		{
+			if(m_add)
+				m_index = m_instruction.addAction(m_action);
+			else
+				m_index = m_instruction.removeAction(m_action);
+			updatePageState(m_add);
+			if(monitor != null)
+				monitor.done();
+			return Status.OK_STATUS;
+		}
+
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
+		{
+			if(m_add)
+				m_instruction.removeAction(m_action);
+			else
+				m_instruction.addAction(m_action, m_index);
+			updatePageState(!m_add);
+			if(monitor != null)
+				monitor.done();
+			return Status.OK_STATUS;
+		}
+
 	}
 
 	private class MasterFormPart extends AbstractFormPart
@@ -552,8 +731,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 						if(!(o instanceof ChangeEvent))
 							return;
 						Object source = o.getSource();
-						if(source instanceof TouchpointDataBuilder 
-								|| source instanceof TouchpointInstructionBuilder
+						if(source instanceof TouchpointDataBuilder || source instanceof TouchpointInstructionBuilder
 								|| source instanceof TouchpointActionBuilder)
 							TouchpointBodyBlock.this.m_viewer.refresh(o.getSource(), true);
 					}
@@ -561,6 +739,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 				});
 			}
 		}
+
 		/**
 		 * Refreshes the viewer with stale model changes
 		 */
@@ -572,6 +751,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		}
 
 	}
+
 	/**
 	 * Returns a memento that restores this page selection.
 	 */
@@ -579,6 +759,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 	{
 		return ((IStructuredSelection)m_viewer.getSelection()).getFirstElement();
 	}
+
 	/**
 	 * Restores this page selection from the memento.
 	 */
@@ -587,6 +768,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		if(memento != null)
 			m_viewer.setSelection(new StructuredSelection(memento), true);
 	}
+
 	/**
 	 * Switches focus in the editor to the page where this required body block is.
 	 */
@@ -599,9 +781,10 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		if(select != null)
 			m_viewer.setSelection(new StructuredSelection(select), true);
 	}
+
 	/**
-	 * Overrides default handling of enablement of up/down/remove buttons since it is
-	 * not possible to remove or move an instruction node.
+	 * Overrides default handling of enablement of up/down/remove buttons since it is not possible to remove or move an
+	 * instruction node.
 	 */
 	@Override
 	protected void setStandardButtonEnablement(StandardButtons buttons, IStructuredSelection selection)
