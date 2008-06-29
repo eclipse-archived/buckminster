@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.distro.ui.editor.distro.FeedsPage2;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -64,6 +63,12 @@ import org.eclipse.ui.editors.text.ILocationProvider;
  */
 public class InstallableUnitEditor extends RichFormEditor
 {
+	private static final String EXTENSION_FILTER = "*.iu"; //$NON-NLS-1$
+
+	private static final String TMP_SUFFIX = "iu"; //$NON-NLS-1$
+
+	private static final String TMP_PREFIX = "p2iu-"; //$NON-NLS-1$
+
 	private InstallableUnitBuilder m_iu;
 
 	private boolean m_readOnly = false;
@@ -74,8 +79,8 @@ public class InstallableUnitEditor extends RichFormEditor
 
 	public InstallableUnitEditor()
 	{
-		setTmpPrefix("p2iu-");
-		setTmpSuffix("iu");
+		setTmpPrefix(TMP_PREFIX); 
+		setTmpSuffix(TMP_SUFFIX); 
 	}
 
 	@Override
@@ -90,10 +95,6 @@ public class InstallableUnitEditor extends RichFormEditor
 			addPage(new ArtifactsPage(this));
 			addPage(new InformationPage(this));
 			addPage(new TouchpointPage(this));
-			addPage(new FeedsPage2(this));
-			// addPage(new ThirdPage(this));
-			// addPage(new MasterDetailsPage(this));
-			// addPage(new PageWithSubPages(this));
 		}
 		catch(PartInitException e)
 		{
@@ -107,7 +108,7 @@ public class InstallableUnitEditor extends RichFormEditor
 		if(!commitChanges())
 			return;
 		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.iu" });
+		dlg.setFilterExtensions(new String[] { EXTENSION_FILTER }); 
 		final String location = dlg.open();
 		if(location == null)
 			return;
@@ -128,7 +129,6 @@ public class InstallableUnitEditor extends RichFormEditor
 		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || //
 				input instanceof IURIEditorInput || input instanceof InstallableUnitEditorInput))
 			throw new PartInitException("Invalid Input");
-		// setSite(site);
 
 		if(input instanceof IURIEditorInput)
 		{
@@ -179,7 +179,7 @@ public class InstallableUnitEditor extends RichFormEditor
 			setInputWithNotify(input);
 			setPartName(input.getName() + (m_readOnly
 					? " (read only)"
-					: ""));
+					: "")); //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{
