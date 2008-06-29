@@ -219,7 +219,16 @@ public class TouchpointPage extends RichFormPage implements IPageMementoProvider
 		@Override
 		public void refresh()
 		{
-			m_touchpointTypeViewer.refresh();
+			TouchpointTypeBuilder type = ((InstallableUnitEditor)getEditor()).getInstallableUnit().getTouchpointType();
+			ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(type);
+			try {
+				m_loopLock = true;
+				m_touchpointTypeViewer.setSelection(new StructuredSelection(new Object[]{desc}), true);
+			}
+			finally
+			{
+				m_loopLock = false;
+			}
 			super.refresh();
 		}
 
