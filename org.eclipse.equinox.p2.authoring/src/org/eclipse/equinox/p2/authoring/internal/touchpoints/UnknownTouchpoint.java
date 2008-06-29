@@ -16,6 +16,7 @@ import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Touchpoi
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.TouchpointTypeDescriptor;
 
 /**
  * Descriptor class for the p2 UNKNOWN touchpoint. The description is used by
@@ -30,7 +31,7 @@ import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
  * @author Henrik Lindberg
  *
  */
-public final class UnknownTouchpoint implements ITouchpointTypeDescriptor
+public final class UnknownTouchpoint extends TouchpointTypeDescriptor implements ITouchpointTypeDescriptor
 {
 	public static ITouchpointActionDescriptor[] s_types = new TouchpointActionDescriptor[0]; 
 	private String m_originalTypeId;
@@ -58,7 +59,7 @@ public final class UnknownTouchpoint implements ITouchpointTypeDescriptor
 	/**
 	 * Returns the instructions for the unknown touchpoint (none)
 	 */
-	public ITouchpointActionDescriptor[] getInstructions()
+	public ITouchpointActionDescriptor[] getActions()
 	{
 		return s_types;
 	}
@@ -78,10 +79,7 @@ public final class UnknownTouchpoint implements ITouchpointTypeDescriptor
 	{
 		return ""; //$NON-NLS-1$
 	}
-	public boolean isNull()
-	{
-		return false;
-	}
+	@Override
 	public boolean isUnknown()
 	{
 		return true;

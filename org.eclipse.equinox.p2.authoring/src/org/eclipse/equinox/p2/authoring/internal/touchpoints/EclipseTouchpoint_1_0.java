@@ -16,6 +16,7 @@ import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.TouchpointActionParameterDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.TouchpointTypeDescriptor;
 
 /**
  * Descriptor class for the p2 Eclipse touchpoint version 1.0.0. The description is used by
@@ -24,7 +25,7 @@ import org.eclipse.equinox.p2.authoring.spi.TouchpointActionParameterDescriptor;
  * @author Henrik Lindberg
  *
  */
-public final class EclipseTouchpoint_1_0 implements ITouchpointTypeDescriptor
+public final class EclipseTouchpoint_1_0 extends TouchpointTypeDescriptor implements ITouchpointTypeDescriptor
 {
 	public final static ITouchpointActionDescriptor[] s_types = new TouchpointActionDescriptor[] {
 			new TouchpointActionDescriptor("installBundle", //$NON-NLS-1$
@@ -159,7 +160,7 @@ public final class EclipseTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	/**
 	 * Returns the Eclipse touchpoint instructions.
 	 */
-	public final ITouchpointActionDescriptor[] getInstructions()
+	public final ITouchpointActionDescriptor[] getActions()
 	{
 		return s_types;
 	}
@@ -178,13 +179,5 @@ public final class EclipseTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	public final String getVersionString()
 	{
 		return "1.0.0";
-	}
-	public boolean isNull()
-	{
-		return false;
-	}
-	public boolean isUnknown()
-	{
-		return false;
 	}
 }

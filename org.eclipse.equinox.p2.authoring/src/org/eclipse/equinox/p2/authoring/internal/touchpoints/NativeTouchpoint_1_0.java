@@ -16,6 +16,7 @@ import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.TouchpointActionParameterDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.TouchpointTypeDescriptor;
 
 /**
  * Descriptor class for the p2 Native touchpoint version 1.0.0. The description is used by
@@ -24,7 +25,7 @@ import org.eclipse.equinox.p2.authoring.spi.TouchpointActionParameterDescriptor;
  * @author Henrik Lindberg
  *
  */
-public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
+public final class NativeTouchpoint_1_0 extends TouchpointTypeDescriptor implements ITouchpointTypeDescriptor
 {
 	public static ITouchpointActionDescriptor[] s_types = new TouchpointActionDescriptor[] {
 		
@@ -69,7 +70,7 @@ public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	/**
 	 * Returns the instructions for the native touchpoint version 1.0.0
 	 */
-	public ITouchpointActionDescriptor[] getInstructions()
+	public ITouchpointActionDescriptor[] getActions()
 	{
 		return s_types;
 	}
@@ -88,14 +89,6 @@ public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	public String getVersionString()
 	{
 		return "1.0.0"; //$NON-NLS-1$
-	}
-	public boolean isNull()
-	{
-		return false;
-	}
-	public boolean isUnknown()
-	{
-		return false;
 	}
 
 }

@@ -170,7 +170,7 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 
 			public Object[] getElements(Object inputElement)
 			{
-				return desc.getInstructions();
+				return desc.getActions();
 			}
 
 			public void dispose()

@@ -37,9 +37,14 @@ public interface ITouchpointTypeDescriptor extends ITouchpointActionParameterTyp
 	String getVersionString();
 	
 	/**
-	 * @return An array of ITouchpointInstructionDescriptor that describes the available instructions.
+	 * @return An array of ITouchpointActionDescriptor that describes the available instructions.
 	 */
-	ITouchpointActionDescriptor[] getInstructions();
+	ITouchpointActionDescriptor[] getActions();
+	
+	/**
+	 * @return An array of strings with the instruction names /phases supported by a touchpoint type.
+	 */
+	String[] getPhases();
 	
 	/**
 	 * @return true if this description has the meaning "no touchpoint type"

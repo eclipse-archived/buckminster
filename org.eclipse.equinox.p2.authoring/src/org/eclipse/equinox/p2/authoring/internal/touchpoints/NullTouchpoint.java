@@ -15,6 +15,7 @@ package org.eclipse.equinox.p2.authoring.internal.touchpoints;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.TouchpointTypeDescriptor;
 
 /**
  * Descriptor class for the p2 NULL touchpoint. The description is used by
@@ -23,14 +24,14 @@ import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
  * @author Henrik Lindberg
  *
  */
-public final class NullTouchpoint implements ITouchpointTypeDescriptor
+public final class NullTouchpoint extends TouchpointTypeDescriptor implements ITouchpointTypeDescriptor
 {
 	public static ITouchpointActionDescriptor[] s_types = new TouchpointActionDescriptor[0]; 
 
 	/**
 	 * Returns the instructions for the native touchpoint version 1.0.0
 	 */
-	public ITouchpointActionDescriptor[] getInstructions()
+	public ITouchpointActionDescriptor[] getActions()
 	{
 		return s_types;
 	}
@@ -50,13 +51,10 @@ public final class NullTouchpoint implements ITouchpointTypeDescriptor
 	{
 		return "0.0.0"; //$NON-NLS-1$
 	}
+	@Override
 	public boolean isNull()
 	{
 		return true;
-	}
-	public boolean isUnknown()
-	{
-		return false;
 	}
 
 }
