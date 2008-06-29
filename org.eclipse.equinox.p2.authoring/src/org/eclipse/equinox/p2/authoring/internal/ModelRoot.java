@@ -53,6 +53,12 @@ public class ModelRoot extends ModelPart
 		if(m_eventBus != null)
 			m_eventBus.publishEvent(m_changeEvent);
 	}
+	public void setChanged(boolean changed, ModelPart detail)
+	{
+		m_changed = changed;
+		if(m_eventBus != null)
+			m_eventBus.publishEvent(new ModelChangeEvent(this, detail));
+	}
 	/**
 	 * Returns the event bus in use for this model object. 
 	 * @return
@@ -81,5 +87,11 @@ public class ModelRoot extends ModelPart
 	public void notifyChanged()
 	{
 		setChanged(true);		
+	}
+	
+	@Override
+	public void notifyChanged(ModelPart detail)
+	{
+		setChanged(true, detail);
 	}
 }

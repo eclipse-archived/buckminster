@@ -44,7 +44,12 @@ public class ModelPart implements IAdaptable
 	public void notifyChanged()
 	{
 		if(m_parent != null)
-			m_parent.notifyChanged();
+			m_parent.notifyChanged(this);
+	}
+	public void notifyChanged(ModelPart detail)
+	{
+		if(m_parent != null)
+			m_parent.notifyChanged(detail);
 	}
 	/**
 	 * Default implementation of {@link IAdaptable#getAdapter(Class)}.

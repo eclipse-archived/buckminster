@@ -669,6 +669,8 @@ public class InstallableUnitBuilder extends ModelRoot
 		{
 			m_actionKey = actionKey;
 			m_parameters = parameters.toArray(new Parameter[parameters.size()]);
+			for(int i = 0; i < m_parameters.length; i++)
+				m_parameters[i].setParent(this);
 		}
 		public String getActionKey()
 		{
@@ -681,7 +683,11 @@ public class InstallableUnitBuilder extends ModelRoot
 		}
 		public void setParameters(List<Parameter> parameters)
 		{
+			for(int i = 0; i < m_parameters.length; i++)
+				m_parameters[i].setParent(null);
 			m_parameters = parameters.toArray(new Parameter[parameters.size()]);
+			for(int i = 0; i < m_parameters.length; i++)
+				m_parameters[i].setParent(this);
 			notifyChanged();
 		}
 		public void append(StringBuilder builder)
@@ -736,7 +742,6 @@ public class InstallableUnitBuilder extends ModelRoot
 					m_parameters[i].setValue(parameterValue);
 					return;
 				}
-			notifyChanged();			
 			throw new IllegalArgumentException("No such parameter: " + parameterName);
 		}
 		public Parameter[] getParameters()

@@ -15,8 +15,6 @@ package org.eclipse.equinox.p2.authoring;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -31,6 +29,7 @@ import org.eclipse.equinox.p2.authoring.internal.IEditEventBusProvider;
 import org.eclipse.equinox.p2.authoring.internal.IEditorListener;
 import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
+import org.eclipse.equinox.p2.authoring.internal.ModelChangeEvent;
 import org.eclipse.equinox.p2.authoring.internal.ModelPart;
 import org.eclipse.equinox.p2.authoring.internal.P2AuthoringLabelProvider;
 import org.eclipse.equinox.p2.authoring.internal.P2StyledLabelProvider;
@@ -234,18 +233,13 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		// give the new block a default name
 		data.setName("Instruction block " + Integer.toString(getIU().getTouchpointData().length + 1));
 
-		TouchpointInstructionBuilder instruction = data.getInstruction("install");
-		List<Parameter> params = new ArrayList<Parameter>();
-		params.add(new Parameter("source", "some source value"));
-		params.add(new Parameter("target", "some target value"));
-		TouchpointActionBuilder action = new TouchpointActionBuilder("doSomething", params);
-		instruction.addAction(action);
+//		TouchpointInstructionBuilder instruction = data.getInstruction("install");
+//		List<Parameter> params = new ArrayList<Parameter>();
+//		params.add(new Parameter("source", "some source value"));
+//		params.add(new Parameter("target", "some target value"));
+//		TouchpointActionBuilder action = new TouchpointActionBuilder("doSomething", params);
+//		instruction.addAction(action);
 		addRemoveTouchpointData(data, true);
-	}
-
-	public void addFeed()
-	{
-		// TODO: add a feed
 	}
 
 	/**
@@ -733,12 +727,14 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 
 					public void notify(EventObject o)
 					{
-						if(!(o instanceof ChangeEvent))
+						if(!(o instanceof ModelChangeEvent))
 							return;
-						Object source = o.getSource();
+						Object source = ((ModelChangeEvent)o).getDetail();
 						if(source instanceof TouchpointDataBuilder || source instanceof TouchpointInstructionBuilder
 								|| source instanceof TouchpointActionBuilder)
-							TouchpointBodyBlock.this.m_viewer.refresh(o.getSource(), true);
+							TouchpointBodyBlock.this.m_viewer.refresh(source, true);
+						else if(source instanceof Parameter)
+							TouchpointBodyBlock.this.m_viewer.refresh(((ModelPart)source).getParent(), true);
 					}
 
 				});

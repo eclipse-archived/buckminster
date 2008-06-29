@@ -25,8 +25,19 @@ import java.util.EventObject;
 public class ModelChangeEvent extends EventObject
 {
 	private static final long serialVersionUID = 1L;
+	private ModelPart m_detail;
+	
+	public ModelPart getDetail()
+	{
+		return m_detail;
+	}
 	public ModelChangeEvent(Object source)
 	{
 		super(source);
+	}
+	public ModelChangeEvent(ModelRoot source, ModelPart detail)
+	{
+		super(source);
+		m_detail = detail;
 	}
 }
