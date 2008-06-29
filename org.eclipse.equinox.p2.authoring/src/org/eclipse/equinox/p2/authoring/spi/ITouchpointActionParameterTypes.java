@@ -17,7 +17,7 @@ package org.eclipse.equinox.p2.authoring.spi;
  * @author Henrik Lindberg
  *
  */
-public interface ITouchpointInstructionParameterTypes
+public interface ITouchpointActionParameterTypes
 {
 	/** Parameter can be any string */
 	public static final String TYPE_STRING = "string.type";

@@ -17,7 +17,7 @@ package org.eclipse.equinox.p2.authoring.spi;
  * @author Henrik Lindberg
  *
  */
-public interface ITouchpointInstructionParameterDescriptor extends ITouchpointInstructionParameterTypes
+public interface ITouchpointActionParameterDescriptor extends ITouchpointActionParameterTypes
 {
 	
 	/**
@@ -37,7 +37,7 @@ public interface ITouchpointInstructionParameterDescriptor extends ITouchpointIn
 	
 	/**
 	 * Return the type of the parameter as described by the various TYPE_XXX static Strings 
-	 * in {@link ITouchpointInstructionParameterTypes}. This is
+	 * in {@link ITouchpointActionParameterTypes}. This is
 	 * used by the p2 authoring to validate the input, and to provide lookup.
 	 * 
 	 * @return a TYPE_XXX String as described in this interface

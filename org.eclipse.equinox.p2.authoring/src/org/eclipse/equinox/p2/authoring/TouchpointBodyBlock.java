@@ -37,8 +37,8 @@ import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Paramete
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointDataBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
-import org.eclipse.equinox.p2.authoring.spi.ITouchpointInstructionDescriptor;
-import org.eclipse.equinox.p2.authoring.spi.ITouchpointInstructionParameterDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionParameterDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
@@ -189,9 +189,9 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		// Add the actions to the instruction
 		if(result == null || result.length < 1)
 			return;
-		ITouchpointInstructionDescriptor instr = (ITouchpointInstructionDescriptor)result[0];
+		ITouchpointActionDescriptor instr = (ITouchpointActionDescriptor)result[0];
 		String actionKey = instr.getKey();
-		ITouchpointInstructionParameterDescriptor[] p = instr.getParameters();
+		ITouchpointActionParameterDescriptor[] p = instr.getParameters();
 		List<Parameter> params = new ArrayList<Parameter>(p.length);
 		for(int i = 0; i < p.length;i++)
 			params.add(new Parameter(p[i].getKey(), p[i].getDefaultValue()));

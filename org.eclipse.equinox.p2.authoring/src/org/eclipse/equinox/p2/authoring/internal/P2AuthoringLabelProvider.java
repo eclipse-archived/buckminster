@@ -33,7 +33,7 @@ import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Touchpoi
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointDataBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
 import org.eclipse.equinox.p2.authoring.internal.touchpoints.UnknownTouchpoint;
-import org.eclipse.equinox.p2.authoring.spi.ITouchpointInstructionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -315,9 +315,9 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 				bld.append(" - unknown", StyledString.QUALIFIER_STYLER);
 			return bld;
 		}
-		if(element instanceof ITouchpointInstructionDescriptor)
+		if(element instanceof ITouchpointActionDescriptor)
 		{
-			ITouchpointInstructionDescriptor desc = (ITouchpointInstructionDescriptor)element;
+			ITouchpointActionDescriptor desc = (ITouchpointActionDescriptor)element;
 			StyledString bld = new StyledString(desc.getLabel());
 			return bld;
 		}

@@ -14,33 +14,49 @@ package org.eclipse.equinox.p2.authoring.spi;
 
 
 /**
- * An implementaion of {@link ITouchpointInstructionDescriptor}.
+ * An implementation of the interface {@link ITouchpointActionParameterDescriptor}.
  * @author Henrik Lindberg
  *
  */
-public class TouchpointInstruction implements ITouchpointInstructionDescriptor
+public class TouchpointActionParameterDescriptor implements ITouchpointActionParameterDescriptor
 {
+	private String m_default;
 	private String m_key;
 	private String m_label;
+	private String m_type;
+	private boolean m_required;
 	
-	private ITouchpointInstructionParameterDescriptor[] m_parameters;
-	public TouchpointInstruction(String key, String label, ITouchpointInstructionParameterDescriptor[] parameters)
+	public TouchpointActionParameterDescriptor(String key, String label, String defaultValue, String type, boolean required)
 	{
 		m_key = key;
 		m_label = label;
-		m_parameters = parameters;
+		m_default = defaultValue;
+		m_type = type;
+		m_required = required;
 	}
+	public String getDefaultValue()
+	{
+		return m_default;
+	}
+
 	public String getKey()
 	{
 		return m_key;
 	}
+
 	public String getLabel()
 	{
 		return m_label;
 	}
-	public ITouchpointInstructionParameterDescriptor[] getParameters()
+
+	public String getType()
 	{
-		return m_parameters;
+		return m_type;
+	}
+
+	public boolean isRequired()
+	{
+		return m_required;
 	}
 
 }

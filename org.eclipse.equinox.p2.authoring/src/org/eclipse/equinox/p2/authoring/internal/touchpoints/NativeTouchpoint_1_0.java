@@ -12,10 +12,10 @@
 
 package org.eclipse.equinox.p2.authoring.internal.touchpoints;
 
-import org.eclipse.equinox.p2.authoring.spi.ITouchpointInstructionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointActionDescriptor;
 import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
-import org.eclipse.equinox.p2.authoring.spi.TouchpointInstruction;
-import org.eclipse.equinox.p2.authoring.spi.TouchpointParameter;
+import org.eclipse.equinox.p2.authoring.spi.TouchpointActionDescriptor;
+import org.eclipse.equinox.p2.authoring.spi.TouchpointActionParameterDescriptor;
 
 /**
  * Descriptor class for the p2 Native touchpoint version 1.0.0. The description is used by
@@ -26,40 +26,40 @@ import org.eclipse.equinox.p2.authoring.spi.TouchpointParameter;
  */
 public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
 {
-	public static ITouchpointInstructionDescriptor[] s_types = new TouchpointInstruction[] {
+	public static ITouchpointActionDescriptor[] s_types = new TouchpointActionDescriptor[] {
 		
-			new TouchpointInstruction("cleanupzip", //$NON-NLS-1$
-					"Cleanup Zip", new TouchpointParameter[] { //
-					new TouchpointParameter("source", //$NON-NLS-1$
+			new TouchpointActionDescriptor("cleanupzip", //$NON-NLS-1$
+					"Cleanup Zip", new TouchpointActionParameterDescriptor[] { //
+					new TouchpointActionParameterDescriptor("source", //$NON-NLS-1$
 							"Source Path", "", TYPE_PATH, true), //
-							new TouchpointParameter("target", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("target", //$NON-NLS-1$
 									"Target Path", "", TYPE_PATH, true) }), //
 
-			new TouchpointInstruction("unzip", //$NON-NLS-1$
-					"Unzip", new TouchpointParameter[] { //
-					new TouchpointParameter("source", //$NON-NLS-1$
+			new TouchpointActionDescriptor("unzip", //$NON-NLS-1$
+					"Unzip", new TouchpointActionParameterDescriptor[] { //
+					new TouchpointActionParameterDescriptor("source", //$NON-NLS-1$
 							"Source Path", "", TYPE_PATH, true), //
-							new TouchpointParameter("target", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("target", //$NON-NLS-1$
 									"Target Path", "", TYPE_PATH, true) }),
 
-			new TouchpointInstruction("link", //$NON-NLS-1$
-					"Create Symbolic Link", new TouchpointParameter[] //
-					{ new TouchpointParameter("targetDir", //$NON-NLS-1$
+			new TouchpointActionDescriptor("link", //$NON-NLS-1$
+					"Create Symbolic Link", new TouchpointActionParameterDescriptor[] //
+					{ new TouchpointActionParameterDescriptor("targetDir", //$NON-NLS-1$
 							"Create In", "", TYPE_IMPLIED_PATH, true), //
-							new TouchpointParameter("linkTarget", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("linkTarget", //$NON-NLS-1$
 									"Source Path", "", TYPE_PATH, true), //
-							new TouchpointParameter("linkName", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("linkName", //$NON-NLS-1$
 									"Link Name", "", TYPE_FILENAME, true), //
-							new TouchpointParameter("force", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("force", //$NON-NLS-1$
 									"Force", "false", TYPE_BOOLEAN, true), }), // //$NON-NLS-2$
 
-			new TouchpointInstruction("chmod", //$NON-NLS-1$
-					"Change Permissions", new TouchpointParameter[] //
-					{ new TouchpointParameter("targetDir", //$NON-NLS-1$
+			new TouchpointActionDescriptor("chmod", //$NON-NLS-1$
+					"Change Permissions", new TouchpointActionParameterDescriptor[] //
+					{ new TouchpointActionParameterDescriptor("targetDir", //$NON-NLS-1$
 							"Directory", "", TYPE_PATH, true), //
-							new TouchpointParameter("targetFile", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("targetFile", //$NON-NLS-1$
 									"File Name", "", TYPE_FILENAME, true), //
-							new TouchpointParameter("permissions", //$NON-NLS-1$
+							new TouchpointActionParameterDescriptor("permissions", //$NON-NLS-1$
 									"Permissions", "755", TYPE_STRING, true), }), //
 
 	// The following instruction is created by the engine and should not be used when editing.
@@ -69,7 +69,7 @@ public final class NativeTouchpoint_1_0 implements ITouchpointTypeDescriptor
 	/**
 	 * Returns the instructions for the native touchpoint version 1.0.0
 	 */
-	public ITouchpointInstructionDescriptor[] getInstructions()
+	public ITouchpointActionDescriptor[] getInstructions()
 	{
 		return s_types;
 	}

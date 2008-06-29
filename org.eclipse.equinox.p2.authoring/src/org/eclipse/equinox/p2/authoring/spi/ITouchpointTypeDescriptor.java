@@ -24,7 +24,7 @@ package org.eclipse.equinox.p2.authoring.spi;
  * @author Henrik Lindberg
  *
  */
-public interface ITouchpointTypeDescriptor extends ITouchpointInstructionParameterTypes
+public interface ITouchpointTypeDescriptor extends ITouchpointActionParameterTypes
 {
 	/** 
 	 * @return The ID for the touchpoint type.
@@ -39,7 +39,7 @@ public interface ITouchpointTypeDescriptor extends ITouchpointInstructionParamet
 	/**
 	 * @return An array of ITouchpointInstructionDescriptor that describes the available instructions.
 	 */
-	ITouchpointInstructionDescriptor[] getInstructions();
+	ITouchpointActionDescriptor[] getInstructions();
 	
 	/**
 	 * @return true if this description has the meaning "no touchpoint type"

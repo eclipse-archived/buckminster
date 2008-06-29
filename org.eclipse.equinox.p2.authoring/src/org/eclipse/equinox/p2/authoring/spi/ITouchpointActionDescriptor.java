@@ -19,7 +19,7 @@ package org.eclipse.equinox.p2.authoring.spi;
  * @author Henrik Lindberg
  *
  */
-public interface ITouchpointInstructionDescriptor
+public interface ITouchpointActionDescriptor
 {
 	/**
 	 * @return The instruction key as it appears in IU meta data
@@ -34,6 +34,6 @@ public interface ITouchpointInstructionDescriptor
 	/**
 	 * @return array of parameter descriptors
 	 */
-	ITouchpointInstructionParameterDescriptor[] getParameters();
+	ITouchpointActionParameterDescriptor[] getParameters();
 
 }
