@@ -32,6 +32,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.RequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.TouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.TouchpointType;
+import org.eclipse.equinox.p2.authoring.P2AuthoringUIPlugin;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.osgi.framework.Version;
 
@@ -405,16 +407,13 @@ public class InstallableUnitBuilder extends ModelRoot
 		LinkedHashMap<String, TouchpointInstructionBuilder> m_instructions;
 		private String m_name; 
 
-		public static final String INSTALL = "install"; //$NON-NLS-1$
-		public static final String UNINSTALL = "uninstall"; //$NON-NLS-1$
-		public static final String CONFIGURE = "configure"; //$NON-NLS-1$
-		public static final String UNCONFIGURE = "unconfigure"; //$NON-NLS-1$
+//		public static final String INSTALL = "install"; //$NON-NLS-1$
+//		public static final String UNINSTALL = "uninstall"; //$NON-NLS-1$
+//		public static final String CONFIGURE = "configure"; //$NON-NLS-1$
+//		public static final String UNCONFIGURE = "unconfigure"; //$NON-NLS-1$
 		
 		/**
-		 * Creates a TouchpointDataBuilder. Adds one TouchpointInstructionBuilder 
-		 * per possible instruction
-		 * (This way, there is no need to explicitly add an instruction - it is enough to edit
-		 * the actions per instruction).
+		 * Creates an empty TouchpointDataBuilder.
 		 * @param touchpointData
 		 */
 		public TouchpointDataBuilder()
@@ -439,13 +438,13 @@ public class InstallableUnitBuilder extends ModelRoot
 		{
 			m_instructions = new LinkedHashMap<String, TouchpointInstructionBuilder>(m.size());
 			
-			// initialize with default instructions
-			m_instructions.put(INSTALL, new TouchpointInstructionBuilder(this, INSTALL));
-			m_instructions.put(UNINSTALL, new TouchpointInstructionBuilder(this, UNINSTALL));
-			m_instructions.put(CONFIGURE, new TouchpointInstructionBuilder(this, CONFIGURE));
-			m_instructions.put(UNCONFIGURE, new TouchpointInstructionBuilder(this, UNCONFIGURE));
+//			// initialize with default instructions
+//			m_instructions.put(INSTALL, new TouchpointInstructionBuilder(this, INSTALL));
+//			m_instructions.put(UNINSTALL, new TouchpointInstructionBuilder(this, UNINSTALL));
+//			m_instructions.put(CONFIGURE, new TouchpointInstructionBuilder(this, CONFIGURE));
+//			m_instructions.put(UNCONFIGURE, new TouchpointInstructionBuilder(this, UNCONFIGURE));
 			
-			// Replace with the instructions set in the TouchpointData
+			// initialize with the instructions set in the TouchpointData
 			for(Object e : m.entrySet())
 			{
 				String phaseId = (String)((Map.Entry)e).getKey();				
@@ -457,6 +456,18 @@ public class InstallableUnitBuilder extends ModelRoot
 			// TODO: should set the name when that is supported in TouchpointData - now the InstallableUnitBuilder
 			// sets the name.
 			m_name = "";
+		}
+		/**
+		 * Should be called with an array of supported phases for the selected touchpoint type.
+		 * @param phases
+		 */
+		private void addMissingInstructions(String[] phases)
+		{
+			if(phases == null)
+				return;
+			for(int i = 0; i < phases.length;i++)
+				if(m_instructions.get(phases[i]) == null)
+					m_instructions.put(phases[i], new TouchpointInstructionBuilder(this, phases[i]));
 		}
 
 		/**
@@ -976,6 +987,13 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_requiredCapabilities[i] = new RequiredCapabilityBuilder(requiredCapabilities[i]);
 			m_requiredCapabilities[i].setParent(this);
 		}
+		m_touchpointType = new TouchpointTypeBuilder(unit.getTouchpointType());
+		m_touchpointType.setParent(this);
+		
+		// Get the phases for the touchpoint type
+		ITouchpointTypeDescriptor typeDesc = P2AuthoringUIPlugin.getDefault().getTouchpointType(m_touchpointType);
+		String[] phases = typeDesc.getPhases();
+		
 		TouchpointData[] touchpointData = unit.getTouchpointData();
 		m_touchpointData = new TouchpointDataBuilder[touchpointData.length];
 		for(int i = 0; i < touchpointData.length; i++)
@@ -983,10 +1001,10 @@ public class InstallableUnitBuilder extends ModelRoot
 			m_touchpointData[i] = new TouchpointDataBuilder(touchpointData[i]);
 			// TODO: Replace this when IU meta data contains a name/label - for now generate a name
 			m_touchpointData[i].setName("Instruction block "+Integer.toString(i+1));
+			// make sure instructions/phases that are unused has entries
+			m_touchpointData[i].addMissingInstructions(phases);
 			m_touchpointData[i].setParent(this);
 		}
-		m_touchpointType = new TouchpointTypeBuilder(unit.getTouchpointType());
-		m_touchpointType.setParent(this);
 
 		m_updateDescriptor = new UpdateDescriptorBuilder(unit.getUpdateDescriptor());
 		m_updateDescriptor.setParent(this);
@@ -1278,7 +1296,8 @@ public class InstallableUnitBuilder extends ModelRoot
 
 	/**
 	 * Adds a touchpoint data at a given index. If index is outside of range (or more specifically is -1), the new
-	 * touchpoint data is added last.
+	 * touchpoint data is added last. Missing phases defined in the currently selected touchpoint type
+	 * are added (empty) to the TouchpointData.
 	 * 
 	 * @param data
 	 * @param index
@@ -1287,6 +1306,8 @@ public class InstallableUnitBuilder extends ModelRoot
 	public int addTouchpointData(TouchpointDataBuilder data, int index)
 	{
 		int[] ix = { index };
+		String[] phases = P2AuthoringUIPlugin.getDefault().getTouchpointType(getTouchpointType()).getPhases();
+		data.addMissingInstructions(phases);
 		m_touchpointData = (TouchpointDataBuilder[])addModelPart(m_touchpointData, data, ix);
 		notifyChanged();
 		return ix[0];

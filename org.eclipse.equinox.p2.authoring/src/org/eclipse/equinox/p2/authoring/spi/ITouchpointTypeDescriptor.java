@@ -42,6 +42,12 @@ public interface ITouchpointTypeDescriptor extends ITouchpointActionParameterTyp
 	ITouchpointActionDescriptor[] getActions();
 	
 	/**
+	 * @param actionName
+	 * @return The action descriptor for the actionName, or null of there is no such descriptor.
+	 */
+	ITouchpointActionDescriptor getActionDescriptor(String actionName);
+	
+	/**
 	 * @return An array of strings with the instruction names /phases supported by a touchpoint type.
 	 */
 	String[] getPhases();
