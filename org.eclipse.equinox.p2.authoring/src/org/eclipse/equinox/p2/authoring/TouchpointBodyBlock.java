@@ -448,7 +448,12 @@ public class TouchpointBodyBlock extends TreeMasterDetailsBlock implements IDeta
 		Object selected = ssel.getFirstElement();
 		if(selected instanceof TouchpointDataBuilder)
 			addRemoveTouchpointData((TouchpointDataBuilder)selected, false);
-		// TODO: Removal of other types of elements
+		if(selected instanceof TouchpointActionBuilder)
+		{
+			TouchpointActionBuilder action = (TouchpointActionBuilder)selected;
+			TouchpointInstructionBuilder instruction = (TouchpointInstructionBuilder)action.getParent();
+			addRemoveTouchpointInstruction(instruction, action, false);
+		}
 	}
 
 	public void up()
