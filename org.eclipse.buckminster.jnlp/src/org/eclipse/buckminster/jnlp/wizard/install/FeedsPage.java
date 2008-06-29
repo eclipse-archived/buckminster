@@ -58,11 +58,10 @@ public class FeedsPage extends InstallWizardPage
 		GridLayout layout = new GridLayout(2, false);
 		layout.verticalSpacing = VERTICAL_SPACING;
 		pageComposite.setLayout(layout);
-		GridData layoutData = new GridData();
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		m_heading = new Label(pageComposite, SWT.WRAP);
-		layoutData = new GridData();
+		GridData layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		m_heading.setLayoutData(layoutData);
 
