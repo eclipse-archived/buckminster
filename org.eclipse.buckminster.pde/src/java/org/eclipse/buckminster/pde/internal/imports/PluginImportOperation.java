@@ -1173,9 +1173,9 @@ public class PluginImportOperation extends JarImportOperation
 		ArrayList collected)
 	{
 		super.collectNonJavaResources(provider, element, collected);
-		if(m_importType != IMPORT_WITH_SOURCE)
-			return;
+
 		// filter the resources we get back to include only relevant resource files
+		//
 		ListIterator<?> li = collected.listIterator();
 		while(li.hasNext())
 		{
@@ -1184,6 +1184,11 @@ public class PluginImportOperation extends JarImportOperation
 			// filter out signature files - bug 175756
 			if(name.startsWith("META-INF/") && (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				li.remove();
+			else if(m_importType == IMPORT_BINARY)
+			{
+				if("build.properties".equals(ze.getName())) //$NON-NLS-1$
+					li.remove();
+			}
 		}
 	}
 }
