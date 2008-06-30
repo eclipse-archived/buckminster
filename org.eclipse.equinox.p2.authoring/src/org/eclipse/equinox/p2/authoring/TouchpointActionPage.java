@@ -12,11 +12,18 @@
 
 package org.eclipse.equinox.p2.authoring;
 
+import java.util.EventObject;
+
 import org.eclipse.equinox.p2.authoring.forms.EditAdapter;
 import org.eclipse.equinox.p2.authoring.forms.Mutator;
 import org.eclipse.equinox.p2.authoring.forms.RichDetailsPage;
 import org.eclipse.equinox.p2.authoring.forms.validators.IEditValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
+import org.eclipse.equinox.p2.authoring.internal.IEditEventBusProvider;
+import org.eclipse.equinox.p2.authoring.internal.IEditorEventBus;
+import org.eclipse.equinox.p2.authoring.internal.IEditorListener;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
+import org.eclipse.equinox.p2.authoring.internal.ModelChangeEvent;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Parameter;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
@@ -78,6 +85,8 @@ public class TouchpointActionPage extends RichDetailsPage
 	
 	/** The validator to use for parameter values */
 	private ParameterValidator m_parameterValidator;
+
+	private TouchpointTypeBuilder m_lastTouchpointType;
 
 	public TouchpointActionPage()
 	{
@@ -163,6 +172,27 @@ public class TouchpointActionPage extends RichDetailsPage
 		}
 			
 		section.setClient(m_sectionClient);
+		
+		// Add listener to touchpoint type change so that labels and errors can be displayed
+		//
+		IEditorEventBus eventBus = ((IEditEventBusProvider)toolkit).getEventBus();
+		eventBus.addListener(new IEditorListener(){
+
+			public void notify(EventObject o)
+			{
+				if(!(o instanceof ModelChangeEvent))
+					return;
+				Object detail = ((ModelChangeEvent)o).getDetail();
+				if(detail instanceof InstallableUnitBuilder)
+				{
+					TouchpointTypeBuilder type = ((InstallableUnitBuilder)detail).getTouchpointType();
+					if(type != m_lastTouchpointType)
+						refreshLabels();
+				}
+			}
+			
+		});
+		
 
 	}
 	private String getIndexedEditAdapterKey(int index)
@@ -252,8 +282,8 @@ public class TouchpointActionPage extends RichDetailsPage
 		Parameter[] parameters = m_input.getParameters();
 		
 		IFormPage formPage = (IFormPage)m_mform.getContainer();
-		TouchpointTypeBuilder type = ((InstallableUnitEditor)formPage.getEditor()).getInstallableUnit().getTouchpointType();
-		ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(type);
+		m_lastTouchpointType = ((InstallableUnitEditor)formPage.getEditor()).getInstallableUnit().getTouchpointType();
+		ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(m_lastTouchpointType);
 		m_actionDesc = desc.getActionDescriptor(m_input.getActionKey());
 		
 		int i = 0;
@@ -278,7 +308,7 @@ public class TouchpointActionPage extends RichDetailsPage
 
 			// TODO: set the validation type for the text field
 			// TODO: hook advanced (browse) function to applicable types
-			m_labels[i].setText(m_params[i].label);
+			m_labels[i].setText(m_params[i].label + ":");
 			m_labels[i].setVisible(true);
 			m_texts[i].setVisible(true);
 			m_editAdapters.getAdapter(getIndexedEditAdapterKey(i)).setEnabled(true);
