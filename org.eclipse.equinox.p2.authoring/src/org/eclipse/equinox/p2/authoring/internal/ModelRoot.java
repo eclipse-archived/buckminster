@@ -79,16 +79,19 @@ public class ModelRoot extends ModelPart
 		m_changed = false;
 	}
 	/**
-	 * Typically called from model parts of the overall model (i.e. getParent().notifyChanged()) to notify that a sub part
-	 * of the model has changed. This implementation sets the change flag of the model using {@link #setChanged(boolean) }
-	 * with true as an argument.
+	 * Should be called when the root itself is changed.
 	 */
 	@Override
 	public void notifyChanged()
 	{
-		setChanged(true);		
+		setChanged(true, this);		
 	}
 	
+	/**
+	 * Typically called from model parts of the overall model (i.e. getParent().notifyChanged(ModelPart)) to notify that a sub part
+	 * of the model has changed. This implementation sets the change flag of the model using {@link #setChanged(boolean) }
+	 * with true as an argument.
+	 */	
 	@Override
 	public void notifyChanged(ModelPart detail)
 	{
