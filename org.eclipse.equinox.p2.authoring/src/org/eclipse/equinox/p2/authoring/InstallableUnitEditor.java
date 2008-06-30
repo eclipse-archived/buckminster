@@ -95,6 +95,7 @@ public class InstallableUnitEditor extends RichFormEditor
 			addPage(new ArtifactsPage(this));
 			addPage(new InformationPage(this));
 			addPage(new TouchpointPage(this));
+			addPage(new UpdatePage(this));
 		}
 		catch(PartInitException e)
 		{
