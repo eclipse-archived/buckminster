@@ -42,7 +42,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 /**
- * A Detail page for p2 Touchpoint Action tree node
+ * A Detail page for p2 Touchpoint Action tree nodes.
  * 
  * @author Henrik Lindberg
  * 
@@ -51,19 +51,32 @@ public class TouchpointActionPage extends RichDetailsPage
 
 {
 	private static final String ACTION_TEXT = "actionText";
+	
+	/** The currently selected input. */
 	private TouchpointActionBuilder m_input;
 	
 	private static int MAX_PARAMETERS = 5;
+	/** The dynamic labels, changed depending on the displayed action */
 	private Label m_labels[] = new Label[MAX_PARAMETERS];
+
+	/** The dynamic labels, changed depending on the displayed action */
 	private Text m_texts[] = new Text[MAX_PARAMETERS];
 	
+	/** Parameter info from meta data descriptors, updated based on selected type, and
+	 * selected action.
+	 */
 	private ParameterInfo m_params[]; 
 	
-	// the current set of parameter names = start with default names
-//	private String m_parameterNames[] = { "param1", "param2", "param3", "param4", "param5" };
+	/** Composite that needs re-layout when labels are changed. */
 	private Composite m_sectionClient;
+	
+	/** The current action descriptor. */
 	private ITouchpointActionDescriptor m_actionDesc;
+	
+	/** A label showing a warning message if the selected action is not applicable for the touchpoint type */
 	private Label m_warningLabel;
+	
+	/** The validator to use for parameter values */
 	private ParameterValidator m_parameterValidator;
 
 	public TouchpointActionPage()
@@ -143,15 +156,12 @@ public class TouchpointActionPage extends RichDetailsPage
 		m_labels[i].setForeground(headerColor);
 		m_texts[i] = toolkit.createText(m_sectionClient, "");
 		m_texts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		// TODO: all parameters now get the RequiredValidator - much check if parameter is
-		// optional (none for touchpoint types 1.0 are though).
+
 		m_editAdapters.createEditAdapter(getIndexedEditAdapterKey(i), m_texts[i], //$NON-NLS-1$
 				m_parameterValidator,
 				new IndexedMutator(i));
 		}
 			
-		// TODO: Add text from extension for the touchpoint type that explains the phase
-		//
 		section.setClient(m_sectionClient);
 
 	}
@@ -159,9 +169,10 @@ public class TouchpointActionPage extends RichDetailsPage
 	{
 		return "text"+Integer.toString(index);
 	}
+	
 	/**
 	 * Mutator for an indexed parameter
-	 * @author henrik
+	 * @author Henrik Lindberg
 	 *
 	 */
 	private class IndexedMutator extends Mutator
@@ -193,12 +204,10 @@ public class TouchpointActionPage extends RichDetailsPage
 			m_input.setParameter(m_params[m_index].name, input == null ? "" : input); //$NON-NLS-1$
 		}
 	}
+	
 	/**
-	 * The PhaseValidator validates that the phase is listed among the phases supported by
-	 * a touchpoint type.
-	 * TODO: Error messages and master detail needs an over haul and needs to work with problem markers.
+	 * The ParameterValidator filters out "," from the input.
 	 * @author Henrik Lindberg
-	 *
 	 */
 	public class ParameterValidator implements IEditValidator
 	{
@@ -283,6 +292,7 @@ public class TouchpointActionPage extends RichDetailsPage
 		// Labels may have different width
 		m_sectionClient.layout();
 	}
+	/** Convenient structure for parameter info */
 	private static class ParameterInfo
 	{
 		public String label;
