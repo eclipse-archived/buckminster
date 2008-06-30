@@ -407,7 +407,7 @@ class OverviewPage extends RichFormPage
 		buf.append("<li>Required: the capabilities required from other installable units.</li>");
 		buf.append("<li>Provided: the capabilities this installable unit provides.</li>");
 		buf.append("<li>Information: copyright, license, and documentation for this installable unit.</li>");
-		buf.append("<li>Installation: installation details.</li>");
+		buf.append("<li>Touchpoint: installation details.</li>");
 		buf.append("<li>Update: information about what this installable unit is an update of.</li>");
 		buf.append("</form>"); //$NON-NLS-1$
 		FormText ftext = toolkit.createFormText(sectionClient, true);
