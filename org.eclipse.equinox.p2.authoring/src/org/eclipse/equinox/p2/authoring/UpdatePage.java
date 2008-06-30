@@ -18,7 +18,6 @@ import org.eclipse.equinox.p2.authoring.forms.RichFormPage;
 import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.PositiveIntValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.RangeValidator;
-import org.eclipse.equinox.p2.authoring.forms.validators.RequiredValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.StructuredNameValidator;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.swt.SWT;
@@ -216,7 +215,14 @@ class UpdatePage extends RichFormPage
 					{
 						InstallableUnitBuilder iu = getIU();
 						if(iu != null)
+							try{
 							iu.getUpdateDescriptor().setSeverity(Integer.valueOf(input));
+							}
+						catch(NumberFormatException e)
+						{
+							// can occur for empty string (which means the same as 0 here).
+							iu.getUpdateDescriptor().setSeverity(0);
+						}
 					}
 				});
 
