@@ -42,5 +42,13 @@ public class TouchpointActionDescriptor implements ITouchpointActionDescriptor
 	{
 		return m_parameters;
 	}
-
+	public ITouchpointActionParameterDescriptor getParameter(String parameterKey)
+	{
+		if(m_parameters == null)
+			return null;
+		for(int i = 0; i < m_parameters.length; i++)
+			if(m_parameters[i].getKey().equals(parameterKey))
+				return m_parameters[i];
+		return null;
+	}
 }

@@ -35,5 +35,12 @@ public interface ITouchpointActionDescriptor
 	 * @return array of parameter descriptors
 	 */
 	ITouchpointActionParameterDescriptor[] getParameters();
+	
+	/**
+	 * 
+	 * @param parameterKey
+	 * @return A parameter descriptor for the key, or null if it is not a valid parameter
+	 */
+	ITouchpointActionParameterDescriptor getParameter(String parameterKey);
 
 }

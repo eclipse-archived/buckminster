@@ -56,5 +56,13 @@ public final class NullTouchpoint extends TouchpointTypeDescriptor implements IT
 	{
 		return true;
 	}
+	/**
+	 * Returns null - no phases are supported.
+	 */
+	@Override
+	public String[] getPhases()
+	{
+		return null; // no phases supported
+	}
 
 }

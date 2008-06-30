@@ -12,11 +12,15 @@
 
 package org.eclipse.equinox.p2.authoring;
 
+import org.eclipse.equinox.p2.authoring.forms.EditAdapter;
 import org.eclipse.equinox.p2.authoring.forms.Mutator;
 import org.eclipse.equinox.p2.authoring.forms.RichDetailsPage;
+import org.eclipse.equinox.p2.authoring.forms.validators.IEditValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.RequiredValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.StructuredNameValidator;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointInstructionBuilder;
+import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
+import org.eclipse.equinox.p2.authoring.spi.ITouchpointTypeDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -28,6 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IFormPart;
+import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -45,9 +50,10 @@ public class TouchpointInstructionPage extends RichDetailsPage
 	private static final String PHASE_ID_ADAPTER = "phaseId";
 	private Text m_text;
 	private TouchpointInstructionBuilder m_input;
-
+//	private PhaseValidator m_phaseValidator; // TODO: See other comments about phase validator
 	public TouchpointInstructionPage()
 	{
+//		m_phaseValidator = new PhaseValidator();
 	}
 
 	public void createContents(Composite parent)
@@ -82,6 +88,9 @@ public class TouchpointInstructionPage extends RichDetailsPage
 		label.setForeground(headerColor);
 		m_text = toolkit.createText(sectionClient, "");
 		m_text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		// TODO: Use the phase validator instead to get error feedback, but it does not
+		// work well yet.
+		//
 		m_editAdapters.createEditAdapter(PHASE_ID_ADAPTER, m_text, //$NON-NLS-1$
 				new RequiredValidator(StructuredNameValidator.instance()),
 				new Mutator()
@@ -106,7 +115,40 @@ public class TouchpointInstructionPage extends RichDetailsPage
 		//
 		section.setClient(sectionClient);
 	}
+	/**
+	 * The PhaseValidator validates that the phase is listed among the phases supported by
+	 * a touchpoint type.
+	 * TODO: Error messages and master detail needs an over haul and needs to work with problem markers.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	public class PhaseValidator implements IEditValidator
+	{
 
+		public String inputFilter(String input)
+		{
+			return null;
+		}
+
+		public boolean isValid(String input, EditAdapter editAdapter)
+		{
+			IFormPage formPage = (IFormPage)m_mform.getContainer();
+			TouchpointTypeBuilder type = ((InstallableUnitEditor)formPage.getEditor()).getInstallableUnit().getTouchpointType();
+			ITouchpointTypeDescriptor desc = P2AuthoringUIPlugin.getDefault().getTouchpointType(type);
+			String[] phases = desc.getPhases();
+			if(phases != null)
+				for(int i = 0; i < phases.length;i++)
+					if(phases[i].equals(input))
+					{
+						editAdapter.clearMessages();
+						return true;
+					}
+			
+			editAdapter.setErrorMessage("Instruction phase not supported by current touchpoint type.");
+			return false;
+		}
+		
+	}
 
 	public void setFocus()
 	{
