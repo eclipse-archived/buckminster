@@ -24,3 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.eclipse.equinox.p2.authoring.forms,
+ org.eclipse.equinox.p2.authoring.forms.validators,
+ org.eclipse.equinox.p2.authoring.spi,
+ org.eclipse.equinox.p2.authoring.wizards
