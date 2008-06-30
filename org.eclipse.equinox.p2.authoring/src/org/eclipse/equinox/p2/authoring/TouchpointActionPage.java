@@ -12,8 +12,10 @@
 
 package org.eclipse.equinox.p2.authoring;
 
+import org.eclipse.equinox.p2.authoring.forms.EditAdapter;
 import org.eclipse.equinox.p2.authoring.forms.Mutator;
 import org.eclipse.equinox.p2.authoring.forms.RichDetailsPage;
+import org.eclipse.equinox.p2.authoring.forms.validators.IEditValidator;
 import org.eclipse.equinox.p2.authoring.forms.validators.NullValidator;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.Parameter;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointActionBuilder;
@@ -62,6 +64,7 @@ public class TouchpointActionPage extends RichDetailsPage
 	private Composite m_sectionClient;
 	private ITouchpointActionDescriptor m_actionDesc;
 	private Label m_warningLabel;
+	private ParameterValidator m_parameterValidator;
 
 	public TouchpointActionPage()
 	{
@@ -69,6 +72,7 @@ public class TouchpointActionPage extends RichDetailsPage
 		m_params = new ParameterInfo[MAX_PARAMETERS];
 		for(int i = 0; i < m_params.length;i++)
 			m_params[i] = new ParameterInfo("param"+Integer.toString(i+1));
+		m_parameterValidator = new ParameterValidator();
 	}
 
 	public void createContents(Composite parent)
@@ -142,7 +146,7 @@ public class TouchpointActionPage extends RichDetailsPage
 		// TODO: all parameters now get the RequiredValidator - much check if parameter is
 		// optional (none for touchpoint types 1.0 are though).
 		m_editAdapters.createEditAdapter(getIndexedEditAdapterKey(i), m_texts[i], //$NON-NLS-1$
-				NullValidator.instance(),
+				m_parameterValidator,
 				new IndexedMutator(i));
 		}
 			
@@ -188,6 +192,29 @@ public class TouchpointActionPage extends RichDetailsPage
 				return;
 			m_input.setParameter(m_params[m_index].name, input == null ? "" : input); //$NON-NLS-1$
 		}
+	}
+	/**
+	 * The PhaseValidator validates that the phase is listed among the phases supported by
+	 * a touchpoint type.
+	 * TODO: Error messages and master detail needs an over haul and needs to work with problem markers.
+	 * @author Henrik Lindberg
+	 *
+	 */
+	public class ParameterValidator implements IEditValidator
+	{
+
+		public String inputFilter(String input)
+		{
+			if(input.indexOf(',') == -1)
+				return null;
+			else return input.replace(",", "");
+		}
+
+		public boolean isValid(String input, EditAdapter editAdapter)
+		{
+			editAdapter.clearMessages();
+			return true;
+		}	
 	}
 
 	public void setFocus()
