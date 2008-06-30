@@ -338,6 +338,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				{
 					input = getInput(featureOrBundle, PLUGIN_FILE);
 					ExternalPluginModel model = new ExternalPluginModel();
+					model.load(input, true);
 					IPluginBase pb = model.getPluginBase();
 					addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
 					continue;
@@ -349,6 +350,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				{
 					input = getInput(featureOrBundle, FRAGMENT_FILE);
 					ExternalFragmentModel model = new ExternalFragmentModel();
+					model.load(input, true);
 					IPluginBase pb = model.getPluginBase();
 					addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
 					continue;
