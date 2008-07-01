@@ -12,9 +12,8 @@
 package org.eclipse.equinox.p2.authoring.wizards;
 
 import java.io.InputStream;
-import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
-import org.eclipse.buckminster.ui.wizards.NewBMFileWizard;
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
+import org.eclipse.equinox.p2.authoring.internal.AccessibleByteArrayOutputStream;
 import org.eclipse.equinox.p2.authoring.internal.P2MetadataFactory;
 import org.eclipse.equinox.p2.authoring.internal.P2MetadataWriter;
 import org.eclipse.ui.INewWizard;

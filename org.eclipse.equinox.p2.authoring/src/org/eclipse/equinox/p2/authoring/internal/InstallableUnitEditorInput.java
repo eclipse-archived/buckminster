@@ -14,7 +14,6 @@ package org.eclipse.equinox.p2.authoring.internal;
 
 import java.io.InputStream;
 
-import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

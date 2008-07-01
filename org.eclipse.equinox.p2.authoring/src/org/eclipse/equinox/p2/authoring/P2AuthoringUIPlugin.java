@@ -18,6 +18,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.filetransfer.IRetrieveFileTransferContainerAdapter;
+import org.eclipse.equinox.p2.authoring.internal.Logger;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
 import org.eclipse.equinox.p2.authoring.internal.touchpoints.EclipseTouchpoint_1_0;
 import org.eclipse.equinox.p2.authoring.internal.touchpoints.NativeTouchpoint_1_0;
@@ -48,6 +51,10 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 	private Map<String, ITouchpointTypeDescriptor> m_touchpointTypeDescs;
 
 	private NullTouchpoint m_none;
+
+	private Logger m_logger;
+	
+	private IContainer m_container;
 
 	/**
 	 * The constructor
@@ -188,4 +195,15 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 			initializeTouchpointType();
 		return m_touchpointTypeDescs.values().toArray(new ITouchpointTypeDescriptor[m_touchpointTypeDescs.size()]);
 	}
+	public synchronized Logger getBundleLogger()
+	{
+		if(m_logger == null)
+			m_logger = new Logger(this.getBundle());
+		return m_logger;
+	}
+	public IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
+	{
+		return (IRetrieveFileTransferContainerAdapter)m_container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
+	}
+
 }

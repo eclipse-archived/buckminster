@@ -17,9 +17,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -27,6 +24,7 @@ import org.eclipse.equinox.p2.authoring.forms.RichFormEditor;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitEditorInput;
 import org.eclipse.equinox.p2.authoring.internal.ModelChangeEvent;
+import org.eclipse.equinox.p2.authoring.internal.P2AuthoringException;
 import org.eclipse.equinox.p2.authoring.internal.P2MetadataReader;
 import org.eclipse.equinox.p2.authoring.internal.SaveIURunnable;
 import org.eclipse.equinox.p2.authoring.internal.InstallableUnitBuilder.TouchpointTypeBuilder;
@@ -185,7 +183,7 @@ public class InstallableUnitEditor extends RichFormEditor
 		catch(Exception e)
 		{
 			// TODO: Uses Buckminster exception wrapper
-			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
+			throw new PartInitException(P2AuthoringException.wrap(e).getMessage());
 		}
 		finally
 		{
@@ -243,9 +241,9 @@ public class InstallableUnitEditor extends RichFormEditor
 		}
 		catch(InvocationTargetException e)
 		{
-			CoreException t = BuckminsterException.wrap(e);
+			CoreException t = P2AuthoringException.wrap(e);
 			String msg = "Unable to save file " + path;
-			CorePlugin.getLogger().error(t, msg);
+			P2AuthoringUIPlugin.getDefault().getBundleLogger().error(t, msg);
 			ErrorDialog.openError(getSite().getShell(), null, msg, t.getStatus());
 		}
 		catch(InterruptedException e)

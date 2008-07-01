@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.equinox.p2.authoring.wizards;
 
-import org.eclipse.buckminster.ui.wizards.NewBMFileWizardPage;
 import org.eclipse.jface.viewers.ISelection;
 
 

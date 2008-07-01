@@ -14,12 +14,11 @@ package org.eclipse.equinox.p2.authoring.internal;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -93,7 +92,16 @@ public class SaveIURunnable implements IRunnableWithProgress
 					}
 					finally
 					{
-						IOUtils.close(stream);
+						if(stream != null)
+						{
+							try
+							{
+								stream.close();
+							}
+							catch(IOException e)
+							{
+							}
+						}						
 					}
 					return;
 				}
@@ -111,7 +119,16 @@ public class SaveIURunnable implements IRunnableWithProgress
 			}
 			finally
 			{
-				IOUtils.close(stream);
+				if(stream != null)
+				{
+					try
+					{
+						stream.close();
+					}
+					catch(IOException e)
+					{
+					}
+				}		
 			}
 		}
 		catch(OperationCanceledException e)

@@ -13,6 +13,7 @@
 package org.eclipse.equinox.p2.authoring.forms;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,10 +22,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.buckminster.download.DownloadManager;
-import org.eclipse.buckminster.ui.DerivedExternalFileEditorInput;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
-import org.eclipse.buckminster.ui.IDerivedEditorInput;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.ObjectUndoContext;
@@ -37,9 +34,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.p2.authoring.P2AuthoringUIPlugin;
+import org.eclipse.equinox.p2.authoring.internal.DerivedExternalFileEditorInput;
 import org.eclipse.equinox.p2.authoring.internal.EditorEventBus;
+import org.eclipse.equinox.p2.authoring.internal.ExternalFileEditorInput;
+import org.eclipse.equinox.p2.authoring.internal.FileReader;
+import org.eclipse.equinox.p2.authoring.internal.IDerivedEditorInput;
 import org.eclipse.equinox.p2.authoring.internal.IEditEventBusProvider;
 import org.eclipse.equinox.p2.authoring.internal.IEditorEventBus;
+import org.eclipse.equinox.p2.authoring.internal.IFileInfo;
 import org.eclipse.equinox.p2.authoring.internal.IUndoOperationSupport;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.ITextSelection;
@@ -120,6 +122,12 @@ public abstract class RichFormEditor extends FormEditor implements IEditorMatchi
 			m_clipboard.dispose();
 		super.dispose();
 	}
+	private static IFileInfo readInto(URL url, OutputStream output, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	{
+		FileReader reader = new FileReader();
+		reader.readInto(url, output, monitor);
+		return reader.getLastFileInfo();
+	}
 
 	public ExternalFileEditorInput getExternalFileEditorInput(IURIEditorInput input) throws CoreException, IOException
 	{
@@ -142,7 +150,7 @@ public abstract class RichFormEditor extends FormEditor implements IEditorMatchi
 			try
 			{
 				os = new FileOutputStream(iuFile);
-				DownloadManager.readInto(url, os, null);
+				readInto(url, os, null);
 			}
 			finally
 			{
