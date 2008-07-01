@@ -453,6 +453,21 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	}
 
 	/**
+	 * Returns true if the given <code>versionMatch</code> will match this query with respect to
+	 * the current version designator, branchTag path, and space path.
+	 *
+	 * @param versionMatch The version match to match
+	 * @param spacePathResolver the space path resolver to use when expanding the space path.
+	 * @return true if the given values matches this query
+	 */
+	public boolean isMatch(VersionMatch versionMatch, ISpacePathResolver spacePathResolver)
+	{
+		if(versionMatch == null)
+			versionMatch = VersionMatch.DEFAULT;
+		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag(), versionMatch.getSpace(), spacePathResolver);
+	}
+
+	/**
 	 * Returns true if the given version will match this query with respect to
 	 * the current version designator, branchTag path, and space path.
 	 *
@@ -462,6 +477,21 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 * @return true if the given values matches this query
 	 */
 	public boolean isMatch(IVersion version, VersionSelector branchOrTag, String space)
+	{
+		return isMatch(version, branchOrTag, space, DefaultSpacePathResolver.INSTANCE);
+	}
+
+	/**
+	 * Returns true if the given version will match this query with respect to
+	 * the current version designator, branchTag path, and space path.
+	 *
+	 * @param version The version to match or <code>null</code> if not applicable
+	 * @param branchOrTag The branch or tag to match or <code>null</code> if not applicable
+	 * @param space The space to match or <code>null</code> if not applicable
+	 * @param spacePathResolver the space path resolver to use when expanding the space path.
+	 * @return true if the given values matches this query
+	 */
+	public boolean isMatch(IVersion version, VersionSelector branchOrTag, String space, ISpacePathResolver spacePathResolver)
 	{
 		VersionSelector[] branchTagPath = getBranchTagPath();
 		if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
@@ -473,10 +503,14 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		}
 
 		String[] spacePath = getSpacePath();
-		if(spacePath.length > 0 && TextUtils.indexOf(spacePath, space) < 0)
+		if(spacePath.length > 0)
 		{
-			logDecision(ResolverDecisionType.SPACE_REJECTED, space, String.format("not in path '%s'", TextUtils.concat(spacePath, ",")));
-			return false;
+			spacePath = spacePathResolver.expandSpacePath(spacePath);
+			if(TextUtils.indexOf(spacePath, space) < 0)
+			{
+				logDecision(ResolverDecisionType.SPACE_REJECTED, space, String.format("not in path '%s'", TextUtils.concat(spacePath, ",")));
+				return false;
+			}
 		}
 
 		IVersionDesignator designator = getVersionDesignator();
