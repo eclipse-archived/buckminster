@@ -8,18 +8,6 @@
 
 package org.eclipse.equinox.p2.authoring.internal;
 
-import java.util.List;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
-import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
-import org.eclipse.buckminster.generic.ui.utils.UiUtils;
-import org.eclipse.buckminster.opml.IOPML;
-import org.eclipse.buckminster.opml.IOutline;
-import org.eclipse.buckminster.opml.OutlineType;
-import org.eclipse.buckminster.ui.adapters.ComponentReference;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -41,6 +29,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -63,9 +52,20 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 	{
 	}
 
-	private Image getHtmlImage()
+//	private Image getHtmlImage()
+//	{
+//		return P2AuthoringImages.getImageDescriptorForFile("file.html").createImage();
+//	}
+	
+	/**
+	 * Returns an image for a descriptor for the default Display. Use this methods for 
+	 * created images (that should not be disposed).
+	 * @param imageDescriptor
+	 * @return
+	 */
+	public static Image getImageFromDescriptor(ImageDescriptor imageDescriptor)
 	{
-		return P2AuthoringImages.getImageDescriptorForFile("file.html").createImage();
+		return new Image(Display.getDefault(), imageDescriptor.getImageData());		
 	}
 
 	public static ImageDescriptor getImageDescriptor(String fileName)
@@ -114,9 +114,6 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 		if(selected instanceof RequiredCapabilityBuilder)
 			return getRequiredCapabilityImage((RequiredCapabilityBuilder)selected);
 
-		if(selected instanceof ITreeDataNode)
-			element = ((ITreeDataNode)element).getData();
-
 		if(element instanceof IProject)
 			return P2AuthoringImages.getIMG_PROJECT();
 
@@ -126,36 +123,15 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 		if(element instanceof IFile)
 		{
 			IFile file = (IFile)element;
-			ImageDescriptor imageDescriptor = UiUtils.getImageDescriptor(file);
+			ImageDescriptor imageDescriptor = getImageDescriptor(file.getName());
 			return imageDescriptor == null
 					? P2AuthoringImages.getIMG_FILE()
-					: UiUtils.getImage(imageDescriptor);
+					: getImageFromDescriptor(imageDescriptor);
 		}
 		if(element instanceof ArtifactKeyBuilder)
 			return P2AuthoringImages.getIMG_FILE();
 
 		if(element instanceof TouchpointDataBuilder || element instanceof TouchpointInstructionBuilder)
-			return P2AuthoringImages.getIMG_FOLDER();
-
-		// OPML stuff
-		if(element instanceof IOPML)
-			return P2AuthoringImages.getIMG_FOLDER();
-
-		if(element instanceof IOutline)
-		{
-			// An outline that has sub-outlines is shown as a folder
-			//
-			List<? extends IOutline> outlines = ((IOutline)element).getOutlines();
-			if(((IOutline)element).getType() == OutlineType.UNKNOWN || (outlines != null && outlines.size() > 0))
-				return P2AuthoringImages.getIMG_FOLDER();
-			// An outline that is a link is shown as a browseable image
-			if(((IOutline)element).getType() == OutlineType.LINK)
-				return getHtmlImage();
-			return P2AuthoringImages.getIMG_RSS();
-		}
-
-		// Parents default to Folder
-		if(selected instanceof BasicTreeParentDataNode)
 			return P2AuthoringImages.getIMG_FOLDER();
 
 		return null;
@@ -179,46 +155,9 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 
 	public StyledString getStyledText(Object element)
 	{
-		if(element instanceof ITreeDataNode)
-			element = ((ITreeDataNode)element).getData();
 		if(element instanceof IResource)
 			return new StyledString(((IResource)element).getName());
 
-		if(element instanceof Resolution)
-		{
-			Resolution r = (Resolution)element;
-			StyledString bld = new StyledString(r.getName());
-			String type = r.getComponentTypeId();
-			if(type != null)
-			{
-				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
-				bld.append(type, StyledString.DECORATIONS_STYLER);
-			}
-			IVersion version = r.getVersion();
-			if(version != null)
-			{
-				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
-				bld.append(version.toString(), StyledString.DECORATIONS_STYLER);
-			}
-			return bld;
-		}
-		if(element instanceof ComponentReference)
-		{
-			ComponentReference ref = (ComponentReference)element;
-			StyledString bld = new StyledString(ref.getComponentName());
-			ComponentRequest req = ref.getComponentRequest();
-			if(req.getComponentTypeID() != null)
-			{
-				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
-				bld.append(req.getComponentTypeID(), StyledString.DECORATIONS_STYLER);
-			}
-			if(req.getVersionDesignator() != null)
-			{
-				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
-				bld.append(req.getVersionDesignator().toString(), StyledString.DECORATIONS_STYLER);
-			}
-			return bld;
-		}
 		if(element instanceof RequiredCapabilityBuilder)
 		{
 			RequiredCapabilityBuilder req = (RequiredCapabilityBuilder)element;
@@ -320,19 +259,6 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 			ITouchpointActionDescriptor desc = (ITouchpointActionDescriptor)element;
 			StyledString bld = new StyledString(desc.getLabel());
 			return bld;
-		}
-		if(element instanceof CSpec)
-		{
-			return new StyledString("Component Specification (CSpec)");
-		}
-		if(element instanceof IOPML)
-		{
-			return new StyledString("Component Information");
-		}
-		if(element instanceof IOutline)
-		{
-			IOutline outline = (IOutline)element;
-			return new StyledString(outline.getText());
 		}
 		return new StyledString(element.toString());
 	}
