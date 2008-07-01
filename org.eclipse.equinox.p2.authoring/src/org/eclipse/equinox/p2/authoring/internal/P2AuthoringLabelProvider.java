@@ -106,6 +106,21 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 		// unknown namespace - return image for "required capability"
 		return P2AuthoringImages.getIMG_REQ_CAPABILITY();
 	}
+	public Image getProvidedCapabilityImage(ProvidedCapabilityBuilder provided)
+	{
+		String namespace = provided.getNamespace();
+		if(namespace.equals(NS_JAVA_PACKAGE))
+			return P2AuthoringImages.getIMG_PACKAGE();
+		if(namespace.equals(NS_IU))
+			return P2AuthoringImages.getIMG_IU();
+		if(namespace.equals(NS_ECLIPSE))
+			return P2AuthoringImages.getIMG_PLUGIN();
+		if(namespace.equals(NS_OSGI_BUNDLE))
+			return P2AuthoringImages.getIMG_BUNDLE();
+
+		// unknown namespace - return image for "provided capability"
+		return P2AuthoringImages.getIMG_PROV_CAPABILITY();
+	}
 
 	@Override
 	public Image getImage(Object selected)
@@ -113,6 +128,9 @@ public class P2AuthoringLabelProvider extends ColumnLabelProvider implements ISt
 		Object element = selected;
 		if(selected instanceof RequiredCapabilityBuilder)
 			return getRequiredCapabilityImage((RequiredCapabilityBuilder)selected);
+
+		if(selected instanceof ProvidedCapabilityBuilder)
+			return getProvidedCapabilityImage((ProvidedCapabilityBuilder)selected);
 
 		if(element instanceof IProject)
 			return P2AuthoringImages.getIMG_PROJECT();
