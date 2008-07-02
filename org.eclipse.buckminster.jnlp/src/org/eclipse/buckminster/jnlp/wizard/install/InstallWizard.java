@@ -506,6 +506,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
 			getContainer().run(true, true, mr);
 
+			if(!m_startedFromIDE)
+			{
+				Job.getJobManager().setProgressProvider(null);
+				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
+			}
+			
 			m_materializationFinished = true;
 
 			if(getComponentInfoProvider() != null)
@@ -526,8 +532,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 									ERROR_CODE_RUNTIME_EXCEPTION, status);
 				}
 
-			getContainer().showPage(m_donePage);
 			m_donePage.update(mr.getContext());
+			getContainer().showPage(m_donePage);
 		}
 		catch(InterruptedException e)
 		{
