@@ -112,27 +112,25 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </url>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.update.core" version="3.1.100" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.core"/>
-      <import plugin="org.eclipse.buckminster.cmdline"/>
-      <import plugin="org.eclipse.buckminster.runtime"/>
-      <import plugin="org.eclipse.buckminster.ant"/>
-      <import plugin="org.eclipse.buckminster.sax"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.debug.core" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.variables" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.team.core" version="3.2.0" match="compatible"/>
+      <import plugin="com.ibm.icu.base"/>
+      <import plugin="org.apache.ant" version="1.7.0" match="compatible"/>
+      <import plugin="org.eclipse.ant.core" version="3.1.200" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.ant" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.cmdline" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.core" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.download" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.opml" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.sax" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.100" match="compatible"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.osgi" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.update.configurator" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.ant.core" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.text" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.core.commands" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.filebuffers" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.update.core" version="3.2.100" match="compatible"/>
    </requires>
 
    <plugin
