@@ -44,22 +44,24 @@
 		<delete dir="${zip.temp}" />
 		<unzip dest="${zip.temp}" src="${input.file}" />
 
+		<!-- Some jars have signatures generated for pack200 normalization that uses a different level
+		     We clean them from signing information here. They will be resigned later.
+		  -->
+		<buckminster.signatureCleaner>
+			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*,**/org.eclipse.jdt.compiler*"/>
+		</buckminster.signatureCleaner>
+
+		<!-- Create an exclusion list for bundles that does not need signing. The Buckminster bundles and the
+		     bundles cleaned above are not included in this list.
+		  -->
 		<path id="sign.excludes">
-			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse*.jar" excludes="**/org.eclipse.buckminster.*,**/org.eclipse.slf4j.*" />
+			<fileset dir="${zip.temp}" excludes="**/org.eclipse.buckminster.*,**/org.eclipse.slf4j.*,**/org.eclipse.jdt.compiler*,**/com.ibm.icu*" />
 		</path>
 		<pathconvert property="sign.excludes" pathsep="," dirsep="/" refid="sign.excludes">
 			<globmapper from="${zip.temp}/" to="" handledirsep="true" />
 		</pathconvert>
 
-		<path id="pack.excludes">
-			<fileset dir="${zip.temp}" includes="**/com.ibm.icu*.jar,**/org.eclipse.jdt.compiler*.jar" />
-		</path>
-		<pathconvert property="pack.excludes" pathsep="," dirsep="/" refid="pack.excludes">
-			<globmapper from="${zip.temp}/" to="" handledirsep="true" />
-		</pathconvert>
-
 		<echo message="sign.excludes=${sign.excludes}${line.separator}" file="${zip.temp}/pack.properties" />
-		<echo message="pack.excludes=${pack.excludes}" file="${zip.temp}/pack.properties" append="true" />
 
 		<zip destfile="${short.file.name}" basedir="${zip.temp}" />
 		<eclipse.jarProcessor verbose="${verbose}" normalize="true" jar="${short.file.name}" />

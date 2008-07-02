@@ -37,6 +37,7 @@ public class SignatureCleanerTask
 			int len;
 			File folder = jarFile.getParentFile();
 			File tmpFile1 = File.createTempFile("jarclean", ".tmp", folder);
+			boolean cleaned = false;
 			try
 			{
 				ZipInputStream zipInput = null;
@@ -51,10 +52,12 @@ public class SignatureCleanerTask
 					{
 						String name = entry.getName();
 						if(name.startsWith("META-INF/")
-						&& name.indexOf('/', 9) == 0 && (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF")))
+						&& name.indexOf('/', 9) < 0 && (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF")))
+						{
 							// Skip this entry
+							cleaned = true;
 							continue;
-	
+						}
 						// Copy entry to output
 						zipOutput.putNextEntry(entry);
 						while((len = zipInput.read(m_buffer)) > 0)
@@ -67,20 +70,23 @@ public class SignatureCleanerTask
 					IOUtils.close(zipOutput);
 				}
 
-				// Rename the old file (use the same folder)
-				//
-				File tmpFile2 = new File(tmpFile1.getAbsolutePath() + ".delete");
-				if(!jarFile.renameTo(tmpFile2))
-					throw new IOException("Unable to rename " + jarFile + " to " + tmpFile2);
-
-				if(!tmpFile1.renameTo(jarFile))
+				if(cleaned)
 				{
-					// Make an attempt to undo the previous rename.
+					// Rename the old file
 					//
-					tmpFile2.renameTo(jarFile);
-					throw new IOException("Unable to rename " + tmpFile1 + " to " + jarFile);
+					File tmpFile2 = new File(tmpFile1.getAbsolutePath() + ".delete");
+					if(!jarFile.renameTo(tmpFile2))
+						throw new IOException("Unable to rename " + jarFile + " to " + tmpFile2);
+	
+					if(!tmpFile1.renameTo(jarFile))
+					{
+						// Make an attempt to undo the previous rename.
+						//
+						tmpFile2.renameTo(jarFile);
+						throw new IOException("Unable to rename " + tmpFile1 + " to " + jarFile);
+					}
+					tmpFile1 = tmpFile2; // Delete this one instead in the finally clause
 				}
-				tmpFile1 = tmpFile2; // Delete this one instead in the finally clause
 			}
 			finally
 			{
