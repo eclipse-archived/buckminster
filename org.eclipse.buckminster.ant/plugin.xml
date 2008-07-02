@@ -71,6 +71,10 @@
 			class="org.eclipse.buckminster.ant.taskdefs.VersionQualifier"
 			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.versionQualifier" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.SignatureCleaner"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.signatureCleaner" />
   <antTask
         class="org.eclipse.buckminster.ant.taskdefs.PackageNames"
         library="ant_tasks/ant_tasks.jar"
