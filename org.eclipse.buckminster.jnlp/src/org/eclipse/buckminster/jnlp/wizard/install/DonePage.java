@@ -184,9 +184,9 @@ public class DonePage extends InstallWizardPage
 	{
 		if(failed > 0)
 			if(failed > 1)
-				setErrorMessage("Materialization of " + failed + " components was cancelled");
+				setErrorMessage("Materialization of " + failed + " components was cancelled (check the list below)");
 			else
-				setErrorMessage("Materialization of 1 component was cancelled");
+				setErrorMessage("Materialization of 1 component was cancelled (check the list below)");
 		else
 			setErrorMessage(null);
 	}

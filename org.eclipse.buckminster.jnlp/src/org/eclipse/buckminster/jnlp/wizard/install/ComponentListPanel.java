@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.ui.DynamicTableLayout;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -47,6 +48,14 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ComponentListPanel
 {
+	private static final String ICON_STATUS_OK = "status.ok.gif";
+	
+	private static final String ICON_STATUS_FAILED = "status.error.gif";
+	
+	private final Image m_iconStatusOK = MaterializationUtils.getImage(ICON_STATUS_OK);
+
+	private final Image m_iconStatusFailed = MaterializationUtils.getImage(ICON_STATUS_FAILED);
+
 	class TableContentProvider implements IStructuredContentProvider
 	{
 		public void dispose()
@@ -69,13 +78,29 @@ public class ComponentListPanel
 	{
 		public Image getColumnImage(Object element, int columnIndex)
 		{
+			if(columnIndex == 0)
+			{
+				ComponentPath componentPath = (ComponentPath)element;
+
+				if(componentPath.isFailed())
+					return m_iconStatusFailed;
+
+				return m_iconStatusOK;
+			}
+			
 			return null;
 		}
 
 		public String getColumnText(Object element, int columnIndex)
 		{
 			ComponentPath componentPath = (ComponentPath)element;
-			return columnIndex == 0 ? componentPath.getComponentIdentifier().getName() : componentPath.getPath().toOSString();
+			
+			if(columnIndex == 0)
+				return null;
+			else if(columnIndex == 1)
+				return componentPath.getComponentIdentifier().getName();
+			else
+				return componentPath.getPath().toOSString();
 		}
 	}
 	
@@ -83,17 +108,30 @@ public class ComponentListPanel
 	{
 		private ComponentIdentifier m_componentIdentifier;
 		
+		private boolean m_failed = false;
+		
 		private IPath m_path;
 
 		public ComponentPath(ComponentIdentifier componentIdentifier, IPath path)
 		{
+			this(componentIdentifier, false, path);
+		}
+
+		public ComponentPath(ComponentIdentifier componentIdentifier, boolean failed, IPath path)
+		{
 			m_componentIdentifier = componentIdentifier;
+			m_failed = failed;
 			m_path = path;
 		}
 
 		public ComponentIdentifier getComponentIdentifier()
 		{
 			return m_componentIdentifier;
+		}
+
+		public boolean isFailed()
+		{
+			return m_failed;
 		}
 
 		public IPath getPath()
@@ -127,10 +165,13 @@ public class ComponentListPanel
 		Table table = m_tableViewer.getTable();
 		DynamicTableLayout layout = new DynamicTableLayout(50);
 		
-		new TableColumn(table, SWT.LEFT, 0).setText("Component");
-		layout.addColumnData(new ColumnWeightData(30, true));
+		new TableColumn(table, SWT.CENTER, 0);
+		layout.addColumnData(new ColumnWeightData(1, true));
 
-		new TableColumn(table, SWT.LEFT, 1).setText("Destination Folder");
+		new TableColumn(table, SWT.LEFT, 1).setText("Component");
+		layout.addColumnData(new ColumnWeightData(29, true));
+
+		new TableColumn(table, SWT.LEFT, 2).setText("Destination Folder");
 		layout.addColumnData(new ColumnWeightData(70, true));
 
 		table.setLayout(layout);
@@ -156,7 +197,9 @@ public class ComponentListPanel
 	private void openSelectedFolder()
 	{
 		ComponentPath componentPath = (ComponentPath)((IStructuredSelection)m_tableViewer.getSelection()).getFirstElement();
-		Program.launch(componentPath.getPath().toOSString());
+		
+		if(componentPath.getPath() != null)
+			Program.launch(componentPath.getPath().toOSString());
 	}
 	
 	public void update(MaterializationContext context)
@@ -189,6 +232,9 @@ public class ComponentListPanel
 				m_data.add(new ComponentPath(ci, path.removeTrailingSeparator()));
 		}
 		
+		for(ComponentIdentifier ci : ms.getFailed())
+			m_data.add(new ComponentPath(ci, true, null));
+			
 		m_tableViewer.setInput(m_data);
 	}
 }
