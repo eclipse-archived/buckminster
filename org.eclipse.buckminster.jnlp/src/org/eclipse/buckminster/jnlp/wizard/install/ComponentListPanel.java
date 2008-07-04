@@ -31,9 +31,12 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -41,6 +44,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * @author Karel Brezina
@@ -149,6 +153,8 @@ public class ComponentListPanel
 	
 	private TableViewer m_tableViewer;
 	
+	private Menu m_tableMenu;
+	
 	public Control createControl(Composite parent)
 	{
 		m_tableViewer = new TableViewer(parent, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
@@ -162,7 +168,7 @@ public class ComponentListPanel
 			}
 		});
 
-		Table table = m_tableViewer.getTable();
+		final Table table = m_tableViewer.getTable();
 		DynamicTableLayout layout = new DynamicTableLayout(50);
 		
 		new TableColumn(table, SWT.CENTER, 0);
@@ -176,10 +182,9 @@ public class ComponentListPanel
 
 		table.setLayout(layout);
 		table.setHeaderVisible(true);
-		table.setToolTipText("Double-click to open selected folder");
 
-	    Menu menu = new Menu(table);
-	    MenuItem menuItem = new MenuItem(menu, SWT.CASCADE);
+	    m_tableMenu = new Menu(table);
+	    MenuItem menuItem = new MenuItem(m_tableMenu, SWT.CASCADE);
 	    menuItem.setText("Open Folder");
 	    menuItem.addSelectionListener(new SelectionAdapter(){
 
@@ -189,7 +194,43 @@ public class ComponentListPanel
 				openSelectedFolder();
 			}
 		});
-	    table.setMenu(menu);
+	    table.setMenu(m_tableMenu);
+		
+		table.addMouseTrackListener(new MouseTrackAdapter()
+		{
+
+			@Override
+			public void mouseExit(MouseEvent e)
+			{
+				table.setToolTipText(null);
+			}
+
+			@Override
+			public void mouseHover(MouseEvent e)
+			{
+				TableItem item = table.getItem(new Point(e.x, e.y));
+				String toolTipText = "Double-click to open selected folder";
+
+				if(item != null && ((ComponentPath)item.getData()).isFailed())
+					toolTipText = "Cancelled";
+
+				table.setToolTipText(toolTipText);
+			}
+		});
+		
+		table.addSelectionListener(new SelectionAdapter(){
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				TableItem item = (TableItem)e.item;
+				
+				if(item != null && ((ComponentPath)item.getData()).isFailed())
+					table.setMenu(null);
+				else
+					table.setMenu(m_tableMenu);
+			}
+		});
 		
 		return m_tableViewer.getTable();
 	}
