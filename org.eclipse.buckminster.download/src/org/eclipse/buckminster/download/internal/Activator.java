@@ -45,7 +45,7 @@ public class Activator implements BundleActivator
 		return s_plugin;
 	}
 
-	public IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
+	public synchronized IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
 	{
 		return (IRetrieveFileTransferContainerAdapter)m_container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
 	}
