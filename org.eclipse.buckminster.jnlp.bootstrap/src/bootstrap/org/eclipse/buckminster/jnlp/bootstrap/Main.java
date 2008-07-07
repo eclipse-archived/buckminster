@@ -36,6 +36,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -817,6 +819,7 @@ public class Main
 
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(javaExe.toString());
+		allArgs.addAll(parseExtraArgs(args));
 		allArgs.add("-Xmx512m");
 		allArgs.add("-jar");
 		allArgs.add(launcherFile.toString());
@@ -932,6 +935,34 @@ public class Main
 			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again",
 					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
 		}
+	}
+
+	/**
+	 * Converts a single -extra string parameter into a list of parameters. Parameters are delimited by space.
+	 * Example: -extra "-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y" 
+	 * 
+	 * @param args
+	 * @return
+	 */
+	private List<String> parseExtraArgs(String[] args)
+	{
+		for(int i=0; i < args.length; i++)
+		{
+			if("-extra".equals(args[i]))
+			{
+				String extraArgsString = args[++i];
+				if(extraArgsString != null && !"null".equals(extraArgsString))
+				{
+					String[] extraArgs = extraArgsString.split(" ");
+					
+					return Arrays.asList(extraArgs);
+				}
+				
+				break;
+			}
+		}
+		
+		return Collections.emptyList();
 	}
 
 	/**
