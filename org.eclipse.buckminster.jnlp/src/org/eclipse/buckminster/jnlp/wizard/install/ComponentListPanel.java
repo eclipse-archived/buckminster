@@ -104,7 +104,7 @@ public class ComponentListPanel
 			else if(columnIndex == 1)
 				return componentPath.getComponentIdentifier().getName();
 			else
-				return componentPath.getPath().toOSString();
+				return componentPath.getPath() == null ? null : componentPath.getPath().toOSString();
 		}
 	}
 	
