@@ -17,7 +17,6 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
@@ -160,9 +159,9 @@ public class DonePage extends InstallWizardPage
 
 		Group listGroup = new Group(pageComposite, SWT.NONE);
 		listGroup.setText("Materialized Components");
-		FillLayout fillLayout = new FillLayout();
-		fillLayout.marginHeight = fillLayout.marginWidth = 5;
-		listGroup.setLayout(fillLayout);
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginHeight = gridLayout.marginWidth = 5;
+		listGroup.setLayout(gridLayout);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.horizontalSpan = 2;
 		listGroup.setLayoutData(gridData);

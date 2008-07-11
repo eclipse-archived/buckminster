@@ -18,10 +18,8 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
-import org.eclipse.buckminster.jnlp.ui.DynamicTableLayout;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -37,6 +35,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -169,18 +168,12 @@ public class ComponentListPanel
 		});
 
 		final Table table = m_tableViewer.getTable();
-		DynamicTableLayout layout = new DynamicTableLayout(50);
-		
-		new TableColumn(table, SWT.CENTER, 0);
-		layout.addColumnData(new ColumnWeightData(1, true));
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		new TableColumn(table, SWT.LEFT, 0);
 		new TableColumn(table, SWT.LEFT, 1).setText("Component");
-		layout.addColumnData(new ColumnWeightData(29, true));
-
 		new TableColumn(table, SWT.LEFT, 2).setText("Destination Folder");
-		layout.addColumnData(new ColumnWeightData(70, true));
 
-		table.setLayout(layout);
 		table.setHeaderVisible(true);
 
 	    m_tableMenu = new Menu(table);
@@ -277,5 +270,8 @@ public class ComponentListPanel
 			m_data.add(new ComponentPath(ci, true, null));
 			
 		m_tableViewer.setInput(m_data);
+
+		for (int i=0; i < 3; i++)
+			m_tableViewer.getTable().getColumn(i).pack();
 	}
 }
