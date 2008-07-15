@@ -35,10 +35,11 @@
 		<sequential>
 			<loadfile property="@{property}" srcfile="@{file}">
 				<filterchain>
+					<replaceregex pattern="(.*)\n\s+(.*)" replace="\1\2" flags="gm" byline="false"/>
 					<linecontains>
 						<contains value="Bundle-SymbolicName:"/>
 					</linecontains>
-					<replaceregex pattern="Bundle-SymbolicName: ([^;]+)(;.*)?$" replace="\1"/>
+					<replaceregex pattern="Bundle-SymbolicName: ([^;]+)(;.*)?$" replace="\1" flags="gm" byline="false"/>
 					<striplinebreaks/>
 				</filterchain>
 			</loadfile>
