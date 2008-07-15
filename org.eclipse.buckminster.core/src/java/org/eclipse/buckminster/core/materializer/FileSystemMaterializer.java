@@ -120,7 +120,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 						mat = new Materialization(artifactLocation, ci);
 						resolutionPerID.put(ci, cr);
-	
+
 						File file = artifactLocation.toFile().getAbsoluteFile();
 						boolean fileExists = file.exists();
 						if(fileExists && conflictRes == ConflictResolution.KEEP)
@@ -128,22 +128,23 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							boolean pathTypeOK = artifactLocation.hasTrailingSeparator()
 									? file.isDirectory()
 									: !file.isDirectory();
-	
+
 							if(!pathTypeOK)
 								throw new FileFolderMismatchException(ci, artifactLocation);
-	
+
 							// Don't materialize this one. Instead, pretend that we
 							// just did.
 							//
 							statistics.addKept(ci);
-							logger.info("Skipping materialization of %s. Instead reusing what's already at %s", ci, artifactLocation);
-	
+							logger.info("Skipping materialization of %s. Instead reusing what's already at %s", ci,
+									artifactLocation);
+
 							mat.store(sm);
 							adjustedMinfos.add(mat);
 							MonitorUtils.worked(prepMon, 10);
 							continue;
 						}
-	
+
 						// Ensure that the destination exists and that it is empty. This might cause a
 						// DestinationNotEmpty exception to be thrown.
 						//
@@ -158,7 +159,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 								// unless that parent has been explicitly stated.
 								//
 								if(node.getLeafArtifact() == null)
-									conflictRes = ConflictResolution.UPDATE;									
+									conflictRes = ConflictResolution.UPDATE;
 							}
 
 							if(conflictRes.equals(ConflictResolution.REPLACE))
@@ -167,9 +168,9 @@ public class FileSystemMaterializer extends AbstractMaterializer
 								//
 								int alCount = artifactLocation.segmentCount();
 								if(!((userHome.isPrefixOf(artifactLocation) && userHome.segmentCount() < alCount)
-								|| (userTemp.isPrefixOf(artifactLocation) && userTemp.segmentCount() < alCount)
-								|| (workspaceRoot.isPrefixOf(artifactLocation) && workspaceRoot.segmentCount() < alCount)
-								|| (filesRoot != null && filesRoot.isPrefixOf(artifactLocation) && filesRoot.segmentCount() < alCount)))
+										|| (userTemp.isPrefixOf(artifactLocation) && userTemp.segmentCount() < alCount)
+										|| (workspaceRoot.isPrefixOf(artifactLocation) && workspaceRoot.segmentCount() < alCount) || (filesRoot != null
+										&& filesRoot.isPrefixOf(artifactLocation) && filesRoot.segmentCount() < alCount)))
 									conflictRes = ConflictResolution.UPDATE;
 							}
 
@@ -223,10 +224,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				{
 					if(ci != null)
 						statistics.addFailed(ci);
-					
+
 					if(!context.isContinueOnError())
 						throw e;
-					
+
 					context.addRequestStatus(cr.getRequest(), e.getStatus());
 				}
 			}
@@ -299,6 +300,14 @@ public class FileSystemMaterializer extends AbstractMaterializer
 		}
 		finally
 		{
+			for(Resolution res : resolutions)
+			{
+				ComponentIdentifier ci = res.getComponentIdentifier();
+
+				if(!statistics.isIncluded(ci))
+					statistics.addFailed(ci);
+			}
+
 			monitor.done();
 		}
 	}
