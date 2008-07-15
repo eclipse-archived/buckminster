@@ -103,49 +103,74 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			return version;
 
 		OSGiVersion v = (OSGiVersion)VersionFactory.OSGiType.fromString(version);
-		if("qualifier".equals(v.getQualifier()))
+		boolean qualifierTag = "qualifier".equals(v.getQualifier());
+		if(qualifierTag)
 			v = (OSGiVersion)v.replaceQualifier(null);
 
-		StringBuilder vbld;
+		StringBuilder vbld = new StringBuilder();
 		switch(pdeMatchRule)
 		{
-		case IMatchRules.GREATER_OR_EQUAL:
-			break;
 		case IMatchRules.PERFECT:
-			// If the version was sanitized, a perfect match will not find
-			// it.
-			//
-			version = "[" + v + ',' + v + "]";
+			vbld.append('[');
+			vbld.append(v);
+			if(qualifierTag)
+			{
+				// Generate a version range that matches the given version with
+				// any qualifier.
+				//
+				vbld.append(".0,");
+				vbld.append(v.getMajor());
+				vbld.append('.');
+				vbld.append(v.getMinor());
+				vbld.append('.');
+				vbld.append(v.getMicro() + 1);
+				vbld.append(')');
+			}
+			else
+			{
+				// Use a true explicit version range
+				//
+				vbld.append(',');
+				vbld.append(v);
+				vbld.append(']');
+			}
 			break;
+
 		case IMatchRules.EQUIVALENT:
 			//
 			// Create a range that requires major and minor numbers
 			// to be equal.
 			//
-			vbld = new StringBuilder();
 			vbld.append('[');
 			vbld.append(v);
+			if(qualifierTag)
+				vbld.append(".0");
 			vbld.append(',');
 			vbld.append(v.getMajor());
 			vbld.append('.');
 			vbld.append(v.getMinor() + 1);
 			vbld.append(".0)");
-			version = vbld.toString();
 			break;
+
 		case IMatchRules.COMPATIBLE:
 			//
 			// Create a range that requires major and minor numbers
 			// to be equal.
 			//
-			vbld = new StringBuilder();
 			vbld.append('[');
 			vbld.append(v);
+			if(qualifierTag)
+				vbld.append(".0");
 			vbld.append(',');
 			vbld.append(v.getMajor() + 1);
 			vbld.append(".0.0)");
-			version = vbld.toString();
+			break;
+		default:
+			vbld.append(v);
+			if(qualifierTag)
+				vbld.append(".0");
 		}
-		return version;
+		return vbld.toString();
 	}
 
 	protected static String buildArtifactName(String id, String ver, boolean asJar)
