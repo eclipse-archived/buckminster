@@ -8,7 +8,13 @@
 
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.DEFAULT_MATERIALIZATION_FOLDER;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_403_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_404_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_500_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,10 +39,6 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
-import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
-import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
-import org.eclipse.buckminster.jnlp.wizard.publish.PublishWizard;
-import org.eclipse.buckminster.jnlp.wizard.tp.TPWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -45,7 +47,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
 /**
@@ -90,34 +91,6 @@ public class MaterializationUtils
 	private static Map<MaterializationSpecBuilder, Map<String, String>> m_expandProperties = new HashMap<MaterializationSpecBuilder, Map<String, String>>();
 
 	private static Map<MaterializationSpecBuilder, Set<PropertyEntryByLength>> m_generalizeProperties = new HashMap<MaterializationSpecBuilder, Set<PropertyEntryByLength>>();
-
-	/**
-	 * The publishing wizard dialog width
-	 */
-	private static final int PUBLISH_WIZARD_MIN_WIDTH = 450;
-
-	private static final int PUBLISH_WIZARD_MAX_WIDTH = 850;
-
-	/**
-	 * The publishing wizard dialog height
-	 */
-	private static final int PUBLISH_WIZARD_MIN_HEIGHT = 450;
-
-	private static final int PUBLISH_WIZARD_MAX_HEIGHT = 750;
-
-	/**
-	 * The target platform wizard dialog width
-	 */
-	private static final int TP_WIZARD_MIN_WIDTH = 450;
-
-	private static final int TP_WIZARD_MAX_WIDTH = 650;
-
-	/**
-	 * The target platform wizard dialog height
-	 */
-	private static final int TP_WIZARD_MIN_HEIGHT = 250;
-
-	private static final int TP_WIZARD_MAX_HEIGHT = 450;
 
 	private static final Map<String, String> s_humanReadableComponentTypes;
 
@@ -221,54 +194,6 @@ public class MaterializationUtils
 		if(hrType == null)
 			hrType = componentType;
 		return hrType;
-	}
-
-	/**
-	 * Opens publishing wizard dialog
-	 * 
-	 * @param installWizard
-	 * @param parentShell
-	 */
-	public static void startPublishingWizard(InstallWizard installWizard, Shell parentShell)
-	{
-		PublishWizard publishWizard = new PublishWizard(installWizard);
-
-		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, publishWizard);
-		dialog.create();
-
-		final Shell shell = dialog.getShell();
-		shell.setSize(Math.min(Math.max(PUBLISH_WIZARD_MIN_WIDTH, shell.getSize().x), PUBLISH_WIZARD_MAX_WIDTH), Math
-				.min(Math.max(PUBLISH_WIZARD_MIN_HEIGHT, shell.getSize().y), PUBLISH_WIZARD_MAX_HEIGHT));
-
-		dialog.open();
-	}
-
-	/**
-	 * Opens target platform wizard dialog
-	 * 
-	 * @param installWizard
-	 * @param parentShell
-	 */
-	public static void startTPWizard(InstallWizard installWizard, Shell parentShell)
-	{
-		TPWizard tpWizard = new TPWizard(installWizard);
-
-		AdvancedWizardDialog dialog = new AdvancedWizardDialog(parentShell, tpWizard)
-		{
-			@Override
-			public boolean isHelpAvailable()
-			{
-				return false;
-			}
-
-		};
-		dialog.create();
-
-		final Shell shell = dialog.getShell();
-		shell.setSize(Math.min(Math.max(TP_WIZARD_MIN_WIDTH, shell.getSize().x), TP_WIZARD_MAX_WIDTH), Math.min(Math
-				.max(TP_WIZARD_MIN_HEIGHT, shell.getSize().y), TP_WIZARD_MAX_HEIGHT));
-
-		dialog.open();
 	}
 
 	/**
