@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -38,7 +37,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.pde.core.IModel;
-import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
@@ -64,12 +62,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 
 		if(m_model == null)
 			throw BuckminsterException.fromMessage("Unable to load model for %s", m_base.getComponentName());
-	}
-
-	public List<IFragmentModel> getFragmentsFor(String pluginId) throws CoreException
-	{
-		EclipseImportReaderType rt = (EclipseImportReaderType)getReaderType();
-		return rt.getFragmentsFor(m_base.getRemoteLocation(), getProviderMatch(), pluginId);
 	}
 
 	public IPluginModelBase getPluginModelBase(String pluginId, String version) throws CoreException

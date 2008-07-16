@@ -33,6 +33,8 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		s_defaultNode.putBoolean(LOG_ECLIPSE_TO_CONSOLE, LOG_ECLIPSE_TO_CONSOLE_DEFAULT);
 		s_defaultNode.put(SITE_NAME, SITE_NAME_DEFAULT);
 		s_defaultNode.put(QUERY_RESOLVER_SORT_ORDER, QUERY_RESOLVER_SORT_ORDER_DEFAULT);
+		s_defaultNode.putInt(CONNECTION_RETRY_COUNT, CONNECTION_RETRY_COUNT_DEFAULT);
+		s_defaultNode.putInt(CONNECTION_RETRY_DELAY, CONNECTION_RETRY_DELAY_DEFAULT);
 		try
 		{
 			s_defaultNode.flush();
@@ -67,6 +69,16 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	{
 		String tmp = s_prefsNode.get(BUCKMINSTER_PROJECT_CONTENTS, null);
 		return (tmp == null) ? null : new Path(tmp);
+	}
+
+	public static int getConnectionRetryCount()
+	{
+		return s_prefsNode.getInt(CONNECTION_RETRY_COUNT, CONNECTION_RETRY_COUNT_DEFAULT);
+	}
+
+	public static int getConnectionRetryDelay()
+	{
+		return s_prefsNode.getInt(CONNECTION_RETRY_DELAY, CONNECTION_RETRY_DELAY_DEFAULT);
 	}
 
 	public static int getLogLevelConsole()
@@ -116,6 +128,16 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 			s_prefsNode.remove(BUCKMINSTER_PROJECT_CONTENTS);
 		else
 			s_prefsNode.put(BUCKMINSTER_PROJECT_CONTENTS, path.toPortableString());
+	}
+
+	public static void setConnectionRetryCount(int retryCount)
+	{
+		s_prefsNode.putInt(CONNECTION_RETRY_COUNT, retryCount);
+	}
+
+	public static void setConnectionRetryDelay(int retryDelay)
+	{
+		s_prefsNode.putInt(CONNECTION_RETRY_DELAY, retryDelay);
 	}
 
 	public static void setLogLevelConsole(int logLevel)

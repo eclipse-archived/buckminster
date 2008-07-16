@@ -16,7 +16,9 @@ import java.io.PipedOutputStream;
 import java.net.URL;
 import java.util.Date;
 
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -59,6 +61,15 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 
 	private ProgressStatistics m_statistics;
 
+	private final int m_connectionRetryCount;
+
+	private final long m_connectionRetryDelay;
+
+	/**
+	 * Create a new FileReader that will retry failed connection attempts and sleep some amount of time between each attempt.
+	 * @param connectionRetryCount The number of times to retry the connection. Set to zero to fail on first attempt.
+	 * @param connectionRetryDelay The number of milliseconds to sleep between each attempt.
+	 */
 	public FileReader()
 	{
 		super("URL reader");
@@ -66,6 +77,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		// Hide this job.
 		setSystem(true);
 		setUser(false);
+		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
+		m_connectionRetryDelay = (long)BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
 	}
 
 	public IFileInfo getLastFileInfo()
@@ -154,6 +167,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		{
 			throw BuckminsterException.wrap(e);
 		}
+		Buckminster.getLogger().debug("Downloading %s", url);
 		sendRetrieveRequest(url, output, true, false, null);
 
 		return new InputStream()
@@ -285,25 +299,58 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		m_monitor = monitor;
 		m_outputStream = outputStream;
 
-		try
+		for(int retryCount = 0;;)
 		{
-			IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
-			adapter.sendRetrieveRequest(fileID, this, null);
-		}
-		catch(IncomingFileTransferException e)
-		{
-			m_exception = e;
-		}
-		if(m_exception != null)
-		{
-			Throwable t = BuckminsterException.unwind(m_exception);
-			if(t instanceof CoreException)
-				throw (CoreException)t;
-	
-			if(t instanceof FileNotFoundException)
-				throw (FileNotFoundException)t;
-	
-			throw BuckminsterException.wrap(m_exception);
+			if(monitor != null && monitor.isCanceled())
+				throw new OperationCanceledException();
+
+			try
+			{
+				IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
+				adapter.sendRetrieveRequest(fileID, this, null);
+			}
+			catch(IncomingFileTransferException e)
+			{
+				m_exception = e;
+			}
+
+			if(m_exception != null)
+			{
+				Throwable t = BuckminsterException.unwind(m_exception);
+				while(t instanceof CoreException)
+				{
+					Throwable t2 = ((CoreException)t).getStatus().getException();
+					if(t2 == null)
+						throw (CoreException)t;
+					t = t2;
+				}
+
+				if(t instanceof FileNotFoundException)
+					//
+					// Connection succeeded but the target doesn't exist
+					//
+					throw (FileNotFoundException)t;
+
+				if(t instanceof IOException && retryCount < m_connectionRetryCount)
+				{
+					// TODO: Retry only certain exceptions or filter out
+					// some exceptions not worth retrying
+					//
+					++retryCount;
+					m_exception = null;
+					try
+					{
+						Buckminster.getLogger().warning("Connection to %s failed on %s. Retry attempt %d started", url, t.getMessage(), new Integer(retryCount));
+						Thread.sleep(m_connectionRetryDelay);
+						continue;
+					}
+					catch(InterruptedException e)
+					{
+					}
+				}
+				throw BuckminsterException.wrap(m_exception);
+			}
+			break;
 		}
 	}
 }

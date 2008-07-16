@@ -31,6 +31,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 {
 	private final EclipseImportReaderType m_readerType;
 	private final EclipseImportBase m_base;
+	private final NodeQuery m_query;
 
 	public EclipseImportFinder(EclipseImportReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
 	throws CoreException
@@ -38,6 +39,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		super(provider, ctype, query);
 		m_base = EclipseImportBase.obtain(query, provider.getURI(query.getProperties()));
 		m_readerType = readerType;
+		m_query = query;
 	}
 
 	public VersionMatch getBestVersion(IProgressMonitor monitor)
@@ -144,7 +146,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	{
 		IVersion bestFit = null;
 		String space = getProvider().getSpace();
-		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, monitor))
+		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, m_query, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion().toString());
 			if(getQuery().isMatch(version, null, space))

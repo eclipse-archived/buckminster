@@ -57,7 +57,9 @@ import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.pde.mapfile.MapFile;
 import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IProject;
@@ -71,7 +73,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PDEState;
@@ -86,12 +87,15 @@ import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.PluginEntry;
 import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.internal.core.FeatureDownloadException;
 import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
+
+	private static final UUID CACHE_KEY_PLUGIN_ENTRIES_CACHE = UUID.randomUUID();
 
 	public static class RemotePluginEntry extends PluginEntry
 	{
@@ -166,19 +170,42 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private static Map<URL,IPluginEntry[]> getPluginEntriesCache(Map<UUID,Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<URL,IPluginEntry[]> cache = (Map<URL,IPluginEntry[]>)ctxUserCache.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
+			if(cache == null)
+			{
+				cache = Collections.synchronizedMap(new HashMap<URL,IPluginEntry[]>());
+				ctxUserCache.put(CACHE_KEY_PLUGIN_ENTRIES_CACHE, cache);
+			}
+			return cache;
+		}
+	}
+
 	private final Map<IProject, IClasspathEntry[]> m_classpaths = new HashMap<IProject, IClasspathEntry[]>();
 
 	private final HashMap<File, IFeatureModel[]> m_featureCache = new HashMap<File, IFeatureModel[]>();
 
 	private final HashMap<File, IPluginModelBase[]> m_pluginCache = new HashMap<File, IPluginModelBase[]>();
 
-	private transient ArrayList<IFragmentModel> m_siteFragments;
+	private final int m_connectionRetryCount;
+
+	private final long m_connectionRetryDelay;
+
+	public EclipseImportReaderType()
+	{
+		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
+		m_connectionRetryDelay = (long)BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
+	}
 
 	@SuppressWarnings("deprecation")
 	public synchronized IPluginModelBase getPluginModelBase(URL location, String id, String version,
 		ProviderMatch templateInfo) throws CoreException
 	{
-		for(IPluginEntry candidate : getSitePluginEntries(location, new NullProgressMonitor()))
+		for(IPluginEntry candidate : getSitePluginEntries(location, templateInfo.getNodeQuery(), new NullProgressMonitor()))
 		{
 			VersionedIdentifier vi = candidate.getVersionedIdentifier();
 			String name = vi.getIdentifier();
@@ -266,27 +293,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
-	List<IFragmentModel> getFragmentsFor(URL location, ProviderMatch templateInfo, String pluginId)
-	throws CoreException
-	{
-		ArrayList<IFragmentModel> frags = null;
-		for(IFragmentModel frag : getAllFragments(location, templateInfo))
-		{
-			if(frag.getFragment().getPluginId().equals(pluginId))
-			{
-				if(frags == null)
-					frags = new ArrayList<IFragmentModel>();
-				frags.add(frag);
-			}
-		}
-		return frags == null ? Collections.<IFragmentModel> emptyList() : frags;
-	}
-
-	List<IPluginEntry> getPluginEntries(URL location, String componentName, IProgressMonitor monitor)
+	List<IPluginEntry> getPluginEntries(URL location, NodeQuery query, String componentName, IProgressMonitor monitor)
 	throws CoreException
 	{
 		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
-		for(IPluginEntry entry : getSitePluginEntries(location, monitor))
+		for(IPluginEntry entry : getSitePluginEntries(location, query, monitor))
 		{
 			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
 				result.add(entry);
@@ -477,30 +488,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return new URL(remoteLocation, subDir + '/' + name + '_' + version + ".jar");
 	}
 
-	@SuppressWarnings("deprecation")
-	private synchronized List<IFragmentModel> getAllFragments(URL location, ProviderMatch templateInfo)
-	throws CoreException
-	{
-		if(m_siteFragments != null)
-			return m_siteFragments;
-
-		ArrayList<IFragmentModel> frags = new ArrayList<IFragmentModel>();
-		for(IPluginEntry candidate : getSitePluginEntries(location, new NullProgressMonitor()))
-		{
-			if(candidate.isFragment())
-			{
-				// Only one way to know if this is a fragment for the pluginId
-				// We must download it.
-				//
-				VersionedIdentifier vi = candidate.getVersionedIdentifier();
-				frags.add((IFragmentModel)localize(vi.getIdentifier(), vi.getVersion().toString(),
-					templateInfo));
-			}
-		}
-		m_siteFragments = frags;
-		return frags;
-	}
-
 	private IFeatureModel[] getPlatformFeatures()
 	{
 		return PDECore.getDefault().getFeatureModelManager().getModels();
@@ -642,69 +629,75 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	public IPluginEntry[] getSitePluginEntries(URL location, IProgressMonitor monitor) throws CoreException
+	public IPluginEntry[] getSitePluginEntries(URL location, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		if(location.getPath().endsWith(".map"))
+		synchronized(location.toString().intern())
 		{
-			MonitorUtils.complete(monitor);
-			return getMapPluginEntries(location);
-		}
+			Map<URL,IPluginEntry[]> cache = getPluginEntriesCache(query.getContext().getUserCache());
+			IPluginEntry[] entries = cache.get(location);
+			if(entries != null)
+				return entries;
 
-		ISite site;
-		MonitorUtils.begin(monitor, 100);
-		synchronized(SiteManager.class)
-		{
-			site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
-			if(site == null)
-				throw new OperationCanceledException();
-
-			try
+			if(location.getPath().endsWith(".map"))
 			{
-				IPluginEntry[] entries = site.getPluginEntries();
-				MonitorUtils.worked(monitor, 50);
+				MonitorUtils.complete(monitor);
+				entries = getMapPluginEntries(location);
+				cache.put(location, entries);
 				return entries;
 			}
-			catch(UnsupportedOperationException uoe)
+	
+			ISite site;
+			MonitorUtils.begin(monitor, 100);
+			synchronized(SiteManager.class)
 			{
-				// Damn it! We need to use the slow version.
-				//
-				HashMap<VersionedIdentifier, IPluginEntry> entries = new HashMap<VersionedIdentifier, IPluginEntry>();
-				HashSet<VersionedIdentifier> seenFeatures = new HashSet<VersionedIdentifier>();
-				IFeatureReference[] refs = getSiteFeatureReferences(location,
-					MonitorUtils.subMonitor(monitor, 10));
-				IProgressMonitor itemsMonitor = MonitorUtils.subMonitor(monitor, 40);
-				itemsMonitor.beginTask(null, refs.length * 100);
-				for(IFeatureReference ref : refs)
+				site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
+				if(site == null)
+					throw new OperationCanceledException();
+	
+				try
 				{
-					// The getFeature() call is not thread-safe. It uses static variables without
-					// synchronization
-					//
-					VersionedIdentifier vid = ref.getVersionedIdentifier();
-					if(seenFeatures.add(vid))
-					{
-						IFeature feature;
-						try
-						{
-							feature = ref.getFeature(MonitorUtils.subMonitor(itemsMonitor, 50));
-						}
-						catch(Exception e)
-						{
-							PDEPlugin.getLogger().warning(e, e.getMessage());
-							continue;
-						}
-						addFeaturePluginEntries(entries, seenFeatures, feature, MonitorUtils.subMonitor(itemsMonitor, 50));
-					}
+					entries = site.getPluginEntries();
+					cache.put(location, entries);
+					MonitorUtils.worked(monitor, 50);
+					return entries;
 				}
-				return entries.values().toArray(new IPluginEntry[entries.size()]);
-			}
-			finally
-			{
-				MonitorUtils.done(monitor);
+				catch(UnsupportedOperationException uoe)
+				{
+					// Damn it! We need to use the slow version.
+					//
+					HashMap<VersionedIdentifier, IPluginEntry> entryCache = new HashMap<VersionedIdentifier, IPluginEntry>();
+					HashSet<VersionedIdentifier> seenFeatures = new HashSet<VersionedIdentifier>();
+					IFeatureReference[] refs = getSiteFeatureReferences(location,
+						MonitorUtils.subMonitor(monitor, 10));
+					IProgressMonitor itemsMonitor = MonitorUtils.subMonitor(monitor, 40);
+					itemsMonitor.beginTask(null, refs.length * 100);
+	
+					for(IFeatureReference ref : refs)
+					{
+						// The getFeature() call is not thread-safe. It uses static variables without
+						// synchronization
+						//
+						VersionedIdentifier vid = ref.getVersionedIdentifier();
+						if(seenFeatures.add(vid))
+						{
+							IFeature feature = obtainFeature(ref, MonitorUtils.subMonitor(itemsMonitor, 50));
+							if(feature != null)
+								addFeaturePluginEntries(entryCache, seenFeatures, feature, MonitorUtils.subMonitor(itemsMonitor, 50));
+						}
+					}
+					entries = entryCache.values().toArray(new IPluginEntry[entryCache.size()]);
+					cache.put(location, entries);
+					return entries;
+				}
+				finally
+				{
+					MonitorUtils.done(monitor);
+				}
 			}
 		}
 	}
 
-	private static void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries, HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
+	private void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries, HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
 	{
 		for(IPluginEntry entry : feature.getRawPluginEntries())
 			entries.put(entry.getVersionedIdentifier(), entry);
@@ -725,17 +718,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			else
 			{
 				seenFeatures.add(vid);
-				IFeature includedFeature;
-				try
-				{
-					includedFeature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
-				}
-				catch(Exception e)
-				{
-					PDEPlugin.getLogger().warning(e, e.getMessage());
-					continue;
-				}
-				addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils.subMonitor(monitor, 50));
+				IFeature includedFeature = obtainFeature(ref, MonitorUtils.subMonitor(monitor, 50));
+				if(feature != null)
+					addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils.subMonitor(monitor, 50));
 			}
 		}
 		monitor.done();
@@ -803,5 +788,50 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
 		ProviderMatch pm = new ProviderMatch(provider, templateInfo.getComponentType(), vm, ProviderScore.GOOD, nq);
 		return getPluginModel(pm, new NullProgressMonitor());
+	}
+
+	private IFeature obtainFeature(IFeatureReference ref, IProgressMonitor monitor)
+	{
+		Exception e;
+		Logger logger = PDEPlugin.getLogger();
+		for(int retryCount = 0;;)
+		{
+			try
+			{
+				logger.debug("Downloading %s", ref.getURL());
+				return ref.getFeature(monitor);
+			}
+			catch(FeatureDownloadException ex)
+			{
+				if(retryCount < m_connectionRetryCount)
+				{
+					Throwable t = ex.getStatus().getException();
+					if(t instanceof IOException)
+					{
+						if(!(t instanceof FileNotFoundException))
+						{
+							++retryCount;
+							try
+							{
+								Thread.sleep(m_connectionRetryDelay);
+								logger.warning("Connection to %s failed on %s. Retry attempt %d started", ref.getURL(), t.getMessage(), new Integer(retryCount));
+								continue;
+							}
+							catch(InterruptedException e1)
+							{
+							}
+						}
+					}
+				}
+				e = ex;
+			}
+			catch(Exception ex)
+			{
+				e = ex;
+			}
+			break;
+		}
+		logger.warning(e, e.getMessage());
+		return null;
 	}
 }

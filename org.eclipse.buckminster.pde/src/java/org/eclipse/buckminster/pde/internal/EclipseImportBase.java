@@ -227,9 +227,9 @@ final class EclipseImportBase
 		return m_location;
 	}
 
-	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
+	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		return readerType.getPluginEntries(getRemoteLocation(),  getComponentName(), monitor);
+		return readerType.getPluginEntries(getRemoteLocation(), query, getComponentName(), monitor);
 	}
 
 	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException

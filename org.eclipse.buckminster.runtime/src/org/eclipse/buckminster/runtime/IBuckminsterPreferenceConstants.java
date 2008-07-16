@@ -38,4 +38,12 @@ public interface IBuckminsterPreferenceConstants
 	public static final String QUERY_RESOLVER_SORT_ORDER_DEFAULT = "rmap";
 	
 	public static final String CUSTOM_QUERY_RESOLVER_SORT_ORDER = "customQueryResolverSort";
+
+	public static final String CONNECTION_RETRY_COUNT = "connectionRetryCount";
+
+	public static final int CONNECTION_RETRY_COUNT_DEFAULT = 3;
+
+	public static final String CONNECTION_RETRY_DELAY = "connectionRetryDelay";
+
+	public static final int CONNECTION_RETRY_DELAY_DEFAULT = 1;
 }

@@ -260,9 +260,18 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, "Eclipse logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, "Ant logger level:", LogLevel.values(), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, "Copy Eclipse log events to Console", getFieldEditorParent()));
-		IntegerFieldEditor mthreads = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, "Max number of parallel materializations", getFieldEditorParent());
-		mthreads.setValidRange(1, 12);
-		addField(mthreads);
+		IntegerFieldEditor intEditor = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, "Max number of parallel materializations", getFieldEditorParent());
+		intEditor.setValidRange(1, 12);
+		addField(intEditor);
+
+		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_COUNT, "Connection retry count", getFieldEditorParent());
+		intEditor.setValidRange(0, 5);
+		addField(intEditor);
+
+		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_DELAY, "Connection retry delay (seconds)", getFieldEditorParent());
+		intEditor.setValidRange(0, 60);
+		addField(intEditor);
+
 		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, "Resolver order", getFieldEditorParent()));
 
 		IResolverFactory[] factories = ResolverFactoryMaintainer.getInstance().getResolverFactories();
