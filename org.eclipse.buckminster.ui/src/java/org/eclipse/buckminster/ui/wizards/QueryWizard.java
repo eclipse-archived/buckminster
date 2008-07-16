@@ -110,7 +110,11 @@ public class QueryWizard extends Wizard implements INewWizard
 	public MaterializationContext getMaterializationContext()
 	{
 		if(m_materializationContext == null)
+		{
 			m_materializationContext = new MaterializationContext(getBOM(), m_mspec.createMaterializationSpec(), getContext());
+			m_materializationContext.setContinueOnError(m_context.isContinueOnError());
+
+		}
 		return m_materializationContext;
 	}
 
