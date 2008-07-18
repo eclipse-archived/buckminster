@@ -66,6 +66,8 @@ public abstract class FileUtils
 
 	private static final Pattern[] s_defaultExcludes;
 
+	private static final Object THREADLOCK = new Object();
+
 	static
 	{
 		ArrayList<Pattern> bld = new ArrayList<Pattern>();
@@ -1133,5 +1135,26 @@ public abstract class FileUtils
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Creates directories in a synchronized block.
+	 * 
+	 * @param directory The path for which all directories should be created
+	 * @throws CoreException If the directories cannot be created
+	 */
+	public static void mkdirs(File directory) throws CoreException
+	{
+		synchronized(THREADLOCK)
+		{
+			if(directory == null || directory.exists() && !directory.isDirectory())
+				throw BuckminsterException.fromMessage("Unable to create directory %s: Not a directory",
+						directory != null
+							? directory
+							: "(null)");
+			
+			if(!directory.mkdirs())
+				throw BuckminsterException.fromMessage("Unable to create directory %s", directory);
+		}
 	}
 }

@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class ArchivePolicy extends AbstractFetchPolicy
 {
+	private static final Object THREADLOCK = new Object();
+
 	private final String m_remoteName;
 
 	public ArchivePolicy(ICache cache, String remoteName)
@@ -114,7 +116,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			localFile = localFile.getCanonicalFile();
 			File parentFolder = localFile.getParentFile();
 			if(parentFolder != null)
-				parentFolder.mkdirs();
+				mkdirs(parentFolder);
 			output = new FileOutputStream(localFile);
 			FileReader retriever = new FileReader();
 			retriever.readInto(url, output, monitor);
@@ -133,4 +135,28 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			IOUtils.close(output);
 		}
 	}
+	
+	/**
+	 * Creates directories in a synchronized block.
+	 * Note: The same method is in the org.eclipse.buckminster.core.helpers.FileUtils class, however, for the dependency hierarchy reasons,
+	 *       this package is not accessible from here. This could be solved by refactoring the dependencies.
+	 * 
+	 * @param directory The path for which all directories should be created
+	 * @throws CoreException If the directories cannot be created
+	 */
+	private static void mkdirs(File directory) throws CoreException
+	{
+		synchronized(THREADLOCK)
+		{
+			if(directory == null || directory.exists() && !directory.isDirectory())
+				throw BuckminsterException.fromMessage("Unable to create directory %s: Not a directory",
+						directory != null
+							? directory
+							: "(null)");
+			
+			if(!directory.mkdirs())
+				throw BuckminsterException.fromMessage("Unable to create directory %s", directory);
+		}
+	}
+
 }
