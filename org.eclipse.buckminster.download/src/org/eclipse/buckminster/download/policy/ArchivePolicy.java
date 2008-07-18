@@ -154,7 +154,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 							? directory
 							: "(null)");
 			
-			if(!directory.mkdirs())
+			if(!directory.exists() && !directory.mkdirs())
 				throw BuckminsterException.fromMessage("Unable to create directory %s", directory);
 		}
 	}
