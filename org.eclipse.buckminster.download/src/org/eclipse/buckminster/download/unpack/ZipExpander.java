@@ -74,7 +74,14 @@ public class ZipExpander implements IExpander
 					if(destinationFolder == null)
 						output = NullOutputStream.INSTANCE;
 					else
+					{
+						// ZipEntry can contain e.g. "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml" - folders need to be created
+						File subDir = new File(destinationFolder, name).getParentFile();
+						if(subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
+							throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+
 						output = new FileOutputStream(new File(destinationFolder, name));
+					}
 					
 					IProgressMonitor subMon = null;
 					if(ticksLeft >= 20)
