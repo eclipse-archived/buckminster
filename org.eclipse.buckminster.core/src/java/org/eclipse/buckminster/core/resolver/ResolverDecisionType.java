@@ -67,6 +67,15 @@ public enum ResolverDecisionType
 			return "Match %s was rejected: %s";
 		}
 	},
+	
+	MAIN_REJECTED
+	{
+		@Override
+		public String toString()
+		{
+			return "Trunk/Head rejected: %s";
+		}
+	},
 
 	NO_BRANCHES_FOUND
 	{

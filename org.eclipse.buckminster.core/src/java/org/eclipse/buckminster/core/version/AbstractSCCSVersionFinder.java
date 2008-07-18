@@ -310,6 +310,20 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			if(match == null)
 				match = new VersionMatch(version, branchOrTag, space, entry.getRevision(), entry.getTimestamp(), null);
 
+			if(version == null)
+			{
+				// Unknown component type will not check the existence of any artifacts. We need to
+				// do that here
+				//						
+				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
+				{
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "no component was found");
+					continue;
+				}
+			}
+
 			if(best == null || query.compare(match, best) > 0)
 			{
 				best = match;
@@ -358,7 +372,19 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				}
 			}
 
-			IVersion version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
+			IVersion version = null;
+			try
+			{
+				version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
+			}
+			catch(CoreException e)
+			{
+				// Something is not right with this entry. Skip it.
+				//
+				logDecision(ResolverDecisionType.MAIN_REJECTED, e.getMessage());
+				return null;
+			}
+
 			IVersionDesignator versionDesignator = query.getVersionDesignator();
 			if(!(versionDesignator == null || versionDesignator.designates(version)))
 			{
