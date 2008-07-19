@@ -524,7 +524,11 @@ public class SubversiveSession implements Closeable
 					if(upSplit > 0)
 					{
 						username = authentication.substring(0, upSplit);
+						if("null".equals(username))
+							username = null;
 						password = authentication.substring(upSplit + 1);
+						if("null".equals(password))
+							password = null;
 					}
 				}
 				bld.append("//");
@@ -662,19 +666,21 @@ public class SubversiveSession implements Closeable
 			m_repositoryLocation = bestMatch;
 			synchronized(userCache)
 			{
+				m_proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+			    m_proxy.setTouchUnresolved(false);
+			    m_proxy.setCommitMissingFiles(false);
+			    m_proxy.setSSLCertificateCacheEnabled(true);
+			    m_proxy.setUsername(m_username);
+			    m_proxy.setPassword(m_password);
+			    m_proxy.setCredentialsCacheEnabled(true);
 				if(bestMatch == null)
 				{
-				    m_proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-				    m_proxy.setCredentialsCacheEnabled(true);
-				    m_proxy.setSSLCertificateCacheEnabled(true);
-				    m_proxy.setTouchUnresolved(false);
-				    m_proxy.setCommitMissingFiles(false);
-				    m_proxy.setUsername(m_username);
-				    m_proxy.setPassword(m_password);
 				    addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username, m_password));
 				}
 				else
-					m_proxy = m_repositoryLocation.acquireSVNProxy();
+				{
+					SVNUtility.configureProxy(m_proxy, m_repositoryLocation);
+				}
 			}
 
 			// Add the UnattendedPromptUserPassword callback only in case
@@ -692,10 +698,7 @@ public class SubversiveSession implements Closeable
 
 	public void close()
 	{
-		if(m_repositoryLocation != null)
-			m_repositoryLocation.releaseSVNProxy(m_proxy);
-		else
-			m_proxy.dispose();
+		m_proxy.dispose();
 	}
 
 	ISVNConnector getSVNProxy()

@@ -33,6 +33,11 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 		m_session = new SubversiveSession(provider.getURI(query.getProperties()), null, query.getRevision(), query.getTimestamp(), query.getContext());
 	}
 
+	public void close()
+	{
+		m_session.close();
+	}
+
 	@Override
 	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
 	{
