@@ -572,7 +572,11 @@ public class SvnSession implements Closeable
 					if(upSplit > 0)
 					{
 						username = authentication.substring(0, upSplit);
+						if("null".equals(username))
+							username = null;
 						password = authentication.substring(upSplit + 1);
+						if("null".equals(password))
+							password = null;
 					}
 				}
 				bld.append("//");
