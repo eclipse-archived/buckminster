@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.ant.materializer;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +18,16 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * @author Thomas Hallgren
+ * @author Guillaume CHATELET
+ */
 public class TarExpander extends AbstractExtension implements IExpander
 {
+	private FileFilter m_filter;
+
+	private boolean m_flatten = false;
+
 	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException
 	{
 		TarEntry entry;
@@ -40,7 +49,9 @@ public class TarExpander extends AbstractExtension implements IExpander
 			input = new TarInputStream(inputs);
 			while((entry = input.getNextEntry()) != null)
 			{
-				String name = entry.getName();
+				if(entry.isDirectory() && m_flatten)
+					continue;
+				String name = getName(entry);
 				if(entry.isDirectory())
 				{
 					if(destinationFolder == null)
@@ -65,14 +76,19 @@ public class TarExpander extends AbstractExtension implements IExpander
 						output = NullOutputStream.INSTANCE;
 					else
 					{
-						// TarEntry can contain e.g. "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml" - folders need to be created
+						// TarEntry can contain e.g. "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml" -
+						// folders need to be created
 						File subDir = new File(destinationFolder, name).getParentFile();
 						if(subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
-							throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+							throw BuckminsterException.fromMessage("Unable to unzip into directory %s",
+									destinationFolder);
 
-						output = new FileOutputStream(new File(destinationFolder, name));
+						if(m_filter == null || m_filter.accept(new File(entry.getName())))
+							output = new FileOutputStream(new File(destinationFolder, name));
+						else
+							output = NullOutputStream.INSTANCE;
 					}
-					
+
 					IProgressMonitor subMon = null;
 					if(ticksLeft >= 20)
 					{
@@ -97,5 +113,21 @@ public class TarExpander extends AbstractExtension implements IExpander
 		{
 			MonitorUtils.done(monitor);
 		}
+	}
+
+	private String getName(TarEntry entry)
+	{
+		final String name = entry.getName();
+		return m_flatten ? new File(name).getName() : name;
+	}
+
+	public void setFilter(FileFilter filter)
+	{
+		m_filter = filter;
+	}
+
+	public void setFlattenHierarchy(boolean shouldFlatten)
+	{
+		m_flatten = shouldFlatten;
 	}
 }

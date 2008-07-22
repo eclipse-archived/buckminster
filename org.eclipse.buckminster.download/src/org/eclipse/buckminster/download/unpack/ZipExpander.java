@@ -5,10 +5,10 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  ******************************************************************************/
-
 package org.eclipse.buckminster.download.unpack;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,40 +26,42 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
+ * @author Guillaume CHATELET
  */
 public class ZipExpander implements IExpander
 {
+	private FileFilter m_filter;
+
+	private boolean m_flatten = false;
+
 	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException
 	{
 		ZipEntry entry;
 		ZipInputStream input = null;
-
 		int ticksLeft = 600;
 		MonitorUtils.begin(monitor, ticksLeft);
 		if(destinationFolder != null)
 		{
 			if(!(destinationFolder.isDirectory() || destinationFolder.mkdirs()))
 				throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
-
 			MonitorUtils.worked(monitor, 10);
 			ticksLeft -= 10;
 		}
-
 		try
 		{
 			input = new ZipInputStream(inputs);
 			while((entry = input.getNextEntry()) != null)
 			{
-				String name = entry.getName();
+				if(entry.isDirectory() && m_flatten)
+					continue;
+				String name = getName(entry);
 				if(entry.isDirectory())
 				{
 					if(destinationFolder == null)
 						continue;
-
 					File subDir = new File(destinationFolder, name);
 					if(!(subDir.isDirectory() || subDir.mkdirs()))
 						throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
-
 					if(ticksLeft >= 10)
 					{
 						MonitorUtils.worked(monitor, 10);
@@ -67,7 +69,6 @@ public class ZipExpander implements IExpander
 					}
 					continue;
 				}
-
 				OutputStream output = null;
 				try
 				{
@@ -75,14 +76,18 @@ public class ZipExpander implements IExpander
 						output = NullOutputStream.INSTANCE;
 					else
 					{
-						// ZipEntry can contain e.g. "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml" - folders need to be created
+						// ZipEntry can contain e.g. "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml" -
+						// folders need to be created
 						File subDir = new File(destinationFolder, name).getParentFile();
 						if(subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
-							throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+							throw BuckminsterException.fromMessage("Unable to unzip into directory %s",
+									destinationFolder);
 
-						output = new FileOutputStream(new File(destinationFolder, name));
+						if(m_filter == null || m_filter.accept(new File(entry.getName())))
+							output = new FileOutputStream(new File(destinationFolder, name));
+						else
+							output = NullOutputStream.INSTANCE;
 					}
-					
 					IProgressMonitor subMon = null;
 					if(ticksLeft >= 20)
 					{
@@ -107,5 +112,21 @@ public class ZipExpander implements IExpander
 		{
 			MonitorUtils.done(monitor);
 		}
+	}
+
+	private String getName(ZipEntry entry)
+	{
+		String name = entry.getName();
+		return m_flatten ? new File(name).getName() : name;
+	}
+
+	public void setFilter(FileFilter filter)
+	{
+		m_filter = filter;
+	}
+
+	public void setFlattenHierarchy(boolean shouldFlatten)
+	{
+		m_flatten = shouldFlatten;
 	}
 }

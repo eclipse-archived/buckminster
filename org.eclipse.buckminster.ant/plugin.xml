@@ -119,7 +119,11 @@
     </expander>
     <expander
           class="org.eclipse.buckminster.ant.materializer.TGZExpander"
-          suffixes=".tgz">
+          suffixes=".tgz,.tar.gz">
+    </expander>
+    <expander
+          class="org.eclipse.buckminster.ant.materializer.TBZ2Expander"
+          suffixes=".tar.bz2,.tbz2,.tb2,.tbz">
     </expander>
  </extension>
 </plugin>
