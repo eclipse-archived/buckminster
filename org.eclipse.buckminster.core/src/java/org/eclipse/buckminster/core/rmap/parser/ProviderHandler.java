@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.FormatHandler;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -27,6 +28,8 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -56,6 +59,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	private Format m_digestFormat;
 	private String m_digestAlgorithm;
 	private VersionConverterDesc m_versionConverter;
+	private Filter m_resolutionFilter;
 
 	public ProviderHandler(AbstractHandler parent)
 	{
@@ -169,6 +173,21 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		m_mutable = getOptionalBooleanValue(attrs, Provider.ATTR_MUTABLE, true);
 		m_source = getOptionalBooleanValue(attrs, Provider.ATTR_SOURCE, true);
 		m_space = getOptionalStringValue(attrs, Provider.ATTR_SPACE);
+		
+		tmp = getOptionalStringValue(attrs, Provider.ATTR_RESOLUTION_FILTER);
+		if(tmp != null)
+		{
+			try
+			{
+				m_resolutionFilter = FilterUtils.createFilter(tmp);
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
+		else
+			m_resolutionFilter = null;
 		m_uriFormat = null;
 		m_digestFormat = null;
 		m_digestAlgorithm = null;
@@ -214,6 +233,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				m_digestFormat,
 				m_digestAlgorithm,
 				m_space,
+				m_resolutionFilter,
 				m_mutable,
 				m_source,
 				m_uriMatcher,
@@ -257,6 +277,11 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	protected final String getReaderType()
 	{
 		return m_readerType;
+	}
+
+	protected final Filter getResolutionFilter()
+	{
+		return m_resolutionFilter;
 	}
 
 	protected final String getSpace()

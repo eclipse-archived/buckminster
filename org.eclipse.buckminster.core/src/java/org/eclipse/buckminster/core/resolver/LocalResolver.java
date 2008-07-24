@@ -32,7 +32,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictExceptio
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
@@ -89,11 +88,11 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				new BidirectionalTransformer[0]);
 		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${"
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null);
+						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, null, false, false, null, null);
 
 		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${"
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null);
+						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, null, false, false, null, null);
 	}
 
 	private final ResolutionContext m_context;
@@ -213,7 +212,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 						res = null;
 					}
 				}
-				if(res != null && FilterUtils.isMatch(res.getCSpec().getFilter(), query.getProperties()))
+				if(res != null && res.isFilterMatchFor(query))
 				{
 					MonitorUtils.complete(monitor);
 					return new ResolvedNode(query, res);
@@ -245,7 +244,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			{
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				ComponentIdentifier ci = resolution.getComponentIdentifier();
-				if(request.designates(ci) && FilterUtils.isMatch(resolution.getCSpec().getFilter(), query.getProperties()))
+				if(request.designates(ci) && resolution.isFilterMatchFor(query))
 				{
 					// Make sure we have a materialization for the project.
 					//
@@ -286,7 +285,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				IOUtils.close(reader[0]);
 
 				Resolution res = node.getResolution();
-				if(FilterUtils.isMatch(res.getCSpec().getFilter(), query.getProperties()))
+				if(res.isFilterMatchFor(query))
 				{
 					res.store(StorageManager.getDefault());
 					return node;
@@ -532,7 +531,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, false, false, null, null);
+		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, null, false, false, null, null);
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
 		Resolution bestMatch = null;

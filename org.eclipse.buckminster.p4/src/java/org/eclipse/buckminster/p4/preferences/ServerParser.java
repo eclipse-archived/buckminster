@@ -12,7 +12,6 @@ package org.eclipse.buckminster.p4.preferences;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.parser.AbstractParser;
-import org.eclipse.buckminster.core.parser.ISAXParser;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;

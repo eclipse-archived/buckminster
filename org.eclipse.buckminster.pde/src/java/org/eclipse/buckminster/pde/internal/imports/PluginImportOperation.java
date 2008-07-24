@@ -260,45 +260,44 @@ public class PluginImportOperation extends JarImportOperation
 			extractJARdPlugin(monitor);
 			return;
 		}
-		else
+
+		File installLocation = new File(m_model.getInstallLocation());
+		File[] items = installLocation.listFiles();
+		MonitorUtils.begin(monitor, "Linking imported plugin", items.length + 1);
+		if(items != null)
 		{
-			File installLocation = new File(m_model.getInstallLocation());
-			File[] items = installLocation.listFiles();
-			MonitorUtils.begin(monitor, "Linking imported plugin", items.length + 1);
-			if(items != null)
+			for(int i = 0; i < items.length; i++)
 			{
-				for(int i = 0; i < items.length; i++)
+				File sourceFile = items[i];
+				String name = sourceFile.getName();
+				if(sourceFile.isDirectory())
 				{
-					File sourceFile = items[i];
-					String name = sourceFile.getName();
-					if(sourceFile.isDirectory())
+					m_project.getFolder(name).createLink(new Path(sourceFile.getPath()), IResource.NONE,
+						MonitorUtils.subMonitor(monitor, 1));
+				}
+				else
+				{
+					if(!name.equals(".project"))
 					{
-						m_project.getFolder(name).createLink(new Path(sourceFile.getPath()), IResource.NONE,
-							MonitorUtils.subMonitor(monitor, 1));
+						m_project.getFile(name).createLink(new Path(sourceFile.getPath()),
+							IResource.NONE, MonitorUtils.subMonitor(monitor, 1));
 					}
 					else
 					{
-						if(!name.equals(".project"))
-						{
-							m_project.getFile(name).createLink(new Path(sourceFile.getPath()),
-								IResource.NONE, MonitorUtils.subMonitor(monitor, 1));
-						}
-						else
-						{
-							// if the binary project with links has a .project file, copy it instead
-							// of linking (allows us to edit it)
-							ArrayList<File> filesToImport = new ArrayList<File>(1);
-							filesToImport.add(sourceFile);
-							importContent(installLocation, m_project.getFullPath(),
-								FileSystemStructureProvider.INSTANCE, filesToImport, new SubProgressMonitor(
-									monitor, 1));
-						}
+						// if the binary project with links has a .project file, copy it instead
+						// of linking (allows us to edit it)
+						ArrayList<File> filesToImport = new ArrayList<File>(1);
+						filesToImport.add(sourceFile);
+						importContent(installLocation, m_project.getFullPath(),
+							FileSystemStructureProvider.INSTANCE, filesToImport, new SubProgressMonitor(
+								monitor, 1));
 					}
 				}
 			}
-			linkSourceArchives(MonitorUtils.subMonitor(monitor, 1));
-			MonitorUtils.done(monitor);
 		}
+		linkSourceArchives(MonitorUtils.subMonitor(monitor, 1));
+		MonitorUtils.done(monitor);
+
 		try
 		{
 			RepositoryProvider.map(m_project, PDECore.BINARY_REPOSITORY_PROVIDER);
@@ -511,7 +510,7 @@ public class PluginImportOperation extends JarImportOperation
 
 				while(!stack.isEmpty())
 				{
-					IResource res = (IResource)stack.pop();
+					IResource res = stack.pop();
 					if(res instanceof IFile)
 					{
 						if(!res.getName().endsWith(".class")){ //$NON-NLS-1$

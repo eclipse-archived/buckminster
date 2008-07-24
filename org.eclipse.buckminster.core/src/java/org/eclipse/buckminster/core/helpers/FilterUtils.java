@@ -26,6 +26,39 @@ public class FilterUtils
 		return new MatchAllAwareFilterImpl(expression);
 	}
 
+	/**
+	 * <p>
+	 * Scan the filter and find all attributes that this filter makes use of. For each attribute found, the values that
+	 * the attribute will be compared against are collected into a unique array of strings and put into o the provided
+	 * <code>propertyChoices</code> map keyed by the name of the attribute.
+	 * </p>
+	 * <p>It is guaranteed that all updates to the <code>propertyChoices</code> map are synchronised.</p>
+	 * @param filter The filter to scan
+	 * @param propertyChoices The map that will receive the results.
+	 */
+	public static void addConsultedAttributes(Filter filter, Map<String, String[]> propertyChoices)
+	{
+		if(filter == null)
+			return;
+
+		MatchAllAwareFilterImpl maFilter;
+		if(filter instanceof MatchAllAwareFilterImpl)
+			maFilter = (MatchAllAwareFilterImpl)filter;
+		else
+		{
+			try
+			{
+				maFilter = new MatchAllAwareFilterImpl(filter.toString());
+			}
+			catch(InvalidSyntaxException e)
+			{
+				// Won't happen since the origin is a filter
+				throw new RuntimeException(e);
+			}
+		}
+		maFilter.addConsultedAttributes(propertyChoices);
+	}
+
 	public static Filter createFilter(String os, String ws, String arch, String nl)
 	{
 		StringBuilder bld = new StringBuilder();
@@ -86,14 +119,17 @@ public class FilterUtils
 	}
 
 	/**
-	 * This method will parse the filter and potentially change the names of the attributes in that
-	 * filter. No values will be replaced.
-	 * Attributes named <code>from</code> or attributes that uses a dotted notation where <code>from</code> is
-	 * one of the elements will have <code>from</code> replaced with <code>to</code>.
-	 * @param filter An LDAP filter in string format
-	 * @param from The attribute name to replace
-	 * @param to The new attribute name
-	 * @return A string where the needed replacements has been made. 
+	 * This method will parse the filter and potentially change the names of the attributes in that filter. No values
+	 * will be replaced. Attributes named <code>from</code> or attributes that uses a dotted notation where
+	 * <code>from</code> is one of the elements will have <code>from</code> replaced with <code>to</code>.
+	 * 
+	 * @param filter
+	 *            An LDAP filter in string format
+	 * @param from
+	 *            The attribute name to replace
+	 * @param to
+	 *            The new attribute name
+	 * @return A string where the needed replacements has been made.
 	 */
 	public static String replaceAttributeNames(String filter, String from, String to)
 	{
@@ -203,12 +239,69 @@ public class FilterUtils
 			}
 		}
 
+		public void addConsultedAttributes(Map<String, String[]> propertyChoices)
+		{
+			if(value instanceof Filter[])
+			{
+				Filter[] subFilters = (Filter[])value;
+				int idx = subFilters.length;
+				while(--idx >= 0)
+					((MatchAllAwareFilterImpl)subFilters[idx]).addConsultedAttributes(propertyChoices);
+				return;
+			}
+			if(attr == null || value == null)
+				return;
+
+			String stringValue;
+			if(value instanceof String[])
+			{
+				String[] substrings = (String[])value;
+				StringBuilder bld = new StringBuilder();
+				int size = substrings.length;
+				for(int i = 0; i < size; i++)
+				{
+					String substr = substrings[i];
+					if(substr == null)
+						bld.append('*');
+					else
+						bld.append(substr);
+				}
+				stringValue = bld.toString();
+			}
+			else
+				stringValue = value.toString();
+
+			// Add the attribute value as a valid choice for the attribute
+			// unless it's already present.
+			//
+			synchronized(propertyChoices)
+			{
+				String[] choices = propertyChoices.get(attr);
+				if(choices == null)
+				{
+					propertyChoices.put(attr, new String[] { stringValue });
+					return;
+				}
+
+				int top = choices.length;
+				int idx = top;
+				while(--idx >= 0)
+					if(stringValue.equals(choices[idx]))
+						return;
+
+				String[] newChoices = new String[top + 1];
+				System.arraycopy(choices, 0, newChoices, 0, top);
+				newChoices[top] = stringValue;
+				propertyChoices.put(attr, newChoices);
+			}
+		}
+
 		@Override
 		protected boolean compare_String(int op, String string, Object value2)
 		{
 			return MATCH_ALL.equals(string)
-				? true
-				: super.compare_String(op, string, value2);
+					? true
+					: super.compare_String(op, string, value2);
 		}
 	}
 }

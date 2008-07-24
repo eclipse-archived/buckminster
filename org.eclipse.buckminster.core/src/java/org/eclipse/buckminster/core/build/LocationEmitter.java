@@ -99,7 +99,7 @@ public class LocationEmitter extends PropertiesEmitter
 
 		// Emit properties of all dependencies
 		//
-		cspec = cspec.prune(RMContext.getGlobalPropertyAdditions(), false, attributes);
+		cspec = cspec.prune(null, RMContext.getGlobalPropertyAdditions(), false, attributes);
 		for(QualifiedDependency dep : cspec.getQualifiedDependencies(false))
 		{
 			CSpec childSpec = cache.findCSpec(cspec, dep.getRequest());

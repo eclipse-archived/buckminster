@@ -198,7 +198,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	public EclipseImportReaderType()
 	{
 		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
-		m_connectionRetryDelay = (long)BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
+		m_connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
 	}
 
 	@SuppressWarnings("deprecation")

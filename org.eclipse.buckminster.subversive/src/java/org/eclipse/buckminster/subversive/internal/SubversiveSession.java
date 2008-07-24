@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.team.svn.core.SVNTeamPlugin;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNCredentialsPrompt;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
@@ -44,8 +45,10 @@ import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
 import org.eclipse.team.svn.core.connector.SVNRevision;
 import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
+import org.eclipse.team.svn.core.extension.options.IOptionProvider;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
+import org.eclipse.team.svn.core.svnstorage.SVNRepositoryLocation.BaseCredentialsPromptWrapper;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
@@ -680,6 +683,10 @@ public class SubversiveSession implements Closeable
 				else
 				{
 					SVNUtility.configureProxy(m_proxy, m_repositoryLocation);
+					IOptionProvider optionProvider = SVNTeamPlugin.instance().getOptionProvider();
+				    ISVNCredentialsPrompt externalPrompt = optionProvider.getCredentialsPrompt();
+				    if (externalPrompt != null)
+						m_proxy.setPrompt(new BaseCredentialsPromptWrapper(externalPrompt, m_repositoryLocation));
 				}
 			}
 

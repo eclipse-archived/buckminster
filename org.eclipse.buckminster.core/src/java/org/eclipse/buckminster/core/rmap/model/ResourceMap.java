@@ -28,7 +28,6 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -53,6 +52,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -172,18 +172,16 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 					DepNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
 					Resolution resolution = node.getResolution();
 					MonitorUtils.testCancelStatus(monitor);
-
-					CSpec cspec = resolution.getCSpec();
-
-					// Check that the cspec isn't rejected due to filtering
-					//
-					if(!FilterUtils.isMatch(cspec.getFilter(), query.getProperties()))
+					Filter[] filterHandle = new Filter[1];
+					if(!resolution.isFilterMatchFor(query, filterHandle))
 					{
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, cspec.getFilter());						
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);						
 						noGoodList.add(providerMatch.getOriginalProvider());
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 						continue;
 					}
+
+					CSpec cspec = resolution.getCSpec();
 
 					// Assert that the cspec can handle required actions and
 					// exports

@@ -26,6 +26,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -36,6 +37,7 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.MapToDictionary;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
@@ -599,7 +601,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		return artifacts;
 	}
 
-	public boolean isPruned(Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
+	public boolean isPruneApplicable(RMContext context, Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
 	{
 		Dictionary<String,String> propsDict = null;
 		Collection<ComponentRequest> deps = getDependencies().values();
@@ -612,6 +614,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 			if(propsDict == null)
 				propsDict = MapToDictionary.wrap(properties); 
 
+			FilterUtils.addConsultedAttributes(filter, context.getFilterAttributeUsageMap());
 			if(!filter.match(propsDict))
 				//
 				// This dependency is pruned
@@ -642,9 +645,9 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		return !allAttrNames.equals(referencedAttrNames);
 	}
 
-	public CSpec prune(Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
+	public CSpec prune(RMContext context, Map<String,String> properties, boolean pruneForAttributes, Set<String> attrNames) throws CoreException
 	{
-		if(!isPruned(properties, pruneForAttributes, attrNames))
+		if(!isPruneApplicable(context, properties, pruneForAttributes, attrNames))
 			return this;
 
 		CSpecBuilder bld = new CSpecBuilder();
@@ -699,6 +702,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 				if(propsDict == null)
 					propsDict = MapToDictionary.wrap(properties); 
 
+				FilterUtils.addConsultedAttributes(filter, context.getFilterAttributeUsageMap());
 				if(!filter.match(propsDict))
 					//
 					// This dependency is pruned

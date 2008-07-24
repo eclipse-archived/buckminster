@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.osgi.framework.Filter;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -63,14 +64,14 @@ public class PDEMapProvider extends Provider
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
 
 	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
-		Format uri, String space, boolean mutable, boolean source, Documentation documentation)
+		Format uri, String space, Filter resolutionFilter, boolean mutable, boolean source, Documentation documentation)
 	{
-		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, space, mutable, source, null, documentation);
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, space, resolutionFilter, mutable, source, null, documentation);
 	}
 
-	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri)
+	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri, Filter resolutionFilter)
 	{
-		super(remoteReaderType, componentTypes, uri);
+		super(remoteReaderType, componentTypes, uri, resolutionFilter);
 	}
 
 	@Override
@@ -120,7 +121,7 @@ public class PDEMapProvider extends Provider
 			IReaderType rt = tv.getReaderType();
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getSpace(), isMutable(),
+			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getSpace(), getResolutionFilter(), isMutable(),
 					hasSource(), null, null);
 
 			String ctypeID = rq.getComponentTypeID();

@@ -61,7 +61,7 @@ public class ImportBundle
 		// Create the provider that will perform the import.
 		//
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
-		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() }, m_siteURL.toString());
+		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() }, m_siteURL.toString(), null);
 
 		// Next, we need a reader and a Resolution builder in order to create the real resolution
 		// from witch we can derive the origin of the component etc.

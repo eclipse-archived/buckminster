@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -59,6 +60,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	public static final String ATTR_MUTABLE = "mutable";
 
 	public static final String ATTR_READER_TYPE = "readerType";
+
+	public static final String ATTR_RESOLUTION_FILTER = "resolutionFilter";
 
 	public static final String ATTR_SOURCE = "source";
 
@@ -98,9 +101,11 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	private final URIMatcher m_uriMatcher;
 
-	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri)
+	private final Filter m_resolutionFilter;
+
+	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri, Filter resolutionFilter)
 	{
-		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, null, false, false, null, null);
+		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, null, resolutionFilter, false, false, null, null);
 	}
 
 	/**
@@ -119,7 +124,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 * @param documentation Documentation in xhtml format.
 	 */
 	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
-		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, String space, boolean mutable, boolean source,
+		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, String space, Filter resolutionFilter, boolean mutable, boolean source,
 		URIMatcher uriMatcher,
 		Documentation documentation)
 	{
@@ -130,6 +135,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		m_uri = uri;
 		m_digest = digest;
 		m_digestAlgorithm = digestAlgorithm;
+		m_resolutionFilter = resolutionFilter;
 		m_space = space;
 		m_mutable = mutable;
 		m_source = source;
@@ -279,6 +285,11 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return m_readerTypeId;
 	}
 
+	public Filter getResolutionFilter()
+	{
+		return m_resolutionFilter;
+	}
+
 	public final SearchPath getSearchPath()
 	{
 		return m_searchPath;
@@ -401,6 +412,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ","));
 		if(m_space != null)
 			Utils.addAttribute(attrs, ATTR_SPACE, m_space);
+		if(m_resolutionFilter != null)
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());			
 		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
 		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
 	}

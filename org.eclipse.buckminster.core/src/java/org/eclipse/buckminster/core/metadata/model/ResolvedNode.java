@@ -58,7 +58,7 @@ public class ResolvedNode extends DepNode
 	{
 		m_resolution = resolution;
 
-		CSpec cspec = resolution.getCSpec().prune(query.getProperties(), query.isPrune(), resolution.getQualifiedDependency().getAttributeNames());
+		CSpec cspec = resolution.getCSpec().prune(query.getContext(), query.getProperties(), query.isPrune(), resolution.getQualifiedDependency().getAttributeNames());
 		List<QualifiedDependency> qDeps = cspec.getQualifiedDependencies(query.isPrune());
 		int nDeps = qDeps.size();
 		if(nDeps == 0)

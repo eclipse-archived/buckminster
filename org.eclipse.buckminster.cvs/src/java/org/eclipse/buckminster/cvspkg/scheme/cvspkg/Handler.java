@@ -146,7 +146,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				IReaderType cvsReaderType = plugin.getReaderType("cvs");
 				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), null, -1, null, null);
 				IProgressMonitor nullMon = new NullProgressMonitor();
-				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString());
+				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString(), null);
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 				cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
 				if(vm == null)

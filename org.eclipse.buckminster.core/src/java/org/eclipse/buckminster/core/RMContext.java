@@ -55,6 +55,8 @@ public class RMContext extends ExpandingProperties
 
 	private final Map<QualifiedDependency,NodeQuery> m_nodeQueries = new HashMap<QualifiedDependency,NodeQuery>();
 
+	private final Map<String, String[]> m_filterAttributeUsageMap = new HashMap<String, String[]>();
+
 	public class TagInfo
 	{
 		private final String m_tagId;
@@ -171,6 +173,7 @@ public class RMContext extends ExpandingProperties
 			m_userCache.putAll(source.getUserCache());
 			m_tagInfos.putAll(source.getTagInfos());
 			m_bindingProperties.putAll(source.getBindingProperties());
+			m_filterAttributeUsageMap.putAll(source.getFilterAttributeUsageMap());
 		}
 	}
 
@@ -343,6 +346,17 @@ public class RMContext extends ExpandingProperties
 	public ComponentQuery getComponentQuery()
 	{
 		return null;
+	}
+
+	/**
+	 * Returns the map used for keeping track of that attributes that are used by
+	 * filters throughout the resolution and what values that are queried for
+	 * those attributes.
+	 * @return An map, keyed by attribute name, that collects queried values for each attribute.
+	 */
+	public Map<String, String[]> getFilterAttributeUsageMap()
+	{
+		return m_filterAttributeUsageMap;
 	}
 
 	public NodeQuery getNodeQuery(ComponentRequest request)

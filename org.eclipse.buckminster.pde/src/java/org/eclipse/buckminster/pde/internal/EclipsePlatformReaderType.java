@@ -122,7 +122,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			String siteURL = entry.getKey();
 			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
 			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE, new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null,
-					new Format(siteURL), null, null, null, false, false, null, null);
+					new Format(siteURL), null, null, null, null, false, false, null, null);
 
 			for(Resolution res : entry.getValue())
 			{
@@ -241,7 +241,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		{
 			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
 			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE, new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null,
-					new Format(siteFolder.toURI().toURL().toString()), null, null, null, false, false, null, null);
+					new Format(siteFolder.toURI().toURL().toString()), null, null, null, null, false, false, null, null);
 
 			IVersion version = VersionFactory.OSGiType.fromString(generatedFeature.getVersion());
 			VersionMatch vm = new VersionMatch(version, null, null, -1, null, null);

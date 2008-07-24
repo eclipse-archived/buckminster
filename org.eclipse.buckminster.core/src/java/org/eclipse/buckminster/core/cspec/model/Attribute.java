@@ -130,7 +130,10 @@ public class Attribute extends NamedElement implements Cloneable
 
 	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		return m_filter == null || FilterUtils.isMatch(m_filter, ctx.getProperties());
+		if(m_filter == null)
+			return true;
+
+		return FilterUtils.isMatch(m_filter, ctx.getProperties());
 	}
 
 	public boolean isProducedByActions(IModelCache cache) throws CoreException

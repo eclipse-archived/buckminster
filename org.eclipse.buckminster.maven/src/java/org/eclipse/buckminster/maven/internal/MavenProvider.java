@@ -28,6 +28,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -79,10 +80,10 @@ public class MavenProvider extends Provider
 	private final List<BidirectionalTransformer> m_rules;
 
 	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-		VersionConverterDesc versionConverterDesc, Format uri, String space, boolean mutable, boolean source,
+		VersionConverterDesc versionConverterDesc, Format uri, String space, Filter resolutionFilter, boolean mutable, boolean source,
 		Documentation documentation, Map<String, MapEntry> mappings, List<BidirectionalTransformer> rules)
 	{
-		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, space, mutable, source,
+		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, space, resolutionFilter, mutable, source,
 			null, documentation);
 		if(mappings == null)
 			mappings = Collections.emptyMap();

@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -19,6 +20,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -37,6 +39,7 @@ import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -403,6 +406,54 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IFileInfo
 	public boolean isMaterializable()
 	{
 		return m_materializable;
+	}
+
+	/**
+	 * Returns true if this resolution is a match for the given <code>query</code> with respect
+	 * to provided properties. The method will update the filter attributes map of the query
+	 * context.
+	 * @param The query to match
+	 * @return True if this resolution is a match for the given query.
+	 * @see RMContext#getFilterAttributeUsageMap()
+	 */
+	public boolean isFilterMatchFor(NodeQuery query)
+	{
+		return isFilterMatchFor(query, null);
+	}
+
+	/**
+	 * Returns true if this resolution is a match for the given <code>query</code> with respect
+	 * to provided properties. The method will update the filter attributes map of the query
+	 * context.
+	 * @param The query to match
+	 * @param A one element array that will receive the failing filter. Can be <code>null</code>.
+	 * @return True if this resolution is a match for the given query.
+	 * @see RMContext#getFilterAttributeUsageMap()
+	 */
+	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter)
+	{
+		Map<String,String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
+		Filter resFilter = getProvider().getResolutionFilter();
+		FilterUtils.addConsultedAttributes(resFilter, attributeUsageMap);
+
+		Filter cspecFilter = getCSpec().getFilter();
+		FilterUtils.addConsultedAttributes(cspecFilter, attributeUsageMap);
+
+		Map<String,String> properties = query.getProperties();
+		if(!FilterUtils.isMatch(resFilter, properties))
+		{
+			if(failingFilter != null)
+				failingFilter[0] = resFilter;
+			return false;
+		}
+
+		if(!FilterUtils.isMatch(cspecFilter, properties))
+		{
+			if(failingFilter != null)
+				failingFilter[0] = cspecFilter;
+			return false;
+		}
+		return true;
 	}
 
 	/**

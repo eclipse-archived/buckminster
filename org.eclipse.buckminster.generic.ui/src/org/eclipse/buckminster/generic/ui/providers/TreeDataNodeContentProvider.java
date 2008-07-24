@@ -12,16 +12,15 @@
 
 package org.eclipse.buckminster.generic.ui.providers;
 
+import org.eclipse.buckminster.generic.model.tree.ITreeDataListener;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeRootNode;
 import org.eclipse.buckminster.generic.model.tree.TreeDataEvent;
-import org.eclipse.buckminster.generic.model.tree.ITreeDataListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ui.IViewSite;
 
 /**
  * The TreeDataNodeContentProvider uses an ITreeRootNode to hold the tree's data. 

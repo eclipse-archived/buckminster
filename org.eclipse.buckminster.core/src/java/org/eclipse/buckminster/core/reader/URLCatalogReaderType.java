@@ -103,7 +103,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString);
+		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString, null);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return pm.getReader(monitor);
 	}
