@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -262,7 +263,7 @@ public class LocalCache
 			if(!(outputDir.exists() || outputDir.mkdirs()))
 				throw new IOException("Unable to create directory " + outputDir);
 
-			output = new FileOutputStream(file);
+			output = new DigestOutputStream(new FileOutputStream(file), md);
 			DownloadManager.readInto(remoteURL, output, monitor);
 		}
 		finally

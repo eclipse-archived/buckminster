@@ -30,7 +30,7 @@ public class MavenTest extends AbstractTestCase
 
 	public void testTransitive() throws Exception
 	{
-		IResolver resolver = createResolver("org.apache.commons.net", null);
+		IResolver resolver = createResolver("commons-net", "maven");
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 		CSpec csp = bom.getResolution().getCSpec();
 		Utils.serialize(csp, System.out);

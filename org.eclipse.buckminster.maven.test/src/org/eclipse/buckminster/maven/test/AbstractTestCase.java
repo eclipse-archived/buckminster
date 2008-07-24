@@ -59,7 +59,7 @@ public abstract class AbstractTestCase extends TestCase
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(getRMAP().toString());
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
-		node.setNamePattern(Pattern.compile("(subclipse)|(subversive)|(slf4j)|(buckminster)"));
+		node.setNamePattern(Pattern.compile(".*"));
 		node.setUseTargetPlatform(false);
 		queryBld.addAdvisorNode(node);
 		ComponentQuery query = queryBld.createComponentQuery();
@@ -82,14 +82,7 @@ public abstract class AbstractTestCase extends TestCase
 
 	protected URL getRMAP()
 	{
-		try
-		{
-			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap");
-		}
-		catch(MalformedURLException e)
-		{
-			return null;
-		}
+		return getClass().getResource("test.rmap");
 	}
 
 	protected CorePlugin getPlugin()
