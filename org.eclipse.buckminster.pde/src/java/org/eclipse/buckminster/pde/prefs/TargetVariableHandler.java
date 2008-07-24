@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.prefs;
 
-import org.eclipse.buckminster.core.commands.BasicPreferenceHandler;
+import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 import org.osgi.service.prefs.BackingStoreException;

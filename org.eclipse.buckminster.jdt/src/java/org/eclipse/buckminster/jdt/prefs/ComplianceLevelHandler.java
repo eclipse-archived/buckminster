@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.jdt.prefs;
 
-import org.eclipse.buckminster.core.commands.BasicPreferenceHandler;
+import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;

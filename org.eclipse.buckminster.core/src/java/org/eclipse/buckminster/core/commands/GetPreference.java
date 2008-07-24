@@ -11,12 +11,11 @@
 package org.eclipse.buckminster.core.commands;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
+import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
-import org.eclipse.buckminster.core.commands.BasicPreferenceHandler;
-import org.eclipse.buckminster.core.commands.PreferenceMappingManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**

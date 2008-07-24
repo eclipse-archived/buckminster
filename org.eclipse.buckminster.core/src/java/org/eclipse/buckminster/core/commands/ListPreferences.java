@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
+import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;

@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.core.prefs;
 
-import org.eclipse.buckminster.core.commands.BasicPreferenceHandler;
+import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.core.runtime.CoreException;
