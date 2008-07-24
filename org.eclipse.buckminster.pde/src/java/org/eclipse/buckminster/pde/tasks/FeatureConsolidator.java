@@ -395,49 +395,60 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		boolean usingGenerator = false;
 		IVersion newVersion = null;
 		String newVersionStr = versionStr;
-		if(versionStr != null && versionStr.endsWith(PROPERTY_QUALIFIER))
+		if(versionStr != null)
 		{
+			IVersion version;
 			try
 			{
-				IVersion version = VersionFactory.OSGiType.fromString(versionStr);
-				ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
-				newVersion = replaceQualifier(ci, deps);
-				usingGenerator = isUsingGenerator(ci);
-				if(newVersion == null)
-					newVersion = version;
-				else if(!version.equals(newVersion))
-				{
-					newVersionStr = newVersion.toString();
-					feature.setVersion(newVersionStr);
-					if(isContextReplacement())
-					{
-						int lastDot = versionStr.lastIndexOf(".");
-						m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
-					}
-				}
+				version = VersionFactory.OSGiType.fromString(versionStr);
 			}
 			catch(VersionSyntaxException e)
 			{
+				version = null;
 			}
-		}
 
-		if(!usingGenerator)
-		{
-			String suffix = generateFeatureVersionSuffix();
-			if(suffix != null)
+			if(version != null)
 			{
-				String qualifier = newVersion.getQualifier();
-				if(qualifier == null)
-					qualifier = suffix;
-				else
+				if(versionStr.endsWith(PROPERTY_QUALIFIER))
 				{
-					StringBuilder bld = new StringBuilder();
-					bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
-					bld.append('-');
-					bld.append(suffix);
-					qualifier = bld.toString();
+					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
+					newVersion = replaceQualifier(ci, deps);
+					usingGenerator = isUsingGenerator(ci);
+					if(newVersion == null)
+						newVersion = version;
+					else if(!version.equals(newVersion))
+					{
+						newVersionStr = newVersion.toString();
+						feature.setVersion(newVersionStr);
+						if(isContextReplacement())
+						{
+							int lastDot = versionStr.lastIndexOf(".");
+							m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
+						}
+					}
 				}
-				feature.setVersion(newVersion.replaceQualifier(qualifier).toString());
+
+				if(!usingGenerator)
+				{
+					String suffix = generateFeatureVersionSuffix();
+					if(suffix != null)
+					{
+						if(newVersion == null)
+							newVersion = version;
+						String qualifier = newVersion.getQualifier();
+						if(qualifier == null)
+							qualifier = suffix;
+						else
+						{
+							StringBuilder bld = new StringBuilder();
+							bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
+							bld.append('-');
+							bld.append(suffix);
+							qualifier = bld.toString();
+						}
+						feature.setVersion(newVersion.replaceQualifier(qualifier).toString());
+					}
+				}
 			}
 		}
 		m_featureModel.save(getOutputFile());
