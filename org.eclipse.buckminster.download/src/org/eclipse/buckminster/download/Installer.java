@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.download;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
@@ -35,6 +36,7 @@ import org.eclipse.ecf.core.util.StringUtils;
 
 /**
  * @author Thomas Hallgren
+ * @author Guillaume CHATELET
  * 
  */
 public class Installer
@@ -66,8 +68,10 @@ public class Installer
 	{
 		synchronized(s_installerCache)
 		{
-			Map<String, Installer> cache = expand ? s_installerCache : s_decompressorCache;
-			for(Map.Entry<String,Installer> entry : cache.entrySet())
+			Map<String, Installer> cache = expand
+					? s_installerCache
+					: s_decompressorCache;
+			for(Map.Entry<String, Installer> entry : cache.entrySet())
 			{
 				if(fileName.endsWith(entry.getKey()))
 					return entry.getValue();
@@ -124,7 +128,7 @@ public class Installer
 				suffixes = new String[idx][];
 				while(--idx >= 0)
 					suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ',');
-	
+
 				// Find the suffix that matches the most characters at the
 				// end of the path
 				//
@@ -143,7 +147,7 @@ public class Installer
 						}
 					}
 				}
-	
+
 				if(matchIdx >= 0)
 				{
 					chewedName = chewedName.substring(0, chewedName.length() - matchLen);
@@ -154,7 +158,7 @@ public class Installer
 			if(decompressorList == null && expander == null)
 			{
 				int lastDot = fileName.lastIndexOf('.');
-				if(lastDot >= 0 && lastDot < fileName.length() - 1 && Character.isLetter(fileName.charAt(lastDot+1)))
+				if(lastDot >= 0 && lastDot < fileName.length() - 1 && Character.isLetter(fileName.charAt(lastDot + 1)))
 					//
 					// Assume that this suffix will never render anything
 					// but the plain installer from now on
@@ -195,6 +199,12 @@ public class Installer
 	public void install(InputStream input, File destination, IProgressMonitor monitor) throws IOException,
 			CoreException
 	{
+		install(input, destination, null, false, monitor);
+	}
+
+	public void install(InputStream input, File destination, FileFilter fileFilter, boolean flattenHierarchy,
+			IProgressMonitor monitor) throws IOException, CoreException
+	{
 		int dcCount = m_decompressors.size();
 		MonitorUtils.begin(monitor, 100 + dcCount * 100);
 		if(dcCount > 0)
@@ -218,7 +228,11 @@ public class Installer
 		{
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 100);
 			if(m_expander != null)
+			{
+				m_expander.setFilter(fileFilter);
+				m_expander.setFlattenHierarchy(flattenHierarchy);
 				m_expander.expand(input, destination, subMon);
+			}
 			else
 			{
 				// Just verify that the stream can be read

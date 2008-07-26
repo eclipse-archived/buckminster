@@ -9,27 +9,31 @@ import java.util.HashMap;
  */
 public final class ShellCommand
 {
-	private static final String OS_NAME = System.getProperty("os.name");
-
+	private static final String WINDOWS_CMD = "cmd.exe /C";
+	private static final String LINUX_CMD = "sh -c";
 	private static final HashMap<String, String> s_shellCommands;
 
 	static
 	{
 		s_shellCommands = new HashMap<String, String>();
 		s_shellCommands.put("Windows 95", "command.com /C");
-		s_shellCommands.put("Windows NT", "cmd.exe /C");
-		s_shellCommands.put("Windows 2000", "cmd.exe /C");
-		s_shellCommands.put("Windows 2003", "cmd.exe /C");
-		s_shellCommands.put("Windows XP", "cmd.exe /C");
+		s_shellCommands.put("Windows 98", "command.com /C");
+		s_shellCommands.put("Windows NT", WINDOWS_CMD);
+		s_shellCommands.put("Windows 2000", WINDOWS_CMD);
+		s_shellCommands.put("Windows 2003", WINDOWS_CMD);
+		s_shellCommands.put("Windows XP", WINDOWS_CMD);
+		s_shellCommands.put("Linux", LINUX_CMD);
+		s_shellCommands.put("Mac OS X", LINUX_CMD);
+		s_shellCommands.put("Linux", LINUX_CMD);
 	}
 
 	public static String getShellCommand()
 	{
-		return s_shellCommands.get(OS_NAME);
+		return s_shellCommands.get(getOsName());
 	}
 
 	public static String getOsName()
 	{
-		return OS_NAME;
+		return System.getProperty("os.name");
 	}
 }

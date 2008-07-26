@@ -126,4 +126,11 @@
           suffixes=".tar.bz2,.tbz2,.tb2,.tbz">
     </expander>
  </extension>
+ <extension
+       point="org.eclipse.buckminster.download.decompressors">
+    <decompressor
+          class="org.eclipse.buckminster.ant.materializer.BZip2Decompressor"
+          suffixes=".bz2">
+    </decompressor>
+ </extension>
 </plugin>

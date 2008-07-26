@@ -78,7 +78,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		setSystem(true);
 		setUser(false);
 		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
-		m_connectionRetryDelay = (long)BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
+		m_connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
 	}
 
 	public IFileInfo getLastFileInfo()
