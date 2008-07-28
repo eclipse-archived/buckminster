@@ -57,6 +57,11 @@ public class Build extends WorkspaceCommand
 				ws.build(IncrementalProjectBuilder.CLEAN_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
 
 			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
+			
+			// Some errors are caused by circular dependencies in the build hierarcy. They might be
+			// fixed by an additional incremental build.
+			//
+			ws.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
 
 			// Get all problem markers. Sort them by timestamp
 			//

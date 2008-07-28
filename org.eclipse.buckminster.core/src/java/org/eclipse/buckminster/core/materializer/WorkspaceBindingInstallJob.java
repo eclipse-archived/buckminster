@@ -29,7 +29,7 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 {
 	private static WorkspaceBindingInstallJob s_active = null;
 
-	public static final int REPEAT_DELAY = 30000;
+	public static final int REPEAT_DELAY = 60000;
 
 	private WorkspaceBindingInstallJob()
 	{
@@ -67,27 +67,20 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 
 	public static void start()
 	{
-		synchronized(WorkspaceBindingInstallJob.class)
-		{
-			if(s_active == null)
-			{
-				s_active = new WorkspaceBindingInstallJob();
-				s_active.addJobChangeListener(new Repeater());
-				s_active.schedule(5000);
-			}
-		}
+		if(s_active != null)
+			return;
+
+		s_active = new WorkspaceBindingInstallJob();
+		s_active.addJobChangeListener(new Repeater());
+		s_active.schedule(5000);
 	}
 
 	public static void stop()
 	{
-		synchronized(WorkspaceBindingInstallJob.class)
-		{
-			if(s_active != null)
-			{
-				s_active .cancel();
-				s_active = null;
-			}
-		}
+		Job active = s_active;
+		s_active = null;
+		if(active != null)
+			active.cancel();
 	}
 
 	private static class Repeater extends JobChangeAdapter
@@ -95,11 +88,9 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 		@Override
 		public void done(IJobChangeEvent event)
 		{
-			synchronized(WorkspaceBindingInstallJob.class)
-			{
-				if(s_active != null)
-					s_active.schedule(REPEAT_DELAY);
-			}
+			Job active = s_active;
+			if(active != null)
+				active.schedule(REPEAT_DELAY);
 		}
 	}
 }

@@ -57,6 +57,8 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -126,7 +128,39 @@ public class CorePlugin extends LogAwarePlugin
 
 	public static Logger getLogger()
 	{
-		return s_plugin.getBundleLogger();
+		CorePlugin plugin = s_plugin;
+		if(plugin != null)
+			return plugin.getBundleLogger();
+
+		return new Logger(new ILog()
+		{
+			public void addLogListener(ILogListener listener)
+			{
+			}
+
+			public Bundle getBundle()
+			{
+				return null;
+			}
+
+			public void log(IStatus status)
+			{
+				if(status == null)
+					return;
+				switch(status.getSeverity())
+				{
+				case IStatus.ERROR:
+				case IStatus.WARNING:
+					System.err.println(status.getMessage());
+					break;
+				default:
+					System.out.println(status.getMessage());
+				}
+			}
+			public void removeLogListener(ILogListener listener)
+			{
+			}
+		}); 
 	}
 
 	/**

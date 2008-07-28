@@ -160,10 +160,16 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	protected abstract int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception;
 
 	@Override
-	protected final int internalRun(IProgressMonitor monitor) throws Exception
+	protected void initWorkspace(IProgressMonitor monitor) throws Exception
 	{
 		if(m_template != null)
 			initWorkspaceFromTemplate();
+		super.initWorkspace(monitor);
+	}
+
+	@Override
+	protected final int internalRun(IProgressMonitor monitor) throws Exception
+	{
 		return internalRun(m_continueOnError, monitor);
 	}
 
