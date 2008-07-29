@@ -19,10 +19,13 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
@@ -142,8 +145,57 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		throw new UnsupportedOperationException("checkout");
 	}
 
-	protected String getResolvedFile(String relativeFile, InputStream[] isReturn)
-	throws IOException, CoreException
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		File modelRoot = getModelRoot();
+		if(modelRoot == null)
+			return;
+
+		File[] content = modelRoot.listFiles();
+		if(content != null)
+		{
+			for(File file : content)
+			{
+				String name = file.getName();
+				if(file.isDirectory())
+					name = name + "/";
+				files.add(name);
+			}
+			return;
+		}
+
+		if(!modelRoot.getName().endsWith(".jar"))
+			return;
+
+		ZipInputStream zi = null;
+		try
+		{
+			ZipEntry ze;
+			zi = new ZipInputStream(new BufferedInputStream(new FileInputStream(modelRoot)));
+			while((ze = zi.getNextEntry()) != null)
+			{
+				String name = ze.getName();
+				if(name.endsWith("/"))
+					name = name.substring(name.length() - 1);
+				if(name.indexOf('/', 1) < 0)
+				{
+					if(ze.isDirectory())
+						name = name + "/";
+					files.add(name);
+				}
+			}
+		}
+		catch(IOException e)
+		{
+		}
+		finally
+		{
+			IOUtils.close(zi);
+		}
+	}
+
+	private File getModelRoot() throws CoreException
 	{
 		String installLocation;
 		if(m_type == InstalledType.PLUGIN)
@@ -155,10 +207,8 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 			}
 			catch(IllegalStateException e)
 			{
-				model = null;
+				return null;
 			}
-			if(model == null)
-				throw new FileNotFoundException(relativeFile);
 			installLocation = model.getInstallLocation();
 		}
 		else
@@ -168,8 +218,16 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 				return null;
 			installLocation = model.getInstallLocation();
 		}
+		return new File(installLocation);
+	}
 
-		File modelRoot = new File(installLocation);
+	protected String getResolvedFile(String relativeFile, InputStream[] isReturn)
+	throws IOException, CoreException
+	{
+		File modelRoot = getModelRoot();
+		if(modelRoot == null)
+			throw new FileNotFoundException(relativeFile);
+			
 		String fileName;
 		if(modelRoot.isDirectory())
 		{
@@ -182,10 +240,10 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		}
 		else
 		{
-			if(!installLocation.endsWith(".jar"))
+			if(!modelRoot.getName().endsWith(".jar"))
 				throw new FileNotFoundException(modelRoot.toString());
 
-			fileName = installLocation + '!' + relativeFile;
+			fileName = modelRoot.getName() + '!' + relativeFile;
 
 			final JarFile jf = new JarFile(modelRoot);
 			JarEntry entry = jf.getJarEntry(relativeFile);

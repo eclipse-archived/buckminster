@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.Path;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
+import org.tigris.subversion.svnclientadapter.SVNNodeKind;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
@@ -118,6 +119,18 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			for(String name : names)
 				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
 			monitor.done();
+		}
+	}
+
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		for(ISVNDirEntry dirEntry : m_topEntries)
+		{
+			String fileName = dirEntry.getPath();
+			if(dirEntry.getNodeKind() == SVNNodeKind.DIR && ! fileName.endsWith("/"))
+				fileName = fileName + "/";
+			files.add(fileName);
 		}
 	}
 

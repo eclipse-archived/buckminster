@@ -73,6 +73,27 @@ public class URLCatalogReader extends AbstractCatalogReader
 		}
 	}
 
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		URL url = getURL();
+		File source = FileUtils.getFile(url);
+		if(source == null)
+			return;
+		
+		File[] rootFiles = source.listFiles();
+		if(rootFiles == null)
+			return;
+
+		for(File rootFile : rootFiles)
+		{
+			String name = rootFile.getName();
+			if(rootFile.isDirectory())
+				name += "/";
+			files.add(name);
+		}
+	}
+
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	throws CoreException
 	{

@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.reader;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -85,5 +86,35 @@ public class ZipArchiveReader extends AbstractCatalogReader
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		throw new UnsupportedOperationException("ZipArchiveReader cannot materialize");
+	}
+
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		ZipInputStream zi = null;
+		try
+		{
+			ZipEntry ze;
+			zi = new ZipInputStream(m_zipFileReader.open(monitor));
+			while((ze = zi.getNextEntry()) != null)
+			{
+				String name = ze.getName();
+				if(name.endsWith("/"))
+					name = name.substring(name.length() - 1);
+				if(name.indexOf('/', 1) < 0)
+				{
+					if(ze.isDirectory())
+						name = name + "/";
+					files.add(name);
+				}
+			}
+		}
+		catch(IOException e)
+		{
+		}
+		finally
+		{
+			IOUtils.close(zi);
+		}
 	}
 }

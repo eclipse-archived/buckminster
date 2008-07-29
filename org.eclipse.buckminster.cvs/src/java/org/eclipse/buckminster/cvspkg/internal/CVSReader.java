@@ -229,6 +229,29 @@ public class CVSReader extends AbstractRemoteReader
 		}
 	}
 
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 1000 + (m_flatRoot == null ? 500 : 0));
+		try
+		{
+			if(m_flatRoot == null)
+				getFlatRoot(MonitorUtils.subMonitor(monitor, 500));
+
+			for(ICVSRemoteResource child : m_flatRoot.getChildren())
+			{
+				String name = child.getName();
+				if(child.isFolder() && !name.endsWith("/"))
+					name = name + "/";
+				files.add(child.getName());
+			}
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
 	private synchronized RepositoryMetaData getMetaData(IProgressMonitor monitor) throws CoreException
 	{
 		if(m_metaData == null)

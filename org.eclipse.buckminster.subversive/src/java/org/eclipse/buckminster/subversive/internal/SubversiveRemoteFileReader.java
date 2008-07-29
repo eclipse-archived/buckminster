@@ -42,6 +42,7 @@ import org.eclipse.team.svn.core.connector.SVNConnectorException;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
 import org.eclipse.team.svn.core.connector.SVNRevision;
+import org.eclipse.team.svn.core.connector.SVNEntry.Kind;
 import org.eclipse.team.svn.core.operation.file.GetFileContentOperation;
 
 /**
@@ -156,6 +157,18 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 			for(String name : names)
 				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
 			monitor.done();
+		}
+	}
+
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		for(SVNEntry dirEntry : m_topEntries)
+		{
+			String fileName = dirEntry.path;
+			if(dirEntry.nodeKind == Kind.DIR && !fileName.endsWith("/"))
+				fileName = fileName + "/";
+			files.add(fileName);
 		}
 	}
 

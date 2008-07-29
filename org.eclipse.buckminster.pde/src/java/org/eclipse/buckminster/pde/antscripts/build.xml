@@ -117,9 +117,13 @@
 		<extractFeatureVersion file="${sp:manifest}" property="feature.version"/>
 		<extractFeatureId file="${sp:manifest}" property="feature.id"/>
 		<mkdir dir="${sp:action.output}"/>
-		<buckminster.jar jarfile="${sp:action.output}/${feature.id}_${feature.version}.jar">
+		<buckminster.copy todir="${buckminster.temp}">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
-		</buckminster.jar>
+		</buckminster.copy>
+		<zip zipfile="${sp:action.output}/${feature.id}_${feature.version}.jar">
+			<fileset dir="${buckminster.temp}" includes="META-INF/*" excludes="META-INF/*.RSA,META-INF/*.DSA,META-INF/*.SF"/>
+			<fileset dir="${buckminster.temp}" excludes="META-INF/*"/>
+		</zip>
 	</target>
 
 	<target name="create.zip" depends="create.output.dir">

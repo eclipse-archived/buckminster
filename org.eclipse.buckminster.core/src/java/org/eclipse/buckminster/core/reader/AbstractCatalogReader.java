@@ -78,6 +78,13 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		return files;
 	}
 
+	public final List<String> list(IProgressMonitor monitor) throws CoreException
+	{
+		ArrayList<String> files = new ArrayList<String>();
+		innerList(files, monitor);
+		return files;
+	}
+
 	public synchronized IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException
 	{
 		if(m_prefStateKnown)
@@ -231,6 +238,10 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
 			throws CoreException, IOException
+	{
+	}
+
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
 	{
 	}
 

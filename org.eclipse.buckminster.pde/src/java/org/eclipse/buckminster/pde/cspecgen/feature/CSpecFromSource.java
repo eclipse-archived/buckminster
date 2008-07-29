@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -100,7 +101,24 @@ public class CSpecFromSource extends CSpecGenerator
 		addFeatures();
 		addPlugins();
 
-		if(m_buildProperties != null)
+		MonitorUtils.begin(monitor, 100);
+		if(m_buildProperties == null)
+		{
+			ArtifactBuilder binIncludes = null;
+			for(String path : getReader().list(MonitorUtils.subMonitor(monitor, 20)))
+			{
+				if(FEATURE_FILE.equals(path))
+					//
+					// Handled separately
+					//
+					continue;
+
+				if(binIncludes == null)
+					binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null, null);
+				binIncludes.addPath(new Path(path));
+			}
+		}
+		else
 		{
 			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
 			for(Map.Entry<String, String> entry : m_buildProperties.entrySet())
@@ -163,12 +181,14 @@ public class CSpecFromSource extends CSpecGenerator
 					cspec.addAttribute(artifact);
 				}
 			}
+			MonitorUtils.worked(monitor, 20);
 		}
 
 		createFeatureManifestAction();
 		createFeatureJarAction();
 		createFeatureExportsAction();
-		addProducts(monitor);
+		addProducts(MonitorUtils.subMonitor(monitor, 80));
+		MonitorUtils.done(monitor);
 	}
 
 	@Override

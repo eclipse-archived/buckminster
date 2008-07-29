@@ -73,6 +73,16 @@ public interface ICatalogReader extends IComponentReader
 	void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Returns a list of strings representing what is found at the root of this
+	 * reader. Folders with end with a slash.
+	 *
+	 * @param monitor
+	 * @return
+	 * @throws CoreException
+	 */
+	List<String> list(IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * Read a file and send the result to the <code>consumer</code>.
 	 * @param fileName The name of the file relative to the root of this reader.
 	 * @param consumer The consumer that will be handed the InputStream.
