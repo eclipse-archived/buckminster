@@ -82,6 +82,7 @@
 		</attribute>
 		<attribute name="readerType" type="string" use="required" />
 		<attribute name="space" type="string" use="optional" />
+		<attribute name="resolutionFilter" type="string" use="optional" />
 		<attribute name="mutable" type="boolean" use="optional" />
 		<attribute name="source" type="boolean" use="optional" />
 
