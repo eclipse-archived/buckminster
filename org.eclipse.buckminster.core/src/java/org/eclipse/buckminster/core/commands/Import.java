@@ -8,21 +8,24 @@
 
 package org.eclipse.buckminster.core.commands;
 
-import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.parser.IParserFactory;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.core.resolver.IResolver;
+import org.eclipse.buckminster.core.resolver.MainResolver;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.Buckminster;
-import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -46,55 +49,94 @@ public class Import extends WorkspaceInitCommand
 	protected int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception
 	{
 		Logger logger = Buckminster.getLogger();
+		MonitorUtils.begin(monitor, 100);
 		try
 		{
-			InputStream bomIn = null;
-			MonitorUtils.begin(monitor, 100);
+			IParserFactory pf = CorePlugin.getDefault().getParserFactory();
+			URL url = FileLocator.resolve(m_url);
+
+			AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
+			DownloadManager.readInto(url, byteBld, MonitorUtils.subMonitor(monitor, 20));
+	
+			// Assume that the URL is pointing to an MSPEC.
+			//
+			MaterializationSpec mspec;
 			try
 			{
-				MaterializationSpec mspec = null;
-				URL url = FileLocator.resolve(m_url);
-				if(url.getPath().endsWith(".mspec"))
-				{
-					mspec = MaterializationSpec.fromURL(m_url);
-					url = FileLocator.resolve(mspec.getResolvedURL());
-				}
-				MonitorUtils.worked(monitor, 5);
-
-				bomIn = DownloadManager.read(url);
-				BillOfMaterials bom = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true).parse(url.toString(), bomIn);
-				IOUtils.close(bomIn);
-				bomIn = null;
-
-				if(mspec == null)
-				{
-					// Create a default mspec
-					//
-					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
-					mspecBuilder.setName(bom.getViewName());
-					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
-					bom.addMaterializationNodes(mspecBuilder);
-					mspec = mspecBuilder.createMaterializationSpec();
-				}
-				MaterializationContext matCtx = new MaterializationContext(bom, mspec);
-				matCtx.setContinueOnError(continueOnError);
-				MaterializationJob.run(matCtx, true);
-				if(matCtx.emitWarningAndErrorTags())
-					return 1;
+				mspec = pf.getMaterializationSpecParser(true).parse(url.toString(), byteBld.getInputStream());
 			}
-			finally
+			catch(CoreException e)
 			{
-				IOUtils.close(bomIn);
-				MonitorUtils.done(monitor);
+				mspec = null;
 			}
+			MonitorUtils.worked(monitor, 5);
+
+			if(mspec != null)
+			{
+				// We have an MSPEC. Now let's parse whatever it points to.
+				//
+				url = mspec.getResolvedURL();
+				byteBld.reset();
+				DownloadManager.readInto(url, byteBld, MonitorUtils.subMonitor(monitor, 20));
+			}
+			else
+			{
+				MonitorUtils.worked(monitor, 20);
+			}
+
+			// Let's see if we can parse a CQUERY
+			//
+			ComponentQuery cquery;
+			try
+			{
+				cquery = ComponentQuery.fromStream(url, byteBld.getInputStream(), true);
+			}
+			catch(CoreException e)
+			{
+				// Assume this was not a CQUERY, restart input
+				//
+				cquery = null;
+			}
+			MonitorUtils.worked(monitor, 5);
+
+			BillOfMaterials bom;
+			if(cquery != null)
+			{
+				IResolver resolver = new MainResolver(new ResolutionContext(cquery));
+				resolver.getContext().setContinueOnError(true);
+				bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 40));
+			}
+			else
+			{
+				// If CQUERY parsing failed, our last attempt is to parse the BOM.
+				//
+				bom = pf.getBillOfMaterialsParser(true).parse(url.toString(), byteBld.getInputStream());
+				MonitorUtils.worked(monitor, 40);
+			}
+			MonitorUtils.worked(monitor, 10);
+
+			if(mspec == null)
+			{
+				// Create a default MSPEC
+				//
+				MaterializationSpecBuilder mspecBld = new MaterializationSpecBuilder();
+				mspecBld.setURL(url.toString());
+				mspecBld.setName(bom.getViewName());
+				mspecBld.setMaterializerID(IMaterializer.WORKSPACE);
+				bom.addMaterializationNodes(mspecBld);
+				mspec = mspecBld.createMaterializationSpec();
+			}
+
+			MaterializationContext matCtx = new MaterializationContext(bom, mspec);
+			matCtx.setContinueOnError(continueOnError);
+			MaterializationJob.run(matCtx, true);
+			if(matCtx.emitWarningAndErrorTags())
+				return 1;
 		}
-		catch(Throwable t)
+		finally
 		{
-			CoreException be = BuckminsterException.wrap(t);
-			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
-				logger.error("An SSL handshake exception occurred - are all server certificates available in your keystore?");
-			throw be;
-		}		
+			MonitorUtils.done(monitor);
+		}
 		logger.info("Import complete.");
 		return 0;
 	}
