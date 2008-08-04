@@ -249,4 +249,21 @@ public abstract class URLUtils
 			throw BuckminsterException.wrap(e);
 		}
 	}
+
+	public static URL resolveURL(URL contextURL, String url)
+	{
+		if(url == null)
+			return null;
+
+		try
+		{
+			if(contextURL == null)
+				return normalizeToURL(url);
+			return new URL(contextURL, url);
+		}
+		catch(MalformedURLException e)
+		{
+			return null;
+		}
+	}
 }
