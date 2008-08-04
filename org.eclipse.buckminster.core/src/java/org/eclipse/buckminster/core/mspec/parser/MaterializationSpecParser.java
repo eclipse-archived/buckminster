@@ -9,11 +9,14 @@
 package org.eclipse.buckminster.core.mspec.parser;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.buckminster.core.metadata.parser.MetaDataParser;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.ParserFactory;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
@@ -25,6 +28,8 @@ import org.xml.sax.SAXException;
  */
 public class MaterializationSpecParser extends MetaDataParser<MaterializationSpec> implements ChildPoppedListener
 {
+	private URL m_contextURL;
+
 	private MaterializationSpec m_materializationSpec;
 
 	public MaterializationSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
@@ -38,7 +43,7 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 	{
 		if(MaterializationSpec.TAG.equals(localName))
 		{
-			MaterializationSpecHandler rmh = new MaterializationSpecHandler(this);
+			MaterializationSpecHandler rmh = new MaterializationSpecHandler(this, m_contextURL);
 			this.pushHandler(rmh, attrs);
 		}
 		else
@@ -47,6 +52,14 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 
 	public MaterializationSpec parse(String systemId, InputStream input) throws CoreException
 	{
+		try
+		{
+			m_contextURL = URLUtils.normalizeToURL(systemId);
+		}
+		catch(MalformedURLException e)
+		{
+			m_contextURL = null;
+		}
 		this.parseInput(systemId, input);
 		return m_materializationSpec;
 	}

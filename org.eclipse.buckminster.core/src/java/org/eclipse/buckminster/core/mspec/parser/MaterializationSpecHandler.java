@@ -8,6 +8,8 @@
 
 package org.eclipse.buckminster.core.mspec.parser;
 
+import java.net.URL;
+
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -21,10 +23,12 @@ import org.xml.sax.SAXException;
 public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 {
 	public static final String TAG = MaterializationSpec.TAG;
-	
-	public MaterializationSpecHandler(AbstractHandler parent)
+	private final URL m_contextURL;
+
+	public MaterializationSpecHandler(AbstractHandler parent, URL contextURL)
 	{
 		super(parent, TAG, new MaterializationSpecBuilder());
+		m_contextURL = contextURL;
 	}
 
 	@Override
@@ -44,9 +48,10 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 	{
 		super.handleAttributes(attrs);
 		MaterializationSpecBuilder builder = (MaterializationSpecBuilder)getBuilder();
+		builder.setContextURL(m_contextURL);
 		builder.setName(getStringValue(attrs, MaterializationSpec.ATTR_NAME));
 		builder.setShortDesc(getOptionalStringValue(attrs, MaterializationSpec.ATTR_SHORT_DESC));
-		builder.setURL(getURLValue(attrs, MaterializationSpec.ATTR_URL));
+		builder.setURL(getStringValue(attrs, MaterializationSpec.ATTR_URL));
 	}
 
 	public MaterializationSpec getMaterializationSpec()

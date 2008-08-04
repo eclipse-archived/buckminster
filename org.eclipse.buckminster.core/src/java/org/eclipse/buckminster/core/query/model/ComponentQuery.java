@@ -15,7 +15,6 @@ import static org.eclipse.buckminster.core.XMLConstants.BM_CQUERY_PREFIX;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -276,12 +275,12 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public URL getResolvedPropertiesURL()
 	{
-		return resolveURL(m_propertiesURL);
+		return URLUtils.resolveURL(m_contextURL, m_propertiesURL);
 	}
 
 	public URL getResolvedResourceMapURL()
 	{
-		return resolveURL(m_resourceMapURL);
+		return URLUtils.resolveURL(m_contextURL, m_resourceMapURL);
 	}
 
 	public ProviderScore getProviderScore(ComponentName cName, boolean mutable, boolean source)
@@ -494,22 +493,5 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 	protected String getElementPrefix(String prefix)
 	{
 		return BM_CQUERY_PREFIX;
-	}
-
-	private URL resolveURL(String url)
-	{
-		if(url == null)
-			return null;
-
-		try
-		{
-			if(m_contextURL == null)
-				return URLUtils.normalizeToURL(url);
-			return new URL(m_contextURL, url);
-		}
-		catch(MalformedURLException e)
-		{
-			return null;
-		}
 	}
 }

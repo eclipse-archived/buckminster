@@ -16,5 +16,9 @@ public interface IMaterializationSpec extends IMaterializationDirective, ISaxabl
 
 	String getShortDesc();
 
-	URL getURL();
+	String getURL();
+
+	URL getContextURL();
+
+	URL getResolvedURL();
 }

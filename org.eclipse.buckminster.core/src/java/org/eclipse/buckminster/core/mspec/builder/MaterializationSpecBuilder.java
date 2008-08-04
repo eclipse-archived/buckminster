@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.Platform;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -30,7 +31,8 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 	private final List<MaterializationNodeBuilder> m_nodes = new ArrayList<MaterializationNodeBuilder>();
 	private String m_shortDesc;
 	private String m_name;
-	private URL m_url;
+	private String m_url;
+	private URL m_contextURL;
 
 	@Override
 	public void clear()
@@ -39,6 +41,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		m_name = null;
 		m_shortDesc = null;
 		m_url = null;
+		m_contextURL = null;
 		m_nodes.clear();
 	}
 
@@ -62,6 +65,11 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		if(adapter.isAssignableFrom(MaterializationSpec.class))
 			return createMaterializationSpec();
 		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
+
+	public URL getContextURL()
+	{
+		return m_contextURL;
 	}
 
 	public IMaterializationNode getMatchingNode(ComponentName cName)
@@ -105,7 +113,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return m_shortDesc;
 	}
 
-	public URL getURL()
+	public String getURL()
 	{
 		return m_url;
 	}
@@ -116,12 +124,18 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		m_name = mspec.getName();
 		m_shortDesc = mspec.getShortDesc();
 		m_url = mspec.getURL();
+		m_contextURL = mspec.getContextURL();
 		for(IMaterializationNode node : mspec.getNodes())
 		{
 			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
 			nodeBuilder.initFrom(node);
 			m_nodes.add(nodeBuilder);
 		}
+	}
+
+	public void setContextURL(URL contextURL)
+	{
+		m_contextURL = contextURL;
 	}
 
 	public void setName(String name)
@@ -134,7 +148,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		m_shortDesc = shortDesc;
 	}
 
-	public void setURL(URL url)
+	public void setURL(String url)
 	{
 		m_url = url;
 	}
@@ -143,5 +157,10 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 	{
 		MaterializationSpec mspec = new MaterializationSpec(this);
 		mspec.toSax(receiver);
+	}
+
+	public URL getResolvedURL()
+	{
+		return URLUtils.resolveURL(m_contextURL, m_url);
 	}
 }

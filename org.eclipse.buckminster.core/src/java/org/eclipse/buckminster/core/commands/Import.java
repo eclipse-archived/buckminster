@@ -57,7 +57,7 @@ public class Import extends WorkspaceInitCommand
 				if(url.getPath().endsWith(".mspec"))
 				{
 					mspec = MaterializationSpec.fromURL(m_url);
-					url = FileLocator.resolve(mspec.getURL());
+					url = FileLocator.resolve(mspec.getResolvedURL());
 				}
 				MonitorUtils.worked(monitor, 5);
 

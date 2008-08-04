@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -51,8 +52,9 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	private final String m_name;
 	private final String m_shortDesc;
-	private final URL m_url;
+	private final String m_url;
 	private final List<MaterializationNode> m_nodes;
+	private final URL m_contextURL;
 
 	public static MaterializationSpec fromStream(String systemId, InputStream stream) throws CoreException
 	{
@@ -92,6 +94,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		m_name = builder.getName();
 		m_shortDesc = builder.getShortDesc();
 		m_url = builder.getURL();
+		m_contextURL = builder.getContextURL();
 		ArrayList<MaterializationNode> nodes = new ArrayList<MaterializationNode>();
 		for(MaterializationNodeBuilder nodeBuilder : builder.getNodeBuilders())
 			nodes.add(nodeBuilder.createMaterializationNode());
@@ -151,6 +154,11 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 				cr = ConflictResolution.getDefault();
 		}
 		return cr;
+	}
+
+	public URL getContextURL()
+	{
+		return m_contextURL;
 	}
 
 	public IMaterializationNode getMatchingNode(ComponentName cName)
@@ -221,9 +229,14 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node == null ? null : node.getSuffix();
 	}
 
-	public URL getURL()
+	public String getURL()
 	{
 		return m_url;
+	}
+
+	public URL getResolvedURL()
+	{
+		return URLUtils.resolveURL(m_contextURL, m_url);
 	}
 
 	public boolean isExcluded(ComponentName cname)
@@ -256,7 +269,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	{
 		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		Utils.addAttribute(attrs, ATTR_URL, m_url.toString());
+		Utils.addAttribute(attrs, ATTR_URL, m_url);
 		if(m_shortDesc != null)
 			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
 	}
