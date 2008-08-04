@@ -298,7 +298,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			else
 			{
 				String lcMsg = msg.toLowerCase();
-				if(lcMsg.contains("file not found") || lcMsg.contains("path not found"))
+				if(lcMsg.contains("file not found") || lcMsg.contains("path not found") || lcMsg.contains("unable to find repository location"))
 				{
 					if(logger.isDebugEnabled())
 						logger.debug(String.format("Remote file not found %s", key));
