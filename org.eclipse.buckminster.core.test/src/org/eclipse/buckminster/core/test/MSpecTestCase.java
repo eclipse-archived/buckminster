@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -55,7 +54,7 @@ public class MSpecTestCase extends TestCase
 	{
 		MaterializationSpecBuilder builder = new MaterializationSpecBuilder();
 		builder.setName("Buckys download spec");
-		builder.setURL(new URL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery"));
+		builder.setURL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery");
 		builder.setShortDesc("Buckminster materialization spec");
 		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home") + System.getProperty("file.separator") + "bucky"));
 		builder.setMaterializerID("workspace");
