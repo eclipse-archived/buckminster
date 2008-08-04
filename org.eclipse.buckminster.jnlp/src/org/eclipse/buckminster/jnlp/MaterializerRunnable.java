@@ -64,7 +64,7 @@ public class MaterializerRunnable implements IRunnableWithProgress
 	
 	private MaterializationContext createContext() throws CoreException, IOException, SAXException
 	{
-		URL url = m_mspec.getURL();
+		URL url = m_mspec.getResolvedURL();
 		InputStream input = null;
 		try
 		{

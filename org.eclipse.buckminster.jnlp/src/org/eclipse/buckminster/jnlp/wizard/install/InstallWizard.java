@@ -491,7 +491,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			builderToPerform.initFrom(m_builder.createMaterializationSpec());
 
 			if(m_cachedBOMURL != null)
-				builderToPerform.setURL(m_cachedBOMURL);
+				builderToPerform.setURL(m_cachedBOMURL.toString());
 
 			MaterializationUtils.excludeCSsiteComponents(builderToPerform, getBOM());
 
@@ -1082,7 +1082,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			else
 				client = new HttpClient();
 
-			URL bomURL = getMaterializationSpecBuilder().getURL();
+			URL bomURL = getMaterializationSpecBuilder().getResolvedURL();
 
 			HttpMethod method = null;
 			InputStream stream = null;
@@ -1297,7 +1297,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				}
 				else
 				{
-					m_builder.setURL(new URL(tmp));
+					m_builder.setURL(tmp);
 				}
 			}
 			catch(MalformedURLException e)
