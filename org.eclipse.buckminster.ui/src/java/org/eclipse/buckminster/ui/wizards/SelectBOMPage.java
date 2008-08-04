@@ -239,13 +239,13 @@ public class SelectBOMPage extends AbstractQueryPage
 						if(mspec != null)
 						{
 							mspecBld.initFrom(mspec);
-							urlToParse = mspec.getURL();
+							urlToParse = mspec.getResolvedURL();
 							byteBld.reset();
-							DownloadManager.readInto(mspec.getURL(), byteBld, MonitorUtils.subMonitor(monitor, 20));
+							DownloadManager.readInto(urlToParse, byteBld, MonitorUtils.subMonitor(monitor, 20));
 						}
 						else
 						{
-							mspecBld.setURL(urlToParse);
+							mspecBld.setURL(urlToParse.toString());
 							MonitorUtils.worked(monitor, 20);
 						}
 						input = byteBld.getInputStream();

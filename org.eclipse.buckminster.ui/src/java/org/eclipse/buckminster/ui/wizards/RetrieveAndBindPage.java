@@ -11,7 +11,6 @@
 package org.eclipse.buckminster.ui.wizards;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -776,8 +775,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			MaterializationSpecBuilder mspecBuilder = wizard.getMaterializationSpec();
 			IPath parent = path.removeLastSegments(1);
 			String name = path.lastSegment();
-			URL bomURL = mspecBuilder.getURL();
-			if(bomURL == null)
+			if(mspecBuilder.getURL() == null)
 			{
 				String bomName;
 				if(name.endsWith(".mspec"))
@@ -788,8 +786,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				IPath bomPath = parent.append(bomName);
 				SaveRunnable sr = new SaveRunnable(wizard.getBOM(), bomPath);
 				container.run(true, true, sr);
-				bomURL = bomPath.toFile().toURI().toURL();
-				mspecBuilder.setURL(bomURL);
+				mspecBuilder.setURL(bomName);
 			}
 
 			SaveRunnable sr = new SaveRunnable(mspecBuilder.createMaterializationSpec(), path);
