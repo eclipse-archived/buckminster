@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -236,7 +238,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public URL getResolvedURL()
 	{
-		return URLUtils.resolveURL(m_contextURL, m_url);
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_url, 0));
 	}
 
 	public boolean isExcluded(ComponentName cname)

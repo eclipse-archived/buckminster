@@ -275,12 +275,12 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public URL getResolvedPropertiesURL()
 	{
-		return URLUtils.resolveURL(m_contextURL, m_propertiesURL);
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_propertiesURL, 0));
 	}
 
 	public URL getResolvedResourceMapURL()
 	{
-		return URLUtils.resolveURL(m_contextURL, m_resourceMapURL);
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_resourceMapURL, 0));
 	}
 
 	public ProviderScore getProviderScore(ComponentName cName, boolean mutable, boolean source)
