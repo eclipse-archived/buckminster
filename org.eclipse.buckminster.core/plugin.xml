@@ -194,6 +194,12 @@
           description="The maximum number of parallel jobs used for materialisation"
           name="maxParallelMaterializations">
     </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.MaxParallelResolutions"
+          description="The number of threads to run in parallel for RMAP resolution."
+          key="instance/org.eclipse.buckminster.runtime/rmap/resolverThreadsMax"
+          name="maxParallelResolutions">
+    </prefmapping>
  </extension>
 	<extension point="org.eclipse.buckminster.cmdline.commands">
 		<command
