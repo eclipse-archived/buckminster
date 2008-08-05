@@ -597,6 +597,10 @@ public class CreateProductBase
 		// include only bundles that are actually in this product configuration
 		//
 		boolean first = true;
+		Set<String> includedBundles = new HashSet<String>();
+		for(BundleDescription bundle : pluginModels)
+			includedBundles.add(bundle.getSymbolicName());
+
 		Set<String> bundles = new HashSet<String>();
 		bundles.add("org.eclipse.osgi");
 
@@ -607,34 +611,42 @@ public class CreateProductBase
 					? token.substring(0, delimIdx)
 					: token;
 
-			if(!bundles.add(id))
+			if(!includedBundles.contains(id))
 				continue;
+			includedBundles.remove(id);
 
-			if(!first)
+			if(first)
+				first = false;
+			else
 				writer.write(',');
 
 			writer.write(id);
 			if(delimIdx >= 0 && delimIdx < token.length() - 1)
 				writer.write(token, delimIdx, token.length() - delimIdx);
-			first = false;
 		}
 
 		for(BundleDescription bundle : pluginModels)
 		{
-			String filterSpec = bundle.getPlatformFilter();
 			try
 			{
 				String id = bundle.getSymbolicName();
-				if(!bundles.add(id))
+				if(!includedBundles.contains(id))
 					continue;
+				includedBundles.remove(id);
 
+				String filterSpec = bundle.getPlatformFilter();
 				if(filterSpec == null || FilterUtils.createFilter(filterSpec).match(environment))
 				{
-					if(!first)
+					if(first)
+						first = false;
+					else
 						writer.write(",");
+
 					writer.write(id);
 					if("org.eclipse.equinox.app".equals(id))
 						writer.write("@start");
+					else if("org.eclipse.equinox.common".equals(id))
+						writer.write("@start:2");
 				}
 			}
 			catch(InvalidSyntaxException e)

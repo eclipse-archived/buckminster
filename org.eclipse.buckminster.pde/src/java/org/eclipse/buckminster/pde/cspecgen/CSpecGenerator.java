@@ -62,6 +62,8 @@ import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IMatchRules;
+import org.eclipse.pde.core.plugin.IPluginBase;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.IPluginReference;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
@@ -89,6 +91,12 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site");
 
 	public static final IPath OUTPUT_DIR_TEMP = OUTPUT_DIR.append("temp");
+
+	public static final String LAUNCHER_BUNDLE = "org.eclipse.equinox.launcher";
+
+	public static final String LAUNCHER_FEATURE_3_2 = "org.eclipse.platform.launchers";
+
+	public static final String LAUNCHER_FEATURE = "org.eclipse.equinox.executable";
 
 	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
@@ -308,15 +316,15 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				featureExports.setRebase(OUTPUT_DIR_SITE);
 				createProduct.addLocalPrerequisite(featureExports);
 
-				IFeatureModel exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.equinox.executable", null, null);
-				if(exeFeature == null)
-					exeFeature = EclipsePlatformReaderType.getBestFeature("org.eclipse.platform.launchers", null, null);
+				IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE, null, null);
+				if(launcherFeature == null)
+					launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE_3_2, null, null);
 
-				if(exeFeature != null)
+				if(launcherFeature != null)
 				{
-					IFeature feature = exeFeature.getFeature();
+					IFeature feature = launcherFeature.getFeature();
 					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
-					DependencyBuilder dep = createDependency("org.eclipse.equinox.executable",
+					DependencyBuilder dep = createDependency(feature.getId(),
 							IComponentType.ECLIPSE_FEATURE,
 							version.toString(), IMatchRules.PERFECT,
 							null);
@@ -331,12 +339,33 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				}
 			}
 
-			// Ensure that the launcher is present
-			//
-			DependencyBuilder dep = createDependency("org.eclipse.equinox.launcher", IComponentType.OSGI_BUNDLE, null,
-					null);
-			if(addDependency(dep))
-				bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+			boolean hasLauncherFeature = false;
+			for(DependencyBuilder dep : cspec.getDependencies().values())
+			{
+				if(dep.getComponentTypeID() != IComponentType.ECLIPSE_FEATURE)
+					continue;
+
+				if(dep.getName().equals(LAUNCHER_FEATURE) || dep.getName().equals(LAUNCHER_FEATURE_3_2))
+				{
+					hasLauncherFeature = true;
+					break;
+				}
+			}
+
+			if(!hasLauncherFeature)
+			{
+				// Ensure that the launcher is present if it exists in the current target platform
+				//
+				IPluginModelBase launcherBundle = EclipsePlatformReaderType.getBestPlugin("org.eclipse.equinox.launcher", null, null);
+				if(launcherBundle != null)
+				{
+					IPluginBase plugin = launcherBundle.getPluginBase();
+					IVersion version = VersionFactory.OSGiType.fromString(plugin.getVersion());
+					DependencyBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, version.toString(), IMatchRules.PERFECT, null);
+					if(addDependency(dep))
+						bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+				}
+			}
 
 			if(rootFiles != null)
 				createProduct.addLocalPrerequisite(rootFiles);
