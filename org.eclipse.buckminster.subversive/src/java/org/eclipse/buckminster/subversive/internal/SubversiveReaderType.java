@@ -27,11 +27,19 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.team.svn.core.SVNTeamProjectMapper;
+import org.eclipse.team.svn.core.connector.ISVNConnector;
+import org.eclipse.team.svn.core.connector.SVNChangeStatus;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
+import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
+import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
+import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
 import org.eclipse.team.svn.core.resource.IRepositoryContainer;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
+import org.eclipse.team.svn.core.utility.FileUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
@@ -71,11 +79,10 @@ public class SubversiveReaderType extends CatalogReaderType
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
-		MonitorUtils.complete(monitor);
-		return info == null
-				? null
-				: new Date(info.lastChangedDate);
+		SVNChangeStatus localInfo = getLocalInfo(workingCopy, monitor);
+		return localInfo == null
+			? null
+			: new Date(localInfo.lastChangedDate);
 	}
 
 	@Override
@@ -107,14 +114,38 @@ public class SubversiveReaderType extends CatalogReaderType
 		}
 	}
 
+	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor)
+	{
+		IPath location = Path.fromOSString(workingCopy.toString());
+		IPath checkedPath = workingCopy.isFile() ? location.removeLastSegments(1) : location;
+		if(!checkedPath.append(SVNUtility.getSVNFolderName()).toFile().exists())
+			return null;
+
+		ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+		try
+		{
+			SVNChangeStatus[] st = SVNUtility.status(proxy, location.toString(), Depth.IMMEDIATES, ISVNConnector.Options.INCLUDE_UNCHANGED, new SVNNullProgressMonitor());
+			if(st == null || st.length == 0)
+				return null;
+
+			SVNUtility.reorder(st, true);
+			return st[0];
+		}
+		catch (Exception ex)
+		{
+			return null;
+		}
+		finally
+		{
+			proxy.dispose();
+			MonitorUtils.complete(monitor);
+		}
+	}
 	@Override
 	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
-		MonitorUtils.complete(monitor);
-		return info == null
-				? -1
-				: info.lastChangedRevision;
+		SVNChangeStatus localInfo = getLocalInfo(workingCopy, monitor);
+		return localInfo == null ? -1 : localInfo.lastChangedRevision;
 	}
 
 	@Override
