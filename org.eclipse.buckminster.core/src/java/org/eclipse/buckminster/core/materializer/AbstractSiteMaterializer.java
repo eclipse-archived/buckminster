@@ -249,7 +249,10 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			if(components.add(ci))
 			{
 				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
-				addFeatureComponents(feature, components, MonitorUtils.subMonitor(monitor, 50));
+				if(feature == null)
+					components.remove(ci);
+				else
+					addFeatureComponents(feature, components, MonitorUtils.subMonitor(monitor, 50));
 			}
 			else
 				monitor.worked(100);

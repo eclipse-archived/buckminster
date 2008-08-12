@@ -264,6 +264,24 @@ public enum ResolverDecisionType
 		{
 			return "Using version converter %s. trunk/head will not be considered";
 		}
+	},
+
+	USING_BRANCH_CONVERTED_VERSION
+	{
+		@Override
+		public String toString()
+		{
+			return "Version %s was converted from branch %s";
+		}
+	},
+
+	USING_TAG_CONVERTED_VERSION
+	{
+		@Override
+		public String toString()
+		{
+			return "Version %s was converted from tag %s";
+		}
 	};
 
 	public final String getMessage(Object...args)

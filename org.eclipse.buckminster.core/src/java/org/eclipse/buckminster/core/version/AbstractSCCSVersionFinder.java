@@ -265,7 +265,9 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				{
 					// Converter could not make sense of this tag. Skip it
 					//
-					logDecision(ResolverDecisionType.VERSION_REJECTED, version, "versionSelector cannot make sense of it");
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "versionSelector cannot make sense of it");
 					MonitorUtils.worked(monitor, 10);
 					continue;
 				}
@@ -281,6 +283,9 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "no component was found");
 					continue;
 				}
+				logDecision(branches
+						? ResolverDecisionType.USING_BRANCH_CONVERTED_VERSION
+						: ResolverDecisionType.USING_TAG_CONVERTED_VERSION, version, branchOrTag);
 			}
 			else
 			{
@@ -326,13 +331,25 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 
 			if(best == null || query.compare(match, best) > 0)
 			{
+				if(best != null)
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+
 				best = match;
-				if(query.getResolutionPrio()[0] == AdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
-					//
-					// Branch/Tag path have the highest prio so there's no need to
-					// check the next entry.
+				if(vConverter == null)
+				{
+					if(query.getResolutionPrio()[0] == AdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
+						//
+						// Branch/Tag path have the highest prio so there's no need to
+						// check the next entry.
+						//
+						break;
+				}
+				else if(versionDesignator != null && versionDesignator.isExplicit())
+				{
+					// Explicit hit on a version converted tag or branch. This will do just fine.
 					//
 					break;
+				}
 			}
 		}
 		monitor.done();
