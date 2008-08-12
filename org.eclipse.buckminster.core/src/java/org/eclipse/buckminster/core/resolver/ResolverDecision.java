@@ -8,6 +8,8 @@
 
 package org.eclipse.buckminster.core.resolver;
 
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+
 
 /**
  * @author Thomas Hallgren
@@ -15,13 +17,20 @@ package org.eclipse.buckminster.core.resolver;
  */
 public class ResolverDecision
 {
+	private final ComponentRequest m_request;
 	private final ResolverDecisionType m_type;
 	private final Object[] m_args;
 
-	public ResolverDecision(ResolverDecisionType type, Object[] args)
+	public ResolverDecision(ComponentRequest request, ResolverDecisionType type, Object[] args)
 	{
+		m_request = request;
 		m_type = type;
 		m_args = args;
+	}
+
+	public ComponentRequest getRequest()
+	{
+		return m_request;
 	}
 
 	@Override

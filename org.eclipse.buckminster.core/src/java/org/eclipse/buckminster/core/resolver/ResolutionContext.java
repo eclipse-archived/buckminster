@@ -158,7 +158,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 			m_decisionLog.put(request, decisions);
 		}
 
-		ResolverDecision decision = new ResolverDecision(decisionType, args);
+		ResolverDecision decision = new ResolverDecision(request, decisionType, args);
 		decisions.add(decision);
 		Logger logger = CorePlugin.getLogger();
 		if(logger.isDebugEnabled())
