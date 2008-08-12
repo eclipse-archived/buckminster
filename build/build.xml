@@ -79,7 +79,7 @@
       <os family="unix"/>
     </condition>
     
-    <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}-${pde.target.ws}.zip${eclipse.download.end}">
+    <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}.zip${eclipse.download.end}">
       <os family="windows"/>
     </condition>
 
@@ -138,6 +138,7 @@
   <target name="buckminster.unzip" depends="buckminster.download" unless="unzip.unnecessary" >
     <echo message="Unzipping Buckminster headless package"/>
     <unzip src="${buckminster.file.fullname}" dest="${build.directory}"/>
+
   </target>
 
   
@@ -213,5 +214,21 @@
    <target name="clean.build" depends="clean, build"/>
 
 
+
+  <target name="buckminster.build.site">
+    <echo message="Building Buckminster Update Site"/>
+
+        <!-- First let's fix up the cfg file to build platform agnostic stuff -->
+    <concat destfile="${build.directory}/buckminster/configuration/config.ini" append="true">
+      <fileset dir="${build.directory}/.." file="buckminster.properties"/>
+    </concat>
+
+    <buckminster command="perform">
+     <args>
+       <arg value="-Dbuckminster.output.root=${build.directory}"/>
+       <arg value="org.eclipse.buckminster#normalize.site"/>
+     </args>
+    </buckminster>
+  </target> 
 
  </project>
