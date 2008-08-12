@@ -4,6 +4,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.RxAssemblyHandler;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.rmap.model.URIMatcher;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -18,10 +19,18 @@ public class URIMatcherHandler extends RxAssemblyHandler
 
 	private String m_base;
 	private IVersionType m_versionType;
+	private String m_componentType = IComponentType.UNKNOWN;
 
 	public URIMatcherHandler(AbstractHandler parent)
 	{
 		super(parent);
+		if(parent instanceof ProviderHandler) {
+			ProviderHandler parentHandler = (ProviderHandler) getParentHandler();
+			String[] componentTypes = parentHandler.getComponentTypes();
+			if(componentTypes.length == 1) {
+				m_componentType = componentTypes[0];
+			}
+		}	
 	}
 
 	@Override
@@ -45,6 +54,6 @@ public class URIMatcherHandler extends RxAssemblyHandler
 
 	URIMatcher createURIMetaData() throws CoreException, PatternSyntaxException
 	{
-		return new URIMatcher(getParts(), m_base, m_versionType);
+		return new URIMatcher(getParts(), m_base, m_versionType, m_componentType);
 	}
 }

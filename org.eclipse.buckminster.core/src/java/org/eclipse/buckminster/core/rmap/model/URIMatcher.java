@@ -90,7 +90,9 @@ public class URIMatcher extends RxAssembly
 
 	private final IVersionType m_versionType;
 
-	public URIMatcher(List<RxPart> parts, String base, IVersionType versionType) throws CoreException,
+	private final String m_componentType;
+	
+	public URIMatcher(List<RxPart> parts, String base, IVersionType versionType, String componentType) throws CoreException,
 			PatternSyntaxException
 	{
 		super(parts);
@@ -98,6 +100,7 @@ public class URIMatcher extends RxAssembly
 		m_versionType = versionType == null
 				? VersionFactory.OSGiType
 				: versionType;
+		m_componentType = componentType;
 	}
 
 	@Override
@@ -228,7 +231,7 @@ public class URIMatcher extends RxAssembly
 
 		query = query.getContext().getNodeQuery(query.getQualifiedDependency());
 		query.getProperties().putAll(candidateMap);
-		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN), candidate, query);
+		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(m_componentType), candidate, query);
 		pm.setMatcherMap(candidateMap);
 		return pm;
 	}
