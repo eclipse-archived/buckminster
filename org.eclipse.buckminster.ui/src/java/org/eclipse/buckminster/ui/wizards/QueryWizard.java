@@ -15,6 +15,7 @@ import java.io.PrintStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
@@ -127,12 +128,9 @@ public class QueryWizard extends Wizard implements INewWizard
 
 		try
 		{
-			getContainer().run(true, true, new MaterializeAndBindRunnable(getMaterializationContext()));
+			MaterializationJob job = new MaterializationJob(getMaterializationContext(), false);
+			job.schedule();
 			return true;
-		}
-		catch(InterruptedException e)
-		{
-			((WizardPage)getContainer().getCurrentPage()).setErrorMessage("Operation cancelled");
 		}
 		catch(Exception e)
 		{
