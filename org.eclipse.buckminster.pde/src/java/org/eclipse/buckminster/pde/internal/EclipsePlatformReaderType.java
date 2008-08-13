@@ -112,7 +112,14 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 
 				// A feature reference is always explicit
 				//
-				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, dep.getVersionDesignator().getVersion()));
+				IVersionDesignator vd = dep.getVersionDesignator();
+				if(vd == null)
+				{
+					CorePlugin.getLogger().warning("Bogus reference to bundle %s in feature %s at site %s. The reference has no version",
+							dep.getName(), res.getComponentIdentifier(), siteURL);
+					continue;
+				}
+				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd == null ? null : vd.getVersion()));
 			}
 		}
 
