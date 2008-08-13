@@ -126,7 +126,7 @@ public class MaterializationJob extends Job
 		mbJob.internalRun(monitor);
 	}
 
-	protected MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
+	public MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
 	{
 		super("Materializing");
 		m_context = ctx;
