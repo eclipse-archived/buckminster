@@ -34,6 +34,11 @@ public enum MutableLevel
 	DESIRE,
 
 	/**
+	 * A mutable provider will score higher than an immutable provider. Both are ok.
+	 */
+	AVOID,
+
+	/**
 	 * Reject an immutable provider. Typically used when the intention is to modify source.
 	 */
 	REQUIRE

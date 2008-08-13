@@ -300,6 +300,9 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 		case DESIRE:
 			mutableScore = mutable ? ProviderScore.GOOD : ProviderScore.BAD;
 			break;
+		case AVOID:
+			mutableScore = mutable ? ProviderScore.BAD : ProviderScore.GOOD;
+			break;
 		case REJECT:
 			if(mutable)
 				return ProviderScore.REJECTED;
@@ -318,6 +321,9 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 			break;
 		case DESIRE:
 			sourceScore = source ? ProviderScore.GOOD : ProviderScore.BAD;
+			break;
+		case AVOID:
+			sourceScore = source ? ProviderScore.BAD : ProviderScore.GOOD;
 			break;
 		case REJECT:
 			if(source)

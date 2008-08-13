@@ -30,9 +30,14 @@ public enum SourceLevel
 	REJECT,
 
 	/**
-	 * A provider that provide source will score higher than one that does not. Both are ok.
+	 * A provider that provides source will score higher than one that does not. Both are ok.
 	 */
 	DESIRE,
+
+	/**
+	 * A provider that provides source will score lower than one that does not. Both are ok.
+	 */
+	AVOID,
 
 	/**
 	 * Reject providers that have no source. Typically used when the intention is to

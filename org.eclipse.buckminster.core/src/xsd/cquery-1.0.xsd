@@ -172,6 +172,7 @@
 			<enumeration value="INDIFFERENT" />
 			<enumeration value="REJECT" />
 			<enumeration value="DESIRE" />
+			<enumeration value="AVOID" />
 			<enumeration value="REQUIRE" />
 		</restriction>
 	</simpleType>
