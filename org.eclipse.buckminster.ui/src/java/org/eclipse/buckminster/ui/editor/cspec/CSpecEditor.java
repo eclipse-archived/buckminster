@@ -263,12 +263,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getSite().getShell(), null, msg, t.getStatus());
 		}
-		catch(CoreException e)
-		{
-			String msg = "Unable to save file " + path;
-			CorePlugin.getLogger().error(e, msg);
-			ErrorDialog.openError(getSite().getShell(), null, msg, e.getStatus());
-		}
 		catch(InterruptedException e)
 		{
 		}

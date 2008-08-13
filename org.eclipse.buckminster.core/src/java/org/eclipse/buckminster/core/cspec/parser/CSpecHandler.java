@@ -44,16 +44,9 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		super(parent);
 	}
 
-	public final CSpec getCSpec() throws SAXException
+	public final CSpec getCSpec()
 	{
-		try
-		{
-			return m_builder.createCSpec();
-		}
-		catch(CoreException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
+		return m_builder.createCSpec();
 	}
 
 	public final CSpecBuilder getCSpecBuilder()

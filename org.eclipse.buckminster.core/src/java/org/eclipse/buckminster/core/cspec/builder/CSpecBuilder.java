@@ -165,7 +165,7 @@ public class CSpecBuilder
 		return new AttributeBuilder(this);
 	}
 
-	public CSpec createCSpec() throws CoreException
+	public CSpec createCSpec()
 	{
 		return new CSpec(this);
 	}
