@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.ResolutionBuilder;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -255,7 +256,17 @@ public class URIMatcher extends RxAssembly
 		try
 		{
 			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()));
-			return new Resolution(bld.createCSpec(), null, pm.getNodeQuery(), pm.getProvider(), ctype.getId(), pm.getVersionMatch(), info);
+			NodeQuery nq = pm.getNodeQuery();
+			ResolutionBuilder resBld = new ResolutionBuilder();
+			resBld.setCSpecBuilder(bld);
+			resBld.setAttributes(nq.getRequiredAttributes());
+			resBld.setProvider(pm.getProvider());
+			resBld.setRequest(nq.getComponentRequest());
+			resBld.setRepository(pm.getProvider().getURI(nq.getProperties()));
+			resBld.setComponentTypeId(ctype.getId());
+			resBld.setVersionMatch(pm.getVersionMatch());
+			resBld.setFileInfo(info);
+			return new Resolution(resBld);
 		}
 		catch(FileNotFoundException e)
 		{

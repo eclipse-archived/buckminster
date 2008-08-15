@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
@@ -64,7 +63,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
 
 			if(forResolutionAidOnly)
-				return createResolution(reader, getCSpecBuilder(siteFeature).createCSpec(), null);
+				return createNode(reader, getCSpecBuilder(siteFeature), null);
 
 			NodeQuery query = reader.getNodeQuery();
 			QualifiedDependency qdep = new QualifiedDependency(query.getComponentRequest(), null);
@@ -106,7 +105,6 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 
 		node.startResolvingChildren(depNode);
 		ResolverNode[] children = null;
-		CSpec cspec;
 		if(numChildren > 0)
 		{
 			QualifiedDependency qDeps[] = new QualifiedDependency[numChildren];
@@ -129,8 +127,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				matches[idx] = new VersionMatch(version, null, provider.getSpace(), -1, null, null);
 				qDeps[idx] = new QualifiedDependency(bld.createDependency(), null);
 			}
-			cspec = cspecBld.createCSpec();
-			String childTagInfo = cspec.getTagInfo(tagInfo);
+			String childTagInfo = cspecBld.getTagInfo(tagInfo);
 
 			for(int idx = 0; idx < numChildren; ++idx)
 			{
@@ -149,10 +146,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			}
 			children = childArr.toArray(new ResolverNode[childArr.size()]);
 		}
-		else
-			cspec = cspecBld.createCSpec();
-
-		node.setResolution(new Resolution(cspec, null, reader), children);
+		node.setResolution(createResolution(reader, cspecBld, null), children);
 		MonitorUtils.worked(monitor, 5);
 		monitor.done();
 		return node;

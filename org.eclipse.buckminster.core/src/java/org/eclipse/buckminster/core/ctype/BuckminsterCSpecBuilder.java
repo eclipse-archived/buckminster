@@ -16,6 +16,7 @@ import java.io.InputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -24,6 +25,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -49,18 +51,20 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 		IComponentReader reader = readerHandle[0];
 		try
 		{
-			OPML opml = null;
-			CSpec cspec;
+			OPMLBuilder opmlBld = null;
+			CSpecBuilder cspecBld = new CSpecBuilder();
 			if(reader instanceof ICatalogReader)
 			{
 				ICatalogReader catRdr = (ICatalogReader)reader;
 				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE, MonitorUtils.subMonitor(monitor, 100));
-				cspec = catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100));
+				cspecBld.initFrom(catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100)));
 
 				fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, null);
 				try
 				{
-					opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 100));
+					OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 100));
+					opmlBld = new OPMLBuilder();
+					opmlBld.initFrom(opml);
 				}
 				catch(FileNotFoundException e)
 				{
@@ -68,10 +72,10 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 				}
 			}
 			else
-				cspec = ((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000));
+				cspecBld.initFrom(((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000)));
 
-			cspec = applyExtensions(cspec, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
-			return createResolution(reader, cspec, opml);
+			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
+			return createNode(reader, cspecBld, opmlBld);
 		}
 		catch(FileNotFoundException e)
 		{

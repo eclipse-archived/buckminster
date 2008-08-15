@@ -16,7 +16,6 @@ import java.io.IOException;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -24,6 +23,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
@@ -68,16 +68,17 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			m_usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
 			parseFile(cspecBuilder, forResolutionAidOnly, catRdr, MonitorUtils.subMonitor(monitor, 1000));
-			CSpec cspec = applyExtensions(cspecBuilder.createCSpec(), forResolutionAidOnly, reader, MonitorUtils.subMonitor(
-				monitor, 200));
+			applyExtensions(cspecBuilder, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 200));
 
-			OPML opml = null;
+			OPMLBuilder opmlBld = null;
 			if(!forResolutionAidOnly)
 			{
 				String fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, MonitorUtils.subMonitor(monitor, 200));
 				try
 				{
-					opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 200));
+					OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 200));
+					opmlBld = new OPMLBuilder();
+					opmlBld.initFrom(opml);
 				}
 				catch(FileNotFoundException e)
 				{
@@ -88,7 +89,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 					throw BuckminsterException.wrap(e);
 				}
 			}
-			return createResolution(reader, cspec, opml);
+			return createNode(reader, cspecBuilder, opmlBld);
 		}
 		finally
 		{

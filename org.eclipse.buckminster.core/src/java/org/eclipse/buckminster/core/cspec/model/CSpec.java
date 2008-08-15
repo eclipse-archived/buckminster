@@ -118,7 +118,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 
 	public CSpec(CSpecBuilder cspecBld)
 	{
-		m_componentIdentifier = new ComponentIdentifier(cspecBld.getName(), cspecBld.getComponentTypeID(), cspecBld.getVersion());
+		m_componentIdentifier = cspecBld.getComponentIdentifier();
 		m_projectInfo = cspecBld.getProjectInfo();
 		m_documentation = cspecBld.getDocumentation();
 		m_shortDesc = cspecBld.getShortDesc();
@@ -343,23 +343,28 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 
 	public String getTagInfo(String parentInfo)
 	{
+		return getTagInfo(m_componentIdentifier, m_projectInfo, parentInfo);
+	}
+
+	public static String getTagInfo(ComponentIdentifier ci, URL projectInfoURL, String parentInfo)
+	{
 		String path = null;
 		String projectInfo = null;
 		if(parentInfo != null)
 		{
 			int pathIdx = parentInfo.indexOf("path: ");
 			if(pathIdx >= 0)
-				path = String.format("%s -> %s", parentInfo.substring(pathIdx), m_componentIdentifier);
+				path = String.format("%s -> %s", parentInfo.substring(pathIdx), ci);
 
-			if(m_projectInfo == null && parentInfo.startsWith("project: "))
+			if(projectInfoURL == null && parentInfo.startsWith("project: "))
 				projectInfo = parentInfo.substring(0, pathIdx - 2);
 		}
 
-		if(m_projectInfo != null)
-			projectInfo = String.format("project: %s", m_projectInfo);
+		if(projectInfoURL != null)
+			projectInfo = String.format("project: %s", projectInfoURL);
 
 		if(path == null)
-			path = String.format("path: %s", m_componentIdentifier.toString());
+			path = String.format("path: %s", ci.toString());
 
 		String tagInfo;
 		if(projectInfo == null)

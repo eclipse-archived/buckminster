@@ -12,19 +12,23 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.ResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -75,18 +79,18 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		return m_weight;
 	}
 
-	public DepNode createResolution(IComponentReader reader, CSpec cspec, OPML opml) throws CoreException
+	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
 	{
-		return new ResolvedNode(reader.getNodeQuery(), new Resolution(cspec, opml, reader));
+		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
 	}
 
-	protected CSpec applyExtensions(CSpec cspec, boolean forResolutionAidOnly, IComponentReader reader, IProgressMonitor monitor)
+	protected void applyExtensions(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, IComponentReader reader, IProgressMonitor monitor)
 		throws CoreException
 	{
 		if(!(reader instanceof ICatalogReader))
 		{
 			MonitorUtils.complete(monitor);
-			return cspec;
+			return;
 		}
 
 		ICatalogReader catReader = (ICatalogReader)reader;
@@ -116,18 +120,40 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 			// The cspec might be incomplete when the forResolutionOnly flag is set so
 			// we only patch the top element when that is the case.
 			//
-			return forResolutionAidOnly
-				? cspecExt.alterTopElement(cspec)
-				: cspecExt.alterCSpec(cspec);
+			if(forResolutionAidOnly)
+				cspecExt.alterTopElement(cspecBuilder);
+			else
+				cspecExt.alterCSpec(cspecBuilder);
 		}
 		catch(FileNotFoundException e)
 		{
-			return cspec;
+			return;
 		}
 		catch(IOException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
+	{
+		ResolutionBuilder resBld = new ResolutionBuilder();
+		resBld.setCSpecBuilder(cspecBuilder);
+		resBld.setOpml(opmlBuilder);
+
+		ProviderMatch providerMatch = reader.getProviderMatch();
+		Provider provider = providerMatch.getProvider();
+		NodeQuery nq = providerMatch.getNodeQuery();
+		resBld.setComponentTypeId(providerMatch.getComponentType().getId());
+		resBld.setRequest(nq.getComponentRequest());
+		resBld.setAttributes(nq.getRequiredAttributes());
+		resBld.setProvider(provider);
+		resBld.setVersionMatch(providerMatch.getVersionMatch());
+		resBld.setMaterializable(reader.canMaterialize());
+		resBld.setRepository(providerMatch.getRepositoryURI());
+		if(reader instanceof IFileReader)
+			resBld.setFileInfo(((IFileReader)reader).getFileInfo());
+		return new Resolution(resBld);
 	}
 
 	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath, IProgressMonitor monitor) throws CoreException

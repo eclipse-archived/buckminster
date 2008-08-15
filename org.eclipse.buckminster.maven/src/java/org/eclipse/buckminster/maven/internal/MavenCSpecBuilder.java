@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
@@ -99,8 +98,8 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 				MavenComponentType.addDependencies(reader, pomDoc, pomPath, cspecBld, archives, properties);
 			}
 
-			CSpec cspec = applyExtensions(cspecBld.createCSpec(), forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
-			return createResolution(reader, cspec, null);
+			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
+			return createNode(reader, cspecBld, null);
 		}
 		catch(IOException e)
 		{

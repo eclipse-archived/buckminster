@@ -11,10 +11,11 @@
 package org.eclipse.buckminster.core.ctype;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -60,16 +61,15 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	String getComponentTypeID();
 
 	/**
-	 * Returns the component information that reflects this builder in association with the given <code>reader</code>.
-	 * 
+	 * Returns a resolved node.
 	 * @param reader
 	 *            The <code>reader</code> to use when creating the result.
-	 * @param cspec The <code>CSPEC</code> for the resolution.
-	 * @param opml The optional <code>OPML</code> for the resolution. Might be <code>null</code>.
+	 * @param cspecBuilder The <code>CSPEC</code> for the resolution.
+	 * @param opmlBuilder The optional <code>OPML</code> for the resolution. Might be <code>null</code>.
 	 * @return The component information.
 	 * @throws CoreException
 	 */
-	DepNode createResolution(IComponentReader reader, CSpec cspec, OPML opml) throws CoreException;
+	ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException;
 
 	/**
 	 * Returns the nature for which this builder will create a configuration spec or <code>null</code> if no nature is

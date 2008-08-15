@@ -25,14 +25,13 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.sax.UUIDKeyed;
@@ -105,67 +104,22 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IFileInfo
 
 	private transient Provider m_provider;
 
-	public Resolution(CSpec cspec, OPML opml, NodeQuery nq, Provider provider, String ctypeId, VersionMatch vm, IFileInfo fi) throws CoreException
+	public Resolution(ResolutionBuilder bld) throws CoreException
 	{
-		m_cspec = cspec;
-		m_opml = opml;
-		m_componentTypeId = ctypeId;
-		m_request = nq.getComponentRequest();
-		m_attributes = Utils.createUnmodifiableList(nq.getRequiredAttributes());
-		m_provider = provider;
-		m_versionMatch = vm;
-		m_materializable = true;
-		m_repository = provider.getURI(nq.getProperties());
-		if(fi == null)
-		{
-			m_remoteName = null;
-			m_contentType = null;
-			m_lastModified = 0L;
-			m_size = -1L;
-		}
-		else
-		{
-			m_remoteName = fi.getName();
-			m_contentType = fi.getContentType();
-			m_lastModified = fi.getLastModified();
-			m_size = fi.getSize();
-		}
-	}
-
-	public Resolution(CSpec cspec, OPML opml, IComponentReader reader) throws CoreException
-	{
-		ProviderMatch providerMatch = reader.getProviderMatch();
-		Provider provider = providerMatch.getProvider();
-		NodeQuery nq = providerMatch.getNodeQuery();
-		m_cspec = cspec;
-		m_opml = opml;
-		m_componentTypeId = providerMatch.getComponentType().getId();
-		m_request = nq.getComponentRequest();
-		m_attributes = Utils.createUnmodifiableList(nq.getRequiredAttributes());
-		m_provider = provider;
-		m_versionMatch = providerMatch.getVersionMatch();
-		m_materializable = reader.canMaterialize();
-		m_repository = providerMatch.getRepositoryURI();
-		
-		String remoteName = null;
-		String contentType = null;
-		long lastModified = 0L;
-		long size = -1L;
-		if(reader instanceof IFileReader)
-		{
-			IFileInfo fileInfo = ((IFileReader)reader).getFileInfo();
-			if(fileInfo != null)
-			{
-				lastModified = fileInfo.getLastModified();
-				remoteName = fileInfo.getName();
-				contentType = fileInfo.getContentType();
-				size = fileInfo.getSize();
-			}
-		}
-		m_remoteName = remoteName;
-		m_contentType = contentType;
-		m_lastModified = lastModified;
-		m_size = size;
+		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
+		m_componentTypeId = bld.getComponentTypeId();
+		m_contentType = bld.getContentType();
+		m_cspec = bld.getCSpecBuilder().createCSpec();
+		m_lastModified = bld.getLastModified();
+		m_materializable = bld.isMaterializable();
+		OPMLBuilder opml = bld.getOPMLBuilder();
+		m_opml = (opml == null) ? null :new OPML(opml);
+		m_provider = bld.getProvider();
+		m_remoteName = bld.getRemoteName();
+		m_repository = bld.getRepository();
+		m_request = bld.getRequest();
+		m_size = bld.getSize();
+		m_versionMatch = bld.getVersionMatch();
 	}
 
 	public Resolution(CSpec cspec, OPML opml, Resolution old) throws CoreException

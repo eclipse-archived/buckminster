@@ -68,46 +68,19 @@ public class CSpecExtension
 	 * all pure additions
 	 * @return A Cspec that acts as the base for the extension
 	 */
-	public CSpec alterTopElement(CSpec original) throws CoreException
+	public void alterTopElement(CSpecBuilder bld) throws CoreException
 	{
 		IVersion extVersion = m_base.getVersion();
-		CSpecBuilder bld = null;
-		if(extVersion != null && !extVersion.equals(original.getVersion()))
-		{
-			bld = new CSpecBuilder();
-			bld.initFrom(original);
+		if(extVersion != null)
 			bld.setVersion(extVersion);
-		}
 
 		String ctype = m_base.getComponentTypeID();
-		if(ctype != null && !ctype.equals(original.getComponentTypeID()))
-		{
-			if(bld == null)
-			{
-				bld = new CSpecBuilder();
-				bld.initFrom(original);
-			}
+		if(ctype != null)
 			bld.setComponentTypeID(ctype);
-		}
-
-		CSpec cspec;
-		if(bld == null)
-			cspec = original;
-		else
-		{
-			cspec = bld.createCSpec();
-			cspec.verifyConsistency();
-		}
-		return cspec;
 	}
 
-	public CSpec alterCSpec(CSpec original) throws CoreException
+	public void alterCSpec(CSpecBuilder cspecBuilder) throws CoreException
 	{
-		// Only create a deps copy if we have modifications
-		//
-		CSpecBuilder cspecBuilder = new CSpecBuilder();
-		cspecBuilder.initFrom(original);
-
 		for(String removedDep : m_removedDependencies)
 		{
 			cspecBuilder.getRequiredDependency(removedDep);
@@ -157,16 +130,12 @@ public class CSpecExtension
 		// On the top element, we never override a value with NULL unless it is
 		// explicitly set to the string "null"
 		//
-		cspecBuilder.setComponentTypeID(overrideCheckNull(original.getComponentTypeID(), m_base.getComponentTypeID()));
-		cspecBuilder.setVersion(overrideCheckNull(original.getVersion(), m_base.getVersion()));
+		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(), m_base.getComponentTypeID()));
+		cspecBuilder.setVersion(overrideCheckNull(cspecBuilder.getVersion(), m_base.getVersion()));
 
-		Documentation origDoc = original.getDocumentation();
+		Documentation origDoc = cspecBuilder.getDocumentation();
 		Documentation baseDoc = m_base.getDocumentation();
 		cspecBuilder.setDocumentation(origDoc == null ? baseDoc : origDoc.merge(baseDoc));
-
-		CSpec cspec = cspecBuilder.createCSpec();
-		cspec.verifyConsistency();
-		return cspec;
 	}
 
 	public static <T> T overrideCheckNull(T a, T b)

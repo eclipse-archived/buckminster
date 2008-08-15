@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.Generator;
@@ -207,6 +208,11 @@ public class CSpecBuilder
 		return m_attributes == null ? null : m_attributes.get(name);
 	}
 
+	public ComponentIdentifier getComponentIdentifier()
+	{
+		return new ComponentIdentifier(m_name, m_componentType, m_version);		
+	}
+
 	public String getComponentTypeID()
 	{
 		return m_componentType;
@@ -301,6 +307,11 @@ public class CSpecBuilder
 	public String getShortDesc()
 	{
 		return m_shortDesc;
+	}
+
+	public String getTagInfo(String parentInfo)
+	{
+		return CSpec.getTagInfo(getComponentIdentifier(), m_projectInfo, parentInfo);
 	}
 
 	public IVersion getVersion()

@@ -28,6 +28,7 @@ public class DefaultResolutionBuilder extends AbstractResolutionBuilder
 	{
 		IComponentReader reader = readerHandle[0];
 		CSpecBuilder bld = reader.getProviderMatch().createCSpec();
-		return createResolution(reader, applyExtensions(bld.createCSpec(), forResolutionAidOnly, reader, monitor), null);
+		applyExtensions(bld, forResolutionAidOnly, reader, monitor);
+		return createNode(reader, bld, null);
 	}
 }
