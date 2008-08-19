@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +30,7 @@ public class QualifiedDependency
 		m_attributes = Utils.createUnmodifiableSet(attributes);
 	}
 
-	public QualifiedDependency applyAdvice(AdvisorNode advice)
+	public QualifiedDependency applyAdvice(IAdvisorNode advice)
 	{
 		if(advice == null)
 			return this;

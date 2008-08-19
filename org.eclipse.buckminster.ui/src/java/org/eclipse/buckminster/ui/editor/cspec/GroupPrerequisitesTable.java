@@ -48,7 +48,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
 		return new Object[] {
-				t.getComponent(),
+				t.getComponentName(),
 				t.getName(),
 				Boolean.valueOf(t.isContributor()),
 				Boolean.valueOf(t.isOptional())};
@@ -57,7 +57,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
 	{
-		builder.setComponent(TextUtils.notEmptyString((String) args[0]));
+		builder.setComponentName(TextUtils.notEmptyString((String) args[0]));
 		builder.setName(TextUtils.notEmptyString((String) args[1]));
 		builder.setContributor(((Boolean) args[2]).booleanValue());
 		builder.setOptional(((Boolean) args[3]).booleanValue());

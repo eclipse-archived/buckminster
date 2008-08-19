@@ -25,6 +25,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -320,7 +321,7 @@ public class QueryEditor extends EditorPart
 	
 	private boolean m_suppressModifyListener = false;
 
-	public String commitChanges(ComponentRequest[] requestRet)
+	public String commitChanges(IComponentRequest[] requestRet)
 	{
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
@@ -589,7 +590,7 @@ public class QueryEditor extends EditorPart
 
 		m_componentQuery.setResourceMapURL(UiUtils.trimmedValue(m_requestURL));
 		m_componentQuery.setPropertiesURL(UiUtils.trimmedValue(m_propertyURL));
-		m_properties.fillProperties(m_componentQuery.getProperties());
+		m_properties.fillProperties(m_componentQuery.getDeclaredProperties());
 		
 		String doc = UiUtils.trimmedValue(m_shortDesc);
 		m_componentQuery.setShortDesc(doc);
@@ -1417,7 +1418,7 @@ public class QueryEditor extends EditorPart
 	
 	private boolean selectRow(AdvisorNodeBuilder node)
 	{
-		int idx = m_componentQuery.getAdvisoryNodeList().indexOf(node);
+		int idx = m_componentQuery.getAdvisoryNodes().indexOf(node);
 		
 		if(idx == -1)
 			return false;
@@ -1474,7 +1475,7 @@ public class QueryEditor extends EditorPart
 
 	private void refreshList()
 	{
-		m_nodeTable.setInput(m_componentQuery.getAdvisoryNodeList());
+		m_nodeTable.setInput(m_componentQuery.getAdvisoryNodes());
 	}
 
 	private void refreshNodeFields()
@@ -1551,7 +1552,7 @@ public class QueryEditor extends EditorPart
 			m_requestURL.setText(string);
 			m_requestURLCheckbox.setSelection(string.length() > 0);
 			m_requestURLCheckbox.notifyListeners(SWT.Selection, new Event());
-			m_properties.setProperties(m_componentQuery.getProperties());
+			m_properties.setProperties(m_componentQuery.getDeclaredProperties());
 			m_shortDesc.setText(TextUtils.notNullString(m_componentQuery.getShortDesc()));
 			Documentation doc = m_componentQuery.getDocumentation();
 			m_documentation.setText(TextUtils.notNullString(doc == null
@@ -1580,10 +1581,10 @@ public class QueryEditor extends EditorPart
 			m_lastEditedNode = DONT_SAVE;
 			refreshList();
 			
-			if(m_componentQuery.getAdvisoryNodeList().size() > last_idx)
+			if(m_componentQuery.getAdvisoryNodes().size() > last_idx)
 			{
 				m_nodeTable.getTable().setSelection(last_idx);
-			} else if(m_componentQuery.getAdvisoryNodeList().size() > 0)
+			} else if(m_componentQuery.getAdvisoryNodes().size() > 0)
 			{
 				m_nodeTable.getTable().setSelection(last_idx - 1);
 			} else
@@ -1815,7 +1816,7 @@ public class QueryEditor extends EditorPart
 		if(idx <= 0)
 			return;
 
-		List<AdvisorNodeBuilder> nl = m_componentQuery.getAdvisoryNodeList();
+		List<AdvisorNodeBuilder> nl = m_componentQuery.getAdvisoryNodes();
 		if(idx >= nl.size())
 			return;
 

@@ -10,7 +10,7 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.io.InputStream;
 import java.util.List;
 
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -20,9 +20,9 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class DepNodeParser extends MetaDataParser<DepNode>
+public class DepNodeParser extends MetaDataParser<BOMNode>
 {
-	private DepNode m_resolvedNode;
+	private BOMNode m_resolvedNode;
 
 	public DepNodeParser(List<ParserFactory.ParserExtension> parserExtensions)
 	throws CoreException
@@ -57,7 +57,7 @@ public class DepNodeParser extends MetaDataParser<DepNode>
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	public DepNode parse(String systemID, InputStream input) throws CoreException
+	public BOMNode parse(String systemID, InputStream input) throws CoreException
 	{
 		this.parseInput(systemID, input);
 		return m_resolvedNode;
@@ -66,7 +66,7 @@ public class DepNodeParser extends MetaDataParser<DepNode>
 	public void childPopped(ChildHandler child)
 	throws SAXException
 	{
-		m_resolvedNode = ((DepNodeHandler)child).getDepNode();
+		m_resolvedNode = ((BomNodeHandler)child).getDepNode();
 	}
 }
 

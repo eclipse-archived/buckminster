@@ -10,7 +10,7 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
@@ -20,7 +20,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class GeneratorNodeHandler extends DepNodeHandler
+class GeneratorNodeHandler extends BomNodeHandler
 {
 	public static final String TAG = GeneratorNode.TAG;
 
@@ -51,7 +51,7 @@ class GeneratorNodeHandler extends DepNodeHandler
 	}
 
 	@Override
-	DepNode getDepNode()
+	BOMNode getDepNode()
 	{
 		return m_node;
 	}

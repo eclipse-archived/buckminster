@@ -20,7 +20,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FibonacciMonitorWrapper;
 import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -231,12 +231,12 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		}
 	}
 
-	DepNode innerResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
+	BOMNode innerResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		try
 		{
-			DepNode node = null;
+			BOMNode node = null;
 			if(m_factory.isLocalResolve())
 				node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
 			else

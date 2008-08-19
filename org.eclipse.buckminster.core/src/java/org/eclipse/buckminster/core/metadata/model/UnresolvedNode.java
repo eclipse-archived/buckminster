@@ -26,7 +26,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class UnresolvedNode extends DepNode
+public class UnresolvedNode extends BOMNode
 {
 	public static final String ELEM_ATTRIBUTE = "attribute";
 

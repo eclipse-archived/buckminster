@@ -17,7 +17,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -417,9 +418,9 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		}
 	}
 
-	private static void updateProjectReferences(IProject project, CSpec cspec, IProgressMonitor monitor) throws CoreException
+	private static void updateProjectReferences(IProject project, ICSpecData cspec, IProgressMonitor monitor) throws CoreException
 	{
-		Collection<ComponentRequest> crefs = cspec.getDependencies().values();
+		Collection<? extends IComponentRequest> crefs = cspec.getDependencies().values();
 		if(crefs.size() == 0)
 		{
 			// No use continuing. Project doesn't have any references.
@@ -439,7 +440,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 50 + crefs.size() * 10);
 		ArrayList<IProject> refdProjs = null;
-		for(ComponentRequest cref : crefs)
+		for(IComponentRequest cref : crefs)
 		{
 			for(IResource resource : WorkspaceInfo.getResources(cref))
 			{

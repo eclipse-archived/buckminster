@@ -7,8 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.parser;
 
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
-import org.eclipse.buckminster.core.cspec.parser.DependencyHandler;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
+import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.cspecext.builder.AlterDependencyBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterDependency;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -24,13 +24,13 @@ import org.xml.sax.SAXParseException;
  */
 class AlterDependencyHandler extends AlterHandler
 {
-	private final DependencyHandler m_baseHandler;
+	private final ComponentRequestHandler m_baseHandler;
 	private AlterDependencyBuilder m_builder;
 
 	AlterDependencyHandler(AbstractHandler parent)
 	{
 		super(parent);
-		m_baseHandler = new DependencyHandler(parent);
+		m_baseHandler = new ComponentRequestHandler(parent, new ComponentRequestBuilder());
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -52,7 +52,7 @@ class AlterDependencyHandler extends AlterHandler
 	throws SAXException
 	{
 		m_baseHandler.handleAttributes(attrs);
-		m_builder = new AlterDependencyBuilder((DependencyBuilder)m_baseHandler.getBuilder());
+		m_builder = new AlterDependencyBuilder(m_baseHandler.getBuilder());
 	}
 
 	AlterDependencyBuilder getBuilder()

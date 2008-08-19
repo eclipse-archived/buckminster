@@ -19,7 +19,7 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.OPMLConsumer;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -44,7 +44,7 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 		return cspecParser.parse(streamName, stream);
 	}
 
-	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		monitor.beginTask(null, 2000);

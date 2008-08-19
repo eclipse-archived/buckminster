@@ -13,16 +13,15 @@ package org.eclipse.buckminster.core.query.parser;
 import java.net.URL;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
+import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 
 /**
@@ -30,7 +29,6 @@ import org.xml.sax.SAXParseException;
  */
 public class ComponentQueryHandler extends PropertyManagerHandler
 {
-	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this);
 	private final URL m_contextURL;
 	private DocumentationHandler m_documentationHandler;
 	private AdvisorNodeHandler m_advisorNodeHandler;
@@ -46,9 +44,7 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	@Override
 	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(child == m_componentRequestHandler)
-			m_builder.setRootRequest(m_componentRequestHandler.getComponentRequest());
-		else if(child == m_advisorNodeHandler)
+		if(child == m_advisorNodeHandler)
 			m_builder.addAdvisorNode(m_advisorNodeHandler.getAdvisorNodeBuilder());
 		else if(child == m_documentationHandler)
 			m_builder.setDocumentation(m_documentationHandler.createDocumentation());
@@ -62,7 +58,7 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	{
 		ChildHandler ch;
 		if(ComponentQuery.ELEM_ROOT_REQUEST.equals(localName))
-			ch = m_componentRequestHandler;
+			ch = new ComponentRequestHandler(this, m_builder.getRootRequestBuilder());
 		else if(AdvisorNodeHandler.TAG.equals(localName))
 		{
 			if(m_advisorNodeHandler == null)
@@ -82,17 +78,13 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 
 	public ComponentQuery getComponentQuery() throws SAXException
 	{
-		if(m_builder.getRootRequest() == null)
-			throw new SAXParseException("Missing required element <" +
-					XMLConstants.BM_CQUERY_NS + '.' + ComponentQuery.ELEM_ROOT_REQUEST + '>',
-					this.getDocumentLocator());
 		return m_builder.createComponentQuery();
 	}
 
 	@Override
 	public Map<String,String> getProperties()
 	{
-		return m_builder.getProperties();
+		return m_builder.getDeclaredProperties();
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package org.eclipse.buckminster.core.distro.builder;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.distro.IDistro;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
+import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 
@@ -66,13 +66,13 @@ public class DistroBuilder implements IDistro
 		m_opml.initFrom(distro.getOpml());
 	}
 
-	public ComponentQuery getCquery()
+	public IComponentQuery getCquery()
 	{
 		// TODO: Awaits IComponentQuery interface
 		return null;
 	}
 
-	public CSpec getCspec()
+	public ICSpecData getCspec()
 	{
 		// TODO: Awaits IComponentSpec interface
 		return null;

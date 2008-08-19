@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -337,7 +337,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				best = match;
 				if(vConverter == null)
 				{
-					if(query.getResolutionPrio()[0] == AdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
+					if(query.getResolutionPrio()[0] == IAdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
 						//
 						// Branch/Tag path have the highest prio so there's no need to
 						// check the next entry.

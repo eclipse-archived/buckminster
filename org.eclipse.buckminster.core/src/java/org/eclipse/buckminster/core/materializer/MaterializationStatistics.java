@@ -15,7 +15,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 
 /**
  * @author Thomas Hallgren
- * 
  */
 public class MaterializationStatistics
 {

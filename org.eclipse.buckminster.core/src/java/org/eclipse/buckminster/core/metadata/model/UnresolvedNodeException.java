@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.model;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 
 /**
@@ -17,7 +17,7 @@ public class UnresolvedNodeException extends LocalizedException
 {
 	private static final long serialVersionUID = 6297785682251941992L;
 
-	public UnresolvedNodeException(ComponentRequest request)
+	public UnresolvedNodeException(IComponentRequest request)
 	{
 		super("Attempt to use an unresolved node. Request is %s", request);
 	}

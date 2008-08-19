@@ -17,12 +17,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
+import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -162,10 +164,10 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		{
 			switch(prio[idx])
 			{
-			case AdvisorNode.PRIO_BRANCHTAG_PATH_INDEX:
+			case IAdvisorNode.PRIO_BRANCHTAG_PATH_INDEX:
 				cmp = compareSelectors(vm1, vm2);
 				break;
-			case AdvisorNode.PRIO_SPACE_PATH_INDEX:
+			case IAdvisorNode.PRIO_SPACE_PATH_INDEX:
 				cmp = compareSpacePaths(vm1, vm2);
 				break;
 			default:
@@ -291,7 +293,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 * @throws CoreException when this query declares an attribute
 	 * that cannot be found in <code>cspec</code>.
 	 */
-	public Attribute[] getAttributes(CSpec cspec) throws CoreException
+	public IAttribute[] getAttributes(CSpec cspec) throws CoreException
 	{
 		return cspec.getAttributes(getRequiredAttributes());
 	}

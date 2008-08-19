@@ -53,7 +53,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		{
 			rebasePath = Path.fromOSString(rebasePathString);
 		}
-		builder.setRebase(rebasePath);
+		builder.setPrerequisiteRebase(rebasePath);
 
 		List<PrerequisiteBuilder> prerequisites = builder.getPrerequisites();
 
@@ -148,7 +148,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 	{
 		super.refreshRow(builder);
 
-		IPath rebasePath = builder.getRebase();
+		IPath rebasePath = builder.getPrerequisiteRebase();
 		m_rebasePathText.setText(TextUtils.notNullString(rebasePath == null
 				? null
 				: rebasePath.toOSString()));

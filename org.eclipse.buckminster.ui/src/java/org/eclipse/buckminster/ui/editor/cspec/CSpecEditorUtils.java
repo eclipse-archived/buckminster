@@ -13,11 +13,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.core.runtime.IPath;
 
@@ -31,16 +33,15 @@ public class CSpecEditorUtils
 	{
 		public int compare(CSpecElementBuilder o1, CSpecElementBuilder o2)
 		{
-			if(o1.getName() == null && o2.getName() == null)
-				return 0;
-			
-			if(o1.getName() == null && o2.getName() != null)
-				return -1;
-			
-			if(o1.getName() != null && o2.getName() == null)
-				return 1;
-			
-			return o1.getName().compareTo(o2.getName());
+			return Trivial.compareAllowNull(o1.getName(), o2.getName());
+		}
+	}
+	
+	static class ComponentComparator implements Comparator<IComponentName>
+	{
+		public int compare(IComponentName o1, IComponentName o2)
+		{
+			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
 	
@@ -54,16 +55,7 @@ public class CSpecEditorUtils
 			if(!o1.isPublic() && o2.isPublic())
 				return 1;
 			
-			if(o1.getName() == null && o2.getName() == null)
-				return 0;
-			
-			if(o1.getName() == null && o2.getName() != null)
-				return -1;
-			
-			if(o1.getName() != null && o2.getName() == null)
-				return 1;
-			
-			return o1.getName().compareTo(o2.getName());
+			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
 	
@@ -71,33 +63,19 @@ public class CSpecEditorUtils
 	{
 		public int compare(PrerequisiteBuilder o1, PrerequisiteBuilder o2)
 		{
-			int result = localStringCompare(o1.getComponent(), o2.getComponent());
+			int result = Trivial.compareAllowNull(o1.getComponentName(), o2.getComponentName());
 			
 			if(result != 0)
 				return result;
 			
-			result = localStringCompare(o1.getName(), o2.getName());
+			result = Trivial.compareAllowNull(o1.getName(), o2.getName());
 
 			if(result != 0)
 				return result;
 			
-			result = localStringCompare(o1.getAlias(), o2.getAlias());
+			result = Trivial.compareAllowNull(o1.getAlias(), o2.getAlias());
 
 			return result;
-		}
-
-		private int localStringCompare(String o1, String o2)
-		{
-			if(o1 == null && o2 == null)
-				return 0;
-
-			if(o1 == null && o2 != null)
-				return -1;
-			
-			if(o1 != null && o2 == null)
-				return 1;
-			
-			return o1.compareTo(o2);
 		}
 	}
 	
@@ -110,6 +88,7 @@ public class CSpecEditorUtils
 	};
 
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = new CSpecElementComparator();
+	private static Comparator<IComponentName> s_componentComparator = new ComponentComparator();
 	private static Comparator<AttributeBuilder> s_attributeComparator = new AttributeComparator();
 	private static Comparator<PrerequisiteBuilder> s_prerequisiteComparator = new PrerequisiteComparator();
 	private static Comparator<Property> s_propertyComparator = new PropertyComparator();
@@ -121,6 +100,11 @@ public class CSpecEditorUtils
 	public static Comparator<CSpecElementBuilder> getCSpecElementComparator()
 	{
 		return s_cspecElementComparator;
+	}
+
+	public static Comparator<IComponentName> getComponentComparator()
+	{
+		return s_componentComparator;
 	}
 
 	public static Comparator<AttributeBuilder> getAttributeComparator()
@@ -138,7 +122,7 @@ public class CSpecEditorUtils
 		return s_propertyComparator;
 	}
 	
-	public static void copyAndSortItems(ExpandingProperties src, List<Property> trgt)
+	public static void copyAndSortItems(Map<String,String> src, List<Property> trgt)
 	{
 		trgt.clear();
 		if(src != null)

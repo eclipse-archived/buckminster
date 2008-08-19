@@ -16,16 +16,16 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IGenerator;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.CircularDependencyException;
-import org.eclipse.buckminster.core.cspec.model.Generator;
-import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -93,7 +93,7 @@ public class ResolverNode
 		m_invalidateRun = true;
 	}
 
-	public DepNode collectNodes(Map<UUID, DepNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop)
+	public BOMNode collectNodes(Map<UUID, BOMNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop)
 	throws CoreException
 	{
 		if(m_query.skipComponent())
@@ -106,7 +106,7 @@ public class ResolverNode
 			return new UnresolvedNode(m_query.getQualifiedDependency());
 
 		UUID myID = m_resolution.getId();
-		DepNode node = nodeMap.get(myID);
+		BOMNode node = nodeMap.get(myID);
 		if(node != null)
 			return node;
 
@@ -122,19 +122,19 @@ public class ResolverNode
 			throw new CircularDependencyException(attrs);
 		}
 
-		List<DepNode> childNodes;
+		List<BOMNode> childNodes;
 		int top = m_children.length;
 		ComponentQuery cquery = m_query.getComponentQuery();
 		if(top > 0)
 		{
 			try
 			{
-				ArrayList<DepNode> childNodeArr = new ArrayList<DepNode>(top);
+				ArrayList<BOMNode> childNodeArr = new ArrayList<BOMNode>(top);
 				circularDepTrap.push(m_resolution);
 				for(ResolverNode child : m_children)
 				{
 					boolean sameChildTop = cquery.equals(child.m_query.getComponentQuery());
-					DepNode childNode = child.collectNodes(nodeMap, circularDepTrap, sameChildTop);
+					BOMNode childNode = child.collectNodes(nodeMap, circularDepTrap, sameChildTop);
 					if(childNode == null)
 					{
 						// We encountered a skipped component or an allowed circular dependency. This
@@ -144,9 +144,9 @@ public class ResolverNode
 						CSpec cspec = m_resolution.getCSpec();
 						CSpecBuilder bld = new CSpecBuilder();
 						bld.initFrom(cspec);
-						for(Attribute attr : cspec.getAttributes().values())
+						for(IAttribute attr : cspec.getAttributes().values())
 						{
-							for(Prerequisite pq : attr.getPrerequisites())
+							for(IPrerequisite pq : attr.getPrerequisites())
 							{
 								if(depName.equals(pq.getComponentName()))
 									((TopLevelAttributeBuilder)bld.getAttribute(attr.getName())).removePrerequisite(pq);
@@ -194,7 +194,7 @@ public class ResolverNode
 		}
 	}
 
-	public synchronized ResolutionContext startResolvingChildren(DepNode node) throws CoreException
+	public synchronized ResolutionContext startResolvingChildren(BOMNode node) throws CoreException
 	{
 		Resolution resolution = node.getResolution();
 		if(m_invalidateRun || resolution == null)
@@ -206,12 +206,13 @@ public class ResolverNode
 		if(!(cquery == null || cquery.equals(context.getComponentQuery())))
 			context = new ResolutionContext(cquery, context);
 
-		Map<String,Generator> generators = resolution.getCSpec().getGenerators();
+		CSpec cspec = resolution.getCSpec();
+		Map<String,? extends IGenerator> generators = cspec.getGenerators();
 		if(generators.size() > 0)
 		{
 			if(context == originalContext)
 				context = new ResolutionContext(originalContext.getComponentQuery(), originalContext);
-			context.setGenerators(generators.values());
+			context.setGenerators(cspec, generators.values());
 		}
 
 		if(context != originalContext)

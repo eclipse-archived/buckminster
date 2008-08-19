@@ -21,12 +21,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.SmartArrayList;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
@@ -245,13 +245,13 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 
 		private ComponentRequest m_request;
 		
-		private CSpec m_cspec;
+		private ICSpecData m_cspec;
 
 		private List<TreeNode> m_cloneItems = new ArrayList<TreeNode>();
 		
 		private ResolveStatus m_resolveStatus;
 		
-		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, ComponentRequest request, CSpec cspec, boolean resolved)
+		public MaterializationNodeHandler(List<MaterializationNodeBuilder> nodes, MaterializationNodeBuilder node, ComponentRequest request, ICSpecData cspec, boolean resolved)
 		{
 			m_node = node;
 			nodes.add(node);
@@ -815,27 +815,27 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 		return unresolvedChild;
 	}
 
-	private void addChildrenItems(TreeNode parentTN, DepNode parentDN) throws CoreException
+	private void addChildrenItems(TreeNode parentTN, BOMNode parentDN) throws CoreException
 	{
-		for(DepNode depNode : getSortedChildren(parentDN))
+		for(BOMNode bomNode : getSortedChildren(parentDN))
 		{
-			MaterializationNodeHandler handler = getHandler(depNode);
+			MaterializationNodeHandler handler = getHandler(bomNode);
 
 			if(handler != null)
 			{
 				TreeNode treeNode = handler.createTreeNodeClone(parentTN);
-				addChildrenItems(treeNode, depNode);
+				addChildrenItems(treeNode, bomNode);
 			}
 		}
 	}
 
-	private MaterializationNodeHandler getHandler(DepNode depNode) throws CoreException
+	private MaterializationNodeHandler getHandler(BOMNode bomNode) throws CoreException
 	{
-		Resolution resolution = depNode.getResolution();
+		Resolution resolution = bomNode.getResolution();
 
 		ComponentName componentNameId;		
 		if(resolution == null)
-			componentNameId = depNode.getRequest();
+			componentNameId = bomNode.getRequest();
 		else
 			componentNameId = resolution.getComponentIdentifier();
 		
@@ -843,7 +843,7 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 
 		if(handler == null)
 		{
-			CSpec cspec = null;
+			ICSpecData cspec = null;
 			if(resolution != null)
 				cspec = resolution.getCSpec();
 			
@@ -857,8 +857,8 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 			}
 			else
 			{
-				componentName = depNode.getRequest().getName();
-				componentType = depNode.getRequest().getComponentTypeID();
+				componentName = bomNode.getRequest().getName();
+				componentType = bomNode.getRequest().getComponentTypeID();
 			}
 
 			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
@@ -880,22 +880,22 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 			if(componentType != null)
 				nodeBuilder.setComponentTypeID(componentType);
 
-			handler = new MaterializationNodeHandler(m_mspec.getNodeBuilders(), nodeBuilder, depNode.getRequest(), cspec, depNode.getResolution() != null);
+			handler = new MaterializationNodeHandler(m_mspec.getNodeBuilders(), nodeBuilder, bomNode.getRequest(), cspec, bomNode.getResolution() != null);
 			m_componentMap.put(componentNameId, handler);
-			if(depNode.getResolution() == null)
+			if(bomNode.getResolution() == null)
 				m_unresolved.add(handler);
 		}
 
 		return handler;
 	}
 
-	private Collection<DepNode> getSortedChildren(DepNode parent) throws CoreException
+	private Collection<BOMNode> getSortedChildren(BOMNode parent) throws CoreException
 	{
-		Collection<DepNode> children = parent.getChildren();
+		Collection<BOMNode> children = parent.getChildren();
 		if(children.size() > 1)
 		{
-			Map<String, DepNode> sortedMap = new TreeMap<String, DepNode>();
-			for(DepNode child : children)
+			Map<String, BOMNode> sortedMap = new TreeMap<String, BOMNode>();
+			for(BOMNode child : children)
 			{
 				Resolution resolution = child.getResolution();
 				

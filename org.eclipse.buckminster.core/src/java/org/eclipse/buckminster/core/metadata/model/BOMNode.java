@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
+public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 {
 	public static final int SEQUENCE_NUMBER = 3;
 
@@ -44,7 +44,7 @@ public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 		return Collections.emptyList();
 	}
 
-	public List<DepNode> getChildren()
+	public List<BOMNode> getChildren()
 	{
 		return Collections.emptyList();
 	}
@@ -75,7 +75,7 @@ public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 
 	public abstract String getViewName() throws CoreException;
 
-	public boolean isChild(DepNode node) throws CoreException
+	public boolean isChild(BOMNode node) throws CoreException
 	{
 		return false;
 	}
@@ -100,7 +100,7 @@ public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 	 *         if it is found in the graph extending from this node
 	 * @throws CoreException
 	 */
-	public boolean isReferencing(DepNode node, boolean shallow) throws CoreException
+	public boolean isReferencing(BOMNode node, boolean shallow) throws CoreException
 	{
 		return equals(node);
 	}
@@ -125,7 +125,7 @@ public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 
 	public int uniqueNodeCount() throws CoreException
 	{
-		HashSet<DepNode> allNodes = new HashSet<DepNode>();
+		HashSet<BOMNode> allNodes = new HashSet<BOMNode>();
 		collectNodes(allNodes);
 		return allNodes.size();
 	}
@@ -137,9 +137,9 @@ public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 	{
 	}
 
-	DepNode replaceNode(DepNode topReplacer, DepNode node, Map<DepNode,DepNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode,BOMNode> visited) throws CoreException
 	{
-		DepNode self = visited.get(this);
+		BOMNode self = visited.get(this);
 		if(self == null)
 		{
 			QualifiedDependency qDep = getQualifiedDependency();
@@ -154,10 +154,10 @@ public abstract class DepNode extends UUIDKeyed implements IUUIDPersisted
 		return self;
 	}
 
-	private void collectNodes(Set<DepNode> nodes) throws CoreException
+	private void collectNodes(Set<BOMNode> nodes) throws CoreException
 	{
 		if(nodes.add(this))
-			for(DepNode child : getChildren())
+			for(BOMNode child : getChildren())
 				child.collectNodes(nodes);
 	}
 }

@@ -8,7 +8,7 @@
 package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
@@ -27,8 +27,6 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 {
 	public static final String TAG = CSpec.ELEM_DEPENDENCIES;
 
-	private final DependencyHandler m_dependencyHandler = new DependencyHandler(this);
-
 	DependenciesHandler(AbstractHandler parent)
 	{
 		super(parent);
@@ -39,7 +37,7 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 	{
 		ChildHandler ch;
 		if(CSpec.ELEM_DEPENDENCY.equals(localName))
-			ch = m_dependencyHandler;
+			ch = new ComponentRequestHandler(this, new ComponentRequestBuilder());
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
@@ -47,15 +45,17 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 
 	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(child == m_dependencyHandler)
+		if(child instanceof ComponentRequestHandler)
+		{
 			try
 			{
-				this.getCSpecBuilder().addDependency((DependencyBuilder)m_dependencyHandler.getBuilder());
+				getCSpecBuilder().addDependency(((ComponentRequestHandler)child).getBuilder());
 			}
 			catch(DependencyAlreadyDefinedException e)
 			{
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
+		}
 	}
 
 	public CSpecBuilder getCSpecBuilder()

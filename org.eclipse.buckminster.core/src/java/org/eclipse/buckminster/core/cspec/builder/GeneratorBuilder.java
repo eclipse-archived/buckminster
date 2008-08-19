@@ -7,14 +7,14 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Generator;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
 
 /**
  * @author Thomas Hallgren
  */
-public class GeneratorBuilder extends CSpecElementBuilder
+public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator
 {
 	private String m_attribute;
 	private String m_component;
@@ -52,11 +52,9 @@ public class GeneratorBuilder extends CSpecElementBuilder
 		return getName();
 	}
 
-	@Override
-	public void initFrom(NamedElement namedElem)
+	public void initFrom(IGenerator generator)
 	{
-		super.initFrom(namedElem);
-		Generator generator = (Generator)namedElem;
+		super.initFrom(generator.getGenerates());
 		m_component = generator.getComponent();
 		m_attribute = generator.getAttribute();
 	}

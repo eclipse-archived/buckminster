@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.Utils;
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class GeneratorNode extends DepNode
+public class GeneratorNode extends BOMNode
 {
 	public static final String ATTR_ATTRIBUTE = "attribute";
 
@@ -45,9 +45,9 @@ public class GeneratorNode extends DepNode
 
 	private final CSpec m_declaringCSpec;
 
-	public GeneratorNode(Generator generator)
+	public GeneratorNode(CSpec declaringCSpec, IGenerator generator)
 	{
-		m_declaringCSpec = generator.getCSpec();
+		m_declaringCSpec = declaringCSpec;
 		m_component = generator.getComponent();
 		m_attribute = generator.getAttribute();
 		m_generates = generator.getGenerates();

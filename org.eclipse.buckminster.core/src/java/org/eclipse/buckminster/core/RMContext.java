@@ -21,9 +21,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Action;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
@@ -184,7 +186,7 @@ public class RMContext extends ExpandingProperties
 	 * @param resolveStatus
 	 *            A status that indicates an error during processing.
 	 */
-	public synchronized void addRequestStatus(ComponentRequest request, IStatus status)
+	public synchronized void addRequestStatus(IComponentRequest request, IStatus status)
 	{
 		Logger logger = CorePlugin.getLogger();
 		if(logger.isInfoEnabled())
@@ -269,7 +271,7 @@ public class RMContext extends ExpandingProperties
 		}
 	}
 
-	private synchronized String getTagId(ComponentRequest request)
+	private synchronized String getTagId(IComponentRequest request)
 	{
 		TagInfo tagInfo = m_tagInfos.get(request);
 		if(tagInfo != null)
@@ -325,8 +327,8 @@ public class RMContext extends ExpandingProperties
 		ComponentRequest request = resolution.getRequest();
 		String name = null;
 
-		Attribute bindEntryPoint = resolution.getCSpec().getBindEntryPoint();
-		if(bindEntryPoint instanceof Action)
+		IAttribute bindEntryPoint = resolution.getCSpec().getBindEntryPoint();
+		if(bindEntryPoint instanceof IAction)
 		{
 			if(props == null)
 				props = getProperties(request);

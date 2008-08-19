@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -72,12 +72,12 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return m_contextURL;
 	}
 
-	public IMaterializationNode getMatchingNode(ComponentName cName)
+	public IMaterializationNode getMatchingNode(IComponentName cName)
 	{
 		return getMatchingNodeBuilder(cName);
 	}
 
-	public MaterializationNodeBuilder getMatchingNodeBuilder(ComponentName cName)
+	public MaterializationNodeBuilder getMatchingNodeBuilder(IComponentName cName)
 	{
 		String name = cName.getName();
 		for(MaterializationNodeBuilder aNode : m_nodes)

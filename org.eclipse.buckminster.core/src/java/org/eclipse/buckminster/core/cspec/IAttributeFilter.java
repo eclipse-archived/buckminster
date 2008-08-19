@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.core.cspec.model;
+package org.eclipse.buckminster.core.cspec;
 
 import java.util.regex.Pattern;
 

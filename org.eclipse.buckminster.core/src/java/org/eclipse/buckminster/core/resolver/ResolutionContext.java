@@ -17,12 +17,14 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.core.cspec.IGenerator;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.Utils;
@@ -51,7 +53,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public synchronized void addRequestStatus(ComponentRequest request, IStatus resolveStatus)
+	public synchronized void addRequestStatus(IComponentRequest request, IStatus resolveStatus)
 	{
 		if(m_parentContext != null)
 			m_parentContext.addRequestStatus(request, resolveStatus);
@@ -96,7 +98,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	@Override
 	public Map<String, String> getProperties(ComponentName cName)
 	{
-		AdvisorNode node;
+		IAdvisorNode node;
 		Map<String,String> p = super.getProperties(cName);
 		if(m_parentContext != null)
 		{
@@ -134,7 +136,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 			: super.isContinueOnError();
 	}
 
-	public synchronized List<ResolverDecision> getDecisionLog(ComponentRequest request)
+	public synchronized List<ResolverDecision> getDecisionLog(IComponentRequest request)
 	{
 		if(m_parentContext != null)
 			return m_parentContext.getDecisionLog(request);
@@ -175,13 +177,13 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 			super.setContinueOnError(flag);
 	}
 
-	public void setGenerators(Collection<Generator> generators)
+	public void setGenerators(CSpec cspec, Collection<? extends IGenerator> generators)
 	{
-		for(Generator generator : generators)
+		for(IGenerator generator : generators)
 		{
 			if(m_generators == null)
 				m_generators = new HashMap<String, GeneratorNode>();
-			m_generators.put(generator.getGenerates(), new GeneratorNode(generator));
+			m_generators.put(generator.getGenerates(), new GeneratorNode(cspec, generator));
 		}
 	}
 }

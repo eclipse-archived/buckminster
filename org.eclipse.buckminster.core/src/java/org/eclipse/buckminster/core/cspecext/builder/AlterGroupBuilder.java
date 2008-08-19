@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
@@ -60,7 +60,7 @@ public class AlterGroupBuilder extends AlterAttributeBuilder
 		if(m_alteredPrerequisites.containsKey(key))
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 
-		List<PrerequisiteBuilder> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
+		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
 		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 

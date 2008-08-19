@@ -34,6 +34,8 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
+import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
@@ -55,7 +57,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
+public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, IComponentQuery
 {
 	public static final String ATTR_PROPERTIES = "properties";
 
@@ -127,7 +129,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 		m_resourceMapURL = bld.getResourceMapURL();
 		m_rootRequest = bld.getRootRequest();
 
-		List<AdvisorNodeBuilder> advisorNodeBuilders = bld.getAdvisoryNodeList();
+		List<AdvisorNodeBuilder> advisorNodeBuilders = bld.getAdvisoryNodes();
 		if(advisorNodeBuilders.size() == 0)
 			m_advisorNodes = Collections.emptyList();
 		else
@@ -138,7 +140,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 			m_advisorNodes = Collections.unmodifiableList(advisorNodes);
 		}
 
-		Map<String,String> properties = bld.getProperties();
+		Map<String,String> properties = bld.getDeclaredProperties();
 		if(properties == null || properties.size() == 0)
 			m_properties = Collections.emptyMap();
 		else
@@ -149,24 +151,24 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public boolean allowCircularDependency(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? false : node.allowCircularDependency();
 	}
 
-	public List<AdvisorNode> getAdvisoryNodes()
+	public List<? extends IAdvisorNode> getAdvisoryNodes()
 	{
 		return m_advisorNodes;
 	}
 	
 	public List<String> getAttributes(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? Collections.<String>emptyList() : node.getAttributes();
 	}
 
 	public VersionSelector[] getBranchTagPath(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? VersionSelector.EMPTY_PATH : node.getBranchTagPath();
 	}
 
@@ -221,10 +223,10 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 		return m_allProperties;
 	}
 
-	public AdvisorNode getMatchingNode(ComponentName cName)
+	public IAdvisorNode getMatchingNode(ComponentName cName)
 	{
 		String name = cName.getName();
-		for(AdvisorNode aNode : m_advisorNodes)
+		for(IAdvisorNode aNode : m_advisorNodes)
 		{
 			Pattern pattern = aNode.getNamePattern();
 			if(pattern.matcher(name).find())
@@ -243,9 +245,9 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 	 * @param pattern
 	 * @return
 	 */
-	public AdvisorNode getNodeByPattern(String pattern, String componentTypeID)
+	public IAdvisorNode getNodeByPattern(String pattern, String componentTypeID)
 	{
-		for(AdvisorNode node : m_advisorNodes)
+		for(IAdvisorNode node : m_advisorNodes)
 			if(node.getNamePattern().toString().equals(pattern)
 			&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentTypeID))
 				return node;
@@ -254,7 +256,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public URL getOverlayFolder(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getOverlayFolder();
 	}
 
@@ -285,7 +287,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public ProviderScore getProviderScore(ComponentName cName, boolean mutable, boolean source)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		if(node == null)
 			return ProviderScore.GOOD;
 
@@ -337,13 +339,13 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public int[] getResolutionPrio(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
-		return node == null ? AdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
+		IAdvisorNode node = getMatchingNode(cName);
+		return node == null ? IAdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
 	}
 
 	public long getRevision(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? -1 : node.getRevision();
 	}
 
@@ -359,7 +361,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public String[] getSpacePath(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? Trivial.EMPTY_STRING_ARRAY : node.getSpacePath();
 	}
 
@@ -370,13 +372,13 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public Date getTimestamp(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getTimestamp();
 	}
 
 	public IVersionDesignator getVersionOverride(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getVersionOverride();
 	}
 
@@ -387,7 +389,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public boolean isPrune(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? false : node.isPrune();
 	}
 
@@ -396,7 +398,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 		throw new UnsupportedOperationException();
 	}
 
-	public void removeAdvisorNode(AdvisorNode node)
+	public void removeAdvisorNode(IAdvisorNode node)
 	{
 		m_advisorNodes.remove(node);
 	}
@@ -417,7 +419,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 
 	public boolean skipComponent(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? false : node.skipComponent();
 	}
 
@@ -443,25 +445,25 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted
 	
 	public boolean useMaterialization(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.isUseMaterialization();
 	}
 
 	public boolean useResolutionService(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.isUseRemoteResolution();
 	}
 
 	public boolean useTargetPlatform(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.isUseTargetPlatform();
 	}
 
 	public boolean useWorkspace(ComponentName cName)
 	{
-		AdvisorNode node = getMatchingNode(cName);
+		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? true : node.isUseWorkspace();
 	}
 

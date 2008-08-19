@@ -11,7 +11,7 @@ package org.eclipse.buckminster.ui.editor.cspec;
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -40,7 +40,7 @@ import org.osgi.framework.InvalidSyntaxException;
  * @author Karel Brezina
  *
  */
-public class DependenciesTable extends SimpleTable<DependencyBuilder>
+public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 {
 	class VersionDesignatorValidator implements IValidator
 	{
@@ -98,7 +98,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 	
 	private FilterValidator m_filterValidator;
 	
-	public DependenciesTable(List<DependencyBuilder> data, CSpecBuilder cspecBuilder)
+	public DependenciesTable(List<ComponentRequestBuilder> data, CSpecBuilder cspecBuilder)
 	{
 		super(data);
 		m_cspecBuilder = cspecBuilder;
@@ -115,7 +115,7 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		return new int[]{40, 20, 20, 20};
 	}
 
-	public Object[] toRowArray(DependencyBuilder t)
+	public Object[] toRowArray(ComponentRequestBuilder t)
 	{
 		Object[] array = new Object[getColumns()];
 		
@@ -127,12 +127,12 @@ public class DependenciesTable extends SimpleTable<DependencyBuilder>
 		return array;
 	}
 
-	public DependencyBuilder createRowClass()
+	public ComponentRequestBuilder createRowClass()
 	{
 		return m_cspecBuilder.createDependencyBuilder();
 	}
 
-	public void updateRowClass(DependencyBuilder builder, Object[] args) throws ValidatorException
+	public void updateRowClass(ComponentRequestBuilder builder, Object[] args) throws ValidatorException
 	{
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
 		builder.setComponentTypeID(TextUtils.notEmptyString((String) args[1]));

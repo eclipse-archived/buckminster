@@ -87,8 +87,8 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 
 	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(child instanceof DepNodeHandler)
-			m_wrapper = new IDWrapper(m_id, ((DepNodeHandler)child).getDepNode());
+		if(child instanceof BomNodeHandler)
+			m_wrapper = new IDWrapper(m_id, ((BomNodeHandler)child).getDepNode());
 		else if(child == m_cspecHandler)
 			m_wrapper = new IDWrapper(m_id, m_cspecHandler.getCSpec());
 		else if(child instanceof ProviderHandler)

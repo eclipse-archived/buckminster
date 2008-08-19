@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.distro.model;
 
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.distro.IDistro;
 import org.eclipse.buckminster.core.distro.builder.DistroBuilder;
@@ -15,6 +16,7 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.model.OPML;
@@ -43,12 +45,12 @@ public class Distro extends UUIDKeyed implements IUUIDPersisted, IDistro
 		m_opml = new OPML(builder.getOpmlBuilder());
 	}
 
-	public CSpec getCspec()
+	public ICSpecData getCspec()
 	{
 		return m_cspec;
 	}
 
-	public ComponentQuery getCquery()
+	public IComponentQuery getCquery()
 	{
 		return m_cquery;
 	}

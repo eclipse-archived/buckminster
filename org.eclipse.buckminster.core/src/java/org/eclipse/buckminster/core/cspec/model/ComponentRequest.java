@@ -10,7 +10,9 @@ package org.eclipse.buckminster.core.cspec.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
@@ -29,7 +31,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * singleton pattern and is optimized for use as key in a Map or Set.
  * @author thhal
  */
-public class ComponentRequest extends ComponentName
+public class ComponentRequest extends ComponentName implements IComponentRequest
 {
 	@SuppressWarnings("hiding")
 	public static final String TAG = "component";
@@ -57,7 +59,7 @@ public class ComponentRequest extends ComponentName
 		this(name, componentType, versionDesignatorStr, versionTypeId, null);
 	}
 
-	public ComponentRequest(DependencyBuilder bld)
+	public ComponentRequest(ComponentRequestBuilder bld)
 	{
 		super(bld.getName(), bld.getComponentTypeID());
 		m_versionDesignator = bld.getVersionDesignator();
@@ -75,7 +77,7 @@ public class ComponentRequest extends ComponentName
 		m_filter = filter;
 	}
 
-	public boolean designates(ComponentIdentifier id)
+	public boolean designates(IComponentIdentifier id)
 	{
 		return Trivial.equalsAllowNull(getName(), id.getName())
 			&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))

@@ -10,6 +10,8 @@ package org.eclipse.buckminster.core.cspec.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -21,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  * @author Thomas Hallgren
  */
-public class ComponentIdentifier extends ComponentName
+public class ComponentIdentifier extends ComponentName implements IComponentIdentifier
 {
 	private final IVersion m_version;
 	public static final String ATTR_VERSION_TYPE = "versionType";
@@ -140,12 +142,12 @@ public class ComponentIdentifier extends ComponentName
 	}
 
 	@Override
-	public int compareTo(ComponentName o)
+	public int compareTo(IComponentName o)
 	{
 		int cmp = super.compareTo(o);
 		if(cmp == 0)
-			cmp = o instanceof ComponentIdentifier
-				? Trivial.compareAllowNull(m_version, ((ComponentIdentifier)o).m_version)
+			cmp = o instanceof IComponentIdentifier
+				? Trivial.compareAllowNull(m_version, ((IComponentIdentifier)o).getVersion())
 				: 1;
 		return cmp;
 	}

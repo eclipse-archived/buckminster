@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  */
 class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<Document>
 {
-	public DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
+	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];

@@ -21,11 +21,12 @@ import java.util.jar.JarFile;
 
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IGroup;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.Group;
-import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.site.SaxableSite;
 import org.eclipse.buckminster.core.site.SiteReader;
@@ -132,7 +133,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 			if(outputFile != null)
 				Utils.serialize(m_saxableSite, output);
 
-			ComponentIdentifier ci = cspec.getComponentIdentifier();
+			IComponentIdentifier ci = cspec.getComponentIdentifier();
 			return generateQualifier
 				? replaceQualifier(cspec.getComponentIdentifier(), deps)
 				: ci.getVersion();
@@ -205,14 +206,14 @@ public class UpdateSiteGenerator extends VersionConsolidator
 
 			for(Attribute attr : attributes)
 			{
-				if(!(attr instanceof Group))
+				if(!(attr instanceof IGroup))
 					continue;
 	
 				String categoryName = attr.getName();
 				if(!categoryExists(categories, attr.getName()))
 					continue;
 	
-				for(Prerequisite included : attr.getPrerequisites())
+				for(IPrerequisite included : attr.getPrerequisites())
 				{
 					if(!featureName.equals(included.getComponentName()))
 						continue;

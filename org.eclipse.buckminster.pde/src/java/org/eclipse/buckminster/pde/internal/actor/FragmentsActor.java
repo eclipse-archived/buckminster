@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.MapToDictionary;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -105,7 +106,7 @@ public class FragmentsActor extends AbstractActor
 				}
 			}
 
-			Resolution res = WorkspaceInfo.getResolution(request, false);
+			IResolution res = WorkspaceInfo.getResolution(request, false);
 			if(res == null)
 				continue;
 

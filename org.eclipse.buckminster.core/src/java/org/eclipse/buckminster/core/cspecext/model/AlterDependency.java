@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.model;
 
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 
 /**
@@ -27,7 +27,7 @@ public class AlterDependency
 		return m_base.getName();
 	}
 
-	public void alterDependency(DependencyBuilder dep)
+	public void alterDependency(ComponentRequestBuilder dep)
 	{
 		dep.setComponentTypeID(CSpecExtension.overrideCheckNull(m_base.getComponentTypeID(), dep.getComponentTypeID()));
 		dep.setVersionDesignator(CSpecExtension.overrideCheckNull(m_base.getVersionDesignator(), dep.getVersionDesignator()));

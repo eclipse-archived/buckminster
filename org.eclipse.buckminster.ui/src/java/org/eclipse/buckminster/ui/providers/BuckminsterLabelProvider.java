@@ -10,8 +10,9 @@ package org.eclipse.buckminster.ui.providers;
 
 import java.util.List;
 
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
@@ -132,10 +133,10 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 					: 	UiUtils.getImage(imageDescriptor);
 		}
 		
-		if(element instanceof CSpec)
+		if(element instanceof ICSpecData)
 			return getCspecImage();
 		
-		if(element instanceof Resolution)
+		if(element instanceof IResolution)
 			return getComponentImage();
 		
 		// OPML stuff
@@ -206,7 +207,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		if(element instanceof IResource)
 			return new StyledString(((IResource)element).getName());
 		
-		if(element instanceof Resolution)
+		if(element instanceof IResolution)
 		{
 			Resolution r = (Resolution)element;
 			StyledString bld = new StyledString(r.getName());
@@ -242,7 +243,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			return bld;
 		}
 			
-		if(element instanceof CSpec)
+		if(element instanceof ICSpecData)
 		{
 			return new StyledString("Component Specification (CSpec)");
 		}

@@ -8,12 +8,15 @@
 package org.eclipse.buckminster.core.cspec.builder;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.Group;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.core.runtime.IPath;
@@ -21,7 +24,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class ActionBuilder extends TopLevelAttributeBuilder
+public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 {
 	private String m_actorName;
 
@@ -118,9 +121,21 @@ public class ActionBuilder extends TopLevelAttributeBuilder
 		return m_actorProperties;
 	}
 
+	@Override
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
+	{
+		return specBuilder == getCSpecBuilder() ? this : new ActionBuilder(specBuilder);
+	}
+
 	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
 	{
 		return m_prerequisitesBuilder.getPrerequisite(prerequisteName);
+	}
+
+	@Override
+	public List<? extends IPrerequisite> getPrerequisites()
+	{
+		return getPrerequisitesBuilder().getPrerequisites();
 	}
 
 	public PrerequisitesBuilder getPrerequisitesBuilder()
@@ -135,7 +150,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder
 
 	public ArtifactBuilder getProductArtifact(String name)
 	{
-		ArtifactBuilder bld = getCSpecBuilder().getArtifact(name);
+		ArtifactBuilder bld = getCSpecBuilder().getArtifactBuilder(name);
 		return (bld instanceof ActionArtifactBuilder) ? bld : null;
 	}
 
@@ -165,14 +180,14 @@ public class ActionBuilder extends TopLevelAttributeBuilder
 	}
 
 	@Override
-	public void initFrom(NamedElement namedElement)
+	public void initFrom(IAttribute attribute)
 	{
-		Action action = (Action)namedElement;
+		IAction action = (IAction)attribute;
 		super.initFrom(action);
 		m_actorName = action.getActorName();
 		m_actorProperties.putAll(action.getActorProperties(), true);
 		m_always = action.isAlways();
-		m_assignConsoleSupport = action.assignConsoleSupport();
+		m_assignConsoleSupport = action.isAssignConsoleSupport();
 		m_prerequisitesBuilder.initFrom(action.getPrerequisiteGroup());
 		m_productAlias = action.getProductAlias();
 		m_productBase = action.getProductBase();
@@ -230,7 +245,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder
 
 	public void setPrerequisitesRebase(IPath rebase)
 	{
-		m_prerequisitesBuilder.setRebase(rebase);
+		m_prerequisitesBuilder.setPrerequisiteRebase(rebase);
 	}
 
 	public void setProductAlias(String productAlias)
@@ -251,5 +266,18 @@ public class ActionBuilder extends TopLevelAttributeBuilder
 	public void setUpToDatePolicy(UpToDatePolicy upToDatePolicy)
 	{
 		m_upToDatePolicy = upToDatePolicy;
+	}
+
+	public Group getPrerequisiteGroup()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isInternal()
+	{
+		// An internal action is never "built".
+		//
+		return false;
 	}
 }

@@ -7,40 +7,44 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
  */
-public class DependencyBuilder extends CSpecElementBuilder
+public class ComponentRequestBuilder implements IComponentRequest
 {
+	private String m_name;
 	private String m_componentType;
 	private IVersionDesignator m_versionDesignator;
 	private Filter m_filter;
 
-	DependencyBuilder(CSpecBuilder cspecBuilder)
-	{
-		super(cspecBuilder);
-	}
-
-	@Override
 	public void clear()
 	{
-		super.clear();
+		m_name = null;
 		m_componentType = null;
 		m_versionDesignator = null;
 		m_filter = null;
 	}
 
-	public ComponentRequest createDependency()
+	public ComponentRequest createComponentRequest()
 	{
 		return new ComponentRequest(this);
+	}
+
+	public boolean designates(IComponentIdentifier id)
+	{
+		return Trivial.equalsAllowNull(getName(), id.getName())
+		&& (m_componentType == null || m_componentType.equals(id.getComponentTypeID()))
+		&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
 	}
 
 	public String getComponentTypeID()
@@ -51,6 +55,11 @@ public class DependencyBuilder extends CSpecElementBuilder
 	public Filter getFilter()
 	{
 		return m_filter;
+	}
+
+	public String getName()
+	{
+		return m_name;
 	}
 
 	public IVersionDesignator getVersionDesignator()
@@ -68,14 +77,12 @@ public class DependencyBuilder extends CSpecElementBuilder
 		return m_versionDesignator == null ? null : m_versionDesignator.getVersion().getType();
 	}
 
-	@Override
-	public void initFrom(NamedElement depElem)
+	public void initFrom(IComponentRequest request)
 	{
-		super.initFrom(depElem);
-		ComponentRequest dependency = (ComponentRequest)depElem;
-		m_componentType = dependency.getComponentTypeID();
-		m_versionDesignator = dependency.getVersionDesignator();
-		m_filter = dependency.getFilter();
+		m_name = request.getName();
+		m_componentType = request.getComponentTypeID();
+		m_versionDesignator = request.getVersionDesignator();
+		m_filter = request.getFilter();
 	}
 
 	public void setComponentTypeID(String componentType)
@@ -86,6 +93,11 @@ public class DependencyBuilder extends CSpecElementBuilder
 	public void setFilter(Filter filter)
 	{
 		m_filter = filter;
+	}
+
+	public void setName(String name)
+	{
+		m_name = name;
 	}
 
 	public void setVersionDesignator(String designatorStr, String versionType) throws CoreException

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
@@ -48,7 +49,7 @@ public class AlterGroup extends AlterAttribute<Group>
 		alterInstallerHints(gBld);
 		alterPrerequisiteMap(gBld);
 		alterDocumentation(gBld);
-		gBld.setRebase(CSpecExtension.overrideCheckNull(gBld.getRebase(), base.getPrerequisiteRebase()));
+		gBld.setPrerequisiteRebase(CSpecExtension.overrideCheckNull(gBld.getPrerequisiteRebase(), base.getPrerequisiteRebase()));
 	}
 
 	protected void alterPrerequisiteMap(GroupBuilder original) throws CoreException
@@ -56,7 +57,7 @@ public class AlterGroup extends AlterAttribute<Group>
 		Group base = this.getBase();
 		String attrName = original.getName();
 		String compName = original.getCSpecName();
-		List<PrerequisiteBuilder> pqs = original.getPrerequisites();
+		List<? extends IPrerequisite> pqs = original.getPrerequisites();
 		List<Prerequisite> addedPqs = base.getPrerequisites();
 
 		if(!(addedPqs.isEmpty() && m_alteredPrerequisites.isEmpty() && m_removedPrerequisites.isEmpty()))
@@ -69,7 +70,7 @@ public class AlterGroup extends AlterAttribute<Group>
 				if(GroupBuilder.indexOfPrerequisite(pqs, pqName) < 0)
 					throw new MissingPrerequisiteException(compName,attrName, pqName);
 
-			for(Prerequisite pq : addedPqs)
+			for(IPrerequisite pq : addedPqs)
 			{
 				String pqName = pq.toString();
 				if(GroupBuilder.indexOfPrerequisite(pqs, pqName) >= 0)
@@ -78,8 +79,8 @@ public class AlterGroup extends AlterAttribute<Group>
 			
 			for(String pqName : m_removedPrerequisites)
 				pqs.remove(pqName);
-			for(Prerequisite pq : m_alteredPrerequisites.values())
-				pqs.get(GroupBuilder.indexOfPrerequisite(pqs, pq.toString())).initFrom(pq);
+			for(IPrerequisite pq : m_alteredPrerequisites.values())
+				((PrerequisiteBuilder)pqs.get(GroupBuilder.indexOfPrerequisite(pqs, pq.toString()))).initFrom(pq);
 			for(Prerequisite pq : addedPqs)
 			{
 				PrerequisiteBuilder bld = original.createPrerequisiteBuilder();

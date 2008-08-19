@@ -7,7 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
 
 /**
  * @author Thomas Hallgren
@@ -26,10 +25,10 @@ public abstract class NamedElementBuilder
 		return m_name;
 	}
 
-	public void initFrom(NamedElement namedElement)
+	public void initFrom(String name)
 	{
-		this.clear();
-		m_name = namedElement.getName();
+		clear();
+		m_name = name;
 	}
 
 	public void setName(String name)

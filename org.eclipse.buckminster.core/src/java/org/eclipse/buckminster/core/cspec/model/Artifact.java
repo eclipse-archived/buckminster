@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.eclipse.buckminster.core.cspec.IArtifact;
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
@@ -29,7 +31,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Artifact extends TopLevelAttribute
+public class Artifact extends TopLevelAttribute implements IArtifact
 {
 	public static final String ATTR_PATH = "path";
 

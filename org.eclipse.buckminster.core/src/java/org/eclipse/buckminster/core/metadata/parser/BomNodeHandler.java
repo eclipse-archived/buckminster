@@ -9,7 +9,7 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.UUIDKeyed;
@@ -18,9 +18,9 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class DepNodeHandler extends ExtensionAwareHandler implements IWrapperParent
+abstract class BomNodeHandler extends ExtensionAwareHandler implements IWrapperParent
 {
-	DepNodeHandler(AbstractHandler parent)
+	BomNodeHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}
@@ -30,6 +30,6 @@ abstract class DepNodeHandler extends ExtensionAwareHandler implements IWrapperP
 		return ((IDWrapperHandler)getParentHandler()).getWrapped(id);
 	}
 
-	abstract DepNode getDepNode() throws SAXException;
+	abstract BOMNode getDepNode() throws SAXException;
 }
 

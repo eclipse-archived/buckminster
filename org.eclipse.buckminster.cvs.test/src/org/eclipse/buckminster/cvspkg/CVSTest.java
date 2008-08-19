@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -226,7 +226,9 @@ public class CVSTest extends TestCase
 		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
 				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, null, false, false, null, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
-		cq.setRootRequest(new ComponentRequest("pgsql", null, "[8.0.0,8.0.4]", null));
+		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
+		rqBld.setName("pgsql");
+		rqBld.setVersionDesignator("[8.0.0,8.0.4]", null);
 		cq.setResourceMapURL(getClass().getResource("test.rmap").toString());
 		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
 		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(), new NullProgressMonitor());

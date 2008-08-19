@@ -8,7 +8,7 @@
 package org.eclipse.buckminster.core.cspecext.parser;
 
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.cspec.parser.DependencyHandler;
+import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -43,7 +43,7 @@ class AlterDependenciesHandler extends AlterHandler
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
-		if(DependencyHandler.TAG.equals(localName))
+		if(ComponentRequestHandler.TAG.equals(localName))
 			ch = m_alterDependencyHandler;
 		else if(m_removeDependencyHandler.getTAG().equals(localName))
 			ch = m_removeDependencyHandler;

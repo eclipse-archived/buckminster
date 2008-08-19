@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -29,7 +29,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppedListener
+public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppedListener
 {
 	public static final String TAG = BillOfMaterials.TAG;
 	
@@ -118,8 +118,8 @@ public class BillOfMaterialsHandler extends DepNodeHandler implements ChildPoppe
 	}
 
 	@Override
-	DepNode getDepNode() throws SAXException
+	BOMNode getDepNode() throws SAXException
 	{
-		return new BillOfMaterials((DepNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
+		return new BillOfMaterials((BOMNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
 	}
 }

@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -76,7 +78,7 @@ public class WorkspaceInfo
 
 	private static final HashMap<ComponentIdentifier, Resolution> s_resolutionCache = new HashMap<ComponentIdentifier, Resolution>();
 
-	public static void clearCachedLocation(ComponentIdentifier cid)
+	public static void clearCachedLocation(IComponentIdentifier cid)
 	{
 		synchronized(s_locationCache)
 		{
@@ -84,7 +86,7 @@ public class WorkspaceInfo
 		}
 	}
 
-	public static void clearResolutionCache(ComponentIdentifier cid)
+	public static void clearResolutionCache(IComponentIdentifier cid)
 	{
 		synchronized(s_resolutionCache)
 		{
@@ -104,14 +106,14 @@ public class WorkspaceInfo
 			MonitorUtils.worked(monitor, 50);
 
 			IProject[] projects = wsRoot.getProjects();
-			Resolution[] resolutions = StorageManager.getDefault().getResolutions().getElements();
+			IResolution[] resolutions = StorageManager.getDefault().getResolutions().getElements();
 			MonitorUtils.worked(monitor, 50);
 
 			int ticksPerRefresh = 900 / (resolutions.length > 0 ? resolutions.length : (projects.length > 0 ? projects.length : 1));
 
 			// Re-resolve all known bundles from the target platform
 			//
-			for(Resolution res : resolutions)
+			for(IResolution res : resolutions)
 			{
 				if(!IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
 					continue;
@@ -276,7 +278,7 @@ public class WorkspaceInfo
 				: getResolution(id).getCSpec();
 	}
 
-	public static Materialization getMaterialization(ComponentIdentifier cid) throws CoreException
+	public static Materialization getMaterialization(IComponentIdentifier cid) throws CoreException
 	{
 		// Add all components for which we have a materialization
 		//
@@ -319,7 +321,7 @@ public class WorkspaceInfo
 	 * @return The found project or <code>null</code> if no open project was found.
 	 * @throws CoreException
 	 */
-	public static IProject getProject(ComponentIdentifier componentIdentifier) throws CoreException
+	public static IProject getProject(IComponentIdentifier componentIdentifier) throws CoreException
 	{
 		return extractProject(getResources(componentIdentifier));
 	}
@@ -497,7 +499,7 @@ public class WorkspaceInfo
 	 * @return The found workspace resources.
 	 * @throws CoreException
 	 */
-	public static IResource[] getResources(ComponentIdentifier componentIdentifier) throws CoreException
+	public static IResource[] getResources(IComponentIdentifier componentIdentifier) throws CoreException
 	{
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
@@ -511,7 +513,7 @@ public class WorkspaceInfo
 		return s_noResources;
 	}
 
-	public static IResource[] getResources(ComponentRequest request) throws CoreException
+	public static IResource[] getResources(IComponentRequest request) throws CoreException
 	{
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
@@ -552,7 +554,7 @@ public class WorkspaceInfo
 				: wsRoot.findFilesForLocation(location);
 	}
 
-	public static Resolution resolveLocal(ComponentRequest request, boolean useWorkspace) throws CoreException
+	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException
 	{
 		checkFirstUse();
 
@@ -563,25 +565,23 @@ public class WorkspaceInfo
 		// Add an advisor node that matches the request and prohibits that we
 		// do something using an existing materialization or something external.
 		//
-		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
+		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
 		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$"));
 		nodeBld.setComponentTypeID(request.getComponentTypeID());
 		nodeBld.setUseTargetPlatform(true);
 		nodeBld.setUseWorkspace(useWorkspace);
 		nodeBld.setUseMaterialization(false);
 		nodeBld.setUseRemoteResolution(false);
-		qbld.addAdvisorNode(nodeBld);
 
 		// Add an advisor node that matches all remaining components and prohibits that we
 		// do something external.
 		//
-		nodeBld = new AdvisorNodeBuilder();
+		nodeBld = qbld.addAdvisorNode();
 		nodeBld.setNamePattern(Pattern.compile(".*"));
 		nodeBld.setUseTargetPlatform(true);
 		nodeBld.setUseWorkspace(useWorkspace);
 		nodeBld.setUseMaterialization(useWorkspace);
 		nodeBld.setUseRemoteResolution(false);
-		qbld.addAdvisorNode(nodeBld);
 
 		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));
 		Resolution res = main.resolve(new NullProgressMonitor()).getResolution();
@@ -590,7 +590,7 @@ public class WorkspaceInfo
 		return res;
 	}
 
-	public static void setComponentIdentifier(IResource resource, ComponentIdentifier identifier) throws CoreException
+	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException
 	{
 		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier.toString());
 	}

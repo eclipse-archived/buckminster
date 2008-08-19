@@ -14,6 +14,8 @@ import java.util.Stack;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -158,7 +160,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		CSpec cspec = getCSpec();
 		for(Prerequisite child : getPrerequisites(filters))
 		{
-			Attribute refAttr = child.getReferencedAttribute(cspec, ctx);
+			IAttribute refAttr = child.getReferencedAttribute(cspec, ctx);
 			if(!(refAttr instanceof TopLevelAttribute))
 				continue;
 
@@ -208,6 +210,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		return oldest;
 	}
 
+	@Override
 	public final Map<String, String> getInstallerHints()
 	{
 		return m_installerHints;

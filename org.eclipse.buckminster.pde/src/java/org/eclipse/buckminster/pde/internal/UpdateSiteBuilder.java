@@ -12,8 +12,7 @@ package org.eclipse.buckminster.pde.internal;
 
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
@@ -31,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class UpdateSiteBuilder extends AbstractResolutionBuilder
 {
-	public DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
+	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();

@@ -22,8 +22,8 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.StorageManager;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -146,7 +146,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 
 	public abstract String getMaterializerRootDir();
 
-	public void installRecursive(DepNode node, MaterializationContext context, Set<String> generated,
+	public void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated,
 		Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{
 		if(node instanceof GeneratorNode)
@@ -166,7 +166,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				return;
 
 			perused.add(resolution);
-			for(DepNode child : node.getChildren())
+			for(BOMNode child : node.getChildren())
 				delegateAndInstallRecursive(child, context, generated, perused, monitor);
 
 			if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier()))
@@ -188,7 +188,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		MonitorUtils.complete(monitor);
 	}
 
-	private void delegateAndInstallRecursive(DepNode node, MaterializationContext context,
+	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context,
 		Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
 	{
 		IMaterializer materializer;

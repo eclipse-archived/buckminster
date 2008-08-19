@@ -34,7 +34,7 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -136,7 +136,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				ProviderMatch orig = res.getProviderMatch(context);
 				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(), res.getVersionDesignator()), null);
 				ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, orig.getVersionMatch(), nq);
-				DepNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
+				BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
 				Resolution siteFeatureResolution = node.getResolution();
 				if(siteFeatureResolution != null)
 					siteFeatureResolutions.add(siteFeatureResolution);
@@ -255,7 +255,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(), VersionFactory.createExplicitDesignator(version));
 			NodeQuery nq = new NodeQuery(context, cr, null);
 			ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, vm, nq);
-			DepNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
+			BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
 			Resolution siteFeatureResolution = node.getResolution();
 			if(siteFeatureResolution != null)
 				siteFeatureResolutions.add(siteFeatureResolution);

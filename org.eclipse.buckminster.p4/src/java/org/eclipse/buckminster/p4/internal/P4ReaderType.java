@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TimedHashMap;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -120,12 +121,12 @@ public class P4ReaderType extends CatalogReaderType
 			P4WSADBridge.shareProject(project, getDepotLocation(cr, context.getProperties(cr.getRequest())));
 	}
 
-	public static DepotURI getDepotLocation(Resolution resolution, Map<String,String> properties) throws CoreException
+	public static DepotURI getDepotLocation(IResolution resolution, Map<String,String> properties) throws CoreException
 	{
 		return new DepotURI(resolution.getRepository(), getNonDefaultBranchName(resolution), properties);
 	}
 
-	private static String getNonDefaultBranchName(Resolution resolution)
+	private static String getNonDefaultBranchName(IResolution resolution)
 	{
 		VersionSelector vs = resolution.getVersionMatch().getBranchOrTag();
 		return (vs != null && !vs.isDefault() && vs.getType() == VersionSelector.BRANCH) ? vs.getName() : null;

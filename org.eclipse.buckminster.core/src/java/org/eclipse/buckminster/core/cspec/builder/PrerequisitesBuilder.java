@@ -23,4 +23,10 @@ public class PrerequisitesBuilder extends GroupBuilder
 		//
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
+	{
+		return specBuilder == getCSpecBuilder() ? this : new PrerequisitesBuilder(specBuilder);
+	}
 }

@@ -15,18 +15,23 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
+import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.Trivial;
 
 /**
  * @author Thomas Hallgren
  */
-public class ComponentQueryBuilder
+public class ComponentQueryBuilder implements IComponentQuery
 {
 	private final ArrayList<AdvisorNodeBuilder> m_advisorNodes = new ArrayList<AdvisorNodeBuilder>();
+
+	private final ComponentRequestBuilder m_rootRequest = new ComponentRequestBuilder();
 
 	private Documentation m_documentation;
 
@@ -38,13 +43,13 @@ public class ComponentQueryBuilder
 
 	private String m_resourceMapURL;
 
-	private ComponentRequest m_rootRequest;
-
 	private String m_shortDesc;
 
-	public ComponentQueryBuilder()
+	public AdvisorNodeBuilder addAdvisorNode()
 	{
-		this.clear();
+		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
+		m_advisorNodes.add(node);
+		return node;
 	}
 
 	public void addAdvisorNode(AdvisorNodeBuilder node)
@@ -54,12 +59,12 @@ public class ComponentQueryBuilder
 
 	public void clear()
 	{
+		m_rootRequest.clear();
 		m_advisorNodes.clear();
 		m_contextURL = null;
 		m_properties = null;
 		m_propertiesURL = null;
 		m_resourceMapURL = null;
-		m_rootRequest = null;
 		m_documentation = null;
 		m_shortDesc = null;
 	}
@@ -69,7 +74,7 @@ public class ComponentQueryBuilder
 		return new ComponentQuery(this);
 	}
 
-	public List<AdvisorNodeBuilder> getAdvisoryNodeList()
+	public List<AdvisorNodeBuilder> getAdvisoryNodes()
 	{
 		return m_advisorNodes;
 	}
@@ -93,7 +98,7 @@ public class ComponentQueryBuilder
 		return null;
 	}
 
-	public Map<String, String> getProperties()
+	public Map<String, String> getDeclaredProperties()
 	{
 		if(m_properties == null)
 			m_properties = new HashMap<String,String>();
@@ -112,6 +117,11 @@ public class ComponentQueryBuilder
 
 	public ComponentRequest getRootRequest()
 	{
+		return m_rootRequest.createComponentRequest();
+	}
+
+	public ComponentRequestBuilder getRootRequestBuilder()
+	{
 		return m_rootRequest;
 	}
 
@@ -120,10 +130,10 @@ public class ComponentQueryBuilder
 		return m_shortDesc;
 	}
 
-	public void initFrom(ComponentQuery query)
+	public void initFrom(IComponentQuery query)
 	{
 		this.clear();
-		for(AdvisorNode node : query.getAdvisoryNodes())
+		for(IAdvisorNode node : query.getAdvisoryNodes())
 		{
 			AdvisorNodeBuilder bld = new AdvisorNodeBuilder();
 			bld.initFrom(node);
@@ -137,7 +147,7 @@ public class ComponentQueryBuilder
 		m_contextURL = query.getContextURL();
 		m_propertiesURL = query.getPropertiesURL();
 		m_resourceMapURL = query.getResourceMapURL();
-		m_rootRequest = query.getRootRequest();
+		m_rootRequest.initFrom(query.getRootRequest());
 		m_documentation = query.getDocumentation();
 		m_shortDesc = query.getShortDesc();
 	}
@@ -172,7 +182,7 @@ public class ComponentQueryBuilder
 		}
 		else
 		{
-			Map<String,String> props = getProperties();
+			Map<String,String> props = getDeclaredProperties();
 			props.put(TargetPlatform.TARGET_OS, FilterUtils.MATCH_ALL);
 			props.put(TargetPlatform.TARGET_WS, FilterUtils.MATCH_ALL);
 			props.put(TargetPlatform.TARGET_ARCH, FilterUtils.MATCH_ALL);
@@ -190,9 +200,9 @@ public class ComponentQueryBuilder
 		m_resourceMapURL = resourceMapURL;
 	}
 
-	public final void setRootRequest(ComponentRequest rootRequest)
+	public final void setRootRequest(IComponentRequest rootRequest)
 	{
-		m_rootRequest = rootRequest;
+		m_rootRequest.initFrom(rootRequest);
 	}
 
 	public void setShortDesc(String shortDesc)

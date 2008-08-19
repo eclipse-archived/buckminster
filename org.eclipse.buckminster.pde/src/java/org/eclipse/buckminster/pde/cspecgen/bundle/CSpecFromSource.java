@@ -26,7 +26,7 @@ import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
@@ -501,7 +501,7 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 			}
 
-			DependencyBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 
@@ -538,7 +538,7 @@ public class CSpecFromSource extends CSpecGenerator
 			throws CoreException
 	{
 		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
-		pqBld.setComponent(component);
+		pqBld.setComponentName(component);
 		pqBld.setName(name);
 		pqBld.setOptional(optional);
 		group.addPrerequisite(pqBld);
@@ -624,7 +624,7 @@ public class CSpecFromSource extends CSpecGenerator
 	private ActionBuilder getAttributeEclipseBuild() throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
-		ActionBuilder eclipseBuild = cspec.getAction(ATTRIBUTE_ECLIPSE_BUILD);
+		ActionBuilder eclipseBuild = cspec.getActionBuilder(ATTRIBUTE_ECLIPSE_BUILD);
 		if(eclipseBuild == null)
 			eclipseBuild = cspec.addInternalAction(ATTRIBUTE_ECLIPSE_BUILD, false);
 		return eclipseBuild;
@@ -754,7 +754,7 @@ public class CSpecFromSource extends CSpecGenerator
 		HashMap<IPath,ArtifactBuilder> byBase = new HashMap<IPath, ArtifactBuilder>();
 		for(PrerequisiteBuilder pq : new ArrayList<PrerequisiteBuilder>(preqs))
 		{
-			if(pq.getComponent() != null)
+			if(pq.getComponentName() != null)
 			{
 				singleCanReplace = false;
 				continue;

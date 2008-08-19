@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.ctype;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -24,10 +25,11 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -141,7 +143,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 	public IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
-		DepNode node = getResolution(rInfo, true, monitor);
+		BOMNode node = getResolution(rInfo, true, monitor);
 		return node.getResolution().getComponentIdentifier().getVersion();
 	}
 
@@ -165,7 +167,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return m_relativeLocation;
 	}
 
-	public final DepNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	public final BOMNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		return getResolution(rInfo, false, monitor);
 	}
@@ -219,6 +221,34 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		else super.setExtensionParameter(key, value);
 	}
 
+	public String getProjectName(String componentName) throws CoreException
+	{
+		if(componentName == null)
+			return null;
+
+		Pattern desiredMatch = getDesiredNamePattern();
+		if(desiredMatch == null || desiredMatch.matcher(componentName).find())
+			//
+			// We have a component type but no desire to change the name
+			//
+			return componentName;
+
+		Pattern repFrom = getSubstituteNamePattern();
+		String repTo = getNameSubstitution();
+
+		if(repFrom == null || repTo == null)
+			throw BuckminsterException.fromMessage("Component type %s defines desiredNamePattern but no substitution", getId());
+
+		Matcher matcher = repFrom.matcher(componentName);
+		if(matcher.matches())
+		{
+			String repl = matcher.replaceAll(repTo).trim();
+			if(repl.length() > 0)
+				componentName = repl;
+		}
+		return componentName;
+	}
+
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
 	{
@@ -266,7 +296,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		m_metaFiles = (metaFiles == null) ? s_noMetaFiles : metaFiles.toArray(new IMetaFile[metaFiles.size()]);
 	}
 
-	protected DepNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
+	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
 		IComponentReader[] reader = new IComponentReader[1];

@@ -11,7 +11,7 @@ package org.eclipse.buckminster.core.internal.ctype;
 import java.util.Collections;
 
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -28,10 +28,10 @@ public class URIMatcherBuilder extends AbstractResolutionBuilder
 		m_pm = pm;
 	}
 
-	public DepNode build(IComponentReader[] rdr, boolean forResolutionAidOnly,
+	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly,
 			IProgressMonitor mon) throws CoreException
 	{
 		MonitorUtils.complete(mon);
-		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm), Collections.<DepNode>emptyList());
+		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm), Collections.<BOMNode>emptyList());
 	}
 }

@@ -39,7 +39,7 @@ public class PrerequisiteHandler extends CSpecElementHandler
 		PrerequisiteBuilder builder = (PrerequisiteBuilder)this.getBuilder();
 		if(m_component == null)
 			m_component = getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT);
-		builder.setComponent(m_component);
+		builder.setComponentName(m_component);
 		builder.setContributor(getOptionalBooleanValue(attrs, Prerequisite.ATTR_CONTRIBUTOR, true));
 		builder.setOptional(getOptionalBooleanValue(attrs, Prerequisite.ATTR_OPTIONAL, false));
 		builder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));

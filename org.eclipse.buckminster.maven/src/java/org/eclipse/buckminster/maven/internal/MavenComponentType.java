@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
@@ -311,7 +311,7 @@ public class MavenComponentType extends AbstractComponentType
 		if(query.skipComponent(adviceKey))
 			return;
 
-		DependencyBuilder depBld = cspec.createDependencyBuilder();
+		ComponentRequestBuilder depBld = cspec.createDependencyBuilder();
 		depBld.setName(componentName);
 
 		IVersionDesignator vd = query.getVersionOverride(adviceKey);
@@ -326,7 +326,7 @@ public class MavenComponentType extends AbstractComponentType
 		}
 		catch(DependencyAlreadyDefinedException e)
 		{
-			DependencyBuilder oldDep = cspec.getDependency(depBld.getName());
+			ComponentRequestBuilder oldDep = cspec.getDependency(depBld.getName());
 			if(!Trivial.equalsAllowNull(vd, oldDep.getVersionDesignator()))
 				MavenPlugin.getLogger().warning(e.getMessage());
 		}

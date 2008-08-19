@@ -12,13 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
-import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
@@ -26,16 +27,17 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
  */
-public class CSpecBuilder
+public class CSpecBuilder implements ICSpecData
 {
 	private HashMap<String,AttributeBuilder> m_attributes;
 	private String m_componentType;
-	private HashMap<String,DependencyBuilder> m_dependencies;
+	private HashMap<String,ComponentRequestBuilder> m_dependencies;
 	private Documentation m_documentation;
 	private HashMap<String,GeneratorBuilder> m_generators;
 	private String m_name;
@@ -66,12 +68,7 @@ public class CSpecBuilder
 		return bld;
 	}
 
-	public void addAttribute(Attribute attribute) throws AttributeAlreadyDefinedException
-	{
-		addAttribute(attribute.getAttributeBuilder(this));
-	}
-
-	public void addAttribute(AttributeBuilder attribute) throws AttributeAlreadyDefinedException
+	public void addAttribute(IAttribute attribute) throws AttributeAlreadyDefinedException
 	{
 		String name = attribute.getName();
 		if(m_attributes == null)
@@ -79,43 +76,41 @@ public class CSpecBuilder
 		else
 		if(m_attributes.containsKey(name))
 			throw new AttributeAlreadyDefinedException(m_name, name);
-		m_attributes.put(name, attribute);
+		m_attributes.put(name, attribute.getAttributeBuilder(this));
 	}
 
-	public void addDependency(ComponentRequest dependency) throws DependencyAlreadyDefinedException
-	{
-		DependencyBuilder bld = createDependencyBuilder();
-		bld.initFrom(dependency);
-		addDependency(bld);
-	}
-
-	public void addDependency(DependencyBuilder dependency) throws DependencyAlreadyDefinedException
+	public void addDependency(IComponentRequest dependency) throws DependencyAlreadyDefinedException
 	{
 		String name = dependency.getName();
 		if(m_dependencies == null)
-			m_dependencies = new HashMap<String,DependencyBuilder>();
+			m_dependencies = new HashMap<String,ComponentRequestBuilder>();
 		else
 		if(m_dependencies.containsKey(name))
 			throw new DependencyAlreadyDefinedException(m_name, name);
-		m_dependencies.put(name, dependency);
+
+		ComponentRequestBuilder bld;
+		if(dependency instanceof ComponentRequestBuilder)
+			bld = (ComponentRequestBuilder)dependency;
+		else
+		{
+			bld = createDependencyBuilder();
+			bld.initFrom(dependency);
+		}
+		m_dependencies.put(name, bld);
 	}
 
-	public void addGenerator(Generator generator) throws GeneratorAlreadyDefinedException
+	public void addGenerator(IGenerator generator) throws GeneratorAlreadyDefinedException
 	{
-		GeneratorBuilder bld = createGeneratorBuilder();
-		bld.initFrom(generator);
-		addGenerator(bld);
-	}
-
-	public void addGenerator(GeneratorBuilder generator) throws GeneratorAlreadyDefinedException
-	{
-		String name = generator.getName();
+		String name = generator.getGenerates();
 		if(m_generators == null)
 			m_generators = new HashMap<String,GeneratorBuilder>();
 		else
 		if(m_generators.containsKey(name))
 			throw new GeneratorAlreadyDefinedException(m_name, name);
-		m_generators.put(name, generator);
+
+		GeneratorBuilder bld = createGeneratorBuilder();
+		bld.initFrom(generator);
+		m_generators.put(name, bld);
 	}
 
 	public GroupBuilder addGroup(String name, boolean publ) throws AttributeAlreadyDefinedException
@@ -171,9 +166,9 @@ public class CSpecBuilder
 		return new CSpec(this);
 	}
 
-	public DependencyBuilder createDependencyBuilder()
+	public ComponentRequestBuilder createDependencyBuilder()
 	{
-		return new DependencyBuilder(this);
+		return new ComponentRequestBuilder();
 	}
 
 	public GeneratorBuilder createGeneratorBuilder()
@@ -186,20 +181,32 @@ public class CSpecBuilder
 		return new GroupBuilder(this);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapterType)
+	{
+		if(CSpecBuilder.class.isAssignableFrom(adapterType))
+			return this;
+		
+		if(CSpec.class.isAssignableFrom(adapterType))
+			return createCSpec();
+
+		return Platform.getAdapterManager().getAdapter(this, adapterType);
+	}
+
 	public Map<String,AttributeBuilder> getAttributes()
 	{
 		return m_attributes;
 	}
 
-	public ActionBuilder getAction(String name)
+	public ActionBuilder getActionBuilder(String name)
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		return attr instanceof ActionBuilder ? (ActionBuilder)attr : null;
 	}
 
-	public ArtifactBuilder getArtifact(String name)
+	public ArtifactBuilder getArtifactBuilder(String name)
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		return attr instanceof ArtifactBuilder ? (ArtifactBuilder)attr : null;
 	}
 
@@ -218,12 +225,12 @@ public class CSpecBuilder
 		return m_componentType;
 	}
 
-	public Map<String,DependencyBuilder> getDependencies()
+	public Map<String,ComponentRequestBuilder> getDependencies()
 	{
 		return m_dependencies;
 	}
 
-	public DependencyBuilder getDependency(String dependencyName)
+	public ComponentRequestBuilder getDependency(String dependencyName)
 	{
 		return m_dependencies == null ? null : m_dependencies.get(dependencyName);
 	}
@@ -250,7 +257,7 @@ public class CSpecBuilder
 
 	public GroupBuilder getGroup(String name)
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		return attr instanceof GroupBuilder ? (GroupBuilder)attr : null;
 	}
 
@@ -261,7 +268,7 @@ public class CSpecBuilder
 
 	public ActionBuilder getRequiredAction(String name) throws MissingAttributeException
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		if(attr instanceof ActionBuilder)
 			return (ActionBuilder)attr;
 		throw new MissingAttributeException(m_name, name);
@@ -269,7 +276,7 @@ public class CSpecBuilder
 
 	public ArtifactBuilder getRequiredArtifact(String name) throws MissingAttributeException
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		if(attr instanceof ArtifactBuilder)
 			return (ArtifactBuilder)attr;
 		throw new MissingAttributeException(m_name, name);
@@ -277,15 +284,15 @@ public class CSpecBuilder
 
 	public AttributeBuilder getRequiredAttribute(String name) throws MissingAttributeException
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		if(attr == null)
 			throw new MissingAttributeException(m_name, name);
 		return attr;
 	}
 
-	public DependencyBuilder getRequiredDependency(String name) throws MissingDependencyException
+	public ComponentRequestBuilder getRequiredDependency(String name) throws MissingDependencyException
 	{
-		DependencyBuilder dep = getDependency(name);
+		ComponentRequestBuilder dep = getDependency(name);
 		if(dep == null)
 			throw new MissingDependencyException(m_name, name);
 		return dep;
@@ -293,7 +300,7 @@ public class CSpecBuilder
 
 	public GroupBuilder getRequiredGroup(String name) throws MissingAttributeException
 	{
-		AttributeBuilder attr = getAttribute(name);
+		AttributeBuilder attr = m_attributes.get(name);
 		if(attr instanceof GroupBuilder)
 			return (GroupBuilder)attr;
 		throw new MissingAttributeException(m_name, name);
@@ -319,7 +326,7 @@ public class CSpecBuilder
 		return m_version;
 	}
 
-	public void initFrom(CSpec cspec)
+	public void initFrom(ICSpecData cspec)
 	{
 		m_name = cspec.getName();
 		m_componentType = cspec.getComponentTypeID();
@@ -329,23 +336,23 @@ public class CSpecBuilder
 		m_documentation = cspec.getDocumentation();
 		m_shortDesc = cspec.getShortDesc();
 
-		Map<String,Attribute> attrs = cspec.getAttributes();
+		Map<String,? extends IAttribute> attrs = cspec.getAttributes();
 		if(attrs.size() > 0)
 		{
 			m_attributes = new HashMap<String, AttributeBuilder>(attrs.size());
-			for(Attribute attr : attrs.values())
+			for(IAttribute attr : attrs.values())
 				m_attributes.put(attr.getName(), attr.getAttributeBuilder(this));
 		}
 		else
 			m_attributes = null;
 
-		Map<String,ComponentRequest> deps = cspec.getDependencies();
+		Map<String,? extends IComponentRequest> deps = cspec.getDependencies();
 		if(deps.size() > 0)
 		{
-			m_dependencies = new HashMap<String, DependencyBuilder>(deps.size());
-			for(ComponentRequest dep : deps.values())
+			m_dependencies = new HashMap<String, ComponentRequestBuilder>(deps.size());
+			for(IComponentRequest dep : deps.values())
 			{
-				DependencyBuilder db = createDependencyBuilder();
+				ComponentRequestBuilder db = createDependencyBuilder();
 				db.initFrom(dep);
 				m_dependencies.put(dep.getName(), db);
 			}
@@ -353,15 +360,15 @@ public class CSpecBuilder
 		else
 			m_dependencies = null;
 
-		Map<String,Generator> gens = cspec.getGenerators();
+		Map<String,? extends IGenerator> gens = cspec.getGenerators();
 		if(gens.size() > 0)
 		{
 			m_generators = new HashMap<String, GeneratorBuilder>(gens.size());
-			for(Generator gen : gens.values())
+			for(IGenerator gen : gens.values())
 			{
 				GeneratorBuilder gb = createGeneratorBuilder();
 				gb.initFrom(gen);
-				m_generators.put(gen.getName(), gb);
+				m_generators.put(gen.getGenerates(), gb);
 			}
 		}
 		else

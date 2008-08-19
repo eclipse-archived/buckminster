@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -42,7 +43,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * The resolution graph
  * @author Thomas Hallgren
  */
-public class BillOfMaterials extends DepNode
+public class BillOfMaterials extends BOMNode
 {
 	public static final String ATTR_QUERY_ID = "componentQueryId";
 	public static final String ATTR_TIMESTAMP = "timestamp";
@@ -54,12 +55,12 @@ public class BillOfMaterials extends DepNode
 	@SuppressWarnings("hiding")
 	public static final String TAG = "billOfMaterials";
 
-	public static BillOfMaterials create(DepNode topNode, ComponentQuery query) throws CoreException
+	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query) throws CoreException
 	{
 		return create(topNode, query, null);
 	}
 
-	public static BillOfMaterials create(DepNode topNode, ComponentQuery query, Date timestamp) throws CoreException
+	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query, Date timestamp) throws CoreException
 	{
 		if(topNode == null)
 			throw new IllegalArgumentException("Top node cannot be null");
@@ -83,7 +84,7 @@ public class BillOfMaterials extends DepNode
 		wrappers.add(new IDWrapper(key, object));
 	}
 
-	private static void buildNodeMap(DepNode node, HashMap<ComponentIdentifier, DepNode> map) throws CoreException
+	private static void buildNodeMap(BOMNode node, HashMap<ComponentIdentifier, BOMNode> map) throws CoreException
 	{
 		Resolution resolution = node.getResolution();
 		if(resolution == null)
@@ -97,11 +98,11 @@ public class BillOfMaterials extends DepNode
 			return;
 
 		map.put(id, node);
-		for(DepNode child : node.getChildren())
+		for(BOMNode child : node.getChildren())
 			buildNodeMap(child, map);
 	}
 
-	private static void collectNodeContents(DepNode node, Set<UUID> unique, List<IDWrapper> wrappers) throws CoreException
+	private static void collectNodeContents(BOMNode node, Set<UUID> unique, List<IDWrapper> wrappers) throws CoreException
 	{
 		UUID nodeId = node.getId();
 		if(unique.contains(nodeId))
@@ -137,7 +138,7 @@ public class BillOfMaterials extends DepNode
 				// very important that we do this depth first since the leafs
 				// must end up first in the list of IDWrappers.
 				//
-				for(DepNode child : node.getChildren())
+				for(BOMNode child : node.getChildren())
 					collectNodeContents(child, unique, wrappers);
 			}
 		}
@@ -147,15 +148,15 @@ public class BillOfMaterials extends DepNode
 	// Private cache that speeds up the identifier to resolved node map. A cache
 	// here is quite safe since both its scope and everything it contains is immutable
 	//
-	private transient HashMap<ComponentIdentifier,DepNode> m_nodeMap;
+	private transient HashMap<ComponentIdentifier,BOMNode> m_nodeMap;
 
 	private final ComponentQuery m_query;
 
 	private final Date m_timestamp;
 
-	private final DepNode m_topNode;
+	private final BOMNode m_topNode;
 
-	public BillOfMaterials(DepNode topNode, ComponentQuery query, Date timestamp)
+	public BillOfMaterials(BOMNode topNode, ComponentQuery query, Date timestamp)
 	{
 		super();
 		m_topNode = topNode;
@@ -224,7 +225,7 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public List<DepNode> getChildren()
+	public List<BOMNode> getChildren()
 	{
 		return getTopNode().getChildren();
 	}
@@ -275,15 +276,15 @@ public class BillOfMaterials extends DepNode
 		return getTopNode().getResolutionId();
 	}
 
-	public synchronized DepNode getResolvedNode(ComponentIdentifier identifier) throws CoreException
+	public synchronized BOMNode getResolvedNode(IComponentIdentifier identifier) throws CoreException
 	{
 		if(m_nodeMap == null)
 		{
-			HashMap<ComponentIdentifier,DepNode> nodeMap = new HashMap<ComponentIdentifier, DepNode>();
+			HashMap<ComponentIdentifier,BOMNode> nodeMap = new HashMap<ComponentIdentifier, BOMNode>();
 			buildNodeMap(getTopNode(), nodeMap);
 			m_nodeMap = nodeMap;
 		}
-		DepNode node = m_nodeMap.get(identifier);
+		BOMNode node = m_nodeMap.get(identifier);
 		if(node == null)
 			throw new MissingComponentException(identifier.toString());
 		return node;
@@ -301,7 +302,7 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public boolean isChild(DepNode node) throws CoreException
+	public boolean isChild(BOMNode node) throws CoreException
 	{
 		return getTopNode().isChild(node);
 	}
@@ -318,12 +319,12 @@ public class BillOfMaterials extends DepNode
 	}
 
 	@Override
-	public final boolean isReferencing(DepNode node, boolean shallow) throws CoreException
+	public final boolean isReferencing(BOMNode node, boolean shallow) throws CoreException
 	{
 		return equals(node) || getTopNode().isReferencing(node, shallow);
 	}
 
-	public BillOfMaterials replaceNode(DepNode node) throws CoreException
+	public BillOfMaterials replaceNode(BOMNode node) throws CoreException
 	{
 		return replaceNode(node, node);
 	}
@@ -393,30 +394,30 @@ public class BillOfMaterials extends DepNode
 		getTopNode().collectAll(notThese, all);
 	}
 
-	BillOfMaterials replaceNode(DepNode topReplacer, DepNode node) throws CoreException
+	BillOfMaterials replaceNode(BOMNode topReplacer, BOMNode node) throws CoreException
 	{
-		List<DepNode> children = node.getChildren();
+		List<BOMNode> children = node.getChildren();
 		int idx = children.size();
 		BillOfMaterials self = this;
 		while(--idx >= 0)
 			self = self.replaceNode(node, children.get(idx));
-		return (BillOfMaterials)self.replaceNode(node, node, new HashMap<DepNode,DepNode>());
+		return (BillOfMaterials)self.replaceNode(node, node, new HashMap<BOMNode,BOMNode>());
 	}
 
 	@Override
-	DepNode replaceNode(DepNode topReplacer, DepNode node, Map<DepNode,DepNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode,BOMNode> visited) throws CoreException
 	{
 		if(node instanceof BillOfMaterials && node.getQuery().equals(getQuery()))
 			node = ((BillOfMaterials)node).getTopNode();
 		else
 		{
-			DepNode newNode = super.replaceNode(topReplacer, node, visited);
+			BOMNode newNode = super.replaceNode(topReplacer, node, visited);
 			if(newNode != this)
 				return newNode;
 		}
 
-		DepNode oldTop = getTopNode();
-		DepNode newTop = oldTop.replaceNode(topReplacer, node, visited);
+		BOMNode oldTop = getTopNode();
+		BOMNode newTop = oldTop.replaceNode(topReplacer, node, visited);
 		return (oldTop == newTop) ? this : create(newTop, getQuery());
 	}
 
@@ -440,7 +441,7 @@ public class BillOfMaterials extends DepNode
 		receiver.endElement(namespace, localName, qName);
 	}
 
-	private synchronized DepNode getTopNode()
+	private synchronized BOMNode getTopNode()
 	{
 		return m_topNode;
 	}

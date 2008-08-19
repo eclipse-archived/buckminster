@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.parser.ElementRefHandler;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.query.model.AdvisorNode;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.sax.Utils;
@@ -33,7 +33,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class ResolvedNode extends DepNode
+public class ResolvedNode extends BOMNode
 {
 	public static final String ATTR_RESOLUTION_ID = "resolutionId";
 
@@ -42,7 +42,7 @@ public class ResolvedNode extends DepNode
 	@SuppressWarnings("hiding")
 	public static final String TAG = "resolvedNode";
 
-	private final List<DepNode> m_children;
+	private final List<BOMNode> m_children;
 
 	private final Resolution m_resolution;
 
@@ -66,11 +66,11 @@ public class ResolvedNode extends DepNode
 		else
 		{
 			ComponentQuery cquery = query.getComponentQuery();
-			List<DepNode> children = new ArrayList<DepNode>(nDeps);
+			List<BOMNode> children = new ArrayList<BOMNode>(nDeps);
 			for(QualifiedDependency qDep : qDeps)
 			{
 				ComponentRequest request = qDep.getRequest();
-				AdvisorNode override = cquery.getMatchingNode(request);
+				IAdvisorNode override = cquery.getMatchingNode(request);
 				if(override != null)
 				{
 					qDep = qDep.applyAdvice(override);
@@ -88,7 +88,7 @@ public class ResolvedNode extends DepNode
 		}
 	}
 
-	public ResolvedNode(Resolution resolution, List<DepNode> children)
+	public ResolvedNode(Resolution resolution, List<BOMNode> children)
 	{
 		m_resolution = resolution;
 		m_children = Utils.createUnmodifiableList(children);
@@ -99,7 +99,7 @@ public class ResolvedNode extends DepNode
 	{
 		if(skipThese.add(getResolution()))
 		{
-			for(DepNode child : getChildren())
+			for(BOMNode child : getChildren())
 				child.addUnresolved(unresolved, skipThese);
 		}
 	}
@@ -116,7 +116,7 @@ public class ResolvedNode extends DepNode
 	}
 
 	@Override
-	public synchronized List<DepNode> getChildren()
+	public synchronized List<BOMNode> getChildren()
 	{
 		return m_children;
 	}
@@ -161,9 +161,9 @@ public class ResolvedNode extends DepNode
 	 * @return true if the nodeID was equal to one of the children ids.
 	 */
 	@Override
-	public boolean isChild(DepNode node)
+	public boolean isChild(BOMNode node)
 	{
-		for(DepNode child : m_children)
+		for(BOMNode child : m_children)
 			if(child.equals(node))
 				return true;
 		return false;
@@ -172,25 +172,25 @@ public class ResolvedNode extends DepNode
 	@Override
 	public boolean isFullyResolved(ComponentQuery query) throws CoreException
 	{
-		for(DepNode child : getChildren())
+		for(BOMNode child : getChildren())
 			if(!child.isFullyResolved(query))
 				return false;
 		return true;
 	}
 
 	@Override
-	public final boolean isReferencing(DepNode node, boolean shallow) throws CoreException
+	public final boolean isReferencing(BOMNode node, boolean shallow) throws CoreException
 	{
 		if(equals(node))
 			return true;
 
-		for(DepNode child : m_children)
+		for(BOMNode child : m_children)
 			if(child.equals(node))
 				return true;
 
 		if(!shallow)
 		{
-			for(DepNode child : m_children)
+			for(BOMNode child : m_children)
 				if(child.isReferencing(node, shallow))
 					return true;
 		}
@@ -209,7 +209,7 @@ public class ResolvedNode extends DepNode
 		if(m_children.size() > 0)
 		{
 			String childName = Utils.makeQualifiedName(prefix, CHILD_TAG);
-			for(DepNode child : m_children)
+			for(BOMNode child : m_children)
 			{
 				AttributesImpl attrs = new AttributesImpl();
 				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.getId().toString());
@@ -223,7 +223,7 @@ public class ResolvedNode extends DepNode
 	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
 	throws CoreException
 	{
-		for(DepNode child : getChildren())
+		for(BOMNode child : getChildren())
 			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
 
 		Resolution resolution = getResolution();
@@ -245,32 +245,32 @@ public class ResolvedNode extends DepNode
 			// the child before its parent since they need to be materialized
 			// and bound in that order.
 			//
-			for(DepNode child : getChildren())
+			for(BOMNode child : getChildren())
 				child.collectAll(notThese, all);
 			all.add(getResolution());
 		}
 	}
 
 	@Override
-	DepNode replaceNode(DepNode topReplacer, DepNode node, Map<DepNode,DepNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode,BOMNode> visited) throws CoreException
 	{
-		DepNode self = super.replaceNode(topReplacer, node, visited);
+		BOMNode self = super.replaceNode(topReplacer, node, visited);
 		if(self != this)
 			return self;
 
-		List<DepNode> newChildren = null;
-		List<DepNode> oldChildren = getChildren();
+		List<BOMNode> newChildren = null;
+		List<BOMNode> oldChildren = getChildren();
 		int numChildren = oldChildren.size();
 		for(int idx = 0; idx < numChildren; ++idx)
 		{
-			DepNode oldChild = oldChildren.get(idx);
-			DepNode newChild = oldChild.replaceNode(topReplacer, node, visited);
+			BOMNode oldChild = oldChildren.get(idx);
+			BOMNode newChild = oldChild.replaceNode(topReplacer, node, visited);
 			if(oldChild == newChild)
 				continue;
 
 			if(newChildren == null)
 			{
-				newChildren = new ArrayList<DepNode>(numChildren);
+				newChildren = new ArrayList<BOMNode>(numChildren);
 				newChildren.addAll(oldChildren);
 			}
 			newChildren.set(idx, newChild);

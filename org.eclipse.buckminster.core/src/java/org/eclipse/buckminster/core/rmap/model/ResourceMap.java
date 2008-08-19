@@ -29,7 +29,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.MapUnion;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -149,7 +149,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		m_matchers.remove(matcher);
 	}
 
-	public DepNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
+	public BOMNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
 		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
@@ -169,7 +169,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 				IComponentType cType = providerMatch.getComponentType();
 				try
 				{
-					DepNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
+					BOMNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
 					Resolution resolution = node.getResolution();
 					MonitorUtils.testCancelStatus(monitor);
 					Filter[] filterHandle = new Filter[1];

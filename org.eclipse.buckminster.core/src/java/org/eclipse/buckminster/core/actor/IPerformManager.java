@@ -10,8 +10,8 @@ package org.eclipse.buckminster.core.actor;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface IPerformManager
 {
-	IGlobalContext perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
+	IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
 
-	IGlobalContext perform(List<Attribute> attributes, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
+	IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> props, boolean forced, IProgressMonitor monitor) throws CoreException;
 
-	IStatus perform(List<Attribute> attributes, IGlobalContext globalCtx, IProgressMonitor monitor) throws CoreException;
+	IStatus perform(List<? extends IAttribute> attributes, IGlobalContext globalCtx, IProgressMonitor monitor) throws CoreException;
 }

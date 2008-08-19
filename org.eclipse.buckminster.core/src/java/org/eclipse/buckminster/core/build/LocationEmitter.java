@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -70,7 +71,7 @@ public class LocationEmitter extends PropertiesEmitter
 
 	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache, HashSet<ComponentIdentifier> seenIds) throws CoreException
 	{
-		ComponentIdentifier cid = cspec.getComponentIdentifier();
+		IComponentIdentifier cid = cspec.getComponentIdentifier();
 		if(seenIds.contains(cid))
 			return;
 

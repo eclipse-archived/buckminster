@@ -20,6 +20,10 @@ import org.eclipse.buckminster.core.actor.IActor;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IActionArtifact;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
@@ -58,14 +62,14 @@ public class PerformManager implements IPerformManager
 		return INSTANCE;
 	}
 
-	public IGlobalContext perform(CSpec cspec, String attributeName, Map<String, String> props, boolean forced,
+	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
-		return perform(Collections.singletonList(cspec.getRequiredAttribute(attributeName)), props,
+		return perform(Collections.singletonList(((CSpec)cspec.getAdapter(CSpec.class)).getRequiredAttribute(attributeName)), props,
 			forced, monitor);
 	}
 
-	public IGlobalContext perform(List<Attribute> attributes, Map<String, String> userProps, boolean forced,
+	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> userProps, boolean forced,
 		IProgressMonitor monitor) throws CoreException
 	{
 		GlobalContext globalCtx = new GlobalContext(userProps, forced);
@@ -85,7 +89,7 @@ public class PerformManager implements IPerformManager
 		}
 	}
 
-	public IStatus perform(List<Attribute> attributes, IGlobalContext global, IProgressMonitor monitor) throws CoreException
+	public IStatus perform(List<? extends IAttribute> attributes, IGlobalContext global, IProgressMonitor monitor) throws CoreException
 	{
 		// calculate a flat dependency list of actions to be done
 		// adjust as needed when it's a build integration
@@ -122,7 +126,7 @@ public class PerformManager implements IPerformManager
 			IActor actor = ActorFactory.getInstance().getActor(action);
 			PrintStream out;
 			PrintStream err;
-			if(action.assignConsoleSupport())
+			if(action.isAssignConsoleSupport())
 			{
 				out = Logger.getOutStream();
 				err = Logger.getErrStream();
@@ -295,23 +299,23 @@ public class PerformManager implements IPerformManager
 		}
 	}
 
-	private static List<Action> getOrderedActionList(GlobalContext ctx, List<Attribute> attributes) throws CoreException
+	private static List<Action> getOrderedActionList(GlobalContext ctx, List<? extends IAttribute> attributes) throws CoreException
 	{
 		Set<String> seen = new HashSet<String>();
 		List<Action> ordered = new ArrayList<Action>();
-		for(Attribute attribute : attributes)
-			addAttributeChildren(ctx, attribute, seen, ordered);
+		for(IAttribute attribute : attributes)
+			addAttributeChildren(ctx, (Attribute)attribute, seen, ordered);
 
-		for(Attribute attribute : attributes)
+		for(IAttribute attribute : attributes)
 		{
-			if(attribute instanceof ActionArtifact)
+			if(attribute instanceof IActionArtifact)
 				attribute = ((ActionArtifact)attribute).getAction();
 
 			String attrId = attribute.toString();
 			if(!seen.contains(attrId))
 			{
 				seen.add(attrId);
-				if(attribute instanceof Action)
+				if(attribute instanceof IAction)
 					ordered.add((Action)attribute);
 			}
 		}
@@ -336,7 +340,7 @@ public class PerformManager implements IPerformManager
 					addAttributeChildren(ctx, ag, seen, ordered);
 			}
 
-			if(attribute instanceof Action)
+			if(attribute instanceof IAction)
 				ordered.add((Action)attribute);
 		}
 	}

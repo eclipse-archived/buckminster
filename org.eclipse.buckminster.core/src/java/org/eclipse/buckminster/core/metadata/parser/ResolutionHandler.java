@@ -16,14 +16,16 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.core.query.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -44,7 +46,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 {
 	public static final String TAG = Resolution.TAG;
 
-	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this);
+	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
 	private final VersionMatchHandler m_versionMatchHandler = new VersionMatchHandler(this);
 	private final ArrayList<String> m_attributes = new ArrayList<String>();
 	private UUID m_cspecId;
@@ -185,7 +187,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_componentRequestHandler)
-			m_request = m_componentRequestHandler.getComponentRequest();
+			m_request = m_componentRequestHandler.getBuilder().createComponentRequest();
 		else if(child == m_versionMatchHandler)
 			m_versionMatch = m_versionMatchHandler.getVersionMatch();
 	}
@@ -199,12 +201,12 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	private String legacyComponentType() throws SAXException
 	{
 		AbstractHandler parent = getParentHandler();
-		CSpec cspec;
+		ICSpecData cspec;
 		Provider provider;
 		if(parent instanceof IDWrapperHandler)
 		{
 			IDWrapperHandler wh = (IDWrapperHandler)parent;
-			cspec = (CSpec)wh.getWrapped(m_cspecId);
+			cspec = (ICSpecData)wh.getWrapped(m_cspecId);
 			provider = (Provider)wh.getWrapped(m_providerId);
 		}
 		else

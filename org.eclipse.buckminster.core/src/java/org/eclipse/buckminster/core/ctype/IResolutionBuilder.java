@@ -12,7 +12,7 @@ package org.eclipse.buckminster.core.ctype;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * An implementation of a IResolutionBuilder Creates a
- * {@link org.eclipse.buckminster.core.metadata.model.DepNode DepNode} based on the dependency information that it can
+ * {@link org.eclipse.buckminster.core.metadata.model.BOMNode DepNode} based on the dependency information that it can
  * read using a {@link org.eclipse.buckminster.core.reader.IComponentReader IRemoteReader}. The
  * <code>CSPecPacking</code> is delivered as a sequence of SAX events
  * 
@@ -53,7 +53,7 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	 * @return The created node
 	 * @throws CoreException
 	 */
-	DepNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException;
+	BOMNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the component type of the cspec built by this builder.

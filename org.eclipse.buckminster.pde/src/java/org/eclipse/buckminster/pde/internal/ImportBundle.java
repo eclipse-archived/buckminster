@@ -16,7 +16,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.StorageManager;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -75,7 +75,7 @@ public class ImportBundle
 		{
 			IResolutionBuilder builder = CorePlugin.getDefault().getResolutionBuilder(
 				IResolutionBuilder.PLUGIN2CSPEC);
-			DepNode node = builder.build(reader, false, monitor);
+			BOMNode node = builder.build(reader, false, monitor);
 
 			// Materialize the plugin, i.e. import it into the workspace
 			//

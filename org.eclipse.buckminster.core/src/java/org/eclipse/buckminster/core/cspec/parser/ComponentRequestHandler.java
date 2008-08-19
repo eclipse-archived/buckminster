@@ -7,11 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
-import org.eclipse.buckminster.core.cspec.builder.NamedElementBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.osgi.framework.InvalidSyntaxException;
@@ -22,25 +22,28 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class DependencyHandler extends CSpecElementHandler
+public class ComponentRequestHandler extends ExtensionAwareHandler
 {
-	public static final String TAG = Prerequisite.TAG;
+	public static final String TAG = ComponentRequest.TAG;
 
-	public DependencyHandler(AbstractHandler parent)
+	private final ComponentRequestBuilder m_builder;
+
+	public ComponentRequestHandler(AbstractHandler parent, ComponentRequestBuilder builder)
 	{
 		super(parent);
+		m_builder = builder;
 	}
 
 	@Override
 	public void handleAttributes(Attributes attrs)
 	throws SAXException
 	{
-		super.handleAttributes(attrs);
-		DependencyBuilder builder = (DependencyBuilder)getBuilder();
-		builder.setComponentTypeID(getComponentType(attrs));
+		m_builder.clear();
+		m_builder.setName(getStringValue(attrs, NamedElement.ATTR_NAME));
+		m_builder.setComponentTypeID(getComponentType(attrs));
 		try
 		{
-			builder.setVersionDesignator(
+			m_builder.setVersionDesignator(
 				getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR),
 				getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_TYPE));
 		}
@@ -53,7 +56,7 @@ public class DependencyHandler extends CSpecElementHandler
 		{
 			try
 			{
-				builder.setFilter(FilterUtils.createFilter(filter));
+				m_builder.setFilter(FilterUtils.createFilter(filter));
 			}
 			catch(InvalidSyntaxException e)
 			{
@@ -62,14 +65,8 @@ public class DependencyHandler extends CSpecElementHandler
 		}
 	}
 
-	@Override
-	protected NamedElementBuilder createBuilder()
+	public ComponentRequestBuilder getBuilder()
 	{
-		return getCSpecBuilder().createDependencyBuilder();
-	}
-
-	public ComponentRequest createDependency()
-	{
-		return ((DependencyBuilder)this.getBuilder()).createDependency();
+		return m_builder;
 	}
 }

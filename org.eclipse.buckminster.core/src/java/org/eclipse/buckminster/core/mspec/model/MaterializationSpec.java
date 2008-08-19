@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
@@ -142,7 +143,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return TAG;
 	}
 
-	public ConflictResolution getConflictResolution(ComponentName cName)
+	public ConflictResolution getConflictResolution(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
 		ConflictResolution cr = null;
@@ -163,7 +164,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_contextURL;
 	}
 
-	public IMaterializationNode getMatchingNode(ComponentName cName)
+	public IMaterializationNode getMatchingNode(IComponentName cName)
 	{
 		String name = cName.getName();
 		for(MaterializationNode aNode : m_nodes)
@@ -203,7 +204,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_name;
 	}
 
-	public IPath getLeafArtifact(ComponentName cname)
+	public IPath getLeafArtifact(IComponentName cname)
 	{
 		IMaterializationNode node = getMatchingNode(cname);
 		return node == null ? null : node.getLeafArtifact();
@@ -214,7 +215,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_nodes;
 	}
 
-	public IPath getResourcePath(ComponentName cName)
+	public IPath getResourcePath(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
 		return node == null ? null : node.getResourcePath();
@@ -225,7 +226,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_shortDesc;
 	}
 
-	public String getSuffix(ComponentName cName)
+	public String getSuffix(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
 		return node == null ? null : node.getSuffix();
@@ -241,19 +242,19 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_url, 0));
 	}
 
-	public boolean isExcluded(ComponentName cname)
+	public boolean isExcluded(IComponentName cname)
 	{
 		IMaterializationNode node = getMatchingNode(cname);
 		return node != null && node.isExclude();
 	}
 
-	public boolean isExpand(ComponentName cName)
+	public boolean isExpand(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
 		return node != null && (node.isUnpack() && node.isExpand());
 	}
 
-	public boolean isUnpack(ComponentName cName)
+	public boolean isUnpack(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
 		return node != null && node.isUnpack();

@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -56,7 +57,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 
 	public Map<String,String> getExecutionProperties(Attribute attribute) throws CoreException
 	{
-		Map<String,String> actionProps = (attribute instanceof Action) ? ((Action)attribute).getProperties() : Collections.<String,String>emptyMap();
+		Map<String,String> actionProps = (attribute instanceof IAction) ? ((IAction)attribute).getProperties() : Collections.<String,String>emptyMap();
 		int mapSize = m_globalProps.size() + actionProps.size() + 10;
 		ExpandingProperties allProps = new ExpandingProperties(mapSize);
 		allProps.putAll(m_globalProps, true);
@@ -118,7 +119,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	 * @param action The action to check
 	 * @return <code>true</code> if the action has been added.
 	 */
-	boolean hasPerformedAction(Action action)
+	boolean hasPerformedAction(IAction action)
 	{
 		return m_actionsPerformed.contains(action);
 	}

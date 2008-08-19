@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -226,7 +226,7 @@ public class CSpecFromBinary extends CSpecGenerator
 	throws CoreException
 	{
 		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
-		pqBld.setComponent(component);
+		pqBld.setComponentName(component);
 		pqBld.setName(name);
 		pqBld.setOptional(optional);
 		group.addPrerequisite(pqBld);
@@ -278,7 +278,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 			}
 
-			DependencyBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 

@@ -27,8 +27,7 @@ import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
@@ -99,11 +98,12 @@ import org.eclipse.ui.part.EditorPart;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 {
-	@SuppressWarnings("unchecked") // don't need generics here - need just to setDirty
+	@SuppressWarnings("unchecked")
+	// don't need generics here - need just to setDirty
 	class CompoundModifyListener implements ModifyListener, ITableModifyListener, IFieldModifyListener
 	{
 
@@ -122,71 +122,101 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			setDirty(true);
 		}
 	}
-	
+
 	enum CSpecEditorTab
 	{
-		MAIN(0), ACTIONS(1), ARTIFACTS(2), GROUPS(3), ATTRIBUTES(4), DEPENDENCIES(5), GENERATORS(6), DOCUMENTATION(6), XML(8);
-		
+		MAIN(0), ACTIONS(1), ARTIFACTS(2), GROUPS(3), ATTRIBUTES(4), DEPENDENCIES(5), GENERATORS(6), DOCUMENTATION(6), XML(
+				8);
+
 		private int m_seqNum;
-		
+
 		CSpecEditorTab(int seqNum)
 		{
 			m_seqNum = seqNum;
 		}
-		
+
 		public int getSeqNum()
 		{
 			return m_seqNum;
 		}
 	}
-	
+
 	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec";
-	
-	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = CSpecEditorUtils.getCSpecElementComparator();
-	private static Comparator<AttributeBuilder> s_attributeComparator = CSpecEditorUtils.getAttributeComparator();
 
 	private CSpecBuilder m_cspec;
-	
+
 	private List<ActionBuilder> m_actionBuilders = new ArrayList<ActionBuilder>();
+
 	private Map<ActionBuilder, List<ActionArtifactBuilder>> m_actionArtifactBuilders = new HashMap<ActionBuilder, List<ActionArtifactBuilder>>();
+
 	private List<ArtifactBuilder> m_artifactBuilders = new ArrayList<ArtifactBuilder>();
+
 	private List<GroupBuilder> m_groupBuilders = new ArrayList<GroupBuilder>();
-	private List<DependencyBuilder> m_dependencyBuilders = new ArrayList<DependencyBuilder>();
+
+	private List<ComponentRequestBuilder> m_dependencyBuilders = new ArrayList<ComponentRequestBuilder>();
+
 	private List<GeneratorBuilder> m_generatorBuilders = new ArrayList<GeneratorBuilder>();
-	
+
 	private CompoundModifyListener m_compoundModifyListener;
-	
-	private boolean m_hasChanges = false;	
-	private boolean m_mute = false;	
+
+	private boolean m_hasChanges = false;
+
+	private boolean m_mute = false;
+
 	private boolean m_needsRefresh = false;
+
 	private boolean m_readOnly = true;
-	
+
 	private CTabFolder m_tabFolder;
+
 	private CTabItem m_mainTab;
+
 	private CTabItem m_actionsTab;
+
 	private CTabItem m_artifactsTab;
+
 	private CTabItem m_groupsTab;
+
 	private CTabItem m_attributesTab;
-	private CTabItem  m_dependenciesTab;
+
+	private CTabItem m_dependenciesTab;
+
 	private CTabItem m_generatorsTab;
+
 	private CTabItem m_documentationTab;
+
 	private CTabItem m_xmlTab;
+
 	private Text m_componentName;
+
 	private Combo m_componentType;
+
 	private Text m_versionString;
+
 	private Combo m_versionType;
+
 	private ActionsTable m_actionsTable;
+
 	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
+
 	private OnePageTableEditor<ArtifactBuilder> m_artifactsEditor;
+
 	private OnePageTableEditor<GroupBuilder> m_groupsEditor;
+
 	private AllAttributesView m_attributesView;
-	private SimpleTableEditor<DependencyBuilder> m_dependenciesEditor;
+
+	private SimpleTableEditor<ComponentRequestBuilder> m_dependenciesEditor;
+
 	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
+
 	private Text m_shortDesc;
+
 	private Text m_documentation;
+
 	private Text m_xml;
+
 	private Button m_externalSaveAsButton;
-	
+
 	public void doExternalSaveAs()
 	{
 		if(!commitChanges())
@@ -269,19 +299,19 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	}
 
 	private boolean commitChanges()
-	{		
+	{
 		if(m_actionsEditor.isVisible())
 			if(!m_actionsEditor.save())
-				return false;		
-		
+				return false;
+
 		if(m_artifactsEditor.isVisible())
 			if(!m_artifactsEditor.save())
-				return false;		
-		
+				return false;
+
 		if(m_groupsEditor.isVisible())
 			if(!m_groupsEditor.save())
-				return false;		
-		
+				return false;
+
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
 		{
@@ -294,10 +324,11 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		if(componentType.length() == 0)
 			componentType = null;
 		m_cspec.setComponentTypeID(componentType);
-		
+
 		try
 		{
-			m_cspec.setVersion(UiUtils.trimmedValue(m_versionString), m_versionType.getItem(m_versionType.getSelectionIndex()));
+			m_cspec.setVersion(UiUtils.trimmedValue(m_versionString), m_versionType.getItem(m_versionType
+					.getSelectionIndex()));
 		}
 		catch(CoreException e)
 		{
@@ -308,12 +339,12 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		try
 		{
 			Map<String, AttributeBuilder> attributesMap = m_cspec.getAttributes();
-			
+
 			if(attributesMap != null)
 			{
 				attributesMap.clear();
 			}
-			
+
 			for(ActionBuilder action : m_actionBuilders)
 			{
 				m_cspec.addAttribute(action);
@@ -338,17 +369,17 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
-		
+
 		try
 		{
-			Map<String, DependencyBuilder> dependeciesMap = m_cspec.getDependencies();
-			
+			Map<String, ComponentRequestBuilder> dependeciesMap = m_cspec.getDependencies();
+
 			if(dependeciesMap != null)
 			{
 				dependeciesMap.clear();
 			}
-			
-			for(DependencyBuilder dependency : m_dependencyBuilders)
+
+			for(ComponentRequestBuilder dependency : m_dependencyBuilders)
 			{
 				m_cspec.addDependency(dependency);
 			}
@@ -358,11 +389,11 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
-		
+
 		try
 		{
 			Map<String, GeneratorBuilder> generatorsMap = m_cspec.getGenerators();
-			
+
 			if(generatorsMap != null)
 			{
 				generatorsMap.clear();
@@ -378,14 +409,16 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
-		
+
 		String doc = UiUtils.trimmedValue(m_shortDesc);
 		m_cspec.setShortDesc(doc);
 
 		doc = UiUtils.trimmedValue(m_documentation);
 		try
 		{
-			m_cspec.setDocumentation(doc == null ? null : Documentation.parse(doc));
+			m_cspec.setDocumentation(doc == null
+					? null
+					: Documentation.parse(doc));
 		}
 		catch(CoreException e)
 		{
@@ -402,14 +435,15 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException
 	{
-		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput || input instanceof CSpecEditorInput))
+		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput
+				|| input instanceof IURIEditorInput || input instanceof CSpecEditorInput))
 			throw new PartInitException("Invalid Input");
 		setSite(site);
 
@@ -439,9 +473,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				IPath path = (input instanceof ILocationProvider)
 						? ((ILocationProvider)input).getPath(input)
 						: ((IPathEditorInput)input).getPath();
-	
-				m_readOnly = (! SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
-						
+
+				m_readOnly = (!SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
+
 				File file = path.toFile();
 				if(file.length() != 0)
 				{
@@ -457,9 +491,11 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			{
 				refreshValues();
 			}
-			
+
 			setInputWithNotify(input);
-			setPartName(input.getName() + (m_readOnly ? " (read only)" : ""));
+			setPartName(input.getName() + (m_readOnly
+					? " (read only)"
+					: ""));
 		}
 		catch(Exception e)
 		{
@@ -476,14 +512,14 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	public boolean matches(IEditorReference editorRef, IEditorInput input)
 	{
 		IEditorPart part = (IEditorPart)editorRef.getPart(false);
-		if (part != null)
+		if(part != null)
 		{
 			IEditorInput editorInput = part.getEditorInput();
 			if(editorInput != null)
 			{
 				if(editorInput.equals(input))
 					return true;
-				
+
 				if(editorInput instanceof IDerivedEditorInput)
 				{
 					IEditorInput originalEditorInput = ((IDerivedEditorInput)editorInput).getOriginalInput();
@@ -495,7 +531,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		return false;
 	}
-	
+
 	private void refreshValues()
 	{
 		setDirty(false);
@@ -524,22 +560,25 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			if(attributesMap != null)
 			{
 				AttributeBuilder[] builders = attributesMap.values().toArray(new AttributeBuilder[0]);
-				Arrays.sort(builders, s_attributeComparator);
+				Arrays.sort(builders, CSpecEditorUtils.getAttributeComparator());
 				List<ActionArtifactBuilder> tmp_actionArtifactBuilders = new ArrayList<ActionArtifactBuilder>();
 				for(AttributeBuilder attribute : builders)
 				{
 					if(attribute instanceof ActionBuilder)
 					{
-						m_actionBuilders.add((ActionBuilder) attribute);
-					} else if(attribute instanceof ActionArtifactBuilder)
+						m_actionBuilders.add((ActionBuilder)attribute);
+					}
+					else if(attribute instanceof ActionArtifactBuilder)
 					{
 						tmp_actionArtifactBuilders.add((ActionArtifactBuilder)attribute);
-					} else if(attribute instanceof ArtifactBuilder)
+					}
+					else if(attribute instanceof ArtifactBuilder)
 					{
-						m_artifactBuilders.add((ArtifactBuilder) attribute);
-					} else if(attribute instanceof GroupBuilder)
+						m_artifactBuilders.add((ArtifactBuilder)attribute);
+					}
+					else if(attribute instanceof GroupBuilder)
 					{
-						m_groupBuilders.add((GroupBuilder) attribute);
+						m_groupBuilders.add((GroupBuilder)attribute);
 					}
 				}
 				for(ActionArtifactBuilder builder : tmp_actionArtifactBuilders)
@@ -547,39 +586,39 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 					addToActionArtifactBuilderMap(builder);
 				}
 			}
-			
+
 			m_dependencyBuilders.clear();
-			Map<String, DependencyBuilder> dependenciesMap = m_cspec.getDependencies();
+			Map<String, ComponentRequestBuilder> dependenciesMap = m_cspec.getDependencies();
 			if(dependenciesMap != null)
 			{
-				DependencyBuilder[] builders = dependenciesMap.values().toArray(new DependencyBuilder[0]);
-				Arrays.sort(builders, s_cspecElementComparator);
-				for(DependencyBuilder dependency : builders)
+				ComponentRequestBuilder[] builders = dependenciesMap.values().toArray(new ComponentRequestBuilder[0]);
+				Arrays.sort(builders, CSpecEditorUtils.getComponentComparator());
+				for(ComponentRequestBuilder dependency : builders)
 				{
 					m_dependencyBuilders.add(dependency);
 				}
 			}
-			
+
 			m_generatorBuilders.clear();
 			Map<String, GeneratorBuilder> generatorsMap = m_cspec.getGenerators();
 			if(generatorsMap != null)
 			{
 				GeneratorBuilder[] generators = generatorsMap.values().toArray(new GeneratorBuilder[0]);
-				Arrays.sort(generators, s_cspecElementComparator);
+				Arrays.sort(generators, CSpecEditorUtils.getCSpecElementComparator());
 				for(GeneratorBuilder generator : generators)
 				{
 					m_generatorBuilders.add(generator);
 				}
 			}
-			
+
 			m_shortDesc.setText(TextUtils.notNullString(m_cspec.getShortDesc()));
 			Documentation doc = m_cspec.getDocumentation();
 			m_documentation.setText(TextUtils.notNullString(doc == null
 					? ""
 					: doc.toString()));
-			
+
 			m_xml.setText(getCSpecXML());
-			
+
 			m_actionsEditor.refresh();
 			m_artifactsEditor.refresh();
 			m_groupsEditor.refresh();
@@ -598,19 +637,19 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		if(actionArtifactbuilder.getActionName() == null)
 			return;
-		
+
 		ActionBuilder actionBuilder = findActionBuilder(actionArtifactbuilder.getActionName());
-		
+
 		if(actionBuilder != null)
 		{
 			List<ActionArtifactBuilder> list = m_actionArtifactBuilders.get(actionBuilder);
-			
+
 			if(list == null)
 			{
 				list = new ArrayList<ActionArtifactBuilder>();
 				m_actionArtifactBuilders.put(actionBuilder, list);
 			}
-			
+
 			list.add(actionArtifactbuilder);
 		}
 	}
@@ -619,8 +658,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		for(ActionBuilder builder : m_actionBuilders)
 			if(actionName.equals(builder.getName()))
-					return builder;
-			
+				return builder;
+
 		return null;
 	}
 
@@ -638,7 +677,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			// nothing
 		}
 		return cspecXML;
-	}			
+	}
 
 	@Override
 	public boolean isDirty()
@@ -649,7 +688,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	@Override
 	public boolean isSaveAsAllowed()
 	{
-		return ! m_readOnly;
+		return !m_readOnly;
 	}
 
 	@Override
@@ -717,7 +756,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 					switchTab(CSpecEditorTab.ACTIONS);
 				}
 			};
-			
+
 			private final IActivator ARTIFACTS_ACTIVATOR = new IActivator()
 			{
 				public void activate()
@@ -725,7 +764,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 					switchTab(CSpecEditorTab.ARTIFACTS);
 				}
 			};
-			
+
 			private final IActivator GROUPS_ACTIVATOR = new IActivator()
 			{
 				public void activate()
@@ -733,9 +772,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 					switchTab(CSpecEditorTab.GROUPS);
 				}
 			};
-			
-			private CTabItem m_lastTab =  m_mainTab;
-			
+
+			private CTabItem m_lastTab = m_mainTab;
+
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
@@ -754,41 +793,51 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 						if(!m_groupsEditor.save(GROUPS_ACTIVATOR))
 							return;
 				}
-				
+
 				if(m_mainTab == e.item)
 				{
 					m_componentName.setFocus();
-				}else if(m_actionsTab == e.item)
+				}
+				else if(m_actionsTab == e.item)
 				{
 					m_actionsEditor.setFocus();
-				} else if(m_artifactsTab == e.item)
+				}
+				else if(m_artifactsTab == e.item)
 				{
 					m_artifactsEditor.setFocus();
-				} else if(m_groupsTab == e.item)
+				}
+				else if(m_groupsTab == e.item)
 				{
 					m_groupsEditor.setFocus();
-				} else if(m_attributesTab == e.item)
+				}
+				else if(m_attributesTab == e.item)
 				{
 					m_attributesView.setFocus();
-				} else if(m_dependenciesTab == e.item)
+				}
+				else if(m_dependenciesTab == e.item)
 				{
 					m_dependenciesEditor.setFocus();
-				} else if(m_generatorsTab == e.item)
+				}
+				else if(m_generatorsTab == e.item)
 				{
 					m_generatorsEditor.setFocus();
-				} else if(m_documentationTab == e.item)
+				}
+				else if(m_documentationTab == e.item)
 				{
 					m_shortDesc.setFocus();
-				} else if(m_xmlTab == e.item)
+				}
+				else if(m_xmlTab == e.item)
 				{
 					if(!commitChanges())
-						MessageDialog.openWarning(getSite().getShell(), null, "XML Content was not actualised due to errors");
+						MessageDialog.openWarning(getSite().getShell(), null,
+								"XML Content was not actualised due to errors");
 					else
 						m_xml.setText(getCSpecXML());
 				}
-				
+
 				m_lastTab = (CTabItem)e.item;
-			}});
+			}
+		});
 
 		createActionButtons(topComposite);
 	}
@@ -856,17 +905,14 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		m_componentType.setItems(AbstractComponentType.getComponentTypeIDs(true));
 		m_componentType.addModifyListener(m_compoundModifyListener);
 
-/*
-		// not nice but I had to make equal 2 columns form different Composites
-		// the purpose of hlpComposite is to create empty space, the same size
-		// as m_componentCategory
-		UiUtils.createEmptyPanel(nameComposite);
-
-		int textWidth = m_componentCategory.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-		gridData = (GridData)m_componentCategory.getLayoutData();
-		gridData.widthHint = textWidth;
-		m_componentCategory.setLayoutData(gridData);
-*/
+		/*
+		 * // not nice but I had to make equal 2 columns form different Composites // the purpose of hlpComposite is to
+		 * create empty space, the same size // as m_componentCategory UiUtils.createEmptyPanel(nameComposite);
+		 * 
+		 * int textWidth = m_componentCategory.computeSize(SWT.DEFAULT, SWT.DEFAULT).x; gridData =
+		 * (GridData)m_componentCategory.getLayoutData(); gridData.widthHint = textWidth;
+		 * m_componentCategory.setLayoutData(gridData);
+		 */
 		Group versionGroup = new Group(tabComposite, SWT.NONE);
 		versionGroup.setText("Version");
 		layout = new GridLayout(2, false);
@@ -879,13 +925,12 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		versionLabel.setLayoutData(gridData);
 
 		m_versionString = UiUtils.createGridText(versionGroup, 1, 0, SWT.NONE, m_compoundModifyListener);
-/*		
-		gridData = (GridData)m_versionString.getLayoutData();
-		gridData.widthHint = textWidth;
-		m_versionString.setLayoutData(gridData);
-
-		UiUtils.createEmptyPanel(versionGroup);
-*/
+		/*
+		 * gridData = (GridData)m_versionString.getLayoutData(); gridData.widthHint = textWidth;
+		 * m_versionString.setLayoutData(gridData);
+		 * 
+		 * UiUtils.createEmptyPanel(versionGroup);
+		 */
 		UiUtils.createGridLabel(versionGroup, "Type:", 1, 0, SWT.NONE);
 		m_versionType = UiUtils.createGridCombo(versionGroup, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
@@ -895,27 +940,23 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		m_versionType.setItems(versionTypes);
 		m_versionType.select(m_versionType.indexOf("OSGi"));
 		m_versionType.addModifyListener(m_compoundModifyListener);
-/*
-		UiUtils.createEmptyPanel(versionGroup);
-*/
+		/*
+		 * UiUtils.createEmptyPanel(versionGroup);
+		 */
 		return tabComposite;
 	}
-	
+
 	private Control getActionsTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
 
 		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec);
 		table.addFieldModifyListener(m_compoundModifyListener);
-				
-		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(
-				tabComposite,
-				table,
-				false,
-				SWT.NONE);
-		
+
+		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(tabComposite, table, false, SWT.NONE);
+
 		m_actionsTable = table;
-		
+
 		return tabComposite;
 	}
 
@@ -925,12 +966,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec);
 		table.addFieldModifyListener(m_compoundModifyListener);
-		
-		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(
-				tabComposite,
-				table,
-				false,
-				SWT.NONE);
+
+		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(tabComposite, table, false, SWT.NONE);
 
 		return tabComposite;
 	}
@@ -941,12 +978,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec);
 		table.addFieldModifyListener(m_compoundModifyListener);
-		
-		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(
-				tabComposite,
-				table,
-				false,
-				SWT.NONE);
+
+		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(tabComposite, table, false, SWT.NONE);
 
 		return tabComposite;
 	}
@@ -956,7 +989,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "All Attributes");
 
 		m_attributesView = new AllAttributesView(tabComposite, SWT.NONE, this);
-		
+
 		return tabComposite;
 	}
 
@@ -967,15 +1000,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		DependenciesTable table = new DependenciesTable(m_dependencyBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
-		
-		m_dependenciesEditor = new SimpleTableEditor<DependencyBuilder>(
-				tabComposite,
-				table,
-				null,
-				"CSpec Editor - Dependency",
-				null,
-				null,
-				SWT.NONE);
+
+		m_dependenciesEditor = new SimpleTableEditor<ComponentRequestBuilder>(tabComposite, table, null,
+				"CSpec Editor - Dependency", null, null, SWT.NONE);
 
 		return tabComposite;
 	}
@@ -987,15 +1014,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		GeneratorsTable table = new GeneratorsTable(this, m_generatorBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
-		
-		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(
-				tabComposite,
-				table,
-				null,
-				"CSpec Editor - Generator",
-				null,
-				null,
-				SWT.NONE);
+
+		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(tabComposite, table, null,
+				"CSpec Editor - Generator", null, null, SWT.NONE);
 
 		return tabComposite;
 	}
@@ -1015,8 +1036,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		Label label = UiUtils.createGridLabel(descComposite, "Documentation:", 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI
-				| SWT.V_SCROLL, m_compoundModifyListener);
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL,
+				m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
@@ -1032,7 +1053,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		xmlComposite.setLayout(layout);
 		xmlComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY, null);
+		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY,
+				null);
 		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
@@ -1042,46 +1064,46 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		if(m_readOnly || m_mute || m_hasChanges == flag)
 			return;
-		
+
 		m_hasChanges = flag;
 		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
 	}
-	
+
 	List<ActionBuilder> getActionBuilders()
 	{
 		return m_actionBuilders;
 	}
-	
-	Map<ActionBuilder,List<ActionArtifactBuilder>> getActionArtifactBuilders()
+
+	Map<ActionBuilder, List<ActionArtifactBuilder>> getActionArtifactBuilders()
 	{
 		return m_actionArtifactBuilders;
 	}
-	
+
 	List<ArtifactBuilder> getArtifactBuilders()
 	{
 		return m_artifactBuilders;
 	}
-	
+
 	List<GroupBuilder> getGroupBuilders()
 	{
 		return m_groupBuilders;
 	}
-	
-	List<DependencyBuilder> getDependencyBuilders()
+
+	List<ComponentRequestBuilder> getDependencyBuilders()
 	{
 		return m_dependencyBuilders;
 	}
-	
+
 	List<GeneratorBuilder> getGeneratorBuilders()
 	{
 		return m_generatorBuilders;
 	}
-	
+
 	String[] getAttributeNames(String excludeName)
 	{
 		List<String> nameList = new ArrayList<String>();
-		
+
 		for(ActionBuilder builder : m_actionBuilders)
 		{
 			if(builder.getName() != null)
@@ -1107,82 +1129,86 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				nameList.add(builder.getName());
 			}
 		}
-		
+
 		if(excludeName != null)
 		{
 			nameList.remove(excludeName);
 		}
-		
+
 		String[] array = nameList.toArray(new String[0]);
-		Arrays.sort(array, new Comparator<String>(){
+		Arrays.sort(array, new Comparator<String>()
+		{
 
 			public int compare(String o1, String o2)
 			{
 				return o1.compareTo(o2);
-			}});
-		
+			}
+		});
+
 		return array;
 	}
-	
+
 	String[] getComponentNames()
 	{
 		List<String> list = new ArrayList<String>();
-		
-		for(DependencyBuilder builder : m_dependencyBuilders)
+
+		for(ComponentRequestBuilder builder : m_dependencyBuilders)
 		{
 			if(builder.getName() != null)
 			{
 				list.add(builder.getName());
 			}
 		}
-		
+
 		String[] array = list.toArray(new String[0]);
-		Arrays.sort(array, new Comparator<String>(){
+		Arrays.sort(array, new Comparator<String>()
+		{
 
 			public int compare(String o1, String o2)
 			{
 				return o1.compareTo(o2);
-			}});
-		
+			}
+		});
+
 		return array;
 	}
 
-	DependencyBuilder getDependencyBuilder(String componentName)
+	ComponentRequestBuilder getDependencyBuilder(String componentName)
 	{
 		if(componentName == null)
 			return null;
-		
-		for(DependencyBuilder builder : m_dependencyBuilders)
+
+		for(ComponentRequestBuilder builder : m_dependencyBuilders)
 		{
 			if(componentName.equals(builder.getName()))
 			{
 				return builder;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	void switchTab(CSpecEditorTab tab)
 	{
 		m_tabFolder.setSelection(tab.getSeqNum());
 	}
-	
+
 	ActionsTable getActionsTable()
 	{
 		return m_actionsTable;
 	}
-	
+
 	OnePageTableEditor<ActionBuilder> getActionsEditor()
 	{
 		return m_actionsEditor;
 	}
-	
+
 	OnePageTableEditor<ArtifactBuilder> getArtifactsEditor()
 	{
 		return m_artifactsEditor;
 	}
-	
+
 	OnePageTableEditor<GroupBuilder> getGroupsEditor()
 	{
 		return m_groupsEditor;

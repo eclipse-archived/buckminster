@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
+import org.eclipse.buckminster.core.cspec.IGroup;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -30,7 +32,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Group extends TopLevelAttribute
+public class Group extends TopLevelAttribute implements IGroup
 {
 	public static final String ATTR_REBASE = "rebase";
 
@@ -106,7 +108,7 @@ public class Group extends TopLevelAttribute
 	public Group(GroupBuilder builder)
 	{
 		super(builder);
-		m_prerequisiteRebase = builder.getRebase();
+		m_prerequisiteRebase = builder.getPrerequisiteRebase();
 		m_prerequisites = Utils.createUnmodifiableList(builder.getPrerequisiteList());
 	}
 

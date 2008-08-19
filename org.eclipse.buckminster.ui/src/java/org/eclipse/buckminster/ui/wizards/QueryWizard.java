@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.UiPlugin;
-import org.eclipse.buckminster.ui.internal.MaterializeAndBindRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;

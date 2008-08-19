@@ -25,7 +25,7 @@ import org.eclipse.buckminster.core.cspec.parser.CSpecParser;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.core.cspecext.parser.AlterCSpecParser;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -120,7 +120,7 @@ public class ParserFactory implements IParserFactory
 	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating)
 	throws CoreException
 	{
-		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG, DepNode.TAG), validating);
+		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG, BOMNode.TAG), validating);
 	}
 
 	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException
@@ -134,10 +134,10 @@ public class ParserFactory implements IParserFactory
 		return new CSpecParser(getParserExtensions(CSpec.TAG), validating);
 	}
 
-	public IParser<DepNode> getDepNodeParser()
+	public IParser<BOMNode> getDepNodeParser()
 	throws CoreException
 	{
-		return new DepNodeParser(getParserExtensions(Resolution.TAG, DepNode.TAG));
+		return new DepNodeParser(getParserExtensions(Resolution.TAG, BOMNode.TAG));
 	}
 
 	public IParser<Materialization> getMaterializationParser()

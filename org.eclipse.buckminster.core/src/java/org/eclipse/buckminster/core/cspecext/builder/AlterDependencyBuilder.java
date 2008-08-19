@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.builder;
 
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterDependency;
 import org.eclipse.core.runtime.CoreException;
 
@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class AlterDependencyBuilder
 {
-	private final DependencyBuilder m_baseBuilder;
+	private final ComponentRequestBuilder m_baseBuilder;
 
-	public AlterDependencyBuilder(DependencyBuilder baseBuilder)
+	public AlterDependencyBuilder(ComponentRequestBuilder baseBuilder)
 	{
 		m_baseBuilder = baseBuilder;
 	}
@@ -35,6 +35,6 @@ public class AlterDependencyBuilder
 
 	public AlterDependency createAlterDependency() throws CoreException
 	{
-		return new AlterDependency(m_baseBuilder.createDependency());
+		return new AlterDependency(m_baseBuilder.createComponentRequest());
 	}
 }

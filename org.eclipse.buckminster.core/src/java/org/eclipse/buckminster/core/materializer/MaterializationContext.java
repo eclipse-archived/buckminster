@@ -12,12 +12,14 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -111,7 +113,7 @@ public class MaterializationContext extends RMContext
 
 	public IPath getLeafArtifact(Resolution resolution) throws CoreException
 	{
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		IComponentIdentifier ci = resolution.getComponentIdentifier();
 		MaterializationSpec mspec = getMaterializationSpec();
 		IPath leaf = mspec.getLeafArtifact(ci);
 		boolean isExpand = mspec.isExpand(ci);
@@ -234,7 +236,7 @@ public class MaterializationContext extends RMContext
 	throws CoreException
 	{
 		MaterializationSpec mspec = getMaterializationSpec();
-		ComponentName cName = resolution.getComponentIdentifier();
+		IComponentName cName = resolution.getComponentIdentifier();
 		if(!mspec.isUnpack(cName))
 			return null;
 
@@ -311,7 +313,7 @@ public class MaterializationContext extends RMContext
 		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
 	}
 
-	private void addTagInfosFromNode(String tagInfo, DepNode node)
+	private void addTagInfosFromNode(String tagInfo, BOMNode node)
 	{
 		Resolution res = node.getResolution();
 		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
@@ -319,7 +321,7 @@ public class MaterializationContext extends RMContext
 
 		addTagInfo(node.getRequest(), tagInfo);
 		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
-		for(DepNode child : node.getChildren())
+		for(BOMNode child : node.getChildren())
 			addTagInfosFromNode(childTagInfo, child);
 	}
 }

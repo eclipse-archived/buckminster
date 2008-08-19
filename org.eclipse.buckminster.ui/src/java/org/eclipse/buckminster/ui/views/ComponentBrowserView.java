@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.views;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.ui.GenericUiPlugin;
@@ -190,7 +191,7 @@ public class ComponentBrowserView extends ViewPart
 				if(obj instanceof IAdaptable)
 				{
 					// Invoke the ViewCSpec Action
-					CSpec cspec = (CSpec)((IAdaptable)obj).getAdapter(CSpec.class);
+					ICSpecData cspec = (ICSpecData)((IAdaptable)obj).getAdapter(CSpec.class);
 					if(cspec != null)
 					{
 						ViewCSpecAction vca = new ViewCSpecAction();

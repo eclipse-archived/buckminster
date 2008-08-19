@@ -13,7 +13,7 @@ package org.eclipse.buckminster.core.parser;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -86,7 +86,7 @@ public interface IParserFactory
 	 * @throws CoreException if the Java Runtime cannot support
 	 * SAX parsers due to configuration problems.
 	 */
-	IParser<DepNode> getDepNodeParser()
+	IParser<BOMNode> getDepNodeParser()
 	throws CoreException;
 
 	/**

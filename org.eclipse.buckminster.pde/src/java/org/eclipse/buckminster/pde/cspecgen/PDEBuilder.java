@@ -18,7 +18,7 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.OPMLConsumer;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
@@ -54,7 +54,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 
 	private IModel m_model;
 
-	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof ICatalogReader))

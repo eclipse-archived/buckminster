@@ -38,10 +38,9 @@ public class RMapTest extends PDETestCase
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(this.getClass().getResource("test.rmap").toString());
 
-		AdvisorNodeBuilder nodeBld = new AdvisorNodeBuilder();
+		AdvisorNodeBuilder nodeBld = queryBld.addAdvisorNode();
 		nodeBld.setNamePattern(Pattern.compile("org\\.eclipse"));
 		nodeBld.setUseTargetPlatform(false);
-		queryBld.addAdvisorNode(nodeBld);
 		ComponentQuery query = queryBld.createComponentQuery();
 
 		IResolver resolver = new MainResolver(new ResolutionContext(query));

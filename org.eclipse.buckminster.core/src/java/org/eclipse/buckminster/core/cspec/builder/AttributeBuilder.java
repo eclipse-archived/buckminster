@@ -7,15 +7,21 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
+import org.eclipse.core.runtime.IPath;
 import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
  */
-public class AttributeBuilder extends CSpecElementBuilder
+public class AttributeBuilder extends CSpecElementBuilder implements IAttribute
 {
 	private Documentation m_documentation;
 
@@ -39,6 +45,11 @@ public class AttributeBuilder extends CSpecElementBuilder
 		return new Attribute(this);
 	}
 
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
+	{
+		return specBuilder == getCSpecBuilder() ? this : new AttributeBuilder(specBuilder);
+	}
+
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
@@ -47,6 +58,33 @@ public class AttributeBuilder extends CSpecElementBuilder
 	public Filter getFilter()
 	{
 		return m_filter;
+	}
+
+	public Map<String, String> getInstallerHints()
+	{
+		return Collections.emptyMap();
+	}
+
+	public IPath getPrerequisiteRebase()
+	{
+		return null;
+	}
+
+	public List<? extends IPrerequisite> getPrerequisites()
+	{
+		return Collections.emptyList();
+	}
+
+	public String getQualifiedName()
+	{
+		return getCSpecBuilder().getComponentIdentifier().toString() + '#' + getName();
+	}
+
+	public void initFrom(IAttribute attribute)
+	{
+		super.initFrom(attribute.getName());
+		m_documentation = attribute.getDocumentation();
+		m_filter = attribute.getFilter();
 	}
 
 	public boolean isPublic()
@@ -62,14 +100,5 @@ public class AttributeBuilder extends CSpecElementBuilder
 	public void setFilter(Filter filter)
 	{
 		m_filter = filter;
-	}
-
-	@Override
-	public void initFrom(NamedElement namedElement)
-	{
-		Attribute attribute = (Attribute)namedElement;
-		super.initFrom(attribute);
-		m_documentation = attribute.getDocumentation();
-		m_filter = attribute.getFilter();
 	}
 }

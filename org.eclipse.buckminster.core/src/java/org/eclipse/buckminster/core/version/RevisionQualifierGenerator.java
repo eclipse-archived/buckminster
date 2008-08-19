@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
@@ -57,7 +58,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 				format = DEFAULT_FORMAT;
 
 			MessageFormat mf = new MessageFormat(format);
-			for(ComponentIdentifier dependency : dependencies)
+			for(IComponentIdentifier dependency : dependencies)
 			{
 				IVersion depVer = dependency.getVersion();
 				if(depVer == null)

@@ -17,13 +17,14 @@ import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Group;
-import org.eclipse.buckminster.core.cspec.model.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -221,7 +222,7 @@ public class PerformContext implements IActionContext
 		}
 	}
 
-	public CSpec findCSpec(CSpec ownerCSpec, ComponentRequest request) throws CoreException
+	public CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException
 	{
 		return m_globalCtx.findCSpec(ownerCSpec, request);
 	}

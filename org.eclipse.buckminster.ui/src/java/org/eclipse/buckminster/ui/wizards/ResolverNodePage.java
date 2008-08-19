@@ -17,10 +17,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -121,7 +122,7 @@ public class ResolverNodePage extends AbstractQueryPage
 
 	private Composite m_masterTreeComposite;
 
-	private final HashMap<Resolution, DepNode> m_parentWhenFirstSeen = new HashMap<Resolution, DepNode>();
+	private final HashMap<Resolution, BOMNode> m_parentWhenFirstSeen = new HashMap<Resolution, BOMNode>();
 
 	private Image m_redDotImage;
 
@@ -191,7 +192,7 @@ public class ResolverNodePage extends AbstractQueryPage
 	{
 		super.pageIsShowing();
 		resetMaster();
-		DepNode currentNode = getSelectedMasterNode();
+		BOMNode currentNode = getSelectedMasterNode();
 
 		TreeItem found = null;
 		for(TreeItem child : m_masterTree.getItems())
@@ -217,12 +218,12 @@ public class ResolverNodePage extends AbstractQueryPage
 	{
 		try
 		{
-			DepNode node = (DepNode)ti.getData();
-			Resolution resolution = node.getResolution();
+			BOMNode node = (BOMNode)ti.getData();
+			IResolution resolution = node.getResolution();
 			boolean isResolved = (resolution != null);
 			if(isResolved)
 			{
-				CSpec cspec = resolution.getCSpec();
+				ICSpecData cspec = resolution.getCSpec();
 				m_dependenciesTable.setInput(cspec.getDependencies().values());
 				m_detailGroup.setText("Dependencies in " + node.getViewName() + ":");
 			}
@@ -332,7 +333,7 @@ public class ResolverNodePage extends AbstractQueryPage
 
 	void unresolveNode()
 	{
-		final DepNode node = getSelectedMasterNode();
+		final BOMNode node = getSelectedMasterNode();
 		if(node == null)
 			return;
 
@@ -351,7 +352,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		resetMaster();
 	}
 
-	private void addMasterItem(TreeItem ti, DepNode parent, DepNode node) throws CoreException
+	private void addMasterItem(TreeItem ti, BOMNode parent, BOMNode node) throws CoreException
 	{
 		ti.removeAll();
 		ti.setText(node.getViewName());
@@ -367,7 +368,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			return;
 		}
 
-		Resolution resolution = node.getResolution();
+		IResolution resolution = node.getResolution();
 		if(resolution != null)
 		{
 			Integer nc = m_masterDups.get(resolution);
@@ -382,9 +383,9 @@ public class ResolverNodePage extends AbstractQueryPage
 		ti.setImage(m_greenDotImage);
 		ti.setFont(null);
 		boolean showPlatformTargets = m_showTargetPlatformButton.getSelection();
-		for(DepNode child : getSortedChildren(node))
+		for(BOMNode child : getSortedChildren(node))
 		{
-			Resolution ci = child.getResolution();
+			IResolution ci = child.getResolution();
 			if(!showPlatformTargets && ci != null)
 			{
 				if(IReaderType.ECLIPSE_PLATFORM.equals(ci.getProvider().getReaderTypeId()))
@@ -395,7 +396,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		ti.setExpanded(true);
 	}
 
-	private void countDuplicates(DepNode parent, DepNode node, MaterializationSpec mspec)
+	private void countDuplicates(BOMNode parent, BOMNode node, MaterializationSpec mspec)
 	throws CoreException
 	{
 		Resolution ci = node.getResolution();
@@ -416,7 +417,7 @@ public class ResolverNodePage extends AbstractQueryPage
 				nci = nc.intValue();
 
 			m_masterDups.put(ci, new Integer(1 + nci));
-			for(DepNode child : getSortedChildren(node))
+			for(BOMNode child : getSortedChildren(node))
 				countDuplicates(node, child, mspec);
 		}
 	}
@@ -544,7 +545,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		});
 	}
 
-	private TreeItem findItemWithData(TreeItem ti, DepNode node)
+	private TreeItem findItemWithData(TreeItem ti, BOMNode node)
 	{
 		if(ti.getData() == node)
 			return ti;
@@ -558,19 +559,19 @@ public class ResolverNodePage extends AbstractQueryPage
 		return null;
 	}
 
-	private DepNode getSelectedMasterNode()
+	private BOMNode getSelectedMasterNode()
 	{
 		TreeItem[] tia = m_masterTree.getSelection();
-		return (tia.length > 0) ? (DepNode)tia[0].getData() : null;
+		return (tia.length > 0) ? (BOMNode)tia[0].getData() : null;
 	}
 
-	private Collection<DepNode> getSortedChildren(DepNode parent) throws CoreException
+	private Collection<BOMNode> getSortedChildren(BOMNode parent) throws CoreException
 	{
-		Collection<DepNode> children = parent.getChildren();
+		Collection<BOMNode> children = parent.getChildren();
 		if(children.size() > 1)
 		{
-			Map<String, DepNode> sortedMap = new TreeMap<String, DepNode>();
-			for(DepNode child : children)
+			Map<String, BOMNode> sortedMap = new TreeMap<String, BOMNode>();
+			for(BOMNode child : children)
 				sortedMap.put(child.getViewName(), child);
 			children = sortedMap.values();
 		}
@@ -625,7 +626,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		setErrorMessage(errorMsg);
 	}
 
-	private boolean wasParentWhenFirstSeen(DepNode parent, DepNode node) throws CoreException
+	private boolean wasParentWhenFirstSeen(BOMNode parent, BOMNode node) throws CoreException
 	{
 		if(parent == null)
 			//
@@ -633,7 +634,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			//
 			return true;
 
-		Resolution resolution = node.getResolution();
+		IResolution resolution = node.getResolution();
 		return (resolution == null) ? false : m_parentWhenFirstSeen.get(resolution) == parent;
 	}
 }

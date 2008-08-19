@@ -2,6 +2,7 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -20,7 +21,7 @@ public interface IModelCache
 	 * @return The found CSpec.
 	 * @throws org.eclipse.buckminster.core.metadata.MissingComponentException If no such component could be found
 	 */
-	CSpec findCSpec(CSpec ownerCSpec, ComponentRequest request) throws CoreException;
+	CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException;
 
 	/**
 	 * Returns the cache used when evaulating attribute path groups

@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.cspec.IActionArtifact;
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -19,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class ActionArtifact extends Artifact
+public class ActionArtifact extends Artifact implements IActionArtifact
 {
 	private final String m_actionName;
 

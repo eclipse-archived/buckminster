@@ -22,9 +22,11 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
@@ -33,7 +35,6 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -46,7 +47,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Resolution extends UUIDKeyed implements IUUIDPersisted, IFileInfo
+public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 {
 	public static final String TAG = "resolution";
 
@@ -115,7 +116,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IFileInfo
 		OPMLBuilder opml = bld.getOPMLBuilder();
 		m_opml = (opml == null) ? null :new OPML(opml);
 		m_provider = bld.getProvider();
-		m_remoteName = bld.getRemoteName();
+		m_remoteName = bld.getName();
 		m_repository = bld.getRepository();
 		m_request = bld.getRequest();
 		m_size = bld.getSize();

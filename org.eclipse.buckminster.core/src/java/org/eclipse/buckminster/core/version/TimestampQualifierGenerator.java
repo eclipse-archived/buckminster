@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
@@ -79,7 +80,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			mf.setTimeZone(DateAndTimeUtils.UTC);
 			mf.setLenient(false);
 
-			for(ComponentIdentifier dependency : dependencies)
+			for(IComponentIdentifier dependency : dependencies)
 			{
 				IVersion depVer = dependency.getVersion();
 				if(depVer == null)

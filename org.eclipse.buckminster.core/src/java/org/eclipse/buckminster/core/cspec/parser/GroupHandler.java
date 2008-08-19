@@ -70,7 +70,7 @@ public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppe
 		super.handleAttributes(attrs);
 		String tmp = getOptionalStringValue(attrs, Group.ATTR_REBASE);
 		if(tmp != null)
-			this.getGroupBuilder().setRebase(Path.fromPortableString(tmp));
+			this.getGroupBuilder().setPrerequisiteRebase(Path.fromPortableString(tmp));
 	}
 
 	final GroupBuilder getGroupBuilder()

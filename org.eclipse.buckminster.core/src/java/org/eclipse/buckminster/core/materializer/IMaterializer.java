@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -89,6 +89,6 @@ public interface IMaterializer
 	 * @param monitor provides feedback to the user.
 	 * @throws CoreException
 	 */
-	void installRecursive(DepNode node, MaterializationContext context,
+	void installRecursive(BOMNode node, MaterializationContext context,
 			Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor) throws CoreException;
 }

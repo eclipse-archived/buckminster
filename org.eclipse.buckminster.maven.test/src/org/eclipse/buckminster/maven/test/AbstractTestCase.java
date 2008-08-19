@@ -57,10 +57,9 @@ public abstract class AbstractTestCase extends TestCase
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(getRMAP().toString());
-		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
+		AdvisorNodeBuilder node = queryBld.addAdvisorNode();
 		node.setNamePattern(Pattern.compile(".*"));
 		node.setUseTargetPlatform(false);
-		queryBld.addAdvisorNode(node);
 		ComponentQuery query = queryBld.createComponentQuery();
 		return new MainResolver(new ResolutionContext(query));
 	}

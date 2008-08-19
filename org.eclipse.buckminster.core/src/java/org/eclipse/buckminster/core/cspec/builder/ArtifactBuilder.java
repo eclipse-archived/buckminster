@@ -10,19 +10,20 @@ package org.eclipse.buckminster.core.cspec.builder;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.cspec.IArtifact;
+import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
 import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Thomas Hallgren
  */
-public class ArtifactBuilder extends TopLevelAttributeBuilder
+public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifact
 {
-	private final HashSet<IPath> m_paths = new HashSet<IPath>();
-
 	private IPath m_base;
+
+	private final HashSet<IPath> m_paths = new HashSet<IPath>();
 
 	private String m_type;
 
@@ -53,6 +54,12 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder
 		return new Artifact(this);
 	}
 
+	@Override
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
+	{
+		return specBuilder == getCSpecBuilder() ? this : new ArtifactBuilder(specBuilder);
+	}
+
 	public IPath getBase()
 	{
 		return m_base;
@@ -69,13 +76,20 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder
 	}
 
 	@Override
-	public void initFrom(NamedElement namedElement)
+	public void initFrom(IAttribute attribute)
 	{
-		Artifact artifact = (Artifact)namedElement;
-		super.initFrom(artifact);
+		super.initFrom(attribute);
+		IArtifact artifact = (IArtifact)attribute;
 		m_base = artifact.getBase();
 		m_type = artifact.getType();
 		m_paths.addAll(artifact.getPaths());
+	}
+
+	public void removePath(IPath path) throws MissingPathException
+	{
+		if(!m_paths.contains(path))
+			throw new MissingPathException(getCSpecName(), getName(), path);
+		m_paths.remove(path);
 	}
 
 	public void setBase(IPath base)
@@ -86,12 +100,5 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder
 	public void setType(String type)
 	{
 		m_type = type;
-	}
-
-	public void removePath(IPath path) throws MissingPathException
-	{
-		if(!m_paths.contains(path))
-			throw new MissingPathException(getCSpecName(), getName(), path);
-		m_paths.remove(path);
 	}
 }

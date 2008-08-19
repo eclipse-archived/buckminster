@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -72,7 +73,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			return toArray(new ISiteFeatureReference[size()]);
 		}
 
-		Resolution[] getResolutions()
+		IResolution[] getResolutions()
 		{
 			return m_includedRes.toArray(new Resolution[m_includedRes.size()]);
 		}
@@ -178,7 +179,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 				ISite mirrorSite = getDestinationSite(context, path, MonitorUtils.subMonitor(monitor, 100));
 				for(FeaturesPerSite fps : sites.get(path).values())
 				{
-					final Resolution first = fps.getResolutions()[0];
+					final IResolution first = fps.getResolutions()[0];
 					ILogListener listener = new ILogListener()
 					{
 						public void logging(IStatus status, String plugin)

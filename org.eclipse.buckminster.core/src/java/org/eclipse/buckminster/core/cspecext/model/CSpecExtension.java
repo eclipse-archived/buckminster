@@ -11,17 +11,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IActionArtifact;
+import org.eclipse.buckminster.core.cspec.IArtifact;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
-import org.eclipse.buckminster.core.cspec.model.Action;
-import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
-import org.eclipse.buckminster.core.cspec.model.Artifact;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.sax.Utils;
@@ -42,7 +42,7 @@ public class CSpecExtension
 
 	public static final String ELEM_ALTER_GROUPS = "alterGroups";
 
-	private final CSpec m_base;
+	private final ICSpecData m_base;
 
 	private final Set<String> m_removedDependencies;
 
@@ -52,7 +52,7 @@ public class CSpecExtension
 
 	private final Map<String, AlterDependency> m_alteredDependencies;
 
-	public CSpecExtension(CSpec base, Set<String> removedDependencies,
+	public CSpecExtension(ICSpecData base, Set<String> removedDependencies,
 			Map<String, AlterDependency> alteredDependencies, Set<String> removedAttributes,
 			Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes)
 	{
@@ -90,12 +90,12 @@ public class CSpecExtension
 		for(AlterDependency alterDep : m_alteredDependencies.values())
 			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName()));
 
-		Map<String, ComponentRequest> addedDeps = m_base.getDependencies();
-		for(ComponentRequest addedDep : addedDeps.values())
+		Map<String, ? extends IComponentRequest> addedDeps = m_base.getDependencies();
+		for(IComponentRequest addedDep : addedDeps.values())
 			cspecBuilder.addDependency(addedDep);
 
-		Map<String,Generator> addedGenerators = m_base.getGenerators();
-		for(Generator addedGenerator : addedGenerators.values())
+		Map<String,? extends IGenerator> addedGenerators = m_base.getGenerators();
+		for(IGenerator addedGenerator : addedGenerators.values())
 		{
 			GeneratorBuilder bld = cspecBuilder.createGeneratorBuilder();
 			bld.initFrom(addedGenerator);
@@ -111,15 +111,15 @@ public class CSpecExtension
 		for(AlterAttribute<?> alterAttr : m_alteredAttributes.values())
 			alterAttr.alterAttribute((TopLevelAttributeBuilder)cspecBuilder.getRequiredAttribute(alterAttr.getName()));
 
-		Map<String, Attribute> addedAttrs = m_base.getAttributes();
-		for(Attribute addedAttr : addedAttrs.values())
+		Map<String, ? extends IAttribute> addedAttrs = m_base.getAttributes();
+		for(IAttribute addedAttr : addedAttrs.values())
 		{
 			AttributeBuilder attrBld;
-			if(addedAttr instanceof ActionArtifact)
+			if(addedAttr instanceof IActionArtifact)
 				attrBld = cspecBuilder.createActionArtifactBuilder();
-			else if(addedAttr instanceof Action)
+			else if(addedAttr instanceof IAction)
 				attrBld = cspecBuilder.createActionBuilder();
-			else if(addedAttr instanceof Artifact)
+			else if(addedAttr instanceof IArtifact)
 				attrBld = cspecBuilder.createArtifactBuilder();
 			else
 				attrBld = cspecBuilder.createGroupBuilder();

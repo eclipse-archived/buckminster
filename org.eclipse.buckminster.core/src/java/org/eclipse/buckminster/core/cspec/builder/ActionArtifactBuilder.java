@@ -7,14 +7,15 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import org.eclipse.buckminster.core.cspec.IActionArtifact;
+import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
 
 /**
  * @author Thomas Hallgren
  */
-public class ActionArtifactBuilder extends ArtifactBuilder
+public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArtifact
 {
 	private String m_actionName;
 
@@ -36,15 +37,21 @@ public class ActionArtifactBuilder extends ArtifactBuilder
 		return new ActionArtifact(this);
 	}
 
+	@Override
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
+	{
+		return specBuilder == getCSpecBuilder() ? this : new ActionArtifactBuilder(specBuilder);
+	}
+
 	public String getActionName()
 	{
 		return m_actionName;
 	}
 
 	@Override
-	public void initFrom(NamedElement namedElement)
+	public void initFrom(IAttribute attribute)
 	{
-		ActionArtifact actionArtifact = (ActionArtifact)namedElement;
+		IActionArtifact actionArtifact = (IActionArtifact)attribute;
 		super.initFrom(actionArtifact);
 		m_actionName = actionArtifact.getActionName();
 	}

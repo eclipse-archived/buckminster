@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
@@ -30,14 +31,8 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class AdvisorNode extends AbstractSaxableElement implements Cloneable
+public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IAdvisorNode
 {
-	public static final int PRIO_VERSION_DESIGNATOR = 1;
-	public static final int PRIO_BRANCHTAG_PATH_INDEX = 2;
-	public static final int PRIO_SPACE_PATH_INDEX = 3;
-
-	public static final int[] DEFAULT_RESOLUTION_PRIO = { PRIO_BRANCHTAG_PATH_INDEX, PRIO_VERSION_DESIGNATOR, PRIO_SPACE_PATH_INDEX };
-
 	public static final String ATTR_ATTRIBUTES = "attributes";
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
@@ -202,11 +197,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable
 	public Map<String, String> getProperties()
 	{
 		return m_properties;
-	}
-
-	public final String[] getResolutionPath()
-	{
-		return m_spacePath;
 	}
 
 	public int[] getResolutionPrio()

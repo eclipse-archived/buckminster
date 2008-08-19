@@ -39,7 +39,6 @@ import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
 import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
 import org.eclipse.team.svn.core.resource.IRepositoryContainer;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
-import org.eclipse.team.svn.core.utility.FileUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**

@@ -36,7 +36,7 @@ import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -180,7 +180,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		m_recursiveResolve = flag;
 	}
 
-	protected DepNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
+	protected BOMNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		ComponentRequest request = query.getComponentRequest();
 		if(query.useMaterialization() || query.useWorkspace())
@@ -280,7 +280,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			try
 			{
 				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor, 10)) };
-				DepNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
+				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
 						MonitorUtils.subMonitor(monitor, 10));
 				IOUtils.close(reader[0]);
 
@@ -375,9 +375,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	BillOfMaterials createBillOfMaterials(ResolverNode topNode) throws CoreException
 	{
-		HashMap<UUID, DepNode> nodeMap = new HashMap<UUID, DepNode>();
+		HashMap<UUID, BOMNode> nodeMap = new HashMap<UUID, BOMNode>();
 		Stack<Resolution> circularDepTrap = new Stack<Resolution>();
-		DepNode node = topNode.collectNodes(nodeMap, circularDepTrap, true);
+		BOMNode node = topNode.collectNodes(nodeMap, circularDepTrap, true);
 		if(node == null)
 			node = new UnresolvedNode(topNode.getQuery().getQualifiedDependency());
 		return BillOfMaterials.create(node, getContext().getComponentQuery());
@@ -388,7 +388,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return new ResolverNode(context.getNodeQuery(qDep), requestorInfo);
 	}
 
-	private ResolverNode deepResolve(ResolutionContext context, Map<ComponentName,ResolverNode> visited, DepNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
+	private ResolverNode deepResolve(ResolutionContext context, Map<ComponentName,ResolverNode> visited, BOMNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
 	{
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
 		ComponentName key = qDep.getRequest().toPureComponentName();
@@ -448,7 +448,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			//
 			return node;
 
-		List<DepNode> children = depNode.getChildren();
+		List<BOMNode> children = depNode.getChildren();
 		int top = children.size();
 		if(top == 0)
 		{
@@ -460,7 +460,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
 		for(int idx = 0; idx < top; ++idx)
 		{
-			DepNode child = children.get(idx);
+			BOMNode child = children.get(idx);
 			ComponentQuery cquery = child.getQuery();
 			ResolutionContext childContext = (cquery == null)
 					? context
@@ -542,7 +542,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 			try
 			{
-				DepNode node = ctype.getResolution(pm, MonitorUtils.subMonitor(monitor, 100));
+				BOMNode node = ctype.getResolution(pm, MonitorUtils.subMonitor(monitor, 100));
 				Resolution resolution = node.getResolution();
 				if(resolution == null)
 					continue;

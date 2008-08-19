@@ -413,7 +413,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		{
 			rebasePath = Path.fromOSString(rebasePathString);
 		}
-		prereqBuilder.setRebase(rebasePath);
+		prereqBuilder.setPrerequisiteRebase(rebasePath);
 
 		List<PrerequisiteBuilder> prerequisites = prereqBuilder.getPrerequisites();
 
@@ -474,7 +474,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		
 		m_prereqNameText.setText(TextUtils.notNullString(prereqBuilder.getName()));
 		
-		IPath rebasePath = prereqBuilder.getRebase();
+		IPath rebasePath = prereqBuilder.getPrerequisiteRebase();
 		m_prereqRebasePathText.setText(TextUtils.notNullString(rebasePath == null
 				? null
 				: rebasePath.toOSString()));

@@ -10,9 +10,9 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -97,7 +97,7 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 		builder.setName(UiUtils.trimmedValue(m_nameText));	
 		builder.setPublic(m_publicCheck.getSelection());
 		
-		ExpandingProperties hints = builder.getInstallerHints();
+		Map<String,String> hints = builder.getInstallerHints();
 		
 		if(hints != null)
 		{

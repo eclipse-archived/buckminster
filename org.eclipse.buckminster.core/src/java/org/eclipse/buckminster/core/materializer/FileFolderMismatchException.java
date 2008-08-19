@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.core.materializer;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.core.runtime.IPath;
 
@@ -19,7 +19,7 @@ public class FileFolderMismatchException extends LocalizedException
 {
 	private static final long serialVersionUID = -8203237901604381801L;
 
-	public FileFolderMismatchException(ComponentIdentifier ci, IPath path)
+	public FileFolderMismatchException(IComponentIdentifier ci, IPath path)
 	{
 		super("Unable to reuse location %s for component %s. A file was expected but a folder was found or vice versa",
 				path, ci);

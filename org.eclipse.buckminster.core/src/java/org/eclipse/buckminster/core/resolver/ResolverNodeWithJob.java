@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -89,7 +89,7 @@ class ResolverNodeWithJob extends ResolverNode
 	{
 		clearInvalidationFlag();
 		m_resolver.addJobMonitor(monitor);
-		DepNode node = null;
+		BOMNode node = null;
 		try
 		{
 			node = resolve(monitor);
@@ -134,7 +134,7 @@ class ResolverNodeWithJob extends ResolverNode
 		return m_job.isScheduled();
 	}
 
-	boolean rebuildTree(DepNode node) throws CoreException
+	boolean rebuildTree(BOMNode node) throws CoreException
 	{
 		clearInvalidationFlag();
 		return buildTree(node);
@@ -145,7 +145,7 @@ class ResolverNodeWithJob extends ResolverNode
 		m_job.setScheduled(scheduled);
 	}
 
-	private boolean buildTree(DepNode node) throws CoreException
+	private boolean buildTree(BOMNode node) throws CoreException
 	{
 		if(isInvalidated())
 			return false;
@@ -169,7 +169,7 @@ class ResolverNodeWithJob extends ResolverNode
 			//
 			return false;
 
-		List<DepNode> nodeChildren = node.getChildren();
+		List<BOMNode> nodeChildren = node.getChildren();
 		int top = nodeChildren.size();
 		if(top == 0)
 		{
@@ -188,7 +188,7 @@ class ResolverNodeWithJob extends ResolverNode
 			if(isInvalidated())
 				return false;
 
-			DepNode childNode = nodeChildren.get(idx);
+			BOMNode childNode = nodeChildren.get(idx);
 			ComponentQuery childQuery = childNode.getQuery();
 			ResolutionContext childContext = (childQuery == null) ? context : new ResolutionContext(childQuery, context);
 			ResolverNode child = m_resolver.getResolverNode(childContext, childNode.getQualifiedDependency(), tagInfo);
@@ -200,7 +200,7 @@ class ResolverNodeWithJob extends ResolverNode
 		return didSchedule;
 	}
 
-	private DepNode resolve(IProgressMonitor monitor) throws CoreException
+	private BOMNode resolve(IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query;
 		synchronized(this)

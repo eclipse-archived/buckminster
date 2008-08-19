@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
@@ -173,7 +173,7 @@ public class CSpecFromSource extends CSpecGenerator
 					// prerequisite.
 					//
 					String prName = productRoots.getName();
-					ArtifactBuilder artifact = cspec.getArtifact(preqs.iterator().next().getName());
+					ArtifactBuilder artifact = cspec.getArtifactBuilder(preqs.iterator().next().getName());
 					cspec.removeAttribute(prName);
 
 					cspec.removeAttribute(artifact.getName());
@@ -219,7 +219,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder productRootFiles = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
 		{
-			DependencyBuilder dep = createDependency(feature);
+			ComponentRequestBuilder dep = createDependency(feature);
 			if(skipComponent(query, dep))
 				continue;
 
@@ -258,7 +258,7 @@ public class CSpecFromSource extends CSpecGenerator
 				if(manager.findEntry(plugin.getId()) == null)
 					continue;
 
-			DependencyBuilder dep = createDependency(plugin);
+			ComponentRequestBuilder dep = createDependency(plugin);
 			if(skipComponent(query, dep))
 				continue;
 
@@ -268,14 +268,14 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 	}
 
-	DependencyBuilder createDependency(IFeatureChild feature) throws CoreException
+	ComponentRequestBuilder createDependency(IFeatureChild feature) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
 		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), feature
 				.getMatch(), filter);
 	}
 
-	DependencyBuilder createDependency(IFeaturePlugin plugin) throws CoreException
+	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
 		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.PERFECT, filter);
@@ -305,7 +305,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
 		featureExports.addLocalPrerequisite(createCopyPluginsAction());
-		featureExports.setRebase(OUTPUT_DIR_SITE);
+		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
 	}
 
 	private ActionBuilder createCopyFeaturesAction() throws CoreException
@@ -352,7 +352,7 @@ public class CSpecFromSource extends CSpecGenerator
 		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
 		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
 
-		if(cspec.getArtifact(ATTRIBUTE_JAR_CONTENTS) != null)
+		if(cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
 			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
 		featureJarBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 

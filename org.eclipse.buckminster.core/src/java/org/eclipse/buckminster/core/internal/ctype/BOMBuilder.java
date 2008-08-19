@@ -15,7 +15,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNodeException;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -39,7 +39,7 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 		return bomParser.parse(streamName, stream);
 	}
 
-	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];

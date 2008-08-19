@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
@@ -65,7 +66,7 @@ public class AlterAction extends AlterAttribute<Action>
 	public void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException
 	{
 		ActionBuilder actionBld = (ActionBuilder)attrBld;
-		Action base = getBase();
+		IAction base = getBase();
 
 		GroupBuilder groupBld = actionBld.getPrerequisitesBuilder();
 		AlterGroup ag = new AlterGroup(

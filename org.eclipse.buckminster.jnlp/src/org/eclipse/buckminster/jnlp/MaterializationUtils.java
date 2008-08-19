@@ -32,10 +32,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
@@ -353,22 +353,22 @@ public class MaterializationUtils
 	 * @param depNode
 	 * @throws CoreException
 	 */
-	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
 	{
 		if(hasCSsiteReader(depNode))
 			excludeComponent(mspec, depNode);
 
-		for(DepNode childDepNode : depNode.getChildren())
+		for(BOMNode childDepNode : depNode.getChildren())
 			excludeCSsiteComponents(mspec, childDepNode);
 	}
 
-	private static void excludeComponent(MaterializationSpecBuilder mspec, DepNode depNode) throws CoreException
+	private static void excludeComponent(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
 	{
-		Resolution resolution = depNode.getResolution();
+		IResolution resolution = depNode.getResolution();
 
 		if(resolution != null)
 		{
-			CSpec cspec = resolution.getCSpec();
+			ICSpecData cspec = resolution.getCSpec();
 
 			if(cspec != null)
 			{
@@ -388,9 +388,9 @@ public class MaterializationUtils
 		}
 	}
 
-	private static boolean hasCSsiteReader(DepNode depNode) throws CoreException
+	private static boolean hasCSsiteReader(BOMNode depNode) throws CoreException
 	{
-		Resolution resolution = depNode.getResolution();
+		IResolution resolution = depNode.getResolution();
 
 		if(resolution != null)
 			if(MaterializationConstants.READER_TYPE_CSSITE.equals(resolution.getProvider().getReaderTypeId()))

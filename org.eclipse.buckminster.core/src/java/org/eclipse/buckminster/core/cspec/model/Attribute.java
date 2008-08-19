@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -28,7 +30,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Attribute extends NamedElement implements Cloneable
+public class Attribute extends NamedElement implements Cloneable, IAttribute
 {
 	public static final String TAG = "define";
 
@@ -58,7 +60,7 @@ public class Attribute extends NamedElement implements Cloneable
 	 * Create a copy of this Attribute with the owner set to <code>null</code>.
 	 * @return A copy that has no cspec owner assigned.
 	 */
-	public Attribute copy()
+	public IAttribute copy()
 	{
 		Attribute copy;
 		try
@@ -104,6 +106,11 @@ public class Attribute extends NamedElement implements Cloneable
 	public Filter getFilter()
 	{
 		return m_filter;
+	}
+
+	public Map<String, String> getInstallerHints()
+	{
+		return Collections.emptyMap();
 	}
 
 	public PathGroup[] getPathGroups(IModelCache ctx, Stack<IAttributeFilter> filters) throws CoreException

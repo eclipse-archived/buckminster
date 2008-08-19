@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNodeException;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -74,7 +74,7 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 		}
 	}
 
-	public synchronized DepNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
 	throws CoreException
 	{
 		monitor.beginTask(null, 2000);

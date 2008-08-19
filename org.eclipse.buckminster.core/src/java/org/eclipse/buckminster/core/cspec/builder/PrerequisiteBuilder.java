@@ -9,13 +9,13 @@ package org.eclipse.buckminster.core.cspec.builder;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 
 /**
  * @author Thomas Hallgren
  */
-public class PrerequisiteBuilder extends CSpecElementBuilder
+public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequisite
 {
 	private String m_alias;
 
@@ -54,12 +54,17 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		return m_alias;
 	}
 
+	public String getAttribute()
+	{
+		return getAttributeBuilder().getName();
+	}
+
 	public AttributeBuilder getAttributeBuilder()
 	{
 		return m_attributeBuilder;
 	}
 
-	public String getComponent()
+	public String getComponentName()
 	{
 		return m_component;
 	}
@@ -74,11 +79,9 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		return m_includePattern;
 	}
 
-	@Override
-	public void initFrom(NamedElement namedElem)
+	public void initFrom(IPrerequisite prerequisite)
 	{
-		super.initFrom(namedElem);
-		Prerequisite prerequisite = (Prerequisite)namedElem;
+		super.initFrom(prerequisite.getName());
 		m_alias = prerequisite.getAlias();
 		m_component = prerequisite.getComponentName();
 		m_optional = prerequisite.isOptional();
@@ -92,6 +95,16 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		return m_contributor;
 	}
 
+	public boolean isExternal()
+	{
+		return m_component != null;
+	}
+
+	public boolean isMatch(String component, String attribute)
+	{
+		return Prerequisite.isMatch(component, attribute, m_excludePattern, m_includePattern);
+	}
+
 	public boolean isOptional()
 	{
 		return m_optional;
@@ -102,7 +115,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 		m_alias = alias;
 	}
 
-	public void setComponent(String component)
+	public void setComponentName(String component)
 	{
 		m_component = component;
 	}
@@ -131,7 +144,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder
 	public String toString()
 	{
 		if(m_component == null)
-			return this.getName();
-		return m_component + '.' + this.getName();
+			return getName();
+		return m_component + '#' + getName();
 	}
 }

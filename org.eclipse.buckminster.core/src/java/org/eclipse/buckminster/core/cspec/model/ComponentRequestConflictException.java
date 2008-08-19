@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 
 /**
@@ -16,7 +17,7 @@ public class ComponentRequestConflictException extends LocalizedException
 {
 	private static final long serialVersionUID = -1279777286044718638L;
 
-	public ComponentRequestConflictException(ComponentRequest rq1, ComponentRequest rq2)
+	public ComponentRequestConflictException(IComponentRequest rq1, IComponentRequest rq2)
 	{
 		super("Component request %s is inconflict with request %s", rq1, rq2);
 	}

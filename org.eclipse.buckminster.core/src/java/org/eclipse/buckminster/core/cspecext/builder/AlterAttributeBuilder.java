@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
-import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
 
 /**
@@ -79,7 +79,7 @@ public abstract class AlterAttributeBuilder
 		m_cspecName = cspecName;
 	}
 
-	Attribute createBase()
+	IAttribute createBase()
 	{
 		return getBaseBuilder().createAttribute();
 	}

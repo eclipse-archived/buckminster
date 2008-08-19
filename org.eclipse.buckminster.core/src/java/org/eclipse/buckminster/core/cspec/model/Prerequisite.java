@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.cspec.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.sax.Utils;
@@ -22,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Prerequisite extends NamedElement implements IAttributeFilter
+public class Prerequisite extends NamedElement implements IPrerequisite
 {
 	public static final String ATTR_ALIAS = "alias";
 
@@ -51,7 +52,7 @@ public class Prerequisite extends NamedElement implements IAttributeFilter
 		m_alias = bld.getAlias();
 		m_contributor = bld.isContributor();
 		m_optional = bld.isOptional();
-		m_componentName = bld.getComponent();
+		m_componentName = bld.getComponentName();
 		m_excludePattern = bld.getExcludePattern();
 		m_includePattern = bld.getIncludePattern();
 	}
@@ -108,13 +109,20 @@ public class Prerequisite extends NamedElement implements IAttributeFilter
 
 	public boolean isMatch(String component, String attribute)
 	{
+		return isMatch(component, attribute, m_excludePattern, m_includePattern);
+	}
+
+	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern)
+	{
 		CharSequence tmp;
+		if(attribute == null && component == null)
+			return false;
+		
+		if(excludePattern == null && includePattern == null)
+			return true;
+
 		if(attribute == null)
-		{
-			if(component == null)
-				return false;
 			tmp = component;
-		}
 		else
 		{
 			StringBuilder bld = new StringBuilder();
@@ -124,15 +132,15 @@ public class Prerequisite extends NamedElement implements IAttributeFilter
 			bld.append(attribute);
 			tmp = bld;
 		}
-		if(m_excludePattern != null)
+		if(excludePattern != null)
 		{
-			Matcher m = m_excludePattern.matcher(tmp);
+			Matcher m = excludePattern.matcher(tmp);
 			if(m.matches())
 				return false;
 		}
-		if(m_includePattern != null)
+		if(includePattern != null)
 		{
-			Matcher m = m_includePattern.matcher(tmp);
+			Matcher m = includePattern.matcher(tmp);
 			if(!m.matches())
 				return false;
 		}

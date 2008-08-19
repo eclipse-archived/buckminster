@@ -10,10 +10,11 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.ArrayList;
 
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
-import org.eclipse.buckminster.core.query.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -24,12 +25,12 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class UnresolvedNodeHandler extends DepNodeHandler implements ChildPoppedListener
+class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 {
 	public static final String TAG = UnresolvedNode.TAG;
 
 	private ComponentRequest m_componentRequest;
-	private final ComponentRequestHandler m_requestHandler = new ComponentRequestHandler(this);
+	private final ComponentRequestHandler m_requestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
 	private ArrayList<String> m_attributes;
 	private AttributeRefHandler m_attributeRefHandler;
 
@@ -59,7 +60,7 @@ class UnresolvedNodeHandler extends DepNodeHandler implements ChildPoppedListene
 	public void childPopped(ChildHandler child) throws SAXParseException
 	{
 		if(child == m_requestHandler)
-			m_componentRequest = m_requestHandler.getComponentRequest();
+			m_componentRequest = m_requestHandler.getBuilder().createComponentRequest();
 		else if(child == m_attributeRefHandler)
 		{
 			if(m_attributes == null)
@@ -78,7 +79,7 @@ class UnresolvedNodeHandler extends DepNodeHandler implements ChildPoppedListene
 	}
 
 	@Override
-	DepNode getDepNode()
+	BOMNode getDepNode()
 	{
 		return new UnresolvedNode(new QualifiedDependency(m_componentRequest, m_attributes));
 	}

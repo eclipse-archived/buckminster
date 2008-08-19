@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -150,7 +151,7 @@ public class PDEMapProvider extends Provider
 		String ctype = wanted.getComponentTypeID();
 		IVersionDesignator vd = wanted.getVersionDesignator();
 
-		ComponentIdentifier candidate = null;
+		IComponentIdentifier candidate = null;
 		MapFileEntry candidateEntry = null;
 		for(Map.Entry<ComponentIdentifier, MapFileEntry> entry : map.entrySet())
 		{

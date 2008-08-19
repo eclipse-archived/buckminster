@@ -9,13 +9,11 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -26,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Thomas Hallgren
  */
-public class ComponentName extends NamedElement implements Comparable<ComponentName>
+public class ComponentName extends NamedElement implements Comparable<IComponentName>, IComponentName
 {
 	public static final String TAG = "componentName";
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
@@ -78,28 +76,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 			// No component type.
 			//
 			return name;
-
-		Pattern desiredMatch = ctype.getDesiredNamePattern();
-		if(desiredMatch == null || desiredMatch.matcher(name).find())
-			//
-			// We have a component type but no desire to change the name
-			//
-			return name;
-
-		Pattern repFrom = ctype.getSubstituteNamePattern();
-		String repTo = ctype.getNameSubstitution();
-
-		if(repFrom == null || repTo == null)
-			throw BuckminsterException.fromMessage("Component type %s defines desiredNamePattern but no substitution", m_componentType);
-
-		Matcher matcher = repFrom.matcher(name);
-		if(matcher.matches())
-		{
-			String repl = matcher.replaceAll(repTo).trim();
-			if(repl.length() > 0)
-				name = repl;
-		}
-		return name;
+		return ctype.getProjectName(name);
 	}
 
 	public Map<String,String> getProperties()
@@ -151,7 +128,7 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 	 * are used as keys where only the component name part is significant.
 	 * @return A pure component name.
 	 */
-	public ComponentName toPureComponentName()
+	public IComponentName toPureComponentName()
 	{
 		return this;
 	}
@@ -174,11 +151,11 @@ public class ComponentName extends NamedElement implements Comparable<ComponentN
 		}
 	}
 
-	public int compareTo(ComponentName o)
+	public int compareTo(IComponentName o)
 	{
 		int cmp = Trivial.compareAllowNull(getName(), o.getName());
 		if(cmp == 0)
-			cmp = Trivial.compareAllowNull(m_componentType, o.m_componentType);
+			cmp = Trivial.compareAllowNull(m_componentType, o.getComponentTypeID());
 		return cmp;
 	}
 

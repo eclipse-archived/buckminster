@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.cspecext.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.cspec.IArtifact;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Artifact;
@@ -35,7 +36,7 @@ public class AlterArtifact extends AlterAttribute<Artifact>
 	@Override
 	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
 	{
-		Artifact base = getBase();
+		IArtifact base = getBase();
 		ArtifactBuilder aBld = (ArtifactBuilder)original;
 		alterInstallerHints(aBld);
 		alterPaths(aBld);

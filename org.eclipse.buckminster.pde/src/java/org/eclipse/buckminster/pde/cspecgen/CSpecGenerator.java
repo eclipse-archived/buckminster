@@ -26,7 +26,7 @@ import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
@@ -286,7 +286,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			{
 				for(IProductFeature feature : product.getFeatures())
 				{
-					DependencyBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature
+					ComponentRequestBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature
 							.getVersion(), IMatchRules.PERFECT, null);
 					if(dep.getName().equals(cspec.getName()))
 						createProduct.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORTS);
@@ -301,7 +301,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			{
 				for(IProductPlugin plugin : product.getPlugins())
 				{
-					DependencyBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null, null);
+					ComponentRequestBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null, null);
 					if(dep.getName().equals(cspec.getName()))
 						continue;
 					else if(!skipComponent(query, dep))
@@ -313,7 +313,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 				featureExports.addLocalPrerequisite(createCopyPluginsAction());
-				featureExports.setRebase(OUTPUT_DIR_SITE);
+				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
 				createProduct.addLocalPrerequisite(featureExports);
 
 				IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE, null, null);
@@ -324,7 +324,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				{
 					IFeature feature = launcherFeature.getFeature();
 					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
-					DependencyBuilder dep = createDependency(feature.getId(),
+					ComponentRequestBuilder dep = createDependency(feature.getId(),
 							IComponentType.ECLIPSE_FEATURE,
 							version.toString(), IMatchRules.PERFECT,
 							null);
@@ -340,7 +340,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			}
 
 			boolean hasLauncherFeature = false;
-			for(DependencyBuilder dep : cspec.getDependencies().values())
+			for(ComponentRequestBuilder dep : cspec.getDependencies().values())
 			{
 				if(dep.getComponentTypeID() != IComponentType.ECLIPSE_FEATURE)
 					continue;
@@ -361,7 +361,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				{
 					IPluginBase plugin = launcherBundle.getPluginBase();
 					IVersion version = VersionFactory.OSGiType.fromString(plugin.getVersion());
-					DependencyBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, version.toString(), IMatchRules.PERFECT, null);
+					ComponentRequestBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, version.toString(), IMatchRules.PERFECT, null);
 					if(addDependency(dep))
 						bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
 				}
@@ -409,7 +409,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected void addBundleHostDependency(IFragmentModel fragmentModel) throws CoreException
 	{
 		IFragment fragment = fragmentModel.getFragment();
-		DependencyBuilder bundleHostDep = m_cspecBuilder.createDependencyBuilder();
+		ComponentRequestBuilder bundleHostDep = m_cspecBuilder.createDependencyBuilder();
 		bundleHostDep.setName(fragment.getPluginId());
 		bundleHostDep.setVersionDesignator(fragment.getPluginVersion(), IVersionType.OSGI);
 		bundleHostDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
@@ -424,9 +424,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		addDependency(bundleHostDep);
 	}
 
-	protected boolean addDependency(DependencyBuilder dependency) throws CoreException
+	protected boolean addDependency(ComponentRequestBuilder dependency) throws CoreException
 	{
-		DependencyBuilder old = m_cspecBuilder.getDependency(dependency.getName());
+		ComponentRequestBuilder old = m_cspecBuilder.getDependency(dependency.getName());
 		if(old == null)
 		{
 			m_cspecBuilder.addDependency(dependency);
@@ -446,7 +446,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					//
 					// Version ranges were not possible to merge, i.e. no intersection
 					//
-					throw new DependencyAlreadyDefinedException(old.getCSpecName(), old.getName());
+					throw new DependencyAlreadyDefinedException(m_cspecBuilder.getName(), old.getName());
 			}
 		}
 
@@ -490,20 +490,20 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return copyPlugins;
 	}
 
-	protected DependencyBuilder createDependency(IPluginReference pluginReference, String category)
+	protected ComponentRequestBuilder createDependency(IPluginReference pluginReference, String category)
 			throws CoreException
 	{
 		return createDependency(pluginReference.getId(), category, pluginReference.getVersion(), pluginReference
 				.getMatch(), null);
 	}
 
-	protected DependencyBuilder createDependency(String name, String componentType, String versionDesignator,
+	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
 			Filter filter) throws CoreException
 	{
 		if(versionDesignator != null && (versionDesignator.length() == 0 || versionDesignator.equals("0.0.0")))
 			versionDesignator = null;
 
-		DependencyBuilder bld = getCSpec().createDependencyBuilder();
+		ComponentRequestBuilder bld = getCSpec().createDependencyBuilder();
 		bld.setName(name);
 		bld.setComponentTypeID(componentType);
 		bld.setVersionDesignator(versionDesignator, IVersionType.OSGI);
@@ -511,7 +511,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld;
 	}
 
-	protected DependencyBuilder createDependency(String name, String componentType, String version, int pdeMatchRule,
+	protected ComponentRequestBuilder createDependency(String name, String componentType, String version, int pdeMatchRule,
 			Filter filter) throws CoreException
 	{
 		return createDependency(name, componentType, convertMatchRule(pdeMatchRule, version), filter);
@@ -530,7 +530,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return rmDir;
 	}
 
-	protected boolean skipComponent(ComponentQuery query, DependencyBuilder bld)
+	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld)
 	{
 		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()));
 	}

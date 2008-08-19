@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.metadata;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -41,7 +42,7 @@ public class ModelCache implements IModelCache
 		return m_pathGroupsCache;
 	}
 
-	public synchronized CSpec findCSpec(CSpec ownerCSpec, ComponentRequest request) throws CoreException
+	public synchronized CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException
 	{
 		CSpec cspec = null;
 		if(m_cspecCache == null)

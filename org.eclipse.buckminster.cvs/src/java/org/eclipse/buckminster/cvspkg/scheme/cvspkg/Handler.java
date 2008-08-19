@@ -21,7 +21,6 @@ import java.net.URLConnection;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -148,7 +147,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString(), null);
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
-				cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
+				cqBld.getRootRequestBuilder().setName(m_fileName);
 				if(vm == null)
 					vm = VersionMatch.DEFAULT;
 				m_reader = (ICatalogReader)cvsReaderType.getReader(provider, plugin.getComponentType(IComponentType.UNKNOWN), new ResolutionContext(

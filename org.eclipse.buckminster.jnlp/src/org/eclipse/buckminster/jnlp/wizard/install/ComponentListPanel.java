@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
@@ -127,7 +128,7 @@ public class ComponentListPanel
 			m_path = path;
 		}
 
-		public ComponentIdentifier getComponentIdentifier()
+		public IComponentIdentifier getComponentIdentifier()
 		{
 			return m_componentIdentifier;
 		}

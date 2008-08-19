@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.internal;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.sax.ISaxable;
@@ -34,7 +35,7 @@ public class CSpecEditorInput extends SaxableEditorInput
 		return true;
 	}
 
-	public CSpec getCSpec()
+	public ICSpecData getCSpec()
 	{
 		return m_cspec;
 	}

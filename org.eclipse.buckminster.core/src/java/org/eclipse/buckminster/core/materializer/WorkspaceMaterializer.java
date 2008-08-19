@@ -20,10 +20,11 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -128,9 +129,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		}
 	}
 
-	private static void storeBelow(Resolution resolution, DepNode node, StorageManager sm, boolean isBelow) throws CoreException
+	private static void storeBelow(Resolution resolution, BOMNode node, StorageManager sm, boolean isBelow) throws CoreException
 	{
-		Resolution nodeRes = node.getResolution();
+		IResolution nodeRes = node.getResolution();
 		if(nodeRes == null)
 			return;
 
@@ -151,7 +152,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			}
 		}
 
-		for(DepNode child : node.getChildren())
+		for(BOMNode child : node.getChildren())
 			storeBelow(resolution, child, sm, isBelow);
 	}
 

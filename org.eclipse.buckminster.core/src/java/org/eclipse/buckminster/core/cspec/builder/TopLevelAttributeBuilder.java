@@ -10,11 +10,10 @@ package org.eclipse.buckminster.core.cspec.builder;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
-import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 
 /**
  * @author Thomas Hallgren
@@ -87,7 +86,8 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		return new PrerequisiteBuilder(this);
 	}
 
-	public ExpandingProperties getInstallerHints()
+	@Override
+	public Map<String,String> getInstallerHints()
 	{
 		return m_installerHints;
 	}
@@ -111,9 +111,8 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	}
 
 	@Override
-	public void initFrom(NamedElement namedElement)
+	public void initFrom(IAttribute attribute)
 	{
-		TopLevelAttribute attribute = (TopLevelAttribute)namedElement;
 		super.initFrom(attribute);
 		m_installerHints = null;
 		m_public = attribute.isPublic();
@@ -123,13 +122,13 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias)
 	{
 		PrerequisiteBuilder bld = createPrerequisiteBuilder();
-		bld.setComponent(component);
+		bld.setComponentName(component);
 		bld.setName(name);
 		bld.setAlias(alias);
 		return bld;
 	}
 
-	public void removePrerequisite(Prerequisite pq)
+	public void removePrerequisite(IPrerequisite pq)
 	{
 		removePrerequisite(pq.toString());
 	}

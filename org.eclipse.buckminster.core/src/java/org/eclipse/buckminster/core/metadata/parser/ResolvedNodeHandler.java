@@ -10,7 +10,7 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -23,7 +23,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class ResolvedNodeHandler extends DepNodeHandler implements ChildPoppedListener
+class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 {
 	public static final String TAG = ResolvedNode.TAG;
 
@@ -63,11 +63,11 @@ class ResolvedNodeHandler extends DepNodeHandler implements ChildPoppedListener
 	}
 
 	@Override
-	DepNode getDepNode() throws SAXException
+	BOMNode getDepNode() throws SAXException
 	{
-		ArrayList<DepNode> childNodes = new ArrayList<DepNode>(m_children.size());
+		ArrayList<BOMNode> childNodes = new ArrayList<BOMNode>(m_children.size());
 		for(UUID childId : m_children)
-			childNodes.add((DepNode)getWrapped(childId));
+			childNodes.add((BOMNode)getWrapped(childId));
 
 		try
 		{

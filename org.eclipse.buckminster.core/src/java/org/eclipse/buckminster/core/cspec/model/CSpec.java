@@ -29,13 +29,23 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IActionArtifact;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
+import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.core.cspec.IGenerator;
+import org.eclipse.buckminster.core.cspec.IGroup;
+import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.MapToDictionary;
@@ -60,7 +70,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class CSpec extends UUIDKeyed implements IUUIDPersisted
+public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 {
 	public static final String ATTR_FILTER = "filter";
 
@@ -182,18 +192,18 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 			m_attributes = Collections.unmodifiableMap(map);
 		}
 
-		Map<String,DependencyBuilder> dependencies = cspecBld.getDependencies();
+		Map<String, ? extends IComponentRequest> dependencies = cspecBld.getDependencies();
 		top = (dependencies == null) ? 0 : dependencies.size();
 		if(top == 0)
 			m_dependencies = Collections.emptyMap();
 		else
 		{
 			Map<String, ComponentRequest> map;
-			Collection<DependencyBuilder> values = dependencies.values();
+			Collection<? extends IComponentRequest> values = dependencies.values();
 			if(top == 1)
 			{
-				DependencyBuilder bld = values.iterator().next();
-				map = Collections.unmodifiableMap(Collections.singletonMap(bld.getName(), bld.createDependency()));
+				ComponentRequestBuilder bld = (ComponentRequestBuilder)values.iterator().next();
+				map = Collections.unmodifiableMap(Collections.singletonMap(bld.getName(), bld.createComponentRequest()));
 			}
 			else
 			{
@@ -201,8 +211,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 				// written in the exact same order at all times
 				//
 				map = new TreeMap<String, ComponentRequest>();
-				for(DependencyBuilder bld : values)
-					map.put(bld.getName(), bld.createDependency());
+				for(IComponentRequest bld : values)
+					map.put(bld.getName(), ((ComponentRequestBuilder)bld).createComponentRequest());
 			}
 			m_dependencies = Collections.unmodifiableMap(map);
 		}
@@ -241,7 +251,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		return attr;
 	}
 
-	public Map<String, Attribute> getAttributes()
+	public Map<String,Attribute> getAttributes()
 	{
 		return m_attributes;
 	}
@@ -308,7 +318,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		return m_filter;
 	}
 
-	public Map<String, Generator> getGenerators()
+	public Map<String,Generator> getGenerators()
 	{
 		return m_generators;
 	}
@@ -346,7 +356,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		return getTagInfo(m_componentIdentifier, m_projectInfo, parentInfo);
 	}
 
-	public static String getTagInfo(ComponentIdentifier ci, URL projectInfoURL, String parentInfo)
+	public static String getTagInfo(IComponentIdentifier ci, URL projectInfoURL, String parentInfo)
 	{
 		String path = null;
 		String projectInfo = null;
@@ -408,14 +418,14 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 				deps.put(dep, new HashSet<String>());
 		}
 
-		for(Attribute ag : getAttributes().values())
+		for(IAttribute ag : getAttributes().values())
 			addDependencyBundle(deps, ag);
 
 		if(!m_generators.isEmpty())
 		{
 			// Components appointed by generators are mandatory
 			//
-			for(Generator generator : m_generators.values())
+			for(IGenerator generator : m_generators.values())
 			{
 				String component = generator.getComponent();
 				if(component == null)
@@ -502,12 +512,12 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		// them).
 		//
 		for(Attribute attr : m_attributes.values())
-			if(!(attr instanceof ActionArtifact))
+			if(!(attr instanceof IActionArtifact))
 				verifyPrerequisites(attr, null);
 
 		// Verify validity of generators
 		//
-		for(Generator generator : m_generators.values())
+		for(IGenerator generator : m_generators.values())
 		{
 			String component = generator.getComponent();
 			if(component == null)
@@ -557,11 +567,11 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		ArrayList<Attribute> groups = new ArrayList<Attribute>();
 		for(Attribute attr : m_attributes.values())
 		{
-			if(attr instanceof Action)
+			if(attr instanceof IAction)
 				actions.add(attr);
-			else if(attr instanceof Group)
+			else if(attr instanceof IGroup)
 				groups.add(attr);
-			else if(!(attr instanceof ActionArtifact))
+			else if(!(attr instanceof IActionArtifact))
 				topArtifacts.add(attr);
 		}
 		Collections.sort(topArtifacts, s_attributeSorter);
@@ -588,9 +598,9 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 	{
 		List<ActionArtifact> artifacts = null;
 		String actionName = action.getName();
-		for(Attribute ag : m_attributes.values())
+		for(IAttribute ag : m_attributes.values())
 		{
-			if(!(ag instanceof ActionArtifact))
+			if(!(ag instanceof IActionArtifact))
 				continue;
 
 			ActionArtifact aa = (ActionArtifact)ag;
@@ -686,7 +696,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 				addReferencedDependencies(referencedDeps, referencedAttrs, attr, null);
 		}
 
-		for(Generator generator : getGenerators().values())
+		for(IGenerator generator : getGenerators().values())
 		{
 			String component = generator.getComponent();
 			if(component == null)
@@ -730,7 +740,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		// Add all generators that can be added with respect to dependency or
 		// local attribute
 		//
-		for(Generator generator : getGenerators().values())
+		for(IGenerator generator : getGenerators().values())
 		{
 			String component = generator.getComponent();
 			if(component == null)
@@ -754,7 +764,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 
 	private boolean dependenciesFulfilled(Attribute attr, CSpecBuilder bld, Stack<IAttributeFilter> filters) throws CoreException
 	{
-		if(attr instanceof ActionArtifact)
+		if(attr instanceof IActionArtifact)
 			attr = ((ActionArtifact)attr).getAction();
 
 		for(Prerequisite pq : attr.getPrerequisites(filters))
@@ -790,7 +800,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		//
 		attrNames.add(attr.getName());
 
-		if(attr instanceof ActionArtifact)
+		if(attr instanceof IActionArtifact)
 		{
 			addReferencedDependencies(dependencies, attrNames, ((ActionArtifact)attr).getAction(), filters);
 			return;
@@ -820,11 +830,11 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 		}
 	}
 
-	private void addDependencyBundle(Map<ComponentRequest, Set<String>> deps, Attribute dp) throws CoreException
+	private void addDependencyBundle(Map<ComponentRequest, Set<String>> deps, IAttribute dp) throws CoreException
 	{
 		// Make sure that the pruned CSpec has all prerequisites
 		//
-		for(Prerequisite prereq : dp.getPrerequisites())
+		for(IPrerequisite prereq : dp.getPrerequisites())
 		{
 			if(prereq.isExternal())
 			{
@@ -839,8 +849,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 			}
 			else
 			{
-				Attribute localGroup = getAttribute(prereq.getAttribute());
-				if(localGroup instanceof ActionArtifact)
+				IAttribute localGroup = getAttribute(prereq.getAttribute());
+				if(localGroup instanceof IActionArtifact)
 					localGroup = ((ActionArtifact)localGroup).getAction();
 				addDependencyBundle(deps, localGroup);
 			}
@@ -859,7 +869,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 				continue;
 
 			Attribute ag = getRequiredAttribute(prereq.getAttribute());
-			if(ag instanceof ActionArtifact)
+			if(ag instanceof IActionArtifact)
 				ag = ((ActionArtifact)ag).getAction();
 
 			if(seenAttributes.contains(ag.getName()))
@@ -905,7 +915,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted
 			}
 
 			Attribute ag = getRequiredAttribute(prereq.getAttribute());
-			if(ag instanceof ActionArtifact)
+			if(ag instanceof IActionArtifact)
 				//
 				// Verify that we can get the action
 				//

@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
@@ -174,7 +175,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_RESOLUTION_PRIO);
 		if(tmp != null)
 		{
-			int max = AdvisorNode.DEFAULT_RESOLUTION_PRIO.length;
+			int max = IAdvisorNode.DEFAULT_RESOLUTION_PRIO.length;
 			int[] prios = new int[max];
 			try
 			{

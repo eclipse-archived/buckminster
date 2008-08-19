@@ -5,15 +5,19 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.core.metadata.model;
+package org.eclipse.buckminster.core.metadata.builder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.metadata.IResolution;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.IFileInfo;
@@ -21,7 +25,7 @@ import org.eclipse.buckminster.runtime.IFileInfo;
 /**
  * @author Thomas Hallgren
  */
-public class ResolutionBuilder
+public class ResolutionBuilder implements IResolution
 {
 	private final List<String> m_attributes = new ArrayList<String>();
 
@@ -39,7 +43,7 @@ public class ResolutionBuilder
 
 	private Provider m_provider;
 
-	private String m_remoteName;
+	private String m_name;
 
 	private String m_repository;
 
@@ -64,7 +68,7 @@ public class ResolutionBuilder
 		m_materializable = false;
 		m_opml = null;
 		m_provider = null;
-		m_remoteName = null;
+		m_name = null;
 		m_repository = null;
 		m_request = null;
 		m_size = -1L;
@@ -86,6 +90,11 @@ public class ResolutionBuilder
 		return m_contentType;
 	}
 
+	public ICSpecData getCSpec()
+	{
+		return m_cspec;
+	}
+
 	public CSpecBuilder getCSpecBuilder()
 	{
 		return m_cspec;
@@ -94,6 +103,11 @@ public class ResolutionBuilder
 	public long getLastModified()
 	{
 		return m_lastModified;
+	}
+
+	public IOPML getOPML()
+	{
+		return m_opml;
 	}
 
 	public OPMLBuilder getOPMLBuilder()
@@ -106,9 +120,9 @@ public class ResolutionBuilder
 		return m_provider;
 	}
 
-	public String getRemoteName()
+	public String getName()
 	{
-		return m_remoteName;
+		return m_name;
 	}
 
 	public String getRepository()
@@ -148,7 +162,7 @@ public class ResolutionBuilder
 			m_opml.initFrom(opml);
 		}
 		m_provider = resolution.getProvider();
-		m_remoteName = resolution.getRemoteName();
+		m_name = resolution.getRemoteName();
 		m_repository = resolution.getRepository();
 		m_request = resolution.getRequest();
 		m_size = resolution.getSize();
@@ -187,14 +201,14 @@ public class ResolutionBuilder
 		if(info == null)
 		{
 			setContentType(null);
-			setRemoteName(null);
+			setName(null);
 			setLastModified(0);
 			setSize(-1);
 		}
 		else
 		{
 			setContentType(info.getContentType());
-			setRemoteName(info.getName());
+			setName(info.getName());
 			setLastModified(info.getLastModified());
 			setSize(info.getSize());
 
@@ -221,9 +235,9 @@ public class ResolutionBuilder
 		m_provider = provider;
 	}
 
-	public void setRemoteName(String remoteName)
+	public void setName(String remoteName)
 	{
-		m_remoteName = remoteName;
+		m_name = remoteName;
 	}
 
 	public void setRepository(String repository)

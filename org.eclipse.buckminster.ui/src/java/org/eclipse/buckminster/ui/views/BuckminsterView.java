@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
@@ -421,9 +422,9 @@ public class BuckminsterView extends ViewPart
 	class CspecNode extends TreeNode
 	{
 		
-		private CSpec m_cspec;
+		private ICSpecData m_cspec;
 		
-		public CspecNode(CSpec cspec)
+		public CspecNode(ICSpecData cspec)
 		{
 			m_cspec = cspec;
 		}

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
@@ -24,7 +25,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IPath;
 
-public class AdvisorNodeBuilder
+public class AdvisorNodeBuilder implements IAdvisorNode
 {
 	private boolean m_allowCircularDependency;
 
@@ -113,7 +114,7 @@ public class AdvisorNodeBuilder
 		m_spacePath = Trivial.EMPTY_STRING_ARRAY;
 		m_revision = -1;
 		m_timestamp = null;
-		m_resolutionPrio = AdvisorNode.DEFAULT_RESOLUTION_PRIO;
+		m_resolutionPrio = IAdvisorNode.DEFAULT_RESOLUTION_PRIO;
 	}
 
 	public AdvisorNode create()
@@ -199,7 +200,7 @@ public class AdvisorNodeBuilder
 		return m_versionOverride;
 	}
 
-	public void initFrom(AdvisorNode node)
+	public void initFrom(IAdvisorNode node)
 	{
 		this.clear();
 		m_allowCircularDependency = node.allowCircularDependency();
@@ -222,7 +223,7 @@ public class AdvisorNodeBuilder
 		m_versionOverride = node.getVersionOverride();
 		m_systemDiscovery = node.isSystemDiscovery();
 		m_branchTagPath = node.getBranchTagPath();
-		m_spacePath = node.getResolutionPath();
+		m_spacePath = node.getSpacePath();
 		m_revision = node.getRevision();
 		m_timestamp = node.getTimestamp();
 		m_resolutionPrio = node.getResolutionPrio();

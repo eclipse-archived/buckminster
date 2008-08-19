@@ -19,6 +19,9 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
+import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -40,7 +43,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Action extends TopLevelAttribute
+public class Action extends TopLevelAttribute implements IAction
 {
 	public static final String ATTR_ACTOR = "actor";
 
@@ -103,7 +106,7 @@ public class Action extends TopLevelAttribute
 	}
 
 	@Override
-	public Attribute copy()
+	public IAttribute copy()
 	{
 		Action copy = (Action)super.copy();
 		copy.m_prerequisites = (Prerequisites)copy.m_prerequisites.copy();
@@ -130,7 +133,7 @@ public class Action extends TopLevelAttribute
 		Stack<IAttributeFilter> filters = null;
 		for(Prerequisite prereq : getPrerequisites(null))
 		{
-			Attribute ag = prereq.getReferencedAttribute(cspec, ctx);
+			IAttribute ag = prereq.getReferencedAttribute(cspec, ctx);
 			if(!(ag instanceof TopLevelAttribute))
 				continue;
 
@@ -220,7 +223,7 @@ public class Action extends TopLevelAttribute
 		return m_properties;
 	}
 
-	public boolean assignConsoleSupport()
+	public boolean isAssignConsoleSupport()
 	{
 		return m_assignConsoleSupport;
 	}
@@ -485,7 +488,7 @@ public class Action extends TopLevelAttribute
 			if(!pq.isContributor())
 				continue;
 
-			Attribute ag = pq.getReferencedAttribute(cspec, ctx);
+			IAttribute ag = pq.getReferencedAttribute(cspec, ctx);
 			if(ag instanceof TopLevelAttribute)
 				((TopLevelAttribute)ag).appendRelativeFiles(ctx, filesAndDates);
 		}

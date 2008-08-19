@@ -11,7 +11,7 @@ package org.eclipse.buckminster.ui.editor.cspec;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.eclipse.buckminster.core.cspec.builder.DependencyBuilder;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -72,7 +72,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
-		return new Object[] { t.getComponent(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
+		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
 				Boolean.valueOf(t.isOptional()) };
 	}
 
@@ -83,7 +83,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
 	{
-		builder.setComponent(TextUtils.notEmptyString((String)args[0]));
+		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
 		builder.setName(TextUtils.notEmptyString((String)args[1]));
 		builder.setAlias(TextUtils.notEmptyString((String)args[2]));
 		builder.setContributor(((Boolean)args[3]).booleanValue());
@@ -191,14 +191,13 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		}
 		else
 		{
-			DependencyBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
+			ComponentRequestBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
 			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder.getVersionDesignator()); 
 
 			TreeSet<String> prereqAttributes = new TreeSet<String>();
-			Resolution prereqResolution;
 			try
 			{
-				prereqResolution = WorkspaceInfo.getResolution(cr, false);
+				Resolution prereqResolution = WorkspaceInfo.getResolution(cr, false);
 				CSpec prereqCSpec = prereqResolution.getCSpec();
 				
 				for(Attribute attribute : prereqCSpec.getAttributes().values())
@@ -234,7 +233,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 				PrerequisiteBuilder prerequisite = toRowClass((Object[])arg[1]);
 
 				if((prerequisite.getName() == null || prerequisite.getName().length() == 0)
-						&& (prerequisite.getComponent() == null || prerequisite.getComponent().length() == 0))
+						&& (prerequisite.getComponentName() == null || prerequisite.getComponentName().length() == 0))
 				{
 					throw new ValidatorException("Name or component has to be filled");
 				}

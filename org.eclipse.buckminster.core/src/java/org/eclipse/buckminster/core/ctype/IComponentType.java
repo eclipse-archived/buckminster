@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.IBuckminsterExtension;
-import org.eclipse.buckminster.core.metadata.model.DepNode;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -70,7 +70,7 @@ public interface IComponentType extends IBuckminsterExtension
 	throws CoreException;
 
 	/**
-	 * Creates a {@link DepNode} based on the dependency information in
+	 * Creates a {@link BOMNode} based on the dependency information in
 	 * <code>providerMatch</code>. A provider will normally create a node where only the
 	 * top element is resolved but a provider can also find a previously resolved
 	 * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}. When it
@@ -80,7 +80,7 @@ public interface IComponentType extends IBuckminsterExtension
 	 * @return The resolved node. This entry is never <code>null</code>.
 	 * @throws CoreException If the node could not be resolved.
 	 */
-	DepNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
+	BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the builder used when building the Resolution
@@ -107,6 +107,15 @@ public interface IComponentType extends IBuckminsterExtension
 	 * @return The substitution string
 	 */
 	String getNameSubstitution();
+
+	/**
+	 * Returns what this component type would like to call a project containing the
+	 * component named componentName.
+	 *
+	 * @param componentName The name of the component
+	 * @return The suggested name for the project
+	 */
+	String getProjectName(String componentName) throws CoreException;
 
 	/**
 	 * Suggested Workspace relative location to use when materializing, i.e. suggest

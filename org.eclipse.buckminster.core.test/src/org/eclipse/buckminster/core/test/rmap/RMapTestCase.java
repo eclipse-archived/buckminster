@@ -59,7 +59,7 @@ public class RMapTestCase extends AbstractTestCase
 		URL rmapURL = getClass().getResource("local_main.rmap");
 		URL parentURL = URLUtils.getParentURL(rmapURL);
 		queryBld.setResourceMapURL(rmapURL.toString());
-		queryBld.getProperties().put("rmaps", parentURL.toString());
+		queryBld.getDeclaredProperties().put("rmaps", parentURL.toString());
 		ComponentQuery query = queryBld.createComponentQuery();
 		ResolutionContext ctx = new ResolutionContext(query);
 		MainResolver resolver = new MainResolver(ctx);
