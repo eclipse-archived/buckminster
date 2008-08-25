@@ -8,50 +8,78 @@
 package org.eclipse.buckminster.core.metadata.builder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.IResolution;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.IFileInfo;
+import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren
  */
 public class ResolutionBuilder implements IResolution
 {
+	private String m_artifactInfo;
+
 	private final List<String> m_attributes = new ArrayList<String>();
 
-	private CSpecBuilder m_cspec;
+	private VersionSelector m_branchOrTag;
 
 	private String m_componentTypeId;
 
 	private String m_contentType;
 
+	private final CSpecBuilder m_cspec;
+
 	private long m_lastModified;
 
 	private boolean m_materializable;
+
+	private String m_name;
 
 	private OPMLBuilder m_opml;
 
 	private Provider m_provider;
 
-	private String m_name;
+	private String m_readerTypeId;
 
 	private String m_repository;
 
-	private ComponentRequest m_request;
+	private final ComponentRequestBuilder m_request = new ComponentRequestBuilder();
+
+	private Filter m_resolutionFilter;
+
+	private long m_revision;
 
 	private long m_size;
 
-	private VersionMatch m_versionMatch;
+	private String m_space;
+
+	private Date m_timestamp;
+
+	private boolean m_unpack;
+
+	public ResolutionBuilder()
+	{
+		this(new CSpecBuilder(), null);
+	}
+
+	public ResolutionBuilder(CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+	{
+		m_cspec = cspecBuilder;
+		m_opml = opmlBuilder;
+	}
 
 	public void addAttribute(String attribute)
 	{
@@ -60,24 +88,41 @@ public class ResolutionBuilder implements IResolution
 
 	public void clear()
 	{
+		m_artifactInfo = null;
 		m_attributes.clear();
+		m_branchOrTag = null;
 		m_componentTypeId = null;
 		m_contentType = null;
-		m_cspec = null;
+		m_cspec.clear();
 		m_lastModified = 0L;
 		m_materializable = false;
+		m_name = null;
 		m_opml = null;
 		m_provider = null;
-		m_name = null;
+		m_readerTypeId = null;
 		m_repository = null;
-		m_request = null;
+		m_request.clear();
+		m_resolutionFilter = null;
+		m_revision = 0L;
 		m_size = -1L;
-		m_versionMatch = null;
+		m_space = null;
+		m_timestamp = null;
+		m_unpack = false;
+	}
+
+	public String getArtifactInfo()
+	{
+		return m_artifactInfo;
 	}
 
 	public List<String> getAttributes()
 	{
 		return m_attributes;
+	}
+
+	public VersionSelector getMatchedBranchOrTag()
+	{
+		return m_branchOrTag;
 	}
 
 	public String getComponentTypeId()
@@ -90,9 +135,9 @@ public class ResolutionBuilder implements IResolution
 		return m_contentType;
 	}
 
-	public ICSpecData getCSpec()
+	public CSpec getCSpec()
 	{
-		return m_cspec;
+		return m_cspec.createCSpec();
 	}
 
 	public CSpecBuilder getCSpecBuilder()
@@ -105,24 +150,38 @@ public class ResolutionBuilder implements IResolution
 		return m_lastModified;
 	}
 
-	public IOPML getOPML()
+	public String getName()
 	{
-		return m_opml;
+		return m_name;
+	}
+
+	public OPML getOPML()
+	{
+		return m_opml == null ? null : new OPML(m_opml);
 	}
 
 	public OPMLBuilder getOPMLBuilder()
 	{
+		if(m_opml == null)
+			m_opml = new OPMLBuilder();
 		return m_opml;
 	}
 
 	public Provider getProvider()
 	{
+		if(m_provider == null)
+		{
+			String componentType = m_cspec.getComponentTypeID();
+			if(componentType == null)
+				componentType = IComponentType.UNKNOWN;
+			return new Provider(m_readerTypeId, new String[] { componentType }, m_repository, m_resolutionFilter);
+		}
 		return m_provider;
 	}
 
-	public String getName()
+	public String getReaderTypeId()
 	{
-		return m_name;
+		return m_readerTypeId;
 	}
 
 	public String getRepository()
@@ -130,9 +189,19 @@ public class ResolutionBuilder implements IResolution
 		return m_repository;
 	}
 
-	public ComponentRequest getRequest()
+	public ComponentRequestBuilder getRequest()
 	{
 		return m_request;
+	}
+
+	public Filter getResolutionFilter()
+	{
+		return m_resolutionFilter;
+	}
+
+	public long getSelectedRevision()
+	{
+		return m_revision;
 	}
 
 	public long getSize()
@@ -140,33 +209,48 @@ public class ResolutionBuilder implements IResolution
 		return m_size;
 	}
 
-	public VersionMatch getVersionMatch()
+	public String getSelectedSpace()
 	{
-		return m_versionMatch;
+		return m_space;
 	}
 
-	public void initFrom(Resolution resolution)
+	public Date getSelectedTimestamp()
+	{
+		return m_timestamp;
+	}
+
+	public VersionMatch getVersionMatch()
+	{
+		return new VersionMatch(m_cspec.getVersion(), m_branchOrTag, m_space, m_revision, m_timestamp, m_artifactInfo);
+	}
+
+	public void initFrom(IResolution resolution)
 	{
 		clear();
 		m_attributes.addAll(resolution.getAttributes());
 		m_componentTypeId = resolution.getComponentTypeId();
 		m_contentType = resolution.getContentType();
-		m_cspec = new CSpecBuilder();
 		m_cspec.initFrom(resolution.getCSpec());
 		m_lastModified = resolution.getLastModified();
 		m_materializable = resolution.isMaterializable();
-		OPML opml = resolution.getOPML();
+		IOPML opml = resolution.getOPML();
 		if(opml != null)
 		{
 			m_opml = new OPMLBuilder();
 			m_opml.initFrom(opml);
 		}
 		m_provider = resolution.getProvider();
-		m_name = resolution.getRemoteName();
+		m_resolutionFilter = resolution.getResolutionFilter();
+		m_name = resolution.getName();
 		m_repository = resolution.getRepository();
-		m_request = resolution.getRequest();
+		m_request.initFrom(resolution.getRequest());
 		m_size = resolution.getSize();
-		m_versionMatch = resolution.getVersionMatch();
+		m_artifactInfo = resolution.getArtifactInfo();
+		m_branchOrTag = resolution.getMatchedBranchOrTag();
+		m_revision = resolution.getSelectedRevision();
+		m_space = resolution.getSelectedSpace();
+		m_timestamp = resolution.getSelectedTimestamp();
+		m_unpack = resolution.isUnpack();
 	}
 
 	public boolean isMaterializable()
@@ -174,11 +258,26 @@ public class ResolutionBuilder implements IResolution
 		return m_materializable;
 	}
 
+	public boolean isUnpack()
+	{
+		return m_unpack;
+	}
+
+	public void setArtifactInfo(String artifactInfo)
+	{
+		m_artifactInfo = artifactInfo;
+	}
+
 	public void setAttributes(List<String> attributes)
 	{
 		m_attributes.clear();
 		if(attributes != null)
 			m_attributes.addAll(attributes);
+	}
+
+	public void setBranchOrTag(VersionSelector branchOrTag)
+	{
+		m_branchOrTag = branchOrTag;
 	}
 
 	public void setComponentTypeId(String componentTypeId)
@@ -189,11 +288,6 @@ public class ResolutionBuilder implements IResolution
 	public void setContentType(String contentType)
 	{
 		m_contentType = contentType;
-	}
-
-	public void setCSpecBuilder(CSpecBuilder cspec)
-	{
-		m_cspec = cspec;
 	}
 
 	public void setFileInfo(IFileInfo info)
@@ -225,9 +319,9 @@ public class ResolutionBuilder implements IResolution
 		m_materializable = materializable;
 	}
 
-	public void setOpml(OPMLBuilder opml)
+	public void setName(String remoteName)
 	{
-		m_opml = opml;
+		m_name = remoteName;
 	}
 
 	public void setProvider(Provider provider)
@@ -235,9 +329,9 @@ public class ResolutionBuilder implements IResolution
 		m_provider = provider;
 	}
 
-	public void setName(String remoteName)
+	public void setReaderTypeId(String readerTypeId)
 	{
-		m_name = remoteName;
+		m_readerTypeId = readerTypeId;
 	}
 
 	public void setRepository(String repository)
@@ -245,9 +339,14 @@ public class ResolutionBuilder implements IResolution
 		m_repository = repository;
 	}
 
-	public void setRequest(ComponentRequest request)
+	public void setResolutionFilter(Filter resolutionFilter)
 	{
-		m_request = request;
+		m_resolutionFilter = resolutionFilter;
+	}
+
+	public void setRevision(long revision)
+	{
+		m_revision = revision;
 	}
 
 	public void setSize(long size)
@@ -255,8 +354,38 @@ public class ResolutionBuilder implements IResolution
 		m_size = size;
 	}
 
+	public void setSpace(String space)
+	{
+		m_space = space;
+	}
+
+	public void setTimestamp(Date timestamp)
+	{
+		m_timestamp = timestamp;
+	}
+
+	public void setUnpack(boolean unpack)
+	{
+		m_unpack = unpack;
+	}
+
 	public void setVersionMatch(VersionMatch versionMatch)
 	{
-		m_versionMatch = versionMatch;
+		if(versionMatch == null)
+		{
+			m_artifactInfo = null;
+			m_branchOrTag = null;
+			m_revision = 0;
+			m_space = null;
+			m_timestamp = null;
+		}
+		else
+		{
+			m_artifactInfo = versionMatch.getArtifactInfo();
+			m_branchOrTag = versionMatch.getBranchOrTag();
+			m_revision = versionMatch.getRevision();
+			m_space = versionMatch.getSpace();
+			m_timestamp = versionMatch.getTimestamp();
+		}
 	}
 }

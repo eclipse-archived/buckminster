@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.metadata.model;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +34,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
@@ -49,81 +50,67 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 {
-	public static final String TAG = "resolution";
-
 	public static final String ATTR_ATTRIBUTES = "attributes";
-
-	public static final String ATTR_CSPEC_ID = "cspecId";
-
-	public static final String ATTR_MATERIALIZABLE = "materializable";
-
-	public static final String ATTR_PROVIDER_ID = "providerId";
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
 
-	public static final String ATTR_OPML_ID = "opmlId";
-
-	public static final String ATTR_QUERY_ID = "queryId";
-
-	public static final String ATTR_REPOSITORY = "repository";
-
-	public static final String ATTR_REMOTE_NAME = "remoteName";
-
 	public static final String ATTR_CONTENT_TYPE = "contentType";
+
+	public static final String ATTR_CSPEC_ID = "cspecId";
 
 	public static final String ATTR_LAST_MODIFIED = "lastModified";
 
+	public static final String ATTR_MATERIALIZABLE = "materializable";
+
+	public static final String ATTR_OPML_ID = "opmlId";
+
+	public static final String ATTR_PROVIDER_ID = "providerId";
+
+	public static final String ATTR_QUERY_ID = "queryId";
+
+	public static final String ATTR_REMOTE_NAME = "remoteName";
+
+	public static final String ATTR_REPOSITORY = "repository";
+
 	public static final String ATTR_SIZE = "size";
+
+	public static final String ATTR_UNPACK = "unpack";
 
 	public static final String ELEM_REQUEST = "request";
 
 	public static final int SEQUENCE_NUMBER = 2;
 
-	private final VersionMatch m_versionMatch;
-
-	private final boolean m_materializable;
-
-	private final ComponentRequest m_request;
+	public static final String TAG = "resolution";
 
 	private final List<String> m_attributes;
 
-	private final String m_repository;
-
 	private final String m_componentTypeId;
-
-	private final String m_remoteName;
 
 	private final String m_contentType;
 
+	private transient CSpec m_cspec;
+
 	private final long m_lastModified;
 
-	private final long m_size;
-
-	private transient CSpec m_cspec;
+	private final boolean m_materializable;
 
 	private transient OPML m_opml;
 
 	private transient Provider m_provider;
 
-	public Resolution(ResolutionBuilder bld) throws CoreException
-	{
-		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
-		m_componentTypeId = bld.getComponentTypeId();
-		m_contentType = bld.getContentType();
-		m_cspec = bld.getCSpecBuilder().createCSpec();
-		m_lastModified = bld.getLastModified();
-		m_materializable = bld.isMaterializable();
-		OPMLBuilder opml = bld.getOPMLBuilder();
-		m_opml = (opml == null) ? null :new OPML(opml);
-		m_provider = bld.getProvider();
-		m_remoteName = bld.getName();
-		m_repository = bld.getRepository();
-		m_request = bld.getRequest();
-		m_size = bld.getSize();
-		m_versionMatch = bld.getVersionMatch();
-	}
+	private final String m_remoteName;
 
-	public Resolution(CSpec cspec, OPML opml, Resolution old) throws CoreException
+	private final String m_repository;
+	
+	private final ComponentRequest m_request;
+
+	private final long m_size;
+
+	private final boolean m_unpack;
+
+	private final VersionMatch m_versionMatch;
+
+	public Resolution(CSpec cspec, OPML opml, Resolution old)
 	{
 		m_cspec = cspec;
 		m_opml = opml;
@@ -138,28 +125,12 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_contentType = old.getContentType();
 		m_lastModified = old.getLastModified();
 		m_size = old.getSize();
-	}
-
-	public Resolution(IVersion version, Resolution old) throws CoreException
-	{
-		m_cspec = old.getCSpec();
-		m_opml = old.getOPML();
-		m_request = old.getRequest();
-		m_attributes = old.getAttributes();
-		m_provider = old.getProvider();
-		m_componentTypeId = old.getComponentTypeId();
-		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
-		m_materializable = old.isMaterializable();
-		m_repository = old.getRepository();
-		m_remoteName = old.getRemoteName();
-		m_contentType = old.getContentType();
-		m_lastModified = old.getLastModified();
-		m_size = old.getSize();
+		m_unpack = old.isUnpack();
 	}
 
 	public Resolution(CSpec cspec, OPML opml, String componentTypeId, VersionMatch versionMatch, Provider provider,
 		boolean materializeable, ComponentRequest request, List<String> attributes,
-		String repository, String remoteName, String contentType, long lastModified, long size)
+		String repository, String remoteName, String contentType, long lastModified, long size, boolean unpack)
 	{
 		m_cspec = cspec;
 		m_opml = opml;
@@ -174,11 +145,71 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_contentType = contentType;
 		m_lastModified = lastModified;
 		m_size = size;
+		m_unpack = unpack;
+	}
+
+	public Resolution(IVersion version, Resolution old)
+	{
+		m_cspec = old.getCSpec();
+		m_opml = old.getOPML();
+		m_request = old.getRequest();
+		m_attributes = old.getAttributes();
+		m_provider = old.getProvider();
+		m_componentTypeId = old.getComponentTypeId();
+		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
+		m_materializable = old.isMaterializable();
+		m_repository = old.getRepository();
+		m_remoteName = old.getRemoteName();
+		m_contentType = old.getContentType();
+		m_lastModified = old.getLastModified();
+		m_size = old.getSize();
+		m_unpack = old.isUnpack();
+	}
+
+	public Resolution(ResolutionBuilder bld)
+	{
+		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
+		m_componentTypeId = bld.getComponentTypeId();
+		m_contentType = bld.getContentType();
+		m_cspec = bld.getCSpec();
+		m_lastModified = bld.getLastModified();
+		m_materializable = bld.isMaterializable();
+		m_opml = bld.getOPML();
+		m_provider = bld.getProvider();
+		m_remoteName = bld.getName();
+		m_repository = bld.getRepository();
+		m_request = bld.getRequest().createComponentRequest();
+		m_size = bld.getSize();
+		m_versionMatch = bld.getVersionMatch();
+		m_unpack = bld.isUnpack();
+	}
+
+	@Override
+	public void emitElements(ContentHandler handler, String namespace, String prefix)
+	throws SAXException
+	{
+		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
+		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch.getDefaultTag());
+	}
+
+	public String getArtifactInfo()
+	{
+		return m_versionMatch.getArtifactInfo();
+	}
+
+	public URI getArtifactURI(RMContext context) throws CoreException
+	{
+		return getProvider().getReaderType().getArtifactURL(this, context);
 	}
 
 	public List<String> getAttributes()
 	{
 		return m_attributes;
+	}
+
+	public VersionSelector getMatchedBranchOrTag()
+	{
+		return m_versionMatch.getBranchOrTag();
 	}
 
 	/**
@@ -189,6 +220,21 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public ComponentIdentifier getComponentIdentifier()
 	{
 		return getCSpec().getComponentIdentifier();
+	}
+
+	public IComponentType getComponentType() throws CoreException
+	{
+		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
+	}
+
+	public String getComponentTypeId()
+	{
+		return m_componentTypeId;
+	}
+
+	public String getContentType()
+	{
+		return m_contentType;
 	}
 
 	/**
@@ -210,6 +256,25 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return m_cspec.getId();
 	}
 
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public long getLastModified()
+	{
+		return m_lastModified;
+	}
+
+	/**
+	 * Returns the name of the component.
+	 * @return the name.
+	 */
+	public final String getName()
+	{
+		return m_request.getName();
+	}
+
 	/**
 	 * Returns the OPML document
 	 * @return The OPML or <code>null</code> if no OPML was present
@@ -228,30 +293,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return m_opml == null ? null : m_opml.getId();
 	}
 
-	public IComponentType getComponentType() throws CoreException
-	{
-		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
-	}
-
-	public String getComponentTypeId()
-	{
-		return m_componentTypeId;
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	/**
-	 * Returns the name of the component.
-	 * @return the name.
-	 */
-	public final String getName()
-	{
-		return m_request.getName();
-	}
-
 	/**
 	 * Returns the provider used when reading the repository.
 	 * @return the repository provider.
@@ -259,15 +300,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public Provider getProvider()
 	{
 		return m_provider;
-	}
-
-	public ProviderMatch getProviderMatch(RMContext context) throws CoreException
-	{
-		ProviderMatch pm = new ProviderMatch(
-			m_provider, getComponentType(), getVersionMatch(),
-			context.getNodeQuery(getQualifiedDependency()));
-		pm.setRepositoryURI(m_repository);
-		return pm;
 	}
 
 	/**
@@ -279,14 +311,13 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return m_provider.getId();
 	}
 
-	public String getRepository()
+	public ProviderMatch getProviderMatch(RMContext context) throws CoreException
 	{
-		return m_repository;
-	}
-
-	public String getRemoteName()
-	{
-		return m_remoteName;
+		ProviderMatch pm = new ProviderMatch(
+			m_provider, getComponentType(), getVersionMatch(),
+			context.getNodeQuery(getQualifiedDependency()));
+		pm.setRepositoryURI(m_repository);
+		return pm;
 	}
 
 	public final QualifiedDependency getQualifiedDependency()
@@ -294,9 +325,19 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return new QualifiedDependency(m_request, m_attributes);
 	}
 
-	public long getSize()
+	public String getReaderTypeId()
 	{
-		return m_size;
+		return getProvider().getReaderTypeId();
+	}
+
+	public String getRemoteName()
+	{
+		return m_remoteName;
+	}
+
+	public String getRepository()
+	{
+		return m_repository;
 	}
 
 	/**
@@ -305,6 +346,21 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public final ComponentRequest getRequest()
 	{
 		return m_request;
+	}
+
+	public Filter getResolutionFilter()
+	{
+		return getProvider().getResolutionFilter();
+	}
+
+	public long getSelectedRevision()
+	{
+		return m_versionMatch.getRevision();
+	}
+
+	public long getSize()
+	{
+		return m_size;
 	}
 
 	/**
@@ -349,18 +405,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 		IVersionDesignator vd = request.getVersionDesignator();
 		return vd == null ? true : vd.designates(getVersion());
-	}
-
-	/**
-	 * Returns <code>true</code> if the reader associated with the component will be able to
-	 * materialized the component. Readers that check for the existence of pre-installed components
-	 * (such as Eclipse plugins that are already present in the running eclipse installation) will
-	 * return <code>false</code>.
-	 * @return <code>true</code> if the component can be materialized on disk.
-	 */
-	public boolean isMaterializable()
-	{
-		return m_materializable;
 	}
 
 	/**
@@ -410,6 +454,18 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		}
 		return true;
 	}
+	
+	/**
+	 * Returns <code>true</code> if the reader associated with the component will be able to
+	 * materialized the component. Readers that check for the existence of pre-installed components
+	 * (such as Eclipse plugins that are already present in the running eclipse installation) will
+	 * return <code>false</code>.
+	 * @return <code>true</code> if the component can be materialized on disk.
+	 */
+	public boolean isMaterializable()
+	{
+		return m_materializable;
+	}
 
 	/**
 	 * Returns <code>true</code> if the component is materialized at the given location according
@@ -428,10 +484,15 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			return false;
 		}
 	}
-
+	
 	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
 		return sm.getResolutions().contains(this);
+	}
+	
+	public boolean isUnpack()
+	{
+		return m_unpack;
 	}
 
 	public void remove(StorageManager sm) throws CoreException
@@ -477,7 +538,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_versionMatch.toString(result);
 		return result.toString();
 	}
-	
+
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
@@ -502,40 +563,29 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
 		if(m_size != -1L)
 			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
+		if(m_unpack)
+			Utils.addAttribute(attrs, ATTR_UNPACK, "true");
 	}
 
-	@Override
-	public void emitElements(ContentHandler handler, String namespace, String prefix)
-	throws SAXException
-	{
-		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
-		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch.getDefaultTag());
-	}
-	
 	@Override
 	protected String getElementNamespace(String namespace)
 	{
 		return XMLConstants.BM_METADATA_NS;
 	}
-	
+
 	@Override
 	protected String getElementPrefix(String prefix)
 	{
 		return XMLConstants.BM_METADATA_PREFIX;
 	}
 
-	public URI getArtifactURI(RMContext context) throws CoreException
+	public String getSelectedSpace()
 	{
-		return getProvider().getReaderType().getArtifactURL(this, context);
+		return getVersionMatch().getSpace();
 	}
 
-	public long getLastModified()
+	public Date getSelectedTimestamp()
 	{
-		return m_lastModified;
-	}
-
-	public String getContentType()
-	{
-		return m_contentType;
+		return getVersionMatch().getTimestamp();
 	}
 }

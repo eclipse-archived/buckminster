@@ -137,15 +137,13 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 
 	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
 	{
-		ResolutionBuilder resBld = new ResolutionBuilder();
-		resBld.setCSpecBuilder(cspecBuilder);
-		resBld.setOpml(opmlBuilder);
+		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder, opmlBuilder);
 
 		ProviderMatch providerMatch = reader.getProviderMatch();
 		Provider provider = providerMatch.getProvider();
 		NodeQuery nq = providerMatch.getNodeQuery();
 		resBld.setComponentTypeId(providerMatch.getComponentType().getId());
-		resBld.setRequest(nq.getComponentRequest());
+		resBld.getRequest().initFrom(nq.getComponentRequest());
 		resBld.setAttributes(nq.getRequiredAttributes());
 		resBld.setProvider(provider);
 		resBld.setVersionMatch(providerMatch.getVersionMatch());

@@ -61,6 +61,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	private String m_contentType;
 	private long m_lastModified;
 	private long m_size;
+	private boolean m_unpack;
 
 	// For backward compatibility with the 0.1.0 Resolution
 	//
@@ -88,6 +89,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
 		m_size = getOptionalLongValue(attrs, Resolution.ATTR_SIZE, -1);
 		m_lastModified = getOptionalLongValue(attrs, Resolution.ATTR_LAST_MODIFIED, -1);
+		m_unpack = getOptionalBooleanValue(attrs, Resolution.ATTR_UNPACK, false);
 		m_request = null;
 
 		m_attributes.clear();
@@ -181,7 +183,8 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				m_remoteName,
 				m_contentType,
 				m_lastModified,
-				m_size);
+				m_size,
+				m_unpack);
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException

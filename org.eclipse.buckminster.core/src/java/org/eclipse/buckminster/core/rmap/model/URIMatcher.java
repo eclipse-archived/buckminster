@@ -257,11 +257,10 @@ public class URIMatcher extends RxAssembly
 		{
 			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()));
 			NodeQuery nq = pm.getNodeQuery();
-			ResolutionBuilder resBld = new ResolutionBuilder();
-			resBld.setCSpecBuilder(bld);
+			ResolutionBuilder resBld = new ResolutionBuilder(bld, null);
+			resBld.getRequest().initFrom(nq.getComponentRequest());
 			resBld.setAttributes(nq.getRequiredAttributes());
 			resBld.setProvider(pm.getProvider());
-			resBld.setRequest(nq.getComponentRequest());
 			resBld.setRepository(pm.getProvider().getURI(nq.getProperties()));
 			resBld.setComponentTypeId(ctype.getId());
 			resBld.setVersionMatch(pm.getVersionMatch());
