@@ -38,7 +38,6 @@ public class SiteFeatureFinder extends AbstractVersionFinder
 
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
-		String space = getProvider().getSpace();
 		String name = m_request.getName();
 		IVersion bestFit = null;
 		for(ISiteFeatureReference featureRef : m_site.getRawFeatureReferences())
@@ -60,10 +59,10 @@ public class SiteFeatureFinder extends AbstractVersionFinder
 				continue;
 			}
 
-			boolean isMatch = getQuery().isMatch(version, null, space);
+			boolean isMatch = getQuery().isMatch(version, null);
 			if(isMatch && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
-		return (bestFit == null) ? null : new VersionMatch(bestFit, null, space, -1, null, null);
+		return (bestFit == null) ? null : new VersionMatch(bestFit, null, -1, null, null);
 	}
 }

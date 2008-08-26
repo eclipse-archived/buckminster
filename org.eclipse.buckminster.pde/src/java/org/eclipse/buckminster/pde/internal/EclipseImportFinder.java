@@ -62,27 +62,25 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	throws CoreException
 	{
 		IVersion bestFit = null;
-		String space = getProvider().getSpace();
 		for(IFeatureModel model : m_base.getFeatureModels(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getFeature().getVersion());
-			if(getQuery().isMatch(version, null, space) && (bestFit == null || version.compareTo(bestFit) > 0))
+			if(getQuery().isMatch(version, null) && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
 		if(bestFit == null)
 			return null;
-		return new VersionMatch(bestFit, null, space, -1, null, null);
+		return new VersionMatch(bestFit, null, -1, null, null);
 	}
 
 	private VersionMatch getBestLocalPluginVersion(IProgressMonitor monitor)
 	throws CoreException
 	{
 		IVersion bestFit = null;
-		String space = getProvider().getSpace();
 		for(IPluginModelBase model : m_base.getPluginModels(m_readerType, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getBundleDescription().getVersion().toString());
-			if(getQuery().isMatch(version, null, space))
+			if(getQuery().isMatch(version, null))
 			{
 				if(bestFit == null)
 					bestFit = version;
@@ -95,7 +93,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		}
 		if(bestFit == null)
 			return null;
-		return new VersionMatch(bestFit, null, space, -1, null, null);
+		return new VersionMatch(bestFit, null, -1, null, null);
 	}
 
 	private VersionMatch getBestPluginVersion(IProgressMonitor monitor)
@@ -115,12 +113,11 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		monitor.subTask("Fetching remote feature references");
 		try
 		{
-			String space = getProvider().getSpace();
 			for(ISiteFeatureReference model : m_base.getFeatureReferences(m_readerType, MonitorUtils.subMonitor(monitor, 80)))
 			{
 				IFeature feature = model.getFeature(MonitorUtils.subMonitor(monitor, 5));
 				IVersion version = VersionFactory.OSGiType.fromString(feature.getVersionedIdentifier().getVersion().toString());
-				if(getQuery().isMatch(version, null, space))
+				if(getQuery().isMatch(version, null))
 				{
 					if(bestFit == null)
 						bestFit = version;
@@ -133,7 +130,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 			}
 			if(bestFit == null)
 				return null;
-			return new VersionMatch(bestFit, null, space, -1, null, null);
+			return new VersionMatch(bestFit, null, -1, null, null);
 		}
 		finally
 		{
@@ -145,11 +142,10 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	private VersionMatch getBestRemotePluginVersion(IProgressMonitor monitor) throws CoreException
 	{
 		IVersion bestFit = null;
-		String space = getProvider().getSpace();
 		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, m_query, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion().toString());
-			if(getQuery().isMatch(version, null, space))
+			if(getQuery().isMatch(version, null))
 			{
 				if(bestFit == null)
 					bestFit = version;
@@ -162,6 +158,6 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		}
 		if(bestFit == null)
 			return null;
-		return new VersionMatch(bestFit, null, space, -1, null, null);
+		return new VersionMatch(bestFit, null, -1, null, null);
 	}
 }

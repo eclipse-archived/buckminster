@@ -65,9 +65,9 @@ public class PDEMapProvider extends Provider
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
 
 	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
-		Format uri, String space, Filter resolutionFilter, boolean mutable, boolean source, Documentation documentation)
+		Format uri, Filter resolutionFilter, boolean mutable, boolean source, Documentation documentation)
 	{
-		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, space, resolutionFilter, mutable, source, null, documentation);
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, mutable, source, null, documentation);
 	}
 
 	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri, Filter resolutionFilter)
@@ -118,11 +118,11 @@ public class PDEMapProvider extends Provider
 					return null;
 			}
 
-			VersionMatch vm = new VersionMatch(v, vs, getSpace(), -1, null, null);
+			VersionMatch vm = new VersionMatch(v, vs, -1, null, null);
 			IReaderType rt = tv.getReaderType();
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getSpace(), getResolutionFilter(), isMutable(),
+			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getResolutionFilter(), isMutable(),
 					hasSource(), null, null);
 
 			String ctypeID = rq.getComponentTypeID();
@@ -215,7 +215,7 @@ public class PDEMapProvider extends Provider
 			try
 			{
 				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
-					new VersionMatch(null, null, getSpace(), -1, new Date(),null), 
+					new VersionMatch(null, null, -1, new Date(),null), 
 					ProviderScore.GOOD, query);
 
 				tempFolder = FileUtils.createTempFolder("bucky", ".tmp");

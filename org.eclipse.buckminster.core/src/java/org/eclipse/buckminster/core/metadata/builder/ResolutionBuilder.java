@@ -64,8 +64,6 @@ public class ResolutionBuilder implements IResolution
 
 	private long m_size;
 
-	private String m_space;
-
 	private Date m_timestamp;
 
 	private boolean m_unpack;
@@ -105,7 +103,6 @@ public class ResolutionBuilder implements IResolution
 		m_resolutionFilter = null;
 		m_revision = 0L;
 		m_size = -1L;
-		m_space = null;
 		m_timestamp = null;
 		m_unpack = false;
 	}
@@ -209,11 +206,6 @@ public class ResolutionBuilder implements IResolution
 		return m_size;
 	}
 
-	public String getSelectedSpace()
-	{
-		return m_space;
-	}
-
 	public Date getSelectedTimestamp()
 	{
 		return m_timestamp;
@@ -221,7 +213,7 @@ public class ResolutionBuilder implements IResolution
 
 	public VersionMatch getVersionMatch()
 	{
-		return new VersionMatch(m_cspec.getVersion(), m_branchOrTag, m_space, m_revision, m_timestamp, m_artifactInfo);
+		return new VersionMatch(m_cspec.getVersion(), m_branchOrTag, m_revision, m_timestamp, m_artifactInfo);
 	}
 
 	public void initFrom(IResolution resolution)
@@ -248,7 +240,6 @@ public class ResolutionBuilder implements IResolution
 		m_artifactInfo = resolution.getArtifactInfo();
 		m_branchOrTag = resolution.getMatchedBranchOrTag();
 		m_revision = resolution.getSelectedRevision();
-		m_space = resolution.getSelectedSpace();
 		m_timestamp = resolution.getSelectedTimestamp();
 		m_unpack = resolution.isUnpack();
 	}
@@ -354,11 +345,6 @@ public class ResolutionBuilder implements IResolution
 		m_size = size;
 	}
 
-	public void setSpace(String space)
-	{
-		m_space = space;
-	}
-
 	public void setTimestamp(Date timestamp)
 	{
 		m_timestamp = timestamp;
@@ -376,7 +362,6 @@ public class ResolutionBuilder implements IResolution
 			m_artifactInfo = null;
 			m_branchOrTag = null;
 			m_revision = 0;
-			m_space = null;
 			m_timestamp = null;
 		}
 		else
@@ -384,7 +369,6 @@ public class ResolutionBuilder implements IResolution
 			m_artifactInfo = versionMatch.getArtifactInfo();
 			m_branchOrTag = versionMatch.getBranchOrTag();
 			m_revision = versionMatch.getRevision();
-			m_space = versionMatch.getSpace();
 			m_timestamp = versionMatch.getTimestamp();
 		}
 	}

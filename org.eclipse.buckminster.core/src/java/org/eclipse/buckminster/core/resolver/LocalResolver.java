@@ -88,11 +88,11 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				new BidirectionalTransformer[0]);
 		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${"
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, null, false, false, null, null);
+						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null);
 
 		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${"
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, null, false, false, null, null);
+						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null);
 	}
 
 	private final ResolutionContext m_context;
@@ -531,7 +531,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, null, false, false, null, null);
+		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, false, false, null, null);
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
 		Resolution bestMatch = null;

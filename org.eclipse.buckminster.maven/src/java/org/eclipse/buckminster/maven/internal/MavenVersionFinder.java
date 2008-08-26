@@ -186,7 +186,6 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				designator = VersionFactory.createDesignator(VersionFactory.TripletType, designator.toString());
 		}
 
-		String space = getProvider().getSpace();
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
 		String artifact = m_mapEntry.getArtifactId() + '-';
 		int artifactLen = artifact.length();
@@ -214,7 +213,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				continue;
 
 			String versionStr = fileName.substring(artifactLen, fileName.length() - extension.length());
-			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, space, fileName + '/'
+			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, fileName + '/'
 					+ versionStr);
 			if(versionMatch != null && query.isMatch(versionMatch))
 				versions.add(versionMatch);

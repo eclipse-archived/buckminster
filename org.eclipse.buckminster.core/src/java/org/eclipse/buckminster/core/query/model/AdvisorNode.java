@@ -69,8 +69,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 
 	public static final String ATTR_BRANCH_TAG_PATH = "branchTagPath";
 
-	public static final String ATTR_SPACE_PATH = "spacePath";
-
 	public static final String ATTR_REVISION = "revision";
 
 	public static final String ATTR_TIMESTAMP = "timestamp";
@@ -115,8 +113,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 
 	private final VersionSelector[] m_branchTagPath;
 
-	private final String[] m_spacePath;
-
 	private final long m_revision;
 
 	private final Date m_timestamp;
@@ -141,7 +137,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		m_useRemoteResolution = bld.isUseRemoteResolution();
 		m_systemDiscovery = bld.isSystemDiscovery();
 		m_branchTagPath = bld.getBranchTagPath();
-		m_spacePath = bld.getSpacePath();
 		m_revision = bld.getRevision();
 		m_timestamp = bld.getTimestamp();
 		m_resolutionPrio = bld.getResolutionPrio();
@@ -202,11 +197,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 	public int[] getResolutionPrio()
 	{
 		return m_resolutionPrio;
-	}
-
-	public String[] getSpacePath()
-	{
-		return m_spacePath;
 	}
 
 	public long getRevision()
@@ -305,10 +295,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		tmp = VersionSelector.toString(m_branchTagPath);
 		if(tmp != null)
 			Utils.addAttribute(attrs, ATTR_BRANCH_TAG_PATH, tmp);
-
-		tmp = TextUtils.concat(m_spacePath, ",");
-		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_SPACE_PATH, tmp);
 
 		if(!Arrays.equals(m_resolutionPrio, DEFAULT_RESOLUTION_PRIO))
 		{

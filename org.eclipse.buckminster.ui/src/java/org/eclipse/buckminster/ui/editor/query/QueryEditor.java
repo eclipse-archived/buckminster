@@ -287,8 +287,6 @@ public class QueryEditor extends EditorPart
 
 	private Text m_branchTagPath;
 
-	private Text m_spacePath;
-
 	private Text m_timestamp;
 
 	private Text m_revision;
@@ -853,9 +851,6 @@ public class QueryEditor extends EditorPart
 		UiUtils.createGridLabel(scComposite, "Branch/Tag path:", 1, 0, SWT.NONE);
 		m_branchTagPath = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
 		m_branchTagPath.addModifyListener(m_compoundModifyListener);
-		UiUtils.createGridLabel(scComposite, "Space path:", 1, 0, SWT.NONE);
-		m_spacePath = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
-		m_spacePath.addModifyListener(m_compoundModifyListener);
 
 		UiUtils.createGridLabel(scComposite, "Timestamp:", 1, 0, SWT.NONE);
 		m_timestamp = UiUtils.createGridText(scComposite, 1, 0, SWT.NONE);
@@ -1088,7 +1083,6 @@ public class QueryEditor extends EditorPart
 		m_useResolutionService.setEnabled(enableRest);
 
 		m_branchTagPath.setEnabled(enableRest);
-		m_spacePath.setEnabled(enableRest);
 		m_timestamp.setEnabled(enableRest);
 		m_revision.setEnabled(enableRest);
 
@@ -1506,7 +1500,6 @@ public class QueryEditor extends EditorPart
 			m_useResolutionService.setSelection(node.isUseRemoteResolution());
 	
 			m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
-			m_spacePath.setText(TextUtils.notNullString(TextUtils.concat(node.getSpacePath(), ",")));
 			long revision = node.getRevision();
 			m_revision.setText(revision == -1 ? "" : Long.toString(revision));
 			Date timestamp = node.getTimestamp();
@@ -1702,7 +1695,6 @@ public class QueryEditor extends EditorPart
 		node.setUseRemoteResolution(m_useResolutionService.getSelection());
 
 		node.setBranchTagPath(VersionSelector.fromPath(UiUtils.trimmedValue(m_branchTagPath)));
-		node.setSpacePath(TextUtils.split(UiUtils.trimmedValue(m_spacePath), ","));
 
 		tmp = UiUtils.trimmedValue(m_revision);
 		if(tmp != null)

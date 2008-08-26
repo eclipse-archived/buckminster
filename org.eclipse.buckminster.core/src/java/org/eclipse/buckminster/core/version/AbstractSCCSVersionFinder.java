@@ -212,7 +212,6 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		}
 
 		monitor.beginTask(null, top * 10);
-		String space = getProvider().getSpace();
 		NodeQuery query = getQuery();
 		VersionSelector[] branchTagPath = query.getBranchTagPath();
 		IVersionDesignator versionDesignator = query.getVersionDesignator();
@@ -275,7 +274,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				// We need to assert that the component really exists on this branch
 				// or with this tag.
 				//
-				match = new VersionMatch(version, branchOrTag, space, entry.getRevision(), entry.getTimestamp(), null);
+				match = new VersionMatch(version, branchOrTag, entry.getRevision(), entry.getTimestamp(), null);
 				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
 				{
 					logDecision(branches
@@ -313,7 +312,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			}
 
 			if(match == null)
-				match = new VersionMatch(version, branchOrTag, space, entry.getRevision(), entry.getTimestamp(), null);
+				match = new VersionMatch(version, branchOrTag, entry.getRevision(), entry.getTimestamp(), null);
 
 			if(version == null)
 			{
@@ -410,7 +409,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));
 				return null;
 			}			
-			return new VersionMatch(version, null, getProvider().getSpace(), entry.getRevision(), entry.getTimestamp(), null);
+			return new VersionMatch(version, null, entry.getRevision(), entry.getTimestamp(), null);
 		}
 		finally
 		{

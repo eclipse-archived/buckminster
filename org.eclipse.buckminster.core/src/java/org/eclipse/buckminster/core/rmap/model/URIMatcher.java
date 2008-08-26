@@ -71,8 +71,6 @@ public class URIMatcher extends RxAssembly
 
 	public static final String TAG_PARAM = TaggedRxPattern.TAGGED_PREFIX + "tag";
 
-	public static final String SPACE_PARAM = TaggedRxPattern.TAGGED_PREFIX + "space";
-
 	public static final String REVISION_PARAM = TaggedRxPattern.TAGGED_PREFIX + "revision";
 
 	public static final String TIMESTAMP_PARAM = TaggedRxPattern.TAGGED_PREFIX + "timestamp";
@@ -189,7 +187,6 @@ public class URIMatcher extends RxAssembly
 					vs = VersionSelector.tag(tmp);
 			}
 
-			String space = matchMap.get(SPACE_PARAM);	
 			long revision = -1;
 			tmp = matchMap.get(REVISION_PARAM);
 			if(tmp != null)
@@ -218,7 +215,7 @@ public class URIMatcher extends RxAssembly
 				}
 			}
 
-			VersionMatch vm =  new VersionMatch(version, vs, space, revision, timestamp, null);
+			VersionMatch vm =  new VersionMatch(version, vs, revision, timestamp, null);
 			if(candidate == null || query.compare(vm, candidate) > 0)
 			{
 				// Verify that the URI created using this matchMap is readable

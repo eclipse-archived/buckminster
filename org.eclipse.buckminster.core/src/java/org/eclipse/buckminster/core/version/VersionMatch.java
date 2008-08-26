@@ -23,14 +23,13 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class VersionMatch extends AbstractSaxableElement
 {
-	public static final VersionMatch DEFAULT = new VersionMatch(null, null, null, -1L, null, null);
+	public static final VersionMatch DEFAULT = new VersionMatch(null, null, -1L, null, null);
 
 	public static final String TAG = "versionMatch";
 
 	public static final String ATTR_ARTIFACT_INFO = "artifactInfo";
 	public static final String ATTR_BRANCH_OR_TAG = "branchOrTag";
 	public static final String ATTR_REVISION = "revision";
-	public static final String ATTR_SPACE = "space";
 	public static final String ATTR_TIMESTAMP = "timestamp";
 	public static final String ATTR_VERSION = "version";
 	public static final String ATTR_VERSION_TYPE = "versionType";
@@ -41,13 +40,11 @@ public class VersionMatch extends AbstractSaxableElement
 
 	private final long m_revision;
 
-	private final String m_space;
-
 	private final Date m_timestamp;
 
 	private final IVersion m_version;
 
-	public VersionMatch(IVersion version, VersionSelector branchOrTag, String space, long revision, Date timestamp, String artifactInfo)
+	public VersionMatch(IVersion version, VersionSelector branchOrTag, long revision, Date timestamp, String artifactInfo)
 	{
 		m_version = version;
 		
@@ -55,7 +52,6 @@ public class VersionMatch extends AbstractSaxableElement
 			branchOrTag = null;
 
 		m_branchOrTag = branchOrTag;
-		m_space = space;
 		m_revision = revision;
 		m_timestamp = timestamp;
 		m_artifactInfo = artifactInfo;
@@ -66,7 +62,7 @@ public class VersionMatch extends AbstractSaxableElement
 		if(Trivial.equalsAllowNull(version, m_version))
 			return this;
 		
-		return new VersionMatch(version, m_branchOrTag, m_space, -1, null, m_artifactInfo);
+		return new VersionMatch(version, m_branchOrTag, -1, null, m_artifactInfo);
 	}
 
 	public String getArtifactInfo()
@@ -82,11 +78,6 @@ public class VersionMatch extends AbstractSaxableElement
 	public long getRevision()
 	{
 		return m_revision;
-	}
-
-	public String getSpace()
-	{
-		return m_space;
 	}
 
 	public Date getTimestamp()
@@ -121,13 +112,6 @@ public class VersionMatch extends AbstractSaxableElement
 				bld.append(':');
 			m_branchOrTag.toString(bld);
 		}
-		if(m_space != null)
-		{
-			if(needSep)
-				bld.append(':');
-			bld.append("@");
-			bld.append(m_space);
-		}
 		if(m_revision != -1)
 		{
 			if(needSep)
@@ -158,9 +142,6 @@ public class VersionMatch extends AbstractSaxableElement
 
 		if(m_revision != -1)
 			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
-
-		if(m_space != null)
-			Utils.addAttribute(attrs, ATTR_SPACE, m_space);
 
 		if(m_timestamp != null)
 			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));

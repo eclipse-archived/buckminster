@@ -124,7 +124,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				bld.setVersionDesignator((version == null) ? null : VersionFactory.createExplicitDesignator(version));
 				bld.setFilter(FilterUtils.createFilter(ref.getOS(), ref.getWS(), ref.getOSArch(), ref.getName()));
 				cspecBld.addDependency(bld);
-				matches[idx] = new VersionMatch(version, null, provider.getSpace(), -1, null, null);
+				matches[idx] = new VersionMatch(version, null, -1, null, null);
 				qDeps[idx] = new QualifiedDependency(bld.createComponentRequest(), null);
 			}
 			String childTagInfo = cspecBld.getTagInfo(tagInfo);

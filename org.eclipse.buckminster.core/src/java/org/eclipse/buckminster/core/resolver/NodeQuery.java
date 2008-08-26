@@ -22,7 +22,6 @@ import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -167,9 +166,6 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			case IAdvisorNode.PRIO_BRANCHTAG_PATH_INDEX:
 				cmp = compareSelectors(vm1, vm2);
 				break;
-			case IAdvisorNode.PRIO_SPACE_PATH_INDEX:
-				cmp = compareSpacePaths(vm1, vm2);
-				break;
 			default:
 				cmp = compareVersions(vm1, vm2);			
 			}
@@ -243,33 +239,6 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			//
 			int v1idx = VersionSelector.indexOf(branchTagPath, vm1.getBranchOrTag());
 			int v2idx = VersionSelector.indexOf(branchTagPath, vm2.getBranchOrTag());
-			if(v1idx >= 0)
-			{
-				if(v2idx >= 0)
-					cmp = (v1idx < v2idx) ? 1 : ((v1idx == v2idx) ? 0 : -1);
-				else
-					cmp = 1;
-			}
-			else
-			{
-				if(v2idx >= 0)
-					cmp = -1;
-			}
-		}
-		return cmp;
-	}
-
-	private int compareSpacePaths(VersionMatch vm1, VersionMatch vm2)
-	{
-		int cmp = 0;
-		String[] spacePath = getSpacePath();
-		if(spacePath.length > 0)
-		{
-			// The match with the lower index is considered greater. A match
-			// with no index (-1) will always loose
-			//
-			int v1idx = TextUtils.indexOf(spacePath, vm1.getSpace());
-			int v2idx = TextUtils.indexOf(spacePath, vm2.getSpace());
 			if(v1idx >= 0)
 			{
 				if(v2idx >= 0)
@@ -405,16 +374,6 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	}
 
 	/**
-	 * Returns the space path
-	 * 
-	 * @return A path that might be empty but never <code>null</code>.
-	 */
-	public String[] getSpacePath()
-	{
-		return getComponentQuery().getSpacePath(getComponentRequest());
-	}
-
-	/**
 	 * Returns the timestamp to search for or <code>null</code> if not applicable
 	 * 
 	 * @return The timestamp to search for
@@ -445,42 +404,14 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 * the current version designator, branchTag path, and space path.
 	 *
 	 * @param versionMatch The version match to match
+	 * @param spacePathResolver the space path resolver to use when expanding the space path.
 	 * @return true if the given values matches this query
 	 */
 	public boolean isMatch(VersionMatch versionMatch)
 	{
 		if(versionMatch == null)
 			versionMatch = VersionMatch.DEFAULT;
-		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag(), versionMatch.getSpace());
-	}
-
-	/**
-	 * Returns true if the given <code>versionMatch</code> will match this query with respect to
-	 * the current version designator, branchTag path, and space path.
-	 *
-	 * @param versionMatch The version match to match
-	 * @param spacePathResolver the space path resolver to use when expanding the space path.
-	 * @return true if the given values matches this query
-	 */
-	public boolean isMatch(VersionMatch versionMatch, ISpacePathResolver spacePathResolver)
-	{
-		if(versionMatch == null)
-			versionMatch = VersionMatch.DEFAULT;
-		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag(), versionMatch.getSpace(), spacePathResolver);
-	}
-
-	/**
-	 * Returns true if the given version will match this query with respect to
-	 * the current version designator, branchTag path, and space path.
-	 *
-	 * @param version The version to match or <code>null</code> if not applicable
-	 * @param branchOrTag The branch or tag to match or <code>null</code> if not applicable
-	 * @param space The space to match or <code>null</code> if not applicable
-	 * @return true if the given values matches this query
-	 */
-	public boolean isMatch(IVersion version, VersionSelector branchOrTag, String space)
-	{
-		return isMatch(version, branchOrTag, space, DefaultSpacePathResolver.INSTANCE);
+		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag());
 	}
 
 	/**
@@ -493,7 +424,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 * @param spacePathResolver the space path resolver to use when expanding the space path.
 	 * @return true if the given values matches this query
 	 */
-	public boolean isMatch(IVersion version, VersionSelector branchOrTag, String space, ISpacePathResolver spacePathResolver)
+	public boolean isMatch(IVersion version, VersionSelector branchOrTag)
 	{
 		VersionSelector[] branchTagPath = getBranchTagPath();
 		if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
@@ -502,17 +433,6 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 				? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED,
 						branchOrTag, String.format("not in path '%s'", VersionSelector.toString(branchTagPath)));
 			return false;
-		}
-
-		String[] spacePath = getSpacePath();
-		if(spacePath.length > 0)
-		{
-			spacePath = spacePathResolver.expandSpacePath(spacePath);
-			if(TextUtils.indexOf(spacePath, space) < 0)
-			{
-				logDecision(ResolverDecisionType.SPACE_REJECTED, space, String.format("not in path '%s'", TextUtils.concat(spacePath, ",")));
-				return false;
-			}
 		}
 
 		IVersionDesignator designator = getVersionDesignator();

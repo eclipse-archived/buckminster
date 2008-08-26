@@ -781,7 +781,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		IVersion version = VersionFactory.OSGiType.fromString(versionStr);
 		NodeQuery tplNq = templateInfo.getNodeQuery();
 		Provider provider = templateInfo.getProvider();
-		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), provider.getSpace(), -1, null, null);
+		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), -1, null, null);
 
 		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID,
 			IComponentType.OSGI_BUNDLE,

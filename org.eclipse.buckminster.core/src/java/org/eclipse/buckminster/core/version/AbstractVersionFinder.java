@@ -70,7 +70,7 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 
 	protected IVersion getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor) throws CoreException
 	{
-		VersionMatch match = new VersionMatch(null, branchOrTag, m_provider.getSpace(), m_query.getRevision(), m_query.getTimestamp(), null);
+		VersionMatch match = new VersionMatch(null, branchOrTag, m_query.getRevision(), m_query.getTimestamp(), null);
 		ProviderMatch rInfo = new ProviderMatch(m_provider, m_componentType, match, m_query);
 		return m_componentType.getComponentVersion(rInfo, monitor);
 	}

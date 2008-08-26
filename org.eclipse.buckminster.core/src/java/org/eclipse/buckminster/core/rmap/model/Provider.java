@@ -65,8 +65,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	public static final String ATTR_SOURCE = "source";
 
-	public static final String ATTR_SPACE = "space";
-
 	public static final String ATTR_VERSION_CONVERTER = "versionConverter";
 
 	public static final String TAG = "provider";
@@ -84,8 +82,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	private final boolean m_mutable;
 
 	private final String m_readerTypeId;
-
-	private final String m_space;
 
 	private final boolean m_source;
 
@@ -105,7 +101,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri, Filter resolutionFilter)
 	{
-		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, null, resolutionFilter, false, false, null, null);
+		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, resolutionFilter, false, false, null, null);
 	}
 
 	/**
@@ -124,7 +120,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 * @param documentation Documentation in xhtml format.
 	 */
 	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
-		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, String space, Filter resolutionFilter, boolean mutable, boolean source,
+		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, Filter resolutionFilter, boolean mutable, boolean source,
 		URIMatcher uriMatcher,
 		Documentation documentation)
 	{
@@ -136,7 +132,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		m_digest = digest;
 		m_digestAlgorithm = digestAlgorithm;
 		m_resolutionFilter = resolutionFilter;
-		m_space = space;
 		m_mutable = mutable;
 		m_source = source;
 		m_uriMatcher = uriMatcher;
@@ -295,11 +290,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return m_searchPath;
 	}
 
-	public final String getSpace()
-	{
-		return m_space;
-	}
-
 	/**
 	 * @return Returns the Digest URI.
 	 */
@@ -410,8 +400,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
 		if(m_componentTypeIDs.length > 0)
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ","));
-		if(m_space != null)
-			Utils.addAttribute(attrs, ATTR_SPACE, m_space);
 		if(m_resolutionFilter != null)
 			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());			
 		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));

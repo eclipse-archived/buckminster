@@ -224,7 +224,7 @@ public class CVSTest extends TestCase
 
 		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
 		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
-				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, null, false, false, null, null);
+				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, false, false, null, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
 		rqBld.setName("pgsql");

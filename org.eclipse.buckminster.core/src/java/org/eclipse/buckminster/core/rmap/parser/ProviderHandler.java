@@ -51,7 +51,6 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	private Documentation m_documentation;
 	private String	m_readerType;
 	private String[] m_componentTypes;
-	private String	m_space;
 	private boolean	m_source;
 	private boolean	m_mutable;
 
@@ -172,14 +171,22 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 
 		m_mutable = getOptionalBooleanValue(attrs, Provider.ATTR_MUTABLE, true);
 		m_source = getOptionalBooleanValue(attrs, Provider.ATTR_SOURCE, true);
-		m_space = getOptionalStringValue(attrs, Provider.ATTR_SPACE);
-		
-		tmp = getOptionalStringValue(attrs, Provider.ATTR_RESOLUTION_FILTER);
+
+		tmp = getOptionalStringValue(attrs, "space");
 		if(tmp != null)
+			tmp = "(buckminster.spacepath=" + tmp + ')';
+
+		String resFilter = getOptionalStringValue(attrs, Provider.ATTR_RESOLUTION_FILTER);
+		if(resFilter == null)
+			resFilter = tmp;
+		else if(tmp != null)
+			resFilter = "(&" + resFilter + tmp + ')';
+
+		if(resFilter != null)
 		{
 			try
 			{
-				m_resolutionFilter = FilterUtils.createFilter(tmp);
+				m_resolutionFilter = FilterUtils.createFilter(resFilter);
 			}
 			catch(InvalidSyntaxException e)
 			{
@@ -188,6 +195,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		}
 		else
 			m_resolutionFilter = null;
+
 		m_uriFormat = null;
 		m_digestFormat = null;
 		m_digestAlgorithm = null;
@@ -232,7 +240,6 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				m_uriFormat,
 				m_digestFormat,
 				m_digestAlgorithm,
-				m_space,
 				m_resolutionFilter,
 				m_mutable,
 				m_source,
@@ -282,11 +289,6 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	protected final Filter getResolutionFilter()
 	{
 		return m_resolutionFilter;
-	}
-
-	protected final String getSpace()
-	{
-		return m_space;
 	}
 
 	protected final boolean isSource()

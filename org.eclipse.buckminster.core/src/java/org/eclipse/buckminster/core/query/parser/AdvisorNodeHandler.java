@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
@@ -220,7 +219,13 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		m_builder.setUseMaterialization(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_MATERIALIZATION, true));
 		m_builder.setUseRemoteResolution(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_REMOTE_RESOLUTION, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
-		m_builder.setSpacePath(TextUtils.split(getOptionalStringValue(attrs, AdvisorNode.ATTR_SPACE_PATH), ","));
+
+		String spacePath = getOptionalStringValue(attrs, "spacePath");
+		if(spacePath != null)
+		{
+			logAttributeDeprecation(TAG, "spacePath", "property buckminster.spacePath=");
+			getProperties().put("buckminster.spacepath", spacePath);
+		}
 	}
 
 	AdvisorNodeBuilder getAdvisorNodeBuilder()

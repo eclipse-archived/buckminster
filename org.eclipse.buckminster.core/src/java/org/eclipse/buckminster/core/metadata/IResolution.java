@@ -78,12 +78,6 @@ public interface IResolution extends IFileInfo
 	long getSelectedRevision();
 
 	/**
-	 * The space used when this resolution was created.
-	 * @return The space.
-	 */
-	String getSelectedSpace();
-
-	/**
 	 * If the resolution was based on a timestapm query, then the matched timestamp is
 	 * returned here.
 	 * @return A timestamp or <code>null</code> if not applicable.

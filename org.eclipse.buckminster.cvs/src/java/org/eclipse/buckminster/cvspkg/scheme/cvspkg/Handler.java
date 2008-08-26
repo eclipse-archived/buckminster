@@ -143,7 +143,7 @@ public class Handler extends AbstractURLStreamHandlerService
 				CorePlugin plugin = CorePlugin.getDefault();
 				String versionSelector = params.get("version");
 				IReaderType cvsReaderType = plugin.getReaderType("cvs");
-				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), null, -1, null, null);
+				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), -1, null, null);
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString(), null);
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();

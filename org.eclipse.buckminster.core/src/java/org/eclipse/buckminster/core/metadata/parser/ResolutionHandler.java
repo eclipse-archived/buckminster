@@ -257,7 +257,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		}
 
 		if(m_fixedVersionSelector == null || m_fixedVersionSelector.length() == 0)
-			return new VersionMatch(version, null, null, -1, null, null);
+			return new VersionMatch(version, null, -1, null, null);
 
 		Matcher m = s_versionExp.matcher(m_fixedVersionSelector);
 		if(m.matches())
@@ -270,7 +270,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			String artifactType = m.group(3);
 			VersionSelector btag = (branch == null) ? null : VersionSelector.branch(branch);
 			if(qualifier == null)
-				return new VersionMatch(version, btag, null, -1, null, artifactType);
+				return new VersionMatch(version, btag, -1, null, artifactType);
 
 			m = s_tagExp.matcher(qualifier);
 			if(m.matches())
@@ -278,20 +278,20 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				String tag = m.group(1);
 				if(tag != null && !"LATEST".equals(tag)) // The LATEST comparison is for backward compatibility
 					btag = VersionSelector.tag(tag);				
-				return new VersionMatch(version, btag, null, -1, null, artifactType);
+				return new VersionMatch(version, btag, -1, null, artifactType);
 			}
 
 			try
 			{
 				Date d = DateAndTimeUtils.fromISOFormat(qualifier.substring(1));
-				return new VersionMatch(version, btag, null, -1, d, artifactType);
+				return new VersionMatch(version, btag, -1, d, artifactType);
 			}
 			catch(ParseException e)
 			{}
 
 			m = s_numberExp.matcher(qualifier);
 			if(m.matches())
-				return new VersionMatch(version, btag, null, Long.parseLong(m.group(1)), null, artifactType);
+				return new VersionMatch(version, btag, Long.parseLong(m.group(1)), null, artifactType);
 		}
 		throw new SAXParseException("Unable to parse legacy version selector string \"" + m_fixedVersionSelector + "\"", getDocumentLocator());
 	}

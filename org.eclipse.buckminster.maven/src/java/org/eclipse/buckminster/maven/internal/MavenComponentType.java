@@ -217,7 +217,7 @@ public class MavenComponentType extends AbstractComponentType
 		return VersionFactory.createGTEqualDesignator(version);
 	}
 
-	static VersionMatch createVersionMatch(String versionStr, String space, String typeInfo) throws CoreException
+	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
 	{
 		if(versionStr == null || versionStr.length() == 0)
 			//
@@ -227,13 +227,13 @@ public class MavenComponentType extends AbstractComponentType
 
 		Matcher m = MavenComponentType.s_timestampDesignatorPattern.matcher(versionStr);
 		if(m.matches())
-			return new VersionMatch(createVersion(m.group(1)), null, space, -1, createTimestamp(m.group(2), m.group(3)), typeInfo);
+			return new VersionMatch(createVersion(m.group(1)), null, -1, createTimestamp(m.group(2), m.group(3)), typeInfo);
 
 		m = MavenComponentType.s_snapshotDesignatorPattern.matcher(versionStr);
 		if(m.matches())
 		{
 			versionStr = m.group(1);
-			return new VersionMatch(createVersion(versionStr), null, space, -1, null, typeInfo);
+			return new VersionMatch(createVersion(versionStr), null, -1, null, typeInfo);
 		}
 
 		IVersion version = createVersion(versionStr);
@@ -241,9 +241,9 @@ public class MavenComponentType extends AbstractComponentType
 			//
 			// Unversioned timestamp
 			//
-			return new VersionMatch(null, null, space, -1, new Date(version.toLong()), typeInfo);
+			return new VersionMatch(null, null, -1, new Date(version.toLong()), typeInfo);
 
-		return new VersionMatch(version, null, space, -1, null, typeInfo);
+		return new VersionMatch(version, null, -1, null, typeInfo);
 	}
 
 	private static void addDependency(ComponentQuery query, Provider provider, CSpecBuilder cspec,
@@ -361,7 +361,7 @@ public class MavenComponentType extends AbstractComponentType
 		MapEntry entry = new MapEntry(componentName, groupId, artifactId, null);
 		VersionMatch vm = (versionStr == null)
 				? reader.getVersionMatch()
-				: createVersionMatch(versionStr, provider.getSpace(), null);
+				: createVersionMatch(versionStr, null);
 
 		IPath parentPath;
 		MavenReaderType mrt = (MavenReaderType)reader.getReaderType();

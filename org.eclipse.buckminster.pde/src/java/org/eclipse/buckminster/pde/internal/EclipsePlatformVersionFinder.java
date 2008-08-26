@@ -74,6 +74,6 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 			if(feature != null)
 				v = VersionFactory.OSGiType.fromString(feature.getFeature().getVersion());
 		}
-		return (v == null) ? null : new VersionMatch(v, null, getProvider().getSpace(), -1L, null, null);
+		return (v == null) ? null : new VersionMatch(v, null, -1L, null, null);
 	}
 }

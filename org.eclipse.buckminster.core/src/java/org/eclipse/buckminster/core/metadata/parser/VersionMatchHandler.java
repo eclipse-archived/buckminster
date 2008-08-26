@@ -52,7 +52,6 @@ class VersionMatchHandler extends ExtensionAwareHandler
 			if(tmp != null)
 				branchOrTag = VersionSelector.fromString(tmp);
 
-			String space = getOptionalStringValue(attrs, VersionMatch.ATTR_SPACE);
 			long revision = getOptionalLongValue(attrs, VersionMatch.ATTR_REVISION, -1L);
 
 			Date timestamp = null;
@@ -61,7 +60,7 @@ class VersionMatchHandler extends ExtensionAwareHandler
 				timestamp = DateAndTimeUtils.fromISOFormat(tmp);
 
 			String artifactInfo = getOptionalStringValue(attrs, VersionMatch.ATTR_ARTIFACT_INFO);
-			m_versionMatch = new VersionMatch(version, branchOrTag, space, revision, timestamp, artifactInfo);
+			m_versionMatch = new VersionMatch(version, branchOrTag, revision, timestamp, artifactInfo);
 		}
 		catch(Exception e)
 		{

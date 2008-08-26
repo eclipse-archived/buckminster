@@ -19,10 +19,7 @@ public interface IAdvisorNode
 
 	public static final int PRIO_BRANCHTAG_PATH_INDEX = 2;
 
-	public static final int PRIO_SPACE_PATH_INDEX = 3;
-
-	public static final int[] DEFAULT_RESOLUTION_PRIO = { PRIO_BRANCHTAG_PATH_INDEX, PRIO_VERSION_DESIGNATOR,
-			PRIO_SPACE_PATH_INDEX };
+	public static final int[] DEFAULT_RESOLUTION_PRIO = { PRIO_BRANCHTAG_PATH_INDEX, PRIO_VERSION_DESIGNATOR };
 
 	boolean allowCircularDependency();
 
@@ -43,8 +40,6 @@ public interface IAdvisorNode
 	Map<String, String> getProperties();
 
 	int[] getResolutionPrio();
-
-	String[] getSpacePath();
 
 	long getRevision();
 

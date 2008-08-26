@@ -55,7 +55,6 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		ArrayList<URL> fileList = new ArrayList<URL>();
 		String rootPath = pbld.toString();
 		int rootLen = rootPath.length();
-		String space = getProvider().getSpace();
 
 		monitor.beginTask(null, 2000);
 		try
@@ -64,7 +63,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 			NodeQuery query = getQuery();
 			for(String version : getVersions(query.getVersionDesignator(), readerType, docBld, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
 			{
-				VersionMatch versionMatch = MavenComponentType.createVersionMatch(version, space, null);
+				VersionMatch versionMatch = MavenComponentType.createVersionMatch(version, null);
 				if(versionMatch != null && query.isMatch(versionMatch))
 				{
 					pbld.setLength(rootLen);

@@ -80,10 +80,10 @@ public class MavenProvider extends Provider
 	private final List<BidirectionalTransformer> m_rules;
 
 	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-		VersionConverterDesc versionConverterDesc, Format uri, String space, Filter resolutionFilter, boolean mutable, boolean source,
+		VersionConverterDesc versionConverterDesc, Format uri, Filter resolutionFilter, boolean mutable, boolean source,
 		Documentation documentation, Map<String, MapEntry> mappings, List<BidirectionalTransformer> rules)
 	{
-		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, space, resolutionFilter, mutable, source,
+		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter, mutable, source,
 			null, documentation);
 		if(mappings == null)
 			mappings = Collections.emptyMap();

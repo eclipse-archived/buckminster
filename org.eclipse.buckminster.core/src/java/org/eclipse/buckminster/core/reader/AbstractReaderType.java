@@ -55,7 +55,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		DefaultVersionFinder(Provider provider, IComponentType ctype, NodeQuery query)
 		{
 			super(provider, ctype, query);
-			m_versionMatch = new VersionMatch(null, null, provider.getSpace(), -1, null, null);
+			m_versionMatch = new VersionMatch(null, null, -1, null, null);
 		}
 
 		public VersionMatch getBestVersion(IProgressMonitor monitor)

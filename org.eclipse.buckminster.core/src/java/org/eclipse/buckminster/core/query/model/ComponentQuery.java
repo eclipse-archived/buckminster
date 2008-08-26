@@ -359,12 +359,6 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return m_shortDesc;
 	}
 
-	public String[] getSpacePath(ComponentName cName)
-	{
-		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? Trivial.EMPTY_STRING_ARRAY : node.getSpacePath();
-	}
-
 	public String getTagInfo()
 	{
 		return "Query for " + m_rootRequest;

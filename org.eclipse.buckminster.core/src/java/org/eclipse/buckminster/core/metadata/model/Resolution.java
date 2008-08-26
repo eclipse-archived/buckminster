@@ -579,11 +579,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return XMLConstants.BM_METADATA_PREFIX;
 	}
 
-	public String getSelectedSpace()
-	{
-		return getVersionMatch().getSpace();
-	}
-
 	public Date getSelectedTimestamp()
 	{
 		return getVersionMatch().getTimestamp();

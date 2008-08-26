@@ -20,9 +20,8 @@ import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
-import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.IPath;
 
 public class AdvisorNodeBuilder implements IAdvisorNode
@@ -54,8 +53,6 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 	private boolean m_skipComponent;
 
 	private SourceLevel m_sourceLevel;
-
-	private String[] m_spacePath;
 
 	private boolean m_systemDiscovery;
 
@@ -111,7 +108,6 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_useRemoteResolution = true;
 		m_systemDiscovery = true;
 		m_branchTagPath = VersionSelector.EMPTY_PATH;
-		m_spacePath = Trivial.EMPTY_STRING_ARRAY;
 		m_revision = -1;
 		m_timestamp = null;
 		m_resolutionPrio = IAdvisorNode.DEFAULT_RESOLUTION_PRIO;
@@ -185,11 +181,6 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		return m_sourceLevel;
 	}
 
-	public String[] getSpacePath()
-	{
-		return m_spacePath;
-	}
-
 	public Date getTimestamp()
 	{
 		return m_timestamp;
@@ -223,7 +214,6 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_versionOverride = node.getVersionOverride();
 		m_systemDiscovery = node.isSystemDiscovery();
 		m_branchTagPath = node.getBranchTagPath();
-		m_spacePath = node.getSpacePath();
 		m_revision = node.getRevision();
 		m_timestamp = node.getTimestamp();
 		m_resolutionPrio = node.getResolutionPrio();
@@ -321,11 +311,6 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_sourceLevel = sourceLevel == null
 				? SourceLevel.INDIFFERENT
 				: sourceLevel;
-	}
-
-	public void setSpacePath(String[] spacePath)
-	{
-		m_spacePath = spacePath == null ? Trivial.EMPTY_STRING_ARRAY : spacePath;
 	}
 
 	public void setSystemDiscovery(boolean systemDiscovery)
