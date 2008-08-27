@@ -44,7 +44,7 @@ public class ResolutionBuilder implements IResolution
 
 	private long m_lastModified;
 
-	private boolean m_materializable;
+	private boolean m_materializable = true;
 
 	private String m_name;
 
@@ -62,11 +62,11 @@ public class ResolutionBuilder implements IResolution
 
 	private long m_revision;
 
-	private long m_size;
+	private long m_size = -1;
 
 	private Date m_timestamp;
 
-	private boolean m_unpack;
+	private boolean m_unpack = false;
 
 	public ResolutionBuilder()
 	{
@@ -93,7 +93,7 @@ public class ResolutionBuilder implements IResolution
 		m_contentType = null;
 		m_cspec.clear();
 		m_lastModified = 0L;
-		m_materializable = false;
+		m_materializable = true;
 		m_name = null;
 		m_opml = null;
 		m_provider = null;
