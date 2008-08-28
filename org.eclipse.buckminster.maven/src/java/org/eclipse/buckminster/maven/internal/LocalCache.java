@@ -164,7 +164,7 @@ public class LocalCache
 
 	private static final int MD5_LEN = 16;
 
-	private File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException, CoreException
+	private synchronized File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException, CoreException
 	{
 		IPath fullPath = m_localCacheRoot.append(path);
 		File file = fullPath.toFile();
@@ -225,7 +225,7 @@ public class LocalCache
 					// We should have a local file if we have a local digest but
 					// we better make sure
 					//
-					if(file.exists())
+					if(file.exists() && file.length() > 0)
 						return file;
 				}
 			}
