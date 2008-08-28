@@ -56,30 +56,30 @@ public interface IAccountService extends Serializable
 
 	public static final int ERROR_TIMEOUT = -3;
 
-	public static final int ERROR_SPACE_ACCESS_DENIED = -4;
+	public static final int ERROR_FOLDER_ACCESS_DENIED = -4;
 
 	public static final int ERROR_ARTIFACT_ALREADY_EXISTS = -5;
 
-	public static final int SPACE_ACCESS_OK = 1;
+	public static final int FOLDER_ACCESS_OK = 1;
 
-	public static final int SPACE_ACCESS_FORBIDDEN = -1;
+	public static final int FOLDER_ACCESS_FORBIDDEN = -1;
 
-	public static final int SPACE_ACCESS_SPACE_NOT_FOUND = -2;
+	public static final int FOLDER_ACCESS_FOLDER_NOT_FOUND = -2;
 
-	public static final int SPACE_ACCESS_INVITATION_EXISTS = -3;
+	public static final int FOLDER_ACCESS_INVITATION_EXISTS = -3;
 
-	public static final int SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
+	public static final int FOLDER_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
 
-	public int checkSpaceReadAccess(String spaceName);
+	public int checkFolderReadAccess(String folderName);
 
 	public String getLoginKey();
 
 	public String getRemoteHost();
 
 	/**
-	 * @return spaces that can be written to, empty list if not logged in.
+	 * @return folders that can be written to, empty list if not logged in.
 	 */
-	public List<String> getSpaceNames();
+	public List<String> getFolderNames();
 
 	public boolean isLoggedIn();
 
@@ -95,8 +95,8 @@ public interface IAccountService extends Serializable
 
 	public int logoutSession();
 
-	public int publish(String originalSpaceName, String cspecName, String cspecType, String cspecVersionString,
-			String cspecVersionType, String targetSpaceName, String artifactName, String xmlData,
+	public int publish(String originalFolderName, String cspecName, String cspecType, String cspecVersionString,
+			String cspecVersionType, String targetFolderName, String artifactName, String xmlData,
 			boolean replaceExisting);
 
 	public int register(String userName, String password, String email);

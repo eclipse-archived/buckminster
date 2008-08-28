@@ -363,7 +363,7 @@ public class Publisher implements IPublisher
 			@Override
 			public Integer process() throws Exception
 			{
-				return Integer.valueOf(m_remoteAccountService.checkSpaceReadAccess(spaceName));
+				return Integer.valueOf(m_remoteAccountService.checkFolderReadAccess(spaceName));
 			}
 		};
 
@@ -379,7 +379,7 @@ public class Publisher implements IPublisher
 			@Override
 			public List<String> process() throws Exception
 			{
-				return m_remoteAccountService.getSpaceNames();
+				return m_remoteAccountService.getFolderNames();
 			}
 		};
 
