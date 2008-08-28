@@ -10,13 +10,12 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.SAXException;
@@ -43,16 +42,11 @@ public class Redirect extends Matcher
 	@Override
 	public SearchPath getSearchPath(NodeQuery query) throws CoreException
 	{
-		try
-		{
-			URL url = new URL(ExpandingProperties.expand(getOwner().getProperties(query.getProperties()), m_url, 0));
-			query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
-			return ResourceMap.fromURL(url).getSearchPath(query);
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		ResourceMap rmap = getOwner();
+		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
+		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
+		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
+		return ResourceMap.fromURL(url).getSearchPath(query);
 	}
 
 	public String getDefaultTag()

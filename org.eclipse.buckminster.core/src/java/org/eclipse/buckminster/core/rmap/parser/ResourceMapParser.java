@@ -11,12 +11,15 @@
 package org.eclipse.buckminster.core.rmap.parser;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.parser.AbstractParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -28,6 +31,7 @@ import org.xml.sax.SAXException;
 public class ResourceMapParser extends AbstractParser<ResourceMap>
 {
 	private ResourceMap m_resourceMap;
+	private URL m_contextURL;
 
 	public ResourceMapParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
 	throws CoreException
@@ -55,6 +59,7 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 		{
 			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
 			ResourceMapHandler rmh = this.createContentHandler(this, ResourceMapHandler.class, uri, type);
+			rmh.setContextURL(m_contextURL);
 			this.pushHandler(rmh, attrs);
 		}
 		else
@@ -63,6 +68,14 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 
 	public ResourceMap parse(String systemID, InputStream input) throws CoreException
 	{
+		try
+		{
+			m_contextURL = URLUtils.normalizeToURL(systemID);
+		}
+		catch(MalformedURLException e)
+		{
+			m_contextURL = null;
+		}
 		this.parseInput(systemID, input);
 		return m_resourceMap;
 	}

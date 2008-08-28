@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.rmap.parser;
 
+import java.net.URL;
+
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
@@ -25,6 +27,7 @@ import org.xml.sax.SAXException;
  */
 public class ResourceMapHandler extends PropertyManagerHandler
 {
+	private URL m_contextURL;
 	private SearchPathHandler m_searchPathHandler;
 	private MatcherHandler.LocatorHandler m_locatorHandler;
 	private MatcherHandler.RedirectHandler m_redirectHandler;
@@ -97,7 +100,7 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	public ResourceMap getResourceMap()
 	{
 		if(m_resourceMap == null)
-			m_resourceMap = new ResourceMap();
+			m_resourceMap = new ResourceMap(m_contextURL);
 		return m_resourceMap;
 	}
 
@@ -105,6 +108,11 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	public ExpandingProperties getProperties()
 	{
 		return (ExpandingProperties)this.getResourceMap().getProperties();
+	}
+
+	void setContextURL(URL contextURL)
+	{
+		m_contextURL = contextURL;
 	}
 }
 

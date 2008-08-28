@@ -71,6 +71,13 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 	private Documentation m_documentation;
 
+	private final URL m_contextURL;
+
+	public ResourceMap(URL contextURL)
+	{
+		m_contextURL = contextURL;
+	}
+
 	public static ResourceMap fromURL(URL url) throws CoreException
 	{
 		IParserFactory pf = CorePlugin.getDefault().getParserFactory();
@@ -316,5 +323,10 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 		for(Matcher matcher : m_matchers)
 			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
+	}
+
+	public URL getContextURL()
+	{
+		return m_contextURL;
 	}
 }
