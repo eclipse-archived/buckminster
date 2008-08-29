@@ -27,7 +27,7 @@
          name="CSSite Authentication"
          point="org.eclipse.buckminster.jnlp.authentication">
       <authenticator
-            class="org.eclipse.buckminster.jnlp.cloudsmith.accountservice.Publisher"
+            class="org.eclipse.buckminster.jnlp.cloudsmith.accountservice.Authenticator"
             id="com.cloudsmith.cssite.accountservice.Publisher"/>
    </extension>
    <extension
@@ -35,7 +35,7 @@
          name="CSSite Publication"
          point="org.eclipse.buckminster.jnlp.publication">
       <publisher
-            class="org.eclipse.buckminster.jnlp.cloudsmith.accountservice.Publisher"
+            class="org.eclipse.buckminster.jnlp.cloudsmith.accountservice.Authenticator"
             id="com.cloudsmith.cssite.accountservice.Publisher"/>
    </extension>
    <extension

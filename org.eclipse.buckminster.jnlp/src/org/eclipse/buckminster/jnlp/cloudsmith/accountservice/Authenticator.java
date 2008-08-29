@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.jnlp.cloudsmith.accountservice;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
@@ -17,7 +16,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.helpers.CryptoUtils;
 import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
-import org.eclipse.buckminster.jnlp.accountservice.IPublisher;
 import org.eclipse.buckminster.jnlp.cloudsmith.accountservice.AccountServiceLoginResponse;
 import org.eclipse.buckminster.jnlp.cloudsmith.accountservice.IAccountService;
 import org.jabsorb.client.Client;
@@ -29,7 +27,7 @@ import org.jabsorb.client.TransportRegistry;
  * @author Karel Brezina
  * 
  */
-public class Publisher implements IPublisher
+public class Authenticator implements IAuthenticator
 {
 	abstract class MethodWrapper<T>
 	{
@@ -133,20 +131,20 @@ public class Publisher implements IPublisher
 		m_currentStatus = AuthenticationStatus.AFTER_INIT;
 	}
 
-	public IPublisher createDuplicate(boolean login) throws Exception
+	public IAuthenticator createDuplicate(boolean login) throws Exception
 	{
-		Publisher publisher = new Publisher();
-		publisher.initialize(m_serviceURL);
+		Authenticator authenticator = new Authenticator();
+		authenticator.initialize(m_serviceURL);
 		
 		if(m_currentStatus == AuthenticationStatus.AFTER_LOGIN && login)
 		{
 			if(m_lastLoginKey != null)
-				publisher.login(m_lastLoginKey);
+				authenticator.login(m_lastLoginKey);
 			else
-				publisher.login(m_lastLoginUserName, m_lastLoginPassword);
+				authenticator.login(m_lastLoginUserName, m_lastLoginPassword);
 		}
 		
-		return publisher;
+		return authenticator;
 	}
 	
 	public HttpClient getHttpClient()
@@ -364,41 +362,6 @@ public class Publisher implements IPublisher
 			public Integer process() throws Exception
 			{
 				return Integer.valueOf(m_remoteAccountService.checkFolderReadAccess(spaceName));
-			}
-		};
-
-		return method.run().intValue();
-	}
-
-	
-	public List<String> getSpaceNames() throws Exception
-	{
-		MethodWrapper<List<String>> method = new MethodWrapper<List<String>>()
-		{
-
-			@Override
-			public List<String> process() throws Exception
-			{
-				return m_remoteAccountService.getFolderNames();
-			}
-		};
-
-		return method.run();
-	}
-
-	public int publish(
-			final String originalSpaceName, final String cspecName, final String cspecType, final String cspecVersionString, final String cspecVersionType,
-			final String targetSpaceName, final String artifactName, final String xmlData, final boolean replaceExisting) throws Exception
-	{
-		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
-		{
-
-			@Override
-			public Integer process() throws Exception
-			{
-				return Integer.valueOf(m_remoteAccountService.publish(
-						originalSpaceName, cspecName, cspecType, cspecVersionString, cspecVersionType,
-						targetSpaceName, artifactName, xmlData, replaceExisting));
 			}
 		};
 

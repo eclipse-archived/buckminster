@@ -9,7 +9,6 @@
 package org.eclipse.buckminster.jnlp.cloudsmith.accountservice;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Methods in this interface are used for remote communication with CSsite
@@ -76,11 +75,6 @@ public interface IAccountService extends Serializable
 
 	public String getRemoteHost();
 
-	/**
-	 * @return folders that can be written to, empty list if not logged in.
-	 */
-	public List<String> getFolderNames();
-
 	public boolean isLoggedIn();
 
 	public void keepAlive();
@@ -94,10 +88,6 @@ public interface IAccountService extends Serializable
 	public int logout();
 
 	public int logoutSession();
-
-	public int publish(String originalFolderName, String cspecName, String cspecType, String cspecVersionString,
-			String cspecVersionType, String targetFolderName, String artifactName, String xmlData,
-			boolean replaceExisting);
 
 	public int register(String userName, String password, String email);
 
