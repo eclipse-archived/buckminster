@@ -406,7 +406,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		if(node.isResolved())
 			return node;
 
-		NodeQuery query = m_context.getNodeQuery(qDep);
+		NodeQuery query = context.getNodeQuery(qDep);
 		if(query.skipComponent())
 			return node;
 
@@ -426,7 +426,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			}
 			catch(CoreException e)
 			{
-				if(!m_context.isContinueOnError())
+				if(!context.isContinueOnError())
 					throw e;
 			}
 
