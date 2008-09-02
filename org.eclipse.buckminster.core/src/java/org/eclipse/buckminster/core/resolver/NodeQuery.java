@@ -427,12 +427,18 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public boolean isMatch(IVersion version, VersionSelector branchOrTag)
 	{
 		VersionSelector[] branchTagPath = getBranchTagPath();
-		if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
+		if(branchTagPath.length > 0)
 		{
-			logDecision(branchOrTag.getType() == VersionSelector.BRANCH
-				? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED,
-						branchOrTag, String.format("not in path '%s'", VersionSelector.toString(branchTagPath)));
-			return false;
+			if(branchOrTag == null)
+				branchOrTag = VersionSelector.branch(VersionSelector.DEFAULT_BRANCH);
+
+			if(VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
+			{
+				logDecision(branchOrTag == null || branchOrTag.getType() == VersionSelector.BRANCH
+					? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED,
+							branchOrTag, String.format("not in path '%s'", VersionSelector.toString(branchTagPath)));
+				return false;
+			}
 		}
 
 		IVersionDesignator designator = getVersionDesignator();
