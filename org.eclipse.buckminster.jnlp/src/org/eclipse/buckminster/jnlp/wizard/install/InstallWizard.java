@@ -230,6 +230,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private LoginPage m_loginPage;
 
+	private SelectDistroPage m_selectDistroPage;
+
 	private SpaceRestrictionPage m_spaceRestrictionPage;
 
 	private SimpleDownloadPage m_downloadPage;
@@ -603,6 +605,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					: getServiceProvider());
 			addAdvancedPage(m_loginPage);
 
+			m_selectDistroPage = new SelectDistroPage();
+			//addAdvancedPage(m_selectDistroPage);			
+			
 			m_downloadPage = new SimpleDownloadPage();
 			addAdvancedPage(m_downloadPage);
 
@@ -724,6 +729,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_eclipseDistroTools33UpdateSiteURL;
 	}
 
+	IWizardPage getSelectDistroPage()
+	{
+		return m_selectDistroPage;
+	}
+	
 	IWizardPage getDownloadPage()
 	{
 		try
