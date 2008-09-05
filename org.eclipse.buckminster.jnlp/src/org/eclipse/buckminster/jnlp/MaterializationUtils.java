@@ -117,7 +117,7 @@ public class MaterializationUtils
 	 * @throws JNLPException
 	 * @throws IOException
 	 */
-	public static void checkConnection(int status, String originalURL) throws JNLPException, IOException
+	public static void checkConnection(int status, String originalURL) throws JNLPException
 	{
 		if(status != HttpStatus.SC_OK)
 		{
