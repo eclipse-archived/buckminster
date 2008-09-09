@@ -101,8 +101,8 @@ import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.MaterializerRunnable;
 import org.eclipse.buckminster.jnlp.MissingPropertyException;
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -256,7 +256,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private final boolean m_startedFromIDE;
 
-	private IAuthenticator m_authenticator;
+	private IRemoteDistroProvider m_authenticator;
 
 	private IComponentInfoProvider m_infoProvider;
 
@@ -289,7 +289,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_localProperties = readLocalProperties();
 
-		m_authenticator = createAuthenticator(m_loginRequired);
+		m_authenticator = createAuthenticator();
 
 		m_infoProvider = createComponentInfoProvider();
 
@@ -347,14 +347,14 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 	}
 
-	public IAuthenticator getAuthenticator()
+	public IRemoteDistroProvider getAuthenticator()
 	{
 		return m_authenticator;
 	}
 
 	public String getAuthenticatorCurrentUserName()
 	{
-		IAuthenticator auth = getAuthenticator();
+		IRemoteDistroProvider auth = getAuthenticator();
 		return auth == null
 				? ""
 				: auth.getCurrenlyLoggedUserName();
@@ -578,7 +578,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_mspecListeners.remove(listener);
 	}
 
-	public void setAuthenticator(IAuthenticator authenticator)
+	public void setAuthenticator(IRemoteDistroProvider authenticator)
 	{
 		m_authenticator = authenticator;
 	}
@@ -740,9 +740,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			int result = checkSpaceReadAccess();
 
-			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN
-					|| result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS
-					|| result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+			if(result == IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN
+					|| result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS
+					|| result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
 			{
 				m_spaceRestrictionPage.setStatus(result);
 
@@ -825,12 +825,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	int checkSpaceReadAccess() throws Exception
 	{
 		if(m_loginRequired && (m_authenticator == null || m_spaceName == null))
-			return IAuthenticator.SPACE_ACCESS_FORBIDDEN;
+			return IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN;
 
 		// if authenticator is null - get smacked later (can only end up here without an
 		// authenticator if loginRequired is false anyway).
 		return m_authenticator == null
-				? IAuthenticator.SPACE_ACCESS_OK
+				? IRemoteDistroProvider.SPACE_ACCESS_OK
 				: m_authenticator.checkSpaceReadAccess(m_spaceName);
 	}
 
@@ -908,11 +908,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				: VALUE_FALSE);
 	}
 
-	private IAuthenticator createAuthenticator(boolean needed)
+	private IRemoteDistroProvider createAuthenticator()
 	{
 		IExtensionRegistry er = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = er.getConfigurationElementsFor(AUTHENTICATION_EXTPOINT);
-		IAuthenticator authenticator = null;
+		IRemoteDistroProvider authenticator = null;
 
 		try
 		{
@@ -923,17 +923,17 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			try
 			{
-				authenticator = (IAuthenticator)elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
+				authenticator = (IRemoteDistroProvider)elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
 				authenticator.initialize(m_basePathURL);
 
 				if(m_loginKey != null)
 				{
 					int result = authenticator.login(m_loginKey);
 
-					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
+					if(result == IRemoteDistroProvider.LOGIN_UNKNOW_KEY)
 						m_loginKey = null;
 
-					if(result == IAuthenticator.LOGIN_OK)
+					if(result == IRemoteDistroProvider.LOGIN_OK)
 						m_loginKeyUserName = authenticator.getCurrenlyLoggedUserName();
 					else
 						m_loginKeyUserName = null;
@@ -946,17 +946,14 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 		catch(JNLPException e)
 		{
-			if(needed)
-			{
-				m_problemInProperties = true;
+			m_problemInProperties = true;
 
-				IStatus status = BuckminsterException.wrap(e.getCause() != null
-						? e.getCause()
-						: e).getStatus();
-				CorePlugin.logWarningsAndErrors(status);
-				HelpLinkErrorDialog.openError(null, null, ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE,
-						m_errorURL, e.getErrorCode(), status);
-			}
+			IStatus status = BuckminsterException.wrap(e.getCause() != null
+					? e.getCause()
+					: e).getStatus();
+			CorePlugin.logWarningsAndErrors(status);
+			HelpLinkErrorDialog.openError(null, null, ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE, m_errorURL,
+					e.getErrorCode(), status);
 		}
 
 		return authenticator;

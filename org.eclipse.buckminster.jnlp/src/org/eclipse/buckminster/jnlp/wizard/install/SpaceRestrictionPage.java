@@ -8,10 +8,10 @@
 
 package org.eclipse.buckminster.jnlp.wizard.install;
 
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.wizard.LoginDialog;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
@@ -247,9 +247,9 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		{
 			int result = getInstallWizard().checkSpaceReadAccess();
 
-			if(result == IAuthenticator.SPACE_ACCESS_FORBIDDEN ||
-					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS ||
-					result == IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+			if(result == IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN ||
+					result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS ||
+					result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
 			{
 				setErrorMessage("Aceess forbidden - the invitation is not accepted");
 				return false;
@@ -267,10 +267,10 @@ public class SpaceRestrictionPage extends InstallWizardPage
 	{
 		switch(result)
 		{
-		case IAuthenticator.SPACE_ACCESS_FORBIDDEN:
+		case IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN:
 			m_stackLayout.topControl = m_solutionForbiddenComposite;
 			break;
-		case IAuthenticator.SPACE_ACCESS_INVITATION_EXISTS:
+		case IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS:
 			m_stackLayout.topControl = m_solutionInvitationComposite;
 			break;
 		default:

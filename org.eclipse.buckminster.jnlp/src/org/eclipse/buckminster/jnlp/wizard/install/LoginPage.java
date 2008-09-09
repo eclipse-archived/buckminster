@@ -13,7 +13,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_N
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.wizard.LoginPanel;
 import org.eclipse.buckminster.jnlp.wizard.install.InstallWizardPage;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -111,7 +111,7 @@ public class LoginPage extends InstallWizardPage
 		if(isCurrentPage())
 		{
 
-			IAuthenticator authenticator;
+			IRemoteDistroProvider authenticator;
 
 			String userName = null;
 			String password = null;
@@ -129,10 +129,10 @@ public class LoginPage extends InstallWizardPage
 				{
 					int result = authenticator.relogin(getInstallWizard().getAuthenticatorLoginKey());
 
-					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
+					if(result == IRemoteDistroProvider.LOGIN_UNKNOW_KEY)
 						getInstallWizard().removeAuthenticatorLoginKey();
 
-					if(result != IAuthenticator.LOGIN_OK)
+					if(result != IRemoteDistroProvider.LOGIN_OK)
 						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
 				}
 				else
@@ -144,7 +144,7 @@ public class LoginPage extends InstallWizardPage
 					{
 						int result = authenticator.register(userName, password, m_login.getEmail());
 	
-						if(result == IAuthenticator.REGISTER_LOGIN_EXISTS &&
+						if(result == IRemoteDistroProvider.REGISTER_LOGIN_EXISTS &&
 								m_lastRegisteredUserName != null && m_lastRegisteredUserName.equals(userName) &&
 								m_lastRegisteredPassword != null && m_lastRegisteredPassword.equals(password))
 							
@@ -159,7 +159,7 @@ public class LoginPage extends InstallWizardPage
 						}
 					}
 	
-					if(authenticator.relogin(userName, password) != IAuthenticator.LOGIN_OK)
+					if(authenticator.relogin(userName, password) != IRemoteDistroProvider.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - check username and password and try again", null);
 					}

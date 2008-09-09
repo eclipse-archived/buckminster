@@ -6,18 +6,27 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp.cloudsmith.accountservice;
+package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.CryptoUtils;
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
-import org.eclipse.buckminster.jnlp.cloudsmith.accountservice.AccountServiceLoginResponse;
-import org.eclipse.buckminster.jnlp.cloudsmith.accountservice.IAccountService;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.jnlp.distroprovider.Distro;
+import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
+import org.eclipse.buckminster.jnlp.distroprovider.PropertySet;
+import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.IAccountService;
+import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.LoginResponse;
 import org.jabsorb.client.Client;
 import org.jabsorb.client.ErrorResponse;
 import org.jabsorb.client.HTTPSession;
@@ -27,17 +36,17 @@ import org.jabsorb.client.TransportRegistry;
  * @author Karel Brezina
  * 
  */
-public class Authenticator implements IAuthenticator
+public class DistroProvider implements IRemoteDistroProvider
 {
 	abstract class MethodWrapper<T>
 	{
 		abstract public T process() throws Exception;
-		
+
 		public T run() throws Exception
 		{
 			if(m_currentStatus == AuthenticationStatus.BEFORE_INIT && m_remoteAccountService == null)
 			{
-				throw new Exception("Authenticator is not initialized - initialize method needs to be called");			
+				throw new Exception("Authenticator is not initialized - initialize method needs to be called");
 			}
 
 			try
@@ -59,32 +68,38 @@ public class Authenticator implements IAuthenticator
 			}
 		}
 	}
-	
+
 	private enum AuthenticationStatus
 	{
 		BEFORE_INIT, AFTER_INIT, AFTER_LOGIN
 	}
-	
-	private static final String JSON_RPC_BRIDGE_URL_SUFFIX = "json-rpc-bridge/accountService";
 
-	private static final String JSON_RPC_URL_SUFFIX = "json-rpc/accountService";
+	private static final String ACCOUNTSERVICE_BRIDGE_URL_SUFFIX = "json-rpc-bridge/accountService";
+
+	private static final String ACCOUNTSERVICE_URL_SUFFIX = "json-rpc/accountService";
+
+	private static final String DISTROSERVICE_BRIDGE_URL_SUFFIX = "json-rpc-bridge/distroService";
+
+	private static final String DISTROSERVICE_URL_SUFFIX = "json-rpc/distroService";
 
 	private static final String ENCRYPT_ALGORITHM = "SHA-256";
-	
+
 	private AuthenticationStatus m_currentStatus = AuthenticationStatus.BEFORE_INIT;
-	
+
 	private String m_lastLoginUserName;
-	
+
 	private String m_lastLoginPassword;
 
 	private String m_lastLoginKey;
-	
-	private AccountServiceLoginResponse m_lastLoginResponse;
+
+	private LoginResponse m_lastLoginResponse;
 
 	private String m_serviceURL;
-	
+
 	private IAccountService m_remoteAccountService = null;
-	
+
+	private IDistroService m_remoteDistroService = null;
+
 	private HttpClient m_httpClient;
 
 	public void initialize(String serviceURL) throws Exception
@@ -93,21 +108,24 @@ public class Authenticator implements IAuthenticator
 		{
 			throw new Exception("Service URL is missing");
 		}
-		
+
 		m_serviceURL = serviceURL;
-		
+
 		m_httpClient = new HttpClient();
 		HttpState httpState = new HttpState();
 		m_httpClient.setState(httpState);
-		
+
 		GetMethod method = null;
-		
+
+		// initialization of account service
 		try
 		{
-			method = new GetMethod(serviceURL + JSON_RPC_BRIDGE_URL_SUFFIX);
+			method = new GetMethod(serviceURL + ACCOUNTSERVICE_BRIDGE_URL_SUFFIX);
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
-				throw new IOException("Setup did not succeed - make sure the AccountServiceServlet servlet is running on " + serviceURL);
+				throw new IOException(
+						"Setup did not succeed - make sure the AccountServiceServlet servlet is running on "
+								+ serviceURL);
 		}
 		finally
 		{
@@ -119,23 +137,46 @@ public class Authenticator implements IAuthenticator
 
 		HTTPSession.register(registry);
 
-		HTTPSession session = (HTTPSession)registry.createSession(serviceURL + JSON_RPC_URL_SUFFIX);
+		HTTPSession session = (HTTPSession)registry.createSession(serviceURL + ACCOUNTSERVICE_URL_SUFFIX);
 
 		// Pass the the session set up earlier
 		session.setState(httpState);
 
 		Client jsonClient = new Client(session);
-		
 		m_remoteAccountService = (IAccountService)jsonClient.openProxy("accountService", IAccountService.class);
-		
+
 		m_currentStatus = AuthenticationStatus.AFTER_INIT;
+
+		// initialization of distro service
+		try
+		{
+			method = new GetMethod(serviceURL + DISTROSERVICE_BRIDGE_URL_SUFFIX);
+			int status = m_httpClient.executeMethod(method);
+			if(status != HttpStatus.SC_OK)
+				throw new IOException(
+						"Setup did not succeed - make sure the DistroServiceServlet servlet is running on "
+								+ serviceURL);
+		}
+		finally
+		{
+			if(method != null)
+				method.releaseConnection();
+		}
+
+		session = (HTTPSession)registry.createSession(serviceURL + DISTROSERVICE_URL_SUFFIX);
+
+		// Pass the the session set up earlier
+		session.setState(httpState);
+
+		jsonClient = new Client(session);
+		m_remoteDistroService = (IDistroService)jsonClient.openProxy("distroService", IDistroService.class);
 	}
 
-	public IAuthenticator createDuplicate(boolean login) throws Exception
+	public IRemoteDistroProvider createDuplicate(boolean login) throws Exception
 	{
-		Authenticator authenticator = new Authenticator();
+		DistroProvider authenticator = new DistroProvider();
 		authenticator.initialize(m_serviceURL);
-		
+
 		if(m_currentStatus == AuthenticationStatus.AFTER_LOGIN && login)
 		{
 			if(m_lastLoginKey != null)
@@ -143,10 +184,10 @@ public class Authenticator implements IAuthenticator
 			else
 				authenticator.login(m_lastLoginUserName, m_lastLoginPassword);
 		}
-		
+
 		return authenticator;
 	}
-	
+
 	public HttpClient getHttpClient()
 	{
 		return m_httpClient;
@@ -169,11 +210,11 @@ public class Authenticator implements IAuthenticator
 
 	public int login(final String userName, final String password) throws Exception
 	{
-		MethodWrapper<AccountServiceLoginResponse> method = new MethodWrapper<AccountServiceLoginResponse>()
+		MethodWrapper<LoginResponse> method = new MethodWrapper<LoginResponse>()
 		{
 
 			@Override
-			public AccountServiceLoginResponse process() throws Exception
+			public LoginResponse process() throws Exception
 			{
 				return m_remoteAccountService.login(userName, CryptoUtils.encrypt(password, ENCRYPT_ALGORITHM));
 			}
@@ -181,7 +222,7 @@ public class Authenticator implements IAuthenticator
 
 		m_lastLoginResponse = method.run();
 		int result = m_lastLoginResponse.getResponseId();
-		
+
 		if(result == LOGIN_OK)
 		{
 			m_currentStatus = AuthenticationStatus.AFTER_LOGIN;
@@ -201,22 +242,23 @@ public class Authenticator implements IAuthenticator
 	{
 		if(isLoggedIn())
 		{
-			if(userName != null && userName.equals(m_lastLoginUserName) && password != null && password.equals(m_lastLoginPassword))
-				return IAuthenticator.LOGIN_OK;
-			
+			if(userName != null && userName.equals(m_lastLoginUserName) && password != null
+					&& password.equals(m_lastLoginPassword))
+				return IRemoteDistroProvider.LOGIN_OK;
+
 			logout();
 		}
-		
+
 		return login(userName, password);
 	}
-	
+
 	public int login(final String loginKey) throws Exception
 	{
-		MethodWrapper<AccountServiceLoginResponse> method = new MethodWrapper<AccountServiceLoginResponse>()
+		MethodWrapper<LoginResponse> method = new MethodWrapper<LoginResponse>()
 		{
 
 			@Override
-			public AccountServiceLoginResponse process() throws Exception
+			public LoginResponse process() throws Exception
 			{
 				return m_remoteAccountService.login(loginKey);
 			}
@@ -224,7 +266,7 @@ public class Authenticator implements IAuthenticator
 
 		m_lastLoginResponse = method.run();
 		int result = m_lastLoginResponse.getResponseId();
-		
+
 		if(result == LOGIN_OK)
 		{
 			m_currentStatus = AuthenticationStatus.AFTER_LOGIN;
@@ -245,19 +287,21 @@ public class Authenticator implements IAuthenticator
 		if(isLoggedIn())
 		{
 			if(loginKey != null && loginKey.equals(m_lastLoginKey))
-				return IAuthenticator.LOGIN_OK;
-			
+				return IRemoteDistroProvider.LOGIN_OK;
+
 			logout();
 		}
-		
+
 		return login(loginKey);
 	}
-	
+
 	public String getCurrenlyLoggedUserName()
 	{
-		return m_lastLoginResponse == null ? null : m_lastLoginResponse.getUserName();
+		return m_lastLoginResponse == null
+				? null
+				: m_lastLoginResponse.getUserName();
 	}
-	
+
 	public String getLoginKey() throws Exception
 	{
 		MethodWrapper<String> method = new MethodWrapper<String>()
@@ -289,7 +333,6 @@ public class Authenticator implements IAuthenticator
 		method.run();
 	}
 
-
 	private int logoutWithoutRefreshingConnection() throws Exception
 	{
 		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
@@ -301,9 +344,9 @@ public class Authenticator implements IAuthenticator
 				return Integer.valueOf(m_remoteAccountService.logoutSession());
 			}
 		};
-		
+
 		int result;
-		
+
 		try
 		{
 			result = method.run().intValue();
@@ -313,14 +356,14 @@ public class Authenticator implements IAuthenticator
 			m_currentStatus = AuthenticationStatus.BEFORE_INIT;
 			m_remoteAccountService = null;
 		}
-		
+
 		return result;
 	}
-	
+
 	public int logout() throws Exception
 	{
 		int result;
-		
+
 		try
 		{
 			result = logoutWithoutRefreshingConnection();
@@ -329,10 +372,10 @@ public class Authenticator implements IAuthenticator
 		{
 			initialize(m_serviceURL);
 		}
-		
+
 		return result;
 	}
-	
+
 	public void releaseConnection() throws Exception
 	{
 		logoutWithoutRefreshingConnection();
@@ -346,7 +389,8 @@ public class Authenticator implements IAuthenticator
 			@Override
 			public Integer process() throws Exception
 			{
-				return Integer.valueOf(m_remoteAccountService.register(userName, CryptoUtils.encrypt(password, ENCRYPT_ALGORITHM), email));
+				return Integer.valueOf(m_remoteAccountService.register(userName, CryptoUtils.encrypt(password,
+						ENCRYPT_ALGORITHM), email));
 			}
 		};
 
@@ -373,9 +417,9 @@ public class Authenticator implements IAuthenticator
 	{
 		if(m_currentStatus == AuthenticationStatus.BEFORE_INIT)
 			return;
-		
+
 		initialize(m_serviceURL);
-		
+
 		if(m_currentStatus == AuthenticationStatus.AFTER_INIT)
 			return;
 
@@ -383,5 +427,47 @@ public class Authenticator implements IAuthenticator
 			login(m_lastLoginKey);
 		else
 			login(m_lastLoginUserName, m_lastLoginPassword);
+	}
+
+	public List<DistroVariant> getDistroVariants(final long stackId, final PropertySet properties) throws Exception
+	{
+		MethodWrapper<List<DistroVariant>> method = new MethodWrapper<List<DistroVariant>>()
+		{
+
+			@Override
+			public List<DistroVariant> process() throws Exception
+			{
+				return m_remoteDistroService.getDistroVariants(Long.valueOf(stackId), properties);
+			}
+		};
+
+		return method.run();
+	}
+
+	public Distro getDistro(final long distroId) throws Exception
+	{
+		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
+		{
+
+			@Override
+			public Distro process() throws Exception
+			{
+				DistroContent distroContent = m_remoteDistroService.getDistro(Long.valueOf(distroId));
+				
+				if(distroContent == null || distroContent.getBomContent() == null || distroContent.getMspecContent() == null)
+					return null;
+				
+				IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
+				BillOfMaterials bom = bomParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getBomContent())));
+				
+				IParser<MaterializationSpec> mspecParser = CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
+				MaterializationSpec mspec = mspecParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent())));
+				
+				return new Distro(bom, mspec);
+
+			}
+		};
+
+		return method.run();
 	}
 }

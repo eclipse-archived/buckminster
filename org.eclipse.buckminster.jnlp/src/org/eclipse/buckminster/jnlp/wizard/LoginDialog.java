@@ -12,7 +12,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_N
 
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedTitleAreaDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -101,7 +101,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 	{
 		if(buttonId == IDialogConstants.OK_ID)
 		{
-			IAuthenticator authenticator;
+			IRemoteDistroProvider authenticator;
 		
 			try
 			{
@@ -119,10 +119,10 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 				{
 					int result = authenticator.relogin(m_loginHandler.getAuthenticatorLoginKey());
 		
-					if(result == IAuthenticator.LOGIN_UNKNOW_KEY)
+					if(result == IRemoteDistroProvider.LOGIN_UNKNOW_KEY)
 						m_loginHandler.removeAuthenticatorLoginKey();
 		
-					if(result != IAuthenticator.LOGIN_OK)
+					if(result != IRemoteDistroProvider.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
 					}					
@@ -138,7 +138,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 						MaterializationUtils.checkRegistrationResponse(result);
 					}
 		
-					if(authenticator.relogin(userName, password) != IAuthenticator.LOGIN_OK)
+					if(authenticator.relogin(userName, password) != IRemoteDistroProvider.LOGIN_OK)
 					{
 						throw new JNLPException("Cannot login - check username and password and try again", null);
 					}

@@ -38,7 +38,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -162,21 +162,21 @@ public class MaterializationUtils
 	{
 		switch(result)
 		{
-		case IAuthenticator.REGISTER_FAIL:
+		case IRemoteDistroProvider.REGISTER_FAIL:
 			throw new JNLPException("Registration was not successful", null);
-		case IAuthenticator.REGISTER_LOGIN_EXISTS:
+		case IRemoteDistroProvider.REGISTER_LOGIN_EXISTS:
 			throw new JNLPException("Login name already exists - choose a different one", null);
-		case IAuthenticator.REGISTER_LOGIN_TOO_SHORT:
+		case IRemoteDistroProvider.REGISTER_LOGIN_TOO_SHORT:
 			throw new JNLPException("Login is too short - length must be between 3 and 25", null);
-		case IAuthenticator.REGISTER_LOGIN_CONTAINS_AT:
+		case IRemoteDistroProvider.REGISTER_LOGIN_CONTAINS_AT:
 			throw new JNLPException("Login name contains '@'", null);
-		case IAuthenticator.REGISTER_LOGIN_INVALID:
+		case IRemoteDistroProvider.REGISTER_LOGIN_INVALID:
 			throw new JNLPException("Login name is invalid", null);
-		case IAuthenticator.REGISTER_PASSWORD_TOO_SHORT:
+		case IRemoteDistroProvider.REGISTER_PASSWORD_TOO_SHORT:
 			throw new JNLPException("Password is too short - length must be between 4 and 25", null);
-		case IAuthenticator.REGISTER_EMAIL_FORMAT_ERROR:
+		case IRemoteDistroProvider.REGISTER_EMAIL_FORMAT_ERROR:
 			throw new JNLPException("Email does not have standard format", null);
-		case IAuthenticator.REGISTER_EMAIL_ALREADY_VALIDATED:
+		case IRemoteDistroProvider.REGISTER_EMAIL_ALREADY_VALIDATED:
 			throw new JNLPException("Email is already verified for another user", null);
 		}
 	}

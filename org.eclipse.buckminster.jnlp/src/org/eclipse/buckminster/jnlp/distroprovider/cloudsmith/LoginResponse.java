@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp.cloudsmith.accountservice;
+package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * 
  * @author Karel Brezina
  */
-public class AccountServiceLoginResponse implements Serializable
+public class LoginResponse implements Serializable
 {
 	private static final long serialVersionUID = -978349240463870537L;
 
@@ -29,16 +29,16 @@ public class AccountServiceLoginResponse implements Serializable
 	
 	private String m_userRealName;
 
-	public AccountServiceLoginResponse()
+	public LoginResponse()
 	{
 	}
 	
-	public AccountServiceLoginResponse(int responseid)
+	public LoginResponse(int responseid)
 	{
 		this(responseid, null, -1, null, null);
 	}
 
-	public AccountServiceLoginResponse(int responseid, String loginKey, long userId, String userName, String userRealName)
+	public LoginResponse(int responseid, String loginKey, long userId, String userName, String userRealName)
 	{
 		m_responseId = responseid;
 		m_loginKey = loginKey;

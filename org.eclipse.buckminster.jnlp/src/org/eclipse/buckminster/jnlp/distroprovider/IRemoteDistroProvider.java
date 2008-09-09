@@ -6,16 +6,18 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp.accountservice;
+package org.eclipse.buckminster.jnlp.distroprovider;
+
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 
 /**
- * Enables authentication of an user
+ * A distro provider - you can register, login, logout, get a distro, ...
  * 
  * @author Karel Brezina
  */
-public interface IAuthenticator
+public interface IRemoteDistroProvider
 {
 	public static final int LOGIN_FAILED = -1;
 	public static final int LOGIN_UNKNOW_KEY = -2;
@@ -40,19 +42,19 @@ public interface IAuthenticator
 	public static final int SPACE_ACCESS_INVITATION_EXISTS = -3;
 	public static final int SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
 	
-	public void initialize(String serviceURL) throws Exception;
+	void initialize(String serviceURL) throws Exception;
 	
 	/**
 	 * Gets HttpClient which was used for authentication. It should be used for getting password protected content after authentication.
 	 * 
 	 * @return
 	 */
-	public HttpClient getHttpClient();
+	HttpClient getHttpClient();
 	
-	public int login(String userName, String password) throws Exception;
+	int login(String userName, String password) throws Exception;
 
 	/**
-	 * The same as {@link IAuthenticator#login(String, String) login(String, String)}, but:
+	 * The same as {@link IRemoteDistroProvider#login(String, String) login(String, String)}, but:
 	 * <ul>
 	 * <li>if already logged in and the same credentials are passed in, the original login is kept</li>
 	 * <li>logout before login, if already logged in and different credentials are passed in</li>
@@ -63,12 +65,12 @@ public interface IAuthenticator
 	 * @return
 	 * @throws Exception
 	 */
-	public int relogin(String userName, String password) throws Exception;
+	int relogin(String userName, String password) throws Exception;
 
-	public int login(String loginKey) throws Exception;
+	int login(String loginKey) throws Exception;
 	
 	/**
-	 * The same as {@link IAuthenticator#login(String) login(String)}, but:
+	 * The same as {@link IRemoteDistroProvider#login(String) login(String)}, but:
 	 * <ul>
 	 * <li>if already logged in and the same credentials are passed in, the original login is kept</li>
 	 * <li>logout before login, if already logged in and different credentials are passed in</li>
@@ -77,33 +79,33 @@ public interface IAuthenticator
 	 * @return
 	 * @throws Exception
 	 */
-	public int relogin(String loginKey) throws Exception;
+	int relogin(String loginKey) throws Exception;
 	
 	/**
 	 * Gets username of the currently logged in user or null if no user is logged in
 	 * 
 	 * @return
 	 */
-	public String getCurrenlyLoggedUserName();
+	String getCurrenlyLoggedUserName();
 	
-	public String getLoginKey() throws Exception;
+	String getLoginKey() throws Exception;
 	
-	public void keepAlive() throws Exception;
+	void keepAlive() throws Exception;
 	
-	public int logout() throws Exception;
+	int logout() throws Exception;
 	
 	/**
 	 * Logout and release connection
 	 * 
 	 * @throws Exception
 	 */
-	public void releaseConnection() throws Exception;
+	void releaseConnection() throws Exception;
 	
-	public boolean isLoggedIn() throws Exception;
+	boolean isLoggedIn() throws Exception;
 	
-	public int register(String userName, String password, String email) throws Exception;
+	int register(String userName, String password, String email) throws Exception;
 	
-	public int checkSpaceReadAccess(final String spaceName) throws Exception;
+	int checkSpaceReadAccess(final String spaceName) throws Exception;
 	
 	/**
 	 * Creates a new authenticator, that is connected to the same server as the original authenticator
@@ -113,5 +115,9 @@ public interface IAuthenticator
 	 * @return
 	 * @throws Exception
 	 */
-	public IAuthenticator createDuplicate(boolean login) throws Exception;
+	IRemoteDistroProvider createDuplicate(boolean login) throws Exception;
+	
+	List<DistroVariant> getDistroVariants(long stackId, PropertySet properties) throws Exception;
+	
+	Distro getDistro(long distroId) throws Exception;
 }

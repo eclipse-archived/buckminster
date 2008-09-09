@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp.cloudsmith.componentinfo;
+package org.eclipse.buckminster.jnlp.componentinfo.cloudsmith;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

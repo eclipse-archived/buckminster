@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.jnlp.wizard;
 
-import org.eclipse.buckminster.jnlp.accountservice.IAuthenticator;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 
 /**
  * Provides authenticator and information about login credentials and
@@ -33,7 +33,7 @@ public interface ILoginHandler
 
 	void setAuthenticatorPassword(String password);
 	
-	IAuthenticator getAuthenticator();
+	IRemoteDistroProvider getAuthenticator();
 	
-	void setAuthenticator(IAuthenticator authenticator);
+	void setAuthenticator(IRemoteDistroProvider authenticator);
 }

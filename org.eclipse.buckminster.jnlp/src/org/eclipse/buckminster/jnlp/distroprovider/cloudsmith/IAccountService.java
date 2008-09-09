@@ -6,12 +6,12 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp.cloudsmith.accountservice;
+package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
 import java.io.Serializable;
 
 /**
- * Methods in this interface are used for remote communication with CSsite
+ * Methods in this interface are used for authentication on CSsite
  * 
  * @author Karel Brezina
  */
@@ -79,11 +79,11 @@ public interface IAccountService extends Serializable
 
 	public void keepAlive();
 
-	public AccountServiceLoginResponse login();
+	public LoginResponse login();
 
-	public AccountServiceLoginResponse login(String loginKey);
+	public LoginResponse login(String loginKey);
 
-	public AccountServiceLoginResponse login(String userName, String password);
+	public LoginResponse login(String userName, String password);
 
 	public int logout();
 
