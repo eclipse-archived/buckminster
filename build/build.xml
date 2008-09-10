@@ -37,7 +37,10 @@
 
     <!-- Set up the correct window environment -->
     <condition property="pde.target.ws" value="gtk">
-      <os name="Linux"/>
+      <or>
+	<os name="Linux"/>
+	<os name="SunOS"/>
+     </or>
     </condition>
     <condition property="pde.target.ws" value="win32">
       <or>
@@ -61,6 +64,9 @@
     <condition property="pde.target.os" value="linux">
       <os name="Linux"/>
     </condition>
+    <condition property="pde.target.os" value="solaris">
+      <os name="SunOS"/>
+    </condition>
     <condition property="pde.target.os" value="win32">
       <or>
 	<os name="Windows Vista"/>
@@ -68,30 +74,48 @@
       </or>
     </condition>
 
-    <condition property="use.gzip" value="true">
-      <os family="unix"/>
-    </condition>
     <condition property="use.unzip" value="true">
+      <or>
         <os family="windows"/>
+	<os name="SunOS"/>
+      </or>
+    </condition>
+    <condition property="use.gzip" value="true">
+      <and>
+        <os family="unix" />
+        <not>
+          <isset property="use.unzip" />
+        </not>
+      </and>
     </condition>
 
     <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}-${pde.target.ws}.tar.gz${eclipse.download.end}">
-      <os family="unix"/>
+      <isset property="use.gzip" />
     </condition>
-    
+    <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}-${pde.target.ws}.zip${eclipse.download.end}">
+      <and>
+        <isset property="use.unzip" />
+        <os name="SunOS" />
+      </and>
+    </condition>
     <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}.zip${eclipse.download.end}">
-      <os family="windows"/>
+      <and>
+        <isset property="use.unzip" />
+        <not>
+          <os name="SunOS" />
+        </not>
+      </and>
     </condition>
 
 
     <condition property="plat.download.file" value="${eclipse.download.file.start}-${pde.target.os}-${pde.target.ws}.tar.gz">
-       <os family="unix"/>
+      <isset property="use.gzip" />
     </condition>
     <condition property="plat.download.file" value="${eclipse.download.file.start}-${pde.target.os}-${pde.target.ws}.zip">
-       <os family="windows"/>
+      <isset property="use.unzip" />
     </condition>
 
-    <available file="${downloads.directory}/${plat.download}" property="plat.download.unnecessary" />
+    <available file="${downloads.directory}/${plat.download.file}" property="plat.download.unnecessary" />
 
   </target>
 
