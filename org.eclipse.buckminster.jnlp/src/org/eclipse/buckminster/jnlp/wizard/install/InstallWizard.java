@@ -102,6 +102,7 @@ import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.MaterializerRunnable;
 import org.eclipse.buckminster.jnlp.MissingPropertyException;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
+import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
@@ -271,6 +272,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private boolean m_materializationFinished = false;
 
 	private boolean m_problemInProperties = false;
+	
+	private DistroVariant m_selectedDistroVariant;
 
 	public InstallWizard(Map<String, String> properties)
 	{
@@ -289,7 +292,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_localProperties = readLocalProperties();
 
-		m_authenticator = createAuthenticator();
+		m_authenticator = createDistroProvider();
 
 		m_infoProvider = createComponentInfoProvider();
 
@@ -797,6 +800,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_builder;
 	}
 
+	DistroVariant getSelectedDistroVariant()
+	{
+		return m_selectedDistroVariant;
+	}
+	
+	void setSelectedDistroVariant(DistroVariant variant)
+	{
+		m_selectedDistroVariant = variant;
+	}
+	
 	String[] getMaterializers()
 	{
 		return MATERIALIZERS;
@@ -908,7 +921,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				: VALUE_FALSE);
 	}
 
-	private IRemoteDistroProvider createAuthenticator()
+	private IRemoteDistroProvider createDistroProvider()
 	{
 		IExtensionRegistry er = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = er.getConfigurationElementsFor(AUTHENTICATION_EXTPOINT);
@@ -941,7 +954,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			}
 			catch(Throwable e)
 			{
-				throw new JNLPException("Cannot create authenticator", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
+				throw new JNLPException("Cannot connect to the remote server", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
 			}
 		}
 		catch(JNLPException e)
