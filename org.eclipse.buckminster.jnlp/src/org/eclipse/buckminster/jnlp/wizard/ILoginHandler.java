@@ -33,7 +33,7 @@ public interface ILoginHandler
 
 	void setAuthenticatorPassword(String password);
 	
-	IRemoteDistroProvider getAuthenticator();
+	IRemoteDistroProvider getDistroProvider();
 	
-	void setAuthenticator(IRemoteDistroProvider authenticator);
+	void setDistroProvider(IRemoteDistroProvider authenticator);
 }

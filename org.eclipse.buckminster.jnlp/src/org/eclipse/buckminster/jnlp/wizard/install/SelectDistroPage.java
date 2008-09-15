@@ -11,10 +11,9 @@ package org.eclipse.buckminster.jnlp.wizard.install;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.buckminster.core.helpers.SmartArrayList;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
-import org.eclipse.buckminster.jnlp.ui.UiUtils;
+import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -29,9 +28,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -59,8 +58,8 @@ public class SelectDistroPage extends InstallWizardPage
 			if(m_direction == SWT.NONE)
 				return 0;
 
-			String ai = ((String[])e1)[m_column];
-			String bi = ((String[])e2)[m_column];
+			String ai = getColumnValueFromVariant((DistroVariant) e1, m_column);
+			String bi = getColumnValueFromVariant((DistroVariant) e2, m_column);
 
 			return m_direction == SWT.UP
 					? safeStringComarator(ai, bi)
@@ -144,6 +143,8 @@ public class SelectDistroPage extends InstallWizardPage
 
 	private Color m_orangeColor;
 	
+	private Color m_redColor;
+	
 	private final Image m_iconCompatible;
 
 	private final Image m_iconIncompatible;
@@ -171,18 +172,10 @@ public class SelectDistroPage extends InstallWizardPage
 	private Label m_selectionHeadingLabel;
 
 	private Composite m_selectionDetailsComposite;
-
-	private final int COLUMN_COUNT = 6;
-
+	
 	private static final String UNSPECIFIED = "unspecified";
 
-	private static final String[][] DATA = { { DISTRO_COMPATIBLE, "sparc", "solaris", "motif", "europa", "chinese" },
-			{ DISTRO_COMPATIBLE, "sparc", "solaris", "motif", "ganymede", "" },
-			{ DISTRO_INCOMPATIBLE, "intel32", "windows", "windows", "europa", "" },
-			{ DISTRO_COMPATIBLE, "sparc", "solaris", "", "europa", "" },
-			{ DISTRO_BROKEN, UNSPECIFIED, UNSPECIFIED, UNSPECIFIED, UNSPECIFIED, UNSPECIFIED } };
-
-	private String[][] m_data;
+	private List<DistroVariant> m_data;
 
 	private boolean m_initialized = false;
 
@@ -214,6 +207,7 @@ public class SelectDistroPage extends InstallWizardPage
 		fontData[0].setStyle(SWT.ITALIC);
 		m_italicFont = new Font(getShell().getDisplay(), fontData);
 		m_orangeColor = new Color(getShell().getDisplay(), 255, 161, 68);
+		m_redColor = getShell().getDisplay().getSystemColor(SWT.COLOR_RED);
 
 		label.setFont(m_boldFont);
 
@@ -261,9 +255,10 @@ public class SelectDistroPage extends InstallWizardPage
 				// nothing to dispose
 			}
 
+			@SuppressWarnings("unchecked")
 			public Object[] getElements(Object inputElement)
 			{
-				return (String[][])inputElement;
+				return ((List<DistroVariant>)inputElement).toArray(new DistroVariant[0]);
 			}
 
 			public void inputChanged(Viewer arg0, Object arg1, Object arg2)
@@ -289,24 +284,24 @@ public class SelectDistroPage extends InstallWizardPage
 
 			public Image getColumnImage(Object element, int columnIndex)
 			{
-				String[] row = (String[])element;
-
 				if(columnIndex == 0)
-					return DISTRO_COMPATIBLE.equals(row[0])
+				{
+					String status = getColumnValueFromVariant((DistroVariant)element, columnIndex);
+
+					return DISTRO_COMPATIBLE.equals(status)
 							? m_iconCompatible
-							: (DISTRO_INCOMPATIBLE.equals(row[0])
+							: (DISTRO_INCOMPATIBLE.equals(status)
 									? m_iconIncompatible
-									: m_iconBroken);
+									: m_iconBroken);				
+				}	
 
 				return null;
 			}
 
 			public String getColumnText(Object element, int columnIndex)
 			{
-				String[] row = (String[])element;
-
 				if(columnIndex > 0)
-					return row[columnIndex];
+					return getColumnValueFromVariant((DistroVariant)element, columnIndex);
 
 				return null;
 			}
@@ -328,6 +323,7 @@ public class SelectDistroPage extends InstallWizardPage
 		m_columns = new ArrayList<TableColumn>();
 		TableColumn column = new TableColumn(variantsTable, SWT.NONE);
 		column.setText("Compatible");
+		column.setAlignment(SWT.CENTER);
 		m_columns.add(column);
 		column = new TableColumn(variantsTable, SWT.NONE);
 		column.setText("CPU Architecture");
@@ -369,19 +365,21 @@ public class SelectDistroPage extends InstallWizardPage
 			public void widgetSelected(SelectionEvent arg0)
 			{
 				TableItem item = (TableItem)arg0.item;
-				String[] row = (String[])item.getData();
+				DistroVariant variant = (DistroVariant)item.getData();
 
 				for(Control control : m_selectionDetailsComposite.getChildren())
 					control.dispose();
 					
 				Label selectionDetailsLabel = new Label(m_selectionDetailsComposite, SWT.NONE);
 				selectionDetailsLabel.setFont(m_boldFont);
+				
+				String variantStatus = getColumnValueFromVariant(variant, 0);
 
-				if(DISTRO_COMPATIBLE.equals(row[0]))
+				if(DISTRO_COMPATIBLE.equals(variantStatus))
 				{
 					m_selectionBoxLabel.setImage(m_imageBoxCompatible);
 
-					if(simplePackaging(row))
+					if(variant.isSimplePackaging())
 					{
 						m_selectionHeadingLabel.setText("Simple packaging:");
 						selectionDetailsLabel.setText("(unspecified)");
@@ -389,16 +387,22 @@ public class SelectDistroPage extends InstallWizardPage
 					else
 					{
 						m_selectionHeadingLabel.setText("Distro variant for:");
-						selectionDetailsLabel.setText(getPlatformString(row));
+						selectionDetailsLabel.setText(variant.getPlatformString());
 					}
 				}
-				else if(DISTRO_INCOMPATIBLE.equals(row[0]))
+				else if(DISTRO_INCOMPATIBLE.equals(variantStatus))
 				{
 					m_selectionBoxLabel.setImage(m_imageBoxIncompatible);
 					m_selectionHeadingLabel.setText("Incompatible distro variant for:");
-					selectionDetailsLabel.setText(getPlatformString(row));
+					
+					selectionDetailsLabel.dispose();					
+					addSelectionDetailsPlatformLabel(variant.getArch(), variant.isArchCompatible());
+					addSelectionDetailsPlatformLabel(variant.getOS(), variant.isOSCompatible());
+					addSelectionDetailsPlatformLabel(variant.getWS(), variant.isWSCompatible());
+					addSelectionDetailsPlatformLabel(variant.getRelease(), variant.isReleaseCompatible());
+					addSelectionDetailsPlatformLabel(variant.getNL(), variant.isNLCompatible());
 				}
-				else if(DISTRO_BROKEN.equals(row[0]))
+				else if(DISTRO_BROKEN.equals(variantStatus))
 				{
 					m_selectionBoxLabel.setImage(m_imageBoxBroken);
 					m_selectionHeadingLabel.setText("Distro broken - not downloadable:");
@@ -412,6 +416,9 @@ public class SelectDistroPage extends InstallWizardPage
 					selectionDetailsLabel.setText("");
 				}
 				getContainer().updateButtons();
+				for(Control control : m_selectionDetailsComposite.getChildren())
+					control.pack();
+				
 				pageComposite.layout();
 			}
 		});
@@ -430,9 +437,12 @@ public class SelectDistroPage extends InstallWizardPage
 
 		m_selectionHeadingLabel = new Label(selectionDetailsComposite, SWT.NONE);
 		m_selectionDetailsComposite = new Composite(selectionDetailsComposite, SWT.NONE);
-		FillLayout fillLayout = new FillLayout();
-		fillLayout.marginWidth = 10;
-		m_selectionDetailsComposite.setLayout(fillLayout);
+		RowLayout rowLayout = new RowLayout();
+		rowLayout.marginLeft = 10;
+		rowLayout.justify = true;
+		rowLayout.spacing = 0;
+		rowLayout.wrap = false;
+		m_selectionDetailsComposite.setLayout(rowLayout);
 
 		setControl(pageComposite);
 	}
@@ -445,6 +455,9 @@ public class SelectDistroPage extends InstallWizardPage
 			initializeTable();
 			setupFilters();
 		}
+		
+		// distros are selected here
+		getInstallWizard().setDistro(null);
 	}
 
 	private void setupFilters()
@@ -453,15 +466,15 @@ public class SelectDistroPage extends InstallWizardPage
 		boolean incompatible = false;
 		boolean broken = false;
 		
-		for(String[] row : DATA)
+		for(DistroVariant variant : getInstallWizard().getDistroVariants())
 		{
-			if(DISTRO_COMPATIBLE.equals(row[0]))
+			if(variant.isCompatible() && !variant.isBroken())
 				compatible = true;
 
-			if(DISTRO_INCOMPATIBLE.equals(row[0]))
+			if(!variant.isCompatible() && !variant.isBroken())
 				incompatible = true;
 
-			if(DISTRO_BROKEN.equals(row[0]))
+			if(variant.isBroken())
 				broken = true;				
 		}
 		
@@ -486,29 +499,18 @@ public class SelectDistroPage extends InstallWizardPage
 		}
 	}
 
-	private String getPlatformString(String[] row)
-	{
-		List<String> platform = new SmartArrayList<String>();
-		for(int i = 1; i < COLUMN_COUNT; i++)
-			if(UiUtils.trimmedValue(row[i]) != null)
-				platform.add(row[i]);
-
-		return platform.toString();
-	}
-
 	private void initializeTable()
 	{
-		List<String[]> dataList = new ArrayList<String[]>();
+		m_data = new ArrayList<DistroVariant>();
 
-		for(String[] row : DATA)
+		for(DistroVariant variant : getInstallWizard().getDistroVariants())
 		{
-			if(DISTRO_INCOMPATIBLE.equals(row[0]) && !m_incompatibleButton.getSelection()
-					|| DISTRO_BROKEN.equals(row[0]) && !m_brokenButton.getSelection())
+			if(!variant.isCompatible() && !variant.isBroken() && !m_incompatibleButton.getSelection()
+					|| variant.isBroken() && !m_brokenButton.getSelection())
 				continue;
 
-			dataList.add(row);
+			m_data.add(variant);
 		}
-		m_data = dataList.toArray(new String[0][]);
 
 		m_variantsTableViewer.setInput(m_data);
 		m_variantsTableViewer.refresh();
@@ -525,14 +527,14 @@ public class SelectDistroPage extends InstallWizardPage
 		
 		for(TableItem item : items)
 		{
-			String[] row = (String[])item.getData();
+			DistroVariant variant = (DistroVariant)item.getData();
 			
-			if(DISTRO_BROKEN.equals(row[0]))
+			if(variant.isBroken())
 				item.setForeground(m_orangeColor);
 			else
 				item.setForeground(null);
 			
-			if(simplePackaging(row))
+			if(variant.isSimplePackaging())
 				item.setFont(m_italicFont);
 			else
 				item.setFont(null);
@@ -561,33 +563,94 @@ public class SelectDistroPage extends InstallWizardPage
 		}
 	}
 
-	private boolean simplePackaging(String[] row)
+    @Override
+	public boolean performPageCommit()
 	{
-		for(int i = 1; i < COLUMN_COUNT; i++)
-			if(!UNSPECIFIED.equals(row[i]))
-				return false;
-
-		return true;
-	}
+		TableItem[] selection = m_variantsTableViewer.getTable().getSelection();
+		DistroVariant variant = (DistroVariant)selection[0].getData();
+		
+		getInstallWizard().retrieveDistro(variant.getDistroId());
+    	
+    	return true;
+	}	
 	
 	@Override
 	public boolean isPageComplete()
 	{
-		TableItem[] selection = m_variantsTableViewer.getTable().getSelection();
-
-		if(selection != null && selection.length == 1)
+		if(isCurrentPage())
 		{
-			String[] row = (String[])selection[0].getData();
+			TableItem[] selection = m_variantsTableViewer.getTable().getSelection();
 
-			if(DISTRO_BROKEN.equals(row[0]))
-				return false;
+			if(selection != null && selection.length == 1)
+			{
+				DistroVariant variant = (DistroVariant)selection[0].getData();
 
-			return true;
+				if(variant.isBroken())
+					return false;
+
+				return true;
+			}
 		}
-
-		if(getInstallWizard().getSelectedDistroVariant() != null)
-			return true;
+		else
+			if(getInstallWizard().getDistro() != null)
+				return true;
 
 		return false;
+	}
+	
+	private String getColumnValueFromVariant(DistroVariant variant, int column)
+	{
+		if(column > 0 && variant.isSimplePackaging())
+			return UNSPECIFIED;
+		
+		switch(column)
+		{
+		case 0:
+			return (variant.isBroken()
+					? DISTRO_BROKEN
+					: (variant.isCompatible()
+							? DISTRO_COMPATIBLE
+							: DISTRO_INCOMPATIBLE));
+		case 1:
+			return variant.getArch();
+
+		case 2:
+			return variant.getOS();
+
+		case 3:
+			return variant.getWS();
+
+		case 4:
+			return variant.getRelease();
+
+		case 5:
+			return variant.getNL();
+
+		default:
+			throw new IllegalArgumentException("Column number " + column + " does NOT exist.");
+		}
+	}
+	
+
+	private void addSelectionDetailsPlatformLabel(String property, boolean isCompatible)
+	{
+		if(property != null)
+		{
+			if(m_selectionDetailsComposite.getChildren().length > 0)
+				addSelectionDetailsPlatformLabelSeparator();
+			
+			Label label = new Label(m_selectionDetailsComposite, SWT.NONE);
+			label.setFont(m_boldFont);
+			label.setText(property);
+			if(!isCompatible)
+				label.setForeground(m_redColor);
+		}
+	}
+	
+	private void addSelectionDetailsPlatformLabelSeparator()
+	{
+		Label comma = new Label(m_selectionDetailsComposite, SWT.NONE);
+		comma.setFont(m_boldFont);
+		comma.setText(", ");
 	}
 }

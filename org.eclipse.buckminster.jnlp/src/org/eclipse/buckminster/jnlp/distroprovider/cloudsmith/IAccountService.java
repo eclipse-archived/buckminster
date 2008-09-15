@@ -69,7 +69,7 @@ public interface IAccountService extends Serializable
 
 	public static final int FOLDER_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
 
-	public int checkFolderReadAccess(String folderName);
+	public int checkFolderReadAccess(String folderPath);
 
 	public String getLoginKey();
 

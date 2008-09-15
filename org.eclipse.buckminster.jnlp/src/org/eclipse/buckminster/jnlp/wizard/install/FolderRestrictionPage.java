@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Link;
  * @author Karel Brezina
  *
  */
-public class SpaceRestrictionPage extends InstallWizardPage
+public class FolderRestrictionPage extends InstallWizardPage
 {
 	private static final int HORIZONTAL_SPACING = 15;
 
@@ -53,9 +53,9 @@ public class SpaceRestrictionPage extends InstallWizardPage
 	
 	private Label m_userNameLabel;
 	
-	protected SpaceRestrictionPage()
+	protected FolderRestrictionPage()
 	{
-		super(MaterializationConstants.STEP_RESTRICTION, "Space Restriction", "Materialization space has a restrictive access.",
+		super(MaterializationConstants.STEP_RESTRICTION, "Folder Restriction", "Cloudsmith folder has a restrictive access.",
 				null);
 	}
 
@@ -75,7 +75,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		GridData layoutData = new GridData();
 
 		label = new Label(warningComposite, SWT.WRAP);
-		label.setText("Access to the materialization space is forbidden");
+		label.setText("Access to the Cloudsmith folder is forbidden");
 		
 		new Label(pageComposite, SWT.NONE);
 
@@ -153,7 +153,7 @@ public class SpaceRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Ask the space owner to invite you to the materialization space");
+		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Ask the folder owner to invite you to the Cloudsmith folder");
 		
 		label = new Label(m_solutionForbiddenComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_DOT));
@@ -245,11 +245,11 @@ public class SpaceRestrictionPage extends InstallWizardPage
 	{
 		try
 		{
-			int result = getInstallWizard().checkSpaceReadAccess();
+			int result = getInstallWizard().checkFolderReadAccess();
 
-			if(result == IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN ||
-					result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS ||
-					result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+			if(result == IRemoteDistroProvider.FOLDER_ACCESS_FORBIDDEN ||
+					result == IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS ||
+					result == IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
 			{
 				setErrorMessage("Aceess forbidden - the invitation is not accepted");
 				return false;
@@ -267,10 +267,10 @@ public class SpaceRestrictionPage extends InstallWizardPage
 	{
 		switch(result)
 		{
-		case IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN:
+		case IRemoteDistroProvider.FOLDER_ACCESS_FORBIDDEN:
 			m_stackLayout.topControl = m_solutionForbiddenComposite;
 			break;
-		case IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS:
+		case IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS:
 			m_stackLayout.topControl = m_solutionInvitationComposite;
 			break;
 		default:

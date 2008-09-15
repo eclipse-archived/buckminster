@@ -36,7 +36,8 @@ public class StartPage extends InstallWizardPage
 	private Text m_artifactDescriptionText;
 	private Text m_artifactDocumentationText;
 	private Text m_publisherInfoText;
-
+	private IWizardPage m_nextPage;
+	
 	protected StartPage()
 	{
 		super(MaterializationConstants.STEP_START, "Materialization", "Please verify that what is described below is what you want to materialize.", null);
@@ -44,6 +45,8 @@ public class StartPage extends InstallWizardPage
 
 	public void createControl(Composite parent)
 	{				
+		m_nextPage = getInstallWizard().getSelectDistroPage();
+		
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 
@@ -150,22 +153,43 @@ public class StartPage extends InstallWizardPage
 	
 	private void focusNextButton()
 	{
-		((AdvancedWizardDialog)getContainer()).getButtonFromButtonArea(IDialogConstants.NEXT_ID).setFocus();
+		if(getInstallWizard().isProblemInProperties())
+			((AdvancedWizardDialog)getContainer()).getButtonFromButtonArea(IDialogConstants.CANCEL_ID).setFocus();
+		else
+			((AdvancedWizardDialog)getContainer()).getButtonFromButtonArea(IDialogConstants.NEXT_ID).setFocus();
 	}
 	
-	@Override
-	public IWizardPage getNextPage()
+    @Override
+	public boolean performPageCommit()
 	{
 		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
-		{
-			return getWizard().getPage(MaterializationConstants.STEP_LOGIN);
-		} 
-		return getInstallWizard().getDownloadPage();	
+			m_nextPage = getInstallWizard().getLoginPage();
+		else
+			if(getInstallWizard().isFolderRestrictionPageNeeded())
+				m_nextPage = getInstallWizard().getFolderRestrictionPage();
+			else
+			{
+				if(!getInstallWizard().isStackInfoRetrieved())
+					getInstallWizard().retrieveStackInfo();
+				
+				if(getInstallWizard().getDistro() != null)
+					m_nextPage = getInstallWizard().getDownloadPage();
+				else
+					m_nextPage = getInstallWizard().getSelectDistroPage();
+			}
+		
+		return true;
+	}
+    
+    @Override
+	public IWizardPage getNextPage()
+	{
+    	return m_nextPage;
 	}
 	
 	@Override
 	public boolean isPageComplete()
 	{
-		return ! getInstallWizard().isProblemInProperties();
+		return !getInstallWizard().isProblemInProperties();
 	}
 }

@@ -9,9 +9,9 @@
 package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
-import org.eclipse.buckminster.jnlp.distroprovider.PropertySet;
 
 /**
  * @author Karel Brezina
@@ -19,7 +19,7 @@ import org.eclipse.buckminster.jnlp.distroprovider.PropertySet;
  */
 public interface IDistroService
 {
-	List<DistroVariant> getDistroVariants(Long stackId, PropertySet platformProperties);
+	List<DistroVariant> getDistroVariants(Long stackId, Map<String, String> platformProperties);
 	
-	DistroContent getDistro(Long variantId);
+	DistroContent getDistro(Long distroId);
 }

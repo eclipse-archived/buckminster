@@ -10,13 +10,16 @@ package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.helpers.CryptoUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -24,7 +27,6 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.distroprovider.Distro;
 import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
-import org.eclipse.buckminster.jnlp.distroprovider.PropertySet;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.IAccountService;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.LoginResponse;
 import org.jabsorb.client.Client;
@@ -397,7 +399,7 @@ public class DistroProvider implements IRemoteDistroProvider
 		return method.run().intValue();
 	}
 
-	public int checkSpaceReadAccess(final String spaceName) throws Exception
+	public int checkFolderReadAccess(final String folderPath) throws Exception
 	{
 		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
 		{
@@ -405,7 +407,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			@Override
 			public Integer process() throws Exception
 			{
-				return Integer.valueOf(m_remoteAccountService.checkFolderReadAccess(spaceName));
+				return Integer.valueOf(m_remoteAccountService.checkFolderReadAccess(folderPath));
 			}
 		};
 
@@ -429,7 +431,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			login(m_lastLoginUserName, m_lastLoginPassword);
 	}
 
-	public List<DistroVariant> getDistroVariants(final long stackId, final PropertySet properties) throws Exception
+	public List<DistroVariant> getDistroVariants(final Long stackId) throws Exception
 	{
 		MethodWrapper<List<DistroVariant>> method = new MethodWrapper<List<DistroVariant>>()
 		{
@@ -437,14 +439,21 @@ public class DistroProvider implements IRemoteDistroProvider
 			@Override
 			public List<DistroVariant> process() throws Exception
 			{
-				return m_remoteDistroService.getDistroVariants(Long.valueOf(stackId), properties);
+				Map<String, String> properties = new HashMap<String, String>();
+				
+				properties.put(DistroVariant.TARGET_ARCH, TargetPlatform.getInstance().getArch());
+				properties.put(DistroVariant.TARGET_OS, TargetPlatform.getInstance().getOS());
+				properties.put(DistroVariant.TARGET_WS, TargetPlatform.getInstance().getWS());
+				properties.put(DistroVariant.TARGET_NL, TargetPlatform.getInstance().getNL());
+
+				return m_remoteDistroService.getDistroVariants(stackId, properties);
 			}
 		};
 
 		return method.run();
 	}
 
-	public Distro getDistro(final long distroId) throws Exception
+	public Distro getDistro(final Long distroId) throws Exception
 	{
 		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
 		{
@@ -452,7 +461,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			@Override
 			public Distro process() throws Exception
 			{
-				DistroContent distroContent = m_remoteDistroService.getDistro(Long.valueOf(distroId));
+				DistroContent distroContent = m_remoteDistroService.getDistro(distroId);
 				
 				if(distroContent == null || distroContent.getBomContent() == null || distroContent.getMspecContent() == null)
 					return null;

@@ -36,7 +36,7 @@ public class LoginPage extends InstallWizardPage
 
 	private String m_lastRegisteredPassword;
 	
-	private boolean m_pageCommitted;
+	private IWizardPage m_nextPage;
 	
 	protected LoginPage(String provider)
 	{
@@ -50,12 +50,12 @@ public class LoginPage extends InstallWizardPage
 		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
 		
 		setPageComplete(getCompleteLoginFields());
-		
-		m_pageCommitted = false;
 	}
 	
 	public void createControl(Composite parent)
 	{		
+		m_nextPage = getInstallWizard().getSelectDistroPage();
+		
 		m_login = new LoginPanel(getInstallWizard().getAuthenticatorLoginKeyUserName());
 
 		setPageComplete(false);
@@ -118,7 +118,7 @@ public class LoginPage extends InstallWizardPage
 
 			try
 			{
-				authenticator = getInstallWizard().getAuthenticator();
+				authenticator = getInstallWizard().getDistroProvider();
 
 				if(authenticator == null)
 				{
@@ -186,7 +186,19 @@ public class LoginPage extends InstallWizardPage
 			getInstallWizard().setAuthenticatorUserName(userName);
 			getInstallWizard().setAuthenticatorPassword(password);
 			
-			m_pageCommitted = true;
+			
+			if(getInstallWizard().isFolderRestrictionPageNeeded())
+				m_nextPage = getInstallWizard().getFolderRestrictionPage();
+			else
+			{
+				if(!getInstallWizard().isStackInfoRetrieved())
+					getInstallWizard().retrieveStackInfo();
+				
+				if(getInstallWizard().getDistro() != null)
+					m_nextPage = getInstallWizard().getDownloadPage();
+				else
+					m_nextPage = getInstallWizard().getSelectDistroPage();
+			}
 		}
 		
 		return true;
@@ -195,9 +207,6 @@ public class LoginPage extends InstallWizardPage
 	@Override
 	public IWizardPage getNextPage()
 	{
-		if(m_pageCommitted)
-			return getInstallWizard().getDownloadPage();
-		
-		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);
+		return m_nextPage;
 	}
 }

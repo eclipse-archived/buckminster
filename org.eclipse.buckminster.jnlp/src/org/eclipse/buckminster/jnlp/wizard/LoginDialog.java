@@ -105,7 +105,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 		
 			try
 			{
-				authenticator = m_loginHandler.getAuthenticator().createDuplicate(false);
+				authenticator = m_loginHandler.getDistroProvider().createDuplicate(false);
 		
 				if(authenticator == null)
 				{
@@ -149,8 +149,8 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 					throw new JNLPException("Problem with the remote server - try to login later", null);
 				}
 		
-				m_loginHandler.getAuthenticator().releaseConnection();
-				m_loginHandler.setAuthenticator(authenticator);
+				m_loginHandler.getDistroProvider().releaseConnection();
+				m_loginHandler.setDistroProvider(authenticator);
 				m_loginHandler.setAuthenticatorUserName(userName);
 				m_loginHandler.setAuthenticatorPassword(password);
 			}

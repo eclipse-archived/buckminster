@@ -8,16 +8,9 @@
 
 package org.eclipse.buckminster.jnlp.wizard.install;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
-
-import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.wizard.DestinationForm;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -84,57 +77,6 @@ public class SimpleDownloadPage extends InstallWizardPage
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		if(!getInstallWizard().isMaterializerInitialized())
-		{
-			// read MSPEC and BOM after login 
-			try
-			{
-				getContainer().run(true, false, new IRunnableWithProgress()
-				{
-	
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-					{
-						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-						monitor.subTask("Retrieving materialization specification");
-						getInstallWizard().initializeMaterializer();
-						getInstallWizard().initMSpecTree();
-						monitor.done();
-					}
-				});
-			}
-			catch(Exception e)
-			{
-				setPageComplete(false);
-	
-				if(e instanceof JNLPException)
-				{
-					throw (JNLPException) e;
-				}
-				
-				if(e.getCause() != null && e.getCause() instanceof JNLPException)
-				{
-					JNLPException jnlpException = (JNLPException)e.getCause();
-					
-					// Forbidden - show login page
-					if(MaterializationConstants.ERROR_CODE_403_EXCEPTION.equals(jnlpException.getErrorCode()))
-					{
-						LoginPage loginPage = (LoginPage)getWizard().getPage(MaterializationConstants.STEP_LOGIN);
-						getContainer().showPage(loginPage);
-					}
-					
-					throw jnlpException;
-				}
-				
-				throw new JNLPException(
-						"Error while reading artifact specification", ERROR_CODE_ARTIFACT_EXCEPTION, e);
-	
-			}
-			finally
-			{
-				getContainer().updateButtons();
-			}			
-		}
-
 		m_destinationForm.update();
 	}
 	
@@ -142,10 +84,14 @@ public class SimpleDownloadPage extends InstallWizardPage
 	public boolean isPageComplete()
 	{
 		// disable FINISH button on the two first pages
-		if(getWizard().getContainer().getCurrentPage().equals(getWizard().getPage(MaterializationConstants.STEP_START)) ||
-				getWizard().getContainer().getCurrentPage().equals(getWizard().getPage(MaterializationConstants.STEP_LOGIN)))
-			return false;
+		IWizardPage currentPage = getContainer().getCurrentPage();
 		
+		if(currentPage.equals(getInstallWizard().getStartingPage())
+				|| currentPage.equals(getInstallWizard().getLoginPage())
+				|| currentPage.equals(getInstallWizard().getSelectDistroPage())
+				|| currentPage.equals(getInstallWizard().getFolderRestrictionPage()))
+			return false;
+
 		return getInstallWizard().isMaterializerInitialized();
 	}
 	
@@ -154,7 +100,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 	{
 		if(m_advancedSettingsButton.getSelection())
 		{
-			return getWizard().getPage(MaterializationConstants.STEP_ADVANCED_SETTINGS);
+			return getInstallWizard().getAdvancedPage();
 		}
 		return null;
 	}

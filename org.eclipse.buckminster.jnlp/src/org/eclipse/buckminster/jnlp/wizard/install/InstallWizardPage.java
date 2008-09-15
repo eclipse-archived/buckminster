@@ -36,9 +36,4 @@ abstract class InstallWizardPage extends AdvancedWizardPage
 	{
 		return (InstallWizard)getAdvancedWizard();
 	}
-
-	public void handleMSpecChangeEvent (MSpecChangeEvent event)
-	{
-		// can be overriden
-	}
 }

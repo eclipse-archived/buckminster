@@ -36,11 +36,11 @@ public interface IRemoteDistroProvider
 	public static final int REGISTER_EMAIL_ALREADY_VALIDATED = -7;
 	public static final int REGISTER_FAIL = -99;
 	
-	public static final int SPACE_ACCESS_OK = 1;
-	public static final int SPACE_ACCESS_FORBIDDEN = -1;
-	public static final int SPACE_ACCESS_SPACE_NOT_FOUND = -2;
-	public static final int SPACE_ACCESS_INVITATION_EXISTS = -3;
-	public static final int SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
+	public static final int FOLDER_ACCESS_OK = 1;
+	public static final int FOLDER_ACCESS_FORBIDDEN = -1;
+	public static final int FOLDER_ACCESS_FOLDER_NOT_FOUND = -2;
+	public static final int FOLDER_ACCESS_INVITATION_EXISTS = -3;
+	public static final int FOLDER_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED = -4;
 	
 	void initialize(String serviceURL) throws Exception;
 	
@@ -105,7 +105,7 @@ public interface IRemoteDistroProvider
 	
 	int register(String userName, String password, String email) throws Exception;
 	
-	int checkSpaceReadAccess(final String spaceName) throws Exception;
+	int checkFolderReadAccess(final String folderPath) throws Exception;
 	
 	/**
 	 * Creates a new authenticator, that is connected to the same server as the original authenticator
@@ -117,7 +117,7 @@ public interface IRemoteDistroProvider
 	 */
 	IRemoteDistroProvider createDuplicate(boolean login) throws Exception;
 	
-	List<DistroVariant> getDistroVariants(long stackId, PropertySet properties) throws Exception;
+	List<DistroVariant> getDistroVariants(Long stackId) throws Exception;
 	
-	Distro getDistro(long distroId) throws Exception;
+	Distro getDistro(Long distroId) throws Exception;
 }

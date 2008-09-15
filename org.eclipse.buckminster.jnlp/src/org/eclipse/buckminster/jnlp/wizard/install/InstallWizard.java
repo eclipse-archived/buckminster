@@ -8,10 +8,8 @@
 
 package org.eclipse.buckminster.jnlp.wizard.install;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_MSPEC;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_UNKNOWN;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_UNKNOWN_TEXT;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_404_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_AUTHENTICATOR_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
@@ -19,7 +17,6 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_M
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
@@ -33,7 +30,6 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFAC
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_VERSION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DESCRIPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DOCUMENTATION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_BASE_PATH_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_URL;
@@ -45,10 +41,12 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_K
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SERVICE_PROVIDER;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SPACE_NAME;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_FOLDER_PATH;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DISTRO_ID;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_ID;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_NAME;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
@@ -72,8 +70,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,15 +79,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -102,6 +95,7 @@ import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.MaterializerRunnable;
 import org.eclipse.buckminster.jnlp.MissingPropertyException;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
+import org.eclipse.buckminster.jnlp.distroprovider.Distro;
 import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
@@ -113,11 +107,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -159,8 +155,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_brandingString;
 
-	private URL m_mspecURL = null;
-
 	private BillOfMaterials m_cachedBOM;
 
 	private URL m_cachedBOMURL;
@@ -201,11 +195,19 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_serviceProvider;
 
-	private String m_spaceName;
+	private String m_folderPath;
 
 	private String m_loginKey;
 
 	private String m_loginKeyUserName;
+
+	private Long m_distroId;
+
+	private Distro m_distro;
+	
+	private Map<Long, Distro> m_retrievedDistroCache = new HashMap<Long, Distro>();
+
+	private Long m_cspecId;
 
 	private String m_cspecName;
 
@@ -233,7 +235,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private SelectDistroPage m_selectDistroPage;
 
-	private SpaceRestrictionPage m_spaceRestrictionPage;
+	private FolderRestrictionPage m_folderRestrictionPage;
 
 	private SimpleDownloadPage m_downloadPage;
 
@@ -249,15 +251,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
 
-	private final List<MSpecChangeListener> m_mspecListeners = new ArrayList<MSpecChangeListener>();
-
 	private final Map<String, String> m_properties;
 
 	private final BMProperties m_localProperties;
 
 	private final boolean m_startedFromIDE;
 
-	private IRemoteDistroProvider m_authenticator;
+	private IRemoteDistroProvider m_distroProvider;
 
 	private IComponentInfoProvider m_infoProvider;
 
@@ -273,7 +273,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private boolean m_problemInProperties = false;
 	
-	private DistroVariant m_selectedDistroVariant;
+	private List<DistroVariant> m_distroVariants;
 
 	public InstallWizard(Map<String, String> properties)
 	{
@@ -292,16 +292,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_localProperties = readLocalProperties();
 
-		m_authenticator = createDistroProvider();
+		m_distroProvider = createDistroProvider();
 
 		m_infoProvider = createComponentInfoProvider();
 
 		m_learnMores = createLearnMores();
-	}
-
-	public void addMSpecChangeListener(MSpecChangeListener listener)
-	{
-		m_mspecListeners.add(listener);
 	}
 
 	@Override
@@ -350,14 +345,14 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 	}
 
-	public IRemoteDistroProvider getAuthenticator()
+	public IRemoteDistroProvider getDistroProvider()
 	{
-		return m_authenticator;
+		return m_distroProvider;
 	}
 
 	public String getAuthenticatorCurrentUserName()
 	{
-		IRemoteDistroProvider auth = getAuthenticator();
+		IRemoteDistroProvider auth = getDistroProvider();
 		return auth == null
 				? ""
 				: auth.getCurrenlyLoggedUserName();
@@ -433,11 +428,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			if(operationPage != null)
 				((MaterializationProgressProvider)operationPage.getProgressProvider()).setEnabled(false);
 
-			if(m_authenticator != null)
+			if(m_distroProvider != null)
 			{
 				try
 				{
-					m_authenticator.releaseConnection();
+					m_distroProvider.releaseConnection();
 				}
 				catch(Throwable e)
 				{
@@ -576,14 +571,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_loginKeyUserName = null;
 	}
 
-	public void removeMSpecChangeListener(MSpecChangeListener listener)
+	public void setDistroProvider(IRemoteDistroProvider distroProvider)
 	{
-		m_mspecListeners.remove(listener);
-	}
-
-	public void setAuthenticator(IRemoteDistroProvider authenticator)
-	{
-		m_authenticator = authenticator;
+		m_distroProvider = distroProvider;
 	}
 
 	public void setAuthenticatorPassword(String password)
@@ -603,13 +593,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		if(!m_problemInProperties)
 		{
-			m_loginPage = new LoginPage(m_authenticator == null
+			m_loginPage = new LoginPage(m_distroProvider == null
 					? "Virtual Distro Provider"
 					: getServiceProvider());
 			addAdvancedPage(m_loginPage);
 
 			m_selectDistroPage = new SelectDistroPage();
-			//addAdvancedPage(m_selectDistroPage);			
+			addAdvancedPage(m_selectDistroPage);			
 			
 			m_downloadPage = new SimpleDownloadPage();
 			addAdvancedPage(m_downloadPage);
@@ -617,8 +607,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			m_advancedPage = new SimpleAdvancedPage();
 			addAdvancedPage(m_advancedPage);
 
-			m_spaceRestrictionPage = new SpaceRestrictionPage();
-			addAdvancedPage(m_spaceRestrictionPage);
+			m_folderRestrictionPage = new FolderRestrictionPage();
+			addAdvancedPage(m_folderRestrictionPage);
 
 			m_operationPage = new OperationPage();
 			addAdvancedPage(m_operationPage);
@@ -664,11 +654,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	public BillOfMaterials getBOM()
 	{
-		if(m_cachedBOM == null)
-		{
-			initBOM();
-		}
-
 		return m_cachedBOM;
 	}
 
@@ -732,6 +717,39 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_eclipseDistroTools33UpdateSiteURL;
 	}
 
+	IWizardPage getLoginPage()
+	{
+		return m_loginPage;
+	}
+	
+	boolean isFolderRestrictionPageNeeded()
+	{
+		try
+		{
+			int result = checkFolderReadAccess();
+
+			if(result == IRemoteDistroProvider.FOLDER_ACCESS_FORBIDDEN
+					|| result == IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS
+					|| result == IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
+			{
+				m_folderRestrictionPage.setStatus(result);
+
+				return true;
+			}
+		}
+		catch(Exception e1)
+		{
+			// no information - try to get the artifact
+		}
+		
+		return false;
+	}
+	
+	IWizardPage getFolderRestrictionPage()
+	{
+		return m_folderRestrictionPage;
+	}
+	
 	IWizardPage getSelectDistroPage()
 	{
 		return m_selectDistroPage;
@@ -739,25 +757,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	
 	IWizardPage getDownloadPage()
 	{
-		try
-		{
-			int result = checkSpaceReadAccess();
-
-			if(result == IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN
-					|| result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS
-					|| result == IRemoteDistroProvider.SPACE_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
-			{
-				m_spaceRestrictionPage.setStatus(result);
-
-				return m_spaceRestrictionPage;
-			}
-		}
-		catch(Exception e1)
-		{
-			// no information - try to get the artifact
-		}
-
 		return m_downloadPage;
+	}
+	
+	IWizardPage getAdvancedPage()
+	{
+		return m_advancedPage;
 	}
 
 	IWizardPage getInfoPage()
@@ -800,14 +805,24 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_builder;
 	}
 
-	DistroVariant getSelectedDistroVariant()
+	Long getDistroId()
 	{
-		return m_selectedDistroVariant;
+		return m_distroId;
 	}
 	
-	void setSelectedDistroVariant(DistroVariant variant)
+	Distro getDistro()
 	{
-		m_selectedDistroVariant = variant;
+		return m_distro;
+	}
+	
+	void setDistro(Distro distro)
+	{
+		m_distro = distro;
+	}
+	
+	List<DistroVariant> getDistroVariants()
+	{
+		return m_distroVariants;
 	}
 	
 	String[] getMaterializers()
@@ -830,29 +845,164 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_homePageURL;
 	}
 
-	public String getSpaceName()
+	public String getFolderPath()
 	{
-		return m_spaceName;
+		return m_folderPath;
 	}
 
-	int checkSpaceReadAccess() throws Exception
+	int checkFolderReadAccess() throws Exception
 	{
-		if(m_loginRequired && (m_authenticator == null || m_spaceName == null))
-			return IRemoteDistroProvider.SPACE_ACCESS_FORBIDDEN;
+		if(m_loginRequired && (m_distroProvider == null || m_folderPath == null))
+			return IRemoteDistroProvider.FOLDER_ACCESS_FORBIDDEN;
 
 		// if authenticator is null - get smacked later (can only end up here without an
 		// authenticator if loginRequired is false anyway).
-		return m_authenticator == null
-				? IRemoteDistroProvider.SPACE_ACCESS_OK
-				: m_authenticator.checkSpaceReadAccess(m_spaceName);
+		return m_distroProvider.checkFolderReadAccess(m_folderPath);
 	}
 
-	void initializeMaterializer()
+	void retrieveStackInfo()
 	{
-		initMSPEC();
-		initBOM();
+		m_distroVariants = null;
+		DistroVariant distroVariant = null;
+		m_distro = null;
+		
+		if(m_distroId == null)
+		{
+			retrieveDistroVariants();
+			
+			if(m_distroVariants.size() == 1)
+				distroVariant = m_distroVariants.get(0);
+		}
+		
+		if(m_distroId != null || distroVariant != null)
+		{
+			Long distroId = m_distroId != null ? m_distroId : distroVariant.getDistroId(); 
+			retrieveDistro(distroId);
+		}
 	}
+	
+	void retrieveDistroVariants()
+	{
+		m_distroVariants = null;
+		try
+		{
+			getContainer().run(true, false, new IRunnableWithProgress()
+			{
 
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+				{
+					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+					monitor.subTask("Retrieving stack variations");
+					
+					try
+					{
+						m_distroVariants = m_distroProvider.getDistroVariants(m_cspecId);
+					}
+					catch(Exception e)
+					{
+						throw new InvocationTargetException(e);
+					}
+					
+					monitor.done();
+				}
+			});
+		}
+		catch(Exception e)
+		{
+			Throwable originalException = e;
+			
+			if(e instanceof InvocationTargetException && e.getCause() != null)
+				originalException = e.getCause();
+				
+			throw new JNLPException("Cannot read stack variations", ERROR_CODE_ARTIFACT_EXCEPTION, originalException);
+		}
+	}
+	
+	void retrieveDistro(final Long distroId)
+	{
+		m_distro = null;
+		m_cachedBOM = null;
+		m_cachedBOMURL = null;
+
+		if(distroId == null)
+			return;
+
+		m_distro = m_retrievedDistroCache.get(distroId);
+
+		if(m_distro == null)
+		{
+			try
+			{
+				getContainer().run(true, false, new IRunnableWithProgress()
+				{
+
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+					{
+						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+						monitor.subTask("Retrieving distro specification");
+						
+						try
+						{
+							m_distro = m_distroProvider.getDistro(distroId);
+						}
+						catch(Exception e)
+						{
+							throw new InvocationTargetException(e);
+						}
+						m_retrievedDistroCache.put(distroId, m_distro);
+						
+						m_builder.initFrom(m_distro.getMspec());
+						m_builder.setInstallLocation(MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation()));
+						
+						m_cachedBOM = m_distro.getBom();
+						saveBOMLocally();
+												
+						initMSpecTree();
+						
+						monitor.done();
+					}
+				});
+			}
+			catch(Exception e)
+			{
+				if(e instanceof JNLPException)
+					throw (JNLPException)e;
+				
+				Throwable originalException = e;
+				
+				if(e instanceof InvocationTargetException && e.getCause() != null)
+					originalException = e.getCause();
+
+				throw new JNLPException("Cannot read distro specification", ERROR_CODE_ARTIFACT_EXCEPTION, originalException);
+			}
+		}
+	}
+	
+	private void saveBOMLocally()
+	{
+		File cachedBOMFile;
+		try
+		{
+			cachedBOMFile = File.createTempFile("jnlp", ".bom");
+			cachedBOMFile.deleteOnExit();
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
+		}
+
+		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
+
+		try
+		{
+			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+		}
+	}
+	
 	void initMSpecTree()
 	{
 		m_advancedPage.initializeMSpecTree(getBOM());
@@ -864,7 +1014,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		try
 		{
-			isLoggedIn = m_authenticator.isLoggedIn();
+			isLoggedIn = m_distroProvider.isLoggedIn();
 		}
 		catch(Exception e1)
 		{
@@ -884,6 +1034,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_loginRequired;
 	}
 
+	boolean isStackInfoRetrieved()
+	{
+		return m_distroVariants != null;
+	}
+
 	boolean isMaterializerInitialized()
 	{
 		return m_cachedBOMURL != null;
@@ -896,6 +1051,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	void resetMaterializerInitialization()
 	{
+		m_distroVariants = null;
 		m_cachedBOMURL = null;
 	}
 
@@ -931,7 +1087,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			if(elems.length != 1)
 			{
-				throw new JNLPException("Authenticator is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
+				throw new JNLPException("Distro provider is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 			}
 
 			try
@@ -1089,165 +1245,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return new Image(Display.getDefault(), newImageData);
 	}
 
-	private void initBOM()
-	{
-		m_cachedBOM = null;
-
-		try
-		{
-			HttpClient client;
-
-			if(m_authenticator != null)
-				client = m_authenticator.getHttpClient();
-			else
-				client = new HttpClient();
-
-			URL bomURL = getMaterializationSpecBuilder().getResolvedURL();
-
-			HttpMethod method = null;
-			InputStream stream = null;
-			BillOfMaterials bom = null;
-
-			try
-			{
-				method = new GetMethod(bomURL.toURI().toString());
-
-				int status = client.executeMethod(method);
-				MaterializationUtils.checkConnection(status, bomURL.toString());
-
-				stream = method.getResponseBodyAsStream();
-
-				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(
-						true);
-
-				bom = parser.parse(bomURL.toString(), stream);
-			}
-			catch(URISyntaxException e)
-			{
-				throw new JNLPException("Cannot read materialization specification",
-						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-			}
-			finally
-			{
-				IOUtils.close(stream);
-
-				if(method != null)
-					method.releaseConnection();
-			}
-
-			m_cachedBOM = bom;
-		}
-		catch(CoreException e)
-		{
-			throw new JNLPException(
-					"Cannot read artifact specification -\n\tmaterialization is supported only from BOM",
-					ERROR_CODE_ARTIFACT_EXCEPTION, e);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_404_EXCEPTION,
-					BuckminsterException.fromMessage("%s cannot be found", getMaterializationSpecBuilder().getURL()));
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot read artifact specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-		}
-
-		File cachedBOMFile;
-		try
-		{
-			cachedBOMFile = File.createTempFile("jnlp", ".bom");
-			cachedBOMFile.deleteOnExit();
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
-		}
-
-		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
-
-		try
-		{
-			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-		}
-	}
-
-	private void initMSPEC()
-	{
-		try
-		{
-			HttpClient client;
-
-			if(m_authenticator != null)
-				client = m_authenticator.getHttpClient();
-			else
-				client = new HttpClient();
-
-			HttpMethod method = null;
-			InputStream stream = null;
-
-			try
-			{
-				method = new GetMethod(m_mspecURL.toURI().toString());
-
-				int status = client.executeMethod(method);
-				MaterializationUtils.checkConnection(status, m_mspecURL.toString());
-
-				stream = method.getResponseBodyAsStream();
-
-				IParser<MaterializationSpec> parser = CorePlugin.getDefault().getParserFactory()
-						.getMaterializationSpecParser(true);
-
-				m_builder.initFrom(parser.parse(ARTIFACT_TYPE_MSPEC, stream));
-				m_builder
-						.setInstallLocation(MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation()));
-			}
-			catch(URISyntaxException e)
-			{
-				throw new JNLPException("Cannot read materialization specification",
-						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-			}
-			finally
-			{
-				IOUtils.close(stream);
-
-				if(method != null)
-					method.releaseConnection();
-			}
-
-			Display.getDefault().asyncExec(new Runnable()
-			{
-
-				public void run()
-				{
-					MSpecChangeEvent event = new MSpecChangeEvent(m_builder);
-					for(MSpecChangeListener listener : m_mspecListeners)
-					{
-						listener.handleMSpecChangeEvent(event);
-					}
-				}
-			});
-
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_404_EXCEPTION,
-					BuckminsterException.fromMessage("%s cannot be found", m_mspecURL));
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-		}
-		catch(CoreException e)
-		{
-			throw new JNLPException("Cannot read materialization specification", ERROR_CODE_ARTIFACT_EXCEPTION, e);
-		}
-	}
-
 	private void readProperties(Map<String, String> properties)
 	{
 		class ErrorEntry
@@ -1295,36 +1292,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 			tmp = ARTIFACT_TYPE_UNKNOWN;
-		}
-
-		String artifactType = tmp;
-
-		tmp = properties.get(PROP_ARTIFACT_URL);
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_ARTIFACT_URL);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
-					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-		else
-		{
-			try
-			{
-				if(ARTIFACT_TYPE_MSPEC.equals(artifactType))
-				{
-					m_mspecURL = new URL(tmp);
-					// initURL() is called in LoginPage
-				}
-				else
-				{
-					m_builder.setURL(tmp);
-				}
-			}
-			catch(MalformedURLException e)
-			{
-				errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
-						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION));
-			}
 		}
 
 		tmp = properties.get(PROP_ARTIFACT_NAME);
@@ -1457,7 +1424,38 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_serviceProvider = properties.get(PROP_SERVICE_PROVIDER);
 
-		m_spaceName = properties.get(PROP_SPACE_NAME);
+		m_folderPath = properties.get(PROP_FOLDER_PATH);
+
+		tmp = properties.get(PROP_DISTRO_ID);
+		if(tmp != null && tmp.length() > 0)
+		{
+			try
+			{
+				m_distroId = new Long(tmp);
+			}
+			catch(NumberFormatException e)
+			{
+				m_distroId = null;
+			}
+		}
+		
+		tmp = properties.get(PROP_CSPEC_ID);
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_CSPEC_ID);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+		
+		try
+		{
+			m_cspecId = new Long(tmp);
+		}
+		catch(NumberFormatException e)
+		{
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
 
 		m_cspecName = properties.get(PROP_CSPEC_NAME);
 		if(m_cspecName == null)

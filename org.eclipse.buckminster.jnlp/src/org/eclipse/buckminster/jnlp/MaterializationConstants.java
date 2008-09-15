@@ -18,7 +18,7 @@ public interface MaterializationConstants
 	
 	public static final String STEP_LOGIN = "LoginStep";
 	
-	public static final String STEP_RESTRICTION = "SpaceRestrictionStep";
+	public static final String STEP_RESTRICTION = "FolderRestrictionStep";
 	
 	public static final String STEP_SELECT_DISTRO = "SelectDistroStep";
 	
@@ -76,7 +76,7 @@ public interface MaterializationConstants
 
 	public static final String PROP_BASE_PATH_URL = "basePathURL";
 
-	public static final String PROP_SPACE_NAME = "spaceName";
+	public static final String PROP_FOLDER_PATH = "folderPath";
 
 	public static final String PROP_WINDOW_TITLE = "windowTitle";
 
@@ -105,6 +105,10 @@ public interface MaterializationConstants
 	public static final String PROP_SERVICE_PROVIDER = "serviceProvider";
 
 	public static final String PROP_LOGIN_KEY = "loginKey";
+	
+	public static final String PROP_DISTRO_ID = "distroId";
+	
+	public static final String PROP_CSPEC_ID = "cspecId";
 	
 	public static final String PROP_CSPEC_NAME = "cspecName";
 	
