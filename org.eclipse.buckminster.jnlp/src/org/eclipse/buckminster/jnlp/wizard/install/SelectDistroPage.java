@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -159,6 +160,16 @@ public class SelectDistroPage extends InstallWizardPage
 
 	private final Image m_imageBoxDisabled;
 
+	private Composite m_topComposite;
+
+	private StackLayout m_stackLayout;
+	
+	private Composite m_noDistroPageComposite;
+	
+	private Label m_noDistroLabel;
+	
+	private Composite m_pageComposite;
+	
 	private Button m_incompatibleButton;
 
 	private Button m_brokenButton;
@@ -194,14 +205,17 @@ public class SelectDistroPage extends InstallWizardPage
 
 	public void createControl(Composite parent)
 	{
-		final Composite pageComposite = new Composite(parent, SWT.NONE);
-		pageComposite.setLayout(new GridLayout(1, false));
-
-		Label label = new Label(pageComposite, SWT.NONE);
-		label.setText("The following distros appear to be compatible with your platform:");
-
-		FontData[] fontData = label.getFont().getFontData();
+		m_topComposite = new Composite(parent, SWT.NONE);
+		m_stackLayout = new StackLayout();
+		m_topComposite.setLayout(m_stackLayout);
 		
+		m_noDistroPageComposite = new Composite(m_topComposite, SWT.NONE);
+		m_noDistroPageComposite.setLayout(new GridLayout(1, false));
+
+		m_noDistroLabel = new Label(m_noDistroPageComposite, SWT.WRAP);
+		m_noDistroLabel.setText("Sorry! The publisher of this stack hasn't packaged it in a distro available for download.");
+
+		FontData[] fontData = m_noDistroLabel.getFont().getFontData();	
 		fontData[0].setStyle(SWT.BOLD);
 		m_boldFont = new Font(getShell().getDisplay(), fontData);
 		fontData[0].setStyle(SWT.ITALIC);
@@ -209,9 +223,16 @@ public class SelectDistroPage extends InstallWizardPage
 		m_orangeColor = new Color(getShell().getDisplay(), 255, 161, 68);
 		m_redColor = getShell().getDisplay().getSystemColor(SWT.COLOR_RED);
 
+		m_noDistroLabel.setFont(m_boldFont);
+
+		m_pageComposite = new Composite(m_topComposite, SWT.NONE);
+		m_pageComposite.setLayout(new GridLayout(1, false));
+		
+		Label label = new Label(m_pageComposite, SWT.NONE);
+		label.setText("The following distros appear to be compatible with your platform:");
 		label.setFont(m_boldFont);
 
-		Composite flagsComposite = new Composite(pageComposite, SWT.NONE);
+		Composite flagsComposite = new Composite(m_pageComposite, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.marginWidth = 0;
 		flagsComposite.setLayout(gridLayout);
@@ -241,7 +262,7 @@ public class SelectDistroPage extends InstallWizardPage
 		m_incompatibleButton.addSelectionListener(distroFilterListener);
 		m_brokenButton.addSelectionListener(distroFilterListener);
 
-		final Table variantsTable = new Table(pageComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		final Table variantsTable = new Table(m_pageComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		variantsTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 		variantsTable.setHeaderVisible(true);
 		variantsTable.setLinesVisible(true);
@@ -416,14 +437,12 @@ public class SelectDistroPage extends InstallWizardPage
 					selectionDetailsLabel.setText("");
 				}
 				getContainer().updateButtons();
-				for(Control control : m_selectionDetailsComposite.getChildren())
-					control.pack();
-				
-				pageComposite.layout();
+				m_selectionDetailsComposite.pack();
+				m_selectionDetailsComposite.layout();
 			}
 		});
 
-		Composite selectionComposite = new Composite(pageComposite, SWT.NONE);
+		Composite selectionComposite = new Composite(m_pageComposite, SWT.NONE);
 		gridLayout = new GridLayout(2, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
 		selectionComposite.setLayout(gridLayout);
@@ -444,16 +463,29 @@ public class SelectDistroPage extends InstallWizardPage
 		rowLayout.wrap = false;
 		m_selectionDetailsComposite.setLayout(rowLayout);
 
-		setControl(pageComposite);
+		setControl(m_topComposite);
 	}
 
 	@Override
 	protected void beforeDisplaySetup()
 	{
-		if(!m_initialized)
+		if(getInstallWizard().getDistroVariants() == null || getInstallWizard().getDistroVariants().size() == 0)
+		{
+			// dynamic width of m_noDistroLabel
+			GridData layoutData = (GridData)m_noDistroLabel.getLayoutData();
+			layoutData.widthHint = m_noDistroLabel.getShell().getSize().x - 20;
+			m_noDistroPageComposite.layout();
+			m_stackLayout.topControl = m_noDistroPageComposite;
+			m_topComposite.layout();
+		}
+		else if(!m_initialized)
 		{
 			initializeTable();
 			setupFilters();
+
+			m_pageComposite.layout();
+			m_stackLayout.topControl = m_pageComposite;
+			m_topComposite.layout();
 		}
 		
 		// distros are selected here
@@ -517,7 +549,6 @@ public class SelectDistroPage extends InstallWizardPage
 		packColumns();
 		selectFirstRow();
 		setTableItemFontAndColor();
-		m_variantsTableViewer.getTable().getItems();
 		m_initialized = true;
 	}
 
@@ -577,6 +608,9 @@ public class SelectDistroPage extends InstallWizardPage
 	@Override
 	public boolean isPageComplete()
 	{
+		if(getInstallWizard().getDistroVariants() == null || getInstallWizard().getDistroVariants().size() == 0)
+			return false;
+		
 		if(isCurrentPage())
 		{
 			TableItem[] selection = m_variantsTableViewer.getTable().getSelection();

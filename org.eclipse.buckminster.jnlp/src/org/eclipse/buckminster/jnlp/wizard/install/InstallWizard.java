@@ -8,15 +8,14 @@
 
 package org.eclipse.buckminster.jnlp.wizard.install;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_TYPE_UNKNOWN;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ARTIFACT_UNKNOWN_TEXT;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_ARTIFACT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_AUTHENTICATOR_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
@@ -26,7 +25,6 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZER
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.META_AREA;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_VERSION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DESCRIPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DOCUMENTATION;
@@ -914,7 +912,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			if(e instanceof InvocationTargetException && e.getCause() != null)
 				originalException = e.getCause();
 				
-			throw new JNLPException("Cannot read stack variations", ERROR_CODE_ARTIFACT_EXCEPTION, originalException);
+			throw new JNLPException("Cannot read stack variations", ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
 		}
 	}
 	
@@ -973,7 +971,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				if(e instanceof InvocationTargetException && e.getCause() != null)
 					originalException = e.getCause();
 
-				throw new JNLPException("Cannot read distro specification", ERROR_CODE_ARTIFACT_EXCEPTION, originalException);
+				throw new JNLPException("Cannot read distro specification", ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
 			}
 		}
 	}
@@ -1283,16 +1281,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 
 		m_basePathURL = tmp;
-
-		tmp = properties.get(PROP_ARTIFACT_TYPE);
-
-		if(tmp == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_ARTIFACT_TYPE);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
-					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-			tmp = ARTIFACT_TYPE_UNKNOWN;
-		}
 
 		tmp = properties.get(PROP_ARTIFACT_NAME);
 		if(tmp == null)
