@@ -3,8 +3,11 @@ package org.eclipse.buckminster.executor.actor;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,8 +39,10 @@ public class ExecutorActor extends AbstractActor
 
 	private static final String EXECUTOR_SHELL_ACTION = "shell";
 
+	private static final String EXECUTOR_INHERIT_ENV_VAR_ACTION = "inheritEnvVar";
+
 	private static final String[] validProperties = { EXECUTOR_ENV, EXECUTOR_EXEC_ACTION, EXECUTOR_EXEC_DIR_ACTION,
-			EXECUTOR_SHELL_ACTION };
+			EXECUTOR_SHELL_ACTION, EXECUTOR_INHERIT_ENV_VAR_ACTION };
 
 	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor";
 
@@ -57,9 +62,9 @@ public class ExecutorActor extends AbstractActor
 			final String command = expander.expand(prepareCommandLine());
 			final String[] env = prepareEnvironmentVariables(expander);
 			final Process proc = Runtime.getRuntime().exec(command, env, executionDir);
-			// any error message?
+			// any error message ?
 			final StreamGobblerRedirector errorGobbler = new StreamGobblerRedirector(proc.getErrorStream(), errorStream);
-			// any output?
+			// any output ?
 			final StreamGobblerRedirector outputGobbler = new StreamGobblerRedirector(proc.getInputStream(),
 					outputStream);
 			// kick them off
@@ -186,11 +191,18 @@ public class ExecutorActor extends AbstractActor
 	 */
 	private String[] prepareEnvironmentVariables(PropertyExpander expander) throws CoreException
 	{
+
 		final Set<String> envSet = new HashSet<String>();
 		final String envProperty = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_ENV));
+		if(this.getActorProperty(EXECUTOR_INHERIT_ENV_VAR_ACTION) != null)
+		{
+			final Map<String, String> getenv = System.getenv();
+			for(String key : getenv.keySet())
+				envSet.add(key+'='+getenv.get(key));
+		}
 		if(envProperty != null)
 		{
-			final String[] split = envProperty.split(";");
+			final String[] split = splitEnvironnementVariables(envProperty);
 			for(String env : split)
 				envSet.add(expander.expand(env));
 		}
@@ -203,4 +215,65 @@ public class ExecutorActor extends AbstractActor
 		}
 		return envSet.toArray(new String[envSet.size()]);
 	}
+
+	/**
+	 * Splits the environment variables but protects quoted parts
+	 * 
+	 * @param env
+	 * @return
+	 */
+	@SuppressWarnings("boxing")
+	static String[] splitEnvironnementVariables(final String env)
+	{
+		final List<Integer> semicolonIndexes = indexesOf(env, ';');
+		final List<Integer> quoteIndexes = indexesOf(env, '\"');
+		if(quoteIndexes.size() % 2 != 0)
+			throw new IllegalStateException("Odd number of quoting characters in " + env);
+		// removing semicolon indexes between quote indexes
+		final Iterator<Integer> quoteItr = quoteIndexes.iterator();
+		while(quoteItr.hasNext())
+		{
+			int min = quoteItr.next();
+			int max = quoteItr.next();
+			Iterator<Integer> semicolonItr = semicolonIndexes.iterator();
+			while(semicolonItr.hasNext())
+			{
+				int i = semicolonItr.next();
+				if(i > min && i < max)
+					semicolonItr.remove();
+			}
+		}
+		// splitting the variables
+		final List<String> result = new ArrayList<String>();
+		int lastIndex = 0;
+		for(int i : semicolonIndexes)
+		{
+			result.add(env.substring(lastIndex, i));
+			lastIndex = i + 1;
+		}
+		result.add(env.substring(lastIndex));
+		return result.toArray(new String[result.size()]);
+	}
+
+	/**
+	 * returns the list of indexes where you can find the character c in string
+	 * 
+	 * @param string
+	 * @param c
+	 * @return
+	 */
+	@SuppressWarnings("boxing")
+	private static List<Integer> indexesOf(String string, char c)
+	{
+		final List<Integer> list = new ArrayList<Integer>();
+		int fromIndex = 0;
+		int index;
+		while((index = string.indexOf(c, fromIndex)) != -1)
+		{
+			list.add(index);
+			fromIndex = index + 1;
+		}
+		return list;
+	}
+
 }
