@@ -148,6 +148,9 @@ public class StartPage extends InstallWizardPage
 		m_artifactDocumentationText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
 		m_publisherInfoText.setText(getInstallWizard().getBrandingString());
 
+		// This might solve problems with redundant scroll bars on Mac
+		((Composite)getControl()).layout();
+		
 		focusNextButton();
 	}
 	
