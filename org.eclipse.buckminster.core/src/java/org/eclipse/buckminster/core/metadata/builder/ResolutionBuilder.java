@@ -68,6 +68,8 @@ public class ResolutionBuilder implements IResolution
 
 	private boolean m_unpack = false;
 
+	private String m_persistentId;
+
 	public ResolutionBuilder()
 	{
 		this(new CSpecBuilder(), null);
@@ -231,6 +233,7 @@ public class ResolutionBuilder implements IResolution
 			m_opml = new OPMLBuilder();
 			m_opml.initFrom(opml);
 		}
+		m_persistentId = resolution.getPersistentId();
 		m_provider = resolution.getProvider();
 		m_resolutionFilter = resolution.getResolutionFilter();
 		m_name = resolution.getName();
@@ -371,5 +374,15 @@ public class ResolutionBuilder implements IResolution
 			m_revision = versionMatch.getRevision();
 			m_timestamp = versionMatch.getTimestamp();
 		}
+	}
+
+	public void setPersistentId(String persistentId)
+	{
+		m_persistentId = persistentId;
+	}
+
+	public String getPersistentId()
+	{
+		return m_persistentId;
 	}
 }

@@ -64,6 +64,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	public static final String ATTR_OPML_ID = "opmlId";
 
+	public static final String ATTR_PERSISTENT_ID = "persistentId";
+
 	public static final String ATTR_PROVIDER_ID = "providerId";
 
 	public static final String ATTR_QUERY_ID = "queryId";
@@ -96,6 +98,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	private transient OPML m_opml;
 
+	private final String m_persistentId;
+
 	private transient Provider m_provider;
 
 	private final String m_remoteName;
@@ -116,6 +120,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_opml = opml;
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
+		m_persistentId = old.getPersistentId();
 		m_provider = old.getProvider();
 		m_componentTypeId = old.getComponentTypeId();
 		m_versionMatch = old.getVersionMatch().copyWithVersion(cspec.getVersion());
@@ -129,7 +134,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	public Resolution(CSpec cspec, OPML opml, String componentTypeId, VersionMatch versionMatch, Provider provider,
-		boolean materializeable, ComponentRequest request, List<String> attributes,
+		boolean materializeable, ComponentRequest request, List<String> attributes, String persistentId,
 		String repository, String remoteName, String contentType, long lastModified, long size, boolean unpack)
 	{
 		m_cspec = cspec;
@@ -140,6 +145,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_materializable = materializeable;
 		m_request = request;
 		m_attributes = Utils.createUnmodifiableList(attributes);
+		m_persistentId = persistentId;
 		m_repository = repository;
 		m_remoteName = remoteName;
 		m_contentType = contentType;
@@ -154,6 +160,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_opml = old.getOPML();
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
+		m_persistentId = old.getPersistentId();
 		m_provider = old.getProvider();
 		m_componentTypeId = old.getComponentTypeId();
 		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
@@ -175,6 +182,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_lastModified = bld.getLastModified();
 		m_materializable = bld.isMaterializable();
 		m_opml = bld.getOPML();
+		m_persistentId = bld.getPersistentId();
 		m_provider = bld.getProvider();
 		m_remoteName = bld.getName();
 		m_repository = bld.getRepository();
@@ -291,6 +299,11 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public UUID getOPMLId()
 	{
 		return m_opml == null ? null : m_opml.getId();
+	}
+
+	public String getPersistentId()
+	{
+		return m_persistentId;
 	}
 
 	/**
@@ -555,6 +568,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 		if(m_componentTypeId != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
+		if(m_persistentId != null)
+			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, m_persistentId);
 		if(m_remoteName != null)
 			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
 		if(m_contentType != null)

@@ -80,6 +80,7 @@
 		<attribute name="componentType" type="string" use="optional" />
 		<attribute name="projectName" type="string" use="optional" />
 		<attribute name="materializable" type="boolean" use="required" />
+		<attribute name="persistentId" type="string" use="optional" />
 		<attribute name="providerId" type="com:uuid" use="required" />
 		<attribute name="repository" type="string" use="required" />
 		<attribute name="remoteName" type="string" use="optional" />

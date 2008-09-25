@@ -47,6 +47,14 @@ public interface IResolution extends IFileInfo
 	Provider getProvider();
 
 	/**
+	 * Returns the persistent identifier for the resolution. This is intended to be used
+	 * when resolutions are stored in a database.
+	 *
+	 * @return
+	 */
+	String getPersistentId();
+
+	/**
 	 * The id of the reader type that can materialize this resolution.
 	 * @return The id of the reader type.
 	 */

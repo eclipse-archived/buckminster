@@ -11,11 +11,11 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -30,37 +30,25 @@ public abstract class AbstractBuildIntegrationActor extends AbstractActor
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
-		int kind = WellknownActions.ECLIPSE.name2Kind(this.getNameForKind(ctx));
-
-		// We build the workspace here. There's no way we can build individual
-		// projects. We prevent repeated invocations of this workspace build using
-		// the GlobalContext.hasExecutedKind(kind) method
-		//
-		GlobalContext globCtx = ((PerformContext)ctx).getGlobalContext();
-		if(globCtx.hasExecutedKind(kind))
-		{
-			MonitorUtils.complete(monitor);
-			return Status.OK_STATUS;
-		}
-
-		monitor.beginTask(null, 200);
+		monitor.beginTask(null, 300);
 		try
 		{
-			IWorkspace ws = ResourcesPlugin.getWorkspace();
-			ws.getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 100));
-			ws.build(kind, MonitorUtils.subMonitor(monitor, 100));
-			for(IMarker problem : ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+			IProject project = WorkspaceInfo.getProject(ctx.getCSpec().getComponentIdentifier());
+			if(project == null)
+				return Status.OK_STATUS;
+
+			project.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 100));
+			project.build(WellknownActions.ECLIPSE.name2Kind(getNameForKind(ctx)), MonitorUtils.subMonitor(monitor, 200));
+			for(IMarker problem : project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
 			{
 				switch(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO))
 				{
 				case IMarker.SEVERITY_ERROR:
 					throw new CoreException(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, problem.getAttribute(IMarker.MESSAGE, ""), null));
 				case IMarker.SEVERITY_WARNING:
-					globCtx.kindWasExecuted(kind);
 					return new Status(IStatus.WARNING, CorePlugin.getID(), IStatus.OK, problem.getAttribute(IMarker.MESSAGE, ""), null);
 				}
 			}
-			globCtx.kindWasExecuted(kind);
 			return Status.OK_STATUS;
 		}
 		finally

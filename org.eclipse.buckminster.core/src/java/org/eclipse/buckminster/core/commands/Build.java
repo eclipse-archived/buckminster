@@ -31,6 +31,8 @@ public class Build extends WorkspaceCommand
 {
 	static private final OptionDescriptor s_cleanDescriptor = new OptionDescriptor('c', "clean", OptionValueType.NONE);
 
+	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
+
 	// set if a clean build is requested
 	//
 	private boolean m_clean = false;
@@ -44,7 +46,7 @@ public class Build extends WorkspaceCommand
 
 		try
 		{
-			monitor.beginTask(null, projs.length * (m_clean ? 3 : 2));
+			monitor.beginTask(null, projs.length * (m_clean ? 8 : 6));
 
 			// Ensure that the workspace is in sync
 			//
@@ -54,26 +56,55 @@ public class Build extends WorkspaceCommand
 				//
 				// Clean first if requested
 				//
-				ws.build(IncrementalProjectBuilder.CLEAN_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
+				ws.build(IncrementalProjectBuilder.CLEAN_BUILD, MonitorUtils.subMonitor(monitor, projs.length * 2));
 
-			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
-			
-			// Some errors are caused by circular dependencies in the build hierarcy. They might be
-			// fixed by an additional incremental build.
-			//
-			ws.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
+			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length * 5));
 
-			// Get all problem markers. Sort them by timestamp
+			// Some errors are caused by circular dependencies in the build hierarchy. They might be
+			// fixed by additional incremental builds so we make MAX_INCREMENTAL_RETRY_COUNT attempts
+			// before we report errors.
 			//
-			Map<Long,IMarker> problems = null;
-			for(IMarker problem : wsRoot.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+			IMarker[] markers;
+			int top;
+			for(int retries = 0;; ++retries)
 			{
-				if(problems == null)
-					problems = new TreeMap<Long, IMarker>();
-				problems.put(Long.valueOf(problem.getCreationTime()), problem);
+				// Get all problem markers. Sort them by timestamp
+				//
+				markers = wsRoot.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+				top = markers.length;
+				if(top == 0 || retries >= MAX_INCREMENTAL_RETRY_COUNT)
+					break;
+
+				boolean retryNeeded = false;
+				for(int idx = 0; idx < top; ++idx)
+				{
+					if(markers[idx].getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) != IMarker.SEVERITY_ERROR)
+						continue;
+
+					retryNeeded = true;
+					break;
+				}
+
+				if(!retryNeeded)
+					//
+					// No errors spotted, we're happy.
+					//
+					break;
+
+				// Build incrementally and then obtain a new set of markers
+				//
+				ws.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
 			}
-			if(problems == null)
+
+			if(top == 0)
 				return 0;
+
+			Map<Long,IMarker> problems = new TreeMap<Long, IMarker>();
+			while(--top >= 0)
+			{
+				IMarker marker = markers[top];
+				problems.put(Long.valueOf(marker.getCreationTime()), marker);
+			}
 
 			int exitValue = 0;
 			for(IMarker problem : problems.values())

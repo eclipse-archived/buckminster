@@ -56,6 +56,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	private String m_componentType;
 	private VersionMatch m_versionMatch;
 	private boolean m_materializable;
+	private String m_persistentId;
 	private String m_repository;
 	private String m_remoteName;
 	private String m_contentType;
@@ -84,6 +85,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		String tmp = getOptionalStringValue(attrs, Resolution.ATTR_OPML_ID);
 		m_opmlId = (tmp == null) ? null : UUID.fromString(tmp);
 		m_componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
+		m_persistentId = getOptionalStringValue(attrs, Resolution.ATTR_PERSISTENT_ID);
 		m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
 		m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
 		m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
@@ -179,6 +181,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				m_materializable,
 				m_request,
 				m_attributes,
+				m_persistentId,
 				m_repository,
 				m_remoteName,
 				m_contentType,
