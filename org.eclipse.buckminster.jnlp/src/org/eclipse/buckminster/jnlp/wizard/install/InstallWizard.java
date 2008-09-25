@@ -869,7 +869,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			retrieveDistroVariants();
 			
 			if(m_distroVariants.size() == 1)
+			{
 				distroVariant = m_distroVariants.get(0);
+				
+				if(distroVariant.isBroken())
+					distroVariant = null;
+			}
 		}
 		
 		if(m_distroId != null || distroVariant != null)
@@ -950,7 +955,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						m_retrievedDistroCache.put(distroId, m_distro);
 						
 						m_builder.initFrom(m_distro.getMspec());
-						m_builder.setInstallLocation(MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation()));
+						
+						IPath location = m_builder.getInstallLocation() == null ?
+											Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName)) :
+											MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
+						m_builder.setInstallLocation(location);
 						
 						m_cachedBOM = m_distro.getBom();
 						saveBOMLocally();
