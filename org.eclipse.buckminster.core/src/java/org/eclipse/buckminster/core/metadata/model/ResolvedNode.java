@@ -90,8 +90,19 @@ public class ResolvedNode extends BOMNode
 
 	public ResolvedNode(Resolution resolution, List<BOMNode> children)
 	{
+		this(resolution, children, false);
+	}
+
+	public ResolvedNode(Resolution resolution, List<BOMNode> children, boolean forBuild)
+	{
 		m_resolution = resolution;
-		m_children = Utils.createUnmodifiableList(children);
+
+		// If forBuild is true, we still wrap the list in an unmodifiableList. This means
+		// that only the caller of this constructor is able to modify the content. We
+		// don't call the createUnmodifiableList in that case though, since that creates
+		// a full copy of the list.
+		//
+		m_children = forBuild ? Collections.unmodifiableList(children) : Utils.createUnmodifiableList(children);
 	}
 
 	@Override
