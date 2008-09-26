@@ -9,12 +9,6 @@
  *******************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -24,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -34,7 +29,6 @@ import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.maven.MavenPlugin;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
@@ -55,24 +49,7 @@ public class MavenComponentType extends AbstractComponentType
 {
 	private static final MavenCSpecBuilder s_builder = new MavenCSpecBuilder();
 
-	private static final Pattern s_snapshotDesignatorPattern = Pattern.compile("^(.+)-"
-			+ MavenComponentType.s_snapshotExpr + '$');
-
-	private static final String s_snapshotExpr = "SNAPSHOT";
-
-	private static final Pattern s_timestampDesignatorPattern = Pattern.compile("^(.+)-"
-			+ MavenComponentType.s_timestampExpr + '$');
-
-	private static final String s_timestampExpr = "((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?";
-
-	private static final Pattern s_timestampPattern = Pattern.compile('^' + MavenComponentType.s_timestampExpr + '$');
-
-	private static final Pattern s_numericDotPattern = Pattern.compile("^[0-9]+\\.[0-9].*$");
-
-	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss");
-	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd");
-
-	static void addDependencies(IComponentReader reader, Document pomDoc, IPath pomPath, CSpecBuilder cspec,
+	static void addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec,
 			GroupBuilder archives, ExpandingProperties properties) throws CoreException
 	{
 		Element project = pomDoc.getDocumentElement();
@@ -104,7 +81,7 @@ public class MavenComponentType extends AbstractComponentType
 		}
 
 		if(reader instanceof MavenReader && parentNode != null)
-			processParentNode((MavenReader)reader, cspec, pomPath, archives, properties, parentNode);
+			processParentNode((MavenReader)reader, cspec, archives, properties, parentNode);
 
 		if(groupId != null)
 		{
@@ -140,48 +117,20 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	static Date createTimestamp(String date, String time) throws CoreException
-	{
-		try
-		{
-			return (time != null)
-				? s_timestampFormat.parse(date + '.' + time)
-				: s_dateFormat.parse(date);
-		}
-		catch(ParseException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
 	static IVersion createVersion(String versionStr) throws CoreException
 	{
+		versionStr = TextUtils.notEmptyTrimmedString(versionStr);
 		if(versionStr == null)
 			return null;
 
-		if(MavenComponentType.s_snapshotExpr.equals(versionStr))
-			return null;
-
-		// Try Triplet. If it fails, default to String.
-		// TODO: Awaits more elaborated solution involving a table of
-		// supported version types per provider.
-		//
-		Matcher m = s_timestampPattern.matcher(versionStr);
-		if(m.matches())
-			return VersionFactory.TimestampType.coerce(createTimestamp(m.group(1), m.group(2)));
-
-		m = s_numericDotPattern.matcher(versionStr);
-		if(m.matches())
+		try
 		{
-			try
-			{
-				return VersionFactory.TripletType.fromString(versionStr);
-			}
-			catch(VersionSyntaxException e)
-			{
-			}
+			return VersionFactory.TripletType.fromString(versionStr);
 		}
-		return VersionFactory.StringType.fromString(versionStr);
+		catch(VersionSyntaxException e)
+		{
+			return VersionFactory.StringType.fromString(versionStr);
+		}
 	}
 
 	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
@@ -193,56 +142,75 @@ public class MavenComponentType extends AbstractComponentType
 		if(version instanceof TripletVersion)
 		{
 			TripletVersion tripletVersion = (TripletVersion)version;
+			String qual = tripletVersion.getQualifier();
+			if(qual != null && qual.endsWith("SNAPSHOT"))
+			{
+				// Strip of SNAPSHOT or -SNAPSHOT
+				//
+				if(qual.length() == 8)
+					qual = null;
+				else
+				{
+					qual = qual.substring(0, qual.length() - 8);
+					if(qual.endsWith("-"))
+						qual = qual.substring(0, qual.length() - 1);
+					if(qual.length() == 0)
+						qual = null;
+				}
+				tripletVersion = (TripletVersion)tripletVersion.replaceQualifier(qual);
+			}
 
 			// Create a version range that is limited by the next minor
-			// number (non inclusive), i.e.
-			// [1.2.4,1.3.0.a)
+			// number (non inclusive), i.e. [1.2.4,1.2.5). This will allow
+			// 1.2.4 with any qualifier but not 1.2.5
 			//
 			StringBuilder bld = new StringBuilder();
 			bld.append('[');
 			tripletVersion.toString(bld);
 			bld.append(',');
-			bld.append(tripletVersion.getMajor());
-			bld.append('.');
-			bld.append(tripletVersion.getMinor() + 1);
-			bld.append(".0.a)");
+			int major = tripletVersion.getMajor();
+			if(tripletVersion.hasMinor())
+			{
+				bld.append(major);
+				bld.append('.');
+				int minor = tripletVersion.getMinor();
+				if(tripletVersion.hasMicro())
+				{
+					bld.append(minor);
+					bld.append('.');
+					bld.append(tripletVersion.getMicro() + 1);
+				}
+				else
+					bld.append(minor + 1);
+			}
+			else
+				bld.append(major + 1);
+			bld.append(')');
 			return VersionFactory.createDesignator(version.getType(), bld.toString());
 		}
 
-		// We use an open ended range starting at versionStr here since
-		// we don't know where to end. Although it's very likely that
-		// an exact match will be found in the maven repo, it's also very
-		// likely that a graph will introduce conflicts.
+		String vstr = version.toString();
+		if(vstr.endsWith("SNAPSHOT"))
+		{
+			vstr = vstr.substring(0, vstr.length() - 8);
+			if(vstr.endsWith("-"))
+				vstr = vstr.substring(0, vstr.length() -1);
+		}
+
+		// We cannot use any range semantics here so we have to leave the range open
+		// in order to allow the snapshots.
 		//
-		return VersionFactory.createGTEqualDesignator(version);
+		return VersionFactory.createGTEqualDesignator(version.getType().fromString(vstr));
 	}
 
 	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
 	{
-		if(versionStr == null || versionStr.length() == 0)
+		IVersion version = createVersion(versionStr);
+		if(version == null)
 			//
 			// No version at all. Treat as if it was an unversioned SNAPSHOT
 			//
 			return VersionMatch.DEFAULT;
-
-		Matcher m = MavenComponentType.s_timestampDesignatorPattern.matcher(versionStr);
-		if(m.matches())
-			return new VersionMatch(createVersion(m.group(1)), null, -1, createTimestamp(m.group(2), m.group(3)), typeInfo);
-
-		m = MavenComponentType.s_snapshotDesignatorPattern.matcher(versionStr);
-		if(m.matches())
-		{
-			versionStr = m.group(1);
-			return new VersionMatch(createVersion(versionStr), null, -1, null, typeInfo);
-		}
-
-		IVersion version = createVersion(versionStr);
-		if(version != null && version.getType().equals(VersionFactory.TimestampType))
-			//
-			// Unversioned timestamp
-			//
-			return new VersionMatch(null, null, -1, new Date(version.toLong()), typeInfo);
-
 		return new VersionMatch(version, null, -1, null, typeInfo);
 	}
 
@@ -332,7 +300,7 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	private static void processParentNode(MavenReader reader, CSpecBuilder cspec, IPath pomPath, GroupBuilder archives,
+	private static void processParentNode(MavenReader reader, CSpecBuilder cspec, GroupBuilder archives,
 			ExpandingProperties properties, Node parent) throws CoreException
 	{
 		String groupId = null;
@@ -359,9 +327,9 @@ public class MavenComponentType extends AbstractComponentType
 				: MavenProvider.getDefaultName(groupId, artifactId);
 
 		MapEntry entry = new MapEntry(componentName, groupId, artifactId, null);
-		VersionMatch vm = (versionStr == null)
-				? reader.getVersionMatch()
-				: createVersionMatch(versionStr, null);
+		VersionMatch vm = reader.getVersionMatch();
+		if(versionStr != null)
+			vm = createVersionMatch(versionStr, vm.getArtifactInfo());
 
 		IPath parentPath;
 		MavenReaderType mrt = (MavenReaderType)reader.getReaderType();
@@ -373,7 +341,7 @@ public class MavenComponentType extends AbstractComponentType
 		if(parentDoc == null)
 			return;
 
-		addDependencies(reader, parentDoc, parentPath, cspec, archives, properties);
+		addDependencies(reader, parentDoc, cspec, archives, properties);
 	}
 
 	private static void processProperties(ExpandingProperties properties, Node node)

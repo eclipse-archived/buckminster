@@ -67,12 +67,11 @@ public class MavenReader extends URLFileReader
 		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor);
 	}
 
-	Document getPOMDocument(IPath[] pomPathRet, IProgressMonitor monitor) throws CoreException
+	Document getPOMDocument(IProgressMonitor monitor) throws CoreException
 	{
 		MavenReaderType rt = (MavenReaderType)getReaderType();
 		VersionMatch vs = getVersionMatch();
 		IPath pomPath = rt.getPomPath(m_mapEntry, vs);
-		pomPathRet[0] = pomPath;
 		return getPOMDocument(m_mapEntry, vs, pomPath, monitor);
 	}
 

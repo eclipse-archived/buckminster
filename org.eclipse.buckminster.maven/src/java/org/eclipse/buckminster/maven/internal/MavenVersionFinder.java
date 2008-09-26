@@ -74,7 +74,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		m_fileList = null;
 	}
 
-	URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	private URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		m_readerType.appendFolder(pbld, m_uri.getPath());

@@ -30,7 +30,6 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -50,7 +49,6 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		monitor.subTask("Generating cspec from Maven artifact");
 		try
 		{
-			IPath pomPath = null;
 			Document pomDoc;
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 2000);
 			if(reader instanceof MavenReader)
@@ -58,9 +56,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 				// We are reading from a maven repository. In that case, we will
 				// allow a missing pom file.
 				//
-				IPath[] pomPathRet = new IPath[1];
-				pomDoc = ((MavenReader)reader).getPOMDocument(pomPathRet, subMon);
-				pomPath = pomPathRet[0];
+				pomDoc = ((MavenReader)reader).getPOMDocument(subMon);
 			}
 			else
 			{
@@ -95,7 +91,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			if(pomDoc != null)
 			{
 				ExpandingProperties properties = new ExpandingProperties();
-				MavenComponentType.addDependencies(reader, pomDoc, pomPath, cspecBld, archives, properties);
+				MavenComponentType.addDependencies(reader, pomDoc, cspecBld, archives, properties);
 			}
 
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));

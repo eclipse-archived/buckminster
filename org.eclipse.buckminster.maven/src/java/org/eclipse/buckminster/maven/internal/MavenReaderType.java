@@ -41,32 +41,6 @@ import org.eclipse.core.runtime.Path;
  */
 public class MavenReaderType extends URLCatalogReaderType
 {
-	static void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension)
-			throws CoreException
-	{
-		String artifactInfo = vm.getArtifactInfo();
-		if(extension == null && artifactInfo != null)
-		{
-			int vnSplit = artifactInfo.indexOf('/');
-			if(vnSplit >= 0)
-			{
-				// Artifact info stores <filename>/<version>
-				//
-				bld.append(artifactInfo, 0, vnSplit);
-				return;
-			}
-
-			// Old style. Artifact info just stores extension
-			//
-			extension = artifactInfo;
-		}
-
-		bld.append(artifactID);
-		bld.append('-');
-		appendMavenVersionName(bld, vm);
-		bld.append(extension);
-	}
-
 	static void appendMavenVersionName(StringBuilder bld, VersionMatch vm) throws CoreException
 	{
 		String artifactInfo = vm.getArtifactInfo();
@@ -165,6 +139,32 @@ public class MavenReaderType extends URLCatalogReaderType
 	{
 		appendFolder(pbld, mapEntry.getGroupId());
 		appendFolder(pbld, "jars");
+	}
+
+	void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension)
+			throws CoreException
+	{
+		String artifactInfo = vm.getArtifactInfo();
+		if(extension == null && artifactInfo != null)
+		{
+			int vnSplit = artifactInfo.indexOf('/');
+			if(vnSplit >= 0)
+			{
+				// Artifact info stores <filename>/<version>
+				//
+				bld.append(artifactInfo, 0, vnSplit);
+				return;
+			}
+
+			// Old style. Artifact info just stores extension
+			//
+			extension = artifactInfo;
+		}
+
+		bld.append(artifactID);
+		bld.append('-');
+		appendMavenVersionName(bld, vm);
+		bld.append(extension);
 	}
 
 	void appendFolder(StringBuilder pbld, String folder)

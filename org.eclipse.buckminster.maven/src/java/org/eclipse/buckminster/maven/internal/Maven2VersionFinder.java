@@ -22,13 +22,16 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -44,44 +47,63 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		super(readerType, provider, ctype, query);
 	}
 
+	/**
+	 * Returns an array of versions known to this repository.
+	 * 
+	 * @return known versions or <code>null</code> if not applicable.
+	 * @throws CoreException
+	 */
 	@Override
-	URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	List<VersionMatch> getComponentVersions(IProgressMonitor monitor) throws CoreException
 	{
+		NodeQuery query = getQuery();
+		IVersionDesignator designator = query.getVersionDesignator();
+		if(designator == null)
+			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0");
+		else
+		{
+			if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
+				//
+				// Convert the OSGi version to a Triplet version instead.
+				//
+				designator = VersionFactory.createDesignator(VersionFactory.TripletType, designator.toString());
+		}
+
+		List<VersionMatch> versions = new ArrayList<VersionMatch>();
 		Maven2ReaderType readerType = (Maven2ReaderType)getReaderType();
 		URI uri = getURI();
 		StringBuilder pbld = new StringBuilder();
 		readerType.appendFolder(pbld, uri.getPath());
 		readerType.appendEntryFolder(pbld, getMapEntry());
-		ArrayList<URL> fileList = new ArrayList<URL>();
 		String rootPath = pbld.toString();
-		int rootLen = rootPath.length();
 
 		monitor.beginTask(null, 2000);
 		try
 		{
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			NodeQuery query = getQuery();
-			for(String version : getVersions(query.getVersionDesignator(), readerType, docBld, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
+			IVersionDesignator versionDesignator = query.getVersionDesignator();
+			for(String versionStr : getVersions(readerType, docBld, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
 			{
-				VersionMatch versionMatch = MavenComponentType.createVersionMatch(version, null);
-				if(versionMatch != null && query.isMatch(versionMatch))
-				{
-					pbld.setLength(rootLen);
-					pbld.append(version);
-					pbld.append('/');
+				String v = versionStr;
+				if(v.endsWith("SNAPSHOT"))
+					v = getSnapshotVersion(readerType, docBld, uri, rootPath, v, new NullProgressMonitor());
 
-					pbld.append(getMapEntry().getArtifactId());
-					pbld.append('-');
-					if (isReleaseVersion(version))
-						pbld.append(version);
-					else
-						appendSnapshotIdentifier(pbld, readerType, docBld, uri, rootPath, version, monitor);
-					pbld.append(".jar");
+				IVersion version = versionDesignator == null ? MavenComponentType.createVersion(v) : versionDesignator.getVersion().getType().fromString(v);
+				if(!(versionDesignator == null || versionDesignator.designates(version)))
+					continue;
 
-					fileList.add(readerType.createURL(uri, pbld.toString()));
-				}
+				pbld.setLength(0);
+				pbld.append(versionStr);
+				pbld.append('/');
+				pbld.append(getMapEntry().getArtifactId());
+				pbld.append('-');
+				pbld.append(version);
+				pbld.append(".jar");
+				VersionMatch versionMatch = new VersionMatch(version, null, -1, null, pbld.toString());
+				if(query.isMatch(versionMatch))
+					versions.add(versionMatch);
 			}
-			return fileList.toArray(new URL[fileList.size()]);
+			return versions;
 		}
 		catch(ParserConfigurationException e)
 		{
@@ -93,7 +115,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		}
 	}
 
-	private List<String> getVersions(IVersionDesignator versionDesignator, Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
+	private List<String> getVersions(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
 	{
 		List<String> versionList = null;
 
@@ -110,13 +132,9 @@ public class Maven2VersionFinder extends MavenVersionFinder
 					int top = versions.getLength();
 					for (int i = 0; i < top; i++)
 					{
-						String version = versions.item(i).getTextContent();
-						if(!isReleaseVersion(versionDesignator) || isReleaseVersion(version))
-						{
-							if(versionList == null)
-								versionList = new ArrayList<String>();
-							versionList.add(version);
-						}
+						if(versionList == null)
+							versionList = new ArrayList<String>();
+						versionList.add(versions.item(i).getTextContent());
 					}
 				}
 			}
@@ -124,7 +142,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		return versionList == null ? Collections.<String>emptyList() : versionList;
 	}
 
-	private void appendSnapshotIdentifier(StringBuilder pbld, Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String rootPath, String version, IProgressMonitor monitor) throws CoreException
+	private String getSnapshotVersion(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String rootPath, String version, IProgressMonitor monitor) throws CoreException
 	{
 		Document doc = getMetadataDocument(readerType, docBld, uri, rootPath + version + "/" + "maven-metadata.xml", monitor);
 		if(doc != null)
@@ -135,32 +153,14 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				Element versionsElement = (Element) versioningElement.getElementsByTagName("snapshot").item(0);
 				if(versionsElement != null)
 				{
-					Element timestampElement = (Element) versionsElement.getElementsByTagName("timestamp").item(0);
-					Element buildNumElement = (Element) versionsElement.getElementsByTagName("buildNumber").item(0);
-					if(timestampElement != null && buildNumElement != null)
-					{
-						pbld.append(version.substring(0, version.indexOf("SNAPSHOT")));
-						pbld.append(timestampElement.getTextContent());
-						pbld.append('-');
-						pbld.append(buildNumElement.getTextContent());
-						return;
-					}
+					Element ts = (Element) versionsElement.getElementsByTagName("timestamp").item(0);
+					Element buildNum = (Element) versionsElement.getElementsByTagName("buildNumber").item(0);
+					if(ts != null && buildNum != null)
+						return version.substring(0, version.length() - 8) + ts.getTextContent() + '-' + buildNum.getTextContent();
 				}
 			}
 		}
 		throw BuckminsterException.fromMessage("Unable to read snapshot metadata");
-	}
-
-	private boolean isReleaseVersion(String version)
-	{
-		return !version.endsWith("SNAPSHOT");
-	}
-
-	private boolean isReleaseVersion(IVersionDesignator versionDesignator)
-	{
-		return (versionDesignator == null)
-			? true
-			: isReleaseVersion(versionDesignator.getVersion().toString());
 	}
 
 	private Document getMetadataDocument(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
