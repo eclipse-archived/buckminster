@@ -597,10 +597,13 @@ public class SelectDistroPage extends InstallWizardPage
     @Override
 	public boolean performPageCommit()
 	{
-		TableItem[] selection = m_variantsTableViewer.getTable().getSelection();
-		DistroVariant variant = (DistroVariant)selection[0].getData();
-		
-		getInstallWizard().retrieveDistro(variant.getDistroId());
+    	if(isCurrentPage())
+    	{
+			TableItem[] selection = m_variantsTableViewer.getTable().getSelection();
+			DistroVariant variant = (DistroVariant)selection[0].getData();
+			
+			getInstallWizard().retrieveDistro(variant.getDistroId());
+    	}
     	
     	return true;
 	}	
