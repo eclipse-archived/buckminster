@@ -55,6 +55,12 @@ public class VersionFactory
 		return VersionDesignator.explicitFromString(versionType, versionString);
 	}
 
+	public static IVersionDesignator createRangeDesignator(IVersion low, boolean includeLow, IVersion high, boolean includeHigh)
+			throws VersionSyntaxException
+	{
+		return VersionDesignator.create(low, includeLow, high, includeHigh);
+	}
+
 	public static IVersionDesignator createGTEqualDesignator(IVersion version)
 	{
 		return VersionDesignator.GTEqual(version);

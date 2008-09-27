@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
+import org.eclipse.buckminster.core.internal.version.TripletVersionType;
+
 /**
  * @author Thomas Hallgren
  */
@@ -38,6 +40,16 @@ public class TripletVersion extends AbstractTripletVersion
 		else
 			stringForm = stringForm + '-' + qualifier;
 		return new TripletVersion(getType(), getMajor(), getMinor(), getMicro(), qualifier, stringForm);
+	}
+
+	public boolean hasMinor()
+	{
+		return TripletVersionType.hasMinor(m_stringForm);
+	}
+
+	public boolean hasMicro()
+	{
+		return TripletVersionType.hasMicro(m_stringForm);
 	}
 
 	@Override

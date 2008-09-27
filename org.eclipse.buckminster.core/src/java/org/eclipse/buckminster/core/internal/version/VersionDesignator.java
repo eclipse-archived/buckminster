@@ -123,7 +123,7 @@ public abstract class VersionDesignator implements IVersionDesignator
 		}
 	}
 
-	private static IVersionDesignator create(IVersion low, boolean includeLow, IVersion high,
+	public static IVersionDesignator create(IVersion low, boolean includeLow, IVersion high,
 		boolean includeHigh)
 	{
 		if(includeLow)

@@ -45,6 +45,26 @@ public class TripletVersionType extends AbstractVersionType
 		return other instanceof TripletVersionType;
 	}
 
+	public static boolean hasMinor(String stringForm)
+	{
+		return hasGroup(stringForm, 2);
+	}
+
+	public static boolean hasMicro(String stringForm)
+	{
+		return hasGroup(stringForm, 3);
+	}
+
+	private static boolean hasGroup(String stringForm, int group)
+	{
+		if(stringForm == null)
+			return false;
+		Matcher m = s_TripletVersionPattern.matcher(stringForm);
+		if(!m.find())
+			return false;
+		return m.group(group) != null;
+	}
+
 	Pattern getVersionPattern()
 	{
 		return s_TripletVersionPattern;
