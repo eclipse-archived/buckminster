@@ -133,74 +133,91 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
+	static boolean isSnapshotVersion(IVersion version)
+	{
+		return version != null && version.toString().endsWith("SNAPSHOT");
+	}
+
+	static IVersion stripFromSnapshot(IVersion version) throws CoreException
+	{
+		if(version == null)
+			return null;
+
+		String vstr = version.toString();
+		if(vstr.endsWith("SNAPSHOT"))
+		{
+			int stripLen = 8;
+			if(vstr.charAt(vstr.length() - (stripLen + 1)) == '-')
+				stripLen++;
+			vstr = vstr.substring(0, vstr.length() - stripLen);
+		}
+		return version.getType().fromString(vstr);
+	}
+
 	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
 	{
 		IVersion version = createVersion(versionStr);
 		if(version == null)
 			return null;
 
-		if(version instanceof TripletVersion)
+		return VersionFactory.createExplicitDesignator(version);
+	}
+
+	static IVersionDesignator convertDesignator(IVersionDesignator designator) throws CoreException
+	{
+		if(designator == null)
+			return null;
+
+		IVersion low = designator.getVersion();
+		if(isSnapshotVersion(low))
 		{
-			TripletVersion tripletVersion = (TripletVersion)version;
-			String qual = tripletVersion.getQualifier();
-			if(qual != null && qual.endsWith("SNAPSHOT"))
+			low = stripFromSnapshot(low);
+			if(designator.isExplicit())
 			{
-				// Strip of SNAPSHOT or -SNAPSHOT
-				//
-				if(qual.length() == 8)
-					qual = null;
+				if(low instanceof TripletVersion)
+				{
+					// [1.2.4.SNAPSHOT,1.0.0.SNAPSHOT] -> [1.2.4,1.2.5)
+					//
+					// Create a version range that is limited by the next minor
+					// number (non inclusive), i.e. [1.2.4,1.2.5). This will allow
+					// 1.2.4 with any qualifier but not 1.2.5
+					//
+					TripletVersion tripletVersion = (TripletVersion)low;
+					StringBuilder bld = new StringBuilder();
+					bld.append('[');
+					tripletVersion.toString(bld);
+					bld.append(',');
+					int major = tripletVersion.getMajor();
+					if(tripletVersion.hasMinor())
+					{
+						bld.append(major);
+						bld.append('.');
+						int minor = tripletVersion.getMinor();
+						if(tripletVersion.hasMicro())
+						{
+							bld.append(minor);
+							bld.append('.');
+							bld.append(tripletVersion.getMicro() + 1);
+						}
+						else
+							bld.append(minor + 1);
+					}
+					else
+						bld.append(major + 1);
+					bld.append(')');
+					designator = VersionFactory.createDesignator(low.getType(), bld.toString());
+				}
 				else
 				{
-					qual = qual.substring(0, qual.length() - 8);
-					if(qual.endsWith("-"))
-						qual = qual.substring(0, qual.length() - 1);
-					if(qual.length() == 0)
-						qual = null;
+					// We cannot use any range semantics here so we have to leave the range open
+					// in order to allow the snapshots.
+					//
+					designator = VersionFactory.createGTEqualDesignator(low);
 				}
-				tripletVersion = (TripletVersion)tripletVersion.replaceQualifier(qual);
+				return designator;
 			}
-
-			// Create a version range that is limited by the next minor
-			// number (non inclusive), i.e. [1.2.4,1.2.5). This will allow
-			// 1.2.4 with any qualifier but not 1.2.5
-			//
-			StringBuilder bld = new StringBuilder();
-			bld.append('[');
-			tripletVersion.toString(bld);
-			bld.append(',');
-			int major = tripletVersion.getMajor();
-			if(tripletVersion.hasMinor())
-			{
-				bld.append(major);
-				bld.append('.');
-				int minor = tripletVersion.getMinor();
-				if(tripletVersion.hasMicro())
-				{
-					bld.append(minor);
-					bld.append('.');
-					bld.append(tripletVersion.getMicro() + 1);
-				}
-				else
-					bld.append(minor + 1);
-			}
-			else
-				bld.append(major + 1);
-			bld.append(')');
-			return VersionFactory.createDesignator(version.getType(), bld.toString());
 		}
-
-		String vstr = version.toString();
-		if(vstr.endsWith("SNAPSHOT"))
-		{
-			vstr = vstr.substring(0, vstr.length() - 8);
-			if(vstr.endsWith("-"))
-				vstr = vstr.substring(0, vstr.length() -1);
-		}
-
-		// We cannot use any range semantics here so we have to leave the range open
-		// in order to allow the snapshots.
-		//
-		return VersionFactory.createGTEqualDesignator(version.getType().fromString(vstr));
+		return VersionFactory.createRangeDesignator(low, designator.includesLowerBound(), stripFromSnapshot(designator.getToVersion()), designator.includesUpperBound());
 	}
 
 	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException

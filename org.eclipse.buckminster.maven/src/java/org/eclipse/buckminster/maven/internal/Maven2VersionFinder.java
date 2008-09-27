@@ -77,11 +77,11 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		readerType.appendEntryFolder(pbld, getMapEntry());
 		String rootPath = pbld.toString();
 
+		IVersionDesignator versionDesignator = MavenComponentType.convertDesignator(query.getVersionDesignator());
 		monitor.beginTask(null, 2000);
 		try
 		{
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			IVersionDesignator versionDesignator = query.getVersionDesignator();
 			for(String versionStr : getVersions(readerType, docBld, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
 			{
 				String v = versionStr;
