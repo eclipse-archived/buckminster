@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Generic Plug-in
+Bundle-Name: Buckminster Generic Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.generic
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -11,3 +11,4 @@ Export-Package: org.eclipse.buckminster.generic.model,
  org.eclipse.buckminster.generic.plugin,
  org.eclipse.buckminster.generic.properties,
  org.eclipse.buckminster.generic.utils
+Bundle-Vendor: Eclipse.org

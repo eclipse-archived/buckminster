@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Generic Ui Plug-in
+Bundle-Name: Buckminster Generic Ui Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.generic.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -17,3 +17,4 @@ Export-Package: org.eclipse.buckminster.generic.ui,
  org.eclipse.buckminster.generic.ui.providers,
  org.eclipse.buckminster.generic.ui.utils
 Bundle-Activator: org.eclipse.buckminster.generic.ui.GenericUiPlugin
+Bundle-Vendor: Eclipse.org
