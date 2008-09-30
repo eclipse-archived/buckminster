@@ -1046,6 +1046,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_distroVariants != null;
 	}
 
+	boolean isDistroRetrieved()
+	{
+		return m_distro != null;
+	}
+
 	boolean isMaterializerInitialized()
 	{
 		return m_cachedBOMURL != null;

@@ -611,11 +611,11 @@ public class SelectDistroPage extends InstallWizardPage
 	@Override
 	public boolean isPageComplete()
 	{
-		if(getInstallWizard().getDistroVariants() == null || getInstallWizard().getDistroVariants().size() == 0)
-			return false;
-		
 		if(isCurrentPage())
 		{
+			if(getInstallWizard().getDistroVariants() == null || getInstallWizard().getDistroVariants().size() == 0)
+				return false;
+			
 			TableItem[] selection = m_variantsTableViewer.getTable().getSelection();
 
 			if(selection != null && selection.length == 1)

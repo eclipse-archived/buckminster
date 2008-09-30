@@ -172,10 +172,10 @@ public class StartPage extends InstallWizardPage
 				m_nextPage = getInstallWizard().getFolderRestrictionPage();
 			else
 			{
-				if(!getInstallWizard().isStackInfoRetrieved())
+				if(!getInstallWizard().isStackInfoRetrieved() && !getInstallWizard().isDistroRetrieved())
 					getInstallWizard().retrieveStackInfo();
 				
-				if(getInstallWizard().getDistro() != null)
+				if(getInstallWizard().isDistroRetrieved())
 					m_nextPage = getInstallWizard().getDownloadPage();
 				else
 					m_nextPage = getInstallWizard().getSelectDistroPage();
