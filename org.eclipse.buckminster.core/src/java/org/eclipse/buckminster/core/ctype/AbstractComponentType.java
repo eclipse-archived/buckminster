@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -175,6 +176,11 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 	public Pattern getSubstituteNamePattern()
 	{
 		return m_substituteNamePattern;
+	}
+
+	public IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator)
+	{
+		return designator;
 	}
 
 	public boolean hasAllRequiredMetaFiles(IPath path)

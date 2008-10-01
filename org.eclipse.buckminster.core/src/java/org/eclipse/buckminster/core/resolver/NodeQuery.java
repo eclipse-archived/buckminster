@@ -16,18 +16,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
@@ -46,6 +49,8 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	private final Map<String, String> m_properties;
 
 	private final QualifiedDependency m_qDep;
+
+	private transient IComponentType m_componentType;
 
 	public NodeQuery(RMContext context, ComponentRequest request, Set<String> attributes)
 	{
@@ -287,6 +292,22 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return m_qDep.getRequest();
 	}
 
+	public synchronized IComponentType getComponentType()
+	{
+		if(m_componentType == null)
+		{
+			try
+			{
+				m_componentType = getComponentRequest().getComponentType();
+			}
+			catch(CoreException e)
+			{
+				throw new IllegalStateException("Unable to obtain component type", e);
+			}
+		}
+		return m_componentType;
+	}
+
 	public RMContext getContext()
 	{
 		return m_context;
@@ -383,7 +404,6 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return getComponentQuery().getTimestamp(getComponentRequest());
 	}
 
-
 	/**
 	 * Returns the, possibly overriden, version designator of the component
 	 * request.
@@ -396,7 +416,22 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		IVersionDesignator vds = getComponentQuery().getVersionOverride(request);
 		if(vds == null)
 			vds = request.getVersionDesignator();
-		return vds;
+		if(vds == null)
+			return vds;
+		
+		IComponentType ctype = getComponentType();
+		if(ctype == null && IVersionType.TRIPLET.equals(vds.getVersion().getType().getId()))
+		{
+			try
+			{
+				ctype = CorePlugin.getDefault().getComponentType("maven");
+			}
+			catch(CoreException e)
+			{
+				return vds;
+			}
+		}
+		return ctype.getTypeSpecificDesignator(vds);
 	}
 
 	/**

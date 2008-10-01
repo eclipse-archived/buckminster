@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -123,6 +124,14 @@ public interface IComponentType extends IBuckminsterExtension
 	 * @return The suggested workspace relative location
 	 */
 	IPath getRelativeLocation();
+
+	/**
+	 * Returns a designator that has been converted to suit the specific component type. Some
+	 * component types put special meaning to the qualifier of a version that affects the
+	 * semantics of the designator (a typical example is Mavens use of the keyword SNAPSHOT).
+	 * @return The converted designator
+	 */
+	IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator);
 
 	/**
 	 * A regular expression used for substitution when the pattern returned by {@link #getDesiredNamePattern()}

@@ -56,7 +56,6 @@ public class VersionFactory
 	}
 
 	public static IVersionDesignator createRangeDesignator(IVersion low, boolean includeLow, IVersion high, boolean includeHigh)
-			throws VersionSyntaxException
 	{
 		return VersionDesignator.create(low, includeLow, high, includeHigh);
 	}
