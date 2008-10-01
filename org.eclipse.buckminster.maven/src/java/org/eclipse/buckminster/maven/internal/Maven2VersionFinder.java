@@ -77,7 +77,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		readerType.appendEntryFolder(pbld, getMapEntry());
 		String rootPath = pbld.toString();
 
-		IVersionDesignator versionDesignator = MavenComponentType.convertDesignator(query.getVersionDesignator());
+		IVersionDesignator versionDesignator = query.getVersionDesignator();
 		monitor.beginTask(null, 2000);
 		try
 		{
@@ -99,9 +99,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				pbld.append('-');
 				pbld.append(version);
 				pbld.append(".jar");
-				VersionMatch versionMatch = new VersionMatch(version, null, -1, null, pbld.toString());
-				if(query.isMatch(versionMatch))
-					versions.add(versionMatch);
+				versions.add(new VersionMatch(version, null, -1, null, pbld.toString()));
 			}
 			return versions;
 		}

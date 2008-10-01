@@ -161,7 +161,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				}
 			}
 		}
-		logDecision(ResolverDecisionType.MATCH_REJECTED, rejected, msgFormat, selected);
+		logDecision(ResolverDecisionType.MATCH_REJECTED, rejected, String.format(msgFormat, selected));
 		return selected;
 	}
 

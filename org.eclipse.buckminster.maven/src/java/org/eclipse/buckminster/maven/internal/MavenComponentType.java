@@ -138,7 +138,7 @@ public class MavenComponentType extends AbstractComponentType
 		return version != null && version.toString().endsWith("SNAPSHOT");
 	}
 
-	static IVersion stripFromSnapshot(IVersion version) throws CoreException
+	static IVersion stripFromSnapshot(IVersion version)
 	{
 		if(version == null)
 			return null;
@@ -151,7 +151,14 @@ public class MavenComponentType extends AbstractComponentType
 				stripLen++;
 			vstr = vstr.substring(0, vstr.length() - stripLen);
 		}
-		return version.getType().fromString(vstr);
+		try
+		{
+			return version.getType().fromString(vstr);
+		}
+		catch(VersionSyntaxException e)
+		{
+			return version;
+		}
 	}
 
 	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
@@ -163,61 +170,162 @@ public class MavenComponentType extends AbstractComponentType
 		return VersionFactory.createExplicitDesignator(version);
 	}
 
-	static IVersionDesignator convertDesignator(IVersionDesignator designator) throws CoreException
+	@Override
+	public IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator)
 	{
 		if(designator == null)
 			return null;
 
 		IVersion low = designator.getVersion();
-		if(isSnapshotVersion(low))
+		IVersion high = designator.getToVersion();
+		boolean lowIsSnapshot = isSnapshotVersion(low);
+		boolean highIsSnapshot = (high != null && isSnapshotVersion(high));
+		if(!(lowIsSnapshot || highIsSnapshot))
+			return designator;
+
+		low = stripFromSnapshot(low);
+		if(high != null)
+			high = stripFromSnapshot(high);
+
+		if(!(low instanceof TripletVersion))
+			//
+			// We cannot apply advanced semantics here so we just
+			// strip the SNAPSHOT part and hope for the best.
+			//
+			return VersionFactory.createRangeDesignator(low, designator.includesLowerBound(), high, designator.includesUpperBound());
+
+		StringBuilder bld = new StringBuilder();
+		TripletVersion lowTriplet = (TripletVersion)low;
+		if(lowIsSnapshot)
 		{
-			low = stripFromSnapshot(low);
-			if(designator.isExplicit())
+			if(high == null || designator.includesLowerBound())
 			{
-				if(low instanceof TripletVersion)
+				// [1.2.4-SNAPSHOT -> (1.2.3
+				// >=1.2.4-SNAPSHOT -> (1.2.3
+				//
+				// Rationale:
+				// In the triplet world the release 1.2.4 is higher then any 1.2.4.SNAPSHOT
+				// so we need something that is lower then 1.2.4 but higher then 1.2.3. This
+				// means "starting from 1.2.3 not including 1.2.3", i.e. (1.2.3. We then want
+				// to include everything up to the release of 1.2.4
+				//
+				// The >= calls for a very high limit. We get to that later.
+				//
+				bld.append('(');
+				int major = lowTriplet.getMajor();
+				if(lowTriplet.hasMinor())
 				{
-					// [1.2.4.SNAPSHOT,1.0.0.SNAPSHOT] -> [1.2.4,1.2.5)
-					//
-					// Create a version range that is limited by the next minor
-					// number (non inclusive), i.e. [1.2.4,1.2.5). This will allow
-					// 1.2.4 with any qualifier but not 1.2.5
-					//
-					TripletVersion tripletVersion = (TripletVersion)low;
-					StringBuilder bld = new StringBuilder();
-					bld.append('[');
-					tripletVersion.toString(bld);
-					bld.append(',');
-					int major = tripletVersion.getMajor();
-					if(tripletVersion.hasMinor())
+					bld.append(major);
+					bld.append('.');
+					int minor = lowTriplet.getMinor();
+					if(lowTriplet.hasMicro())
 					{
-						bld.append(major);
+						bld.append(minor);
 						bld.append('.');
-						int minor = tripletVersion.getMinor();
-						if(tripletVersion.hasMicro())
-						{
-							bld.append(minor);
-							bld.append('.');
-							bld.append(tripletVersion.getMicro() + 1);
-						}
-						else
-							bld.append(minor + 1);
+						bld.append(lowTriplet.getMicro() - 1);
 					}
 					else
-						bld.append(major + 1);
-					bld.append(')');
-					designator = VersionFactory.createDesignator(low.getType(), bld.toString());
+						bld.append(minor - 1);
+				}
+				else
+					bld.append(major - 1);
+			}
+			else
+			{
+				// (1.2.4.SNAPSHOT -> [1.2.4
+				//
+				// Rationale:
+				// 1.2.4.SNAPSHOT is lower then the 1.2.4 release. We let (1.2.4.SNAPSHOT
+				// mean "starting from 1.2.4.SNAPSHOT but not including the SNAPSHOT which
+				// in essence, is the same as starting from, and including, the 1.2.4 release
+				//
+				bld.append('[');
+				bld.append(lowTriplet);
+			}
+		}
+		else
+		{
+			// The best we can do here is to always include the low version. We don't
+			// have any semantics to apply
+			//
+			bld.append('[');
+			bld.append(lowTriplet);
+		}
+
+		bld.append(',');
+		if(designator.isExplicit())
+		{
+			low.toString(bld);
+			bld.append(']');
+		}
+		else
+		{
+			if(high == null)
+			{
+				// Greater or equal. We need a ridiculously high version...
+				//
+				bld.append(Integer.MAX_VALUE);
+				bld.append(']');
+			}
+			else
+			{
+				if(designator.includesUpperBound())
+				{
+					// 1.2.3.SNAPSHOT] -> 1.2.3]
+					// 
+					// The upper bound is included and a SNAPSHOT
+					// can resolve to a release.
+					//
+					bld.append(high);
+					bld.append(']');
 				}
 				else
 				{
-					// We cannot use any range semantics here so we have to leave the range open
-					// in order to allow the snapshots.
-					//
-					designator = VersionFactory.createGTEqualDesignator(low);
+					if(highIsSnapshot)
+					{
+						// ,1.2.3.SNAPSHOT) -> 1.2.2]
+						//
+						// We cannot use 1.2.3) here since that would
+						// allow 1.2.3.xxx to be included since it's
+						// lower. Instead, we include all up to the
+						// 1.2.2 release
+						//
+						TripletVersion highTriplet = (TripletVersion)high;
+						int major = highTriplet.getMajor();
+						if(highTriplet.hasMinor())
+						{
+							bld.append(major);
+							bld.append('.');
+							int minor = highTriplet.getMinor();
+							if(highTriplet.hasMicro())
+							{
+								bld.append(minor);
+								bld.append('.');
+								bld.append(highTriplet.getMicro() - 1);
+							}
+							else
+								bld.append(minor - 1);
+						}
+						else
+							bld.append(major - 1);
+						bld.append(']');
+					}
+					else
+					{
+						bld.append(high);
+						bld.append(')');
+					}
 				}
-				return designator;
 			}
 		}
-		return VersionFactory.createRangeDesignator(low, designator.includesLowerBound(), stripFromSnapshot(designator.getToVersion()), designator.includesUpperBound());
+		try
+		{
+			return VersionFactory.createDesignator(low.getType(), bld.toString());
+		}
+		catch(VersionSyntaxException e)
+		{
+			return designator;
+		}
 	}
 
 	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
