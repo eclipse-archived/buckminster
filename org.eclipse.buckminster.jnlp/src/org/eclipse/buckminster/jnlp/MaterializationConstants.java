@@ -106,6 +106,8 @@ public interface MaterializationConstants
 
 	public static final String PROP_LOGIN_KEY = "loginKey";
 	
+	public static final String PROP_DRAFT = "draft";
+	
 	public static final String PROP_DISTRO_ID = "distroId";
 	
 	public static final String PROP_CSPEC_ID = "cspecId";

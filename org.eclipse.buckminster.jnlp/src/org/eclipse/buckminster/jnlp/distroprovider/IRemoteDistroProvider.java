@@ -117,7 +117,7 @@ public interface IRemoteDistroProvider
 	 */
 	IRemoteDistroProvider createDuplicate(boolean login) throws Exception;
 	
-	List<DistroVariant> getDistroVariants(Long stackId) throws Exception;
+	List<DistroVariant> getDistroVariants(boolean draft, Long stackId) throws Exception;
 	
-	Distro getDistro(Long distroId) throws Exception;
+	Distro getDistro(boolean draft, Long distroId) throws Exception;
 }

@@ -43,6 +43,7 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_FOLDER_
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DRAFT;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DISTRO_ID;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_ID;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_NAME;
@@ -199,6 +200,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_loginKeyUserName;
 
+	private boolean m_draft;
+	
 	private Long m_distroId;
 
 	private Distro m_distro;
@@ -803,6 +806,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_builder;
 	}
 
+	boolean isDraft()
+	{
+		return m_draft;
+	}
+	
 	Long getDistroId()
 	{
 		return m_distroId;
@@ -899,7 +907,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					
 					try
 					{
-						m_distroVariants = m_distroProvider.getDistroVariants(m_cspecId);
+						m_distroVariants = m_distroProvider.getDistroVariants(m_draft, m_cspecId);
 					}
 					catch(Exception e)
 					{
@@ -946,7 +954,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						
 						try
 						{
-							m_distro = m_distroProvider.getDistro(distroId);
+							m_distro = m_distroProvider.getDistro(m_draft, distroId);
 						}
 						catch(Exception e)
 						{
@@ -1428,6 +1436,15 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_folderPath = properties.get(PROP_FOLDER_PATH);
 
+		tmp = properties.get(PROP_DRAFT);
+		if(tmp == null)
+		{
+			Throwable e = new MissingPropertyException(PROP_DRAFT);
+			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
+		}
+		m_draft = VALUE_TRUE.equalsIgnoreCase(tmp);
+		
 		tmp = properties.get(PROP_DISTRO_ID);
 		if(tmp != null && tmp.length() > 0)
 		{

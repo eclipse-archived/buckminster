@@ -431,7 +431,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			login(m_lastLoginUserName, m_lastLoginPassword);
 	}
 
-	public List<DistroVariant> getDistroVariants(final Long stackId) throws Exception
+	public List<DistroVariant> getDistroVariants(final boolean draft, final Long stackId) throws Exception
 	{
 		MethodWrapper<List<DistroVariant>> method = new MethodWrapper<List<DistroVariant>>()
 		{
@@ -446,14 +446,14 @@ public class DistroProvider implements IRemoteDistroProvider
 				properties.put(DistroVariant.TARGET_WS, TargetPlatform.getInstance().getWS());
 				properties.put(DistroVariant.TARGET_NL, TargetPlatform.getInstance().getNL());
 
-				return m_remoteDistroService.getDistroVariants(stackId, properties);
+				return m_remoteDistroService.getDistroVariants(draft, stackId, properties);
 			}
 		};
 
 		return method.run();
 	}
 
-	public Distro getDistro(final Long distroId) throws Exception
+	public Distro getDistro(final boolean draft, final Long distroId) throws Exception
 	{
 		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
 		{
@@ -461,7 +461,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			@Override
 			public Distro process() throws Exception
 			{
-				DistroContent distroContent = m_remoteDistroService.getDistro(distroId);
+				DistroContent distroContent = m_remoteDistroService.getDistro(draft, distroId);
 				
 				if(distroContent == null || distroContent.getBomContent() == null || distroContent.getMspecContent() == null)
 					return null;
