@@ -50,10 +50,6 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_N
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_SDK_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_SDK_VERSION;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
@@ -82,9 +78,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.wizard.ILoginHandler;
 import org.eclipse.buckminster.jnlp.wizard.IUnresolvedNodeHandler;
@@ -102,7 +95,6 @@ import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
@@ -217,14 +209,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_cspecVersionString;
 
 	private String m_cspecVersionType;
-
-	private String m_eclipseSDKURL;
-
-	private IVersion m_eclipseSDKVersion;
-
-	private String m_eclipseDistroTools34URL;
-
-	private String m_eclipseDistroTools33URL;
 
 	private String m_eclipseDistroTools34UpdateSiteURL;
 
@@ -686,26 +670,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public String getCSpecVersionType()
 	{
 		return m_cspecVersionType;
-	}
-
-	public String getEclipseSDKURL()
-	{
-		return m_eclipseSDKURL;
-	}
-
-	public IVersion getEclipseSDKVersion()
-	{
-		return m_eclipseSDKVersion;
-	}
-
-	public String getEclipseDistroTools34URL()
-	{
-		return m_eclipseDistroTools34URL;
-	}
-
-	public String getEclipseDistroTools33URL()
-	{
-		return m_eclipseDistroTools33URL;
 	}
 
 	public String getEclipseDistroTools34UpdateSiteURL()
@@ -1507,22 +1471,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
-
-		m_eclipseSDKURL = properties.get(PROP_ECLIPSE_SDK_URL);
-		tmp = properties.get(PROP_ECLIPSE_SDK_VERSION);
-		try
-		{
-			m_eclipseSDKVersion = (tmp == null
-					? null
-					: VersionFactory.createVersion(IVersionType.OSGI, tmp));
-		}
-		catch(CoreException e)
-		{
-			m_eclipseSDKVersion = null;
-		}
-
-		m_eclipseDistroTools34URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_URL);
-		m_eclipseDistroTools33URL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_URL);
 
 		m_eclipseDistroTools34UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL);
 		m_eclipseDistroTools33UpdateSiteURL = properties.get(PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL);

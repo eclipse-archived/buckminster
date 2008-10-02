@@ -120,14 +120,6 @@ public interface MaterializationConstants
 	
 	public static final String PROP_CSPEC_VERSION_TYPE = "cspecVersionType";
 
-	public static final String PROP_ECLIPSE_SDK_URL = "eclipseSDKLatestURL";
-
-	public static final String PROP_ECLIPSE_SDK_VERSION = "eclipseSDKLatestVersion";
-
-	public static final String PROP_ECLIPSE_DISTRO_TOOLS_34_URL = "eclipseDistroTools3.4URL";
-
-	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_URL = "eclipseDistroTools3.3URL";
-
 	public static final String PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL = "eclipseDistroTools3.4UpdateSiteURL";
 
 	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL = "eclipseDistroTools3.3UpdateSiteURL";
