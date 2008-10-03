@@ -453,7 +453,7 @@ public class DistroProvider implements IRemoteDistroProvider
 		return method.run();
 	}
 
-	public Distro getDistro(final boolean draft, final Long distroId) throws Exception
+	public Distro getDistro(final boolean draft, final Long cspecId, final Long distroId) throws Exception
 	{
 		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
 		{
@@ -461,7 +461,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			@Override
 			public Distro process() throws Exception
 			{
-				DistroContent distroContent = m_remoteDistroService.getDistro(draft, distroId);
+				DistroContent distroContent = m_remoteDistroService.getDistro(draft, cspecId, distroId);
 				
 				if(distroContent == null || distroContent.getBomContent() == null || distroContent.getMspecContent() == null)
 					return null;

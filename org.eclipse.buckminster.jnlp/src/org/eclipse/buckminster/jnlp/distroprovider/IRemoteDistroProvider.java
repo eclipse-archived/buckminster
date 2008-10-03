@@ -119,5 +119,5 @@ public interface IRemoteDistroProvider
 	
 	List<DistroVariant> getDistroVariants(boolean draft, Long stackId) throws Exception;
 	
-	Distro getDistro(boolean draft, Long distroId) throws Exception;
+	Distro getDistro(boolean draft, Long cspecId, Long distroId) throws Exception;
 }

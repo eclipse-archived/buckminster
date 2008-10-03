@@ -918,7 +918,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						
 						try
 						{
-							m_distro = m_distroProvider.getDistro(m_draft, distroId);
+							m_distro = m_distroProvider.getDistro(m_draft, m_cspecId, distroId);
 						}
 						catch(Exception e)
 						{

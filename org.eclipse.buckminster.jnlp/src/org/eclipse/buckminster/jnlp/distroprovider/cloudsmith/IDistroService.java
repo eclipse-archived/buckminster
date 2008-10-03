@@ -21,5 +21,5 @@ public interface IDistroService
 {
 	List<DistroVariant> getDistroVariants(boolean draft, Long stackId, Map<String, String> platformProperties);
 	
-	DistroContent getDistro(boolean draft, Long distroId);
+	DistroContent getDistro(boolean draft, Long cspecId, Long distroId);
 }
