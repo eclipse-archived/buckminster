@@ -8,10 +8,8 @@
 
 package org.eclipse.buckminster.jnlp.distroprovider;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.buckminster.core.helpers.SmartArrayList;
 
 /**
  * @author Karel Brezina
@@ -79,7 +77,7 @@ public class DistroVariant
 
 	public String getPlatformString()
 	{
-		List<String> platform = new SmartArrayList<String>();
+		List<String> platform = new ArrayList<String>();
 		
 		platform.add(m_arch);
 		platform.add(m_os);
@@ -87,12 +85,23 @@ public class DistroVariant
 		platform.add(m_release);
 		platform.add(m_nl);
 		
-		Iterator<String> iterator = platform.iterator();
-		while(iterator.hasNext())
-			if(iterator.next() == null)
-				iterator.remove();
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
 		
-		return platform.toString();
+		for(String item: platform)
+		{
+			if(item == null)
+				continue;
+			
+			if(first)
+				first = false;
+			else
+				sb.append(',');
+			
+			sb.append(item);
+		}
+		
+		return sb.toString();
 	}
 	
 	public String getRelease()
