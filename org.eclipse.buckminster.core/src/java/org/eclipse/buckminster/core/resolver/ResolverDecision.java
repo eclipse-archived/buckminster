@@ -33,6 +33,11 @@ public class ResolverDecision
 		return m_request;
 	}
 
+	public ResolverDecisionType getType()
+	{
+		return m_type;
+	}
+
 	@Override
 	public String toString()
 	{
