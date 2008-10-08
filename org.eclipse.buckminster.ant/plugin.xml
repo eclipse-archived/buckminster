@@ -28,6 +28,10 @@
 			name="buckminster.bind"
 			class="org.eclipse.buckminster.ant.taskdefs.WorkspaceBind" />
 		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.perform"
+			class="org.eclipse.buckminster.ant.taskdefs.Perform" />
+		<antTask
 			class="org.eclipse.buckminster.ant.taskdefs.Copy"
 			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.copy" />
