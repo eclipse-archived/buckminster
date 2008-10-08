@@ -57,7 +57,27 @@ public class Perform extends WorkspaceCommand
 	private boolean m_forced = false;
 
 	private final List<Attribute> m_attributes = new ArrayList<Attribute>();
-	
+
+	public void addAttribute(Attribute attribute)
+	{
+		m_attributes.add(attribute);
+	}
+
+	public void addProperty(String key, String value)
+	{
+		if(m_props == null)
+			m_props = new HashMap<String, String>();
+		m_props.put(key, value);
+	}
+
+	public void addProperties(Map<String,String> properties)
+	{
+		if(m_props == null)
+			m_props = new HashMap<String, String>(properties);
+		else
+			m_props.putAll(properties);
+	}
+
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
@@ -155,9 +175,7 @@ public class Perform extends WorkspaceCommand
 				throw new IllegalArgumentException("Not a key[=value] string : " + v);
 			String key = m.group(1);
 			String value = m.group(2) == null ? "" : m.group(2);
-			if(m_props == null)
-				 m_props = new HashMap<String, String>();
-			m_props.put(key, value);
+			addProperty(key, value);
 		}
 		if(option.is(PROPERTIES_DESCRIPTOR))
 		{
@@ -167,11 +185,7 @@ public class Perform extends WorkspaceCommand
 			{
 				URL propsURL = URLUtils.normalizeToURL(v);
 				input = DownloadManager.read(propsURL);
-				Map<String,String> props = new BMProperties(input);
-				if(m_props == null)
-					m_props = props;
-				else
-					m_props.putAll(props);
+				addProperties(new BMProperties(input));
 			}
 			catch(MalformedURLException e)
 			{
@@ -209,7 +223,7 @@ public class Perform extends WorkspaceCommand
     			throw new UsageException("Attribute names must be in the form <component name>#<attribute name>");
 
     		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
-    		m_attributes.add(cspec.getRequiredAttribute(attribute));
+    		addAttribute(cspec.getRequiredAttribute(attribute));
     	}
 	}
 
