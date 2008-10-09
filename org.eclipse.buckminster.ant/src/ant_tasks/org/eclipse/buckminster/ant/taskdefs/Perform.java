@@ -63,9 +63,9 @@ public class Perform extends Task
 				}
 			}
 		}
-		PerformTask executor = new PerformTask(m_component, m_attribute, inWorkspace, properties);
 		try
 		{
+			PerformTask executor = new PerformTask(m_component, m_attribute, m_inWorkspace, properties);
 			int exitStatus = executor.execute();
 			if(exitStatus != 0)
 				throw new BuildException("perform exited with " + exitStatus);
