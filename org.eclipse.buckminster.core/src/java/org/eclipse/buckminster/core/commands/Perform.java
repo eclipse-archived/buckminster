@@ -82,14 +82,14 @@ public class Perform extends WorkspaceCommand
 		m_props.put(key, value);
 	}
 
-	public boolean isSilent()
+	public boolean isQuiet()
 	{
 		return m_quiet;
 	}
 
-	public void setSilent(boolean silent)
+	public void setQuiet(boolean quiet)
 	{
-		m_quiet = silent;
+		m_quiet = quiet;
 	}
 
     @Override
@@ -185,7 +185,7 @@ public class Perform extends WorkspaceCommand
 		if(markers.length == 0)
 			return 0;
 
-		if(isSilent())
+		if(isQuiet())
 		{
 			for(IMarker problem : markers)
 				if(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR)
