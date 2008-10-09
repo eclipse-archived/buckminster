@@ -254,7 +254,7 @@ public class InvokeAction extends AbstractCSpecAction
 			}
 			try
 			{
-				return pm.perform(m_cspec, this.getName(), props, false, monitor).getStatus();
+				return pm.perform(m_cspec, this.getName(), props, false, false, monitor).getStatus();
 			}
 			catch(Throwable e)
 			{
