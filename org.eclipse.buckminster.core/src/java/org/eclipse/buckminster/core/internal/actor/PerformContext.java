@@ -292,16 +292,14 @@ public class PerformContext implements IActionContext
 		return m_properties;
 	}
 
-	/**
-	 * Returns <code>true</code> if the action is forced. An action that is
-	 * forced is executed regardless of if the product is newer then all
-	 * prerequisites.
-	 *
-	 * @return <code>true</code> if the build is forced.
-	 */
 	public boolean isForced()
 	{
 		return m_globalCtx.isForcedExecution() || m_action.isAlways();
+	}
+
+	public boolean isQuiet()
+	{
+		return m_globalCtx.isQuietExecution();
 	}
 
 	public File makeAbsolute(File file) throws CoreException

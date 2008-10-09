@@ -62,17 +62,17 @@ public class PerformManager implements IPerformManager
 		return INSTANCE;
 	}
 
-	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced,
+	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced, boolean quiet,
 		IProgressMonitor monitor) throws CoreException
 	{
 		return perform(Collections.singletonList(((CSpec)cspec.getAdapter(CSpec.class)).getRequiredAttribute(attributeName)), props,
-			forced, monitor);
+			forced, quiet, monitor);
 	}
 
-	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> userProps, boolean forced,
+	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> userProps, boolean forced, boolean quiet,
 		IProgressMonitor monitor) throws CoreException
 	{
-		GlobalContext globalCtx = new GlobalContext(userProps, forced);
+		GlobalContext globalCtx = new GlobalContext(userProps, forced, quiet);
 		monitor.beginTask(null, 1000);
 		try
 		{

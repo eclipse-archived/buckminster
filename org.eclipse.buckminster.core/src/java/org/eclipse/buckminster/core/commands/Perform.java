@@ -42,32 +42,29 @@ public class Perform extends WorkspaceCommand
 {
 	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", OptionValueType.REQUIRED);
-
-	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings", OptionValueType.REQUIRED);
+	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$");
 
 	static private final OptionDescriptor FORCED_DESCRIPTOR = new OptionDescriptor('F', "force", OptionValueType.NONE);
 
-	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$");
-	
-	private Map<String, String> m_props;
-	
-	private int m_maxWarnings = -1;
+	static private final OptionDescriptor QUIET_DESCRIPTOR = new OptionDescriptor('Q', "quiet", OptionValueType.NONE);
 
+	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings", OptionValueType.REQUIRED);
+
+	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", OptionValueType.REQUIRED);
+	
+	private final List<Attribute> m_attributes = new ArrayList<Attribute>();
+	
 	private boolean m_forced = false;
 
-	private final List<Attribute> m_attributes = new ArrayList<Attribute>();
+	private int m_maxWarnings = -1;
+
+	private Map<String, String> m_props;
+
+	private boolean m_quiet;
 
 	public void addAttribute(Attribute attribute)
 	{
 		m_attributes.add(attribute);
-	}
-
-	public void addProperty(String key, String value)
-	{
-		if(m_props == null)
-			m_props = new HashMap<String, String>();
-		m_props.put(key, value);
 	}
 
 	public void addProperties(Map<String,String> properties)
@@ -78,6 +75,98 @@ public class Perform extends WorkspaceCommand
 			m_props.putAll(properties);
 	}
 
+	public void addProperty(String key, String value)
+	{
+		if(m_props == null)
+			m_props = new HashMap<String, String>();
+		m_props.put(key, value);
+	}
+
+	public boolean isSilent()
+	{
+		return m_quiet;
+	}
+
+	public void setSilent(boolean silent)
+	{
+		m_quiet = silent;
+	}
+
+    @Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
+	{
+		appendHere.add(DEFINE_DESCRIPTOR);
+		appendHere.add(PROPERTIES_DESCRIPTOR);
+		appendHere.add(MAXWARNINGS_DESCRIPTOR);
+		appendHere.add(FORCED_DESCRIPTOR);
+		appendHere.add(QUIET_DESCRIPTOR);
+	}
+
+    @Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(DEFINE_DESCRIPTOR))
+		{
+			String v = option.getValue();
+			Matcher m = DEFINE_PATTERN.matcher(v);
+			if(!m.matches())
+				throw new IllegalArgumentException("Not a key[=value] string : " + v);
+			String key = m.group(1);
+			String value = m.group(2) == null ? "" : m.group(2);
+			addProperty(key, value);
+		}
+		if(option.is(PROPERTIES_DESCRIPTOR))
+		{
+			String v = option.getValue();
+			InputStream input = null;
+			try
+			{
+				URL propsURL = URLUtils.normalizeToURL(v);
+				input = DownloadManager.read(propsURL);
+				addProperties(new BMProperties(input));
+			}
+			catch(MalformedURLException e)
+			{
+				throw new IllegalArgumentException("Invalid URL or Path: " + v);
+			}
+			finally
+			{
+				IOUtils.close(input);
+			}
+		}
+		else if(option.is(MAXWARNINGS_DESCRIPTOR))
+			m_maxWarnings = Integer.parseInt(option.getValue());
+		else if(option.is(FORCED_DESCRIPTOR))
+			m_forced = true;
+		else if(option.is(QUIET_DESCRIPTOR))
+			m_quiet = true;
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+    	for(String s : unparsed)
+    	{
+    		String component = null;
+    		String attribute = null;
+    		int splitIdx = s.lastIndexOf('#');
+    		if(splitIdx > 0)
+    		{
+    			attribute = s.substring(splitIdx + 1).trim();
+    			if(attribute.length() == 0)
+    				attribute = null;
+    			component = s.substring(0, splitIdx).trim();
+    			if(component.length() == 0)
+    				component = null;
+    		}
+    		if(component == null || attribute == null)
+    			throw new UsageException("Attribute names must be in the form <component name>#<attribute name>");
+
+    		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
+    		addAttribute(cspec.getRequiredAttribute(attribute));
+    	}
+	}
+
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
@@ -85,24 +174,28 @@ public class Perform extends WorkspaceCommand
 			throw new UsageException("No attributes specified");
 
 		IPerformManager pm = CorePlugin.getPerformManager();
-		IStatus status = pm.perform(m_attributes, m_props, m_forced, monitor).getStatus();
+		IStatus status = pm.perform(m_attributes, m_props, m_forced, m_quiet, monitor).getStatus();
 
 		if(status.isOK())
 			return 0;
 
-		System.err.print(status.getMessage());
-
 		// Get all problem markers. Sort them by timestamp
 		//
-		Map<Long,IMarker> problems = null;
-		for(IMarker problem : ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
-		{
-			if(problems == null)
-				problems = new TreeMap<Long, IMarker>();
-			problems.put(Long.valueOf(problem.getCreationTime()), problem);
-		}
-		if(problems == null)
+		IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		if(markers.length == 0)
 			return 0;
+
+		if(isSilent())
+		{
+			for(IMarker problem : markers)
+				if(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR)
+					return 1;
+			return 0;
+		}
+
+		Map<Long,IMarker> problems = new TreeMap<Long, IMarker>();
+		for(IMarker problem : markers)
+			problems.put(Long.valueOf(problem.getCreationTime()), problem);
 
 		int warnings = 0;
 		int errors = 0;
@@ -153,78 +246,6 @@ public class Perform extends WorkspaceCommand
 		if(exitValue > 0)
 			System.err.println("Build failed!");
 		return exitValue;
-	}
-
-	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
-		appendHere.add(DEFINE_DESCRIPTOR);
-		appendHere.add(PROPERTIES_DESCRIPTOR);
-		appendHere.add(MAXWARNINGS_DESCRIPTOR);
-		appendHere.add(FORCED_DESCRIPTOR);
-	}
-
-    @Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(DEFINE_DESCRIPTOR))
-		{
-			String v = option.getValue();
-			Matcher m = DEFINE_PATTERN.matcher(v);
-			if(!m.matches())
-				throw new IllegalArgumentException("Not a key[=value] string : " + v);
-			String key = m.group(1);
-			String value = m.group(2) == null ? "" : m.group(2);
-			addProperty(key, value);
-		}
-		if(option.is(PROPERTIES_DESCRIPTOR))
-		{
-			String v = option.getValue();
-			InputStream input = null;
-			try
-			{
-				URL propsURL = URLUtils.normalizeToURL(v);
-				input = DownloadManager.read(propsURL);
-				addProperties(new BMProperties(input));
-			}
-			catch(MalformedURLException e)
-			{
-				throw new IllegalArgumentException("Invalid URL or Path: " + v);
-			}
-			finally
-			{
-				IOUtils.close(input);
-			}
-		}
-		else if(option.is(MAXWARNINGS_DESCRIPTOR))
-			m_maxWarnings = Integer.parseInt(option.getValue());
-		else if(option.is(FORCED_DESCRIPTOR))
-			m_forced = true;
-	}
-
-    @Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-    	for(String s : unparsed)
-    	{
-    		String component = null;
-    		String attribute = null;
-    		int splitIdx = s.lastIndexOf('#');
-    		if(splitIdx > 0)
-    		{
-    			attribute = s.substring(splitIdx + 1).trim();
-    			if(attribute.length() == 0)
-    				attribute = null;
-    			component = s.substring(0, splitIdx).trim();
-    			if(component.length() == 0)
-    				component = null;
-    		}
-    		if(component == null || attribute == null)
-    			throw new UsageException("Attribute names must be in the form <component name>#<attribute name>");
-
-    		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
-    		addAttribute(cspec.getRequiredAttribute(attribute));
-    	}
 	}
 
 	private String formatMarkerMessage(String type, IMarker problem)

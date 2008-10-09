@@ -60,6 +60,21 @@ public interface IActionContext extends IModelCache
 	Map<String, PathGroup[]> getNamedPathGroupArrays() throws CoreException;
 
 	/**
+	 * Returns <code>true</code> if the action is forced. An action that is
+	 * forced is executed regardless of if the product is newer then all
+	 * prerequisites.
+	 *
+	 * @return <code>true</code> if the build is forced.
+	 */
+	boolean isForced();
+
+	/**
+	 * Returns <code>true</code> if the perform was issued with the quite flag set to true.
+	 * @return <code>true</code> if the build is quite.
+	 */
+	boolean isQuiet();
+
+	/**
 	 * Add all named prerequisite path groups 
 	 * @param pgas The map that will receive the groups
 	 * @throws CoreException

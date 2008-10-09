@@ -39,15 +39,17 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	private final Map<String,String> m_globalProps;
 	private final Map<String,String> m_userProps;
 	private final boolean m_forcedExecution;
+	private final boolean m_quietExecution;
 
 	private boolean m_workspaceRefreshPending;
 	private IStatus m_status;
 
-	public GlobalContext(Map<String,String> userProps, boolean forcedExecution)
+	public GlobalContext(Map<String,String> userProps, boolean forcedExecution, boolean quietExecution)
 	{
 		m_globalProps = RMContext.getGlobalPropertyAdditions();
 		m_userProps = userProps == null ? Collections.<String,String>emptyMap() : userProps;
 		m_forcedExecution = forcedExecution;
+		m_quietExecution = quietExecution;
 	}
 
 	public Map<UUID,Object> getInvocationCache()
@@ -127,6 +129,11 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	boolean isForcedExecution()
 	{
 		return m_forcedExecution;
+	}
+
+	boolean isQuietExecution()
+	{
+		return m_quietExecution;
 	}
 
 	boolean isWorkspaceRefreshPending()

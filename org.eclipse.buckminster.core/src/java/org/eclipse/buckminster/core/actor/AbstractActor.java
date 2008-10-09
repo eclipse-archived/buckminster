@@ -114,23 +114,32 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		try
 		{
 			Action action = ctx.getAction();
-			StringBuilder bld = new StringBuilder();
-			bld.append("[start ");
-			action.toString(bld);
-			bld.append(']');
-			if(m_logger.isDebugEnabled())
+			boolean quiet = ctx.isQuiet();
+			boolean isDebug = m_logger.isDebugEnabled();
+			if(isDebug || !quiet)
 			{
-				loggableActionInfo(bld);
-				loggableProps(bld, props);
+				StringBuilder bld = new StringBuilder();
+				bld.append("[start ");
+				action.toString(bld);
+				bld.append(']');
+				if(isDebug)
+				{
+					loggableActionInfo(bld);
+					loggableProps(bld, props);
+				}
+				m_logger.info(bld.toString());
 			}
-			m_logger.info(bld.toString());
+
 			ctx.getGlobalContext().scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP)));
 			IStatus status = internalPerform(ctx, monitor);
-			bld.setLength(0);
-			bld.append("[end ");
-			action.toString(bld);
-			bld.append(']');
-			m_logger.info(bld.toString());
+			if(isDebug || !quiet)
+			{
+				StringBuilder bld = new StringBuilder();
+				bld.append("[end ");
+				action.toString(bld);
+				bld.append(']');
+				m_logger.info(bld.toString());
+			}
 			return status;
 		}
 		catch(Throwable t)

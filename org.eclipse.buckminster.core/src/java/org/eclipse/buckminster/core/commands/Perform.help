@@ -27,6 +27,9 @@ usage: perform
  -F
 --forced
   Force all actions regardless of timestamps
+ -Q
+--quiet
+  Don't print errors and warnings. Just exit with a non zero exit code on failure
 <component>#<action>
   The component name and the action name to perform.
   Can be given multiple times in order to perform many actions in the most

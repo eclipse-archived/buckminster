@@ -507,7 +507,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			{
 				Attribute prebindAttr = cspec.getPrebind();
 				if(prebindAttr != null)
-					performManager.perform(cspec, prebindAttr.getName(), context, false, monitor);
+					performManager.perform(cspec, prebindAttr.getName(), context, false, false, monitor);
 				else
 					MonitorUtils.complete(monitor);
 				return wb;
@@ -517,7 +517,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			IPath productPath = ((TopLevelAttribute)bindEntryPoint).getUniquePath(wb.getComponentLocation(), new ModelCache(props));
 			String bindingName = context.getBindingName(resolution, props);
 
-			performManager.perform(cspec, bindEntryPoint.getName(), props, false, monitor);
+			performManager.perform(cspec, bindEntryPoint.getName(), props, false, false, monitor);
 
 			Resolution newRes = LocalResolver.fromPath(productPath, resolution.getName());
 			newRes = new Resolution(newRes.getCSpec(), newRes.getOPML(), resolution);

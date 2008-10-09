@@ -214,7 +214,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				generatorNode.getAttribute(), new ModelCache());
 			if(generatorAttribute != null)
 			{
-				performManager.perform(Collections.singletonList(generatorAttribute), context, false, monitor);
+				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);
 				return true;
 			}
 		}
