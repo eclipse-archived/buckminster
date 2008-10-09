@@ -31,6 +31,7 @@ import org.eclipse.buckminster.ant.tasks.PerformTask;
 public class Perform extends Task
 {
 	private boolean m_inWorkspace;
+	private boolean m_quiet;
 	private String m_component;
 	private String m_attribute;
 
@@ -65,7 +66,7 @@ public class Perform extends Task
 		}
 		try
 		{
-			PerformTask executor = new PerformTask(m_component, m_attribute, m_inWorkspace, properties);
+			PerformTask executor = new PerformTask(m_component, m_attribute, m_inWorkspace, m_quiet, properties);
 			int exitStatus = executor.execute();
 			if(exitStatus != 0)
 				throw new BuildException("perform exited with " + exitStatus);
@@ -88,6 +89,11 @@ public class Perform extends Task
 	public void setAttribute(String attribute)
 	{
 		m_attribute = attribute;
+	}
+
+	public void setQuiet(boolean flag)
+	{
+		m_quiet = flag;
 	}
 
 	public void setInWorkspace(boolean flag)

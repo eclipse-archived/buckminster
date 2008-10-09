@@ -25,7 +25,7 @@ public class PerformTask
 {
 	private final Perform m_command;
 
-	public PerformTask(String component, String attribute, boolean inWorkspace, Map<String,String> properties) throws CoreException
+	public PerformTask(String component, String attribute, boolean inWorkspace, boolean quiet, Map<String,String> properties) throws CoreException
 	{
 		m_command = new Perform();
 
@@ -33,6 +33,7 @@ public class PerformTask
 		m_command.addAttribute(cspec.getRequiredAttribute(attribute));
 		m_command.addProperties(properties);
 		m_command.setInWorkspace(inWorkspace);
+		m_command.setQuiet(true);
 	}
 
 	public int execute() throws CoreException
