@@ -23,27 +23,23 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class PerformTask
 {
-	private final String m_component;
-	private final String m_attribute;
-	private final Map<String,String> m_properties;
+	private final Perform m_command;
 
-	public PerformTask(String component, String attribute, Map<String,String> properties)
+	public PerformTask(String component, String attribute, boolean inWorkspace, Map<String,String> properties) throws CoreException
 	{
-		m_component = component;
-		m_attribute = attribute;
-		m_properties = properties;
+		m_command = new Perform();
+
+		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
+		m_command.addAttribute(cspec.getRequiredAttribute(attribute));
+		m_command.addProperties(properties);
+		m_command.setInWorkspace(inWorkspace);
 	}
 
 	public int execute() throws CoreException
 	{
-		Perform performCommand = new Perform();
-
-		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(m_component)).getCSpec();
-		performCommand.addAttribute(cspec.getRequiredAttribute(m_attribute));
-		performCommand.addProperties(m_properties);
 		try
 		{
-			return performCommand.run("perform");
+			return m_command.run("perform");
 		}
 		catch(Exception e)
 		{

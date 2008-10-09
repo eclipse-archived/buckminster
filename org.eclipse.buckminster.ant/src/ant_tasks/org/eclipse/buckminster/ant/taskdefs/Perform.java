@@ -30,6 +30,7 @@ import org.eclipse.buckminster.ant.tasks.PerformTask;
  */
 public class Perform extends Task
 {
+	private boolean m_inWorkspace;
 	private String m_component;
 	private String m_attribute;
 
@@ -62,7 +63,7 @@ public class Perform extends Task
 				}
 			}
 		}
-		PerformTask executor = new PerformTask(m_component, m_attribute, properties);
+		PerformTask executor = new PerformTask(m_component, m_attribute, inWorkspace, properties);
 		try
 		{
 			int exitStatus = executor.execute();
@@ -87,6 +88,11 @@ public class Perform extends Task
 	public void setAttribute(String attribute)
 	{
 		m_attribute = attribute;
+	}
+
+	public void setInWorkspace(boolean flag)
+	{
+		m_inWorkspace = flag;
 	}
 
 	public void setComponent(String component)
