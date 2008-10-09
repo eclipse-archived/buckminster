@@ -37,6 +37,8 @@ import org.eclipse.core.runtime.jobs.Job;
 @SuppressWarnings("restriction")
 public abstract class WorkspaceCommand extends AbstractCommand
 {
+	private boolean m_inWorkspace = false;
+
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception
 	{
@@ -51,81 +53,88 @@ public abstract class WorkspaceCommand extends AbstractCommand
 
 		try
 		{
-			initWorkspace(MonitorUtils.subMonitor(monitor, 50));
+			if(!isInWorkspace())
+				initWorkspace(MonitorUtils.subMonitor(monitor, 50));
+
 			jobBlocker.addClassBlock(DelayedSnapshotJob.class);
 			return internalRun(MonitorUtils.subMonitor(monitor, 900));
 		}
 		finally
 		{
-			final Logger logger = CorePlugin.getLogger();
-			logger.debug("Doing full workspace refresh");
-			try
+			if(isInWorkspace())
+				jobBlocker.release();
+			else
 			{
-				ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
-			}
-			catch(Throwable e)
-			{
-				Buckminster.getLogger().error("Error while refreshing workspace: " + e.getMessage(), e);
-			}
-
-			// Suspend the job manager temporarily and wait for all jobs to drain
-			//
-			final IJobManager jobManager = Job.getJobManager();
-			jobManager.suspend();
-
-			// Cancel jobs that are known to run indefinitely
-			//
-			WorkspaceBindingInstallJob.stop();
-			for(Job job : jobManager.find(null))
-			{
-				if(job instanceof StringPoolJob)
-					job.cancel();
-			}
-
-			// We wait for current jobs to end but we use a timeout since there might be jobs
-			// that run forever.
-			//
-			Thread joinWait = new Thread()
-			{
-				@Override
-				public void run()
+				final Logger logger = CorePlugin.getLogger();
+				logger.debug("Doing full workspace refresh");
+				try
 				{
-					try
+					ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
+				}
+				catch(Throwable e)
+				{
+					Buckminster.getLogger().error("Error while refreshing workspace: " + e.getMessage(), e);
+				}
+	
+				// Suspend the job manager temporarily and wait for all jobs to drain
+				//
+				final IJobManager jobManager = Job.getJobManager();
+				jobManager.suspend();
+	
+				// Cancel jobs that are known to run indefinitely
+				//
+				WorkspaceBindingInstallJob.stop();
+				for(Job job : jobManager.find(null))
+				{
+					if(job instanceof StringPoolJob)
+						job.cancel();
+				}
+	
+				// We wait for current jobs to end but we use a timeout since there might be jobs
+				// that run forever.
+				//
+				Thread joinWait = new Thread()
+				{
+					@Override
+					public void run()
 					{
-						jobManager.join(null, new NullProgressMonitor());
-					}
-					catch(InterruptedException e)
-					{
-						for(Job job : jobManager.find(null))
+						try
 						{
-							int state = job.getState();
-							if(state == Job.RUNNING)
-								logger.debug("  JOB: %s is still running", job.toString());
+							jobManager.join(null, new NullProgressMonitor());
+						}
+						catch(InterruptedException e)
+						{
+							for(Job job : jobManager.find(null))
+							{
+								int state = job.getState();
+								if(state == Job.RUNNING)
+									logger.debug("  JOB: %s is still running", job.toString());
+							}
 						}
 					}
-				}
-			};
-			logger.debug("Waiting for jobs to end");
-			
-			// Wait at max 30 seconds for all jobs to complete. The normal case is that
-			// the join returns very quickly.
-			//
-			joinWait.start();
-			joinWait.join(30000);
-			joinWait.interrupt();
-
-			// Cancel remaining jobs
-			//
-			for(Job job : jobManager.find(null))
-				job.cancel();
-
-			// and resume the job manager. The workspace save will start new
-			// jobs.
-			//
-			jobBlocker.removeClassBlock(DelayedSnapshotJob.class);
-			jobManager.resume();
-			saveWorkspace(MonitorUtils.subMonitor(monitor, 50));
-			monitor.done();
+				};
+				logger.debug("Waiting for jobs to end");
+				
+				// Wait at max 30 seconds for all jobs to complete. The normal case is that
+				// the join returns very quickly.
+				//
+				joinWait.start();
+				joinWait.join(30000);
+				joinWait.interrupt();
+	
+				// Cancel remaining jobs
+				//
+				for(Job job : jobManager.find(null))
+					job.cancel();
+	
+				// and resume the job manager. The workspace save will start new
+				// jobs.
+				//
+				jobBlocker.removeClassBlock(DelayedSnapshotJob.class);
+				jobManager.resume();
+				saveWorkspace(MonitorUtils.subMonitor(monitor, 50));
+				monitor.done();
+			}
 		}
 	}
 
@@ -155,5 +164,15 @@ public abstract class WorkspaceCommand extends AbstractCommand
 			Buckminster.getLogger().error(e, "Error while saving workspace: %s", e.getMessage());
 		}
 		monitor.done();
+	}
+
+	public void setInWorkspace(boolean inWorkspace)
+	{
+		m_inWorkspace = inWorkspace;
+	}
+
+	public boolean isInWorkspace()
+	{
+		return m_inWorkspace;
 	}
 }
