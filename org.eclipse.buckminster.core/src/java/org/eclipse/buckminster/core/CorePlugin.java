@@ -508,16 +508,44 @@ public class CorePlugin extends LogAwarePlugin
 	public void start(BundleContext context) throws Exception
 	{
 		super.start(context);
-		performForcedActivations();
-		MetadataSynchronizer.setUp();
-		MaterializationJob.setUp();
-		WorkspaceBindingInstallJob.start();
+		Job startJob = new Job("Core plugin starter")
+		{
+			@Override
+			public IStatus run(IProgressMonitor monitor)
+			{
+				MetadataSynchronizer.setUp();
+				MaterializationJob.setUp();
 
-		// This isn't actually shutting down. It will take care
-		// of cleaning up what wasn't cleaned if the update manager
-		// shut down in a non standard way the last time.
-		//
-		Utilities.shutdown();
+				// This isn't actually shutting down. It will take care
+				// of cleaning up what wasn't cleaned if the update manager
+				// shut down in a non standard way the last time.
+				//
+				Utilities.shutdown();
+
+				IConfigurationElement[] forcedActivations = Platform.getExtensionRegistry()
+						.getConfigurationElementsFor(FORCED_ACTIVATIONS_POINT);
+				monitor.beginTask(null, forcedActivations.length);
+				for(IConfigurationElement elem : forcedActivations)
+				{
+					String pluginId = elem.getAttribute("pluginId");
+					try
+					{
+						Bundle bundle = Platform.getBundle(pluginId);
+						bundle.loadClass(elem.getAttribute("class"));
+					}
+					catch(Exception e)
+					{
+						getLogger().warning(e, "Unable to activate bundle %s", pluginId);
+					}
+					monitor.worked(1);
+				}
+				monitor.done();
+
+				WorkspaceBindingInstallJob.start();
+				return Status.OK_STATUS;
+			}
+		};
+		startJob.schedule(100);
 	}
 
 	/**
@@ -543,37 +571,6 @@ public class CorePlugin extends LogAwarePlugin
 			m_updatePrefsJob.join();
 			m_updatePrefsJob = null;
 		}
-	}
-
-	private void performForcedActivations()
-	{
-		Job forcedActivationJob = new Job("Forced activation starter")
-		{
-			@Override
-			public IStatus run(IProgressMonitor monitor)
-			{
-				IConfigurationElement[] forcedActivations = Platform.getExtensionRegistry()
-						.getConfigurationElementsFor(FORCED_ACTIVATIONS_POINT);
-				monitor.beginTask(null, forcedActivations.length);
-				for(IConfigurationElement elem : forcedActivations)
-				{
-					String pluginId = elem.getAttribute("pluginId");
-					try
-					{
-						Bundle bundle = Platform.getBundle(pluginId);
-						bundle.loadClass(elem.getAttribute("class"));
-					}
-					catch(Exception e)
-					{
-						getLogger().warning(e, "Unable to activate bundle %s", pluginId);
-					}
-					monitor.worked(1);
-				}
-				monitor.done();
-				return Status.OK_STATUS;
-			}
-		};
-		forcedActivationJob.schedule(10);
 	}
 
 	public static void logWarningsAndErrors(IStatus status)
