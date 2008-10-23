@@ -122,6 +122,8 @@ public interface MaterializationConstants
 
 	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL = "eclipseDistroTools3.3UpdateSiteURL";
 
+	public static final String PROPERTY_DISTRO_NAME = "distro.name";
+
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
 
 	public static final String ARTIFACT_TYPE_MSPEC = "mspec";

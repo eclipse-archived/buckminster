@@ -829,7 +829,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		// authenticator if loginRequired is false anyway).
 		return m_distroProvider.checkFolderReadAccess(m_folderPath);
 	}
-
+	
 	void retrieveStackInfo()
 	{
 		m_distroVariants = null;
@@ -927,6 +927,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						m_retrievedDistroCache.put(distroId, m_distro);
 						
 						m_builder.initFrom(m_distro.getMspec());
+						
+						// extra properties
+						m_builder.getProperties().put("distro.name", m_artifactName);
 						
 						IPath location = m_builder.getInstallLocation() == null ?
 											Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName)) :
