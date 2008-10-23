@@ -41,7 +41,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 /**
- * A Detail page for an Installable Unit ArtifactKey
+ * A DetailPage for an Installable Unit ArtifactKey
  * 
  * @author Henrik Lindberg
  * 
