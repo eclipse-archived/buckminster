@@ -313,7 +313,7 @@ public class DestinationForm
 		{
 			int defaultIdx = m_defaultDestinationType;
 			if(m_builder.getMaterializerID() != null)
-				defaultIdx = m_destinationTypes.indexOf(m_builder.getMaterializerID().toLowerCase());
+				defaultIdx = m_destinationTypes.indexOf(m_builder.getMaterializerID());
 
 			if(defaultIdx < 0)
 				defaultIdx = m_defaultDestinationType;
