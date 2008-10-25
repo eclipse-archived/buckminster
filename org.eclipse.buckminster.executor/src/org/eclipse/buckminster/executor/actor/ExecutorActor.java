@@ -39,10 +39,10 @@ public class ExecutorActor extends AbstractActor
 
 	private static final String EXECUTOR_SHELL_ACTION = "shell";
 
-	private static final String EXECUTOR_INHERIT_ENV_VAR_ACTION = "inheritEnvVar";
+	private static final String EXECUTOR_NEW_ENVIRONMENT_ACTION = "newenvironment";
 
 	private static final String[] validProperties = { EXECUTOR_ENV, EXECUTOR_EXEC_ACTION, EXECUTOR_EXEC_DIR_ACTION,
-			EXECUTOR_SHELL_ACTION, EXECUTOR_INHERIT_ENV_VAR_ACTION };
+			EXECUTOR_SHELL_ACTION, EXECUTOR_NEW_ENVIRONMENT_ACTION };
 
 	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor";
 
@@ -61,6 +61,8 @@ public class ExecutorActor extends AbstractActor
 			final File executionDir = getExecutionDir(ctx);
 			final String command = expander.expand(prepareCommandLine());
 			final String[] env = prepareEnvironmentVariables(expander);
+			CorePlugin.getLogger().info("[EXE] now executing : "+command);
+			CorePlugin.getLogger().info("[EXE] in directory : "+executionDir);
 			final Process proc = Runtime.getRuntime().exec(command, env, executionDir);
 			// any error message ?
 			final StreamGobblerRedirector errorGobbler = new StreamGobblerRedirector(proc.getErrorStream(), errorStream);
@@ -191,10 +193,13 @@ public class ExecutorActor extends AbstractActor
 	 */
 	private String[] prepareEnvironmentVariables(PropertyExpander expander) throws CoreException
 	{
-
+		final String ENV = "[ENV] ";
 		final Set<String> envSet = new HashSet<String>();
 		final String envProperty = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_ENV));
-		if(this.getActorProperty(EXECUTOR_INHERIT_ENV_VAR_ACTION) != null)
+		
+		final boolean useEnvironment = !Boolean.parseBoolean(this.getActorProperty(EXECUTOR_NEW_ENVIRONMENT_ACTION));
+		CorePlugin.getLogger().info(ENV+"Using system environment : " + useEnvironment+" (use DEBUG log level to see environment variables)");
+		if(useEnvironment)
 		{
 			final Map<String, String> getenv = System.getenv();
 			for(String key : getenv.keySet())
@@ -211,7 +216,7 @@ public class ExecutorActor extends AbstractActor
 			final StringBuffer buffer = new StringBuffer("Setting environment variables :\n");
 			for(String string : envSet)
 				buffer.append(string).append('\n');
-			CorePlugin.getLogger().debug(buffer.toString(), (Object)null);
+			CorePlugin.getLogger().debug(ENV+buffer.toString());
 		}
 		return envSet.toArray(new String[envSet.size()]);
 	}
