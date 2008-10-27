@@ -36,8 +36,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	private final ArrayList<IPath> m_scheduledRemovals = new ArrayList<IPath>();
 	private final Map<UUID,Object> m_invocationCache = new HashMap<UUID,Object>();
 	private final HashSet<Action> m_actionsPerformed = new HashSet<Action>();
-	private final Map<String,String> m_globalProps;
-	private final Map<String,String> m_userProps;
+	private final Map<String, String> m_globalProps;
 	private final boolean m_forcedExecution;
 	private final boolean m_quietExecution;
 
@@ -46,8 +45,8 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 
 	public GlobalContext(Map<String,String> userProps, boolean forcedExecution, boolean quietExecution)
 	{
+		super(userProps);
 		m_globalProps = RMContext.getGlobalPropertyAdditions();
-		m_userProps = userProps == null ? Collections.<String,String>emptyMap() : userProps;
 		m_forcedExecution = forcedExecution;
 		m_quietExecution = quietExecution;
 	}
@@ -64,9 +63,23 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 		ExpandingProperties allProps = new ExpandingProperties(mapSize);
 		allProps.putAll(m_globalProps, true);
 		allProps.putAll(actionProps, true);
-		allProps.putAll(m_userProps);
+		allProps.putAll(super.getProperties());
 		attribute.addDynamicProperties(allProps);
 		return allProps;
+	}
+
+	/**
+	 * Adding global properties to user properties<br>
+	 * <a href=https://bugs.eclipse.org/bugs/show_bug.cgi?id=252146>Bug 252146</a>
+	 * 
+	 * @author Guillaume CHATELET
+	 */
+	@Override
+	public synchronized Map<String, String> getProperties()
+	{
+		final Map<String, String> userProperties = super.getProperties();
+		userProperties.putAll(m_globalProps);
+		return userProperties;
 	}
 
 	public IStatus getStatus()
@@ -103,11 +116,6 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	void addPerformedAction(Action action)
 	{
 		m_actionsPerformed.add(action);
-	}
-
-	Map<String,String> getUserProperties()
-	{
-		return m_userProps;
 	}
 
 	boolean hasExecutedKind(int kind)
