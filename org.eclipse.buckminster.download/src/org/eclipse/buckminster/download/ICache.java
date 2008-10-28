@@ -16,6 +16,7 @@ import org.eclipse.buckminster.download.internal.Activator;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -24,15 +25,15 @@ public interface ICache
 {
 	File getLocation();
 
-	IFileInfo getRemoteInfo(URL url) throws CoreException, FileNotFoundException;
+	IFileInfo getRemoteInfo(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException;
 
 	boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException;
 
-	boolean isUpToDate(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException,
+	boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException;
 
-	boolean isUpToDate(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor)
+	boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException;
 
 	/**
@@ -70,7 +71,7 @@ public interface ICache
 	 *             if the remote source could not be found
 	 * @throws CoreException
 	 */
-	InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IFileInfo[] fileInfoHandle,
+	InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IFileInfo[] fileInfoHandle,
 			IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
 	/**
@@ -100,7 +101,7 @@ public interface ICache
 	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
 	 * @throws CoreException
 	 */
-	InputStream open(URL remoteFile, String remoteName, IFileInfo[] fileInfoHandle, IProgressMonitor monitor)
+	InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fileInfoHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException;
 
 	/**
@@ -127,5 +128,5 @@ public interface ICache
 	InputStream open(IFetchPolicy fetchPolicy, URL remoteFile, IFileInfo[] fileInfoHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException;
 
-	InputStream openRemote(URL remoteFile) throws CoreException, FileNotFoundException;
+	InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException;
 }

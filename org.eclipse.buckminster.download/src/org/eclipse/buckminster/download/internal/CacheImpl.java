@@ -22,6 +22,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -54,15 +55,15 @@ public class CacheImpl implements ICache
 		}
 	}
 
-	public boolean isUpToDate(URL remoteFile, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		return isUpToDate(new ArchivePolicy(this, remoteName), remoteFile, monitor);
+		return isUpToDate(new ArchivePolicy(this, cctx, remoteName), remoteFile, monitor);
 	}
 
-	public boolean isUpToDate(URL remoteFile, URL remoteDigest, String algorithm, IProgressMonitor monitor)
+	public boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException
 	{
-		return isUpToDate(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
+		return isUpToDate(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
 				remoteFile, monitor);
 	}
 
@@ -77,27 +78,27 @@ public class CacheImpl implements ICache
 		}
 	}
 
-	public InputStream open(URL remoteFile, String remoteName, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		return open(new ArchivePolicy(this, remoteName), remoteFile, fiHandle, monitor);
+		return open(new ArchivePolicy(this, cctx, remoteName), remoteFile, fiHandle, monitor);
 	}
 
-	public InputStream open(URL remoteFile, URL remoteDigest, String algorithm, IFileInfo[] fiHandle, IProgressMonitor monitor)
+	public InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException
 	{
-		return open(new DigestPolicy(this, remoteDigest, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
+		return open(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
 				remoteFile, fiHandle, monitor);
 	}
 
-	public InputStream openRemote(URL remoteFile) throws CoreException, FileNotFoundException
+	public InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException
 	{
-		FileReader reader = new FileReader();
+		FileReader reader = new FileReader(cctx);
 		return reader.read(remoteFile);
 	}
 
-	public IFileInfo getRemoteInfo(URL remoteFile) throws CoreException, FileNotFoundException
+	public IFileInfo getRemoteInfo(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException
 	{
-		FileReader reader = new FileReader();
+		FileReader reader = new FileReader(cctx);
 		return reader.readInfo(remoteFile);
 	}
 

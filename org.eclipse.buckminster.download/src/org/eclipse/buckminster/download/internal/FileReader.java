@@ -25,6 +25,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.filetransfer.FileTransferJob;
 import org.eclipse.ecf.filetransfer.IFileTransferListener;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransfer;
@@ -64,13 +65,15 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 	private final int m_connectionRetryCount;
 
 	private final long m_connectionRetryDelay;
+	
+	private final IConnectContext m_connectContext;
 
 	/**
 	 * Create a new FileReader that will retry failed connection attempts and sleep some amount of time between each attempt.
 	 * @param connectionRetryCount The number of times to retry the connection. Set to zero to fail on first attempt.
 	 * @param connectionRetryDelay The number of milliseconds to sleep between each attempt.
 	 */
-	public FileReader()
+	public FileReader(IConnectContext connectContext)
 	{
 		super("URL reader");
 
@@ -79,6 +82,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		setUser(false);
 		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
 		m_connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
+		m_connectContext = connectContext;
 	}
 
 	public IFileInfo getLastFileInfo()
@@ -289,6 +293,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 	protected void sendRetrieveRequest(URL url, OutputStream outputStream, boolean closeStreamWhenFinished, boolean onlyGetInfo, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		IRetrieveFileTransferContainerAdapter adapter = Activator.getDefault().createRetrieveFileTransfer();
+		adapter.setConnectContextForAuthentication(m_connectContext);
+
 		m_exception = null;
 		m_closeStreamWhenFinished = closeStreamWhenFinished;
 		m_onlyGetInfo = onlyGetInfo;

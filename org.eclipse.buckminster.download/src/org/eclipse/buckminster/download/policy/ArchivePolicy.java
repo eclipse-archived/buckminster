@@ -24,6 +24,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -35,10 +36,13 @@ public class ArchivePolicy extends AbstractFetchPolicy
 
 	private final String m_remoteName;
 
-	public ArchivePolicy(ICache cache, String remoteName)
+	private final IConnectContext m_connectContext;
+
+	public ArchivePolicy(ICache cache, IConnectContext cctx, String remoteName)
 	{
 		super(cache);
 		m_remoteName = remoteName;
+		m_connectContext = cctx;
 	}
 
 	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor)
@@ -61,7 +65,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 				IFileInfo fi;
 				try
 				{
-					fi = getCache().getRemoteInfo(remoteFile);
+					fi = getCache().getRemoteInfo(remoteFile, m_connectContext);
 					if(fiHandle != null)
 						fiHandle[0] = fi;
 				}
@@ -118,7 +122,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			if(parentFolder != null)
 				mkdirs(parentFolder);
 			output = new FileOutputStream(localFile);
-			FileReader retriever = new FileReader();
+			FileReader retriever = new FileReader(m_connectContext);
 			retriever.readInto(url, output, monitor);
 			IFileInfo fileInfo = retriever.getLastFileInfo();
 			saveLocalFileInfo(url, fileInfo);

@@ -31,6 +31,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -64,16 +65,19 @@ public class DigestPolicy extends AbstractFetchPolicy
 
 	private final URL m_remoteDigest;
 
+	private final IConnectContext m_connectContext;
+
 	private final int m_digestLength;
 
 	private final int m_maxDigestAge;
 
-	public DigestPolicy(ICache cache, URL remoteDigest, String algorithm, int maxDigestAge) throws CoreException
+	public DigestPolicy(ICache cache, URL remoteDigest, IConnectContext cctx, String algorithm, int maxDigestAge) throws CoreException
 	{
 		super(cache);
 		m_remoteDigest = remoteDigest;
 		m_algorithm = algorithm;
 		m_maxDigestAge = maxDigestAge;
+		m_connectContext = cctx;
 		try
 		{
 			m_digestLength = MessageDigest.getInstance(algorithm).getDigestLength();
@@ -245,7 +249,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 
 	protected byte[] readRemoteDigest() throws CoreException, FileNotFoundException
 	{
-		FileReader reader = new FileReader();
+		FileReader reader = new FileReader(m_connectContext);
 		BytesFromHexBuilder digestByteBuilder = new BytesFromHexBuilder(m_digestLength);
 		reader.readInto(m_remoteDigest, digestByteBuilder, null);
 		return digestByteBuilder.getBytes();
@@ -263,7 +267,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 			if(parentFolder != null)
 				parentFolder.mkdirs();
 			output = new DigestOutputStream(new FileOutputStream(localFile), md);
-			FileReader retriever = new FileReader();
+			FileReader retriever = new FileReader(m_connectContext);
 			retriever.readInto(url, output, monitor);
 			IFileInfo fi = retriever.getLastFileInfo();
 			saveLocalFileInfo(url, fi);

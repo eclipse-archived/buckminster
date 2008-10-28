@@ -20,6 +20,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -69,21 +70,21 @@ public class DownloadManager
 		return s_instance;
 	}
 
-	public static InputStream read(URL url) throws CoreException, FileNotFoundException
+	public static InputStream read(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException
 	{
-		FileReader reader = new FileReader();
+		FileReader reader = new FileReader(cctx);
 		return reader.read(url);
 	}
 
-	public static IFileInfo readInfo(URL url) throws CoreException, FileNotFoundException
+	public static IFileInfo readInfo(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException
 	{
-		FileReader reader = new FileReader();
+		FileReader reader = new FileReader(cctx);
 		return reader.readInfo(url);
 	}
 
-	public static IFileInfo readInto(URL url, OutputStream output, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public static IFileInfo readInto(URL url, IConnectContext cctx, OutputStream output, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		FileReader reader = new FileReader();
+		FileReader reader = new FileReader(cctx);
 		reader.readInto(url, output, monitor);
 		return reader.getLastFileInfo();
 	}
