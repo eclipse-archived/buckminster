@@ -509,7 +509,7 @@ public class SubversiveSession implements Closeable
 			if(scheme != null)
 			{
 				bld.append(scheme);
-				bld.append(':');
+				bld.append("://");
 			}
 
 			String username = null;
@@ -534,11 +534,13 @@ public class SubversiveSession implements Closeable
 							password = null;
 					}
 				}
-				bld.append("//");
 				bld.append(authority);
 			}
 			m_username = username;
 			m_password = password;
+
+			if(fullPath.getDevice() != null)
+				bld.append('/');
 
 			bld.append(fullPath.removeLastSegments(relPathLen));
 			String urlLeadIn = bld.toString();
@@ -551,7 +553,10 @@ public class SubversiveSession implements Closeable
 			if(m_trunkStructure)
 			{
 				if(relPathLen > 1)
+				{
 					modulePath = fullPath.removeFirstSegments(idx + 1);
+					modulePath = modulePath.setDevice(null);
+				}
 			}
 			else
 				modulePath = Path.fromPortableString(fullPath.lastSegment());
@@ -905,7 +910,7 @@ public class SubversiveSession implements Closeable
 		if(uri == null)
 			return null;
 
-		String path = uri.getPath();
+		String path = uri.toString();
 		if(path == null)
 			return null;
 
@@ -921,7 +926,7 @@ public class SubversiveSession implements Closeable
 		String parentPath = path.substring(0, lastSlash);
 		try
 		{
-			return new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), parentPath, uri.getQuery(), uri.getFragment());
+			return new URI(parentPath);
 		}
 		catch(URISyntaxException e)
 		{
@@ -949,8 +954,7 @@ public class SubversiveSession implements Closeable
 				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision), ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 				if(list == null || list.length == 0)
 				{
-					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote folder had no entries %s", key));
+					logger.debug("Remote folder had no entries %s", key);
 					list = s_emptyFolder;
 				}
 				m_listCache.put(key, list);
@@ -993,11 +997,14 @@ public class SubversiveSession implements Closeable
 		int port = url.getPort();
 		bld.append(protocol);
 		bld.append("://");
-		bld.append(url.getHost());
-		if(url.getPort() != -1)
+		if(url.getHost() != null)
 		{
-			bld.append(":");
-			bld.append(port);
+			bld.append(url.getHost());
+			if(port != -1)
+			{
+				bld.append(":");
+				bld.append(port);
+			}
 		}
 
 		bld.append(url.getPath());
@@ -1071,8 +1078,8 @@ public class SubversiveSession implements Closeable
 					continue;
 
 				URI cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost()) && url.getScheme().equals(cmp.getScheme()) && url
-						.getPort() == cmp.getPort()))
+				if(!(Trivial.equalsAllowNull(url.getHost(),cmp.getHost()) && Trivial.equalsAllowNull(url.getScheme(),cmp.getScheme()) 
+						&& url.getPort() == cmp.getPort()))
 					continue;
 
 				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
@@ -1111,11 +1118,14 @@ public class SubversiveSession implements Closeable
 				StringBuilder bld = new StringBuilder();
 				bld.append(url.getScheme());
 				bld.append("://");
-				bld.append(url.getHost());
-				if(url.getPort() >= 0)
+				if(url.getHost() != null)
 				{
-					bld.append(':');
-					bld.append(url.getPort());
+					bld.append(url.getHost());
+					if(url.getPort() != -1)
+					{
+						bld.append(":");
+						bld.append(url.getPort());
+					}
 				}
 				for(int pdx = 0; pdx < idx; ++pdx)
 				{
@@ -1159,8 +1169,8 @@ public class SubversiveSession implements Closeable
 			for(RepositoryAccess repoAccessCmp : commonRoots)
 			{
 				URI cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost()) && url.getScheme().equals(cmp.getScheme()) && url
-						.getPort() == cmp.getPort()))
+				if(!(Trivial.equalsAllowNull(url.getHost(),cmp.getHost()) && Trivial.equalsAllowNull(url.getScheme(),cmp.getScheme()) 
+						&& url.getPort() == cmp.getPort()))
 					continue;
 
 				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
