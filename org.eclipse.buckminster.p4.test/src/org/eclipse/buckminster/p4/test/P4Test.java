@@ -182,7 +182,7 @@ public class P4Test extends TestCase
 	public void testResolve() throws Exception
 	{
 		URL cqueryURL = getClass().getResource("jam.cquery");
-		ResolutionContext ctx = new ResolutionContext(ComponentQuery.fromURL(cqueryURL, true));
+		ResolutionContext ctx = new ResolutionContext(ComponentQuery.fromURL(cqueryURL, null, true));
 		MainResolver resolver = new MainResolver(ctx);
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 		assertTrue(bom.isFullyResolved());
