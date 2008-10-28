@@ -142,7 +142,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	private VersionMatch getBestRemotePluginVersion(IProgressMonitor monitor) throws CoreException
 	{
 		IVersion bestFit = null;
-		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, m_query, monitor))
+		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, getConnectContext(), m_query, monitor))
 		{
 			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion().toString());
 			if(getQuery().isMatch(version, null))

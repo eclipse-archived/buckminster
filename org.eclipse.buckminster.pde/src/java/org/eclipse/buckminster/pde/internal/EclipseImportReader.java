@@ -67,7 +67,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 	public IPluginModelBase getPluginModelBase(String pluginId, String version) throws CoreException
 	{
 		EclipseImportReaderType rt = (EclipseImportReaderType)getReaderType();
-		return rt.getPluginModelBase(m_base.getRemoteLocation(), pluginId, version, getProviderMatch());
+		return rt.getPluginModelBase(m_base.getRemoteLocation(), getConnectContext(), pluginId, version, getProviderMatch());
 	}
 
 	private void localize(boolean isPlugin, IProgressMonitor monitor) throws CoreException

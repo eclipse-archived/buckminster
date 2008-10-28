@@ -28,6 +28,7 @@ import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.update.core.IPluginEntry;
@@ -227,9 +228,9 @@ final class EclipseImportBase
 		return m_location;
 	}
 
-	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, IConnectContext cctx, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		return readerType.getPluginEntries(getRemoteLocation(), query, getComponentName(), monitor);
+		return readerType.getPluginEntries(getRemoteLocation(), cctx, query, getComponentName(), monitor);
 	}
 
 	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException

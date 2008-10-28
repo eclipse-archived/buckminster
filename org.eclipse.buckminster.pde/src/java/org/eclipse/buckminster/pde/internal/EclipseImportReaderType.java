@@ -72,6 +72,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.PDECore;
@@ -125,7 +126,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				? FEATURES_FOLDER
 				: PLUGINS_FOLDER;
 
-			return createRemoteComponentURL(siteURL, resolution.getName(), resolution.getVersion(), subDir).toURI();
+			return createRemoteComponentURL(siteURL, null, resolution.getName(), resolution.getVersion(), subDir).toURI();
 		}
 		catch(MalformedURLException e)
 		{
@@ -202,10 +203,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	}
 
 	@SuppressWarnings("deprecation")
-	public synchronized IPluginModelBase getPluginModelBase(URL location, String id, String version,
+	public synchronized IPluginModelBase getPluginModelBase(URL location, IConnectContext cctx, String id, String version,
 		ProviderMatch templateInfo) throws CoreException
 	{
-		for(IPluginEntry candidate : getSitePluginEntries(location, templateInfo.getNodeQuery(), new NullProgressMonitor()))
+		for(IPluginEntry candidate : getSitePluginEntries(location, cctx, templateInfo.getNodeQuery(), new NullProgressMonitor()))
 		{
 			VersionedIdentifier vi = candidate.getVersionedIdentifier();
 			String name = vi.getIdentifier();
@@ -293,11 +294,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
-	List<IPluginEntry> getPluginEntries(URL location, NodeQuery query, String componentName, IProgressMonitor monitor)
+	List<IPluginEntry> getPluginEntries(URL location, IConnectContext cctx, NodeQuery query, String componentName, IProgressMonitor monitor)
 	throws CoreException
 	{
 		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
-		for(IPluginEntry entry : getSitePluginEntries(location, query, monitor))
+		for(IPluginEntry entry : getSitePluginEntries(location, cctx, query, monitor))
 		{
 			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
 				result.add(entry);
@@ -353,8 +354,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 			try
 			{
+				IConnectContext cctx = rInfo.getConnectContext();
 				String typeDir = isPlugin ? PLUGINS_FOLDER : FEATURES_FOLDER;
-				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), rInfo.getComponentName(), rInfo.getVersionMatch().getVersion(), typeDir);
+				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, rInfo.getComponentName(), rInfo.getVersionMatch().getVersion(), typeDir);
 
 				// Use a temporary local site
 				//
@@ -370,7 +372,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				InputStream input = null;
 				try
 				{
-					input = DownloadManager.getCache().open(pluginURL, null, null, MonitorUtils.subMonitor(monitor, 900));
+					input = DownloadManager.getCache().open(pluginURL, cctx, null, null, MonitorUtils.subMonitor(monitor, 900));
 					FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
 				}
 				finally
@@ -469,7 +471,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return new CoreException(multiStatus);
 	}
 
-	static URL createRemoteComponentURL(URL remoteLocation, String name, IVersion version, String subDir)
+	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, IVersion version, String subDir)
 	throws MalformedURLException, CoreException
 	{
 		if(remoteLocation.getPath().endsWith(".jar"))
@@ -477,7 +479,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 		if(remoteLocation.getPath().endsWith(".map"))
 		{
-			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation))
+			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, cctx))
 			{
 				VersionedIdentifier vid = entry.getVersionedIdentifier();
 				if(name.equals(vid.getIdentifier()) && version.equalsUnqualified(VersionFactory.OSGiType.coerce(vid.getVersion())))
@@ -573,13 +575,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
-	private static RemotePluginEntry[] getMapPluginEntries(URL location) throws CoreException
+	private static RemotePluginEntry[] getMapPluginEntries(URL location, IConnectContext cctx) throws CoreException
 	{
 		InputStream input = null;
 		try
 		{
 			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
-			input = DownloadManager.read(location);
+			input = DownloadManager.read(location, cctx);
 			MapFile.parse(input, location.toString(), mapEntries);
 			ArrayList<RemotePluginEntry> entries = new ArrayList<RemotePluginEntry>();
 			for(MapFileEntry entry : mapEntries)
@@ -629,7 +631,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	public IPluginEntry[] getSitePluginEntries(URL location, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	public IPluginEntry[] getSitePluginEntries(URL location, IConnectContext cctx, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		synchronized(location.toString().intern())
 		{
@@ -641,7 +643,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			if(location.getPath().endsWith(".map"))
 			{
 				MonitorUtils.complete(monitor);
-				entries = getMapPluginEntries(location);
+				entries = getMapPluginEntries(location, cctx);
 				cache.put(location, entries);
 				return entries;
 			}
