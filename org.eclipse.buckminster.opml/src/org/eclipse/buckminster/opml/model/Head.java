@@ -12,6 +12,7 @@ import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.eclipse.buckminster.opml.IHead;
 import org.eclipse.buckminster.opml.builder.HeadBuilder;
@@ -40,8 +41,8 @@ public class Head extends AbstractSaxableElement implements IHead
 	public static final String ELEM_WINDOW_LEFT = "windowLeft";
 	public static final String ELEM_WINDOW_RIGHT = "windowRight";
 	public static final String ELEM_WINDOW_TOP = "windowTop";
-	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z");
+	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
+	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z", Locale.US);
 	public static final String TAG = "head";
 
 	private final Date m_dateCreated;
