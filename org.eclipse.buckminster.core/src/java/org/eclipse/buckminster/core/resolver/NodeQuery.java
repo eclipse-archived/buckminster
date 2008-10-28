@@ -431,7 +431,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 				return vds;
 			}
 		}
-		return ctype.getTypeSpecificDesignator(vds);
+		return ctype == null ? vds : ctype.getTypeSpecificDesignator(vds);
 	}
 
 	/**
