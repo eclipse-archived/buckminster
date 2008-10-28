@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.osgi.framework.Bundle;
 
 /**
@@ -361,14 +362,14 @@ public abstract class FileUtils
 	 *            The progress monitor used during the operation
 	 * @throws BuckminsterException
 	 */
-	public static void unzip(URL source, String sourceRelPath, File dest, ConflictResolution strategy, IProgressMonitor monitor)
+	public static void unzip(URL source, IConnectContext cctx, String sourceRelPath, File dest, ConflictResolution strategy, IProgressMonitor monitor)
 			throws CoreException
 	{
 		MonitorUtils.begin(monitor, 1000);
 		InputStream input = null;
 		try
 		{
-			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(source,
+			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(source, cctx,
 					MonitorUtils.subMonitor(monitor, 400)));
 			unzip(input, sourceRelPath, dest, strategy, MonitorUtils.subMonitor(monitor, 600));
 		}

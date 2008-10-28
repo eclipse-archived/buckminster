@@ -36,6 +36,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -54,9 +55,16 @@ public class Resolve extends WorkspaceInitCommand
 
 	private URL m_url;
 
+	private IConnectContext m_connectContext;
+
 	public void setBomFile(File bomFile)
 	{
 		m_bomFile = bomFile;
+	}
+
+	public void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
 	}
 
 	public void setResolveOnly(boolean flag)
@@ -120,7 +128,7 @@ public class Resolve extends WorkspaceInitCommand
 			MonitorUtils.begin(monitor, m_resolveOnly ? 40 : 100);
 			try
 			{
-				ComponentQuery query = ComponentQuery.fromURL(m_url, true);
+				ComponentQuery query = ComponentQuery.fromURL(m_url, m_connectContext, true);
 				MonitorUtils.worked(monitor, 5);
 				ResolutionContext context = new ResolutionContext(query);
 				MainResolver resolver = new MainResolver(context);

@@ -168,7 +168,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 				return new File(source, fileName).exists();
 
 			URL fileUrl = new URL(getURL(), fileName);
-			input = CorePlugin.getDefault().openCachedURL(fileUrl, monitor);
+			input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(),  monitor);
 			return true;
 		}
 		catch(IOException e)
@@ -222,7 +222,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 			else
 			{
 				URL fileUrl = new URL(getURL(), fileName);
-				input = CorePlugin.getDefault().openCachedURL(fileUrl, MonitorUtils.subMonitor(monitor, 1));
+				input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), MonitorUtils.subMonitor(monitor, 1));
 				fullName = fileUrl.toString();
 			}
 			input = new BufferedInputStream(input);

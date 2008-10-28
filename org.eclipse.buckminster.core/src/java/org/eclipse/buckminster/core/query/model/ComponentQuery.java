@@ -49,6 +49,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -71,13 +72,15 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 
 	public static final String TAG = "componentQuery";
 
-	public static ComponentQuery fromStream(URL url, InputStream stream, boolean validating) throws CoreException
+	public static ComponentQuery fromStream(URL url, IConnectContext cctx, InputStream stream, boolean validating) throws CoreException
 	{
 		try
 		{
 			IParserFactory pf = CorePlugin.getDefault().getParserFactory();
 			IParser<ComponentQuery> parser = pf.getComponentQueryParser(false);
-			return parser.parse(url.toString(), stream);
+			ComponentQuery cquery = parser.parse(url.toString(), stream);
+			cquery.setConnectContext(cctx);
+			return cquery;
 		}
 		catch(Exception e)
 		{
@@ -85,13 +88,13 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		}
 	}
 
-	public static ComponentQuery fromURL(URL url, boolean validating) throws CoreException
+	public static ComponentQuery fromURL(URL url, IConnectContext cctx, boolean validating) throws CoreException
 	{
 		InputStream stream = null;
 		try
 		{
-			stream = DownloadManager.read(url);
-			return fromStream(url, stream, validating);
+			stream = DownloadManager.read(url, cctx);
+			return fromStream(url, cctx, stream, validating);
 		}
 		catch(IOException e)
 		{
@@ -120,6 +123,8 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	private final ComponentRequest m_rootRequest;
 
 	private final String m_shortDesc;
+
+	private transient IConnectContext m_connectContext;
 
 	public ComponentQuery(ComponentQueryBuilder bld)
 	{
@@ -201,7 +206,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			InputStream input = null;
 			try
 			{
-				input = DownloadManager.read(propsURL);
+				input = DownloadManager.read(propsURL, getConnectContext());
 				Map<String,String> urlProps = new BMProperties(input);
 				if(urlProps.size() > 0)
 				{
@@ -258,6 +263,11 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	{
 		IAdvisorNode node = getMatchingNode(cName);
 		return node == null ? null : node.getOverlayFolder();
+	}
+
+	public IConnectContext getConnectContext()
+	{
+		return m_connectContext;
 	}
 
 	public URL getContextURL()
@@ -495,5 +505,10 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	protected String getElementPrefix(String prefix)
 	{
 		return BM_CQUERY_PREFIX;
+	}
+
+	private void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
 	}
 }

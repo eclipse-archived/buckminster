@@ -20,9 +20,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -49,6 +51,7 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,6 +87,12 @@ public class URLCatalogReaderType extends CatalogReaderType
 	private static final Pattern s_ftpPattern = Pattern.compile(
 			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))",
 			Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * Check if pattern matches an index.html or other index.xxx. We transform such URL's to
+	 * denote folders instead.
+	 */
+	private static final Pattern s_indexPath = Pattern.compile("^(.*/)?index\\.[a-z][a-z0-9]+$");
 
 	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
 
@@ -170,7 +179,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return new URLCatalogReader(this, providerMatch);
 	}
 
-	public static URL[] extractHTMLLinks(URL urlToHTML, IProgressMonitor monitor) throws CoreException
+	public static URL[] extractHTMLLinks(URL urlToHTML, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
 	{
 		ArrayList<URL> links = new ArrayList<URL>();
 		InputStream pageSource = null;
@@ -178,7 +187,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		{
 			try
 			{
-				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
+				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, cctx, monitor);
 				final DocumentBuilder builder = s_documentBuilderFactory.newDocumentBuilder();
 				
 				// Use a very silent error handler
@@ -206,13 +215,13 @@ public class URLCatalogReaderType extends CatalogReaderType
 			{
 				// HTML was not well formed. Use a scanner instead
 				//
-				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, monitor);
+				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, cctx, monitor);
 				Scanner scanner = new Scanner(pageSource);
 				URL parent = URLUtils.appendTrailingSlash(urlToHTML);
 				while(scanner.findWithinHorizon(s_htmlPattern, 0) != null)
 				{
 					MatchResult mr = scanner.match();
-					links.add(new URL(parent, mr.group(1)));
+					addLink(links, parent, mr.group(1));
 				}
 			}
 		}
@@ -237,7 +246,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return links.toArray(new URL[links.size()]);
 	}
 
-	public static URL[] list(URL url, IProgressMonitor monitor) throws CoreException
+	public static URL[] list(URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
 	{
 		File dir = FileUtils.getFile(url);
 		if(dir != null)
@@ -273,7 +282,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 			InputStream pageSource = null;
 			try
 			{
-				pageSource = CorePlugin.getDefault().openCachedURL(url, monitor);
+				pageSource = CorePlugin.getDefault().openCachedURL(url, cctx, monitor);
 				url = URLUtils.appendTrailingSlash(url);
 				Scanner scanner = new Scanner(pageSource);
 				while(scanner.findWithinHorizon(s_ftpPattern, 0) != null)
@@ -302,7 +311,23 @@ public class URLCatalogReaderType extends CatalogReaderType
 				IOUtils.close(pageSource);
 			}
 		}
-		return extractHTMLLinks(url, monitor);
+		return extractHTMLLinks(url, cctx, monitor);
+	}
+
+	private static void addLink(List<URL> links, URL parent, String link) throws MalformedURLException
+	{
+		Matcher m = s_indexPath.matcher(link.toString());
+		if(m.matches())
+		{
+			link = m.group(1);
+			if(link == null)
+				return;
+		}
+
+		if(link.equals("../"))
+			return;
+
+		links.add(new URL(parent, link));
 	}
 
 	private static void collectLinks(Element element, URL parent, ArrayList<URL> links)
@@ -311,7 +336,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		{
 			try
 			{
-				links.add(new URL(parent, element.getAttribute("href")));
+				addLink(links, parent, element.getAttribute("href"));
 			}
 			catch(MalformedURLException e)
 			{

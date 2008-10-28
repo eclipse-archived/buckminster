@@ -46,7 +46,7 @@ public class Redirect extends Matcher
 		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
 		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
 		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
-		return ResourceMap.fromURL(url).getSearchPath(query);
+		return ResourceMap.fromURL(url, query.getComponentQuery().getConnectContext()).getSearchPath(query);
 	}
 
 	public String getDefaultTag()

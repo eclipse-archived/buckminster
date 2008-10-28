@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -130,7 +131,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		}
 	}
 
-	public ResourceMap getResourceMap(ResolutionContext context, URL url) throws CoreException
+	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException
 	{
 		if(isOverrideQueryURL())
 			url = getResourceMapURL();
@@ -142,7 +143,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 			ResourceMap rmap = rmapCache.get(key);
 			if(rmap == null)
 			{
-				rmap = ResourceMap.fromURL(url);
+				rmap = ResourceMap.fromURL(url, cctx);
 				rmapCache.put(key, rmap);
 			}
 			return rmap;

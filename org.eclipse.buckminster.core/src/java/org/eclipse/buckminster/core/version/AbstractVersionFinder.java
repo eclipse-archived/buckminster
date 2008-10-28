@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -43,6 +44,14 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 		return m_componentType;
 	}
 
+	public IConnectContext getConnectContext()
+	{
+		IConnectContext cctx = m_provider.getConnectContext();
+		if(cctx == null)
+			cctx = m_query.getComponentQuery().getConnectContext();
+		return cctx;
+	}
+	
 	public Provider getProvider()
 	{
 		return m_provider;

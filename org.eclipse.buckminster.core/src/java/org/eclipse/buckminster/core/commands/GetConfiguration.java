@@ -28,10 +28,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 public class GetConfiguration extends WorkspaceCommand
 {
 	private URL m_url;
+
+	private IConnectContext m_connectContext;
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
@@ -40,7 +43,7 @@ public class GetConfiguration extends WorkspaceCommand
 		monitor.beginTask(null, 3);
 		try
 		{
-			ComponentQuery query = ComponentQuery.fromURL(m_url, true);
+			ComponentQuery query = ComponentQuery.fromURL(m_url, m_connectContext, true);
 			MonitorUtils.worked(monitor, 1);
 			ResolutionContext context = new ResolutionContext(query);
 			MainResolver resolver = new MainResolver(context);

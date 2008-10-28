@@ -135,7 +135,7 @@ public class URIMatcher extends RxAssembly
 			throw BuckminsterException.wrap(e);
 		}
 
-		for(URL urlToMatch : URLCatalogReaderType.list(baseURL, monitor))
+		for(URL urlToMatch : URLCatalogReaderType.list(baseURL, query.getComponentQuery().getConnectContext(), monitor))
 		{
 			Map<String, String> matchMap = getMatchMap(urlToMatch.toString());
 			if(matchMap == null)
@@ -252,7 +252,7 @@ public class URIMatcher extends RxAssembly
 
 		try
 		{
-			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()));
+			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()), pm.getConnectContext());
 			NodeQuery nq = pm.getNodeQuery();
 			ResolutionBuilder resBld = new ResolutionBuilder(bld, null);
 			resBld.getRequest().initFrom(nq.getComponentRequest());

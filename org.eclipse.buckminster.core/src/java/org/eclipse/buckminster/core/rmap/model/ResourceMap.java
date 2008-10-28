@@ -52,6 +52,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -78,14 +79,14 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		m_contextURL = contextURL;
 	}
 
-	public static ResourceMap fromURL(URL url) throws CoreException
+	public static ResourceMap fromURL(URL url, IConnectContext cctx) throws CoreException
 	{
 		IParserFactory pf = CorePlugin.getDefault().getParserFactory();
 		IParser<ResourceMap> rmapParser = pf.getResourceMapParser(true);
 		InputStream input = null;
 		try
 		{
-			input = DownloadManager.read(url);
+			input = DownloadManager.read(url, cctx);
 			return rmapParser.parse(url.toString(), input);
 		}
 		catch(IOException e)

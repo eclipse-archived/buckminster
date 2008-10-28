@@ -11,13 +11,14 @@ import java.net.URL;
 
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Filip Hrbek
  */
 public interface IResourceMapResolverFactory extends IResolverFactory
 {
-	public ResourceMap getResourceMap(ResolutionContext context, URL url) throws CoreException;
+	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException;
 
 	public int getResolverThreadsMax();
 

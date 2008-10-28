@@ -32,6 +32,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -39,6 +40,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class Import extends WorkspaceInitCommand
 {
 	private URL m_url;
+
+	private IConnectContext m_connectContext;
+
+	public void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
+	}
 
 	public void setURL(URL url)
 	{
@@ -56,7 +64,7 @@ public class Import extends WorkspaceInitCommand
 			URL url = FileLocator.resolve(m_url);
 
 			AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
-			DownloadManager.readInto(url, byteBld, MonitorUtils.subMonitor(monitor, 20));
+			DownloadManager.readInto(url, m_connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
 	
 			// Assume that the URL is pointing to an MSPEC.
 			//
@@ -77,7 +85,7 @@ public class Import extends WorkspaceInitCommand
 				//
 				url = mspec.getResolvedURL();
 				byteBld.reset();
-				DownloadManager.readInto(url, byteBld, MonitorUtils.subMonitor(monitor, 20));
+				DownloadManager.readInto(url, m_connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
 			}
 			else
 			{
@@ -89,7 +97,7 @@ public class Import extends WorkspaceInitCommand
 			ComponentQuery cquery;
 			try
 			{
-				cquery = ComponentQuery.fromStream(url, byteBld.getInputStream(), true);
+				cquery = ComponentQuery.fromStream(url, m_connectContext, byteBld.getInputStream(), true);
 			}
 			catch(CoreException e)
 			{

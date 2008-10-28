@@ -309,7 +309,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			if(fos.endsWith(".zip") || fos.endsWith(".jar"))
 			{
 				File dest = FileUtils.createTempFolder("bmovl", ".tmp");
-				FileUtils.unzip(URLUtils.normalizeToURL(fos), null, dest, ConflictResolution.REPLACE, monitor);
+				FileUtils.unzip(URLUtils.normalizeToURL(fos), getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
 				return dest;
 			}
 
@@ -327,14 +327,14 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
-	private static File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException
+	private File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException
 	{
 		String path = url.getPath();
 		if(!(path.endsWith(".zip") || path.endsWith(".jar")))
 			throw new IllegalOverlayException("Only zip and jar archives allowed for remote overlays");
 
 		File dest = FileUtils.createTempFolder("bmovl", ".tmp");
-		FileUtils.unzip(url, null, dest, ConflictResolution.REPLACE, monitor);
+		FileUtils.unzip(url, getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
 		return dest;
 	}
 

@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -141,6 +142,11 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
 	{
 		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+	}
+
+	public IConnectContext getConnectContext()
+	{
+		return null;
 	}
 
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)

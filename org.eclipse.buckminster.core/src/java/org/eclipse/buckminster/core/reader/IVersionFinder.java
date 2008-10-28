@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * A ITagFinder will find the component tags that matches a certain query.
@@ -36,6 +37,11 @@ public interface IVersionFinder extends IResolverBackchannel
 	 * @throws CoreException
 	 */
 	VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Returns the security context to use for connect (if any)
+	 */
+	IConnectContext getConnectContext();
 
 	/**
 	 * Returns the provider associated with this version finder

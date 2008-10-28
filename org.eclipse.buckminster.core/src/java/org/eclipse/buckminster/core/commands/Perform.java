@@ -122,7 +122,7 @@ public class Perform extends WorkspaceCommand
 			try
 			{
 				URL propsURL = URLUtils.normalizeToURL(v);
-				input = DownloadManager.read(propsURL);
+				input = DownloadManager.read(propsURL, null);
 				addProperties(new BMProperties(input));
 			}
 			catch(MalformedURLException e)

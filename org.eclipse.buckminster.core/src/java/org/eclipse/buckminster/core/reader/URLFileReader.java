@@ -32,6 +32,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * A reader that reads one singleton file denoted by its URL.
@@ -70,7 +71,8 @@ public class URLFileReader extends AbstractReader implements IFileReader
 	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
 	throws CoreException
 	{
-		URL url = this.getURL();
+		URL url = getURL();
+		IConnectContext cctx = getConnectContext();
 
 		monitor.beginTask(null, 1000);
 		monitor.subTask("Copying from " + url);
@@ -79,7 +81,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		try
 		{
 			IFileInfo[] fiHandle = new IFileInfo[1];
-			in = DownloadManager.getCache().open(url, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+			in = DownloadManager.getCache().open(url, cctx, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 			m_fileInfo = fiHandle[0];
 
 			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getName(), resolution, ctx);
@@ -117,7 +119,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 	{
 		ICache cache = DownloadManager.getCache();
 		IFileInfo[] fiHandle = new IFileInfo[1];
-		InputStream input = cache.open(getURL(), null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+		InputStream input = cache.open(getURL(), getConnectContext(), null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 		m_fileInfo = fiHandle[0];
 		return input;
 	}

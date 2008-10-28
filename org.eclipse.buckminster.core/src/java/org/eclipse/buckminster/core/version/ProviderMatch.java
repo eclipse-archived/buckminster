@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * A <code>VersionSelectorMatch</code> is the result of a comparison between a
@@ -92,6 +93,14 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	public IComponentType getComponentType()
 	{
 		return m_componentType;
+	}
+
+	public IConnectContext getConnectContext()
+	{
+		IConnectContext cctx = m_provider.getConnectContext();
+		if(cctx == null)
+			cctx = getNodeQuery().getComponentQuery().getConnectContext();
+		return cctx;
 	}
 
 	public Map<String,String> getMatcherMap()

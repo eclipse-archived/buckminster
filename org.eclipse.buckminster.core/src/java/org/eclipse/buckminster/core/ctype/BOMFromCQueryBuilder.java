@@ -54,7 +54,7 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 		{
 			url = null;
 		}
-		return ComponentQuery.fromStream(url, stream, true);
+		return ComponentQuery.fromStream(url, null, stream, true);
 	}
 
 	private static final UUID CACHE_KEY_BOM_CACHE = UUID.randomUUID();

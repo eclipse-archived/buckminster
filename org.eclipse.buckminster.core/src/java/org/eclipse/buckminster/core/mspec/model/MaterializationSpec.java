@@ -78,7 +78,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		InputStream stream = null;
 		try
 		{
-			stream = DownloadManager.read(url);
+			stream = DownloadManager.read(url, null);
 			return fromStream(url.toString(), stream);
 		}
 		catch(IOException e)

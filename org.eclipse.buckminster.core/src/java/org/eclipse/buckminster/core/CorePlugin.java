@@ -66,6 +66,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.update.core.Utilities;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -496,9 +497,9 @@ public class CorePlugin extends LogAwarePlugin
 	 * @return input stream for the url
 	 * @throws IOException
 	 */
-	public InputStream openCachedURL(URL url, IProgressMonitor monitor) throws IOException, CoreException
+	public InputStream openCachedURL(URL url, IConnectContext cctx, IProgressMonitor monitor) throws IOException, CoreException
 	{
-		return m_urlCache.openURL(url, monitor);
+		return m_urlCache.openURL(url, cctx, monitor);
 	}
 
 	/**

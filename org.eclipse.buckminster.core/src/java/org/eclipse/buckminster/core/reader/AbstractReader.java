@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -51,6 +52,11 @@ public abstract class AbstractReader implements IComponentReader
 	public IComponentType getComponentType()
 	{
 		return m_providerMatch.getComponentType();
+	}
+
+	public IConnectContext getConnectContext()
+	{
+		return m_providerMatch.getConnectContext();
 	}
 
 	public NodeQuery getNodeQuery()

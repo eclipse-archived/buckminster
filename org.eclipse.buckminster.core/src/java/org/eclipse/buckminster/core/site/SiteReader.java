@@ -26,6 +26,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.update.core.Site;
 import org.eclipse.update.core.SiteContentProvider;
 import org.eclipse.update.core.model.DefaultSiteParser;
@@ -44,12 +45,12 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("restriction")
 public class SiteReader implements IStreamConsumer<SaxableSite>
 {
-	public static SaxableSite getSite(URL siteURL) throws CoreException, IOException
+	public static SaxableSite getSite(URL siteURL, IConnectContext cctx) throws CoreException, IOException
 	{
 		InputStream input = null;
 		try
 		{
-			input = DownloadManager.read(siteURL);
+			input = DownloadManager.read(siteURL, cctx);
 			SaxableSite site = parseSite(input, siteURL);
 			return site;
 		}

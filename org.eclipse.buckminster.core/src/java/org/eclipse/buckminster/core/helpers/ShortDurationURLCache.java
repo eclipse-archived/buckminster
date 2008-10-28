@@ -22,6 +22,7 @@ import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author thhal
@@ -40,7 +41,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 		super(keepAlive, prefix, suffix, tempDir);
 	}
 
-	public InputStream openURL(final URL url, IProgressMonitor monitor) throws IOException,
+	public InputStream openURL(final URL url, final IConnectContext cctx, IProgressMonitor monitor) throws IOException,
 			CoreException
 	{
 		if("file".equalsIgnoreCase(url.getProtocol()))
@@ -62,7 +63,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 					OutputStream output = new FileOutputStream(tempFile);
 					try
 					{
-						DownloadManager.readInto(url, output, mon);
+						DownloadManager.readInto(url, cctx, output, mon);
 					}
 					finally
 					{
