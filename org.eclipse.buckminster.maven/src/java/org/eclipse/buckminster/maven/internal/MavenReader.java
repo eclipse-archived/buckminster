@@ -64,7 +64,7 @@ public class MavenReader extends URLFileReader
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
 	{
 		IPath artifactPath = ((MavenReaderType)getReaderType()).getArtifactPath(m_mapEntry, getVersionMatch());
-		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor);
+		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), getConnectContext(), artifactPath, monitor);
 	}
 
 	Document getPOMDocument(IProgressMonitor monitor) throws CoreException
@@ -84,7 +84,7 @@ public class MavenReader extends URLFileReader
 		try
 		{
 			URL repoURL = repoURI.toURL();
-			input = rt.getLocalCache().openFile(repoURI.toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
+			input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource source = new InputSource(new BufferedInputStream(input));

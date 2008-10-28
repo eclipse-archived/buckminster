@@ -28,6 +28,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -97,7 +98,7 @@ public class LocalCache
 		m_localCacheRoot = localCacheRoot;
 	}
 
-	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor)
+	public InputStream openFile(URL repository, IConnectContext cctx, IPath path, IProgressMonitor monitor)
 			throws CoreException, IOException
 	{
 		IProgressMonitor subMonitor = monitor;
@@ -107,7 +108,7 @@ public class LocalCache
 			File localFile;
 			try
 			{
-				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor);
+				localFile = obtainLocalFile(repository, cctx, path, failureCounter, subMonitor);
 				monitor.subTask("Verifying digest...");
 				return new FileInputStream(localFile);
 			}
@@ -132,7 +133,7 @@ public class LocalCache
 		}
 	}
 
-	private static byte[] readRemoteDigest(StringBuilder urlBld, String suffix, int nBytes)
+	private static byte[] readRemoteDigest(StringBuilder urlBld, IConnectContext cctx, String suffix, int nBytes)
 			throws CoreException
 	{
 		int len = urlBld.length();
@@ -143,7 +144,7 @@ public class LocalCache
 		InputStream input = null;
 		try
 		{
-			input = DownloadManager.read(new URL(urlStr));
+			input = DownloadManager.read(new URL(urlStr), cctx);
 			return readHex(urlStr, input, nBytes);
 		}
 		catch(IOException e)
@@ -164,7 +165,7 @@ public class LocalCache
 
 	private static final int MD5_LEN = 16;
 
-	private synchronized File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException, CoreException
+	private synchronized File obtainLocalFile(URL repository, IConnectContext cctx, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException, CoreException
 	{
 		IPath fullPath = m_localCacheRoot.append(path);
 		File file = fullPath.toFile();
@@ -185,15 +186,15 @@ public class LocalCache
 		byte[] remoteMd5 = null;
 		if((failureCounter & 1) == 0)
 		{
-			remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN);
+			remoteMd5 = readRemoteDigest(urlBld, cctx, MD5_SUFFIX, MD5_LEN);
 			if(remoteMd5 == null)
-				remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN);
+				remoteSha1 = readRemoteDigest(urlBld, cctx, SHA1_SUFFIX, SHA1_LEN);
 		}
 		else
 		{
-			remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN);
+			remoteSha1 = readRemoteDigest(urlBld, cctx, SHA1_SUFFIX, SHA1_LEN);
 			if(remoteSha1 == null)
-				remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN);
+				remoteMd5 = readRemoteDigest(urlBld, cctx, MD5_SUFFIX, MD5_LEN);
 		}
 
 		byte[] remoteDigest;
@@ -264,7 +265,7 @@ public class LocalCache
 				throw new IOException("Unable to create directory " + outputDir);
 
 			output = new DigestOutputStream(new FileOutputStream(file), md);
-			DownloadManager.readInto(remoteURL, output, monitor);
+			DownloadManager.readInto(remoteURL, cctx, output, monitor);
 		}
 		finally
 		{

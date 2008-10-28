@@ -80,8 +80,8 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		m_readerType.appendFolder(pbld, m_uri.getPath());
 		m_readerType.appendFolder(pbld, m_mapEntry.getGroupId());
 		m_readerType.appendFolder(pbld, "jars");
-		URL jarsURL = m_readerType.createURL(m_uri, pbld.toString());
-		return URLCatalogReaderType.list(jarsURL, monitor);
+		URL jarsURL = MavenReaderType.createURL(m_uri, pbld.toString());
+		return URLCatalogReaderType.list(jarsURL, getConnectContext(), monitor);
 	}
 
 	VersionMatch getBestVersion(VersionMatch a, VersionMatch b)

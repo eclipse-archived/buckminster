@@ -192,7 +192,7 @@ public class MavenReaderType extends URLCatalogReaderType
 		appendFolder(pbld, "poms");
 	}
 
-	URL createURL(URI repoURI, String path) throws CoreException
+	static URL createURL(URI repoURI, String path) throws CoreException
 	{
 		try
 		{

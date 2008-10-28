@@ -28,10 +28,10 @@ import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -76,17 +76,22 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		readerType.appendFolder(pbld, uri.getPath());
 		readerType.appendEntryFolder(pbld, getMapEntry());
 		String rootPath = pbld.toString();
+		IConnectContext cctx = getConnectContext();
 
 		IVersionDesignator versionDesignator = query.getVersionDesignator();
 		monitor.beginTask(null, 2000);
 		try
 		{
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			for(String versionStr : getVersions(readerType, docBld, uri, rootPath, MonitorUtils.subMonitor(monitor, 1000)))
+			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), cctx, monitor);
+			for(String versionStr : getVersions(doc))
 			{
 				String v = versionStr;
 				if(v.endsWith("SNAPSHOT"))
-					v = getSnapshotVersion(readerType, docBld, uri, rootPath, v, new NullProgressMonitor());
+				{
+					doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" + "maven-metadata.xml"), cctx, new NullProgressMonitor());
+					v = getSnapshotVersion(doc, v);
+				}
 
 				IVersion version = versionDesignator == null ? MavenComponentType.createVersion(v) : versionDesignator.getVersion().getType().fromString(v);
 				if(!(versionDesignator == null || versionDesignator.designates(version)))
@@ -113,64 +118,53 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		}
 	}
 
-	private List<String> getVersions(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
+	public static List<String> getVersions(Document doc)
 	{
 		List<String> versionList = null;
 
-		Document doc = getMetadataDocument(readerType, docBld, uri, path + "maven-metadata.xml", monitor);
-		if (doc != null)
+		Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
+		if(versioningElement != null)
 		{
-			Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
-			if(versioningElement != null)
+			Element versionsElement = (Element) versioningElement.getElementsByTagName("versions").item(0);
+			if(versionsElement != null)
 			{
-				Element versionsElement = (Element) versioningElement.getElementsByTagName("versions").item(0);
-				if(versionsElement != null)
+				NodeList versions = versionsElement.getElementsByTagName("version");
+				int top = versions.getLength();
+				for (int i = 0; i < top; i++)
 				{
-					NodeList versions = versionsElement.getElementsByTagName("version");
-					int top = versions.getLength();
-					for (int i = 0; i < top; i++)
-					{
-						if(versionList == null)
-							versionList = new ArrayList<String>();
-						versionList.add(versions.item(i).getTextContent());
-					}
+					if(versionList == null)
+						versionList = new ArrayList<String>();
+					versionList.add(versions.item(i).getTextContent());
 				}
 			}
 		}
 		return versionList == null ? Collections.<String>emptyList() : versionList;
 	}
 
-	private String getSnapshotVersion(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String rootPath, String version, IProgressMonitor monitor) throws CoreException
+	public static String getSnapshotVersion(Document doc, String version) throws CoreException
 	{
-		Document doc = getMetadataDocument(readerType, docBld, uri, rootPath + version + "/" + "maven-metadata.xml", monitor);
-		if(doc != null)
+		Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
+		if(versioningElement != null)
 		{
-			Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
-			if(versioningElement != null)
+			Element versionsElement = (Element) versioningElement.getElementsByTagName("snapshot").item(0);
+			if(versionsElement != null)
 			{
-				Element versionsElement = (Element) versioningElement.getElementsByTagName("snapshot").item(0);
-				if(versionsElement != null)
-				{
-					Element ts = (Element) versionsElement.getElementsByTagName("timestamp").item(0);
-					Element buildNum = (Element) versionsElement.getElementsByTagName("buildNumber").item(0);
-					if(ts != null && buildNum != null)
-						return version.substring(0, version.length() - 8) + ts.getTextContent() + '-' + buildNum.getTextContent();
-				}
+				Element ts = (Element) versionsElement.getElementsByTagName("timestamp").item(0);
+				Element buildNum = (Element) versionsElement.getElementsByTagName("buildNumber").item(0);
+				if(ts != null && buildNum != null)
+					return version.substring(0, version.length() - 8) + ts.getTextContent() + '-' + buildNum.getTextContent();
 			}
 		}
 		throw BuckminsterException.fromMessage("Unable to read snapshot metadata");
 	}
 
-	private Document getMetadataDocument(Maven2ReaderType readerType, DocumentBuilder docBld, URI uri, String path, IProgressMonitor monitor) throws CoreException
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
 	{
-		URL url = readerType.createURL(uri, path);
-
 		InputStream input = null;
-		Document doc;
 		try
 		{
-			input = CorePlugin.getDefault().openCachedURL(url, monitor);
-			doc = docBld.parse(input);
+			input = CorePlugin.getDefault().openCachedURL(url, cctx, monitor);
+			return docBld.parse(input);
 		}
 		catch(CoreException e)
 		{
@@ -186,19 +180,5 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		{
 			IOUtils.close(input);
 		}
-
-		// Make sure groupId and artifactId in metadata document match map entry
-		String mapEntryGroupId = getMapEntry().getGroupId();
-		String mapEntryArtifactId = getMapEntry().getArtifactId();
-
-		String docGroupId = doc.getElementsByTagName("groupId").item(0).getTextContent();
-		String docArtifactId = doc.getElementsByTagName("artifactId").item(0).getTextContent();
-
-		if (mapEntryGroupId.equals(docGroupId) && mapEntryArtifactId.equals(docArtifactId))
-			return doc;
-
-		CorePlugin.getLogger().warning("Metadata at %s has groupId:artifactId %s:%s  that does not match map entry %s:%s",
-			url, docGroupId, docArtifactId, mapEntryGroupId, mapEntryArtifactId);
-		return null;
 	}
 }

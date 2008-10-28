@@ -7,9 +7,21 @@
  *****************************************************************************/
 package org.eclipse.buckminster.maven;
 
+import java.net.URL;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+
+import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.maven.internal.Maven2VersionFinder;
+import org.eclipse.buckminster.maven.internal.MavenComponentType;
 import org.eclipse.buckminster.runtime.LogAwarePlugin;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.osgi.framework.BundleContext;
+import org.w3c.dom.Document;
 
 /**
  * @author Thomas Hallgren
@@ -33,6 +45,26 @@ public class MavenPlugin extends LogAwarePlugin
 	public MavenPlugin()
 	{
 		s_plugin = this;
+	}
+
+	public static IVersion createVersion(String versionStr) throws CoreException
+	{
+		return MavenComponentType.createVersion(versionStr);
+	}
+
+	public static List<String> getVersions(Document doc)
+	{
+		return Maven2VersionFinder.getVersions(doc);
+	}
+
+	public static String getSnapshotVersion(Document doc, String version) throws CoreException
+	{
+		return Maven2VersionFinder.getSnapshotVersion(doc, version);
+	}
+
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
+	{
+		return Maven2VersionFinder.getMetadataDocument(docBld, url, cctx, monitor);
 	}
 
 	@Override

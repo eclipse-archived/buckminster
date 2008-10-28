@@ -117,7 +117,7 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	static IVersion createVersion(String versionStr) throws CoreException
+	public static IVersion createVersion(String versionStr) throws CoreException
 	{
 		versionStr = TextUtils.notEmptyTrimmedString(versionStr);
 		if(versionStr == null)
