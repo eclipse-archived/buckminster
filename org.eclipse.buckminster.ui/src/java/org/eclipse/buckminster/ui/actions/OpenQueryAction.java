@@ -100,7 +100,7 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 			try
 			{
 				output = new FileOutputStream(tempFile);
-				DownloadManager.readInto(url, output, null);
+				DownloadManager.readInto(url, null, output, null);
 			}
 			finally
 			{

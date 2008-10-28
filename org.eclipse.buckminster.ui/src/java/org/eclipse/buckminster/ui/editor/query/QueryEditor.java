@@ -536,7 +536,7 @@ public class QueryEditor extends EditorPart
 				{
 					contextURL = file.toURI().toURL();
 				}
-				m_componentQuery.initFrom(ComponentQuery.fromStream(contextURL, stream, true));
+				m_componentQuery.initFrom(ComponentQuery.fromStream(contextURL, null, stream, true));
 				CorePlugin.getLogger().debug("CQUERY Context URL set to %s", m_componentQuery.getContextURL());
 			}
 			m_needsRefresh = true;

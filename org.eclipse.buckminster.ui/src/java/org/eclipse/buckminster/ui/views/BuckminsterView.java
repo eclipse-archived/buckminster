@@ -1008,7 +1008,7 @@ public class BuckminsterView extends ViewPart
 				try
 				{
 					stream = new FileInputStream(file);
-					componentQuery.initFrom(ComponentQuery.fromStream(file.toURI().toURL(), stream, true));
+					componentQuery.initFrom(ComponentQuery.fromStream(file.toURI().toURL(), null, stream, true));
 				}
 				catch(Exception e)
 				{

@@ -107,7 +107,7 @@ public class EditorUtils
 			try
 			{
 				os = new FileOutputStream(cspecFile);
-				DownloadManager.readInto(url, os, null);
+				DownloadManager.readInto(url, null, os, null);
 			}
 			finally
 			{

@@ -219,7 +219,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
 						QueryWizard wizard = getQueryWizard();
 						MaterializationSpecBuilder mspecBld = wizard.getMaterializationSpec();
-						DownloadManager.readInto(urlToParse, byteBld, MonitorUtils.subMonitor(monitor, 20));
+						DownloadManager.readInto(urlToParse, null, byteBld, MonitorUtils.subMonitor(monitor, 20));
 						input = byteBld.getInputStream();
 
 						IParserFactory pf = CorePlugin.getDefault().getParserFactory();
@@ -241,7 +241,7 @@ public class SelectBOMPage extends AbstractQueryPage
 							mspecBld.initFrom(mspec);
 							urlToParse = mspec.getResolvedURL();
 							byteBld.reset();
-							DownloadManager.readInto(urlToParse, byteBld, MonitorUtils.subMonitor(monitor, 20));
+							DownloadManager.readInto(urlToParse, null, byteBld, MonitorUtils.subMonitor(monitor, 20));
 						}
 						else
 						{
@@ -254,7 +254,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						ComponentQuery cquery;
 						try
 						{
-							cquery = ComponentQuery.fromStream(urlToParse, input, true);
+							cquery = ComponentQuery.fromStream(urlToParse, null, input, true);
 						}
 						catch(CoreException e)
 						{
