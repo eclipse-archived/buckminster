@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.tigris.subversion.subclipse.core,
  org.eclipse.team.core,
  org.eclipse.core.resources,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.ecf;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

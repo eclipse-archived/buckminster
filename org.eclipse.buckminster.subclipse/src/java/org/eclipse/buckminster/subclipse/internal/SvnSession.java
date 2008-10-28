@@ -554,7 +554,7 @@ public class SvnSession implements Closeable
 			if(scheme != null)
 			{
 				bld.append(scheme);
-				bld.append(':');
+				bld.append("://");
 			}
 
 			String username = null;
@@ -579,11 +579,13 @@ public class SvnSession implements Closeable
 							password = null;
 					}
 				}
-				bld.append("//");
 				bld.append(authority);
 			}
 			m_username = username;
 			m_password = password;
+
+			if(fullPath.getDevice() != null)
+				bld.append('/');
 
 			bld.append(fullPath.removeLastSegments(relPathLen));
 			String urlLeadIn = bld.toString();
@@ -596,7 +598,10 @@ public class SvnSession implements Closeable
 			if(m_trunkStructure)
 			{
 				if(relPathLen > 1)
+				{
 					modulePath = fullPath.removeFirstSegments(idx + 1);
+					modulePath = modulePath.setDevice(null);
+				}
 			}
 			else
 				modulePath = Path.fromPortableString(fullPath.lastSegment());
@@ -1110,11 +1115,14 @@ public class SvnSession implements Closeable
 		int port = url.getPort();
 		bld.append(protocol);
 		bld.append("://");
-		bld.append(url.getHost());
-		if(port != SVNUrl.getDefaultPort(protocol))
+		if(url.getHost() != null)
 		{
-			bld.append(":");
-			bld.append(port);
+			bld.append(url.getHost());
+			if(port != -1)
+			{
+				bld.append(":");
+				bld.append(port);
+			}
 		}
 
 		String[] segments = url.getPathSegments();
@@ -1193,7 +1201,8 @@ public class SvnSession implements Closeable
 					continue;
 
 				SVNUrl cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url.getPort() == cmp.getPort()))
+				if(!(Trivial.equalsAllowNull(url.getHost(),cmp.getHost()) && Trivial.equalsAllowNull(url.getProtocol(),cmp.getProtocol()) 
+						&& url.getPort() == cmp.getPort()))
 					continue;
 
 				String[] urlSegs = url.getPathSegments();
@@ -1233,11 +1242,14 @@ public class SvnSession implements Closeable
 				StringBuilder bld = new StringBuilder();
 				bld.append(url.getProtocol());
 				bld.append("://");
-				bld.append(url.getHost());
-				if(url.getPort() >= 0)
+				if(url.getHost() != null)
 				{
-					bld.append(':');
-					bld.append(url.getPort());
+					bld.append(url.getHost());
+					if(url.getPort() != -1)
+					{
+						bld.append(":");
+						bld.append(url.getPort());
+					}
 				}
 				for(int pdx = 0; pdx < idx; ++pdx)
 				{
@@ -1280,7 +1292,8 @@ public class SvnSession implements Closeable
 			for(RepositoryAccess repoAccessCmp : commonRoots)
 			{
 				SVNUrl cmp = repoAccessCmp.getSvnURL();
-				if(!(url.getHost().equals(cmp.getHost()) && url.getProtocol().equals(cmp.getProtocol()) && url.getPort() == cmp.getPort()))
+				if(!(Trivial.equalsAllowNull(url.getHost(),cmp.getHost()) && Trivial.equalsAllowNull(url.getProtocol(),cmp.getProtocol()) 
+						&& url.getPort() == cmp.getPort()))
 					continue;
 
 				String[] urlSegs = url.getPathSegments();
