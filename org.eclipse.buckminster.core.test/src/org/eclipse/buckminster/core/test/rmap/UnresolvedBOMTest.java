@@ -77,7 +77,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		//
 		URL queryURL = new URL("http://www.eclipse.org/buckminster/samples/queries/actor_a.cquery");
 		InputStream input = queryURL.openStream();
-		ComponentQuery query = ComponentQuery.fromStream(queryURL, input, true);
+		ComponentQuery query = ComponentQuery.fromStream(queryURL, null, input, true);
 		input.close();
 
 		// Create our dependency to the top node

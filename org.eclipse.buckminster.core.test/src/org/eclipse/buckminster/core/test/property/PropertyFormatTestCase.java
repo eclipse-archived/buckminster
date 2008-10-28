@@ -166,7 +166,7 @@ public class PropertyFormatTestCase extends TestCase
 
 		public void parse(URL url) throws IOException, SAXException, CoreException
 		{
-			InputStream input = DownloadManager.read(url);
+			InputStream input = DownloadManager.read(url, null);
 			try
 			{
 				InputSource source = new InputSource(new BufferedInputStream(input));

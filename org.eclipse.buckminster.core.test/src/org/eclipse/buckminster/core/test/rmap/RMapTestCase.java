@@ -72,7 +72,7 @@ public class RMapTestCase extends AbstractTestCase
 		//
 		URL queryURL = new URL("http://www.eclipse.org/buckminster/samples/queries/actor_a.cquery");
 		InputStream input = queryURL.openStream();
-		ComponentQuery query = ComponentQuery.fromStream(queryURL, input, true);
+		ComponentQuery query = ComponentQuery.fromStream(queryURL, null, input, true);
 		input.close();
 
 		// Create a resolver that uses the RMAP from the query regardless, i.e.
