@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -93,9 +94,22 @@ public class Maven2VersionFinder extends MavenVersionFinder
 					v = getSnapshotVersion(doc, v);
 				}
 
-				IVersion version = versionDesignator == null ? MavenComponentType.createVersion(v) : versionDesignator.getVersion().getType().fromString(v);
-				if(!(versionDesignator == null || versionDesignator.designates(version)))
-					continue;
+				IVersion version;
+				if(versionDesignator == null)
+					version = MavenComponentType.createVersion(v);
+				else
+				{
+					try
+					{
+						version = versionDesignator.getVersion().getType().fromString(v);
+						if(!versionDesignator.designates(version))
+							continue;
+					}
+					catch(VersionSyntaxException e)
+					{
+						continue;
+					}
+				}
 
 				pbld.setLength(0);
 				pbld.append(versionStr);
