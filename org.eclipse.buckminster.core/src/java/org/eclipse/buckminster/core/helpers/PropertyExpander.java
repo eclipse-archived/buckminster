@@ -1,6 +1,8 @@
 package org.eclipse.buckminster.core.helpers;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,16 +63,31 @@ public class PropertyExpander
 		for(String pathGroupKey : keySet)
 		{
 			final PathGroup[] pathGroups = namedPathGroupArrays.get(pathGroupKey);
-			final StringBuffer buffer = new StringBuffer();
+			final Set<String> pathSet = new HashSet<String>(5);
 			for(PathGroup pathGroup : pathGroups)
 			{
+				final String base = pathGroup.getBase().toOSString();
 				final IPath[] paths = pathGroup.getPaths();
-				for(IPath path : paths)
-					buffer.append(pathGroup.getBase() + path.toOSString()).append(';');
+				// if only a base path, adding it
+				if(paths.length == 0)
+				{
+					pathSet.add(base);
+				}
+				else
+				// otherwise adding all the paths
+				{
+					for(IPath path : paths)
+						pathSet.add(base + path.toOSString());
+				}
 			}
-			if(buffer.length() > 0)
-				buffer.deleteCharAt(buffer.length() - 1);
-			map.put(pathGroupKey, buffer.toString());
+			final StringBuffer buffer = new StringBuffer();
+			for(String path : pathSet)
+			{
+				buffer.append(path).append(File.pathSeparatorChar);
+			}
+			final int lastCharIndex = buffer.length()-1;
+			if(lastCharIndex>0 && buffer.charAt(lastCharIndex)==File.pathSeparatorChar)
+				map.put(pathGroupKey, buffer.substring(0, lastCharIndex));
 		}
 		return map;
 	}
