@@ -65,20 +65,22 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	private IBaseLabelProvider m_labelProvider;
 
 	private IStructuredContentProvider m_contentProvider;
-	
+
 	private MasterFormPart m_masterFormPart;
 
 	public ProvidedBodyBlock(FormPage page, Object layoutData)
 	{
 		super(page, layoutData, 350);
 	}
+
 	@Override
 	protected void createMasterPart(final IManagedForm managedForm, Composite parent)
 	{
 		super.createMasterPart(managedForm, parent); // create the view
-		m_masterFormPart = new MasterFormPart();	// create the manager of the view data lifecycle
-		managedForm.addPart(m_masterFormPart);		// and make it part of the overall lifecycle
+		m_masterFormPart = new MasterFormPart(); // create the manager of the view data lifecycle
+		managedForm.addPart(m_masterFormPart); // and make it part of the overall lifecycle
 	}
+
 	@Override
 	public String getName()
 	{
@@ -90,23 +92,27 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	{
 		return "Edit the capabilities provided by this installable unit.";
 	}
+
 	/**
 	 * Adds a default provided capability for editing. Operation can be undone.
 	 */
 	public void add()
 	{
 		ProvidedCapabilityBuilder provided = new ProvidedCapabilityBuilder( //
-				"org.equinox.p2.iu", 	// $NON-NLS-1$
-				"provided.name", 			//
-				"1.0.0");  					// $NON-NLS-1$
+				"org.equinox.p2.iu", // $NON-NLS-1$
+				"provided.name", //
+				"1.0.0"); // $NON-NLS-1$
 
 		addRemove(provided, true);
 	}
-	
+
 	/**
 	 * Method common to both add and remove. Operation can be undone.
-	 * @param provided what to add or remove
-	 * @param add true if provided should be added, false to remove
+	 * 
+	 * @param provided
+	 *            what to add or remove
+	 * @param add
+	 *            true if provided should be added, false to remove
 	 */
 	private void addRemove(ProvidedCapabilityBuilder provided, boolean add)
 	{
@@ -134,8 +140,8 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	}
 
 	/**
-	 * Configures the add button to have a menu with different add types
-	 * TODO: clean up popup menu code if it will not be used
+	 * Configures the add button to have a menu with different add types TODO: clean up popup menu code if it will not
+	 * be used
 	 */
 	@Override
 	protected void configureAddButton(final Button b)
@@ -174,11 +180,12 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 		// // attach listener to button so menu pops up on button click (left click)
 		// b.addSelectionListener(new SelectionListener()
 		// { public void widgetDefaultSelected(SelectionEvent e)
-		// 	{ widgetSelected(e); }
-		// 	public void widgetSelected(SelectionEvent e)
-		// 	{ b.getMenu().setVisible(true);}
+		// { widgetSelected(e); }
+		// public void widgetSelected(SelectionEvent e)
+		// { b.getMenu().setVisible(true);}
 		// });
 	}
+
 	/**
 	 * Moves selected provided capability down in the list. Operation can be undone.
 	 */
@@ -186,6 +193,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	{
 		move(1);
 	}
+
 	/**
 	 * Moves selected provided capability up in the list. Operation can be undone.
 	 */
@@ -193,7 +201,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	{
 		move(-1);
 	}
-	
+
 	/**
 	 * Common move operation - moved provided capability up or down in the list. Operation can be undone.
 	 */
@@ -219,7 +227,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -230,7 +238,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 
 	public IDetailsPage getProvidedPage()
 	{
-		// TODO: no need to cache?  Master detail editor creates this on demand and keeps it,
+		// TODO: no need to cache? Master detail editor creates this on demand and keeps it,
 		// but then the undo history may refer to deleted (and recreated elements).
 		//
 		if(m_providedPage == null)
@@ -295,8 +303,8 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	}
 
 	/**
-	 * Selects a page key for the selected object. See {@link #getPage(Object)}. Currently, there is only one type
-	 * of details page key - "provided".
+	 * Selects a page key for the selected object. See {@link #getPage(Object)}. Currently, there is only one type of
+	 * details page key - "provided".
 	 */
 	public Object getPageKey(Object object)
 	{
@@ -315,7 +323,6 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 		addRemove((ProvidedCapabilityBuilder)ssel.getFirstElement(), false);
 	}
 
-	
 	private class MasterFormPart extends AbstractFormPart
 	{
 
@@ -326,7 +333,8 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 			// register a listener to Provided Capability change events
 			if(form.getToolkit() instanceof IEditEventBusProvider)
 			{
-				((IEditEventBusProvider)form.getToolkit()).getEventBus().addListener(new IEditorListener(){
+				((IEditEventBusProvider)form.getToolkit()).getEventBus().addListener(new IEditorListener()
+				{
 
 					public void notify(EventObject o)
 					{
@@ -335,7 +343,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 						if(((ModelChangeEvent)o).getDetail() instanceof ProvidedCapabilityBuilder)
 							ProvidedBodyBlock.this.m_viewer.refresh(((ModelChangeEvent)o).getDetail(), true);
 					}
-					
+
 				});
 			}
 		}
@@ -349,8 +357,9 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 			ProvidedBodyBlock.this.m_viewer.refresh();
 			super.refresh();
 		}
-		
+
 	}
+
 	/**
 	 * Returns a memento that restores this page selection.
 	 */
@@ -358,6 +367,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 	{
 		return ((IStructuredSelection)m_viewer.getSelection()).getFirstElement();
 	}
+
 	/**
 	 * Restores this page selection from the memento.
 	 */
@@ -366,6 +376,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 		if(memento != null)
 			m_viewer.setSelection(new StructuredSelection(memento), true);
 	}
+
 	/**
 	 * Switches focus in the editor to the page where this provided body block is.
 	 */
@@ -381,27 +392,36 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 
 	/**
 	 * Undoable operation for add/remove of provided capability.
+	 * 
 	 * @author Henrik Lindberg
-	 *
+	 * 
 	 */
 	private class AddRemoveOperation extends AbstractOperation
 	{
 		private ProvidedCapabilityBuilder m_provided;
-		private boolean  m_add;
+
+		private boolean m_add;
+
 		private int m_index;
-		
+
 		public AddRemoveOperation(ProvidedCapabilityBuilder provided, boolean add)
 		{
-			super((add ? "Add" : "Remove") + " Provided Capability"); 
+			super((add
+					? "Add"
+					: "Remove") + " Provided Capability");
 			m_provided = provided;
 			m_add = add;
 		}
+
 		private void updatePageState(boolean select)
 		{
 			m_masterFormPart.markStale();
 			m_masterFormPart.markDirty();
-			switchFocus(select ? m_provided : null); // switch focus if on another page
+			switchFocus(select
+					? m_provided
+					: null); // switch focus if on another page
 		}
+
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
@@ -435,30 +455,35 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 				monitor.done();
 			return Status.OK_STATUS;
 		}
-		
+
 	}
+
 	/**
 	 * Undoable operation class for moving provided capability.
+	 * 
 	 * @author Henrik Lindberg
-	 *
+	 * 
 	 */
 	private class MoveOperation extends AbstractOperation
 	{
 		private ProvidedCapabilityBuilder m_provided;
-		private int  m_delta;
-		
+
+		private int m_delta;
+
 		public MoveOperation(ProvidedCapabilityBuilder provided, int delta)
 		{
-			super("Move Provided Capability"); 
+			super("Move Provided Capability");
 			m_provided = provided;
 			m_delta = delta;
 		}
+
 		private void updatePageState()
 		{
 			m_masterFormPart.markStale();
 			m_masterFormPart.markDirty();
 			switchFocus(m_provided); // switch focus if on another page
 		}
+
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
@@ -470,6 +495,7 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 		{
 			return xxdo(monitor, info, m_delta);
 		}
+
 		public IStatus xxdo(IProgressMonitor monitor, IAdaptable info, int delta) throws ExecutionException
 		{
 			InstallableUnitBuilder iu = ((InstallableUnitEditor)m_formPage.getEditor()).getInstallableUnit();
@@ -483,9 +509,9 @@ public class ProvidedBodyBlock extends TableMasterDetailsBlock implements IDetai
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException
 		{
-			return xxdo(monitor, info, -m_delta);		
+			return xxdo(monitor, info, -m_delta);
 		}
-		
+
 	}
 
 }
