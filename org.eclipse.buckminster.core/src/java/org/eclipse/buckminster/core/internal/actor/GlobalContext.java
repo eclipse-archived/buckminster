@@ -79,7 +79,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	{
 		Map<String, String> userProperties = super.getProperties();
 		ExpandingProperties allProps = new ExpandingProperties(userProperties.size() + m_globalProps.size());
-		allProps.putAll(m_globalProps);
+		allProps.putAll(m_globalProps, true);
 		allProps.putAll(userProperties);
 		return allProps;
 	}
