@@ -594,12 +594,16 @@ public class CreateProductBase
 		environment.put("osgi.nl", m_nl);
 		List<BundleDescription> pluginModels = getPluginModels();
 
-		// include only bundles that are actually in this product configuration
+		// We include only bundles that are actually in this product configuration
+		// and we skip fragments all fragments.
 		//
 		boolean first = true;
-		Set<String> includedBundles = new HashSet<String>();
+		Set<String> includedBundles = new HashSet<String>(pluginModels.size());
 		for(BundleDescription bundle : pluginModels)
-			includedBundles.add(bundle.getSymbolicName());
+		{
+			if(bundle.getHost() == null)
+				includedBundles.add(bundle.getSymbolicName());
+		}
 
 		Set<String> bundles = new HashSet<String>();
 		bundles.add("org.eclipse.osgi");
