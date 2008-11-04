@@ -42,11 +42,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.ILocationProvider;
 
 /**
- * A multi page Eclipse form based editor for p2 Installable Unit.
+ * A multi page Eclipse form based editor for p2 IU.
  * 
  * The editor keeps track of two types of "dirty" state - a) the dirty state in the editor pages (and sub editors),
  * which reflect the dirty state in relation to the model object b) the model's dirty state. Editor pages are marked as
- * "clean" when the data in the editor has been "comitted" to the model object. This happens frequently when the user
+ * "clean" when the data in the editor has been "committed" to the model object. This happens frequently when the user
  * switches between pages in the editor, or when switching between details in a master detail setup.
  * 
  * Changes to the model marks the model as "changed" (i.e. dirty), until the changed-state is cleared. The editor clears
