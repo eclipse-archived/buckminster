@@ -53,7 +53,7 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 	private NullTouchpoint m_none;
 
 	private Logger m_logger;
-	
+
 	private IContainer m_container;
 
 	/**
@@ -152,6 +152,7 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 		{
 		}
 	}
+
 	private synchronized void initializeTouchpointType()
 	{
 		if(m_touchpointTypeDescs != null)
@@ -160,26 +161,29 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 
 		m_none = new NullTouchpoint();
 		m_touchpointTypeDescs.put(m_none.getTypeId() + " " + m_none.getVersionString(), m_none);
-		
+
 		EclipseTouchpoint_1_0 e = new EclipseTouchpoint_1_0();
 		m_touchpointTypeDescs.put(e.getTypeId() + " " + e.getVersionString(), e);
-		
+
 		NativeTouchpoint_1_0 n = new NativeTouchpoint_1_0();
-		m_touchpointTypeDescs.put(n.getTypeId() + " " + n.getVersionString(), n);	
-		
+		m_touchpointTypeDescs.put(n.getTypeId() + " " + n.getVersionString(), n);
+
 		// TODO: Pick up from extension point
 	}
+
 	public ITouchpointTypeDescriptor getTouchpointType(String typeKey, String versionString)
 	{
 		if(m_touchpointTypeDescs == null)
 			initializeTouchpointType();
-		
+
 		String key = typeKey.trim() + " " + versionString.trim();
 		return m_touchpointTypeDescs.get(key);
 	}
+
 	/**
-	 * Returns descriptor for the touchpoint type. If type is null, the "null type" is returned. Null
-	 * is returned for unknown types.
+	 * Returns descriptor for the touchpoint type. If type is null, the "null type" is returned. Null is returned for
+	 * unknown types.
+	 * 
 	 * @param builder
 	 * @return null if type is unknown, else a type, or the special "null type"
 	 */
@@ -189,21 +193,25 @@ public class P2AuthoringUIPlugin extends AbstractUIPlugin
 			return m_none;
 		return getTouchpointType(builder.getTypeid(), builder.getVersion());
 	}
+
 	ITouchpointTypeDescriptor[] getTouchpointTypes()
 	{
 		if(m_touchpointTypeDescs == null)
 			initializeTouchpointType();
 		return m_touchpointTypeDescs.values().toArray(new ITouchpointTypeDescriptor[m_touchpointTypeDescs.size()]);
 	}
+
 	public synchronized Logger getBundleLogger()
 	{
 		if(m_logger == null)
 			m_logger = new Logger(this.getBundle());
 		return m_logger;
 	}
+
 	public IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
 	{
-		return (IRetrieveFileTransferContainerAdapter)m_container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
+		return (IRetrieveFileTransferContainerAdapter)m_container
+				.getAdapter(IRetrieveFileTransferContainerAdapter.class);
 	}
 
 }
