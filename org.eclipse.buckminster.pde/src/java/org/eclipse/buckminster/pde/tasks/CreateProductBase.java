@@ -603,7 +603,6 @@ public class CreateProductBase
 
 		Set<String> bundles = new HashSet<String>();
 		bundles.add("org.eclipse.osgi");
-
 		for(String token : TextUtils.split(bundleList, ","))
 		{
 			int delimIdx = token.indexOf('@');
@@ -611,10 +610,12 @@ public class CreateProductBase
 					? token.substring(0, delimIdx)
 					: token;
 
-			if(!includedBundles.contains(id))
+			// Don't include unless it's listed among the pluginModels
+			//
+			if(bundles.contains(id) || !includedBundles.contains(id))
 				continue;
-			includedBundles.remove(id);
 
+			bundles.add(id);
 			if(first)
 				first = false;
 			else
@@ -630,10 +631,10 @@ public class CreateProductBase
 			try
 			{
 				String id = bundle.getSymbolicName();
-				if(!includedBundles.contains(id))
+				if(bundles.contains(id))
 					continue;
-				includedBundles.remove(id);
 
+				bundles.add(id);
 				String filterSpec = bundle.getPlatformFilter();
 				if(filterSpec == null || FilterUtils.createFilter(filterSpec).match(environment))
 				{
