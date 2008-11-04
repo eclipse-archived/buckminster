@@ -43,7 +43,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 /**
- * This is an Overview page with the most basic information for an installable unit such as namespace, name, id, etc.
+ * This is an Overview page with the most basic information for a p2 IU such as namespace, name, id, etc.
  * 
  * @author Henrik Lindberg
  * 
