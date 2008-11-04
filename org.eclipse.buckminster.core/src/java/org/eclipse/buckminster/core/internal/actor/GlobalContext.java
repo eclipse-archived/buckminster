@@ -77,9 +77,11 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	@Override
 	public synchronized Map<String, String> getProperties()
 	{
-		final Map<String, String> userProperties = super.getProperties();
-		userProperties.putAll(m_globalProps);
-		return userProperties;
+		Map<String, String> userProperties = super.getProperties();
+		ExpandingProperties allProps = new ExpandingProperties(userProperties.size() + m_globalProps.size());
+		allProps.putAll(m_globalProps);
+		allProps.putAll(userProperties);
+		return allProps;
 	}
 
 	public IStatus getStatus()
