@@ -598,15 +598,20 @@ public class CreateProductBase
 		// and we skip fragments all fragments.
 		//
 		boolean first = true;
-		Set<String> includedBundles = new HashSet<String>(pluginModels.size());
-		for(BundleDescription bundle : pluginModels)
+		int top = pluginModels.size();
+		Set<String> includedBundles = new HashSet<String>(top);
+		Set<String> processedBundles = new HashSet<String>(top);
+		for(int idx = 0; idx < top; ++idx)
 		{
+			BundleDescription bundle = pluginModels.get(idx);
+			String id = bundle.getSymbolicName();
 			if(bundle.getHost() == null)
-				includedBundles.add(bundle.getSymbolicName());
+				includedBundles.add(id);
+			else
+				processedBundles.add(id);
 		}
+		processedBundles.add("org.eclipse.osgi");
 
-		Set<String> bundles = new HashSet<String>();
-		bundles.add("org.eclipse.osgi");
 		for(String token : TextUtils.split(bundleList, ","))
 		{
 			int delimIdx = token.indexOf('@');
@@ -616,10 +621,10 @@ public class CreateProductBase
 
 			// Don't include unless it's listed among the pluginModels
 			//
-			if(bundles.contains(id) || !includedBundles.contains(id))
+			if(processedBundles.contains(id) || !includedBundles.contains(id))
 				continue;
 
-			bundles.add(id);
+			processedBundles.add(id);
 			if(first)
 				first = false;
 			else
@@ -635,10 +640,10 @@ public class CreateProductBase
 			try
 			{
 				String id = bundle.getSymbolicName();
-				if(bundles.contains(id))
+				if(processedBundles.contains(id))
 					continue;
 
-				bundles.add(id);
+				processedBundles.add(id);
 				String filterSpec = bundle.getPlatformFilter();
 				if(filterSpec == null || FilterUtils.createFilter(filterSpec).match(environment))
 				{
