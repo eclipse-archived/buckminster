@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.buckminster.jnlp" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.buckminster.jnlp" id="learnMore" name="Learn More"/>
+         <meta.schema plugin="org.eclipse.buckminster.jnlp" id="authentication" name="JNLP Authentication"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="learnMoreItem" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="authenticator"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="learnMoreItem">
+   <element name="authenticator">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -56,21 +56,14 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="string" type="string" use="required">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute translatable="true"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.buckminster.jnlp.IAuthenticator"/>
                </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="url" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
             </annotation>
          </attribute>
       </complexType>

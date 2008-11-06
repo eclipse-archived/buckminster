@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.buckminster.jnlp" id="publication" name="JNLP Publication"/>
       </appinfo>
       <documentation>
-         [Enter description]
+         [Enter description of this extension point.]
       </documentation>
    </annotation>
 
