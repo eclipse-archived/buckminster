@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.buckminster.jnlp" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.buckminster.jnlp.p2" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.buckminster.jnlp" id="componentInfo" name="Component INFO"/>
+         <meta.schema plugin="org.eclipse.buckminster.jnlp.p2" id="componentInfo" name="Component INFO"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="componentInfoProvider"/>
@@ -44,7 +49,7 @@
 
    <element name="componentInfoProvider">
       <complexType>
-         <attribute name="is" type="string" use="required">
+         <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -57,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.buckminster.componentinfo.IComponentInfoProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.buckminster.jnlp.p2.componentinfo.IComponentInfoProvider"/>
                </appinfo>
             </annotation>
          </attribute>

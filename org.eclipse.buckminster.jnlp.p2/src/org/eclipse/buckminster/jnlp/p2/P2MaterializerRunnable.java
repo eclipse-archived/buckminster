@@ -32,11 +32,6 @@ public class P2MaterializerRunnable implements IRunnableWithProgress
 	
 	public P2MaterializerRunnable(IPath installLocation)
 	{
-		//org.eclipse.equinox.internal.app.Activator.getContainer();
-		//org.eclipse.equinox.internal.frameworkadmin.equinox.Activator.getDefault();
-		//org.eclipse.equinox.internal.simpleconfigurator.manipulator.Activator.getDefault();
-		//InstallerActivator.getDefault();
-		
 		InstallDescription installDescription = new InstallDescription();
 
 		try
