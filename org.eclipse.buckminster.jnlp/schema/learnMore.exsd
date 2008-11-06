@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.buckminster.jnlp.p2" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.buckminster.jnlp" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.buckminster.jnlp.p2" id="learnMore" name="Learn More"/>
+         <meta.schema plugin="org.eclipse.buckminster.jnlp" id="learnMore" name="Learn More"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         [Enter description]
       </documentation>
    </annotation>
 

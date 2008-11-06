@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.buckminster.jnlp" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.buckminster.jnlp" id="authentication" name="JNLP Authentication"/>
+         <meta.schema plugin="org.eclipse.buckminster.jnlp" id="publication" name="JNLP Publication"/>
       </appinfo>
       <documentation>
          [Enter description]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="authenticator"/>
+            <element ref="publisher"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="authenticator">
+   <element name="publisher">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.buckminster.jnlp.IAuthenticator"/>
+                  <meta.attribute kind="java" basedOn="IPublisher"/>
                </appinfo>
             </annotation>
          </attribute>
