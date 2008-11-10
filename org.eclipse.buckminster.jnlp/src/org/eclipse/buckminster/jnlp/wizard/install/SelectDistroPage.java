@@ -182,6 +182,8 @@ public class SelectDistroPage extends InstallWizardPage
 
 	private Label m_selectionHeadingLabel;
 
+	private Composite m_selectionComposite;
+	
 	private Composite m_selectionDetailsComposite;
 	
 	private static final String UNSPECIFIED = "unspecified";
@@ -437,19 +439,22 @@ public class SelectDistroPage extends InstallWizardPage
 					selectionDetailsLabel.setText("");
 				}
 				getContainer().updateButtons();
-				m_selectionDetailsComposite.pack();
+				
 				m_selectionDetailsComposite.layout();
+				
+				m_selectionComposite.pack();
+				m_selectionComposite.layout();
 			}
 		});
 
-		Composite selectionComposite = new Composite(m_pageComposite, SWT.NONE);
+		m_selectionComposite = new Composite(m_pageComposite, SWT.NONE);
 		gridLayout = new GridLayout(2, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
-		selectionComposite.setLayout(gridLayout);
+		m_selectionComposite.setLayout(gridLayout);
 
-		m_selectionBoxLabel = new Label(selectionComposite, SWT.NONE);
+		m_selectionBoxLabel = new Label(m_selectionComposite, SWT.NONE);
 
-		Composite selectionDetailsComposite = new Composite(selectionComposite, SWT.NONE);
+		Composite selectionDetailsComposite = new Composite(m_selectionComposite, SWT.NONE);
 		gridLayout = new GridLayout(1, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
 		selectionDetailsComposite.setLayout(gridLayout);
