@@ -22,7 +22,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
-import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 public class VersionFinder extends AbstractSCCSVersionFinder
@@ -64,17 +63,13 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 				return Collections.emptyList();
 				
 			SVNUrl url = m_session.getSVNRootUrl(branches);
-			SVNRevision.Number repoRev = m_session.getRepositoryRevision(MonitorUtils.subMonitor(monitor, 50));
-			if(repoRev == null)
-				return Collections.emptyList();
-	
 			ISVNDirEntry[] list = m_session.listFolder(url, MonitorUtils.subMonitor(monitor, 150));
 			if(list.length == 0)
 				return Collections.emptyList();
 	
 			ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
 			for(ISVNDirEntry e : list)
-				entries.add(new RevisionEntry(e.getPath(), null, repoRev.getNumber()));
+				entries.add(new RevisionEntry(e.getPath(), null, e.getLastChangedRevision().getNumber()));
 			return entries;
 		}
 		finally
