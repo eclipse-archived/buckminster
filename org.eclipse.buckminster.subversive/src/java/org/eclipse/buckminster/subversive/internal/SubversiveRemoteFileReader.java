@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
 import org.eclipse.team.svn.core.connector.SVNConnectorException;
@@ -200,8 +201,8 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		OutputStream output = null;
 		InputStream input = null;
 
-		int ticksLeft = 3;
-		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, ticksLeft);
+		MonitorUtils.begin(monitor, 200);
+		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(MonitorUtils.subMonitor(monitor, 180), 100);
 
 		try
 		{
@@ -216,12 +217,15 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 			{
 				// Suspect file not found
 				//
-				if(m_session.getDirEntry(url, revision, null) == null)
+				if(m_session.getDirEntry(url, revision, MonitorUtils.subMonitor(monitor, 20)) == null)
 				{
 					logger.debug("Remote file not found %s", key);
 					throw new FileNotFoundException(url.toString());
 				}
 			}
+			else
+				MonitorUtils.worked(monitor, 20);
+
 			FileHandle fh = new FileHandle(fileName, destFile, true);
 			destFile = null;
 			return fh;
@@ -257,8 +261,6 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 			IOUtils.close(output);
 			if(destFile != null)
 				destFile.delete();
-			if(ticksLeft > 0)
-    			MonitorUtils.worked(monitor, ticksLeft);
 			monitor.done();
 		}
 	}
