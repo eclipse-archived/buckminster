@@ -409,7 +409,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));
 				return null;
 			}			
-			return new VersionMatch(version, null, entry.getRevision(), entry.getTimestamp(), null);
+			return new VersionMatch(version, null, -1, null, null);
 		}
 		finally
 		{
