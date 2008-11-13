@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
@@ -90,8 +91,16 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				String v = versionStr;
 				if(v.endsWith("SNAPSHOT"))
 				{
-					doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" + "maven-metadata.xml"), cctx, new NullProgressMonitor());
-					v = getSnapshotVersion(doc, v);
+					try
+					{
+						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" + "maven-metadata.xml"), cctx, new NullProgressMonitor());
+						v = getSnapshotVersion(doc, v);
+					}
+					catch(CoreException e)
+					{
+						logDecision(ResolverDecisionType.VERSION_REJECTED, v, e.getMessage());
+						continue;
+					}
 				}
 
 				IVersion version;
