@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
@@ -42,8 +43,11 @@ public class PropertyRef extends ValueHolder
 		String expandedKey = ExpandingProperties.expand(properties, m_key, recursionGuard + 1);
 		if(properties instanceof ExpandingProperties)
 			return ((ExpandingProperties)properties).getExpandedProperty(expandedKey, recursionGuard + 1);
-
-		return ExpandingProperties.expand(properties, properties.get(expandedKey), recursionGuard + 1);
+		final String replacementValue = properties.get(expandedKey);
+		if(replacementValue == null)
+			CorePlugin.getLogger()
+					.warning("The property ${" + m_key + "} has not been set and will default to null");
+		return ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1);
 	}
 
 	public String getDefaultTag()
