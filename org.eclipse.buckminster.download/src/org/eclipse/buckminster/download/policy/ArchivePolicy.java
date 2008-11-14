@@ -128,7 +128,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			saveLocalFileInfo(url, fileInfo);
 			if(fiHandle != null)
 				fiHandle[0] = fileInfo;
-			return fileInfo.getName();
+			return fileInfo.getRemoteName();
 		}
 		catch(IOException e)
 		{
