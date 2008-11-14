@@ -69,7 +69,7 @@ public class FileInfoBuilder implements IFileInfo
 		return m_lastModified;
 	}
 
-	public final String getName()
+	public final String getRemoteName()
 	{
 		return m_name;
 	}
@@ -81,7 +81,7 @@ public class FileInfoBuilder implements IFileInfo
 
 	public void initFrom(IFileInfo info)
 	{
-		setName(info.getName());
+		setName(info.getRemoteName());
 		setContentType(info.getContentType());
 		setSize(info.getSize());
 		setLastModified(info.getLastModified());

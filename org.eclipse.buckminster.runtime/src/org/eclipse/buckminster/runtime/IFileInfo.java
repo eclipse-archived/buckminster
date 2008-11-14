@@ -26,7 +26,7 @@ public interface IFileInfo
 	/**
 	 * @return the name (may return null)
 	 */
-	String getName();
+	String getRemoteName();
 
 	/**
 	 * @return the contentType (may return null)
