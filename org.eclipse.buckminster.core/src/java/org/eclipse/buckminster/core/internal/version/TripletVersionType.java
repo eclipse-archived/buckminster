@@ -34,7 +34,13 @@ public class TripletVersionType extends AbstractVersionType
 		if(m.find())
 		{
 			endPosRet[0] = startPos + m.end() - m.group(5).length();
-			return createVersion(intGroup(m, 1), intGroup(m, 2), intGroup(m, 3), m.group(4), versionString.substring(startPos, endPosRet[0]));
+			try
+			{
+				return createVersion(intGroup(m, 1), intGroup(m, 2), intGroup(m, 3), m.group(4), versionString.substring(startPos, endPosRet[0]));
+			}
+			catch(NumberFormatException e)
+			{		
+			}
 		}
 		throw new VersionSyntaxException("Not a valid " + this.getId() + " version", versionString, startPos);
 	}
