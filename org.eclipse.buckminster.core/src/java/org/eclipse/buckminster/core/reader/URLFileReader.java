@@ -84,7 +84,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 			in = DownloadManager.getCache().open(url, cctx, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 			m_fileInfo = fiHandle[0];
 
-			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getName(), resolution, ctx);
+			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getRemoteName(), resolution, ctx);
 			File destFile = unpacker.getFinalDestination().toFile();
 
 			if(destFile.toURI().toURL().equals(url))

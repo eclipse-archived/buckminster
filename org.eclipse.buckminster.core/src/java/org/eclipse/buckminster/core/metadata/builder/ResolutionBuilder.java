@@ -46,7 +46,7 @@ public class ResolutionBuilder implements IResolution
 
 	private boolean m_materializable = true;
 
-	private String m_name;
+	private String m_remoteName;
 
 	private OPMLBuilder m_opml;
 
@@ -96,7 +96,7 @@ public class ResolutionBuilder implements IResolution
 		m_cspec.clear();
 		m_lastModified = 0L;
 		m_materializable = true;
-		m_name = null;
+		m_remoteName = null;
 		m_opml = null;
 		m_provider = null;
 		m_readerTypeId = null;
@@ -149,9 +149,9 @@ public class ResolutionBuilder implements IResolution
 		return m_lastModified;
 	}
 
-	public String getName()
+	public String getRemoteName()
 	{
-		return m_name;
+		return m_remoteName;
 	}
 
 	public OPML getOPML()
@@ -236,7 +236,7 @@ public class ResolutionBuilder implements IResolution
 		m_persistentId = resolution.getPersistentId();
 		m_provider = resolution.getProvider();
 		m_resolutionFilter = resolution.getResolutionFilter();
-		m_name = resolution.getName();
+		m_remoteName = resolution.getRemoteName();
 		m_repository = resolution.getRepository();
 		m_request.initFrom(resolution.getRequest());
 		m_size = resolution.getSize();
@@ -289,14 +289,14 @@ public class ResolutionBuilder implements IResolution
 		if(info == null)
 		{
 			setContentType(null);
-			setName(null);
+			setRemoteName(null);
 			setLastModified(0);
 			setSize(-1);
 		}
 		else
 		{
 			setContentType(info.getContentType());
-			setName(info.getName());
+			setRemoteName(info.getRemoteName());
 			setLastModified(info.getLastModified());
 			setSize(info.getSize());
 
@@ -313,9 +313,9 @@ public class ResolutionBuilder implements IResolution
 		m_materializable = materializable;
 	}
 
-	public void setName(String remoteName)
+	public void setRemoteName(String remoteName)
 	{
-		m_name = remoteName;
+		m_remoteName = remoteName;
 	}
 
 	public void setProvider(Provider provider)

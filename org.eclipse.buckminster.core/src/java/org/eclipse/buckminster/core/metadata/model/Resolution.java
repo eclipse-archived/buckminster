@@ -184,7 +184,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_opml = bld.getOPML();
 		m_persistentId = bld.getPersistentId();
 		m_provider = bld.getProvider();
-		m_remoteName = bld.getName();
+		m_remoteName = bld.getRemoteName();
 		m_repository = bld.getRepository();
 		m_request = bld.getRequest().createComponentRequest();
 		m_size = bld.getSize();

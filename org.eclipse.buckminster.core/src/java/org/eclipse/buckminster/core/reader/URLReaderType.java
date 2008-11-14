@@ -117,7 +117,7 @@ public class URLReaderType extends AbstractReaderType
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context)
 	throws CoreException
 	{
-		String name = resolution.getName();
+		String name = resolution.getRemoteName();
 		if(name != null)
 			return Path.fromPortableString(name);
 
