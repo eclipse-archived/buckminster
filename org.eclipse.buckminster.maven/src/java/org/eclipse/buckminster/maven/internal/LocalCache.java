@@ -79,7 +79,7 @@ public class LocalCache
 		}
 
 		if(totRead != buffer.length)
-			throw BuckminsterException.fromMessage("Unable to read the 40 character hexadecimal form of the sha1 for %s", name);
+			throw BuckminsterException.fromMessage("Unable to read the %d character hexadecimal form of the digest for %s", Integer.valueOf(size), name);
 
 		byte[] result = new byte[size];
 		for(int idx = 0; idx < size; ++idx)

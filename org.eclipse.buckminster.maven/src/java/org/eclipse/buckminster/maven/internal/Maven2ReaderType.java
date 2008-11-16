@@ -18,7 +18,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 
 /**
  * @author Thomas Hallgren
@@ -83,7 +82,7 @@ public class Maven2ReaderType extends MavenReaderType
 	@Override
 	IPath getDefaultLocalRepoPath()
 	{
-		return new Path(System.getProperty("user.home")).append(".m2").append("repository");
+		return Maven2VersionFinder.getDefaultLocalRepoPath();
 	}
 
 	@Override

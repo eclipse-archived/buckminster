@@ -18,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
@@ -28,11 +27,14 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -80,12 +82,13 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		String rootPath = pbld.toString();
 		IConnectContext cctx = getConnectContext();
 
+		LocalCache lc = getReaderType().getLocalCache();
 		IVersionDesignator versionDesignator = query.getVersionDesignator();
 		monitor.beginTask(null, 2000);
 		try
 		{
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), cctx, monitor);
+			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), lc, cctx, monitor);
 			for(String versionStr : getVersions(doc))
 			{
 				String v = versionStr;
@@ -93,7 +96,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				{
 					try
 					{
-						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" + "maven-metadata.xml"), cctx, new NullProgressMonitor());
+						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" + "maven-metadata.xml"), lc, cctx, new NullProgressMonitor());
 						v = getSnapshotVersion(doc, v);
 					}
 					catch(CoreException e)
@@ -145,10 +148,10 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	{
 		List<String> versionList = null;
 
-		Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
+		Element versioningElement = getElement(doc, "versioning");
 		if(versioningElement != null)
 		{
-			Element versionsElement = (Element) versioningElement.getElementsByTagName("versions").item(0);
+			Element versionsElement = getElement(versioningElement, "versions");
 			if(versionsElement != null)
 			{
 				NodeList versions = versionsElement.getElementsByTagName("version");
@@ -164,16 +167,21 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		return versionList == null ? Collections.<String>emptyList() : versionList;
 	}
 
+	public static IPath getDefaultLocalRepoPath()
+	{
+		return new Path(System.getProperty("user.home")).append(".m2").append("repository");
+	}
+
 	public static String getSnapshotVersion(Document doc, String version) throws CoreException
 	{
-		Element versioningElement = (Element) doc.getElementsByTagName("versioning").item(0);
+		Element versioningElement = getElement(doc, "versioning");
 		if(versioningElement != null)
 		{
-			Element versionsElement = (Element) versioningElement.getElementsByTagName("snapshot").item(0);
-			if(versionsElement != null)
+			Element snapshotElement = getElement(versioningElement, "snapshot");
+			if(snapshotElement != null)
 			{
-				Element ts = (Element) versionsElement.getElementsByTagName("timestamp").item(0);
-				Element buildNum = (Element) versionsElement.getElementsByTagName("buildNumber").item(0);
+				Element ts = getElement(snapshotElement, "timestamp");
+				Element buildNum = getElement(snapshotElement, "buildNumber");
 				if(ts != null && buildNum != null)
 					return version.substring(0, version.length() - 8) + ts.getTextContent() + '-' + buildNum.getTextContent();
 			}
@@ -181,12 +189,29 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		throw BuckminsterException.fromMessage("Unable to read snapshot metadata");
 	}
 
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
+	private static Element getElement(Document doc, String elementName)
+	{
+		return getElement(doc.getElementsByTagName(elementName));
+	}
+
+	private static Element getElement(Element elem, String elementName)
+	{
+		return elem == null ? null : getElement(elem.getElementsByTagName(elementName));
+	}
+
+	private static Element getElement(NodeList nodeList)
+	{
+		return (nodeList != null && nodeList.getLength() > 0)
+			? (Element)nodeList.item(0)
+			: null;
+	}
+
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
 	{
 		InputStream input = null;
 		try
 		{
-			input = CorePlugin.getDefault().openCachedURL(url, cctx, monitor);
+			input = DownloadManager.read(url, cctx);
 			return docBld.parse(input);
 		}
 		catch(CoreException e)

@@ -13,6 +13,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.maven.internal.LocalCache;
 import org.eclipse.buckminster.maven.internal.Maven2VersionFinder;
 import org.eclipse.buckminster.maven.internal.MavenComponentType;
 import org.eclipse.buckminster.runtime.LogAwarePlugin;
@@ -64,7 +65,7 @@ public class MavenPlugin extends LogAwarePlugin
 
 	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
 	{
-		return Maven2VersionFinder.getMetadataDocument(docBld, url, cctx, monitor);
+		return Maven2VersionFinder.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder.getDefaultLocalRepoPath()), cctx, monitor);
 	}
 
 	@Override
