@@ -20,8 +20,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.helpers.FileHandle;
-import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
+import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -44,7 +45,7 @@ import org.eclipse.team.internal.ccvs.core.resources.UpdateContentCachingService
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSReader extends AbstractRemoteReader
+public class CVSReader extends AbstractCatalogReader
 {
 	private final CVSTag m_fixed;
 
@@ -134,8 +135,7 @@ public class CVSReader extends AbstractRemoteReader
 	{
 		// Build the local options
 		//
-		IPath filePath = Path.fromPortableString(fileName);
-		monitor.beginTask(null, filePath.segmentCount() > 1 || m_flatRoot == null ? 1500 : 1000);
+		monitor.beginTask(null, 1000);
 		monitor.subTask("Retrieving " + fileName);
 
 		InputStream in = null;
@@ -143,38 +143,11 @@ public class CVSReader extends AbstractRemoteReader
 		File tempFile = null;
 		try
 		{
-			RemoteFolder folder = m_flatRoot;
-			if(filePath.segmentCount() > 1)
-			{
-				IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
-				CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
-				folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), m_fixed);
-				folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, m_fixed, IResource.DEPTH_ONE, MonitorUtils.subMonitor(monitor, 500));
-			}
-			else
-			{
-				if(m_flatRoot == null)
-					getFlatRoot(MonitorUtils.subMonitor(monitor, 500));
-				folder = m_flatRoot;
-			}
-
-			ICVSResource cvsFile;
-			try
-			{
-				cvsFile = folder.getChild(filePath.lastSegment());
-			}
-			catch(CVSException e)
-			{
-				throw new FileNotFoundException(e.getMessage());
-			}
-
-			if(!(cvsFile instanceof ICVSRemoteFile))
-				throw new FileNotFoundException(fileName + " appears to be a folder");
-
-			in = ((ICVSRemoteFile)cvsFile).getContents(MonitorUtils.subMonitor(monitor, 50));
+			ICVSRemoteFile cvsFile = getCVSRemoteFile(fileName, MonitorUtils.subMonitor(monitor, 500));
+			in = cvsFile.getContents(MonitorUtils.subMonitor(monitor, 250));
 			tempFile = createTempFile();
 			out = new BufferedOutputStream(new FileOutputStream(tempFile));
-			IOUtils.copy(in, out, null);
+			IOUtils.copy(in, out, MonitorUtils.subMonitor(monitor, 250));
 			FileHandle fh = new FileHandle(fileName, tempFile, true);
 			tempFile = null;
 			return fh;
@@ -262,5 +235,82 @@ public class CVSReader extends AbstractRemoteReader
 		else
 			MonitorUtils.complete(monitor);
 		return m_metaData;
+	}
+
+	@Override
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			getCVSRemoteFile(fileName, monitor);
+			return true;
+		}
+		catch(FileNotFoundException e)
+		{
+			return false;
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
+
+	private ICVSRemoteFile getCVSRemoteFile(String fileName, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	{
+		IPath filePath = Path.fromPortableString(fileName);
+		RemoteFolder folder = m_flatRoot;
+		if(filePath.segmentCount() > 1)
+		{
+			IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
+			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
+			folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), m_fixed);
+			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, m_fixed, IResource.DEPTH_ONE, monitor);
+		}
+		else
+		{
+			if(m_flatRoot == null)
+				getFlatRoot(monitor);
+			else
+				MonitorUtils.complete(monitor);
+			folder = m_flatRoot;
+		}
+
+		ICVSResource cvsFile;
+		try
+		{
+			cvsFile = folder.getChild(filePath.lastSegment());
+		}
+		catch(CVSException e)
+		{
+			throw new FileNotFoundException(e.getMessage());
+		}
+
+		if(!(cvsFile instanceof ICVSRemoteFile))
+			throw new FileNotFoundException(fileName + " appears to be a folder");
+
+		return (ICVSRemoteFile)cvsFile;
+	}
+
+	@Override
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		// Build the local options
+		//
+		monitor.beginTask(null, 1000);
+		monitor.subTask("Retrieving " + fileName);
+
+		InputStream in = null;
+		try
+		{
+			ICVSRemoteFile cvsFile = getCVSRemoteFile(fileName, MonitorUtils.subMonitor(monitor, 500));
+			in = cvsFile.getContents(MonitorUtils.subMonitor(monitor, 250));
+			return consumer.consumeStream(this, fileName, in, MonitorUtils.subMonitor(monitor, 250));
+		}
+		finally
+		{
+			IOUtils.close(in);
+			monitor.done();
+		}
 	}
 }
