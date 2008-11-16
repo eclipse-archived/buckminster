@@ -35,6 +35,7 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -365,13 +366,11 @@ public abstract class FileUtils
 	public static void unzip(URL source, IConnectContext cctx, String sourceRelPath, File dest, ConflictResolution strategy, IProgressMonitor monitor)
 			throws CoreException
 	{
-		MonitorUtils.begin(monitor, 1000);
 		InputStream input = null;
 		try
 		{
-			input = new BufferedInputStream(CorePlugin.getDefault().openCachedURL(source, cctx,
-					MonitorUtils.subMonitor(monitor, 400)));
-			unzip(input, sourceRelPath, dest, strategy, MonitorUtils.subMonitor(monitor, 600));
+			input = DownloadManager.read(source, cctx);
+			unzip(input, sourceRelPath, dest, strategy, monitor);
 		}
 		catch(IOException e)
 		{
@@ -379,7 +378,6 @@ public abstract class FileUtils
 		}
 		finally
 		{
-			MonitorUtils.done(monitor);
 			IOUtils.close(input);
 		}
 	}

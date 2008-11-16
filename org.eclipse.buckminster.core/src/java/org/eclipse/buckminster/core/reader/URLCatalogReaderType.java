@@ -10,11 +10,9 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,6 +33,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -44,8 +43,8 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -182,12 +181,12 @@ public class URLCatalogReaderType extends CatalogReaderType
 	public static URL[] extractHTMLLinks(URL urlToHTML, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
 	{
 		ArrayList<URL> links = new ArrayList<URL>();
-		InputStream pageSource = null;
 		try
 		{
+			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x200000);
+			DownloadManager.readInto(urlToHTML, cctx, buffer, monitor);
 			try
 			{
-				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, cctx, monitor);
 				final DocumentBuilder builder = s_documentBuilderFactory.newDocumentBuilder();
 				
 				// Use a very silent error handler
@@ -206,7 +205,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 					{
 					}
 				});
-				InputSource source = new InputSource(new BufferedInputStream(pageSource));
+				InputSource source = new InputSource(buffer.getInputStream());
 				source.setSystemId(urlToHTML.toString());
 				Document document = builder.parse(source);
 				collectLinks(document.getDocumentElement(), urlToHTML, links);
@@ -215,15 +214,20 @@ public class URLCatalogReaderType extends CatalogReaderType
 			{
 				// HTML was not well formed. Use a scanner instead
 				//
-				pageSource = CorePlugin.getDefault().openCachedURL(urlToHTML, cctx, monitor);
-				Scanner scanner = new Scanner(pageSource);
+				Scanner scanner = new Scanner(buffer.getInputStream());
 				URL parent = URLUtils.appendTrailingSlash(urlToHTML);
 				while(scanner.findWithinHorizon(s_htmlPattern, 0) != null)
 				{
 					MatchResult mr = scanner.match();
 					addLink(links, parent, mr.group(1));
 				}
+				scanner.close();
 			}
+		}
+		catch(IllegalStateException e)
+		{
+			CorePlugin.getLogger().warning(e, e.getMessage());
+			return Trivial.EMPTY_URL_ARRAY;
 		}
 		catch(FileNotFoundException e)
 		{
@@ -238,10 +242,6 @@ public class URLCatalogReaderType extends CatalogReaderType
 		{
 			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
-		}
-		finally
-		{
-			IOUtils.close(pageSource);
 		}
 		return links.toArray(new URL[links.size()]);
 	}
@@ -279,12 +279,11 @@ public class URLCatalogReaderType extends CatalogReaderType
 		if(proto.equalsIgnoreCase("ftp") || proto.equalsIgnoreCase("sftp"))
 		{
 			final ArrayList<URL> result = new ArrayList<URL>();
-			InputStream pageSource = null;
+			Scanner scanner = null;
 			try
 			{
-				pageSource = CorePlugin.getDefault().openCachedURL(url, cctx, monitor);
+				scanner = new Scanner(DownloadManager.read(url, cctx));
 				url = URLUtils.appendTrailingSlash(url);
-				Scanner scanner = new Scanner(pageSource);
 				while(scanner.findWithinHorizon(s_ftpPattern, 0) != null)
 				{
 					MatchResult mr = scanner.match();
@@ -308,7 +307,8 @@ public class URLCatalogReaderType extends CatalogReaderType
 			}
 			finally
 			{
-				IOUtils.close(pageSource);
+				if(scanner != null)
+					scanner.close();
 			}
 		}
 		return extractHTMLLinks(url, cctx, monitor);
