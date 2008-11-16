@@ -24,6 +24,7 @@ import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.filetransfer.FileTransferJob;
@@ -172,7 +173,9 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			throw BuckminsterException.wrap(e);
 		}
 		Buckminster.getLogger().debug("Downloading %s", url);
-		sendRetrieveRequest(url, output, true, false, null);
+		
+		final IProgressMonitor cancellationMonitor = new NullProgressMonitor();
+		sendRetrieveRequest(url, output, true, false, cancellationMonitor);
 
 		return new InputStream()
 		{
@@ -186,6 +189,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			@Override
 			public void close() throws IOException
 			{
+				cancellationMonitor.setCanceled(true);
 				IOUtils.close(input);
 				checkException();
 			}
