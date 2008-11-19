@@ -321,6 +321,19 @@ public class MavenComponentType extends AbstractComponentType
 				versionStr = nodeValue;
 		}
 
+		if(groupId != null)
+		{
+			properties.put("project.groupId", groupId, true);
+			properties.put("pom.groupId", groupId, true);
+			properties.put("groupId", groupId, true);
+		}
+		if(artifactId != null)
+		{
+			properties.put("project.artifactId", artifactId, true);
+			properties.put("pom.artifactId", artifactId, true);
+			properties.put("artifactId", artifactId, true);
+		}
+
 		Provider provider = reader.getProviderMatch().getProvider();
 		String componentName = (provider instanceof MavenProvider)
 				? ((MavenProvider)provider).getComponentName(groupId, artifactId)
