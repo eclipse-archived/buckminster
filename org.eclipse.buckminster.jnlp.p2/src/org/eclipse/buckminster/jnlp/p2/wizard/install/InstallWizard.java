@@ -85,13 +85,11 @@ import org.eclipse.buckminster.jnlp.p2.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.p2.JNLPException;
 import org.eclipse.buckminster.jnlp.p2.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.p2.MaterializationUtils;
-import org.eclipse.buckminster.jnlp.p2.MaterializerRunnable;
 import org.eclipse.buckminster.jnlp.p2.MissingPropertyException;
 import org.eclipse.buckminster.jnlp.p2.P2MaterializerRunnable;
 import org.eclipse.buckminster.jnlp.p2.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.jnlp.p2.wizard.ILoginHandler;
-import org.eclipse.buckminster.jnlp.p2.wizard.IUnresolvedNodeHandler;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -104,10 +102,6 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.equinox.internal.p2.installer.InstallUpdateProductOperation;
-import org.eclipse.equinox.internal.p2.installer.InstallerActivator;
-import org.eclipse.equinox.internal.provisional.p2.installer.IInstallOperation;
-import org.eclipse.equinox.internal.provisional.p2.installer.InstallDescription;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -117,7 +111,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 
 /**
  * @author Thomas Hallgren
@@ -227,15 +220,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private SimpleDownloadPage m_downloadPage;
 
-	private SimpleAdvancedPage m_advancedPage;
-
 	private OperationPage m_operationPage;
 
 	private DonePage m_donePage;
 
 	private FeedsPage m_infoPage;
-
-	private IUnresolvedNodeHandler m_unresolvedNodeHandler;
 
 	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
 
@@ -457,7 +446,17 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		originalPage.setErrorMessage(null);
 		try
 		{
+			getContainer().showPage(m_operationPage);
+
+			if(!m_startedFromIDE)
+			{
+				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
+				Job.getJobManager().setProgressProvider(m_operationPage.getProgressProvider());
+			}
+
 			getContainer().run(true, true, new P2MaterializerRunnable(m_builder.getInstallLocation()));
+
+			getContainer().showPage(m_operationPage);
 
 			m_materializationFinished = true;
 
@@ -483,10 +482,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 		catch(InterruptedException e)
 		{
+			showOriginalPage(originalPage);
 			originalPage.setErrorMessage("Operation cancelled");
 		}
 		catch(Exception e)
 		{
+			showOriginalPage(originalPage);
+			
 			// final IStatus status = BuckminsterException.wrap(e).getStatus();
 			final IStatus status = BuckminsterException.fromMessage(BuckminsterException.wrap(e),
 					UNIVERSAL_ERROR_MESSAGE).getStatus();
@@ -496,68 +498,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					"This distro failed to materialize", MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
 					ERROR_CODE_MATERIALIZATION_EXCEPTION, status);
 		}
+		finally
+		{
+			if(!m_startedFromIDE)
+			{
+				Job.getJobManager().setProgressProvider(null);
+				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
+			}
+		}
 
 		return false;
-		
-		/*
-		 * if(m_unresolvedNodeHandler != null && m_unresolvedNodeHandler.isUnresolvedNodeIncluded()) { MessageBox
-		 * messageBox = new MessageBox(getContainer().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-		 * messageBox.setMessage("Some distro dependencies cannot be resolved. " +
-		 * "You may decide to exclude the unresolved artifacts.\n" +
-		 * "However, excluding an artifact may result in a configuration that will no longer build.\n\n" +
-		 * "Do you want to exclude the unresolved artifacts?"); messageBox.setText("Warning"); if(messageBox.open() ==
-		 * SWT.YES) m_unresolvedNodeHandler.excludeUnresolvedNodes(); else return false; }
-		 * 
-		 * WizardPage originalPage = (WizardPage)getContainer().getCurrentPage();
-		 * 
-		 * originalPage.setErrorMessage(null); try { if(m_builder.getInstallLocation() == null)
-		 * m_builder.setInstallLocation(Path.fromOSString(
-		 * MaterializationUtils.getDefaultDestination(getArtifactName())).addTrailingSeparator());
-		 * 
-		 * MaterializationSpecBuilder builderToPerform = new MaterializationSpecBuilder();
-		 * builderToPerform.initFrom(m_builder.createMaterializationSpec());
-		 * 
-		 * if(m_cachedBOMURL != null) builderToPerform.setURL(m_cachedBOMURL.toString());
-		 * 
-		 * MaterializationUtils.excludeCSsiteComponents(builderToPerform, getBOM());
-		 * 
-		 * getContainer().showPage(m_operationPage);
-		 * 
-		 * if(!m_startedFromIDE) {
-		 * ((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(true);
-		 * Job.getJobManager().setProgressProvider(m_operationPage.getProgressProvider()); }
-		 * 
-		 * MaterializerRunnable mr = new MaterializerRunnable(builderToPerform.createMaterializationSpec());
-		 * getContainer().run(true, true, mr);
-		 * 
-		 * if(!m_startedFromIDE) { Job.getJobManager().setProgressProvider(null);
-		 * ((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false); }
-		 * 
-		 * m_materializationFinished = true;
-		 * 
-		 * if(getComponentInfoProvider() != null) try { m_infoPageURL =
-		 * getComponentInfoProvider().prepareHTML(getProperties(), getBOM().getResolution().getOPML(),
-		 * MaterializationUtils.getDefaultDestination(null)); } catch(Exception e) { m_infoPageURL = null; final IStatus
-		 * status = BuckminsterException.wrap(e).getStatus(); CorePlugin.logWarningsAndErrors(status);
-		 * HelpLinkErrorDialog .openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
-		 * "Cannot create an HTML page with additional distro infomation", MaterializationConstants.ERROR_HELP_TITLE,
-		 * m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status); }
-		 * 
-		 * m_donePage.update(mr.getContext()); getContainer().showPage(m_donePage); } catch(InterruptedException e) {
-		 * showOriginalPage(originalPage); originalPage.setErrorMessage("Operation cancelled"); } catch(Exception e) {
-		 * showOriginalPage(originalPage);
-		 * 
-		 * // final IStatus status = BuckminsterException.wrap(e).getStatus(); final IStatus status =
-		 * BuckminsterException.fromMessage(BuckminsterException.wrap(e), UNIVERSAL_ERROR_MESSAGE).getStatus();
-		 * 
-		 * CorePlugin.logWarningsAndErrors(status); HelpLinkErrorDialog.openError(null, m_windowImage,
-		 * MaterializationConstants.ERROR_WINDOW_TITLE, "This distro failed to materialize",
-		 * MaterializationConstants.ERROR_HELP_TITLE, m_errorURL, ERROR_CODE_MATERIALIZATION_EXCEPTION, status); }
-		 * finally { if(!m_startedFromIDE) { Job.getJobManager().setProgressProvider(null);
-		 * ((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false); } }
-		 * 
-		 * return false;
-		 */
 	}
 
 	public void removeAuthenticatorLoginKey()
@@ -598,9 +548,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			m_downloadPage = new SimpleDownloadPage();
 			addAdvancedPage(m_downloadPage);
-
-			m_advancedPage = new SimpleAdvancedPage();
-			addAdvancedPage(m_advancedPage);
 
 			m_folderRestrictionPage = new FolderRestrictionPage();
 			addAdvancedPage(m_folderRestrictionPage);
@@ -733,11 +680,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	IWizardPage getDownloadPage()
 	{
 		return m_downloadPage;
-	}
-
-	IWizardPage getAdvancedPage()
-	{
-		return m_advancedPage;
 	}
 
 	IWizardPage getInfoPage()
@@ -951,8 +893,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						m_cachedBOM = m_distro.getBom();
 						saveBOMLocally();
 
-						initMSpecTree();
-
 						monitor.done();
 					}
 				});
@@ -996,11 +936,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 		}
-	}
-
-	void initMSpecTree()
-	{
-		m_advancedPage.initializeMSpecTree(getBOM());
 	}
 
 	boolean isLoggedIn()
@@ -1058,11 +993,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	void setLoginPageRequested(boolean loginPageRequested)
 	{
 		m_loginPageRequested = loginPageRequested;
-	}
-
-	void setUnresolvedNodeHandler(IUnresolvedNodeHandler unresolvedNodeHandler)
-	{
-		m_unresolvedNodeHandler = unresolvedNodeHandler;
 	}
 
 	public BMProperties getLocalProperties()

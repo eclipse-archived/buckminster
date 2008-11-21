@@ -105,6 +105,7 @@ public abstract class AdvancedTitleAreaDialog extends TitleAreaDialog
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 		enableDisableOkButton();
+		setErrorMessage(null);
 	}
 	
 	protected abstract void enableDisableOkButton();

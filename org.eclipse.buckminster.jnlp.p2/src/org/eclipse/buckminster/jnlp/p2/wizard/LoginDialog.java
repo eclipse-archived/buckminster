@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author kaja
+ * @author Karel Brezina
  *
  */
 public class LoginDialog extends AdvancedTitleAreaDialog

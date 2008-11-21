@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.equinox.internal.p2.installer.InstallUpdateProductOperation;
 import org.eclipse.equinox.internal.p2.installer.InstallerActivator;
 import org.eclipse.equinox.internal.p2.installer.VersionedName;
@@ -42,6 +41,9 @@ public class P2MaterializerRunnable implements IRunnableWithProgress
 			installDescription.setRoots(new VersionedName[] {new VersionedName("org.eclipse.sdk.ide", (String)null)});
 			installDescription.setAutoStart(true);
 			installDescription.setInstallLocation(installLocation);
+
+			installDescription.setAgentLocation(installLocation.append("p2")); //$NON-NLS-1$
+			installDescription.setBundleLocation(installLocation);
 			
 			Map<String, String> profileProperties = new HashMap<String, String>();
 			profileProperties.put("eclipse.p2.flavor", "tooling");
@@ -61,12 +63,17 @@ public class P2MaterializerRunnable implements IRunnableWithProgress
 		try
 		{
 			IStatus status = m_installOperation.install(monitor);
-			if(status.getSeverity() == IStatus.ERROR)
+			switch(status.getSeverity())
+			{
+			case IStatus.ERROR:
 				throw new CoreException(status);
+			case IStatus.CANCEL:
+				throw new InterruptedException();
+			}
 		}
-		catch(OperationCanceledException e)
+		catch(InterruptedException e)
 		{
-			throw new InterruptedException();
+			throw e;
 		}
 		catch(Throwable t)
 		{
