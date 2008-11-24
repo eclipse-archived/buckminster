@@ -166,33 +166,50 @@ public abstract class VersionDesignator implements IVersionDesignator
 		if(top == 0)
 			throw new IllegalArgumentException("Version string cannot be empty");
 
+		int idx = 0;
+		while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+			++idx;
+
 		IVersionDesignator result;
 		boolean fromInclusive = false;
 		int[] endPosHolder = new int[1];
-		switch(versionString.charAt(0))
+		switch(versionString.charAt(idx))
 		{
 		case '[':
 			fromInclusive = true;
 			// Fall through
 		case '(':
-			IVersion fromVersion = versionType.fromString(versionString, 1, endPosHolder);
-			int endPos = endPosHolder[0];
-			if(endPos >= top || versionString.charAt(endPos) != ',')
+			++idx;
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			IVersion fromVersion = versionType.fromString(versionString, idx, endPosHolder);
+			idx = endPosHolder[0];
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			if(idx >= top || versionString.charAt(idx) != ',')
 			{
-				if(fromInclusive && versionString.charAt(endPos) == ']')
+				if(fromInclusive && versionString.charAt(idx) == ']')
 				{
 					// Short form [<version>] of perfect match
 					//
 					result = new PerfectMatch(fromVersion);
 					break;
 				}
-				throw new VersionSyntaxException("expected ','", versionString, endPos);
+				throw new VersionSyntaxException("expected ','", versionString, idx);
 			}
-			IVersion toVersion = versionType.fromString(versionString, endPos + 1, endPosHolder);
+			++idx;
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
 
-			endPos = endPosHolder[0];
-			char endChar = endPos < top
-				? versionString.charAt(endPos) : 0;
+			IVersion toVersion = versionType.fromString(versionString, idx, endPosHolder);
+			idx = endPosHolder[0];
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			char endChar = idx < top
+				? versionString.charAt(idx) : 0;
 			boolean toInclusive = false;
 			switch(endChar)
 			{
@@ -209,7 +226,7 @@ public abstract class VersionDesignator implements IVersionDesignator
 							toInclusive);
 				break;
 			default:
-				throw new VersionSyntaxException("expected ']' or ')'", versionString, endPos);
+				throw new VersionSyntaxException("expected ']' or ')'", versionString, idx);
 			}
 			break;
 		default:
