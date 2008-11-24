@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.maven;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class MavenPlugin extends LogAwarePlugin
 		return Maven2VersionFinder.getSnapshotVersion(doc, version);
 	}
 
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		return Maven2VersionFinder.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder.getDefaultLocalRepoPath()), cctx, monitor);
 	}

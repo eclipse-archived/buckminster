@@ -72,7 +72,18 @@ public class MavenProvider extends Provider
 	 */
 	public static String getDefaultName(String groupId, String artifactId)
 	{
-		return artifactId.equals(groupId) ? artifactId : groupId + '/' + artifactId;
+		if(groupId.equals(artifactId))
+		{
+			// Contructs like <groupId>:<artifactId> are known to exist
+			//
+			int colonIdx = artifactId.indexOf(':');
+			if(colonIdx < 0)
+				return artifactId;
+
+			groupId = artifactId.substring(0, colonIdx);
+			artifactId = artifactId.substring(colonIdx + 1);
+		}
+		return groupId + '/' + artifactId;
 	}
 
 	private final Map<String, MapEntry> m_mappings;

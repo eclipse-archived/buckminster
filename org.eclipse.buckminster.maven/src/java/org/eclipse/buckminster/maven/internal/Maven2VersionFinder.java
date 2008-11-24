@@ -7,7 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
-import java.io.InputStream;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -29,7 +30,6 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,6 +39,8 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -46,7 +48,7 @@ import org.w3c.dom.NodeList;
 public class Maven2VersionFinder extends MavenVersionFinder
 {
 	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
-	throws CoreException
+			throws CoreException
 	{
 		super(readerType, provider, ctype, query);
 	}
@@ -88,7 +90,8 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		try
 		{
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), lc, cctx, monitor);
+			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"),
+					lc, cctx, monitor);
 			for(String versionStr : getVersions(doc))
 			{
 				String v = versionStr;
@@ -96,12 +99,20 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				{
 					try
 					{
-						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" + "maven-metadata.xml"), lc, cctx, new NullProgressMonitor());
+						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/"
+								+ "maven-metadata.xml"), lc, cctx, new NullProgressMonitor());
 						v = getSnapshotVersion(doc, v);
+						if(v == null)
+							continue;
 					}
 					catch(CoreException e)
 					{
 						logDecision(ResolverDecisionType.VERSION_REJECTED, v, e.getMessage());
+						continue;
+					}
+					catch(FileNotFoundException e)
+					{
+						// Snapshot not present. This is a valid condition.
 						continue;
 					}
 				}
@@ -134,6 +145,10 @@ public class Maven2VersionFinder extends MavenVersionFinder
 			}
 			return versions;
 		}
+		catch(FileNotFoundException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 		catch(ParserConfigurationException e)
 		{
 			throw BuckminsterException.wrap(e);
@@ -156,7 +171,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 			{
 				NodeList versions = versionsElement.getElementsByTagName("version");
 				int top = versions.getLength();
-				for (int i = 0; i < top; i++)
+				for(int i = 0; i < top; i++)
 				{
 					if(versionList == null)
 						versionList = new ArrayList<String>();
@@ -164,7 +179,9 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				}
 			}
 		}
-		return versionList == null ? Collections.<String>emptyList() : versionList;
+		return versionList == null
+				? Collections.<String> emptyList()
+				: versionList;
 	}
 
 	public static IPath getDefaultLocalRepoPath()
@@ -172,21 +189,26 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		return new Path(System.getProperty("user.home")).append(".m2").append("repository");
 	}
 
-	public static String getSnapshotVersion(Document doc, String version) throws CoreException
+	public static String getSnapshotVersion(Document doc, String version)
 	{
+		String v = null;
 		Element versioningElement = getElement(doc, "versioning");
 		if(versioningElement != null)
 		{
 			Element snapshotElement = getElement(versioningElement, "snapshot");
 			if(snapshotElement != null)
 			{
-				Element ts = getElement(snapshotElement, "timestamp");
 				Element buildNum = getElement(snapshotElement, "buildNumber");
-				if(ts != null && buildNum != null)
-					return version.substring(0, version.length() - 8) + ts.getTextContent() + '-' + buildNum.getTextContent();
+				if(buildNum != null)
+				{
+					Element ts = getElement(snapshotElement, "timestamp");
+					if(ts != null)
+						v = version.substring(0, version.length() - 8) + ts.getTextContent() + '-'
+								+ buildNum.getTextContent();
+				}
 			}
 		}
-		throw BuckminsterException.fromMessage("Unable to read snapshot metadata");
+		return v;
 	}
 
 	private static Element getElement(Document doc, String elementName)
@@ -196,25 +218,47 @@ public class Maven2VersionFinder extends MavenVersionFinder
 
 	private static Element getElement(Element elem, String elementName)
 	{
-		return elem == null ? null : getElement(elem.getElementsByTagName(elementName));
+		return elem == null
+				? null
+				: getElement(elem.getElementsByTagName(elementName));
 	}
 
 	private static Element getElement(NodeList nodeList)
 	{
 		return (nodeList != null && nodeList.getLength() > 0)
-			? (Element)nodeList.item(0)
-			: null;
+				? (Element)nodeList.item(0)
+				: null;
 	}
 
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,
+			IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		InputStream input = null;
 		try
 		{
-			input = DownloadManager.read(url, cctx);
-			return docBld.parse(input);
+			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
+			try
+			{
+				DownloadManager.readInto(url, cctx, buffer, monitor);
+				return docBld.parse(buffer.getInputStream());
+			}
+			catch(SAXParseException e)
+			{
+				String msg = e.getMessage();
+				if(msg == null || !msg.contains("UTF-8"))
+					throw e;
+
+				InputSource input = new InputSource(buffer.getInputStream());
+				input.setEncoding("ISO-8859-1");
+				docBld.reset();
+				return docBld.parse(input);
+			}
 		}
 		catch(CoreException e)
+		{
+			docBld.reset();
+			throw e;
+		}
+		catch(FileNotFoundException e)
 		{
 			docBld.reset();
 			throw e;
@@ -223,10 +267,6 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		{
 			docBld.reset();
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
 		}
 	}
 }

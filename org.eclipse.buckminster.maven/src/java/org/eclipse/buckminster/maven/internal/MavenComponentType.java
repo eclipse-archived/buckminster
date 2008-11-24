@@ -120,18 +120,21 @@ public class MavenComponentType extends AbstractComponentType
 
 		if(groupId != null)
 		{
+			groupId = ExpandingProperties.expand(properties, groupId, 0);
 			properties.put("project.groupId", groupId, true);
 			properties.put("pom.groupId", groupId, true);
 			properties.put("groupId", groupId, true);
 		}
 		if(artifactId != null)
 		{
+			artifactId = ExpandingProperties.expand(properties, artifactId, 0);
 			properties.put("project.artifactId", artifactId, true);
 			properties.put("pom.artifactId", artifactId, true);
 			properties.put("artifactId", artifactId, true);
 		}
 		if(versionStr != null)
 		{
+			versionStr = ExpandingProperties.expand(properties, versionStr, 0);
 			properties.put("project.version", versionStr, true);
 			properties.put("pom.version", versionStr, true);
 			properties.put("version", versionStr, true);
@@ -168,6 +171,21 @@ public class MavenComponentType extends AbstractComponentType
 
 	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
 	{
+		if(versionStr == null || versionStr.length() == 0)
+			return null;
+
+		char leadIn = versionStr.charAt(0);
+		if(leadIn == '[' || leadIn == '(')
+		{
+			if(leadIn == '[' && versionStr.endsWith(",)"))
+			{
+				versionStr = versionStr.substring(1, versionStr.length() - 2);
+				IVersion version = createVersion(versionStr);
+				return (version == null) ? null : VersionFactory.createGTEqualDesignator(version);
+			}
+			return VersionFactory.createDesignator(VersionFactory.TripletType, versionStr);
+		}
+
 		IVersion version = createVersion(versionStr);
 		if(version == null)
 			return null;
@@ -275,6 +293,14 @@ public class MavenComponentType extends AbstractComponentType
 				? ((MavenProvider)provider).getComponentName(groupId, artifactId)
 				: MavenProvider.getDefaultName(groupId, artifactId);
 
+		if(componentName.contains("${"))
+		{
+			// Unresolved property. We can't use this so skip it.
+			//
+			MavenPlugin.getLogger().warning("Unable to resolve component name %s. Skipping dependency", componentName);
+			return;
+		}
+
 		ComponentName adviceKey = new ComponentName(componentName, null);
 		if(query.skipComponent(adviceKey))
 			return;
@@ -323,12 +349,14 @@ public class MavenComponentType extends AbstractComponentType
 
 		if(groupId != null)
 		{
+			groupId = ExpandingProperties.expand(properties, groupId, 0);
 			properties.put("project.groupId", groupId, true);
 			properties.put("pom.groupId", groupId, true);
 			properties.put("groupId", groupId, true);
 		}
 		if(artifactId != null)
 		{
+			artifactId = ExpandingProperties.expand(properties, artifactId, 0);
 			properties.put("project.artifactId", artifactId, true);
 			properties.put("pom.artifactId", artifactId, true);
 			properties.put("artifactId", artifactId, true);
@@ -365,7 +393,10 @@ public class MavenComponentType extends AbstractComponentType
 				continue;
 			String nodeName = child.getNodeName();
 			String nodeValue = child.getTextContent().trim();
-			properties.put(nodeName, nodeValue, true);
+			if(nodeValue.length() > 0)
+				properties.put(nodeName, ExpandingProperties.expand(properties, nodeValue, 0), true);
+			else
+				properties.remove(nodeName);
 		}
 	}
 

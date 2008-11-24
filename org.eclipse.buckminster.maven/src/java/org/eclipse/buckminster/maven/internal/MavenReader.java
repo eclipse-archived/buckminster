@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 
 /**
  * The URL used by the MavenReader denotes the group directory within one
@@ -87,13 +88,30 @@ public class MavenReader extends URLFileReader
 			input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			InputSource source = new InputSource(new BufferedInputStream(input));
 			String repoPath = repoURL.getPath();
 			if(!repoPath.endsWith("/"))
 				repoPath += "/";
 			repoPath += pomPath;
-			source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment()).toString());
-			return builder.parse(source);
+			try
+			{
+				InputSource source = new InputSource(new BufferedInputStream(input));
+				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment()).toString());
+				return builder.parse(source);
+			}
+			catch(SAXParseException e)
+			{
+				String msg = e.getMessage();
+				if(msg == null || !msg.contains("UTF-8"))
+					throw e;
+				
+				IOUtils.close(input);
+				input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
+				InputSource source = new InputSource(new BufferedInputStream(input));
+				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment()).toString());
+				source.setEncoding("ISO-8859-1");
+				builder.reset();
+				return builder.parse(source);
+			}
 		}
 		catch(IOException e)
 		{

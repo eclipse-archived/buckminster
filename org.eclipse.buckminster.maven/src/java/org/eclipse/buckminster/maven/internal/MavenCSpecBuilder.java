@@ -21,6 +21,8 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
+import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -34,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -113,11 +116,25 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		monitor.beginTask(streamName, 1);
 		try
 		{
+			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
+			FileUtils.copyFile(stream, buffer, new byte[0x1000], monitor);
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			InputSource source = new InputSource(stream);
-			source.setSystemId(streamName);
-			return builder.parse(source);
+			DocumentBuilder docBld = factory.newDocumentBuilder();
+			try
+			{
+				return docBld.parse(buffer.getInputStream());
+			}
+			catch(SAXParseException e)
+			{
+				String msg = e.getMessage();
+				if(msg == null || !msg.contains("UTF-8"))
+					throw e;
+				
+				InputSource input = new InputSource(buffer.getInputStream());
+				input.setEncoding("ISO-8859-1");
+				docBld.reset();
+				return docBld.parse(input);
+			}
 		}
 		catch(SAXException e)
 		{
