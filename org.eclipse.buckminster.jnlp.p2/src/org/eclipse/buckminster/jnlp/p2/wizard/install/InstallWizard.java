@@ -838,12 +838,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 		catch(Exception e)
 		{
-			Throwable originalException = e;
+			// I don't want to show the original exception
+			// Throwable originalException = e;
 
-			if(e instanceof InvocationTargetException && e.getCause() != null)
-				originalException = e.getCause();
+			// if(e instanceof InvocationTargetException && e.getCause() != null)
+			// 	originalException = e.getCause();
 
-			throw new JNLPException("Cannot read stack variations", ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
+			throw new JNLPException("Cannot read stack variations", ERROR_CODE_REMOTE_IO_EXCEPTION);
 		}
 	}
 

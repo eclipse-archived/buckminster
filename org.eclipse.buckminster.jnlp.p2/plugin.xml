@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="distroProvider" name="Distro Provider" schema="schema/authentication.exsd"/>
+   <extension-point id="distroProvider" name="Distro Provider" schema="schema/distroProvider.exsd"/>
    <extension-point id="learnmore" name="Learn More" schema="schema/learnMore.exsd"/>
    <extension-point id="componentInfo" name="Component INFO" schema="schema/componentInfo.exsd"/>
    <extension
