@@ -19,6 +19,7 @@ import org.osgi.framework.BundleContext;
 public class JdtPlugin extends LogAwarePlugin
 {
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.jdt"; //$NON-NLS-1$
+
 	public static final String CLASSPATH_CONTAINER_ID = PLUGIN_ID + ".requiredComponents"; //$NON-NLS-1$
 
 	private static JdtPlugin s_plugin;

@@ -48,9 +48,8 @@ public class BMClasspathContainer implements IClasspathContainer
 	}
 
 	/**
-	 * Checks wether this container has the exact same entries as cp. The
-	 * entries are compared for equality but not resolved. The order of the
-	 * entries is significant.
+	 * Checks wether this container has the exact same entries as cp. The entries are compared for equality but not
+	 * resolved. The order of the entries is significant.
 	 * 
 	 * @param cp
 	 *            The container to compare with.
@@ -72,18 +71,34 @@ public class BMClasspathContainer implements IClasspathContainer
 		return true;
 	}
 
+	public final IClasspathEntry[] getClasspathEntries()
+	{
+		return m_entries;
+	}
+
+	public String getDescription()
+	{
+		return Messages.BMClasspathContainer_description;
+	}
+
+	public int getKind()
+	{
+		return K_APPLICATION;
+	}
+
+	public IPath getPath()
+	{
+		return PATH;
+	}
+
 	@Override
 	public int hashCode()
 	{
 		return Arrays.hashCode(m_entries);
 	}
 
-	public final IClasspathEntry[] getClasspathEntries()
-	{
-		return m_entries;
-	}
-
-	private void addNodeToClassPath(CSpec cspec, ArrayList<IClasspathEntry> cpes, IModelCache cache, HashSet<ComponentIdentifier> seenIDs, int depth) throws CoreException
+	private void addNodeToClassPath(CSpec cspec, ArrayList<IClasspathEntry> cpes, IModelCache cache,
+			HashSet<ComponentIdentifier> seenIDs, int depth) throws CoreException
 	{
 		// Depth == 0 is the component itself, depth == 1 is the component
 		// scanning its
@@ -137,20 +152,5 @@ public class BMClasspathContainer implements IClasspathContainer
 			if(!cpes.contains(cpe))
 				cpes.add(cpe);
 		}
-	}
-
-	public String getDescription()
-	{
-		return Messages.BMClasspathContainer_description;
-	}
-
-	public int getKind()
-	{
-		return K_APPLICATION;
-	}
-
-	public IPath getPath()
-	{
-		return PATH;
 	}
 }

@@ -39,13 +39,12 @@ public class BMClasspathInitializer extends ClasspathContainerInitializer implem
 	}
 
 	/**
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#initialize(IPath,
-	 *      IJavaProject)
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#initialize(IPath, IJavaProject)
 	 */
 	@Override
 	public void initialize(IPath containerPath, IJavaProject javaProject) throws CoreException
 	{
-		if (javaProject == null || !BMClasspathContainer.PATH.isPrefixOf(containerPath))
+		if(javaProject == null || !BMClasspathContainer.PATH.isPrefixOf(containerPath))
 			return;
 
 		String targetDesignator = null;
@@ -58,11 +57,8 @@ public class BMClasspathInitializer extends ClasspathContainerInitializer implem
 		if(newCP.equals(oldCP))
 			return;
 
-		JavaCore.setClasspathContainer(
-			containerPath,
-			new IJavaProject[] { javaProject },
-			new IClasspathContainer[] { newCP },
-			null);
+		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject },
+				new IClasspathContainer[] { newCP }, null);
 		JdtPlugin.getLogger().debug("%s container initialized for project %s", containerPath, project.getName()); //$NON-NLS-1$
 	}
 

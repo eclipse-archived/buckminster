@@ -16,7 +16,6 @@ import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.jdt.Messages;
 import org.eclipse.buckminster.jdt.internal.ClasspathEmitter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
@@ -34,7 +33,8 @@ public class JdtAntActor extends AntActor
 	public static final String PROPERTY_PROJECT_CLASSPATH = "project.classpath"; //$NON-NLS-1$
 
 	@Override
-	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays) throws CoreException
+	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays)
+			throws CoreException
 	{
 		IProject project = WorkspaceInfo.getProject(ctx.getCSpec().getComponentIdentifier());
 		if(project == null)
@@ -69,7 +69,9 @@ public class JdtAntActor extends AntActor
 			{
 				ArrayList<IPath> bld = entry.getValue();
 				int nPaths = bld.size();
-				IPath[] blda = nPaths == 0 ? Trivial.EMPTY_PATH_ARRAY : bld.toArray(new IPath[nPaths]);
+				IPath[] blda = nPaths == 0
+						? Trivial.EMPTY_PATH_ARRAY
+						: bld.toArray(new IPath[nPaths]);
 				pgs.add(new PathGroup(entry.getKey(), blda));
 			}
 			namedPathGroupArrays.put(PROPERTY_PROJECT_CLASSPATH, pgs.toArray(new PathGroup[pgs.size()]));

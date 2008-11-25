@@ -1,6 +1,5 @@
 package org.eclipse.buckminster.jdt.internal;
 
-import org.eclipse.buckminster.jdt.Messages;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -90,7 +89,7 @@ public class SaxableClasspath implements ISaxable
 			kindStr = "output"; //$NON-NLS-1$
 			break;
 		default:
-			kindStr ="unknown"; //$NON-NLS-1$
+			kindStr = "unknown"; //$NON-NLS-1$
 		}
 		return kindStr;
 	}

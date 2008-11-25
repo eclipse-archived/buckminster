@@ -16,24 +16,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class ComplianceLevelHandler extends BasicPreferenceHandler
 {
-	@Override
-	public String get(String defaultValue) throws CoreException
-	{
-		return JavaCore.getOption(JavaCore.COMPILER_COMPLIANCE);
-	}
-
-	@Override
-	public void set(String complianceLevel) throws BackingStoreException
-	{
-		setCompilanceOptions(complianceLevel);
-	}
-
-	@Override
-	public void unset() throws BackingStoreException
-	{
-		setCompilanceOptions((String)JavaCore.getDefaultOptions().get(JavaCore.COMPILER_COMPLIANCE));
-	}
-
 	public static void setCompilanceOptions(String compliance) throws BackingStoreException
 	{
 		// We must hardcode these preferences into the instance store. Normally, only
@@ -79,5 +61,23 @@ public class ComplianceLevelHandler extends BasicPreferenceHandler
 			throw new IllegalArgumentException("Unsupported compliance: " + compliance); //$NON-NLS-1$
 		}
 		prefs.flush();
+	}
+
+	@Override
+	public String get(String defaultValue) throws CoreException
+	{
+		return JavaCore.getOption(JavaCore.COMPILER_COMPLIANCE);
+	}
+
+	@Override
+	public void set(String complianceLevel) throws BackingStoreException
+	{
+		setCompilanceOptions(complianceLevel);
+	}
+
+	@Override
+	public void unset() throws BackingStoreException
+	{
+		setCompilanceOptions((String)JavaCore.getDefaultOptions().get(JavaCore.COMPILER_COMPLIANCE));
 	}
 }
