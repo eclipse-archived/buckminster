@@ -41,8 +41,10 @@ public class ExecutorActor extends AbstractActor
 
 	private static final String EXECUTOR_NEW_ENVIRONMENT_ACTION = "newenvironment";
 
+	private static final String EXECUTOR_FAIL_ON_ERROR = "failonerror";
+
 	private static final String[] validProperties = { EXECUTOR_ENV, EXECUTOR_EXEC_ACTION, EXECUTOR_EXEC_DIR_ACTION,
-			EXECUTOR_SHELL_ACTION, EXECUTOR_NEW_ENVIRONMENT_ACTION };
+			EXECUTOR_SHELL_ACTION, EXECUTOR_NEW_ENVIRONMENT_ACTION, EXECUTOR_FAIL_ON_ERROR };
 
 	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor";
 
@@ -61,8 +63,8 @@ public class ExecutorActor extends AbstractActor
 			final File executionDir = getExecutionDir(ctx);
 			final String command = expander.expand(prepareCommandLine());
 			final String[] env = prepareEnvironmentVariables(expander);
-			CorePlugin.getLogger().info("[EXE] now executing : "+command);
-			CorePlugin.getLogger().info("[EXE] in directory : "+executionDir);
+			CorePlugin.getLogger().info("[EXE] now executing : " + command);
+			CorePlugin.getLogger().info("[EXE] in directory : " + executionDir);
 			final Process proc = Runtime.getRuntime().exec(command, env, executionDir);
 			// any error message ?
 			final StreamGobblerRedirector errorGobbler = new StreamGobblerRedirector(proc.getErrorStream(), errorStream);
@@ -75,7 +77,11 @@ public class ExecutorActor extends AbstractActor
 			final int returnCode = proc.waitFor();
 			outputStream.flush();
 			if(returnCode != 0)
+			{
 				CorePlugin.getLogger().error("Program " + command + " returned exit code " + returnCode);
+				if(getFailStatus())
+					return Status.CANCEL_STATUS;
+			}
 		}
 		catch(IOException e)
 		{
@@ -100,6 +106,14 @@ public class ExecutorActor extends AbstractActor
 			monitor.done();
 		}
 		return Status.OK_STATUS;
+	}
+
+	private boolean getFailStatus()
+	{
+		final String failOnErrorValue = this.getActorProperty(EXECUTOR_FAIL_ON_ERROR);
+		if(failOnErrorValue == null)
+			return true;
+		return Boolean.parseBoolean(TextUtils.notEmptyTrimmedString(failOnErrorValue));
 	}
 
 	private void checkProperties() throws CoreException
@@ -196,14 +210,16 @@ public class ExecutorActor extends AbstractActor
 		final String ENV = "[ENV] ";
 		final Set<String> envSet = new HashSet<String>();
 		final String envProperty = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_ENV));
-		
+
 		final boolean useEnvironment = !Boolean.parseBoolean(this.getActorProperty(EXECUTOR_NEW_ENVIRONMENT_ACTION));
-		CorePlugin.getLogger().info(ENV+"Using system environment : " + useEnvironment+" (use DEBUG log level to see environment variables)");
+		CorePlugin.getLogger().info(
+				ENV + "Using system environment : " + useEnvironment
+						+ " (use DEBUG log level to see environment variables)");
 		if(useEnvironment)
 		{
 			final Map<String, String> getenv = System.getenv();
 			for(String key : getenv.keySet())
-				envSet.add(key+'='+getenv.get(key));
+				envSet.add(key + '=' + getenv.get(key));
 		}
 		if(envProperty != null)
 		{
@@ -216,7 +232,7 @@ public class ExecutorActor extends AbstractActor
 			final StringBuffer buffer = new StringBuffer("Setting environment variables :\n");
 			for(String string : envSet)
 				buffer.append(string).append('\n');
-			CorePlugin.getLogger().debug(ENV+buffer.toString());
+			CorePlugin.getLogger().debug(ENV + buffer.toString());
 		}
 		return envSet.toArray(new String[envSet.size()]);
 	}
