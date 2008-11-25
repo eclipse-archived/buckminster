@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.jdt.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -41,11 +42,11 @@ import org.eclipse.jdt.internal.core.JavaProject;
 public class ClasspathReader extends JavaProject implements IStreamConsumer<IClasspathEntry[]>
 {
 	@SuppressWarnings("hiding")
-	public static final String CLASSPATH_FILENAME = ".classpath";
+	public static final String CLASSPATH_FILENAME = ".classpath"; //$NON-NLS-1$
 
 	public ClasspathReader()
 	{
-		super(ResourcesPlugin.getWorkspace().getRoot().getProject(" "), JavaModelManager.getJavaModelManager().getJavaModel());
+		super(ResourcesPlugin.getWorkspace().getRoot().getProject(" "), JavaModelManager.getJavaModelManager().getJavaModel()); //$NON-NLS-1$
 	}
 
 	public static IClasspathEntry[] getClasspath(IComponentReader reader, IProgressMonitor monitor)
@@ -67,7 +68,7 @@ public class ClasspathReader extends JavaProject implements IStreamConsumer<ICla
 	public IClasspathEntry[] consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor.beginTask(null, 150);
-		monitor.subTask("parsing classpath");
+		monitor.subTask(Messages.parsing_classpath);
 		try
 		{
 			ByteArrayOutputStream builder = new ByteArrayOutputStream();
@@ -95,7 +96,7 @@ public class ClasspathReader extends JavaProject implements IStreamConsumer<ICla
 					// The 3.3.x signature is like this:
 					// IClasspathEntry[] decodeClasspath(String xmlClasspath, Map unknownElements) throws IOException, AssertionFailedException {
 					//
-					s_decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, Map.class);
+					s_decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, Map.class); //$NON-NLS-1$
 					s_isEclipse3_3 = true;
 				}
 				catch(NoSuchMethodException e)
@@ -105,7 +106,7 @@ public class ClasspathReader extends JavaProject implements IStreamConsumer<ICla
 						// The 3.2.1 signature is like this:
 						// IClasspathEntry[] decodeClasspath(String xmlClasspath, boolean createMarker, boolean logProblems)
 						//
-						s_decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, boolean.class, boolean.class);
+						s_decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, boolean.class, boolean.class); //$NON-NLS-1$
 						s_isEclipse3_3 = false;
 					}
 					catch(NoSuchMethodException e2)

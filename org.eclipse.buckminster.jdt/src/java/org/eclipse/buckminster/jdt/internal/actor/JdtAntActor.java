@@ -16,6 +16,7 @@ import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.jdt.Messages;
 import org.eclipse.buckminster.jdt.internal.ClasspathEmitter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
@@ -28,9 +29,9 @@ import org.eclipse.core.runtime.Path;
  */
 public class JdtAntActor extends AntActor
 {
-	public static final String ACTOR_ID = "jdt.ant";
+	public static final String ACTOR_ID = "jdt.ant"; //$NON-NLS-1$
 
-	public static final String PROPERTY_PROJECT_CLASSPATH = "project.classpath";
+	public static final String PROPERTY_PROJECT_CLASSPATH = "project.classpath"; //$NON-NLS-1$
 
 	@Override
 	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays) throws CoreException

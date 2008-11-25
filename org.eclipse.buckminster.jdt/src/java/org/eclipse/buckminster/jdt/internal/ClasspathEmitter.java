@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.build.PropertiesEmitter;
 import org.eclipse.buckminster.core.helpers.ArrayUtils;
+import org.eclipse.buckminster.jdt.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -39,18 +40,18 @@ import org.eclipse.jdt.internal.core.ClasspathEntry;
 @SuppressWarnings("restriction")
 public class ClasspathEmitter extends PropertiesEmitter
 {
-	public static final String ARG_FORMAT_CLASSPATH = "format.classpath";
+	public static final String ARG_FORMAT_CLASSPATH = "format.classpath"; //$NON-NLS-1$
 
-	public static final String ARG_TARGET = "target";
+	public static final String ARG_TARGET = "target"; //$NON-NLS-1$
 
 	/**
 	 * Path separator. Defaults to setting of system property &quot;path.separator&quot;
 	 */
-	public static final String ARG_PATH_SEPARATOR = "path.separator";
+	public static final String ARG_PATH_SEPARATOR = "path.separator"; //$NON-NLS-1$
 
-	public static final Format FORMAT_CLASSPATH = new MessageFormat("bm.classpath");
+	public static final Format FORMAT_CLASSPATH = new MessageFormat("bm.classpath"); //$NON-NLS-1$
 
-	private static final String s_pathSeparator = System.getProperty("path.separator", ":");
+	private static final String s_pathSeparator = System.getProperty("path.separator", ":"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	/**
 	 * Obtains the classpath that has been declared for the current project. The classpath entries
@@ -345,7 +346,7 @@ public class ClasspathEmitter extends PropertiesEmitter
 				appendPaths(model, conProject, null, path, seenPaths, seenProjects, false);
 				continue;
 			default:
-				throw BuckminsterException.fromMessage("Unexpected classpath entry kind");
+				throw BuckminsterException.fromMessage(Messages.unexpected_classpath_entry_kind);
 			}
 
 			IResource folder = ResourcesPlugin.getWorkspace().getRoot().findMember(entryPath);

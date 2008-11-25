@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.jdt.internal;
 
+import org.eclipse.buckminster.jdt.Messages;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -35,8 +36,8 @@ public class SaxableClasspath implements ISaxable
 		Utils.addAttribute(attrs, ClasspathEntry.TAG_KIND, kindString);
 		if(accessRule.ignoreIfBetter())
 			Utils.addAttribute(attrs, ClasspathEntry.TAG_IGNORE_IF_BETTER, "true"); //$NON-NLS-1$
-		receiver.startElement("", "", ClasspathEntry.TAG_ACCESS_RULE, attrs);
-		receiver.endElement("", "", ClasspathEntry.TAG_ACCESS_RULE);
+		receiver.startElement("", "", ClasspathEntry.TAG_ACCESS_RULE, attrs); //$NON-NLS-1$ //$NON-NLS-2$
+		receiver.endElement("", "", ClasspathEntry.TAG_ACCESS_RULE); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private static void emitAttribute(IClasspathAttribute attribute, ContentHandler receiver) throws SAXException
@@ -44,8 +45,8 @@ public class SaxableClasspath implements ISaxable
 		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ClasspathEntry.TAG_ATTRIBUTE_NAME, attribute.getName());
 		Utils.addAttribute(attrs, ClasspathEntry.TAG_ATTRIBUTE_VALUE, attribute.getValue());
-		receiver.startElement("", "", ClasspathEntry.TAG_ATTRIBUTE, attrs);
-		receiver.endElement("", "", ClasspathEntry.TAG_ATTRIBUTE);
+		receiver.startElement("", "", ClasspathEntry.TAG_ATTRIBUTE, attrs); //$NON-NLS-1$ //$NON-NLS-2$
+		receiver.endElement("", "", ClasspathEntry.TAG_ATTRIBUTE); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private static void encodePatterns(IPath[] patterns, String tag, AttributesImpl attrs)
@@ -74,22 +75,22 @@ public class SaxableClasspath implements ISaxable
 		{
 		case IClasspathEntry.CPE_PROJECT:
 		case IClasspathEntry.CPE_SOURCE:
-			kindStr = "src";
+			kindStr = "src"; //$NON-NLS-1$
 			break;
 		case IClasspathEntry.CPE_LIBRARY:
-			kindStr = "lib";
+			kindStr = "lib"; //$NON-NLS-1$
 			break;
 		case IClasspathEntry.CPE_VARIABLE:
-			kindStr = "var";
+			kindStr = "var"; //$NON-NLS-1$
 			break;
 		case IClasspathEntry.CPE_CONTAINER:
-			kindStr = "con";
+			kindStr = "con"; //$NON-NLS-1$
 			break;
 		case ClasspathEntry.K_OUTPUT:
-			kindStr = "output";
+			kindStr = "output"; //$NON-NLS-1$
 			break;
 		default:
-			kindStr ="unknown";
+			kindStr ="unknown"; //$NON-NLS-1$
 		}
 		return kindStr;
 	}
@@ -107,10 +108,10 @@ public class SaxableClasspath implements ISaxable
 	public void toSax(ContentHandler receiver) throws SAXException
 	{
 		receiver.startDocument();
-		receiver.startElement("", "", ClasspathEntry.TAG_CLASSPATH, ISaxableElement.EMPTY_ATTRIBUTES);
+		receiver.startElement("", "", ClasspathEntry.TAG_CLASSPATH, ISaxableElement.EMPTY_ATTRIBUTES); //$NON-NLS-1$ //$NON-NLS-2$
 		for(IClasspathEntry entry : m_entries)
 			emitEntry(entry, receiver);
-		receiver.endElement("", "", ClasspathEntry.TAG_CLASSPATH);
+		receiver.endElement("", "", ClasspathEntry.TAG_CLASSPATH); //$NON-NLS-1$ //$NON-NLS-2$
 		receiver.endDocument();
 	}
 
@@ -148,26 +149,26 @@ public class SaxableClasspath implements ISaxable
 			Utils.addAttribute(attrs, ClasspathEntry.TAG_OUTPUT, String.valueOf(outputLocation));
 		}
 
-		receiver.startElement("", "", ClasspathEntry.TAG_CLASSPATHENTRY, attrs);
+		receiver.startElement("", "", ClasspathEntry.TAG_CLASSPATHENTRY, attrs); //$NON-NLS-1$ //$NON-NLS-2$
 
 		IClasspathAttribute[] attributes = entry.getExtraAttributes();
 		if(attributes.length > 0)
 		{
-			receiver.startElement("", "", ClasspathEntry.TAG_ATTRIBUTES, ISaxableElement.EMPTY_ATTRIBUTES);
+			receiver.startElement("", "", ClasspathEntry.TAG_ATTRIBUTES, ISaxableElement.EMPTY_ATTRIBUTES); //$NON-NLS-1$ //$NON-NLS-2$
 			for(IClasspathAttribute attribute : attributes)
 				emitAttribute(attribute, receiver);
-			receiver.endElement("", "", ClasspathEntry.TAG_ATTRIBUTES);
+			receiver.endElement("", "", ClasspathEntry.TAG_ATTRIBUTES); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		IAccessRule accessRules[] = entry.getAccessRules();
 		if(accessRules.length > 0)
 		{
-			receiver.startElement("", "", ClasspathEntry.TAG_ACCESS_RULES, ISaxableElement.EMPTY_ATTRIBUTES);
+			receiver.startElement("", "", ClasspathEntry.TAG_ACCESS_RULES, ISaxableElement.EMPTY_ATTRIBUTES); //$NON-NLS-1$ //$NON-NLS-2$
 			for(IAccessRule accessRule : accessRules)
 				emitAccessRule(accessRule, receiver);
-			receiver.endElement("", "", ClasspathEntry.TAG_ACCESS_RULES);
+			receiver.endElement("", "", ClasspathEntry.TAG_ACCESS_RULES); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		receiver.endElement("", "", ClasspathEntry.TAG_CLASSPATHENTRY);
+		receiver.endElement("", "", ClasspathEntry.TAG_CLASSPATHENTRY); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private IPath makeProjectRelative(IPath path, int entryKind)
