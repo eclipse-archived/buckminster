@@ -72,21 +72,21 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecGenerator
 {
-	private static final String ATTRIBUTE_BUNDLE_EXTRAJARS = "bundle.extrajars";
+	private static final String ATTRIBUTE_BUNDLE_EXTRAJARS = "bundle.extrajars"; //$NON-NLS-1$
 
 	private static final String ATTRIBUTE_ECLIPSE_BUILD = WellknownActions.ECLIPSE.BUILD.toString();
 
-	private static final String ATTRIBUTE_ECLIPSE_BUILD_REQUIREMENTS = ATTRIBUTE_ECLIPSE_BUILD + ".requirements";
+	private static final String ATTRIBUTE_ECLIPSE_BUILD_REQUIREMENTS = ATTRIBUTE_ECLIPSE_BUILD + ".requirements"; //$NON-NLS-1$
 
-	private static final String ATTRIBUTE_ECLIPSE_BUILD_SOURCE = ATTRIBUTE_ECLIPSE_BUILD + ".source";
+	private static final String ATTRIBUTE_ECLIPSE_BUILD_SOURCE = ATTRIBUTE_ECLIPSE_BUILD + ".source"; //$NON-NLS-1$
 
 	private static final String ATTRIBUTE_ECLIPSE_CLEAN = WellknownActions.ECLIPSE.CLEAN.toString();
 
-	private static final String PREFIX_CREATE_JAR = "create.";
+	private static final String PREFIX_CREATE_JAR = "create."; //$NON-NLS-1$
 
-	private static final String PREFIX_ECLIPSE_BUILD_OUTPUT = "eclipse.build.output.";
+	private static final String PREFIX_ECLIPSE_BUILD_OUTPUT = "eclipse.build.output."; //$NON-NLS-1$
 
-	private static final String PREFIX_ROUGE_SOURCE = "rouge.sources.";
+	private static final String PREFIX_ROUGE_SOURCE = "rouge.sources."; //$NON-NLS-1$
 
 	private static final IClasspathEntry[] s_emptyClasspath = new IClasspathEntry[0];
 
@@ -151,7 +151,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(classPath == null)
 			classPath = new IClasspathEntry[0];
 
-		fullClean.addLocalPrerequisite(generateRemoveDirAction("build", OUTPUT_DIR, false));
+		fullClean.addLocalPrerequisite(generateRemoveDirAction("build", OUTPUT_DIR, false)); //$NON-NLS-1$
 		fullClean.addLocalPrerequisite(cspec.addInternalAction(ATTRIBUTE_ECLIPSE_CLEAN, false));
 
 		// Exported entries in the classpath must be added to the
@@ -235,14 +235,14 @@ public class CSpecFromSource extends CSpecGenerator
 		for(IBuildEntry entry : build.getBuildEntries())
 		{
 			String name = entry.getName();
-			if(name.startsWith("source."))
+			if(name.startsWith("source.")) //$NON-NLS-1$
 			{
 				if(name.length() == 8 && name.charAt(7) == '.')
 				{
 					simpleBundle = true;
 					continue;
 				}
-				if(name.endsWith(".jar") && name.length() > 11)
+				if(name.endsWith(".jar") && name.length() > 11) //$NON-NLS-1$
 				{
 					if(jarsToCompile == null)
 						jarsToCompile = new ArrayList<String>();
@@ -270,11 +270,11 @@ public class CSpecFromSource extends CSpecGenerator
 			{
 				cnt = 0;
 				GroupBuilder eaBld = null;
-				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ",");
+				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ","); //$NON-NLS-1$
 				while(tokens.hasMoreTokens())
 				{
 					String token = tokens.nextToken().trim();
-					if(simpleBundle && token.equals(".") || token.equals("./"))
+					if(simpleBundle && token.equals(".") || token.equals("./")) //$NON-NLS-1$ //$NON-NLS-2$
 						continue;
 
 					if(jarsToCompile != null && jarsToCompile.contains(token))
@@ -313,7 +313,7 @@ public class CSpecFromSource extends CSpecGenerator
 		OSGiVersion version = (OSGiVersion)cspec.getVersion();
 		String versionQualifier = version.getQualifier();
 		boolean versionExpansion = versionQualifier != null
-				? versionQualifier.startsWith("qualifier")
+				? versionQualifier.startsWith("qualifier") //$NON-NLS-1$
 				: false;
 		if(versionExpansion)
 		{
@@ -367,8 +367,8 @@ public class CSpecFromSource extends CSpecGenerator
 
 		if(simpleBundle)
 		{
-			derivedArtifacts.add(new Path("."));
-			derivedArtifacts.add(new Path("./")); // Uncertain which one is used
+			derivedArtifacts.add(new Path(".")); //$NON-NLS-1$
+			derivedArtifacts.add(new Path("./")); // Uncertain which one is used //$NON-NLS-1$
 		}
 
 		// The jar contents group represents all contents of the final jar except the
@@ -436,7 +436,7 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 
 		ActionBuilder buildPlugin;
-		String jarName = m_plugin.getId() + '_' + m_plugin.getVersion() + ".jar";
+		String jarName = m_plugin.getId() + '_' + m_plugin.getVersion() + ".jar"; //$NON-NLS-1$
 		IPath jarPath = Path.fromPortableString(jarName);
 		if(localReader
 				&& (getReader().exists(jarName, new NullProgressMonitor()) || getLinkDescriptions()
@@ -500,7 +500,7 @@ public class CSpecFromSource extends CSpecGenerator
 		for(IPluginImport pluginImport : imports)
 		{
 			String pluginId = pluginImport.getId();
-			if(pluginId.equals("system.bundle"))
+			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
 
 			if(requiredBundles != null && !requiredBundles.contains(pluginId))

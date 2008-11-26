@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -44,12 +45,12 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 	/**
 	 * Name of the default generated target.
 	 */
-	public static final String DEFAULT_TARGET = "default";
+	public static final String DEFAULT_TARGET = "default"; //$NON-NLS-1$
 
 	/**
 	 * Name of the optional target.
 	 */
-	public static final String OPTIONAL_TARGET = "optional";
+	public static final String OPTIONAL_TARGET = "optional"; //$NON-NLS-1$
 
 	private boolean m_usingInstalledReader;
 
@@ -66,7 +67,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		monitor.beginTask(null, forResolutionAidOnly
 				? 1200
 				: 1600);
-		monitor.subTask("Generating cspec from PDE artifacts");
+		monitor.subTask(Messages.getString("PDEBuilder.generating_cspec_from_PDE_artifacts")); //$NON-NLS-1$
 		try
 		{
 			m_usingInstalledReader = reader instanceof EclipsePlatformReader;

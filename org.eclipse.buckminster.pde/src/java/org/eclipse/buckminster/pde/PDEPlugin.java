@@ -92,7 +92,7 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 		try
 		{
 			if(m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.pde.PdePluginResources");
+				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.pde.PdePluginResources"); //$NON-NLS-1$
 		}
 		catch(MissingResourceException x)
 		{

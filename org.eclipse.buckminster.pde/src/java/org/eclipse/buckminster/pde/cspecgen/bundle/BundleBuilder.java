@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
@@ -84,7 +85,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				BundleModel model = new ExternalBundleModel();
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
 				if(model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
-					throw new FileNotFoundException("Not an OSGi manifest");
+					throw new FileNotFoundException(Messages.getString("BundleBuilder.not_an_OSGi_manifest")); //$NON-NLS-1$
 
 				fragment = model.isFragmentModel();
 				BundlePluginModelBase bmodel = fragment

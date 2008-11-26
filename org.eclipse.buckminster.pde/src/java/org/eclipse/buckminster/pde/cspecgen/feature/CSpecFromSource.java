@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.core.PDECore;
@@ -36,19 +38,19 @@ import org.osgi.framework.Filter;
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecGenerator
 {
-	private static final String ACTION_COPY_FEATURES = "copy.features";
+	private static final String ACTION_COPY_FEATURES = "copy.features"; //$NON-NLS-1$
 
-	private static final String ATTRIBUTE_FEATURE_REFS = "feature.references";
+	private static final String ATTRIBUTE_FEATURE_REFS = "feature.references"; //$NON-NLS-1$
 
-	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root";
+	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root"; //$NON-NLS-1$
 
 	private static boolean isListOK(String list, String item)
 	{
 		if(list == null || list.length() == 0)
 			return true;
-		StringTokenizer tokens = new StringTokenizer(list, ",");
+		StringTokenizer tokens = new StringTokenizer(list, ","); //$NON-NLS-1$
 		while(tokens.hasMoreTokens())
-			if("*".equals(item) || item.equals(tokens.nextElement()))
+			if("*".equals(item) || item.equals(tokens.nextElement())) //$NON-NLS-1$
 				return true;
 		return false;
 	}
@@ -93,7 +95,7 @@ public class CSpecFromSource extends CSpecGenerator
 		cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 
 		cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
-		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
+		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN); //$NON-NLS-1$
 
 		addFeatures();
 		addPlugins();
@@ -138,7 +140,7 @@ public class CSpecFromSource extends CSpecGenerator
 					if(key.charAt(ROOT.length()) != '.')
 						continue;
 
-					String[] s = TextUtils.split(key.substring(ROOT.length() + 1), ".");
+					String[] s = TextUtils.split(key.substring(ROOT.length() + 1), "."); //$NON-NLS-1$
 					switch(s.length)
 					{
 					case 2: // permissions.digits
@@ -283,7 +285,7 @@ public class CSpecFromSource extends CSpecGenerator
 	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException
 	{
 		ArtifactBuilder binIncludes = null;
-		StringTokenizer tokens = new StringTokenizer(binIncludesStr, ",");
+		StringTokenizer tokens = new StringTokenizer(binIncludesStr, ","); //$NON-NLS-1$
 		while(tokens.hasMoreTokens())
 		{
 			String path = tokens.nextToken().trim();
@@ -368,7 +370,7 @@ public class CSpecFromSource extends CSpecGenerator
 	private void createRootsArtifact(String filesAndFolders, Filter filter) throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
-		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
+		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ","); //$NON-NLS-1$
 		GroupBuilder productRoots = null;
 		while(tokenizer.hasMoreTokens())
 		{
@@ -378,23 +380,24 @@ public class CSpecFromSource extends CSpecGenerator
 			// for absolute paths?
 			//
 			String token = tokenizer.nextToken().trim();
-			if(token.startsWith("absolute:"))
+			if(token.startsWith("absolute:")) //$NON-NLS-1$
 				//
 				// Why whould a feature copy anything using absolute paths? If it did, it would
 				// make it hopelessly dependent on install location. Not good. We don't permit
 				// it here.
 				//
-				throw BuckminsterException.fromMessage("Component %s contains absolute paths in build.properties",
-						getCSpec().getName());
+				throw BuckminsterException.fromMessage(NLS.bind(Messages
+						.getString("CSpecFromSource.component_0_contains_absolute_path_in_buildproperties"), //$NON-NLS-1$
+						getCSpec().getName()));
 
 			IPath path;
-			boolean isFile = token.startsWith("file:");
+			boolean isFile = token.startsWith("file:"); //$NON-NLS-1$
 			if(isFile)
 			{
-				if("file:bin/win32/win32/x86/eclipse.exe".equals(token))
-					token = "file:bin/win32/win32/x86/launcher.exe";
-				else if("file:bin/wpf/win32/x86/eclipse.exe".equals(token))
-					token = "file:bin/wpf/win32/x86/launcher.exe";
+				if("file:bin/win32/win32/x86/eclipse.exe".equals(token)) //$NON-NLS-1$
+					token = "file:bin/win32/win32/x86/launcher.exe"; //$NON-NLS-1$
+				else if("file:bin/wpf/win32/x86/eclipse.exe".equals(token)) //$NON-NLS-1$
+					token = "file:bin/wpf/win32/x86/launcher.exe"; //$NON-NLS-1$
 
 				path = new Path(token.substring(5));
 			}

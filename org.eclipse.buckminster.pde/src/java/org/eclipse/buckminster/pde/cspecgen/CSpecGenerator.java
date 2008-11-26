@@ -45,6 +45,7 @@ import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -84,23 +85,23 @@ import org.osgi.framework.InvalidSyntaxException;
 @SuppressWarnings("restriction")
 public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEConstants
 {
-	public static final IPath OUTPUT_DIR_JAR = OUTPUT_DIR.append("jar");
+	public static final IPath OUTPUT_DIR_JAR = OUTPUT_DIR.append("jar"); //$NON-NLS-1$
 
-	public static final IPath OUTPUT_DIR_FRAGMENTS = OUTPUT_DIR.append("fragments");
+	public static final IPath OUTPUT_DIR_FRAGMENTS = OUTPUT_DIR.append("fragments"); //$NON-NLS-1$
 
-	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site");
+	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site"); //$NON-NLS-1$
 
-	public static final IPath OUTPUT_DIR_TEMP = OUTPUT_DIR.append("temp");
+	public static final IPath OUTPUT_DIR_TEMP = OUTPUT_DIR.append("temp"); //$NON-NLS-1$
 
-	public static final String LAUNCHER_BUNDLE = "org.eclipse.equinox.launcher";
+	public static final String LAUNCHER_BUNDLE = "org.eclipse.equinox.launcher"; //$NON-NLS-1$
 
-	public static final String LAUNCHER_FEATURE_3_2 = "org.eclipse.platform.launchers";
+	public static final String LAUNCHER_FEATURE_3_2 = "org.eclipse.platform.launchers"; //$NON-NLS-1$
 
-	public static final String LAUNCHER_FEATURE = "org.eclipse.equinox.executable";
+	public static final String LAUNCHER_FEATURE = "org.eclipse.equinox.executable"; //$NON-NLS-1$
 
 	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
-		if(version == null || version.length() == 0 || version.equals("0.0.0"))
+		if(version == null || version.length() == 0 || version.equals("0.0.0")) //$NON-NLS-1$
 			return null;
 
 		char c = version.charAt(0);
@@ -111,7 +112,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			return version;
 
 		OSGiVersion v = (OSGiVersion)VersionFactory.OSGiType.fromString(version);
-		boolean qualifierTag = "qualifier".equals(v.getQualifier());
+		boolean qualifierTag = "qualifier".equals(v.getQualifier()); //$NON-NLS-1$
 		if(qualifierTag)
 			v = (OSGiVersion)v.replaceQualifier(null);
 
@@ -126,7 +127,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				// Generate a version range that matches the given version with
 				// any qualifier.
 				//
-				vbld.append(".0,");
+				vbld.append(".0,"); //$NON-NLS-1$
 				vbld.append(v.getMajor());
 				vbld.append('.');
 				vbld.append(v.getMinor());
@@ -152,12 +153,12 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			vbld.append('[');
 			vbld.append(v);
 			if(qualifierTag)
-				vbld.append(".0");
+				vbld.append(".0"); //$NON-NLS-1$
 			vbld.append(',');
 			vbld.append(v.getMajor());
 			vbld.append('.');
 			vbld.append(v.getMinor() + 1);
-			vbld.append(".0)");
+			vbld.append(".0)"); //$NON-NLS-1$
 			break;
 
 		case IMatchRules.COMPATIBLE:
@@ -168,15 +169,15 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			vbld.append('[');
 			vbld.append(v);
 			if(qualifierTag)
-				vbld.append(".0");
+				vbld.append(".0"); //$NON-NLS-1$
 			vbld.append(',');
 			vbld.append(v.getMajor() + 1);
-			vbld.append(".0.0)");
+			vbld.append(".0.0)"); //$NON-NLS-1$
 			break;
 		default:
 			vbld.append(v);
 			if(qualifierTag)
-				vbld.append(".0");
+				vbld.append(".0"); //$NON-NLS-1$
 		}
 		return vbld.toString();
 	}
@@ -191,7 +192,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			bld.append(ver);
 		}
 		if(asJar)
-			bld.append(".jar");
+			bld.append(".jar"); //$NON-NLS-1$
 		else
 			bld.append('/');
 		return bld.toString();
@@ -238,7 +239,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		bundleHostDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
 		try
 		{
-			bundleHostDep.setFilter(FilterUtils.createFilter("(bundleHost=true)"));
+			bundleHostDep.setFilter(FilterUtils.createFilter("(bundleHost=true)")); //$NON-NLS-1$
 		}
 		catch(InvalidSyntaxException e)
 		{
@@ -283,7 +284,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			{
 				try
 				{
-					fl = FilterUtils.createFilter("(|" + fl + nfl + ')');
+					fl = FilterUtils.createFilter("(|" + fl + nfl + ')'); //$NON-NLS-1$
 				}
 				catch(InvalidSyntaxException e)
 				{
@@ -344,7 +345,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
 			Filter filter) throws CoreException
 	{
-		if(versionDesignator != null && (versionDesignator.length() == 0 || versionDesignator.equals("0.0.0")))
+		if(versionDesignator != null && (versionDesignator.length() == 0 || versionDesignator.equals("0.0.0"))) //$NON-NLS-1$
 			versionDesignator = null;
 
 		ComponentRequestBuilder bld = getCSpec().createDependencyBuilder();
@@ -395,7 +396,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ) throws CoreException
 	{
-		return generateRemoveDirAction(dirTag, dirPath, publ, "buckminster.rm." + dirTag + ".dir");
+		return generateRemoveDirAction(dirTag, dirPath, publ, "buckminster.rm." + dirTag + ".dir"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ, String actionName)
@@ -435,13 +436,13 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		try
 		{
 			Filter filter = FilterUtils.createFilter(filterStr);
-			getCSpec().setFilter(FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX));
+			getCSpec().setFilter(FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX)); //$NON-NLS-1$
 		}
 		catch(InvalidSyntaxException e)
 		{
 			NodeQuery query = m_reader.getNodeQuery();
 			IStatus status = new Status(IStatus.WARNING, PDEPlugin.getPluginId(),
-					"Manifest has malformed LDAP rule for " + ICoreConstants.PLATFORM_FILTER + ": " + e.getMessage());
+					Messages.getString("CSpecGenerator.manifest_has_malformed_LDAP_rule_for") + ICoreConstants.PLATFORM_FILTER + ": " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			RMContext ctx = query.getContext();
 			if(!ctx.isContinueOnError())
 				throw new CoreException(status);
@@ -466,10 +467,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 			CSpecBuilder cspec = getCSpec();
 
-			ActionBuilder createProduct = addAntAction("create." + product.getId(), TASK_CREATE_ECLIPSE_PRODUCT, true);
+			ActionBuilder createProduct = addAntAction("create." + product.getId(), TASK_CREATE_ECLIPSE_PRODUCT, true); //$NON-NLS-1$
 			ILauncherInfo info = product.getLauncherInfo();
-			if(info != null && "_removethisfile".equalsIgnoreCase(info.getLauncherName()))
-				createProduct.addProperty(PROP_DELETE_UILAUNCHER, "true", false);
+			if(info != null && "_removethisfile".equalsIgnoreCase(info.getLauncherName())) //$NON-NLS-1$
+				createProduct.addProperty(PROP_DELETE_UILAUNCHER, "true", false); //$NON-NLS-1$
 			createProduct.addProperty(PROP_PRODUCT_FILE, productConfig.getName(), false);
 
 			AttributeBuilder rootFiles = cspec.getAttribute(ATTRIBUTE_PRODUCT_ROOT_FILES);
@@ -550,7 +551,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				// Ensure that the launcher is present if it exists in the current target platform
 				//
 				IPluginModelBase launcherBundle = EclipsePlatformReaderType.getBestPlugin(
-						"org.eclipse.equinox.launcher", null, null);
+						"org.eclipse.equinox.launcher", null, null); //$NON-NLS-1$
 				if(launcherBundle != null)
 				{
 					IPluginBase plugin = launcherBundle.getPluginBase();
@@ -576,12 +577,12 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				if(launcherInfo != null)
 				{
 					outputFolder = launcherInfo.getLauncherName();
-					if(outputFolder != null && outputFolder.endsWith(".exe"))
+					if(outputFolder != null && outputFolder.endsWith(".exe")) //$NON-NLS-1$
 						outputFolder = outputFolder.substring(0, outputFolder.length() - 4);
 				}
 
 				if(outputFolder == null)
-					outputFolder = "eclipse";
+					outputFolder = "eclipse"; //$NON-NLS-1$
 			}
 			createProduct.addProductPath(Path.fromPortableString(outputFolder).addTrailingSeparator());
 		}

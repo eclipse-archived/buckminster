@@ -54,7 +54,7 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class CSpecFromBinary extends CSpecGenerator
 {
-	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi";
+	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi"; //$NON-NLS-1$
 
 	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE,
 			IComponentType.OSGI_BUNDLE);
@@ -104,7 +104,7 @@ public class CSpecFromBinary extends CSpecGenerator
 		addImports();
 		MonitorUtils.worked(monitor, 10);
 
-		IPath parentDir = new Path("..");
+		IPath parentDir = new Path(".."); //$NON-NLS-1$
 		String location = model.getInstallLocation();
 		File locationFile = (location != null)
 				? new File(location)
@@ -171,7 +171,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				// Create an artifact that contains all entries listed in the classpath
 				//
 				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false, ATTRIBUTE_JAVA_BINARIES, null);
-				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ",");
+				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ","); //$NON-NLS-1$
 				while(tokens.hasMoreTokens())
 				{
 					String token = tokens.nextToken().trim();
@@ -209,7 +209,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			bundleExport.setProductBase(OUTPUT_DIR);
 			bundleExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			bundleAndFragments.addLocalPrerequisite(bundleExport);
-			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN);
+			generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN); //$NON-NLS-1$
 		}
 		monitor.done();
 	}
@@ -271,7 +271,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 
 			String pluginId = pluginImport.getId();
-			if(pluginId.equals("system.bundle"))
+			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
 
 			if(requiredBundles != null && !requiredBundles.contains(pluginId))
@@ -304,7 +304,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			bld.append(ver);
 		}
 		if(asJar)
-			bld.append(".jar");
+			bld.append(".jar"); //$NON-NLS-1$
 		else
 			bld.append('/');
 		return bld.toString();
