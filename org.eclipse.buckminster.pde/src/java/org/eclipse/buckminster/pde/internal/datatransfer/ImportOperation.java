@@ -148,7 +148,7 @@ public class ImportOperation extends WorkspaceJob
 	public ImportOperation(IPath containerPath, Object source, IImportStructureProvider provider,
 			IOverwriteQuery overwriteImplementor)
 	{
-		super("ImportOperation");
+		super("ImportOperation"); //$NON-NLS-1$
 		this.destinationPath = containerPath;
 		this.source = source;
 		this.provider = provider;

@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
 import org.eclipse.buckminster.pde.internal.datatransfer.IImportStructureProvider;
 import org.eclipse.buckminster.pde.internal.datatransfer.ImportOperation;
@@ -44,6 +45,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.build.WorkspaceBuildModel;
@@ -123,7 +125,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		MaterializationContext context = (MaterializationContext)m_query.getContext();
 		ComponentRequest request = m_query.getComponentRequest();
 		String projectName = request.getProjectName();
-		monitor.beginTask("Importing feature " + projectName, 100);
+		monitor.beginTask(NLS.bind(Messages.getString("FeatureImportOperation.importing_feature_0"), projectName), 100); //$NON-NLS-1$
 		IProject project = m_root.getProject(projectName);
 		try
 		{
@@ -133,7 +135,8 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				switch(conflictResolution)
 				{
 				case FAIL:
-					throw BuckminsterException.fromMessage("Project %s already exists", projectName);
+					throw BuckminsterException.fromMessage(NLS.bind(Messages
+							.getString("FeatureImportOperation.project_0_already_exists"), projectName)); //$NON-NLS-1$
 				case KEEP:
 					return;
 				default:

@@ -97,7 +97,7 @@ public class ContainerGenerator
 		{
 			public void run(IProgressMonitor monitor) throws CoreException
 			{
-				monitor.beginTask("IDEWorkbenchMessages.ContainerGenerator_progressMessage", 1000 * containerFullPath
+				monitor.beginTask("IDEWorkbenchMessages.ContainerGenerator_progressMessage", 1000 * containerFullPath //$NON-NLS-1$
 						.segmentCount());
 				if(container != null)
 					return;
@@ -118,7 +118,7 @@ public class ContainerGenerator
 					{
 						if(resource.getType() == IResource.FILE)
 						{
-							String msg = NLS.bind("IDEWorkbenchMessages.ContainerGenerator_pathOccupied", resource
+							String msg = NLS.bind("IDEWorkbenchMessages.ContainerGenerator_pathOccupied", resource //$NON-NLS-1$
 									.getFullPath().makeRelative());
 							throw new CoreException(new Status(IStatus.ERROR, PDEPlugin.getPluginId(), 1, msg, null));
 						}
