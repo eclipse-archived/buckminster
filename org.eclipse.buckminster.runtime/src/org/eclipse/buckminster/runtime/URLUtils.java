@@ -23,42 +23,9 @@ import org.eclipse.core.runtime.Path;
 public abstract class URLUtils
 {
 	/**
-	 * Appends a trailing slash to <code>url</code> and returns the result. If the <code>url</code> already has a
-	 * trailing slash, the argument is returned without modification.
-	 * 
-	 * @param url
-	 *            The <code>url</code> that should receive the trailing slash. Cannot be <code>null</code>.
-	 * @return A <code>url</code> that has a trailing slash
-	 */
-	public static URL appendTrailingSlash(URL url)
-	{
-		if(!url.getPath().endsWith("/"))
-		{
-			try
-			{
-				URI u = url.toURI();
-				url = new URI(u.getScheme(), u.getAuthority(), u.getPath() + '/', u.getQuery(), u.getFragment())
-						.toURL();
-			}
-			catch(RuntimeException e)
-			{
-				throw e;
-			}
-			catch(Exception e)
-			{
-				// Not very likely since original was a URL.
-				//
-				throw new RuntimeException(e);
-			}
-		}
-		return url;
-	}
-
-	/**
-	 * Append <code>path</code> to <code>url</code> while preserving all other characteristics of the
-	 * <code>url</code>. If <code>path</code> is absolute, it will become the new path of the <code>url</code>
-	 * else, if <code>url</code> doesn't end with a trailing slash, it is appended prior to appending the
-	 * <code>path</code>.
+	 * Append <code>path</code> to <code>url</code> while preserving all other characteristics of the <code>url</code>.
+	 * If <code>path</code> is absolute, it will become the new path of the <code>url</code> else, if <code>url</code>
+	 * doesn't end with a trailing slash, it is appended prior to appending the <code>path</code>.
 	 * 
 	 * @param url
 	 *            The url to use as root.
@@ -108,23 +75,36 @@ public abstract class URLUtils
 		return url;
 	}
 
-	public static URL getParentURL(URL url)
+	/**
+	 * Appends a trailing slash to <code>url</code> and returns the result. If the <code>url</code> already has a
+	 * trailing slash, the argument is returned without modification.
+	 * 
+	 * @param url
+	 *            The <code>url</code> that should receive the trailing slash. Cannot be <code>null</code>.
+	 * @return A <code>url</code> that has a trailing slash
+	 */
+	public static URL appendTrailingSlash(URL url)
 	{
-		if(url == null)
-			return null;
-
-		try
+		if(!url.getPath().endsWith("/"))
 		{
-			return getParentURI(url.toURI()).toURL();
+			try
+			{
+				URI u = url.toURI();
+				url = new URI(u.getScheme(), u.getAuthority(), u.getPath() + '/', u.getQuery(), u.getFragment())
+						.toURL();
+			}
+			catch(RuntimeException e)
+			{
+				throw e;
+			}
+			catch(Exception e)
+			{
+				// Not very likely since original was a URL.
+				//
+				throw new RuntimeException(e);
+			}
 		}
-		catch(MalformedURLException e)
-		{
-			return null;
-		}
-		catch(URISyntaxException e)
-		{
-			return null;
-		}
+		return url;
 	}
 
 	public static URI getParentURI(URI uri)
@@ -150,6 +130,25 @@ public abstract class URLUtils
 		}
 	}
 
+	public static URL getParentURL(URL url)
+	{
+		if(url == null)
+			return null;
+
+		try
+		{
+			return getParentURI(url.toURI()).toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			return null;
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
+		}
+	}
+
 	public static boolean isLocalURL(URL url)
 	{
 		String proto = url.getProtocol();
@@ -162,43 +161,6 @@ public abstract class URLUtils
 			proto = spec.substring(0, sepIdx);
 		}
 		return "file".equals(proto) || "platform".equals(proto) || proto.startsWith("bundle");
-	}
-
-	public static URL normalizeToURL(String surl) throws MalformedURLException
-	{
-		if(surl == null)
-			return null;
-
-		try
-		{
-			return new URL(surl);
-		}
-		catch(MalformedURLException e)
-		{
-			// Do a space check.
-			//
-			if(surl.indexOf(' ') > 0)
-			{
-				try
-				{
-					return new URL(surl.replaceAll("\\s", "%20"));
-				}
-				catch(MalformedURLException me1)
-				{
-				}
-			}
-
-			try
-			{
-				return new File(surl).toURI().toURL();
-			}
-			catch(MalformedURLException me2)
-			{
-				// Throw the original exception
-				//
-				throw e;
-			}
-		}
 	}
 
 	public static URI normalizeToURI(String repository, boolean asFolder) throws CoreException
@@ -247,6 +209,43 @@ public abstract class URLUtils
 		catch(URISyntaxException e)
 		{
 			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public static URL normalizeToURL(String surl) throws MalformedURLException
+	{
+		if(surl == null)
+			return null;
+
+		try
+		{
+			return new URL(surl);
+		}
+		catch(MalformedURLException e)
+		{
+			// Do a space check.
+			//
+			if(surl.indexOf(' ') > 0)
+			{
+				try
+				{
+					return new URL(surl.replaceAll("\\s", "%20"));
+				}
+				catch(MalformedURLException me1)
+				{
+				}
+			}
+
+			try
+			{
+				return new File(surl).toURI().toURL();
+			}
+			catch(MalformedURLException me2)
+			{
+				// Throw the original exception
+				//
+				throw e;
+			}
 		}
 	}
 

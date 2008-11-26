@@ -15,16 +15,16 @@ import java.net.URLConnection;
 
 /**
  * @author kolwing
- *
+ * 
  */
 public interface IURLConnectionProvider
 {
 
 	public static final int MAX_CONNECTION_ATTEMPTS = 3;
+
 	public static final int MILLISECS_BETWEEN_RETRIES = 3000;
 
-	public static final String URL_CONNECTION_PROVIDERS_POINT = Buckminster.PLUGIN_ID
-	+ ".URLConnectionProviders";
+	public static final String URL_CONNECTION_PROVIDERS_POINT = Buckminster.PLUGIN_ID + ".URLConnectionProviders";
 
 	public URLConnection openConnection(URL url) throws IOException;
 }

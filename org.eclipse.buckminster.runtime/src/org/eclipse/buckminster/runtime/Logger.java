@@ -29,6 +29,28 @@ import org.osgi.framework.Bundle;
  */
 public class Logger
 {
+	private static class EclipseLogListener implements ILogListener
+	{
+		public void logging(IStatus status, String plugin)
+		{
+			int severity = status.getSeverity();
+			if(severity >= s_consoleThreshold)
+			{
+				PrintStream out;
+				switch(severity)
+				{
+				case IStatus.ERROR:
+				case IStatus.WARNING:
+					out = System.err;
+					break;
+				default:
+					out = System.out;
+				}
+				Logger.printStatus(status, out);
+			}
+		}
+	}
+
 	public static final int SILENT = IStatus.CANCEL; // We use this constant to avoid collisions
 
 	public static final int DEBUG = IStatus.OK;
@@ -51,33 +73,40 @@ public class Logger
 
 	private static int s_eclipseLoggerThreshold = IBuckminsterPreferenceConstants.LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT;
 
-	private static ILogListener s_eclipseLogListener;
+	private static ILogListener s_eclipseLogListener;;
 
-	private static class EclipseLogListener implements ILogListener
+	private static PrintStream s_errStream;
+
+	private static PrintStream s_outStream;
+
+	static
 	{
-		public void logging(IStatus status, String plugin)
-		{
-			int severity = status.getSeverity();
-			if(severity >= s_consoleThreshold)
-			{
-				PrintStream out;
-				switch(severity)
-				{
-				case IStatus.ERROR:
-				case IStatus.WARNING:
-					out = System.err;
-					break;
-				default:
-					out = System.out;
-				}
-				Logger.printStatus(status, out);
-			}
-		}
-	};
+		setOutStream(getLoggerStream(false));
+		setErrStream(getLoggerStream(true));
+	}
 
 	public static Logger getDefault()
 	{
 		return s_defaultLogger;
+	}
+
+	public static PrintStream getErrStream()
+	{
+		return s_errStream;
+	}
+
+	public static PrintStream getOutStream()
+	{
+		return s_outStream;
+	}
+
+	public static void printStatus(IStatus status, PrintStream out)
+	{
+		synchronized(out)
+		{
+			printStatus(status, out, 0);
+			out.flush();
+		}
 	}
 
 	public static void setConsoleLevelThreshold(int threshold)
@@ -110,9 +139,91 @@ public class Logger
 		}
 	}
 
+	public static void setErrStream(PrintStream err)
+	{
+		s_errStream = err;
+	}
+
+	public static void setOutStream(PrintStream out)
+	{
+		s_outStream = out;
+	}
+
 	static void setDefaultLogger(Bundle bundle)
 	{
 		s_defaultLogger = new Logger(bundle);
+	}
+
+	private static PrintStream getLoggerStream(boolean errorStream)
+	{
+		// collect all implementors of a builder log receiver and hook them all
+		// up in a tee
+		//
+		PrintStream sysStream = errorStream
+				? System.err
+				: System.out;
+		if(Buckminster.isHeadless())
+			return sysStream;
+
+		IExtensionRegistry ier = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = ier.getConfigurationElementsFor(BUILDER_LOG_RECEIVER_POINT);
+		int idx = elems.length;
+		if(idx == 0)
+			return sysStream;
+
+		try
+		{
+			OutputStream[] streams = new OutputStream[idx + 1];
+			streams[idx] = sysStream;
+			while(--idx >= 0)
+			{
+				ILogReceiver receiver = (ILogReceiver)elems[idx].createExecutableExtension("class");
+				streams[idx] = receiver.start("Buckminster log", "org.eclipse.ui.MessageConsole", true, errorStream);
+			}
+			return new PrintStream(new MultiTeeOutputStream(streams), true);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace(System.err);
+			return sysStream;
+		}
+	}
+
+	private static void printStatus(IStatus status, PrintStream out, int indent)
+	{
+		boolean hasSeverityPrefix = false;
+		String msg = status.getMessage();
+		if(msg != null)
+			hasSeverityPrefix = msg.startsWith("ERROR") || msg.startsWith("WARN") || msg.startsWith("INFO");
+
+		for(int idx = 0; idx < indent; ++idx)
+			out.print(' ');
+
+		if(!hasSeverityPrefix)
+		{
+			switch(status.getSeverity())
+			{
+			case IStatus.CANCEL:
+				return;
+			case IStatus.ERROR:
+				out.print("ERROR: ");
+				break;
+			case IStatus.INFO:
+				out.print("INFO:  ");
+				break;
+			case IStatus.WARNING:
+				out.print("WARN:  ");
+			}
+		}
+
+		out.println(msg);
+		Throwable t = status.getException();
+		if(t != null)
+			t.printStackTrace(out);
+
+		indent += 2;
+		for(IStatus child : status.getChildren())
+			printStatus(child, out, indent);
 	}
 
 	private final ILog m_log;
@@ -166,11 +277,6 @@ public class Logger
 		log(INFO, t, msg, args);
 	}
 
-	public boolean isInfoEnabled()
-	{
-		return s_consoleThreshold <= INFO || s_eclipseLoggerThreshold <= INFO;
-	}
-
 	public boolean isDebugEnabled()
 	{
 		return s_consoleThreshold <= DEBUG || s_eclipseLoggerThreshold <= DEBUG;
@@ -181,6 +287,11 @@ public class Logger
 		return s_consoleThreshold <= ERROR || s_eclipseLoggerThreshold <= ERROR;
 	}
 
+	public boolean isInfoEnabled()
+	{
+		return s_consoleThreshold <= INFO || s_eclipseLoggerThreshold <= INFO;
+	}
+
 	public boolean isWarningEnabled()
 	{
 		return s_consoleThreshold <= WARNING || s_eclipseLoggerThreshold <= WARNING;
@@ -189,16 +300,6 @@ public class Logger
 	public void log(int level, String msg, Object... args)
 	{
 		log(level, null, msg, args);
-	}
-
-	private static PrintStream s_errStream;
-
-	private static PrintStream s_outStream;
-
-	static
-	{
-		setOutStream(getLoggerStream(false));
-		setErrStream(getLoggerStream(true));
 	}
 
 	public void log(int level, Throwable t, String msg, Object... args)
@@ -214,7 +315,7 @@ public class Logger
 					logStream.print(msg);
 				else
 					logStream.format(msg, args);
-				
+
 				logStream.println();
 				if(t != null && level == DEBUG)
 					t.printStackTrace(logStream);
@@ -235,106 +336,5 @@ public class Logger
 	public void warning(Throwable t, String msg, Object... args)
 	{
 		log(WARNING, t, msg, args);
-	}
-
-	public static PrintStream getOutStream()
-	{
-		return s_outStream;
-	}
-
-	public static PrintStream getErrStream()
-	{
-		return s_errStream;
-	}
-
-	public static void printStatus(IStatus status, PrintStream out)
-	{
-		synchronized(out)
-		{
-			printStatus(status, out, 0);
-			out.flush();
-		}
-	}
-
-	private static void printStatus(IStatus status, PrintStream out, int indent)
-	{
-		boolean hasSeverityPrefix = false;
-		String msg = status.getMessage();
-		if(msg != null)
-			hasSeverityPrefix = msg.startsWith("ERROR") || msg.startsWith("WARN") || msg.startsWith("INFO");
-
-		for(int idx = 0; idx < indent; ++idx)
-			out.print(' ');
-
-		if(!hasSeverityPrefix)
-		{
-			switch(status.getSeverity())
-			{
-			case IStatus.CANCEL:
-				return;
-			case IStatus.ERROR:
-				out.print("ERROR: ");
-				break;
-			case IStatus.INFO:
-				out.print("INFO:  ");
-				break;
-			case IStatus.WARNING:
-				out.print("WARN:  ");
-			}
-		}
-
-		out.println(msg);
-		Throwable t = status.getException();
-		if(t != null)
-			t.printStackTrace(out);
-
-		indent += 2;
-		for(IStatus child : status.getChildren())
-			printStatus(child, out, indent);
-	}
-
-	private static PrintStream getLoggerStream(boolean errorStream)
-	{
-		// collect all implementors of a builder log receiver and hook them all
-		// up in a tee
-		//
-		PrintStream sysStream = errorStream
-				? System.err
-				: System.out;
-		if(Buckminster.isHeadless())
-			return sysStream;
-
-		IExtensionRegistry ier = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = ier.getConfigurationElementsFor(BUILDER_LOG_RECEIVER_POINT);
-		int idx = elems.length;
-		if(idx == 0)
-			return sysStream;
-
-		try
-		{
-			OutputStream[] streams = new OutputStream[idx + 1];
-			streams[idx] = sysStream;
-			while(--idx >= 0)
-			{
-				ILogReceiver receiver = (ILogReceiver)elems[idx].createExecutableExtension("class");
-				streams[idx] = receiver.start("Buckminster log", "org.eclipse.ui.MessageConsole", true, errorStream);
-			}
-			return new PrintStream(new MultiTeeOutputStream(streams), true);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace(System.err);
-			return sysStream;
-		}
-	}
-
-	public static void setOutStream(PrintStream out)
-	{
-		s_outStream = out;
-	}
-
-	public static void setErrStream(PrintStream err)
-	{
-		s_errStream = err;
 	}
 }

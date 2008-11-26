@@ -32,11 +32,11 @@ public interface IBuckminsterPreferenceConstants
 	public static final String BUCKMINSTER_PROJECT_CONTENTS = "bmProjectContents";
 
 	public static final String BUCKMINSTER_PROJECT_CONTENTS_DEFAULT = ".buckminster";
-	
+
 	public static final String QUERY_RESOLVER_SORT_ORDER = "queryResolverSortOrder";
-	
+
 	public static final String QUERY_RESOLVER_SORT_ORDER_DEFAULT = "rmap";
-	
+
 	public static final String CUSTOM_QUERY_RESOLVER_SORT_ORDER = "customQueryResolverSort";
 
 	public static final String CONNECTION_RETRY_COUNT = "connectionRetryCount";

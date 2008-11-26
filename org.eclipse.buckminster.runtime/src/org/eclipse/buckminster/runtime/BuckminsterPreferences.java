@@ -21,6 +21,7 @@ import org.osgi.service.prefs.BackingStoreException;
 public abstract class BuckminsterPreferences implements IBuckminsterPreferenceConstants
 {
 	private static final IEclipsePreferences s_prefsNode;
+
 	private static final IEclipsePreferences s_defaultNode;
 
 	static
@@ -45,30 +46,42 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		}
 	}
 
-	public static IEclipsePreferences getNode()
-	{
-		return s_prefsNode;
-	}
-
-	public static IEclipsePreferences getDefaultNode()
-	{
-		return s_defaultNode;
-	}
-
 	public static void addListener(IPreferenceChangeListener listener)
 	{
 		s_prefsNode.addPreferenceChangeListener(listener);
 	}
 
-	public static void removeListener(IPreferenceChangeListener listener)
+	public static String createQueryResolverSortOrder(String[] sortOrder)
 	{
-		s_prefsNode.removePreferenceChangeListener(listener);
+		if(sortOrder == null || sortOrder.length == 0)
+			return null;
+
+		StringBuffer bld = new StringBuffer();
+		for(int idx = 0; idx < sortOrder.length; ++idx)
+		{
+			String resolverName = sortOrder[idx];
+			if(resolverName == null)
+				continue;
+
+			resolverName = resolverName.trim();
+			if(resolverName.length() == 0)
+				continue;
+
+			if(bld.length() > 0)
+				bld.append(',');
+			bld.append(resolverName);
+		}
+		return (bld.length() > 0)
+				? bld.toString()
+				: null;
 	}
 
 	public static IPath getBuckminterProjectContents()
 	{
 		String tmp = s_prefsNode.get(BUCKMINSTER_PROJECT_CONTENTS, null);
-		return (tmp == null) ? null : new Path(tmp);
+		return (tmp == null)
+				? null
+				: new Path(tmp);
 	}
 
 	public static int getConnectionRetryCount()
@@ -81,9 +94,9 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		return s_prefsNode.getInt(CONNECTION_RETRY_DELAY, CONNECTION_RETRY_DELAY_DEFAULT);
 	}
 
-	public static int getLogLevelConsole()
+	public static IEclipsePreferences getDefaultNode()
 	{
-		return s_prefsNode.getInt(LOG_LEVEL_CONSOLE, LOG_LEVEL_CONSOLE_DEFAULT);
+		return s_defaultNode;
 	}
 
 	public static int getLogLevelAntLogger()
@@ -91,19 +104,19 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		return s_prefsNode.getInt(LOG_LEVEL_ANT_LOGGER, LOG_LEVEL_ANT_LOGGER_DEFAULT);
 	}
 
+	public static int getLogLevelConsole()
+	{
+		return s_prefsNode.getInt(LOG_LEVEL_CONSOLE, LOG_LEVEL_CONSOLE_DEFAULT);
+	}
+
 	public static int getLogLevelEclipseLogger()
 	{
 		return s_prefsNode.getInt(LOG_LEVEL_ECLIPSE_LOGGER, LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT);
 	}
 
-	public static boolean isEclipseLoggerToConsole()
+	public static IEclipsePreferences getNode()
 	{
-		return s_prefsNode.getBoolean(LOG_ECLIPSE_TO_CONSOLE, LOG_ECLIPSE_TO_CONSOLE_DEFAULT);
-	}
-
-	public static boolean isCustomQuerySortOrder()
-	{
-		return s_prefsNode.getBoolean(CUSTOM_QUERY_RESOLVER_SORT_ORDER, false);
+		return s_prefsNode;
 	}
 
 	public static String[] getQueryResolverSortOrder()
@@ -115,6 +128,21 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static String getSiteName()
 	{
 		return s_prefsNode.get(SITE_NAME, SITE_NAME_DEFAULT);
+	}
+
+	public static boolean isCustomQuerySortOrder()
+	{
+		return s_prefsNode.getBoolean(CUSTOM_QUERY_RESOLVER_SORT_ORDER, false);
+	}
+
+	public static boolean isEclipseLoggerToConsole()
+	{
+		return s_prefsNode.getBoolean(LOG_ECLIPSE_TO_CONSOLE, LOG_ECLIPSE_TO_CONSOLE_DEFAULT);
+	}
+
+	public static void removeListener(IPreferenceChangeListener listener)
+	{
+		s_prefsNode.removePreferenceChangeListener(listener);
 	}
 
 	public static void save() throws BackingStoreException
@@ -140,19 +168,9 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		s_prefsNode.putInt(CONNECTION_RETRY_DELAY, retryDelay);
 	}
 
-	public static void setLogLevelConsole(int logLevel)
+	public static void setCustomQueryResolverSortOrder(boolean flag)
 	{
-		s_prefsNode.putInt(LOG_LEVEL_CONSOLE, logLevel);
-	}
-
-	public static void setLogLevelAntLogger(int logLevel)
-	{
-		s_prefsNode.putInt(LOG_LEVEL_ANT_LOGGER, logLevel);
-	}
-
-	public static void setLogLevelEclipseLogger(int logLevel)
-	{
-		s_prefsNode.putInt(LOG_LEVEL_ECLIPSE_LOGGER, logLevel);
+		s_prefsNode.putBoolean(CUSTOM_QUERY_RESOLVER_SORT_ORDER, flag);
 	}
 
 	public static void setEclipseLoggerToConsole(boolean flag)
@@ -160,32 +178,19 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		s_prefsNode.putBoolean(LOG_ECLIPSE_TO_CONSOLE, flag);
 	}
 
-	public static void setCustomQueryResolverSortOrder(boolean flag)
+	public static void setLogLevelAntLogger(int logLevel)
 	{
-		s_prefsNode.putBoolean(CUSTOM_QUERY_RESOLVER_SORT_ORDER, flag);
+		s_prefsNode.putInt(LOG_LEVEL_ANT_LOGGER, logLevel);
 	}
 
-	public static String createQueryResolverSortOrder(String[] sortOrder)
+	public static void setLogLevelConsole(int logLevel)
 	{
-		if(sortOrder == null || sortOrder.length == 0)
-			return null;
+		s_prefsNode.putInt(LOG_LEVEL_CONSOLE, logLevel);
+	}
 
-		StringBuffer bld = new StringBuffer();
-		for(int idx = 0; idx < sortOrder.length; ++idx)
-		{
-			String resolverName = sortOrder[idx];
-			if(resolverName == null)
-				continue;
-
-			resolverName = resolverName.trim();
-			if(resolverName.length() == 0)
-				continue;
-
-			if(bld.length() > 0)
-				bld.append(',');
-			bld.append(resolverName);
-		}
-		return (bld.length() > 0) ? bld.toString() : null;
+	public static void setLogLevelEclipseLogger(int logLevel)
+	{
+		s_prefsNode.putInt(LOG_LEVEL_ECLIPSE_LOGGER, logLevel);
 	}
 
 	public static void setQueryResolverSortOrder(String[] sortOrder)

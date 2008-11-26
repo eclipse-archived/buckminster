@@ -8,10 +8,9 @@
 
 package org.eclipse.buckminster.runtime;
 
-
 /**
  * @author Filip Hrbek
- *
+ * 
  */
 public interface IFileInfo
 {
@@ -24,11 +23,6 @@ public interface IFileInfo
 	public static final String PROPERTY_SIZE = "size";
 
 	/**
-	 * @return the name (may return null)
-	 */
-	String getRemoteName();
-
-	/**
 	 * @return the contentType (may return null)
 	 */
 	String getContentType();
@@ -37,6 +31,11 @@ public interface IFileInfo
 	 * @return the timestamp when the file was last modified
 	 */
 	long getLastModified();
+
+	/**
+	 * @return the name (may return null)
+	 */
+	String getRemoteName();
 
 	/**
 	 * @return the size or -1 if the size is not known

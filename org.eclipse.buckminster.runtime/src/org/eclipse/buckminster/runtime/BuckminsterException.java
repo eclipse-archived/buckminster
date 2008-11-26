@@ -22,36 +22,31 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * This class contains basic wrap and unwrap functionality for various commonly
- * used exceptions. The idea is to normalize exception into a {@link CoreException}
- *
+ * This class contains basic wrap and unwrap functionality for various commonly used exceptions. The idea is to
+ * normalize exception into a {@link CoreException}
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("serial")
 public abstract class BuckminsterException extends CoreException
 {
-	protected BuckminsterException(IStatus status)
-	{
-		super(status);
-	}
-
-	public static IStatus createStatus(String message, Object...args)
+	public static IStatus createStatus(String message, Object... args)
 	{
 		return createStatus(null, message, args);
-	}
-
-	public static IStatus createStatus(Throwable cause, String message, Object...args)
-	{
-		if(args.length > 0)
-			message = String.format(message, args);
-		return new Status(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, message, cause);
 	}
 
 	public static IStatus createStatus(Throwable cause)
 	{
 		return (cause instanceof CoreException)
-			? ((CoreException)cause).getStatus()
-			: new Status(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
+				? ((CoreException)cause).getStatus()
+				: new Status(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
+	}
+
+	public static IStatus createStatus(Throwable cause, String message, Object... args)
+	{
+		if(args.length > 0)
+			message = String.format(message, args);
+		return new Status(IStatus.ERROR, Buckminster.PLUGIN_ID, IStatus.OK, message, cause);
 	}
 
 	public static void deeplyPrint(Throwable e, PrintStream strm, boolean stackTrace)
@@ -59,12 +54,12 @@ public abstract class BuckminsterException extends CoreException
 		deeplyPrint(e, strm, stackTrace, 0);
 	}
 
-	public static CoreException fromMessage(String message, Object...args)
+	public static CoreException fromMessage(String message, Object... args)
 	{
 		return fromMessage(null, message, args);
 	}
 
-	public static CoreException fromMessage(Throwable cause, String message, Object...args)
+	public static CoreException fromMessage(Throwable cause, String message, Object... args)
 	{
 		CoreException ce = new CoreException(createStatus(cause, message, args));
 		if(cause != null)
@@ -81,10 +76,8 @@ public abstract class BuckminsterException extends CoreException
 			// We don't use instanceof operator since we want
 			// the explicit class, not subclasses.
 			//
-			if(tc != RuntimeException.class
-			&& tc != InvocationTargetException.class
-			&& tc != SAXException.class
-			&& tc != IOException.class)
+			if(tc != RuntimeException.class && tc != InvocationTargetException.class && tc != SAXException.class
+					&& tc != IOException.class)
 				break;
 
 			Throwable cause = t.getCause();
@@ -208,5 +201,10 @@ public abstract class BuckminsterException extends CoreException
 				}
 			}
 		}
+	}
+
+	protected BuckminsterException(IStatus status)
+	{
+		super(status);
 	}
 }

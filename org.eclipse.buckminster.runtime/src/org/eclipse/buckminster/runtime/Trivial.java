@@ -16,21 +16,31 @@ import org.eclipse.core.runtime.IPath;
 public class Trivial
 {
 	public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
-	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-	public static final String[] EMPTY_STRING_ARRAY = new String[0];
-	public static final IPath[] EMPTY_PATH_ARRAY = new IPath[0];
-	public static final URL[] EMPTY_URL_ARRAY = new URL[0];
 
-	public static boolean equalsAllowNull(Object a, Object b)
-	{
-		return a == null ? b == null : a.equals(b);
-	}
+	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
+	public static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+	public static final IPath[] EMPTY_PATH_ARRAY = new IPath[0];
+
+	public static final URL[] EMPTY_URL_ARRAY = new URL[0];
 
 	public static <T extends Comparable<T>> int compareAllowNull(T a, T b)
 	{
 		return a == null
-			? (b == null ? 0 : -1)
-			: (b == null ? 1 : a.compareTo(b));
+				? (b == null
+						? 0
+						: -1)
+				: (b == null
+						? 1
+						: a.compareTo(b));
+	}
+
+	public static boolean equalsAllowNull(Object a, Object b)
+	{
+		return a == null
+				? b == null
+				: a.equals(b);
 	}
 
 	/**

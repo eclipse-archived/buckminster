@@ -17,6 +17,7 @@ import org.osgi.framework.BundleContext;
 public class Buckminster extends LogAwarePlugin implements IPreferenceChangeListener, IBuckminsterPreferenceConstants
 {
 	public static final String NAMESPACE = "org.eclipse.buckminster";
+
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.runtime";
 
 	private static Buckminster s_plugin;
@@ -28,9 +29,62 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 	//
 	private static boolean s_headless = false;
 
+	public static Buckminster getDefault()
+	{
+		return s_plugin;
+	}
+
+	public static Logger getLogger()
+	{
+		return s_plugin.getBundleLogger();
+	}
+
+	/**
+	 * Returns true if Buckminster was started through the application entry point.
+	 * 
+	 * @return The headless state
+	 */
+	public static boolean isHeadless()
+	{
+		return s_headless;
+	}
+
+	/**
+	 * Sets the headless state.
+	 */
+	public static void setHeadless()
+	{
+		s_headless = true;
+	}
+
 	public Buckminster()
 	{
 		s_plugin = this;
+	}
+
+	public void preferenceChange(PreferenceChangeEvent event)
+	{
+		if(LOG_LEVEL_CONSOLE.equals(event.getKey()))
+		{
+			Object newVal = event.getNewValue();
+			Logger.setConsoleLevelThreshold(newVal == null
+					? LOG_LEVEL_CONSOLE_DEFAULT
+					: Integer.parseInt(newVal.toString()));
+		}
+		if(LOG_LEVEL_ECLIPSE_LOGGER.equals(event.getKey()))
+		{
+			Object newVal = event.getNewValue();
+			Logger.setEclipseLoggerLevelThreshold(newVal == null
+					? LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT
+					: Integer.parseInt(newVal.toString()));
+		}
+		else if(LOG_ECLIPSE_TO_CONSOLE.equals(event.getKey()))
+		{
+			Object newVal = event.getNewValue();
+			Logger.setEclipseLoggerToConsole(newVal == null
+					? LOG_ECLIPSE_TO_CONSOLE_DEFAULT
+					: Boolean.valueOf(newVal.toString()).booleanValue());
+		}
 	}
 
 	@Override
@@ -49,53 +103,5 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 	{
 		s_plugin = null;
 		super.stop(context);
-	}
-
-	public static Buckminster getDefault()
-	{
-		return s_plugin;
-	}
-
-	public static Logger getLogger()
-	{
-		return s_plugin.getBundleLogger();
-	}
-
-	public void preferenceChange(PreferenceChangeEvent event)
-	{
-		if(LOG_LEVEL_CONSOLE.equals(event.getKey()))
-		{
-			Object newVal = event.getNewValue();
-			Logger.setConsoleLevelThreshold(newVal == null ? LOG_LEVEL_CONSOLE_DEFAULT : Integer.parseInt(newVal.toString()));
-		}
-		if(LOG_LEVEL_ECLIPSE_LOGGER.equals(event.getKey()))
-		{
-			Object newVal = event.getNewValue();
-			Logger.setEclipseLoggerLevelThreshold(newVal == null ? LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT : Integer.parseInt(newVal.toString()));
-		}
-		else if(LOG_ECLIPSE_TO_CONSOLE.equals(event.getKey()))
-		{
-			Object newVal = event.getNewValue();
-			Logger.setEclipseLoggerToConsole(newVal == null ? LOG_ECLIPSE_TO_CONSOLE_DEFAULT : Boolean.valueOf(newVal.toString()).booleanValue());
-		}
-	}
-
-	/**
-	 * Sets the headless state. 
-	 */
-	public static void setHeadless()
-	{
-		s_headless = true;
-	}
-
-	/**
-	 * Returns true if Buckminster was started through the application entry
-	 * point.
-	 * 
-	 * @return The headless state
-	 */
-	public static boolean isHeadless()
-	{
-		return s_headless;
 	}
 }

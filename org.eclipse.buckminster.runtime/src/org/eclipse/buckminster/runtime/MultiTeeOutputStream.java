@@ -58,19 +58,19 @@ public class MultiTeeOutputStream extends OutputStream
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len) throws IOException
-	{
-		int idx = m_streams.length;
-		while(--idx >= 0)
-			m_streams[idx].write(b, off, len);
-	}
-
-	@Override
 	public void write(byte[] b) throws IOException
 	{
 		int idx = m_streams.length;
 		while(--idx >= 0)
 			m_streams[idx].write(b);
+	}
+
+	@Override
+	public void write(byte[] b, int off, int len) throws IOException
+	{
+		int idx = m_streams.length;
+		while(--idx >= 0)
+			m_streams[idx].write(b, off, len);
 	}
 
 	@Override

@@ -30,6 +30,25 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class IOUtils
 {
 	/**
+	 * Close but no cigar, sorry no Exception...
+	 * 
+	 * @param stream
+	 */
+	public static void close(Closeable stream)
+	{
+		if(stream != null)
+		{
+			try
+			{
+				stream.close();
+			}
+			catch(IOException e)
+			{
+			}
+		}
+	}
+
+	/**
 	 * Copies all data read from <code>in</code> to <code>out</code> using a byte buffer of size 2048 bytes.
 	 * 
 	 * @param in
@@ -55,71 +74,6 @@ public class IOUtils
 		{
 			MonitorUtils.done(monitor);
 		}
-	}
-
-	/**
-	 * Convert an <code>URL</code> into a <code>URI</code>.
-	 * @param url The url to be converted or <code>null</code>.
-	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URI.
-	 * @throws IllegalArgumentException if the URL could not be converted.
-	 */
-	public static URI uri(URL url)
-	{
-		try
-		{
-			return url == null ? null : url.toURI();
-		}
-		catch(URISyntaxException e)
-		{
-			throw new IllegalArgumentException("Unable to convert URL into URI: " + url);
-		}
-	}
-
-	/**
-	 * Convert an <code>String</code> into a <code>URI</code>.
-	 * @param uriStr The String to be converted or <code>null</code>.
-	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URI.
-	 * @throws IllegalArgumentException if the String could not be converted.
-	 */
-	public static URI uri(String uriStr)
-	{
-		try
-		{
-			return uriStr == null ? null : new URI(uriStr);
-		}
-		catch(URISyntaxException e)
-		{
-			throw new IllegalArgumentException("Unable to convert String into URI: " + uriStr);
-		}
-	}
-
-	/**
-	 * Convert an <code>URI</code> into a <code>URL</code>.
-	 * @param uri The uri to be converted or <code>null</code>.
-	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URL.
-	 * @throws IllegalArgumentException if the URI could not be converted.
-	 */
-	public static URL url(URI uri)
-	{
-		try
-		{
-			return uri == null ? null : uri.toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw new IllegalArgumentException("Unable to convert URI into URL: " + uri);
-		}
-	}
-
-	/**
-	 * Convert an <code>File</code> into a <code>URL</code>.
-	 * @param file The file to be converted or <code>null</code>.
-	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URL.
-	 * @throws IllegalArgumentException if the File could not be converted.
-	 */
-	public static URL url(File file)
-	{
-		return file == null ? null : url(file.toURI());
 	}
 
 	/**
@@ -151,21 +105,87 @@ public class IOUtils
 	}
 
 	/**
-	 * Close but no cigar, sorry no Exception...
+	 * Convert an <code>String</code> into a <code>URI</code>.
 	 * 
-	 * @param stream
+	 * @param uriStr
+	 *            The String to be converted or <code>null</code>.
+	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URI.
+	 * @throws IllegalArgumentException
+	 *             if the String could not be converted.
 	 */
-	public static void close(Closeable stream)
+	public static URI uri(String uriStr)
 	{
-		if(stream != null)
+		try
 		{
-			try
-			{
-				stream.close();
-			}
-			catch(IOException e)
-			{
-			}
+			return uriStr == null
+					? null
+					: new URI(uriStr);
+		}
+		catch(URISyntaxException e)
+		{
+			throw new IllegalArgumentException("Unable to convert String into URI: " + uriStr);
+		}
+	}
+
+	/**
+	 * Convert an <code>URL</code> into a <code>URI</code>.
+	 * 
+	 * @param url
+	 *            The url to be converted or <code>null</code>.
+	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URI.
+	 * @throws IllegalArgumentException
+	 *             if the URL could not be converted.
+	 */
+	public static URI uri(URL url)
+	{
+		try
+		{
+			return url == null
+					? null
+					: url.toURI();
+		}
+		catch(URISyntaxException e)
+		{
+			throw new IllegalArgumentException("Unable to convert URL into URI: " + url);
+		}
+	}
+
+	/**
+	 * Convert an <code>File</code> into a <code>URL</code>.
+	 * 
+	 * @param file
+	 *            The file to be converted or <code>null</code>.
+	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URL.
+	 * @throws IllegalArgumentException
+	 *             if the File could not be converted.
+	 */
+	public static URL url(File file)
+	{
+		return file == null
+				? null
+				: url(file.toURI());
+	}
+
+	/**
+	 * Convert an <code>URI</code> into a <code>URL</code>.
+	 * 
+	 * @param uri
+	 *            The uri to be converted or <code>null</code>.
+	 * @return <code>null</code> if <code>null</code> was passed, otherwise the corresponding URL.
+	 * @throws IllegalArgumentException
+	 *             if the URI could not be converted.
+	 */
+	public static URL url(URI uri)
+	{
+		try
+		{
+			return uri == null
+					? null
+					: uri.toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw new IllegalArgumentException("Unable to convert URI into URL: " + uri);
 		}
 	}
 }
