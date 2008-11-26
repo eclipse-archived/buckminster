@@ -25,10 +25,12 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
@@ -53,7 +55,8 @@ public class BundleConsolidator extends VersionConsolidator
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.fromMessage("Unable to manifest from %s", inputFile);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("BundleConsolidator.unable_to_manifest_from_0"), inputFile)); //$NON-NLS-1$
 		}
 		finally
 		{
