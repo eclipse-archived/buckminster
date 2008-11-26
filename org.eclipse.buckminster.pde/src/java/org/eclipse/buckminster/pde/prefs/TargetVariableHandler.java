@@ -8,6 +8,8 @@
 package org.eclipse.buckminster.pde.prefs;
 
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
+import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 import org.osgi.service.prefs.BackingStoreException;
@@ -46,7 +48,8 @@ abstract class TargetVariableHandler extends BasicPreferenceHandler implements I
 				return;
 			}
 		}
-		throw new BackingStoreException(value + " is not a valid setting for the target" + m_prefName + " preference");
+		throw new BackingStoreException(NLS.bind(Messages
+				.getString("TargetVariableHandler.0_is_not_valid_setting_for_target_1_pref"), value, m_prefName)); //$NON-NLS-1$
 	}
 
 	abstract String[] getKnownValues();
