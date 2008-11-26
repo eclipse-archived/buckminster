@@ -28,8 +28,10 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.build.IFetchFactory;
 import org.eclipse.pde.internal.build.FetchTaskFactoriesRegistry;
 
@@ -39,13 +41,13 @@ import org.eclipse.pde.internal.build.FetchTaskFactoriesRegistry;
 @SuppressWarnings("restriction")
 public class MapFile
 {
-	private static final Pattern s_pattern = Pattern.compile("^" + "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle,
-																							// feature, plugin, or
-																							// fragment
-			+ "\\s*([^@,=\\s]+)\\s*" // Element ID
-			+ "(?:,\\s*([^@,=\\s]+)\\s*)?=" // Optional version
-			+ "(?:\\s*([A-Za-z_][A-Za-z0-9_-]*)\\s*,)?\\s*" // Optional fetch type specifier (default is CVS)
-			+ "\\s*([^\\s]+)\\s*$"); // Fetch type specific field
+	private static final Pattern s_pattern = Pattern.compile("^" + "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle, //$NON-NLS-1$ //$NON-NLS-2$
+			// feature, plugin, or
+			// fragment
+			+ "\\s*([^@,=\\s]+)\\s*" // Element ID //$NON-NLS-1$
+			+ "(?:,\\s*([^@,=\\s]+)\\s*)?=" // Optional version //$NON-NLS-1$
+			+ "(?:\\s*([A-Za-z_][A-Za-z0-9_-]*)\\s*,)?\\s*" // Optional fetch type specifier (default is CVS) //$NON-NLS-1$
+			+ "\\s*([^\\s]+)\\s*$"); // Fetch type specific field //$NON-NLS-1$
 
 	private static FetchTaskFactoriesRegistry s_fetchTaskFactories;
 
@@ -58,12 +60,12 @@ public class MapFile
 		if(s_fetchTaskFactories == null)
 			s_fetchTaskFactories = new FetchTaskFactoriesRegistry();
 		AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream();
-		FileUtils.substituteParameters(inputStream, buffer, '@', Collections.singletonMap("CVSTag", "HEAD"));
+		FileUtils.substituteParameters(inputStream, buffer, '@', Collections.singletonMap("CVSTag", "HEAD")); //$NON-NLS-1$ //$NON-NLS-2$
 		BufferedReader input = new BufferedReader(new InputStreamReader(buffer.getInputStream()));
 		String line;
 		while((line = input.readLine()) != null)
 		{
-			if(line.startsWith("#"))
+			if(line.startsWith("#")) //$NON-NLS-1$
 				//
 				// Comment
 				//
@@ -76,10 +78,10 @@ public class MapFile
 			String fetchType = m.group(4);
 			String fetchTypeSpecific = m.group(5);
 			if(fetchType == null)
-				fetchType = "CVS";
-			else if(fetchType.equals("COPY"))
+				fetchType = "CVS"; //$NON-NLS-1$
+			else if(fetchType.equals("COPY")) //$NON-NLS-1$
 			{
-				logger.warning("Fetch type COPY is not supported. Map file %s", streamName);
+				logger.warning(NLS.bind(Messages.getString("MapFile.fetch_type_COPY_not_supported_map_0"), streamName)); //$NON-NLS-1$
 				continue;
 			}
 
@@ -90,27 +92,29 @@ public class MapFile
 				// fetchTypeSpecific string and that the real fetchType is CVS.
 				//
 				fetchTypeSpecific = fetchType + ',' + fetchTypeSpecific;
-				fetchType = "CVS";
+				fetchType = "CVS"; //$NON-NLS-1$
 
 				ff = s_fetchTaskFactories.getFactory(fetchType);
 				if(ff == null)
 				{
-					logger.warning("No fetch factory found for id '%s' in PDE map file %s", fetchType, streamName);
+					logger.warning(NLS.bind(
+							Messages.getString("MapFile.no_factory_found_for_0_in_PDEmap_1"), fetchType, streamName)); //$NON-NLS-1$
 					continue;
 				}
 			}
 
 			String type = m.group(1);
 			String ctypeId;
-			if("plugin".equals(type) || "bundle".equals(type) || "fragment".equals(type))
+			if("plugin".equals(type) || "bundle".equals(type) || "fragment".equals(type)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				ctypeId = IComponentType.OSGI_BUNDLE;
-			else if("feature".equals(type))
+			else if("feature".equals(type)) //$NON-NLS-1$
 				ctypeId = IComponentType.ECLIPSE_FEATURE;
 			else
 			{
 				// We don't recognize this type
 				//
-				logger.warning("Unregognized component type '%s' in PDE map file %s", type, streamName);
+				logger.warning(NLS.bind(
+						Messages.getString("MapFile.unrecognized_component_type_0_in_PDEmap_1"), type, streamName)); //$NON-NLS-1$
 				continue;
 			}
 
@@ -126,7 +130,8 @@ public class MapFile
 			{
 				// Version is corrupt. Skip this line
 				//
-				logger.warning("Badly formatted version '%s' in PDE map file %s", vstr, streamName);
+				logger.warning(NLS.bind(
+						Messages.getString("MapFile.badly_formatted_version_0_in_PDEmap_1"), vstr, streamName)); //$NON-NLS-1$
 				continue;
 			}
 
@@ -139,20 +144,20 @@ public class MapFile
 			}
 			catch(Exception e)
 			{
-				logger.warning("Fetch factory %s was unable to parse '%s' in PDE map file %s", fetchType,
-						fetchTypeSpecific, streamName);
+				logger.warning(NLS.bind(Messages.getString("MapFile.fetch_factory_0_unable_to_parse_1_in_PDEmap_2"), //$NON-NLS-1$
+						new Object[] { fetchType, fetchTypeSpecific, streamName }));
 				continue;
 			}
 
 			String readerTypeID = fetchType.toLowerCase();
-			if("get".equals(readerTypeID))
+			if("get".equals(readerTypeID)) //$NON-NLS-1$
 			{
-				readerTypeID = "url";
+				readerTypeID = "url"; //$NON-NLS-1$
 
 				// Extract a more exact version from the file name if possible
 				//
-				String src = props.get("src");
-				if(src.endsWith(".jar") || src.endsWith(".zip"))
+				String src = props.get("src"); //$NON-NLS-1$
+				if(src.endsWith(".jar") || src.endsWith(".zip")) //$NON-NLS-1$ //$NON-NLS-2$
 				{
 					int lastSlash = src.lastIndexOf('/');
 					if(lastSlash < 0)
@@ -181,8 +186,9 @@ public class MapFile
 			}
 			catch(CoreException e)
 			{
-				logger.warning("Unable to obtain reader type for fetch type '%s' in PDE map file %s", fetchType,
-						streamName);
+				logger.warning(NLS.bind(Messages
+						.getString("MapFile.Unable_to_obtain_readertype_for_fetchtype_0_in_PDEmap_1"), fetchType, //$NON-NLS-1$
+						streamName));
 				continue;
 			}
 			receivingList.add(new MapFileEntry(cid, readerType, props));
