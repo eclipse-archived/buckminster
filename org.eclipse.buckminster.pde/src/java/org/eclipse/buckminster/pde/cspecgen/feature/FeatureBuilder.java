@@ -42,7 +42,7 @@ public class FeatureBuilder extends PDEBuilder
 	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders, String[] spec)
 	{
 		StringBuilder bld = new StringBuilder();
-		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
+		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ","); //$NON-NLS-1$
 		while(tokenizer.hasMoreTokens())
 		{
 			if(bld.length() > 0)
@@ -55,7 +55,7 @@ public class FeatureBuilder extends PDEBuilder
 		if(bld.length() > 0)
 		{
 			String key = (spec != null && spec.length >= 3)
-					? String.format("%s/%s.%s.%s", HINT_PERMISSIONS, spec[0], spec[1], spec[2])
+					? String.format("%s/%s.%s.%s", HINT_PERMISSIONS, spec[0], spec[1], spec[2]) //$NON-NLS-1$
 					: HINT_PERMISSIONS;
 
 			String permissions = hints.get(key);
@@ -98,7 +98,7 @@ public class FeatureBuilder extends PDEBuilder
 			{
 				try
 				{
-					model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor,
+					model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor, //$NON-NLS-1$
 							40));
 				}
 				catch(FileNotFoundException e)
@@ -121,7 +121,7 @@ public class FeatureBuilder extends PDEBuilder
 		{
 			try
 			{
-				buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor(
+				buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor( //$NON-NLS-1$
 						monitor, 40));
 			}
 			catch(FileNotFoundException e)
