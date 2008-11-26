@@ -1,10 +1,10 @@
 /*****************************************************************************
-* Copyright (c) 2006-2007, Cloudsmith Inc.
-* The code, documentation and other materials contained herein have been
-* licensed under the Eclipse Public License - v 1.0 by the copyright holder
-* listed above, as the Initial Contributor under such license. The text of
-* such license is available at www.eclipse.org.
-*****************************************************************************/
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.remote.resolver;
 
@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 public class RemoteResolver implements IResolver
 {
 	private IResolutionServiceConnection m_remoteService;
-	
+
 	private ComponentQuery m_cQuery;
 
 	private final ResolutionContext m_context;
@@ -58,19 +58,14 @@ public class RemoteResolver implements IResolver
 		return m_recursive;
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
-		return m_context.logDecision(decisionType, args);
-	}
-
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
 	{
 		return m_context.logDecision(request, decisionType, args);
 	}
 
-	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
 	{
-		return resolve(m_context.getComponentQuery().getRootRequest(), monitor);
+		return m_context.logDecision(decisionType, args);
 	}
 
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
@@ -82,11 +77,16 @@ public class RemoteResolver implements IResolver
 		return resolveRemaining(unresolved, monitor);
 	}
 
+	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException
+	{
+		return resolve(m_context.getComponentQuery().getRootRequest(), monitor);
+	}
+
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
-		if (bom == null)
+		if(bom == null)
 			throw BuckminsterException.fromMessage("Null BOM resolution request");
-		
+
 		if(bom.isFullyResolved())
 		{
 			MonitorUtils.complete(monitor);
@@ -95,7 +95,7 @@ public class RemoteResolver implements IResolver
 
 		if(!bom.getQuery().useResolutionService(bom.getRequest()))
 			return bom;
-		
+
 		BillOfMaterials bomReturned = null;
 
 		try
@@ -136,10 +136,10 @@ public class RemoteResolver implements IResolver
 
 				monitor.subTask(message);
 				monitor.worked(worked - lastWorked);
-				
+
 				lastWorked = worked;
 
-				if (monitor.isCanceled() && !m_remoteService.isCancelSent())
+				if(monitor.isCanceled() && !m_remoteService.isCancelSent())
 				{
 					logger.debug("Starting cancel service...");
 					m_remoteService.cancel();
@@ -152,8 +152,8 @@ public class RemoteResolver implements IResolver
 			{
 				logger.debug("Getting query result...");
 				bomReturned = m_remoteService.getResolutionResult();
-				
-				if (bomReturned == null)
+
+				if(bomReturned == null)
 				{
 					logger.debug("No resolution progress detected, using the original BOM...");
 					bomReturned = bom;

@@ -10,7 +10,7 @@ package org.eclipse.buckminster.remote;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ServiceProvider implements IServiceProvider
 {
@@ -42,7 +42,8 @@ public class ServiceProvider implements IServiceProvider
 	 * @param servicePath
 	 * @param loginSupport
 	 */
-	public ServiceProvider(String id, String name, String protocol, String host, String port, String initializationPath, String servicePath, boolean loginSupport)
+	public ServiceProvider(String id, String name, String protocol, String host, String port,
+			String initializationPath, String servicePath, boolean loginSupport)
 	{
 		super();
 		m_id = id;
@@ -55,19 +56,14 @@ public class ServiceProvider implements IServiceProvider
 		m_loginSupport = loginSupport;
 	}
 
-	public String getId()
-	{
-		return m_id;
-	}
-
-	public String getName()
-	{
-		return m_name;
-	}
-
 	public String getHost()
 	{
 		return m_host;
+	}
+
+	public String getId()
+	{
+		return m_id;
 	}
 
 	public String getInitializationPath()
@@ -75,9 +71,9 @@ public class ServiceProvider implements IServiceProvider
 		return m_initializationPath;
 	}
 
-	public String getServicePath()
+	public String getName()
 	{
-		return m_servicePath;
+		return m_name;
 	}
 
 	public String getPort()
@@ -88,6 +84,11 @@ public class ServiceProvider implements IServiceProvider
 	public String getProtocol()
 	{
 		return m_protocol;
+	}
+
+	public String getServicePath()
+	{
+		return m_servicePath;
 	}
 
 	public boolean isLoginSupported()

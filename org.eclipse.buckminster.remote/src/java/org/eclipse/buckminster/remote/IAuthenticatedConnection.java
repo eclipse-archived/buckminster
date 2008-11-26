@@ -14,14 +14,22 @@ import org.eclipse.core.runtime.CoreException;
  * Provides basic authentication operations
  * 
  * @author Karel Brezina
- *
+ * 
  */
 public interface IAuthenticatedConnection
 {
 	public static final int LOGIN_FAILED = -1;
-	
+
 	public static final int LOGIN_OK = 1;
-	
+
+	/**
+	 * Checks the login status
+	 * 
+	 * @return true=logged in
+	 * @throws CoreException
+	 */
+	boolean isLoggedIn() throws CoreException;
+
 	/**
 	 * Login to the remote service
 	 * 
@@ -31,19 +39,11 @@ public interface IAuthenticatedConnection
 	 * @throws CoreException
 	 */
 	int login(String userName, String password) throws CoreException;
-	
+
 	/**
 	 * Logout from the remote service
 	 * 
 	 * @throws CoreException
 	 */
 	void logout() throws CoreException;
-	
-	/**
-	 * Checks the login status
-	 * 
-	 * @return true=logged in
-	 * @throws CoreException
-	 */
-	boolean isLoggedIn() throws CoreException;
 }

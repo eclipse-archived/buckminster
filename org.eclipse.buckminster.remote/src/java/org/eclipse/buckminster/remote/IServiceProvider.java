@@ -1,10 +1,10 @@
 /*****************************************************************************
-* Copyright (c) 2006-2007, Cloudsmith Inc.
-* The code, documentation and other materials contained herein have been
-* licensed under the Eclipse Public License - v 1.0 by the copyright holder
-* listed above, as the Initial Contributor under such license. The text of
-* such license is available at www.eclipse.org.
-*****************************************************************************/
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.remote;
 
@@ -23,6 +23,13 @@ public interface IServiceProvider
 	String getHost();
 
 	/**
+	 * Gets remote service ID
+	 * 
+	 * @return the id
+	 */
+	String getId();
+
+	/**
 	 * Gets remote service initialization URL path
 	 * 
 	 * @return the service path
@@ -30,11 +37,11 @@ public interface IServiceProvider
 	String getInitializationPath();
 
 	/**
-	 * Gets remote service URL path
+	 * Gets remote service name
 	 * 
-	 * @return the service path
+	 * @return the name
 	 */
-	String getServicePath();
+	String getName();
 
 	/**
 	 * Gets remote service port
@@ -51,18 +58,11 @@ public interface IServiceProvider
 	String getProtocol();
 
 	/**
-	 * Gets remote service name
+	 * Gets remote service URL path
 	 * 
-	 * @return the name
+	 * @return the service path
 	 */
-	String getName();
-
-	/**
-	 * Gets remote service ID
-	 * 
-	 * @return the id
-	 */
-	String getId();
+	String getServicePath();
 
 	/**
 	 * Gets remote service login support

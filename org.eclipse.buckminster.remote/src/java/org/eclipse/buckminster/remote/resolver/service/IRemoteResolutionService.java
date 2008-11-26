@@ -13,16 +13,51 @@ import java.io.Serializable;
 import org.eclipse.buckminster.remote.IProgressInfo;
 
 /**
- * Methods in this interface are used for remote communication with remote resolution server. They are called locally and exercised on the remote server
+ * Methods in this interface are used for remote communication with remote resolution server. They are called locally
+ * and exercised on the remote server
  * 
  * @author Karel Brezina
  */
 public interface IRemoteResolutionService extends Serializable
 {
 	public static final int LOGIN_FAILED = -1;
-	
+
 	public static final int LOGIN_OK = 1;
-	
+
+	/**
+	 * Cancel resolution
+	 */
+	void cancel();
+
+	/**
+	 * Fires BOM resolution
+	 * 
+	 * @param bomImage
+	 *            BillOfMaterial image
+	 */
+	void fireBomResolution(byte[] bomImage);
+
+	/**
+	 * Get progress information
+	 * 
+	 * @return
+	 */
+	IProgressInfo getProgressInfo();
+
+	/**
+	 * Gets resolution results
+	 * 
+	 * @return resolved BillOfMaterial image
+	 */
+	byte[] getResolutionResult();
+
+	/**
+	 * Checks the login status
+	 * 
+	 * @return
+	 */
+	boolean isLoggedIn();
+
 	/**
 	 * Login to the remote service
 	 * 
@@ -31,41 +66,9 @@ public interface IRemoteResolutionService extends Serializable
 	 * @return
 	 */
 	int login(String userName, String password);
-	
+
 	/**
 	 * Logout from the remote service
 	 */
 	void logout();
-	
-	/**
-	 * Checks the login status
-	 * 
-	 * @return
-	 */
-	boolean isLoggedIn();
-	
-	/**
-	 * Cancel resolution
-	 */
-	void cancel();
-	
-	/**
-	 * Get progress information
-	 * @return
-	 */
-	IProgressInfo getProgressInfo();
-
-	/**
-	 * Fires BOM resolution
-	 * 
-	 * @param bomImage BillOfMaterial image
-	 */
-	void fireBomResolution(byte[] bomImage);
-
-	/**
-	 * Gets resolution results
-	 * 
-	 * @return resolved BillOfMaterial image
-	 */
-	byte[] getResolutionResult();
 }

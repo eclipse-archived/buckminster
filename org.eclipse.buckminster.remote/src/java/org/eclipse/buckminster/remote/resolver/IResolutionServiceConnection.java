@@ -16,14 +16,15 @@ import org.eclipse.core.runtime.CoreException;
  * Provides remote resolution service operations
  * 
  * @author Karel Brezina
- *
+ * 
  */
 public interface IResolutionServiceConnection extends IServiceConnection
 {
 	/**
 	 * Fires query resolution - it should start an asynchronous method on the server side
 	 * 
-	 * @param bom BillOfMaterials
+	 * @param bom
+	 *            BillOfMaterials
 	 * @throws CoreException
 	 */
 	public void fireQueryResolution(BillOfMaterials bom) throws CoreException;

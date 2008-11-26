@@ -10,20 +10,20 @@ package org.eclipse.buckminster.remote;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ProgressInfo implements IProgressInfo
 {
 	private String m_message;
-	
+
 	private int m_worked;
-	
+
 	private boolean m_isDone;
-	
+
 	public ProgressInfo()
 	{
 	}
-	
+
 	public ProgressInfo(String message, int worked, boolean isDone)
 	{
 		super();
@@ -37,19 +37,9 @@ public class ProgressInfo implements IProgressInfo
 		return m_message;
 	}
 
-	public void setMessage(String message)
-	{
-		m_message = message;
-	}
-
 	public int getWorked()
 	{
 		return m_worked;
-	}
-
-	public void setWorked(int worked)
-	{
-		m_worked = worked;
 	}
 
 	public boolean isDone()
@@ -60,6 +50,16 @@ public class ProgressInfo implements IProgressInfo
 	public void setDone(boolean isDone)
 	{
 		m_isDone = isDone;
+	}
+
+	public void setMessage(String message)
+	{
+		m_message = message;
+	}
+
+	public void setWorked(int worked)
+	{
+		m_worked = worked;
 	}
 
 }

@@ -22,8 +22,10 @@ import org.eclipse.core.runtime.CoreException;
 public class RemoteResolverFactory extends AbstractRemoteResolverFactory
 {
 	@Override
-	protected IResolutionServiceConnection createResolutionServiceConnection(String providerID, Map<String, Object> properties) throws CoreException
-	{	
-		return new ResolutionServiceConnection(providerID, (String)properties.get(LOGIN_PARAM), (String)properties.get(PASSWORD_PARAM));
+	protected IResolutionServiceConnection createResolutionServiceConnection(String providerID,
+			Map<String, Object> properties) throws CoreException
+	{
+		return new ResolutionServiceConnection(providerID, (String)properties.get(LOGIN_PARAM), (String)properties
+				.get(PASSWORD_PARAM));
 	}
 }

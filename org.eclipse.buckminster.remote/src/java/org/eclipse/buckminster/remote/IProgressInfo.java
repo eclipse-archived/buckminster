@@ -1,10 +1,10 @@
 /*****************************************************************************
-* Copyright (c) 2006-2007, Cloudsmith Inc.
-* The code, documentation and other materials contained herein have been
-* licensed under the Eclipse Public License - v 1.0 by the copyright holder
-* listed above, as the Initial Contributor under such license. The text of
-* such license is available at www.eclipse.org.
-*****************************************************************************/
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.remote;
 
@@ -16,23 +16,23 @@ package org.eclipse.buckminster.remote;
 public interface IProgressInfo
 {
 	/**
-	 * Returns true if the process being monitored has already finished
+	 * Returns description of the task currently being processed
 	 * 
-	 * @return true or false
+	 * @return current task description
 	 */
-	boolean isDone();
-	
+	String getMessage();
+
 	/**
 	 * Returns progress in ticks
 	 * 
 	 * @return progress in ticks
 	 */
 	int getWorked();
-	
+
 	/**
-	 * Returns description of the task currently being processed
+	 * Returns true if the process being monitored has already finished
 	 * 
-	 * @return current task description
+	 * @return true or false
 	 */
-	String getMessage();
+	boolean isDone();
 }
