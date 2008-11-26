@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -32,6 +33,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.HostSpecification;
 import org.eclipse.osgi.service.resolver.VersionRange;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.IEditableModel;
 import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -97,7 +99,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 
 	private final File m_externalFile;
 
-	private static final Pattern s_ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s");
+	private static final Pattern s_ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s"); //$NON-NLS-1$
 
 	public EditableFeatureModel(File externalFile)
 	{
@@ -172,7 +174,8 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 			// Parsing failed but AbstractFeatureParser silently ignores
 			// SAXExceptions
 			//
-			throw BuckminsterException.fromMessage("Unable to parse feature: %s", m_externalFile);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("EditableFeatureModel.unable_to_parse_feature_0"), m_externalFile)); //$NON-NLS-1$
 		}
 
 		int ctxQualLen = -1;
@@ -204,7 +207,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		}
 		catch(FileNotFoundException e)
 		{
-			PDEPlugin.getLogger().error(e, "Unable to save feature model");
+			PDEPlugin.getLogger().error(e, Messages.getString("EditableFeatureModel.unable_to_save_feature_model")); //$NON-NLS-1$
 		}
 	}
 
@@ -226,23 +229,23 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 	{
 		try
 		{
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, "UTF-8"));
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, "UTF-8")); //$NON-NLS-1$
 			save(writer);
 			writer.flush();
 		}
 		catch(UnsupportedEncodingException e)
 		{
-			PDEPlugin.getLogger().error(e, "UTF-8 is not supported");
+			PDEPlugin.getLogger().error(e, Messages.getString("EditableFeatureModel.utf8_not_supported")); //$NON-NLS-1$
 			throw new RuntimeException(e);
 		}
 	}
 
 	public void save(PrintWriter writer)
 	{
-		writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
 		if(getFeature().getVersion().indexOf('-') > 0 && m_contextQualifierLength != -1)
-			writer.println("<!-- contextQualifierLength=" + m_contextQualifierLength + " -->");
-		feature.write("", writer);
+			writer.println("<!-- contextQualifierLength=" + m_contextQualifierLength + " -->"); //$NON-NLS-1$ //$NON-NLS-2$
+		feature.write("", writer); //$NON-NLS-1$
 		setDirty(false);
 	}
 
