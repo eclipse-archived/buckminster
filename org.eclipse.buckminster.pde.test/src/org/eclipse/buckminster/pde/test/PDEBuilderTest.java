@@ -49,8 +49,8 @@ public class PDEBuilderTest extends PDETestCase
 
 		IComponentType bundleType = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
 		IReaderType readerType = provider.getReaderType();
-		IComponentReader[] reader = new IComponentReader[] {
-			readerType.getReader(provider, bundleType, resolver.getContext().getRootNodeQuery(), null, nulMon) };
+		IComponentReader[] reader = new IComponentReader[] { readerType.getReader(provider, bundleType, resolver
+				.getContext().getRootNodeQuery(), null, nulMon) };
 
 		IResolutionBuilder builder = corePlugin.getResolutionBuilder("plugin2cspec");
 		Utils.serialize(builder.build(reader, false, nulMon), System.out);
@@ -89,9 +89,14 @@ public class PDEBuilderTest extends PDETestCase
 		try
 		{
 			resolver = this.createResolver("org.tigris.subversion.subclipse.core", null);
-			provider = new Provider("svn", componentTypes, "http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core", null);
+			provider = new Provider(
+					"svn",
+					componentTypes,
+					"http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core",
+					null);
 			readerType = provider.getReaderType();
-			reader[0] = readerType.getReader(provider, bundleType, resolver.getContext().getRootNodeQuery(), null, nulMon);
+			reader[0] = readerType.getReader(provider, bundleType, resolver.getContext().getRootNodeQuery(), null,
+					nulMon);
 			builder = corePlugin.getResolutionBuilder("plugin2cspec");
 			Utils.serialize(builder.build(reader, false, nulMon), System.out);
 			if(reader[0] != null)

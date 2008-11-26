@@ -21,13 +21,12 @@ import junit.framework.TestCase;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class MapFileTest extends TestCase
 {
 	@Override
-	public void setUp()
-	throws Exception
+	public void setUp() throws Exception
 	{
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
@@ -41,7 +40,8 @@ public class MapFileTest extends TestCase
 		MapFile.parse(input, url.toString(), bld);
 		input.close();
 
-		url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/orbitBundles-S20080209163815.map");
+		url = new URL(
+				"http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/orbitBundles-S20080209163815.map");
 		input = url.openStream();
 		MapFile.parse(input, url.toString(), bld);
 		input.close();

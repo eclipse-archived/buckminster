@@ -23,12 +23,6 @@ import org.eclipse.pde.internal.core.PDECore;
 @SuppressWarnings("restriction")
 public abstract class PDETestCase extends AbstractTestCase
 {
-	@Override
-	public void setUp() throws Exception
-	{
-		super.setUp();
-	}
-
 	/**
 	 * Returns the location of the target platform
 	 */
@@ -49,5 +43,10 @@ public abstract class PDETestCase extends AbstractTestCase
 		return targetPath;
 	}
 
-}
+	@Override
+	public void setUp() throws Exception
+	{
+		super.setUp();
+	}
 
+}

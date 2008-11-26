@@ -29,7 +29,6 @@ import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -45,8 +44,7 @@ public abstract class AbstractTestCase extends TestCase
 	}
 
 	@Override
-	public void setUp()
-	throws Exception
+	public void setUp() throws Exception
 	{
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
@@ -65,18 +63,12 @@ public abstract class AbstractTestCase extends TestCase
 		return new MainResolver(new ResolutionContext(query));
 	}
 
-	@Override
-	protected void runTest() throws Throwable
+	protected CorePlugin getPlugin() throws Exception
 	{
-		try
-		{
-			super.runTest();
-		}
-		catch(CoreException e)
-		{
-			BuckminsterException.deeplyPrint(e, System.err, true);
-			throw e;
-		}
+		CorePlugin plugin = CorePlugin.getDefault();
+		if(plugin == null)
+			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
+		return plugin;
 	}
 
 	protected URL getRMAP()
@@ -91,13 +83,17 @@ public abstract class AbstractTestCase extends TestCase
 		}
 	}
 
-	protected CorePlugin getPlugin()
-	throws Exception
+	@Override
+	protected void runTest() throws Throwable
 	{
-		CorePlugin plugin = CorePlugin.getDefault();
-		if(plugin == null)
-			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
-		return plugin;
+		try
+		{
+			super.runTest();
+		}
+		catch(CoreException e)
+		{
+			BuckminsterException.deeplyPrint(e, System.err, true);
+			throw e;
+		}
 	}
 }
-

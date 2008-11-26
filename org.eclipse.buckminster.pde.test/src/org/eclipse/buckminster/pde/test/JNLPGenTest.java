@@ -13,7 +13,7 @@ public class JNLPGenTest extends AbstractTestCase
 		File siteWorkspace = new File("/workspaces/Buck-3.2.x");
 		File featureFile = new File(siteWorkspace, "features/org.eclipse.buckminster.jnlp.product/feature.xml");
 		JNLPGenerator generator = new JNLPGenerator(featureFile);
-		
+
 		File jnlpFile = File.createTempFile("bucky_", ".jnlp");
 		jnlpFile.deleteOnExit();
 
