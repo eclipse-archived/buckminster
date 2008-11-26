@@ -52,9 +52,9 @@ public class MapFileEntry
 	{
 		StringBuilder bld = new StringBuilder();
 		m_componentIdentifier.toString(bld);
-		bld.append(", ");
+		bld.append(", "); //$NON-NLS-1$
 		bld.append(m_readerType.getId());
-		bld.append(", ");
+		bld.append(", "); //$NON-NLS-1$
 		bld.append(m_properties);
 		return bld.toString();
 	}
