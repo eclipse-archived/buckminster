@@ -45,8 +45,6 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Utils
 {
-	private static SAXTransformerFactory s_saxTransformerFactory;
-
 	private static class ByteInputOutputBuffer extends ByteArrayOutputStream
 	{
 		public InputStream getInputStream()
@@ -54,6 +52,8 @@ public class Utils
 			return new ByteArrayInputStream(buf, 0, count);
 		}
 	}
+
+	private static SAXTransformerFactory s_saxTransformerFactory;
 
 	private static final Class<?>[] s_emptyArgTypes = new Class[] {};
 
@@ -74,6 +74,68 @@ public class Utils
 	public static void addAttribute(AttributesImpl attrs, String name, String value)
 	{
 		attrs.addAttribute("", name, name, "CDATA", value);
+	}
+
+	public static <T> List<T> createUnmodifiableList(Collection<T> coll)
+	{
+		List<T> aList;
+		if(coll == null || coll.size() == 0)
+			aList = Collections.emptyList();
+		else
+		{
+			List<T> newList;
+			if(coll.size() == 1)
+			{
+				T value = (coll instanceof List)
+						? ((List<T>)coll).get(0)
+						: coll.iterator().next();
+				newList = Collections.singletonList(value);
+			}
+			else
+				newList = new ArrayList<T>(coll);
+			aList = Collections.unmodifiableList(newList);
+		}
+		return aList;
+	}
+
+	public static <K, V> Map<K, V> createUnmodifiableMap(Map<K, V> aMap)
+	{
+		if(aMap == null || aMap.size() == 0)
+			aMap = Collections.emptyMap();
+		else
+		{
+			if(aMap.size() == 1)
+			{
+				Map.Entry<K, V> entry = aMap.entrySet().iterator().next();
+				aMap = Collections.singletonMap(entry.getKey(), entry.getValue());
+			}
+			else
+				aMap = new HashMap<K, V>(aMap);
+			aMap = Collections.unmodifiableMap(aMap);
+		}
+		return aMap;
+	}
+
+	public static <T> Set<T> createUnmodifiableSet(Collection<T> coll)
+	{
+		Set<T> aSet;
+		if(coll == null || coll.size() == 0)
+			aSet = Collections.emptySet();
+		else
+		{
+			Set<T> newSet;
+			if(coll.size() == 1)
+			{
+				T value = (coll instanceof List)
+						? ((List<T>)coll).get(0)
+						: coll.iterator().next();
+				newSet = Collections.singleton(value);
+			}
+			else
+				newSet = new HashSet<T>(coll);
+			aSet = Collections.unmodifiableSet(newSet);
+		}
+		return aSet;
 	}
 
 	/**
@@ -104,10 +166,45 @@ public class Utils
 		}
 	}
 
+	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
+			String elemName, Attributes attrs, Collection<T> collection, ContentHandler handler) throws SAXException
+	{
+		if(collection.isEmpty() && attrs.getLength() == 0)
+			return;
+
+		String qName = makeQualifiedName(prefix, localName);
+		handler.startElement(namespace, localName, qName, attrs);
+		for(T elem : collection)
+			elem.toSax(handler, namespace, prefix, elemName == null
+					? elem.getDefaultTag()
+					: elemName);
+		handler.endElement(namespace, localName, qName);
+	}
+
+	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
+			String elemName, Attributes attrs, T[] array, ContentHandler handler) throws SAXException
+	{
+		if(array.length == 0)
+			return;
+
+		String qName = makeQualifiedName(prefix, localName);
+		handler.startElement(namespace, localName, qName, attrs);
+		for(T elem : array)
+			elem.toSax(handler, namespace, prefix, elemName == null
+					? elem.getDefaultTag()
+					: elemName);
+		handler.endElement(namespace, localName, qName);
+	}
+
+	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
+			String elemName, Collection<T> collection, ContentHandler handler) throws SAXException
+	{
+		emitCollection(namespace, prefix, localName, elemName, ISaxableElement.EMPTY_ATTRIBUTES, collection, handler);
+	}
+
 	/**
 	 * Using J2SE 5.0 or higher, we would not need this since the <code>Locator</code> then can be casted to a
-	 * <code>Locator2</code>. With 1.4 we know that the method is there but we can't get to it without using
-	 * reflection.
+	 * <code>Locator2</code>. With 1.4 we know that the method is there but we can't get to it without using reflection.
 	 * 
 	 * @param locator
 	 *            The locator to extract the encoding from
@@ -171,8 +268,8 @@ public class Utils
 	}
 
 	/**
-	 * Creates a qualified name by concatenating the <code>prefix</code>, a colon, and the <code>localName</code>.
-	 * If <code>prefix</code> is <code>null</code> or an empty string, the <code>localName</code> is returned.
+	 * Creates a qualified name by concatenating the <code>prefix</code>, a colon, and the <code>localName</code>. If
+	 * <code>prefix</code> is <code>null</code> or an empty string, the <code>localName</code> is returned.
 	 * 
 	 * @param prefix
 	 *            The prefix for the qualified name
@@ -248,51 +345,15 @@ public class Utils
 		return serializer;
 	}
 
-	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
-			String elemName, Attributes attrs, Collection<T> collection, ContentHandler handler) throws SAXException
+	public static void serialize(ISaxable saxable, OutputStream outputStream) throws SAXException
 	{
-		if(collection.isEmpty() && attrs.getLength() == 0)
-			return;
-
-		String qName = makeQualifiedName(prefix, localName);
-		handler.startElement(namespace, localName, qName, attrs);
-		for(T elem : collection)
-			elem.toSax(handler, namespace, prefix, elemName == null
-					? elem.getDefaultTag()
-					: elemName);
-		handler.endElement(namespace, localName, qName);
-	}
-
-	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
-			String elemName, Attributes attrs, T[] array, ContentHandler handler) throws SAXException
-	{
-		if(array.length == 0)
-			return;
-
-		String qName = makeQualifiedName(prefix, localName);
-		handler.startElement(namespace, localName, qName, attrs);
-		for(T elem : array)
-			elem.toSax(handler, namespace, prefix, elemName == null
-					? elem.getDefaultTag()
-					: elemName);
-		handler.endElement(namespace, localName, qName);
-	}
-
-	public static <T extends ISaxableElement> void emitCollection(String namespace, String prefix, String localName,
-			String elemName, Collection<T> collection, ContentHandler handler) throws SAXException
-	{
-		emitCollection(namespace, prefix, localName, elemName, ISaxableElement.EMPTY_ATTRIBUTES, collection, handler);
+		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", 4, true);
+		saxable.toSax(serializer);
 	}
 
 	public static void serializeUgly(ISaxable saxable, OutputStream outputStream) throws SAXException
 	{
 		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", -1, false);
-		saxable.toSax(serializer);
-	}
-
-	public static void serialize(ISaxable saxable, OutputStream outputStream) throws SAXException
-	{
-		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", 4, true);
 		saxable.toSax(serializer);
 	}
 
@@ -323,63 +384,5 @@ public class Utils
 		{
 			throw new SAXException(e.getMessage());
 		}
-	}
-
-	public static <T> List<T> createUnmodifiableList(Collection<T> coll)
-	{
-		List<T> aList;
-		if(coll == null || coll.size() == 0)
-			aList = Collections.emptyList();
-		else
-		{
-			List<T> newList;
-			if(coll.size() == 1)
-			{
-				T value = (coll instanceof List) ? ((List<T>)coll).get(0) : coll.iterator().next();
-				newList = Collections.singletonList(value);
-			}
-			else
-				newList = new ArrayList<T>(coll);
-			aList = Collections.unmodifiableList(newList);
-		}
-		return aList;
-	}
-
-	public static <K,V> Map<K,V> createUnmodifiableMap(Map<K,V> aMap)
-	{
-		if(aMap == null || aMap.size() == 0)
-			aMap = Collections.emptyMap();
-		else
-		{
-			if(aMap.size() == 1)
-			{
-				Map.Entry<K,V> entry = aMap.entrySet().iterator().next();
-				aMap = Collections.singletonMap(entry.getKey(), entry.getValue());
-			}
-			else
-				aMap = new HashMap<K,V>(aMap);
-			aMap = Collections.unmodifiableMap(aMap);
-		}
-		return aMap;
-	}
-
-	public static <T> Set<T> createUnmodifiableSet(Collection<T> coll)
-	{
-		Set<T> aSet;
-		if(coll == null || coll.size() == 0)
-			aSet = Collections.emptySet();
-		else
-		{
-			Set<T> newSet;
-			if(coll.size() == 1)
-			{
-				T value = (coll instanceof List) ? ((List<T>)coll).get(0) : coll.iterator().next();
-				newSet = Collections.singleton(value);
-			}
-			else
-				newSet = new HashSet<T>(coll);
-			aSet = Collections.unmodifiableSet(newSet);
-		}
-		return aSet;
 	}
 }

@@ -10,14 +10,15 @@ package org.eclipse.buckminster.sax;
 import org.xml.sax.SAXException;
 
 /**
- * A handler that can extract the contents between XML start
- * and end tags without the overhead of creating several objects.
- * Make sure to call {@link #getLengthAndReset()} between each element.
+ * A handler that can extract the contents between XML start and end tags without the overhead of creating several
+ * objects. Make sure to call {@link #getLengthAndReset()} between each element.
+ * 
  * @author Thomas Hallgren
  */
 public abstract class StringElementHandler extends ChildHandler
 {
 	private char[] m_buffer = new char[64];
+
 	private int m_length;
 
 	protected StringElementHandler(AbstractHandler parentHandler)
@@ -26,8 +27,7 @@ public abstract class StringElementHandler extends ChildHandler
 	}
 
 	@Override
-	public void characters(char[] chars, int start, int length)
-	throws SAXException
+	public void characters(char[] chars, int start, int length) throws SAXException
 	{
 		if(m_length == 0)
 		{
@@ -48,7 +48,9 @@ public abstract class StringElementHandler extends ChildHandler
 		{
 			if(m_length + length > m_buffer.length)
 			{
-				char[] newBuffer = new char[m_length + (m_length > length ? m_length : length)];
+				char[] newBuffer = new char[m_length + (m_length > length
+						? m_length
+						: length)];
 				System.arraycopy(m_buffer, 0, newBuffer, 0, m_length);
 				m_buffer = newBuffer;
 			}
@@ -59,6 +61,7 @@ public abstract class StringElementHandler extends ChildHandler
 
 	/**
 	 * Returns the raw character buffer.
+	 * 
 	 * @return the raw character buffer.
 	 */
 	protected final char[] getBuffer()
@@ -67,12 +70,10 @@ public abstract class StringElementHandler extends ChildHandler
 	}
 
 	/**
-	 * Returns the number of valid characters in the buffer after the
-	 * start position. The length is trimmed from whitespace at the
-	 * end. This method also resets the handler. Susequent calls to
-	 * this method will return zero until a call to
-	 * {@link #characters(char[], int, int)} arrives.
-	 *
+	 * Returns the number of valid characters in the buffer after the start position. The length is trimmed from
+	 * whitespace at the end. This method also resets the handler. Susequent calls to this method will return zero until
+	 * a call to {@link #characters(char[], int, int)} arrives.
+	 * 
 	 * @return the whitespace trimmed length of the buffer.
 	 */
 	protected final int getLengthAndReset()

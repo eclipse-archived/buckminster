@@ -9,12 +9,10 @@ package org.eclipse.buckminster.sax;
 
 import java.util.UUID;
 
-
 /**
- * Base class for immutable UUID keyed classes. The contract specifies
- * that such a class may only declare immutable (i.e. final) properties
- * since the id of the instance is calculated from the XML serialization.
- *
+ * Base class for immutable UUID keyed classes. The contract specifies that such a class may only declare immutable
+ * (i.e. final) properties since the id of the instance is calculated from the XML serialization.
+ * 
  * @author Thomas Hallgren
  */
 public abstract class UUIDKeyed extends AbstractSaxableElement implements ISaxable

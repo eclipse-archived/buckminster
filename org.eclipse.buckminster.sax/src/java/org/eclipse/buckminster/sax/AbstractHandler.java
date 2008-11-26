@@ -27,17 +27,87 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public abstract class AbstractHandler extends DefaultHandler
 {
-	private HashMap<String, String> m_prefixMappings;
-
-	protected abstract Locator getDocumentLocator();
+	/**
+	 * Returns an boolean value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
+	 * it consists entirely of whitespace.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @param defaultValue
+	 *            The value to be returned if the attribute is not set.
+	 * @return The value of the attribute or <code>defaultValue</code>.
+	 */
+	public static boolean getOptionalBooleanValue(Attributes attrs, String qName, boolean defaultValue)
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		if(value == null)
+			return defaultValue;
+		if("1".equals(value))
+			return true;
+		if("0".equals(value))
+			return false;
+		return "true".equalsIgnoreCase(value);
+	}
 
 	/**
-	 * Returns the name of the element for which this class is a handler. In essence, this method returns the value of
-	 * the static variable <code>TAG</code> declared for the class of the instance that receives the call.
+	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if it
+	 * consists entirely of whitespace.
 	 * 
-	 * @return The element name.
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @param defaultValue
+	 *            The value to be returned if the attribute is not set.
+	 * @return The value of the attribute or <code>defaultValue</code>.
 	 */
-	public abstract String getTAG();
+	public static final double getOptionalDoubleValue(Attributes attrs, String qName, double defaultValue)
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		return (value == null)
+				? defaultValue
+				: Double.parseDouble(value);
+	}
+
+	/**
+	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if it
+	 * consists entirely of whitespace.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The value of the attribute or <code>defaultValue</code>.
+	 */
+	public static final int getOptionalIntValue(Attributes attrs, String qName, int defaultValue)
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		return (value == null)
+				? defaultValue
+				: Integer.parseInt(value);
+	}
+
+	/**
+	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if it
+	 * consists entirely of whitespace.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @param defaultValue
+	 *            The value to be returned if the attribute is not set.
+	 * @return The value of the attribute or <code>defaultValue</code>.
+	 */
+	public static final long getOptionalLongValue(Attributes attrs, String qName, long defaultValue)
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		return (value == null)
+				? defaultValue
+				: Long.parseLong(value);
+	}
 
 	/**
 	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero. This method returns the
@@ -59,6 +129,35 @@ public abstract class AbstractHandler extends DefaultHandler
 				value = null;
 		}
 		return value;
+	}
+
+	/**
+	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero. This method returns the
+	 * <code>defaultValue</code> if the attribute does not exist or if it consists entirely of whitespace.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @param defaultValue
+	 *            The value to be returned if the attribute is not set.
+	 * @return The value of the attribute or <code>defaultValue</code>.
+	 */
+	public static final String getOptionalStringValue(Attributes attrs, String qName, String defaultValue)
+	{
+		String value = getOptionalStringValue(attrs, qName);
+		if(value == null)
+			value = defaultValue;
+		return value;
+	}
+
+	private HashMap<String, String> m_prefixMappings;
+
+	@Override
+	public void endPrefixMapping(String prefix) throws SAXException
+	{
+		if(m_prefixMappings != null)
+			m_prefixMappings.remove(prefix);
 	}
 
 	/**
@@ -129,169 +228,27 @@ public abstract class AbstractHandler extends DefaultHandler
 		}
 	}
 
-	/**
-	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero. This method returns the
-	 * <code>defaultValue</code> if the attribute does not exist or if it consists entirely of whitespace.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @param defaultValue
-	 *            The value to be returned if the attribute is not set.
-	 * @return The value of the attribute or <code>defaultValue</code>.
-	 */
-	public static final String getOptionalStringValue(Attributes attrs, String qName, String defaultValue)
+	public String getPrefixMapping(String prefix)
 	{
-		String value = getOptionalStringValue(attrs, qName);
-		if(value == null)
-			value = defaultValue;
-		return value;
+		return m_prefixMappings == null
+				? null
+				: m_prefixMappings.get(prefix);
 	}
 
 	/**
-	 * Returns an boolean value. This method returns the <code>defaultValue</code> if the attribute does not exist or
-	 * if it consists entirely of whitespace.
+	 * Returns the name of the element for which this class is a handler. In essence, this method returns the value of
+	 * the static variable <code>TAG</code> declared for the class of the instance that receives the call.
 	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @param defaultValue
-	 *            The value to be returned if the attribute is not set.
-	 * @return The value of the attribute or <code>defaultValue</code>.
+	 * @return The element name.
 	 */
-	public static boolean getOptionalBooleanValue(Attributes attrs, String qName, boolean defaultValue)
-	{
-		String value = getOptionalStringValue(attrs, qName);
-		if(value == null)
-			return defaultValue;
-		if("1".equals(value))
-			return true;
-		if("0".equals(value))
-			return false;
-		return "true".equalsIgnoreCase(value);
-	}
+	public abstract String getTAG();
 
-	/**
-	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
-	 * it consists entirely of whitespace.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @param defaultValue
-	 *            The value to be returned if the attribute is not set.
-	 * @return The value of the attribute or <code>defaultValue</code>.
-	 */
-	public static final double getOptionalDoubleValue(Attributes attrs, String qName, double defaultValue)
+	@Override
+	public void startPrefixMapping(String prefix, String uri) throws SAXException
 	{
-		String value = getOptionalStringValue(attrs, qName);
-		return (value == null)
-				? defaultValue
-				: Double.parseDouble(value);
-	}
-
-	/**
-	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
-	 * it consists entirely of whitespace.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @param defaultValue
-	 *            The value to be returned if the attribute is not set.
-	 * @return The value of the attribute or <code>defaultValue</code>.
-	 */
-	public static final long getOptionalLongValue(Attributes attrs, String qName, long defaultValue)
-	{
-		String value = getOptionalStringValue(attrs, qName);
-		return (value == null)
-				? defaultValue
-				: Long.parseLong(value);
-	}
-
-	/**
-	 * Returns an long value. This method returns the <code>defaultValue</code> if the attribute does not exist or if
-	 * it consists entirely of whitespace.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @return The value of the attribute or <code>defaultValue</code>.
-	 */
-	public static final int getOptionalIntValue(Attributes attrs, String qName, int defaultValue)
-	{
-		String value = getOptionalStringValue(attrs, qName);
-		return (value == null)
-				? defaultValue
-				: Integer.parseInt(value);
-	}
-
-	/**
-	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @return The value of the attribute or <code>null</code>.
-	 * @throws MissingRequiredAttributeException
-	 *             if the attribute does not exist or if it consists entirely of whitespace.
-	 */
-	protected String getStringValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
-	{
-		String value = getOptionalStringValue(attrs, qName);
-		if(value == null)
-			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
-		return value;
-	}
-
-	/**
-	 * Returns an attribute that is compiled into a regular expression pattern.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @return The compiled pattern.
-	 * @throws MissingRequiredAttributeException
-	 *             when the attribute is not null or empty
-	 * @throws SAXParseException
-	 *             when the attribute value cannot be compiled into a regular expression pattern.
-	 */
-	protected Pattern getPatternValue(Attributes attrs, String qName) throws SAXParseException,
-			MissingRequiredAttributeException
-	{
-		Pattern value = getOptionalPatternValue(attrs, qName);
-		if(value == null)
-			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
-		return value;
-	}
-
-	/**
-	 * Returns an attribute that is parsed into a URL.
-	 * 
-	 * @param attrs
-	 *            The attribute container.
-	 * @param qName
-	 *            The qualified name of the attribute.
-	 * @return The URL.
-	 * @throws MissingRequiredAttributeException
-	 *             when the attribute is not null or empty
-	 * @throws SAXParseException
-	 *             when the attribute value cannot be parsed into a URL.
-	 */
-	protected URL getURLValue(Attributes attrs, String qName) throws SAXParseException,
-			MissingRequiredAttributeException
-	{
-		URL value = getOptionalURLValue(attrs, qName);
-		if(value == null)
-			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
-		return value;
+		if(m_prefixMappings == null)
+			m_prefixMappings = new HashMap<String, String>();
+		m_prefixMappings.put(prefix, uri);
 	}
 
 	/**
@@ -313,6 +270,24 @@ public abstract class AbstractHandler extends DefaultHandler
 		if("0".equals(value))
 			return false;
 		return "true".equalsIgnoreCase(value);
+	}
+
+	protected abstract Locator getDocumentLocator();
+
+	/**
+	 * Returns the double value of an attribute.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The value of the attribute or <code>null</code>.
+	 * @throws MissingRequiredAttributeException
+	 *             if the attribute does not exist.
+	 */
+	protected double getDoubleValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
+	{
+		return Double.parseDouble(this.getStringValue(attrs, qName));
 	}
 
 	/**
@@ -348,7 +323,29 @@ public abstract class AbstractHandler extends DefaultHandler
 	}
 
 	/**
-	 * Returns the double value of an attribute.
+	 * Returns an attribute that is compiled into a regular expression pattern.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The compiled pattern.
+	 * @throws MissingRequiredAttributeException
+	 *             when the attribute is not null or empty
+	 * @throws SAXParseException
+	 *             when the attribute value cannot be compiled into a regular expression pattern.
+	 */
+	protected Pattern getPatternValue(Attributes attrs, String qName) throws SAXParseException,
+			MissingRequiredAttributeException
+	{
+		Pattern value = getOptionalPatternValue(attrs, qName);
+		if(value == null)
+			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
+		return value;
+	}
+
+	/**
+	 * Returns an attribute that is trimmed from whitespace and with a length greater then zero.
 	 * 
 	 * @param attrs
 	 *            The attribute container.
@@ -356,34 +353,37 @@ public abstract class AbstractHandler extends DefaultHandler
 	 *            The qualified name of the attribute.
 	 * @return The value of the attribute or <code>null</code>.
 	 * @throws MissingRequiredAttributeException
-	 *             if the attribute does not exist.
+	 *             if the attribute does not exist or if it consists entirely of whitespace.
 	 */
-	protected double getDoubleValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
+	protected String getStringValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
 	{
-		return Double.parseDouble(this.getStringValue(attrs, qName));
-	}
-
-	@Override
-	public void startPrefixMapping(String prefix, String uri) throws SAXException
-	{
-		if(m_prefixMappings == null)
-			m_prefixMappings = new HashMap<String, String>();
-		m_prefixMappings.put(prefix, uri);
-	}
-
-	@Override
-	public void endPrefixMapping(String prefix) throws SAXException
-	{
-		if(m_prefixMappings != null)
-			m_prefixMappings.remove(prefix);
-	}
-
-	public String getPrefixMapping(String prefix)
-	{
-		return m_prefixMappings == null
-				? null
-				: m_prefixMappings.get(prefix);
+		String value = getOptionalStringValue(attrs, qName);
+		if(value == null)
+			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
+		return value;
 	}
 
 	protected abstract TopHandler getTopHandler();
+
+	/**
+	 * Returns an attribute that is parsed into a URL.
+	 * 
+	 * @param attrs
+	 *            The attribute container.
+	 * @param qName
+	 *            The qualified name of the attribute.
+	 * @return The URL.
+	 * @throws MissingRequiredAttributeException
+	 *             when the attribute is not null or empty
+	 * @throws SAXParseException
+	 *             when the attribute value cannot be parsed into a URL.
+	 */
+	protected URL getURLValue(Attributes attrs, String qName) throws SAXParseException,
+			MissingRequiredAttributeException
+	{
+		URL value = getOptionalURLValue(attrs, qName);
+		if(value == null)
+			throw new MissingRequiredAttributeException(this.getTAG(), qName, this.getDocumentLocator());
+		return value;
+	}
 }

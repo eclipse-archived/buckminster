@@ -9,10 +9,7 @@ package org.eclipse.buckminster.sax;
 
 import org.xml.sax.SAXException;
 
-
 public interface ChildPoppedListener
 {
-	void childPopped(ChildHandler child)
-	throws SAXException;
+	void childPopped(ChildHandler child) throws SAXException;
 }
-

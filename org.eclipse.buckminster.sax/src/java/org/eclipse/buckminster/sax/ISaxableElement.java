@@ -13,9 +13,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * The ISaxable interface is implemented by model elements in Buckminster. It allows
- * the elements to serialize themselves in XML format.
- *
+ * The ISaxable interface is implemented by model elements in Buckminster. It allows the elements to serialize
+ * themselves in XML format.
+ * 
  * @author Thomas Hallgren
  */
 public interface ISaxableElement
@@ -24,11 +24,10 @@ public interface ISaxableElement
 
 	/**
 	 * Returns the default local name for the element.
+	 * 
 	 * @return The default local name.
 	 */
 	String getDefaultTag();
 
-	void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-	throws SAXException;
+	void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException;
 }
-
