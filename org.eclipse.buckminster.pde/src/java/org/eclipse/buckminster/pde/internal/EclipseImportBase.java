@@ -24,11 +24,13 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.update.core.IPluginEntry;
@@ -77,13 +79,13 @@ final class EclipseImportBase
 	 * Parameter in the resource URI that determines the search order when resolving the component. Valid values are
 	 * &quot;binary&quot; and &quot;linked&quot; or &quot;source&quot;. Default is &quot;binary&quot;
 	 */
-	static final String PARAM_IMPORT_TYPE = "importType";
+	static final String PARAM_IMPORT_TYPE = "importType"; //$NON-NLS-1$
 
-	static final String IMPORT_TYPE_BINARY = "binary";
+	static final String IMPORT_TYPE_BINARY = "binary"; //$NON-NLS-1$
 
-	static final String IMPORT_TYPE_LINKED = "linked";
+	static final String IMPORT_TYPE_LINKED = "linked"; //$NON-NLS-1$
 
-	static final String IMPORT_TYPE_SOURCE = "source";
+	static final String IMPORT_TYPE_SOURCE = "source"; //$NON-NLS-1$
 
 	private final int m_type;
 
@@ -158,13 +160,13 @@ final class EclipseImportBase
 			else
 				location = new File(path);
 		}
-		else if("file".equalsIgnoreCase(scheme))
+		else if("file".equalsIgnoreCase(scheme)) //$NON-NLS-1$
 			location = new File(path);
 		else
 		{
 			try
 			{
-				if(!(path.endsWith("/") || path.endsWith(".map") || path.endsWith(".xml") || path.endsWith(".jar")))
+				if(!(path.endsWith("/") || path.endsWith(".map") || path.endsWith(".xml") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					path += '/';
 				remoteLocation = new URL(scheme, uri.getHost(), path);
 			}
@@ -191,7 +193,8 @@ final class EclipseImportBase
 		else if(IMPORT_TYPE_SOURCE.equalsIgnoreCase(importType))
 			m_type = PluginImportOperation.IMPORT_WITH_SOURCE;
 		else
-			throw BuckminsterException.fromMessage("Invalid import type: %s", importType);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("EclipseImportBase.invalid_import_type_0"), importType)); //$NON-NLS-1$
 
 	}
 
@@ -232,7 +235,7 @@ final class EclipseImportBase
 	final File getLocation() throws CoreException
 	{
 		if(m_location == null && !m_platform)
-			throw BuckminsterException.fromMessage("site is not local");
+			throw BuckminsterException.fromMessage(Messages.getString("EclipseImportBase.site_is_not_local")); //$NON-NLS-1$
 		return m_location;
 	}
 
