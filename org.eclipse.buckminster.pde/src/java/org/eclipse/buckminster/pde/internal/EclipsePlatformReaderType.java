@@ -50,6 +50,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -61,6 +62,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.core.PDECore;
@@ -82,9 +84,9 @@ import org.osgi.framework.Version;
 @SuppressWarnings("restriction")
 public class EclipsePlatformReaderType extends CatalogReaderType implements ISiteFeatureConverter
 {
-	private static final String TEMP_FEATURE_ID = "buckminster.temp";
+	private static final String TEMP_FEATURE_ID = "buckminster.temp"; //$NON-NLS-1$
 
-	private static final String TEMP_FEATURE_VERSION = "'0.1.0.'yyyyMMddHHmmss";
+	private static final String TEMP_FEATURE_VERSION = "'0.1.0.'yyyyMMddHHmmss"; //$NON-NLS-1$
 
 	public static IFeatureModel getBestFeature(String componentName, IVersionDesignator versionDesignator,
 			NodeQuery query)
@@ -106,7 +108,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			if(!(versionDesignator == null || versionDesignator.designates(v)))
 			{
 				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s",
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages
+							.getString("EclipsePlatformReaderType.not_designated_by_0"), //$NON-NLS-1$
 							versionDesignator));
 				continue;
 			}
@@ -146,7 +149,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			if(!(versionDesignator == null || versionDesignator.designates(v)))
 			{
 				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s",
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format(Messages
+							.getString("EclipsePlatformReaderType.not_designated_by_0"), //$NON-NLS-1$
 							versionDesignator));
 				continue;
 			}
@@ -166,7 +170,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		//
 		URI artifactURI = res.getArtifactURI(context);
 		if(artifactURI == null)
-			throw BuckminsterException.fromMessage("Unable to obtain URI for %s", res.getComponentIdentifier());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("EclipsePlatformReaderType.unable_to_obtain_URI_for_0"), res.getComponentIdentifier())); //$NON-NLS-1$
 		try
 		{
 			URL artifactURL = artifactURI.toURL();
@@ -174,7 +179,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		}
 		catch(MalformedURLException e)
 		{
-			throw BuckminsterException.fromMessage(e, "Unable to obtain URL for %s", res.getComponentIdentifier());
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages
+					.getString("EclipsePlatformReaderType.unable_to_obtain_URL_for_0"), res.getComponentIdentifier())); //$NON-NLS-1$
 		}
 	}
 
@@ -187,7 +193,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		for(Resolution res : features)
 		{
 			String urlString = getArtifactURLString(context, res);
-			int idx = urlString.indexOf("/features/");
+			int idx = urlString.indexOf("/features/"); //$NON-NLS-1$
 			if(idx < 0)
 				continue;
 
@@ -210,8 +216,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				if(vd == null)
 				{
 					CorePlugin.getLogger().warning(
-							"Bogus reference to bundle %s in feature %s at site %s. The reference has no version",
-							dep.getName(), res.getComponentIdentifier(), siteURL);
+							NLS.bind(Messages.getString("EclipsePlatformReaderType.bogus_ref_to_0_in_1_at_2"), //$NON-NLS-1$
+									new Object[] { dep.getName(), res.getComponentIdentifier(), siteURL }));
 					continue;
 				}
 				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd == null
@@ -253,7 +259,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			String id = ci.getName();
 			IVersion v = ci.getVersion();
 			String vStr = (v == null)
-					? "0.0.0"
+					? "0.0.0" //$NON-NLS-1$
 					: v.toString();
 
 			if(pluginNames.contains(ci))
@@ -267,7 +273,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			// This plug-in is not here. It's in a remote location
 			//
 			ArchiveReferenceModel arf = new ArchiveReferenceModel();
-			arf.setPath("plugins/" + id + '_' + vStr + ".jar");
+			arf.setPath("plugins/" + id + '_' + vStr + ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			arf.setURLString(getArtifactURLString(context, res));
 			site.addArchiveReferenceModel(arf);
 			pluginNames.add(ci);
@@ -278,11 +284,11 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				//
 				DateFormat dateFormat = new SimpleDateFormat(TEMP_FEATURE_VERSION);
 				String featureVer = dateFormat.format(new Date());
-				generatedFeatureJar = TEMP_FEATURE_ID + '_' + featureVer + ".jar";
+				generatedFeatureJar = TEMP_FEATURE_ID + '_' + featureVer + ".jar"; //$NON-NLS-1$
 				generatedFeatureModel = new EditableFeatureModel(null);
 				generatedFeature = generatedFeatureModel.getFeature();
 				generatedFeature.setId(TEMP_FEATURE_ID);
-				generatedFeature.setLabel("Placeholder feature generated by Buckminster");
+				generatedFeature.setLabel(Messages.getString("EclipsePlatformReaderType.placeholder_feature")); //$NON-NLS-1$
 				generatedFeature.setVersion(featureVer);
 			}
 
@@ -303,10 +309,10 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		JarOutputStream featureOutput = null;
 		try
 		{
-			File featureFolder = new File(siteFolder, "features");
+			File featureFolder = new File(siteFolder, "features"); //$NON-NLS-1$
 			featureFolder.mkdir();
 			featureOutput = new JarOutputStream(new FileOutputStream(new File(featureFolder, generatedFeatureJar)));
-			featureOutput.putNextEntry(new JarEntry("feature.xml"));
+			featureOutput.putNextEntry(new JarEntry("feature.xml")); //$NON-NLS-1$
 			generatedFeatureModel.save(featureOutput);
 			featureOutput.closeEntry();
 		}
@@ -324,7 +330,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		model.setFeatureIdentifier(generatedFeature.getId());
 		model.setFeatureVersion(generatedFeature.getVersion());
 		model.setLabel(generatedFeature.getLabel());
-		model.setURLString("features/" + generatedFeatureJar);
+		model.setURLString("features/" + generatedFeatureJar); //$NON-NLS-1$
 		model.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
 		site.addFeatureReferenceModel(model);
 
@@ -334,7 +340,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		OutputStream output = null;
 		try
 		{
-			output = new BufferedOutputStream(new FileOutputStream(new File(siteFolder, "site.xml")));
+			output = new BufferedOutputStream(new FileOutputStream(new File(siteFolder, "site.xml"))); //$NON-NLS-1$
 			Utils.serialize(saxSite, output);
 		}
 		catch(Exception e)
