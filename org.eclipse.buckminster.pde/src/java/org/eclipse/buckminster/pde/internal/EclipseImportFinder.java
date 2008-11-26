@@ -17,9 +17,11 @@ import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.update.core.IFeature;
@@ -84,7 +86,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages
+							.getString("EclipseImportFinder.0_is_higher"), version)); //$NON-NLS-1$
 					bestFit = version;
 				}
 			}
@@ -106,7 +109,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	{
 		IVersion bestFit = null;
 		monitor.beginTask(null, 100);
-		monitor.subTask("Fetching remote feature references");
+		monitor.subTask(Messages.getString("EclipseImportFinder.fetching_remote_feature_references")); //$NON-NLS-1$
 		try
 		{
 			for(ISiteFeatureReference model : m_base.getFeatureReferences(m_readerType, MonitorUtils.subMonitor(
@@ -121,7 +124,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 						bestFit = version;
 					else if(version.compareTo(bestFit) > 0)
 					{
-						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher",
+						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages
+								.getString("EclipseImportFinder.0_is_higher"), //$NON-NLS-1$
 								version));
 						bestFit = version;
 					}
@@ -151,7 +155,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages
+							.getString("EclipseImportFinder.0_is_higher"), version)); //$NON-NLS-1$
 					bestFit = version;
 				}
 			}
