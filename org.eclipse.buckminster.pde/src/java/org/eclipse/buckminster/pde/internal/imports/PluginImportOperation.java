@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
 import org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider;
@@ -60,6 +61,7 @@ import org.eclipse.jdt.launching.environments.IExecutionEnvironmentsManager;
 import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.IFragment;
@@ -143,7 +145,7 @@ public class PluginImportOperation extends JarImportOperation
 		ComponentRequest request = m_query.getComponentRequest();
 		String projectName = request.getProjectName();
 		String id = m_model.getPluginBase().getId();
-		MonitorUtils.begin(monitor, "Importing plugin " + id, 7);
+		MonitorUtils.begin(monitor, NLS.bind(Messages.getString("PluginImportOperation.importing_plugin_0"), id), 7); //$NON-NLS-1$
 		try
 		{
 			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
@@ -166,7 +168,13 @@ public class PluginImportOperation extends JarImportOperation
 					// TODO: There's a misfit in execution environment. The AdvisorNode should have
 					// a way
 					// to handle this.
-					PDEPlugin.getLogger().info("Execution environment misfit. Skipping plugin %s", id);
+					PDEPlugin
+							.getLogger()
+							.info(
+									NLS
+											.bind(
+													Messages
+															.getString("PluginImportOperation.execution_env_misfit_skipping_plugin_0"), id)); //$NON-NLS-1$
 					return;
 				}
 			}
@@ -177,7 +185,8 @@ public class PluginImportOperation extends JarImportOperation
 				switch(conflictResolution)
 				{
 				case FAIL:
-					throw BuckminsterException.fromMessage("Project %s already exists", projectName);
+					throw BuckminsterException.fromMessage(NLS.bind(Messages
+							.getString("PluginImportOperation.project_0_already_exists"), projectName)); //$NON-NLS-1$
 				case KEEP:
 					return;
 				default:
@@ -210,7 +219,7 @@ public class PluginImportOperation extends JarImportOperation
 				importAsBinary(true, importMonitor);
 				break;
 			case IMPORT_BINARY_WITH_LINKS:
-				if(id.startsWith("org.eclipse.swt") && !isJARd())
+				if(id.startsWith("org.eclipse.swt") && !isJARd()) //$NON-NLS-1$
 					importAsBinary(true, importMonitor);
 				else
 					importAsBinaryWithLinks(importMonitor);
@@ -225,7 +234,7 @@ public class PluginImportOperation extends JarImportOperation
 			setProjectDescription();
 			if(m_classpathCollector != null)
 			{
-				if(project.hasNature(JavaCore.NATURE_ID) && project.findMember(".classpath") == null)
+				if(project.hasNature(JavaCore.NATURE_ID) && project.findMember(".classpath") == null) //$NON-NLS-1$
 					m_classpathCollector.addProjectClasspath(project, ClasspathComputer.getClasspath(project, m_model,
 							true, false));
 			}
@@ -481,7 +490,7 @@ public class PluginImportOperation extends JarImportOperation
 		IPluginLibrary[] libraries = m_model.getPluginBase().getLibraries();
 		int top = libraries.length;
 		if(top == 0 && isJARd())
-			return new String[] { "." };
+			return new String[] { "." }; //$NON-NLS-1$
 
 		String[] list = new String[top];
 		for(int i = 0; i < top; i++)
@@ -674,7 +683,8 @@ public class PluginImportOperation extends JarImportOperation
 
 		File installLocation = new File(m_model.getInstallLocation());
 		File[] items = installLocation.listFiles();
-		MonitorUtils.begin(monitor, "Linking imported plugin", items.length + 1);
+		MonitorUtils.begin(monitor,
+				Messages.getString("PluginImportOperation.linking_imported_plugin"), items.length + 1); //$NON-NLS-1$
 		if(items != null)
 		{
 			for(int i = 0; i < items.length; i++)
@@ -688,7 +698,7 @@ public class PluginImportOperation extends JarImportOperation
 				}
 				else
 				{
-					if(!name.equals(".project"))
+					if(!name.equals(".project")) //$NON-NLS-1$
 					{
 						m_project.getFile(name).createLink(new Path(sourceFile.getPath()), IResource.NONE,
 								MonitorUtils.subMonitor(monitor, 1));
@@ -845,7 +855,7 @@ public class PluginImportOperation extends JarImportOperation
 		if(libraries.length == 0)
 			return;
 
-		MonitorUtils.begin(monitor, "Copying source", libraries.length);
+		MonitorUtils.begin(monitor, Messages.getString("PluginImportOperation.copying_source"), libraries.length); //$NON-NLS-1$
 
 		SourceLocationManager manager = PDECore.getDefault().getSourceLocationManager();
 		Set<?> roots = null;
@@ -973,7 +983,7 @@ public class PluginImportOperation extends JarImportOperation
 	{
 
 		String[] libraries = getLibraryNames(true);
-		monitor.beginTask("Copying imported source", libraries.length);
+		monitor.beginTask(Messages.getString("PluginImportOperation.copying_imported_source"), libraries.length); //$NON-NLS-1$
 
 		SourceLocationManager manager = PDECore.getDefault().getSourceLocationManager();
 		if(manager.hasBundleManifestLocation(m_model.getPluginBase()))
