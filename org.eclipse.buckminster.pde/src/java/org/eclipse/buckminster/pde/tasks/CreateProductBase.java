@@ -46,6 +46,7 @@ import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.feature.FeatureBuilder;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -60,6 +61,7 @@ import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.core.plugin.TargetPlatform;
@@ -108,13 +110,13 @@ public class CreateProductBase
 
 	private final List<File> m_files;
 
-	public static final String MACOSX_LAUNCHER_FOLDER = "Eclipse.app/Contents/MacOS";
+	public static final String MACOSX_LAUNCHER_FOLDER = "Eclipse.app/Contents/MacOS"; //$NON-NLS-1$
 
-	public static final String DEFAULT_LAUNCHER = "launcher";
+	public static final String DEFAULT_LAUNCHER = "launcher"; //$NON-NLS-1$
 
-	public static final String DEFAULT_LAUNCHER_WIN32 = DEFAULT_LAUNCHER + ".exe";
+	public static final String DEFAULT_LAUNCHER_WIN32 = DEFAULT_LAUNCHER + ".exe"; //$NON-NLS-1$
 
-	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
+	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$"); //$NON-NLS-1$
 
 	private static void appendExpandedPath(StringBuilder builder, String path)
 	{
@@ -182,15 +184,15 @@ public class CreateProductBase
 			boolean copyJavaLauncher) throws CoreException
 	{
 		if(outputDir == null)
-			throw new IllegalArgumentException("outputDir cannot be null");
+			throw new IllegalArgumentException(Messages.getString("CreateProductBase.outputdir_can_not_be_null")); //$NON-NLS-1$
 		m_outputDir = outputDir.addTrailingSeparator();
 
 		if(targetLocation == null)
-			throw new IllegalArgumentException("targetLocation cannot be null");
+			throw new IllegalArgumentException(Messages.getString("CreateProductBase.target_loc_cannot_be_null")); //$NON-NLS-1$
 		m_targetLocation = targetLocation.addTrailingSeparator();
 
 		if(productFile == null)
-			throw new IllegalArgumentException("productFile cannot be null");
+			throw new IllegalArgumentException(Messages.getString("CreateProductBase.productFile_cannot_be_null")); //$NON-NLS-1$
 
 		m_files = files;
 		m_actionContext = AbstractActor.getActiveContext();
@@ -205,7 +207,8 @@ public class CreateProductBase
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.fromMessage("Unable to read file %s", productFile);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("CreateProductBase.unable_to_read_file_0"), productFile)); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -242,7 +245,8 @@ public class CreateProductBase
 
 		File outputDir = m_outputDir.toFile();
 		if(!outputDir.isDirectory())
-			throw BuckminsterException.fromMessage("%s is not a directory", outputDir);
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.getString("CreateProductBase.0_is_not_directory"), outputDir)); //$NON-NLS-1$
 
 		if(m_copyJavaLauncher)
 			copyJavaLauncherToRoot();
@@ -250,7 +254,7 @@ public class CreateProductBase
 		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
 		//
 		IProgressMonitor monitor = new NullProgressMonitor();
-		createConfigIniFile(new File(outputDir, "configuration"), monitor);
+		createConfigIniFile(new File(outputDir, "configuration"), monitor); //$NON-NLS-1$
 		createEclipseProductFile(outputDir, monitor);
 		createLauncherIniFile(outputDir, monitor);
 		return createLauncher();
@@ -289,10 +293,10 @@ public class CreateProductBase
 		// org.eclipse.equinox.launcher_xxxx.jar file under plugins. Let's find it.
 		//
 		File targetRoot = m_targetLocation.toFile();
-		File pluginsDir = new File(targetRoot, "plugins");
+		File pluginsDir = new File(targetRoot, "plugins"); //$NON-NLS-1$
 		String[] names = pluginsDir.list();
 		if(names == null)
-			throw new IOException(pluginsDir + " is not a directory");
+			throw new IOException(NLS.bind(Messages.getString("CreateProductBase.0_is_not_directory"), pluginsDir)); //$NON-NLS-1$
 
 		String found = null;
 		IVersion foundVer = null;
@@ -316,13 +320,13 @@ public class CreateProductBase
 		{
 			// Are we building against an older platform perhaps?
 			//
-			startupJar = new File(targetRoot, "startup.jar");
+			startupJar = new File(targetRoot, "startup.jar"); //$NON-NLS-1$
 			if(!startupJar.exists())
-				throw new FileNotFoundException(pluginsDir + "org.eclipse.equinox.launcher_<version>.jar");
+				throw new FileNotFoundException(pluginsDir + "org.eclipse.equinox.launcher_<version>.jar"); //$NON-NLS-1$
 		}
 		else
 			startupJar = new File(pluginsDir, found);
-		FileUtils.copyFile(startupJar, m_outputDir.toFile(), "startup.jar", new NullProgressMonitor());
+		FileUtils.copyFile(startupJar, m_outputDir.toFile(), "startup.jar", new NullProgressMonitor()); //$NON-NLS-1$
 	}
 
 	private void copyLauncherExecutable() throws CoreException
@@ -344,13 +348,13 @@ public class CreateProductBase
 
 			String name = rootFile.getName();
 			boolean copyFile = false;
-			if("startup.jar".equals(name))
+			if("startup.jar".equals(name)) //$NON-NLS-1$
 				copyFile = true;
 			else
 			{
 				if(isMac)
 				{
-					if("Eclipse.app".equals(name))
+					if("Eclipse.app".equals(name)) //$NON-NLS-1$
 						FileUtils.deepCopy(rootFile, new File(dest, name), ConflictResolution.REPLACE,
 								new NullProgressMonitor());
 					continue;
@@ -358,7 +362,7 @@ public class CreateProductBase
 
 				if(isWin32)
 				{
-					if("eclipse.exe".equals(name))
+					if("eclipse.exe".equals(name)) //$NON-NLS-1$
 					{
 						copyFile = true;
 						name = DEFAULT_LAUNCHER_WIN32;
@@ -366,16 +370,16 @@ public class CreateProductBase
 				}
 				else
 				{
-					if("eclipse".equals(name))
+					if("eclipse".equals(name)) //$NON-NLS-1$
 					{
 						copyFile = true;
 						name = DEFAULT_LAUNCHER;
-						addChmodHint("755", getLauncherName());
+						addChmodHint("755", getLauncherName()); //$NON-NLS-1$
 					}
-					else if(name.startsWith("libXm.so") || name.startsWith("libcairo-swt.so"))
+					else if(name.startsWith("libXm.so") || name.startsWith("libcairo-swt.so")) //$NON-NLS-1$ //$NON-NLS-2$
 					{
 						copyFile = true;
-						addChmodHint("755", name);
+						addChmodHint("755", name); //$NON-NLS-1$
 					}
 				}
 			}
@@ -390,7 +394,7 @@ public class CreateProductBase
 		File custom = getCustomIniFile();
 		if(custom != null)
 		{
-			FileUtils.copyFile(custom, outputDir, "config.ini", monitor);
+			FileUtils.copyFile(custom, outputDir, "config.ini", monitor); //$NON-NLS-1$
 			return;
 		}
 
@@ -398,26 +402,26 @@ public class CreateProductBase
 		Writer writer = null;
 		try
 		{
-			writer = new FileWriter(new File(outputDir, "config.ini"));
+			writer = new FileWriter(new File(outputDir, "config.ini")); //$NON-NLS-1$
 			String location = getSplashLocation();
-			writer.write("#Product Runtime Configuration File");
+			writer.write("#Product Runtime Configuration File"); //$NON-NLS-1$
 			writer.write(lineDelimiter);
 			writer.write(lineDelimiter);
 			if(location != null)
 			{
-				writer.write("osgi.splashPath=");
+				writer.write("osgi.splashPath="); //$NON-NLS-1$
 				writer.write(location);
 				writer.write(lineDelimiter);
 			}
-			writer.write("eclipse.product=");
+			writer.write("eclipse.product="); //$NON-NLS-1$
 			writer.write(m_product.getId());
 			writer.write(lineDelimiter);
 
-			writer.write("osgi.bundles=");
+			writer.write("osgi.bundles="); //$NON-NLS-1$
 			printBundleList(writer, TargetPlatform.getBundleList());
 			writer.write(lineDelimiter);
 
-			writer.write("osgi.bundles.defaultStartLevel=4");
+			writer.write("osgi.bundles.defaultStartLevel=4"); //$NON-NLS-1$
 			writer.write(lineDelimiter);
 		}
 		finally
@@ -432,18 +436,18 @@ public class CreateProductBase
 		Map<String, String> properties = new HashMap<String, String>();
 		IPluginModelBase model = PluginRegistry.findModel(getBrandingPlugin());
 		if(model != null)
-			properties.put("name", model.getResourceString(m_product.getName()));
+			properties.put("name", model.getResourceString(m_product.getName())); //$NON-NLS-1$
 		else
-			properties.put("name", m_product.getName());
-		properties.put("id", m_product.getId());
+			properties.put("name", m_product.getName()); //$NON-NLS-1$
+		properties.put("id", m_product.getId()); //$NON-NLS-1$
 		if(model != null)
-			properties.put("version", model.getPluginBase().getVersion());
+			properties.put("version", model.getPluginBase().getVersion()); //$NON-NLS-1$
 
 		OutputStream out = null;
 		try
 		{
-			out = new FileOutputStream(new File(outputDir, ".eclipseproduct"));
-			BMProperties.store(properties, out, "Eclipse Product File");
+			out = new FileOutputStream(new File(outputDir, ".eclipseproduct")); //$NON-NLS-1$
+			BMProperties.store(properties, out, "Eclipse Product File"); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -469,7 +473,7 @@ public class CreateProductBase
 				// or on a MacOS (in which case the BrandingIron will do it
 				// for us).
 				//
-				addChmodHint("755", launcherName);
+				addChmodHint("755", launcherName); //$NON-NLS-1$
 			}
 		}
 		else
@@ -532,7 +536,7 @@ public class CreateProductBase
 		Writer writer = null;
 		try
 		{
-			writer = new FileWriter(new File(outputDir, getLauncherName() + ".ini"));
+			writer = new FileWriter(new File(outputDir, getLauncherName() + ".ini")); //$NON-NLS-1$
 			ExecutionArguments args = new ExecutionArguments(vmArgs, programArgs);
 
 			// add program arguments
@@ -548,7 +552,7 @@ public class CreateProductBase
 			String[] array = args.getVMArgumentsArray();
 			if(array.length > 0)
 			{
-				writer.write("-vmargs");
+				writer.write("-vmargs"); //$NON-NLS-1$
 				writer.write(lineDelimiter);
 				for(String arg : array)
 				{
@@ -575,7 +579,7 @@ public class CreateProductBase
 	private File getCustomIniFile()
 	{
 		IConfigurationFileInfo info = m_product.getConfigurationFileInfo();
-		if(info != null && "custom".equals(info.getUse(m_os)))
+		if(info != null && "custom".equals(info.getUse(m_os))) //$NON-NLS-1$
 		{
 			String path = getExpandedPath(info.getPath(m_os));
 			if(path != null)
@@ -597,7 +601,7 @@ public class CreateProductBase
 			if(name != null && name.length() > 0)
 			{
 				name = name.trim();
-				if(name.endsWith(".exe"))
+				if(name.endsWith(".exe")) //$NON-NLS-1$
 					name = name.substring(0, name.length() - 4);
 				return name;
 			}
@@ -608,8 +612,8 @@ public class CreateProductBase
 	private String getLineDelimiter()
 	{
 		return Platform.OS_WIN32.equals(m_os)
-				? "\r\n"
-				: "\n";
+				? "\r\n" //$NON-NLS-1$
+				: "\n"; //$NON-NLS-1$
 	}
 
 	private List<BundleDescription> getPluginModels() throws CoreException
@@ -630,7 +634,7 @@ public class CreateProductBase
 			for(File file : m_files)
 			{
 				String fileName = file.getName();
-				if(!fileName.endsWith(".jar"))
+				if(!fileName.endsWith(".jar")) //$NON-NLS-1$
 					continue;
 
 				File folder = file.getParentFile();
@@ -674,7 +678,7 @@ public class CreateProductBase
 			}
 		}
 
-		IPluginModelBase launcherPlugin = PluginRegistry.findModel("org.eclipse.equinox.launcher");
+		IPluginModelBase launcherPlugin = PluginRegistry.findModel("org.eclipse.equinox.launcher"); //$NON-NLS-1$
 		if(launcherPlugin != null)
 		{
 			BundleDescription bundle = launcherPlugin.getBundleDescription();
@@ -694,7 +698,7 @@ public class CreateProductBase
 		IArgumentsInfo info = m_product.getLauncherArguments();
 		return info != null
 				? CoreUtility.normalize(info.getCompleteProgramArguments(os))
-				: "";
+				: ""; //$NON-NLS-1$
 	}
 
 	private String getSplashLocation()
@@ -710,7 +714,7 @@ public class CreateProductBase
 		if(plugin == null)
 			return null;
 
-		StringBuilder buffer = new StringBuilder("platform:/base/plugins/");
+		StringBuilder buffer = new StringBuilder("platform:/base/plugins/"); //$NON-NLS-1$
 		buffer.append(plugin.trim());
 
 		State state = getState();
@@ -722,7 +726,7 @@ public class CreateProductBase
 				String id = fragment.getSymbolicName();
 				if(m_product.containsPlugin(id))
 				{
-					buffer.append(",platform:/base/plugins/");
+					buffer.append(",platform:/base/plugins/"); //$NON-NLS-1$
 					buffer.append(id);
 				}
 			}
@@ -742,9 +746,9 @@ public class CreateProductBase
 		stateCopy.setPlatformProperties(main.getPlatformProperties());
 		for(Dictionary<String, String> properties : getStatePlatformProperties(stateCopy))
 		{
-			properties.put("osgi.os", m_os);
-			properties.put("osgi.ws", m_ws);
-			properties.put("osgi.arch", m_arch);
+			properties.put("osgi.os", m_os); //$NON-NLS-1$
+			properties.put("osgi.ws", m_ws); //$NON-NLS-1$
+			properties.put("osgi.arch", m_arch); //$NON-NLS-1$
 		}
 		stateCopy.resolve(false);
 		return stateCopy;
@@ -755,7 +759,7 @@ public class CreateProductBase
 		IArgumentsInfo info = m_product.getLauncherArguments();
 		return (info != null)
 				? CoreUtility.normalize(info.getCompleteVMArguments(os))
-				: "";
+				: ""; //$NON-NLS-1$
 	}
 
 	private boolean hasDeltaPackFeature() throws CoreException
@@ -771,7 +775,7 @@ public class CreateProductBase
 			if(cname == null)
 				continue;
 
-			if(cname.equals("org.eclipse.equinox.executable") || cname.equals("org.eclipse.platform.launchers"))
+			if(cname.equals("org.eclipse.equinox.executable") || cname.equals("org.eclipse.platform.launchers")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				return (pq.getReferencedAttribute(cspec, m_actionContext) != null);
 			}
@@ -782,10 +786,10 @@ public class CreateProductBase
 	private void printBundleList(Writer writer, String bundleList) throws IOException, CoreException
 	{
 		Dictionary<String, String> environment = new Hashtable<String, String>(4);
-		environment.put("osgi.os", m_os);
-		environment.put("osgi.ws", m_ws);
-		environment.put("osgi.arch", m_arch);
-		environment.put("osgi.nl", m_nl);
+		environment.put("osgi.os", m_os); //$NON-NLS-1$
+		environment.put("osgi.ws", m_ws); //$NON-NLS-1$
+		environment.put("osgi.arch", m_arch); //$NON-NLS-1$
+		environment.put("osgi.nl", m_nl); //$NON-NLS-1$
 		List<BundleDescription> pluginModels = getPluginModels();
 
 		// We include only bundles that are actually in this product configuration
@@ -804,9 +808,9 @@ public class CreateProductBase
 			else
 				processedBundles.add(id);
 		}
-		processedBundles.add("org.eclipse.osgi");
+		processedBundles.add("org.eclipse.osgi"); //$NON-NLS-1$
 
-		for(String token : TextUtils.split(bundleList, ","))
+		for(String token : TextUtils.split(bundleList, ",")) //$NON-NLS-1$
 		{
 			int delimIdx = token.indexOf('@');
 			String id = delimIdx >= 0
@@ -844,13 +848,13 @@ public class CreateProductBase
 					if(first)
 						first = false;
 					else
-						writer.write(",");
+						writer.write(","); //$NON-NLS-1$
 
 					writer.write(id);
-					if("org.eclipse.equinox.app".equals(id))
-						writer.write("@start");
-					else if("org.eclipse.equinox.common".equals(id) || "org.eclipse.update.configurator".equals(id))
-						writer.write("@2:start");
+					if("org.eclipse.equinox.app".equals(id)) //$NON-NLS-1$
+						writer.write("@start"); //$NON-NLS-1$
+					else if("org.eclipse.equinox.common".equals(id) || "org.eclipse.update.configurator".equals(id)) //$NON-NLS-1$ //$NON-NLS-2$
+						writer.write("@2:start"); //$NON-NLS-1$
 				}
 			}
 			catch(InvalidSyntaxException e)
