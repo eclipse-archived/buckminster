@@ -35,20 +35,20 @@ public class JNLPGenerator
 		if(arch == null)
 			return null;
 
-		if("x86".equalsIgnoreCase(arch))
-			return "x86";
-		if("PA_RISC".equalsIgnoreCase(arch))
-			return "PA_RISC";
-		if("ppc".equalsIgnoreCase(arch))
-			return "ppc";
-		if("sparc".equalsIgnoreCase(arch))
-			return "sparc";
-		if("x86_64".equalsIgnoreCase(arch))
-			return "x86_64";
-		if("ia64".equalsIgnoreCase(arch))
-			return "ia64";
-		if("ia64_32".equalsIgnoreCase(arch))
-			return "ia64_32";
+		if("x86".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "x86"; //$NON-NLS-1$
+		if("PA_RISC".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "PA_RISC"; //$NON-NLS-1$
+		if("ppc".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "ppc"; //$NON-NLS-1$
+		if("sparc".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "sparc"; //$NON-NLS-1$
+		if("x86_64".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "x86_64"; //$NON-NLS-1$
+		if("ia64".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "ia64"; //$NON-NLS-1$
+		if("ia64_32".equalsIgnoreCase(arch)) //$NON-NLS-1$
+			return "ia64_32"; //$NON-NLS-1$
 
 		return arch;
 	}
@@ -57,22 +57,22 @@ public class JNLPGenerator
 	{
 		if(os == null)
 			return null;
-		if("win32".equalsIgnoreCase(os))
-			return "Windows";
-		if("macosx".equalsIgnoreCase(os))
-			return "Mac";
-		if("linux".equalsIgnoreCase(os))
-			return "Linux";
-		if("solaris".equalsIgnoreCase(os))
-			return "Solaris";
-		if("hpux".equalsIgnoreCase(os))
-			return "HP-UX";
-		if("aix".equalsIgnoreCase(os))
-			return "AIX";
+		if("win32".equalsIgnoreCase(os)) //$NON-NLS-1$
+			return "Windows"; //$NON-NLS-1$
+		if("macosx".equalsIgnoreCase(os)) //$NON-NLS-1$
+			return "Mac"; //$NON-NLS-1$
+		if("linux".equalsIgnoreCase(os)) //$NON-NLS-1$
+			return "Linux"; //$NON-NLS-1$
+		if("solaris".equalsIgnoreCase(os)) //$NON-NLS-1$
+			return "Solaris"; //$NON-NLS-1$
+		if("hpux".equalsIgnoreCase(os)) //$NON-NLS-1$
+			return "HP-UX"; //$NON-NLS-1$
+		if("aix".equalsIgnoreCase(os)) //$NON-NLS-1$
+			return "AIX"; //$NON-NLS-1$
 		return os;
 	}
 
-	private String m_codeBase = "$$codebase";
+	private String m_codeBase = "$$codebase"; //$NON-NLS-1$
 
 	private final IFeature m_feature;
 
@@ -80,7 +80,7 @@ public class JNLPGenerator
 
 	private boolean m_offLineAllowed = true;
 
-	private String m_specVersion = "1.5+";
+	private String m_specVersion = "1.5+"; //$NON-NLS-1$
 
 	private boolean m_useVersions = true;
 
@@ -112,7 +112,7 @@ public class JNLPGenerator
 		jnlp.setSpecVersion(m_specVersion);
 
 		if(m_href == null)
-			m_href = createFileName(m_feature.getId(), m_feature.getVersion().toString(), ".jnlp");
+			m_href = createFileName(m_feature.getId(), m_feature.getVersion().toString(), ".jnlp"); //$NON-NLS-1$
 		jnlp.setHref(m_href);
 
 		jnlp.setTitle(m_feature.getLabel());
@@ -125,21 +125,21 @@ public class JNLPGenerator
 		if(description != null)
 			jnlp.setDescription(description.getDescription());
 
-		Map<String, String> j2se = jnlp.createResource(null, null, null, "j2se");
-		j2se.put("version", "1.5+");
+		Map<String, String> j2se = jnlp.createResource(null, null, null, "j2se"); //$NON-NLS-1$
+		j2se.put("version", "1.5+"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		for(IFeatureChild include : m_feature.getIncludedFeatures())
 		{
 			String os = include.getOS();
 			if(os == null)
 				os = include.getWS();
-			Map<String, String> extension = jnlp.createResource(include.getId() + "_F", convertOS(os),
-					convertArch(include.getArch()), "extension");
-			String name = createFileName(include.getId(), include.getVersion(), ".jnlp");
-			extension.put("name", name);
-			extension.put("href", "features/" + name);
+			Map<String, String> extension = jnlp.createResource(include.getId() + "_F", convertOS(os), //$NON-NLS-1$
+					convertArch(include.getArch()), "extension"); //$NON-NLS-1$
+			String name = createFileName(include.getId(), include.getVersion(), ".jnlp"); //$NON-NLS-1$
+			extension.put("name", name); //$NON-NLS-1$
+			extension.put("href", "features/" + name); //$NON-NLS-1$ //$NON-NLS-2$
 			if(m_useVersions)
-				extension.put("version", include.getVersion());
+				extension.put("version", include.getVersion()); //$NON-NLS-1$
 		}
 
 		for(IFeaturePlugin plugin : m_feature.getPlugins())
@@ -147,11 +147,11 @@ public class JNLPGenerator
 			String os = plugin.getOS();
 			if(os == null)
 				os = plugin.getWS();
-			Map<String, String> jar = jnlp.createResource(plugin.getId() + "_B", convertOS(os), convertArch(plugin
-					.getArch()), "jar");
-			jar.put("href", "plugins/" + createFileName(plugin.getId(), plugin.getVersion(), ".jar"));
+			Map<String, String> jar = jnlp.createResource(plugin.getId() + "_B", convertOS(os), convertArch(plugin //$NON-NLS-1$
+					.getArch()), "jar"); //$NON-NLS-1$
+			jar.put("href", "plugins/" + createFileName(plugin.getId(), plugin.getVersion(), ".jar")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if(m_useVersions)
-				jar.put("version", plugin.getVersion());
+				jar.put("version", plugin.getVersion()); //$NON-NLS-1$
 		}
 		return jnlp;
 	}

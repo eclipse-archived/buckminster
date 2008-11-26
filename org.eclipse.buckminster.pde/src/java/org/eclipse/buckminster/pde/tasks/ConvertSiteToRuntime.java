@@ -41,11 +41,11 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class ConvertSiteToRuntime
 {
-	private static final String FEATURES_DIR = "features";
+	private static final String FEATURES_DIR = "features"; //$NON-NLS-1$
 
-	private static final String FEATURE_FILE = "feature.xml";
+	private static final String FEATURE_FILE = "feature.xml"; //$NON-NLS-1$
 
-	private static final String PLUGINS_DIR = "plugins";
+	private static final String PLUGINS_DIR = "plugins"; //$NON-NLS-1$
 
 	public static boolean guessUnpack(File bundleJar) throws CoreException
 	{
@@ -63,7 +63,7 @@ public class ConvertSiteToRuntime
 					ManifestElement[] elements = ManifestElement.parseHeader(Constants.FRAGMENT_HOST, value);
 					if(elements.length > 0)
 					{
-						if("org.eclipse.equinox.launcher".equals(elements[0].getValue()))
+						if("org.eclipse.equinox.launcher".equals(elements[0].getValue())) //$NON-NLS-1$
 							return true;
 					}
 				}
@@ -73,7 +73,7 @@ public class ConvertSiteToRuntime
 				{
 					for(ManifestElement elem : ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, value))
 					{
-						if(elem.getValue().equals("."))
+						if(elem.getValue().equals(".")) //$NON-NLS-1$
 							return false;
 					}
 					return true;
@@ -120,7 +120,7 @@ public class ConvertSiteToRuntime
 		{
 			for(String featureCandidate : featureCandiates)
 			{
-				if(!featureCandidate.endsWith(".jar"))
+				if(!featureCandidate.endsWith(".jar")) //$NON-NLS-1$
 					continue;
 
 				File featureJar = new File(featuresDir, featureCandidate);
@@ -176,7 +176,7 @@ public class ConvertSiteToRuntime
 
 		for(String pluginCandidate : pluginCandiates)
 		{
-			if(!pluginCandidate.endsWith(".jar"))
+			if(!pluginCandidate.endsWith(".jar")) //$NON-NLS-1$
 				continue;
 
 			String fullName = pluginCandidate.substring(0, pluginCandidate.length() - 4);
@@ -198,7 +198,7 @@ public class ConvertSiteToRuntime
 
 		for(String pluginToUnpack : pluginsToUnpack)
 		{
-			File pluginJar = new File(pluginsDir, pluginToUnpack + ".jar");
+			File pluginJar = new File(pluginsDir, pluginToUnpack + ".jar"); //$NON-NLS-1$
 			File pluginDir = new File(pluginsDir, pluginToUnpack);
 			InputStream input = null;
 			try
