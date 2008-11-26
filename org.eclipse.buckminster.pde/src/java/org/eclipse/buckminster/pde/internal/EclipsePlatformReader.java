@@ -36,6 +36,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -70,7 +71,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 
 		PluginFilter(String componentName, ArrayList<IVersion> collector)
 		{
-			m_pattern = Pattern.compile('^' + Pattern.quote(componentName) + "_(.*?)(?:\\.jar)?$");
+			m_pattern = Pattern.compile('^' + Pattern.quote(componentName) + "_(.*?)(?:\\.jar)?$"); //$NON-NLS-1$
 			m_collector = collector;
 		}
 
@@ -133,7 +134,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 	public synchronized IPluginModelBase getPluginModelBase() throws CoreException
 	{
 		if(m_type != InstalledType.PLUGIN)
-			throw new IllegalStateException("Plugin requested from a reader initialized to read Features");
+			throw new IllegalStateException(Messages.getString("EclipsePlatformReader.plugin_requested_from_feature_reader")); //$NON-NLS-1$
 
 		if(m_model == null)
 		{
@@ -155,7 +156,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 	 */
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	{
-		throw new UnsupportedOperationException("checkout");
+		throw new UnsupportedOperationException("checkout"); //$NON-NLS-1$
 	}
 
 	protected String getResolvedFile(String relativeFile, InputStream[] isReturn) throws IOException, CoreException
@@ -176,7 +177,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		}
 		else
 		{
-			if(!modelRoot.getName().endsWith(".jar"))
+			if(!modelRoot.getName().endsWith(".jar")) //$NON-NLS-1$
 				throw new FileNotFoundException(modelRoot.toString());
 
 			fileName = modelRoot.getName() + '!' + relativeFile;
@@ -247,13 +248,13 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 			{
 				String name = file.getName();
 				if(file.isDirectory())
-					name = name + "/";
+					name = name + "/"; //$NON-NLS-1$
 				files.add(name);
 			}
 			return;
 		}
 
-		if(!modelRoot.getName().endsWith(".jar"))
+		if(!modelRoot.getName().endsWith(".jar")) //$NON-NLS-1$
 			return;
 
 		ZipInputStream zi = null;
@@ -264,12 +265,12 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 			while((ze = zi.getNextEntry()) != null)
 			{
 				String name = ze.getName();
-				if(name.endsWith("/"))
+				if(name.endsWith("/")) //$NON-NLS-1$
 					name = name.substring(name.length() - 1);
 				if(name.indexOf('/', 1) < 0)
 				{
 					if(ze.isDirectory())
-						name = name + "/";
+						name = name + "/"; //$NON-NLS-1$
 					files.add(name);
 				}
 			}
