@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.imports.FeatureImportOperation;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -36,6 +37,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -61,7 +63,8 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				: getPluginModel(version, new NullProgressMonitor());
 
 		if(m_model == null)
-			throw BuckminsterException.fromMessage("Unable to load model for %s", m_base.getComponentName());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("EclipseImportReader.unable_to_load_model_for_0"), m_base.getComponentName())); //$NON-NLS-1$
 	}
 
 	public IPluginModelBase getPluginModelBase(String pluginId, String version) throws CoreException
@@ -140,7 +143,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		monitor.beginTask(null, m_base.isLocal()
 				? 1000
 				: 2000);
-		monitor.subTask("Downloading " + m_base.getComponentName());
+		monitor.subTask(NLS.bind(Messages.getString("EclipseImportReader.downloading_0"), m_base.getComponentName())); //$NON-NLS-1$
 		try
 		{
 			EclipseImportReaderType readerType = (EclipseImportReaderType)getReaderType();
@@ -236,7 +239,8 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				? getPluginModel(version, subMon)
 				: getFeatureModel(version, subMon);
 		if(m_model == null)
-			throw BuckminsterException.fromMessage("Unable to load localized model for %s", m_base.getComponentName());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("EclipseImportReader.unable_to_load_localized_model_for_0"), m_base.getComponentName())); //$NON-NLS-1$
 		monitor.done();
 	}
 }
