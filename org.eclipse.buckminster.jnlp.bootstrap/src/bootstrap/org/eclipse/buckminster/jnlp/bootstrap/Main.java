@@ -186,6 +186,9 @@ public class Main
 		catch(OperationCanceledException e)
 		{
 			System.err.println("Warning: Operation was canceled by user");
+			
+			if(!fromApplet)
+				Runtime.getRuntime().exit(-1);
 		}
 		catch(Throwable t)
 		{
