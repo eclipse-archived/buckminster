@@ -19,18 +19,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * This builder will create a default cspec. An update-site is more like
- * a repository of features then a component with dependencies. In fact,
- * it may contain any number of components, versions of components, etc.
- * and they don't need to have anything in common. In essence, an update-site
- * can be compared to a CVS, or Maven repository.
+ * This builder will create a default cspec. An update-site is more like a repository of features then a component with
+ * dependencies. In fact, it may contain any number of components, versions of components, etc. and they don't need to
+ * have anything in common. In essence, an update-site can be compared to a CVS, or Maven repository.
  * 
  * @author ken1
  * @author Thomas Hallgren
  */
 public class UpdateSiteBuilder extends AbstractResolutionBuilder
 {
-	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
+	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
+			throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
@@ -39,4 +38,3 @@ public class UpdateSiteBuilder extends AbstractResolutionBuilder
 		return createNode(reader, cspecBld, null);
 	}
 }
-

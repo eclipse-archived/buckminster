@@ -26,7 +26,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class JNLPModel extends SAXModel
 {
 	@SuppressWarnings("serial")
-	static class Resource extends HashMap<String,String> implements ISaxableElement
+	static class Resource extends HashMap<String, String> implements ISaxableElement
 	{
 		private final String m_arch;
 
@@ -74,7 +74,7 @@ public class JNLPModel extends SAXModel
 				throws SAXException
 		{
 			AttributesImpl attrs = new AttributesImpl();
-			for(Map.Entry<String,String> attribute : entrySet())
+			for(Map.Entry<String, String> attribute : entrySet())
 				Utils.addAttribute(attrs, attribute.getKey(), attribute.getValue());
 			startElement(receiver, localName, attrs);
 			endElement(receiver, localName);
@@ -101,7 +101,7 @@ public class JNLPModel extends SAXModel
 
 	private String m_version;
 
-	public Map<String,Resource> getResources()
+	public Map<String, Resource> getResources()
 	{
 		return m_resourceById;
 	}
@@ -167,7 +167,7 @@ public class JNLPModel extends SAXModel
 		receiver.endDocument();
 	}
 
-	Map<String,String> createResource(String id, String os, String arch, String tag)
+	Map<String, String> createResource(String id, String os, String arch, String tag)
 	{
 		Resource resource = new Resource(os, arch, tag);
 		List<Resource> resources = m_resourcesByPlatform.get(resource.getKey());

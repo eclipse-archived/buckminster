@@ -39,8 +39,9 @@ import org.eclipse.pde.internal.build.FetchTaskFactoriesRegistry;
 @SuppressWarnings("restriction")
 public class MapFile
 {
-	private static final Pattern s_pattern = Pattern.compile("^"
-			+ "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle, feature, plugin, or fragment
+	private static final Pattern s_pattern = Pattern.compile("^" + "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle,
+																							// feature, plugin, or
+																							// fragment
 			+ "\\s*([^@,=\\s]+)\\s*" // Element ID
 			+ "(?:,\\s*([^@,=\\s]+)\\s*)?=" // Optional version
 			+ "(?:\\s*([A-Za-z_][A-Za-z0-9_-]*)\\s*,)?\\s*" // Optional fetch type specifier (default is CVS)
@@ -99,7 +100,6 @@ public class MapFile
 				}
 			}
 
-
 			String type = m.group(1);
 			String ctypeId;
 			if("plugin".equals(type) || "bundle".equals(type) || "fragment".equals(type))
@@ -132,14 +132,15 @@ public class MapFile
 
 			String identifier = m.group(2);
 
-			Map<String, String> props = new HashMap<String,String>();
+			Map<String, String> props = new HashMap<String, String>();
 			try
 			{
 				ff.parseMapFileEntry(fetchTypeSpecific, null, props);
 			}
 			catch(Exception e)
 			{
-				logger.warning("Fetch factory %s was unable to parse '%s' in PDE map file %s", fetchType, fetchTypeSpecific, streamName);
+				logger.warning("Fetch factory %s was unable to parse '%s' in PDE map file %s", fetchType,
+						fetchTypeSpecific, streamName);
 				continue;
 			}
 
@@ -180,7 +181,8 @@ public class MapFile
 			}
 			catch(CoreException e)
 			{
-				logger.warning("Unable to obtain reader type for fetch type '%s' in PDE map file %s", fetchType, streamName);
+				logger.warning("Unable to obtain reader type for fetch type '%s' in PDE map file %s", fetchType,
+						streamName);
 				continue;
 			}
 			receivingList.add(new MapFileEntry(cid, readerType, props));

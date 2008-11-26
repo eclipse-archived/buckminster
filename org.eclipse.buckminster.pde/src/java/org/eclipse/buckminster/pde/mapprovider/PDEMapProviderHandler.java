@@ -11,7 +11,6 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 
-
 public class PDEMapProviderHandler extends ProviderHandler
 {
 	public PDEMapProviderHandler(AbstractHandler parent)
@@ -22,15 +21,7 @@ public class PDEMapProviderHandler extends ProviderHandler
 	@Override
 	public Provider getProvider()
 	{
-		return new PDEMapProvider(
-				getSearchPath(),
-				getReaderType(),
-				getComponentTypes(),
-				getVersionConverter(),
-				getUriFormat(),
-				getResolutionFilter(),
-				isMutable(),
-				isSource(),
-				getDocumentation());
+		return new PDEMapProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(),
+				getUriFormat(), getResolutionFilter(), isMutable(), isSource(), getDocumentation());
 	}
 }

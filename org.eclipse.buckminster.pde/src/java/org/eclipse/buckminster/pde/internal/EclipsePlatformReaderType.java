@@ -76,20 +76,114 @@ import org.osgi.framework.Version;
 
 /**
  * A Reader type that knows about features and plugins that are part of an Eclipse installation.
+ * 
  * @author thhal
  */
 @SuppressWarnings("restriction")
 public class EclipsePlatformReaderType extends CatalogReaderType implements ISiteFeatureConverter
 {
 	private static final String TEMP_FEATURE_ID = "buckminster.temp";
+
 	private static final String TEMP_FEATURE_VERSION = "'0.1.0.'yyyyMMddHHmmss";
 
-	public List<Resolution> convertToSiteFeatures(RMContext context, File siteFolder, List<Resolution> features, List<Resolution> plugins)
-			throws CoreException
+	public static IFeatureModel getBestFeature(String componentName, IVersionDesignator versionDesignator,
+			NodeQuery query)
+	{
+		IFeatureModel candidate = null;
+		IVersion candidateVersion = null;
+		for(IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName))
+		{
+			IFeature feature = model.getFeature();
+			String ov = feature.getVersion();
+			if(ov == null)
+			{
+				if(candidate == null && versionDesignator == null)
+					candidate = model;
+				continue;
+			}
+
+			IVersion v = VersionFactory.OSGiType.coerce(ov);
+			if(!(versionDesignator == null || versionDesignator.designates(v)))
+			{
+				if(query != null)
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s",
+							versionDesignator));
+				continue;
+			}
+
+			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
+			{
+				candidate = model;
+				candidateVersion = v;
+			}
+		}
+		return candidate;
+	}
+
+	public static IPluginModelBase getBestPlugin(String componentName, IVersionDesignator versionDesignator,
+			NodeQuery query)
+	{
+		IPluginModelBase candidate = null;
+		IVersion candidateVersion = null;
+		for(IPluginModelBase model : PluginRegistry.getActiveModels())
+		{
+			BundleDescription desc = model.getBundleDescription();
+			if(desc == null)
+				continue;
+
+			if(!desc.getSymbolicName().equals(componentName))
+				continue;
+
+			Version ov = desc.getVersion();
+			if(ov == null)
+			{
+				if(candidate == null && versionDesignator == null)
+					candidate = model;
+				continue;
+			}
+
+			IVersion v = VersionFactory.OSGiType.coerce(ov);
+			if(!(versionDesignator == null || versionDesignator.designates(v)))
+			{
+				if(query != null)
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s",
+							versionDesignator));
+				continue;
+			}
+
+			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
+			{
+				candidate = model;
+				candidateVersion = v;
+			}
+		}
+		return candidate;
+	}
+
+	private static String getArtifactURLString(RMContext context, Resolution res) throws CoreException
+	{
+		// This plug-in is not here. It's in a remote location
+		//
+		URI artifactURI = res.getArtifactURI(context);
+		if(artifactURI == null)
+			throw BuckminsterException.fromMessage("Unable to obtain URI for %s", res.getComponentIdentifier());
+		try
+		{
+			URL artifactURL = artifactURI.toURL();
+			return artifactURL.toString();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.fromMessage(e, "Unable to obtain URL for %s", res.getComponentIdentifier());
+		}
+	}
+
+	public List<Resolution> convertToSiteFeatures(RMContext context, File siteFolder, List<Resolution> features,
+			List<Resolution> plugins) throws CoreException
 	{
 		HashSet<ComponentIdentifier> pluginNames = new HashSet<ComponentIdentifier>();
 
-		HashMap<String,List<Resolution>> siteAndFeatures = new HashMap<String, List<Resolution>>();
+		HashMap<String, List<Resolution>> siteAndFeatures = new HashMap<String, List<Resolution>>();
 		for(Resolution res : features)
 		{
 			String urlString = getArtifactURLString(context, res);
@@ -115,32 +209,38 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				IVersionDesignator vd = dep.getVersionDesignator();
 				if(vd == null)
 				{
-					CorePlugin.getLogger().warning("Bogus reference to bundle %s in feature %s at site %s. The reference has no version",
+					CorePlugin.getLogger().warning(
+							"Bogus reference to bundle %s in feature %s at site %s. The reference has no version",
 							dep.getName(), res.getComponentIdentifier(), siteURL);
 					continue;
 				}
-				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd == null ? null : vd.getVersion()));
+				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd == null
+						? null
+						: vd.getVersion()));
 			}
 		}
 
 		ArrayList<Resolution> siteFeatureResolutions = new ArrayList<Resolution>();
-		for(Map.Entry<String,List<Resolution>> entry : siteAndFeatures.entrySet())
+		for(Map.Entry<String, List<Resolution>> entry : siteAndFeatures.entrySet())
 		{
 			String siteURL = entry.getKey();
-			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
-			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE, new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null,
-					new Format(siteURL), null, null, null, false, false, null, null);
+			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(
+					IComponentType.ECLIPSE_SITE_FEATURE);
+			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE,
+					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(siteURL), null, null, null,
+					false, false, null, null);
 
 			for(Resolution res : entry.getValue())
 			{
 				ProviderMatch orig = res.getProviderMatch(context);
-				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(), res.getVersionDesignator()), null);
+				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(), res
+						.getVersionDesignator()), null);
 				ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, orig.getVersionMatch(), nq);
 				BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
 				Resolution siteFeatureResolution = node.getResolution();
 				if(siteFeatureResolution != null)
 					siteFeatureResolutions.add(siteFeatureResolution);
-			}			
+			}
 		}
 
 		EditableFeatureModel generatedFeatureModel = null;
@@ -152,7 +252,9 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			ComponentIdentifier ci = res.getComponentIdentifier();
 			String id = ci.getName();
 			IVersion v = ci.getVersion();
-			String vStr = (v == null) ? "0.0.0" : v.toString();
+			String vStr = (v == null)
+					? "0.0.0"
+					: v.toString();
 
 			if(pluginNames.contains(ci))
 				continue;
@@ -174,7 +276,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			{
 				// Free standing plugins needs a feature.
 				//
-				DateFormat dateFormat = new SimpleDateFormat(TEMP_FEATURE_VERSION); 
+				DateFormat dateFormat = new SimpleDateFormat(TEMP_FEATURE_VERSION);
 				String featureVer = dateFormat.format(new Date());
 				generatedFeatureJar = TEMP_FEATURE_ID + '_' + featureVer + ".jar";
 				generatedFeatureModel = new EditableFeatureModel(null);
@@ -246,13 +348,16 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 
 		try
 		{
-			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(IComponentType.ECLIPSE_SITE_FEATURE);
-			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE, new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null,
-					new Format(siteFolder.toURI().toURL().toString()), null, null, null, false, false, null, null);
+			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(
+					IComponentType.ECLIPSE_SITE_FEATURE);
+			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE,
+					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(siteFolder.toURI().toURL()
+							.toString()), null, null, null, false, false, null, null);
 
 			IVersion version = VersionFactory.OSGiType.fromString(generatedFeature.getVersion());
 			VersionMatch vm = new VersionMatch(version, null, -1, null, null);
-			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(), VersionFactory.createExplicitDesignator(version));
+			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(),
+					VersionFactory.createExplicitDesignator(version));
 			NodeQuery nq = new NodeQuery(context, cr, null);
 			ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, vm, nq);
 			BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
@@ -267,11 +372,18 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		return siteFeatureResolutions;
 	}
 
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
+
 	@Override
 	public IPath getFixedLocation(Resolution cr)
 	{
 		IVersion version = cr.getVersion();
-		IVersionDesignator vd = version == null ? null : VersionFactory.createExplicitDesignator(version);
+		IVersionDesignator vd = version == null
+				? null
+				: VersionFactory.createExplicitDesignator(version);
 		String location;
 		ComponentRequest rq = cr.getRequest();
 		if(IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID()))
@@ -306,102 +418,10 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new EclipsePlatformVersionFinder(this, provider, ctype, nodeQuery);
-	}
-
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		return null;
-	}
-
-	public static IFeatureModel getBestFeature(String componentName, IVersionDesignator versionDesignator, NodeQuery query)
-	{
-		IFeatureModel candidate = null;
-		IVersion candidateVersion = null;
-		for(IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName))
-		{
-			IFeature feature = model.getFeature();
-			String ov = feature.getVersion();
-			if(ov == null)
-			{
-				if(candidate == null && versionDesignator == null)
-					candidate = model;
-				continue;
-			}
-
-			IVersion v = VersionFactory.OSGiType.coerce(ov);
-			if(!(versionDesignator == null || versionDesignator.designates(v)))
-			{
-				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s", versionDesignator));
-				continue;
-			}
-
-			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
-			{
-				candidate = model;
-				candidateVersion = v;
-			}
-		}
-		return candidate;
-	}
-
-	public static IPluginModelBase getBestPlugin(String componentName, IVersionDesignator versionDesignator, NodeQuery query)
-	{
-		IPluginModelBase candidate = null;
-		IVersion candidateVersion = null;
-		for(IPluginModelBase model : PluginRegistry.getActiveModels())
-		{
-			BundleDescription desc = model.getBundleDescription();
-			if(desc == null)
-				continue;
-
-			if(!desc.getSymbolicName().equals(componentName))
-				continue;
-
-			Version ov = desc.getVersion();
-			if(ov == null)
-			{
-				if(candidate == null && versionDesignator == null)
-					candidate = model;
-				continue;
-			}
-
-			IVersion v = VersionFactory.OSGiType.coerce(ov);
-			if(!(versionDesignator == null || versionDesignator.designates(v)))
-			{
-				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format("not designated by %s", versionDesignator));
-				continue;
-			}
-
-			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
-			{
-				candidate = model;
-				candidateVersion = v;
-			}
-		}
-		return candidate;
-	}
-
-	private static String getArtifactURLString(RMContext context, Resolution res) throws CoreException
-	{
-		// This plug-in is not here. It's in a remote location
-		//
-		URI artifactURI = res.getArtifactURI(context);
-		if(artifactURI == null)
-			throw BuckminsterException.fromMessage("Unable to obtain URI for %s", res.getComponentIdentifier());
-		try
-		{
-			URL artifactURL = artifactURI.toURL();
-			return artifactURL.toString();
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.fromMessage(e, "Unable to obtain URL for %s", res.getComponentIdentifier());
-		}
 	}
 }

@@ -69,11 +69,12 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 
 	/**
 	 * @param models
-	 * @param targetPath a parent of external project or null
+	 * @param targetPath
+	 *            a parent of external project or null
 	 * @param replaceQuery
 	 */
-	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model,
-		NodeQuery query, IPath destination, boolean binary)
+	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model, NodeQuery query,
+			IPath destination, boolean binary)
 	{
 		m_classpathCollector = classpathCollector;
 		m_model = model;
@@ -92,6 +93,31 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		MonitorUtils.testCancelStatus(monitor);
 	}
 
+	private void createBuildProperties(IProject project)
+	{
+		IFile file = project.getFile("build.properties"); //$NON-NLS-1$
+		if(file.exists())
+			return;
+
+		WorkspaceBuildModel model = new WorkspaceBuildModel(file);
+		IBuildEntry ientry = model.getFactory().createEntry("bin.includes"); //$NON-NLS-1$
+		try
+		{
+			IResource[] res = project.members();
+			for(int i = 0; i < res.length; i++)
+			{
+				String path = res[i].getProjectRelativePath().toString();
+				if(!path.equals(".project")) //$NON-NLS-1$
+					ientry.addToken(path);
+			}
+			model.getBuild().add(ientry);
+			model.save();
+		}
+		catch(CoreException e)
+		{
+		}
+	}
+
 	private void createProject(IProgressMonitor monitor) throws CoreException
 	{
 		MaterializationContext context = (MaterializationContext)m_query.getContext();
@@ -101,8 +127,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		IProject project = m_root.getProject(projectName);
 		try
 		{
-			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(
-				request);
+			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
 			if(project.exists())
 			{
 				switch(conflictResolution)
@@ -130,16 +155,16 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
-			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution, MonitorUtils.subMonitor(
-				monitor, 10));
+			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution, MonitorUtils.subMonitor(monitor,
+					10));
 			description.setLocation(m_destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));
 			File featureDir = new File(m_model.getInstallLocation());
 
 			importContent(featureDir, project.getFullPath(),
-				org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider.INSTANCE, null,
-				MonitorUtils.subMonitor(monitor, 50));
+					org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider.INSTANCE, null,
+					MonitorUtils.subMonitor(monitor, 50));
 
 			IFolder folder = project.getFolder("META-INF"); //$NON-NLS-1$
 			if(folder.exists())
@@ -164,8 +189,18 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	private void importContent(Object source, IPath destPath, IImportStructureProvider provider,
-		List<?> filesToImport, IProgressMonitor monitor) throws CoreException
+	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel model) throws JavaModelException
+	{
+		IClasspathEntry jreCPEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+
+		String libName = model.getFeature().getInstallHandler().getLibrary();
+		IClasspathEntry handlerCPEntry = JavaCore.newLibraryEntry(project.getFullPath().append(libName), null, null);
+
+		return new IClasspathEntry[] { jreCPEntry, handlerCPEntry };
+	}
+
+	private void importContent(Object source, IPath destPath, IImportStructureProvider provider, List<?> filesToImport,
+			IProgressMonitor monitor) throws CoreException
 	{
 		IOverwriteQuery query = new IOverwriteQuery()
 		{
@@ -187,29 +222,6 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 			throw new CoreException(status);
 	}
 
-	private void setProjectNatures(IProject project, IFeatureModel model, IProgressMonitor monitor)
-	throws CoreException
-	{
-		IProjectDescription desc = project.getDescription();
-		if(needsJavaNature(model))
-			desc.setNatureIds(new String[] { JavaCore.NATURE_ID, IPDEConstants.FEATURE_NATURE });
-		else
-			desc.setNatureIds(new String[] { IPDEConstants.FEATURE_NATURE });
-		project.setDescription(desc, monitor);
-	}
-
-	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel model) throws JavaModelException
-	{
-		IClasspathEntry jreCPEntry = JavaCore.newContainerEntry(new Path(
-			"org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-
-		String libName = model.getFeature().getInstallHandler().getLibrary();
-		IClasspathEntry handlerCPEntry = JavaCore.newLibraryEntry(project.getFullPath().append(libName),
-			null, null);
-
-		return new IClasspathEntry[] { jreCPEntry, handlerCPEntry };
-	}
-
 	private boolean needsJavaNature(IFeatureModel model)
 	{
 		IFeatureInstallHandler handler = model.getFeature().getInstallHandler();
@@ -224,28 +236,14 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		return lib.exists();
 	}
 
-	private void createBuildProperties(IProject project)
+	private void setProjectNatures(IProject project, IFeatureModel model, IProgressMonitor monitor)
+			throws CoreException
 	{
-		IFile file = project.getFile("build.properties"); //$NON-NLS-1$
-		if(file.exists())
-			return;
-
-		WorkspaceBuildModel model = new WorkspaceBuildModel(file);
-		IBuildEntry ientry = model.getFactory().createEntry("bin.includes"); //$NON-NLS-1$
-		try
-		{
-			IResource[] res = project.members();
-			for(int i = 0; i < res.length; i++)
-			{
-				String path = res[i].getProjectRelativePath().toString();
-				if(!path.equals(".project")) //$NON-NLS-1$
-					ientry.addToken(path);
-			}
-			model.getBuild().add(ientry);
-			model.save();
-		}
-		catch(CoreException e)
-		{
-		}
+		IProjectDescription desc = project.getDescription();
+		if(needsJavaNature(model))
+			desc.setNatureIds(new String[] { JavaCore.NATURE_ID, IPDEConstants.FEATURE_NATURE });
+		else
+			desc.setNatureIds(new String[] { IPDEConstants.FEATURE_NATURE });
+		project.setDescription(desc, monitor);
 	}
 }

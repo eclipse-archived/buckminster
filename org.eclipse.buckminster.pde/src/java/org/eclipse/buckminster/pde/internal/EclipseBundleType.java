@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class EclipseBundleType extends AbstractComponentType
 {
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.PLUGIN2CSPEC);

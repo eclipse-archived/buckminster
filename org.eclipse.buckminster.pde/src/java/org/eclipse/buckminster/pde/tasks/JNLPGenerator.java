@@ -125,7 +125,7 @@ public class JNLPGenerator
 		if(description != null)
 			jnlp.setDescription(description.getDescription());
 
-		Map<String,String> j2se = jnlp.createResource(null, null, null, "j2se");
+		Map<String, String> j2se = jnlp.createResource(null, null, null, "j2se");
 		j2se.put("version", "1.5+");
 
 		for(IFeatureChild include : m_feature.getIncludedFeatures())
@@ -133,7 +133,8 @@ public class JNLPGenerator
 			String os = include.getOS();
 			if(os == null)
 				os = include.getWS();
-			Map<String,String> extension = jnlp.createResource(include.getId() + "_F", convertOS(os), convertArch(include.getArch()), "extension");
+			Map<String, String> extension = jnlp.createResource(include.getId() + "_F", convertOS(os),
+					convertArch(include.getArch()), "extension");
 			String name = createFileName(include.getId(), include.getVersion(), ".jnlp");
 			extension.put("name", name);
 			extension.put("href", "features/" + name);
@@ -146,7 +147,8 @@ public class JNLPGenerator
 			String os = plugin.getOS();
 			if(os == null)
 				os = plugin.getWS();
-			Map<String,String> jar = jnlp.createResource(plugin.getId() + "_B", convertOS(os), convertArch(plugin.getArch()), "jar");
+			Map<String, String> jar = jnlp.createResource(plugin.getId() + "_B", convertOS(os), convertArch(plugin
+					.getArch()), "jar");
 			jar.put("href", "plugins/" + createFileName(plugin.getId(), plugin.getVersion(), ".jar"));
 			if(m_useVersions)
 				jar.put("version", plugin.getVersion());

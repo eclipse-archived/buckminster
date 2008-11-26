@@ -24,7 +24,9 @@ import org.osgi.framework.BundleContext;
 public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 {
 	private static final HashSet<String> s_namesOfInterest = new HashSet<String>();
-	
+
+	private static PDEPlugin s_plugin;
+
 	static
 	{
 		s_namesOfInterest.add(PLUGIN_FILE.toLowerCase());
@@ -35,7 +37,41 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 		s_namesOfInterest.add(MANIFEST.toLowerCase());
 	}
 
-	private static PDEPlugin s_plugin;
+	/**
+	 * Returns the shared instance.
+	 */
+	public static PDEPlugin getDefault()
+	{
+		return s_plugin;
+	}
+
+	public static Logger getLogger()
+	{
+		return s_plugin.getBundleLogger();
+	}
+
+	public static String getPluginId()
+	{
+		return s_plugin.getBundle().getSymbolicName();
+	}
+
+	/**
+	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
+	 */
+	public static String getResourceString(String key)
+	{
+		ResourceBundle bundle = PDEPlugin.getDefault().getResourceBundle();
+		try
+		{
+			return (bundle != null)
+					? bundle.getString(key)
+					: key;
+		}
+		catch(MissingResourceException e)
+		{
+			return key;
+		}
+	}
 
 	private ResourceBundle m_resourceBundle;
 
@@ -48,9 +84,21 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 		s_plugin = this;
 	}
 
-	public static String getPluginId()
+	/**
+	 * Returns the plugin's resource bundle,
+	 */
+	public ResourceBundle getResourceBundle()
 	{
-		return s_plugin.getBundle().getSymbolicName();
+		try
+		{
+			if(m_resourceBundle == null)
+				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.pde.PdePluginResources");
+		}
+		catch(MissingResourceException x)
+		{
+			m_resourceBundle = null;
+		}
+		return m_resourceBundle;
 	}
 
 	/**
@@ -72,52 +120,4 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 		s_plugin = null;
 		m_resourceBundle = null;
 	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static PDEPlugin getDefault()
-	{
-		return s_plugin;
-	}
-
-	public static Logger getLogger()
-	{
-		return s_plugin.getBundleLogger();
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 */
-	public static String getResourceString(String key)
-	{
-		ResourceBundle bundle = PDEPlugin.getDefault().getResourceBundle();
-		try
-		{
-			return (bundle != null) ? bundle.getString(key) : key;
-		}
-		catch(MissingResourceException e)
-		{
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle()
-	{
-		try
-		{
-			if(m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.pde.PdePluginResources");
-		}
-		catch(MissingResourceException x)
-		{
-			m_resourceBundle = null;
-		}
-		return m_resourceBundle;
-	}
 }
-

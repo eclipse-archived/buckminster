@@ -32,6 +32,11 @@ public abstract class SAXModel implements ISaxable
 		endElement(receiver, tag);
 	}
 
+	public static void endElement(ContentHandler receiver, String tag) throws SAXException
+	{
+		receiver.endElement("", "", tag);
+	}
+
 	public static void startElement(ContentHandler receiver, String tag) throws SAXException
 	{
 		startElement(receiver, tag, ISaxableElement.EMPTY_ATTRIBUTES);
@@ -40,10 +45,5 @@ public abstract class SAXModel implements ISaxable
 	public static void startElement(ContentHandler receiver, String tag, Attributes attrs) throws SAXException
 	{
 		receiver.startElement("", "", tag, attrs);
-	}
-
-	public static void endElement(ContentHandler receiver, String tag) throws SAXException
-	{
-		receiver.endElement("", "", tag);
 	}
 }

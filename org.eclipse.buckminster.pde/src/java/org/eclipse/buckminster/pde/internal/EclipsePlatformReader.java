@@ -47,18 +47,20 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
- * A Reader that knows about features and plugins that are part of an Eclipse
- * installation.
+ * A Reader that knows about features and plugins that are part of an Eclipse installation.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class EclipsePlatformReader extends AbstractCatalogReader
 {
-	public enum InstalledType { FEATURE, PLUGIN }
+	public enum InstalledType
+	{
+		FEATURE, PLUGIN
+	}
 
 	/**
-	 * A File filter and collector that will collect all occurances of a named
-	 * component along with its version number.
+	 * A File filter and collector that will collect all occurances of a named component along with its version number.
 	 */
 	class PluginFilter implements FilenameFilter
 	{
@@ -88,6 +90,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 			}
 		}
 	}
+
 	private final String m_componentName;
 
 	private IModel m_model;
@@ -117,6 +120,16 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		return false;
 	}
 
+	public synchronized IFeatureModel getFeatureModel()
+	{
+		if(m_type != InstalledType.FEATURE)
+			return null;
+
+		if(m_model == null)
+			m_model = getBestFeature();
+		return (IFeatureModel)m_model;
+	}
+
 	public synchronized IPluginModelBase getPluginModelBase() throws CoreException
 	{
 		if(m_type != InstalledType.PLUGIN)
@@ -137,12 +150,87 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 	}
 
 	/**
-	 * This method should never be called. If a user wants to materialize an
-	 * installed plugin, that should be done using the import plugin wizard.
+	 * This method should never be called. If a user wants to materialize an installed plugin, that should be done using
+	 * the import plugin wizard.
 	 */
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
 	{
 		throw new UnsupportedOperationException("checkout");
+	}
+
+	protected String getResolvedFile(String relativeFile, InputStream[] isReturn) throws IOException, CoreException
+	{
+		File modelRoot = getModelRoot();
+		if(modelRoot == null)
+			throw new FileNotFoundException(relativeFile);
+
+		String fileName;
+		if(modelRoot.isDirectory())
+		{
+			File wantedFile = new File(modelRoot, relativeFile);
+			fileName = wantedFile.toString();
+			if(!wantedFile.exists())
+				throw new FileNotFoundException(fileName);
+			if(isReturn != null)
+				isReturn[0] = new FileInputStream(wantedFile);
+		}
+		else
+		{
+			if(!modelRoot.getName().endsWith(".jar"))
+				throw new FileNotFoundException(modelRoot.toString());
+
+			fileName = modelRoot.getName() + '!' + relativeFile;
+
+			final JarFile jf = new JarFile(modelRoot);
+			JarEntry entry = jf.getJarEntry(relativeFile);
+			if(entry == null)
+			{
+				jf.close();
+				throw new FileNotFoundException(fileName);
+			}
+			if(isReturn == null)
+				jf.close();
+			else
+			{
+				// Return a special InputStream that makes sure that the
+				// entry and the JarFile that it stems from are both closed
+				//
+				isReturn[0] = new FilterInputStream(jf.getInputStream(entry))
+				{
+					@Override
+					public void close() throws IOException
+					{
+						try
+						{
+							super.close();
+						}
+						catch(IOException e)
+						{
+						}
+						jf.close();
+					}
+				};
+			}
+		}
+		return fileName;
+	}
+
+	@Override
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
+	{
+		try
+		{
+			getResolvedFile(fileName, null);
+			return true;
+		}
+		catch(FileNotFoundException e)
+		{
+			return false;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	@Override
@@ -195,6 +283,47 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		}
 	}
 
+	@Override
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
+			throws CoreException, IOException
+	{
+		InputStream input = null;
+		try
+		{
+			InputStream[] isHolder = new InputStream[1];
+			String systemId = getResolvedFile(fileName, isHolder);
+			input = new BufferedInputStream(isHolder[0]);
+			return consumer.consumeStream(this, systemId, input, monitor);
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
+
+	private IFeatureModel getBestFeature()
+	{
+		return EclipsePlatformReaderType.getBestFeature(m_componentName, getDesiredVersion(), null);
+	}
+
+	private IPluginModelBase getBestPlugin()
+	{
+		return EclipsePlatformReaderType.getBestPlugin(m_componentName, getDesiredVersion(), null);
+	}
+
+	private IVersionDesignator getDesiredVersion()
+	{
+		IVersionDesignator desiredVersion = null;
+		ProviderMatch vsMatch = getProviderMatch();
+		if(vsMatch != null)
+		{
+			IVersion version = vsMatch.getVersionMatch().getVersion();
+			if(version != null)
+				desiredVersion = VersionFactory.createExplicitDesignator(version);
+		}
+		return desiredVersion;
+	}
+
 	private File getModelRoot() throws CoreException
 	{
 		String installLocation;
@@ -219,130 +348,5 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 			installLocation = model.getInstallLocation();
 		}
 		return new File(installLocation);
-	}
-
-	protected String getResolvedFile(String relativeFile, InputStream[] isReturn)
-	throws IOException, CoreException
-	{
-		File modelRoot = getModelRoot();
-		if(modelRoot == null)
-			throw new FileNotFoundException(relativeFile);
-			
-		String fileName;
-		if(modelRoot.isDirectory())
-		{
-			File wantedFile = new File(modelRoot, relativeFile);
-			fileName = wantedFile.toString();
-			if(!wantedFile.exists())
-				throw new FileNotFoundException(fileName);
-			if(isReturn != null)
-				isReturn[0] = new FileInputStream(wantedFile);
-		}
-		else
-		{
-			if(!modelRoot.getName().endsWith(".jar"))
-				throw new FileNotFoundException(modelRoot.toString());
-
-			fileName = modelRoot.getName() + '!' + relativeFile;
-
-			final JarFile jf = new JarFile(modelRoot);
-			JarEntry entry = jf.getJarEntry(relativeFile);
-			if(entry == null)
-			{
-				jf.close();
-				throw new FileNotFoundException(fileName);
-			}
-			if(isReturn == null)
-				jf.close();
-			else
-			{
-				// Return a special InputStream that makes sure that the
-				// entry and the JarFile that it stems from are both closed
-				//
-				isReturn[0] = new FilterInputStream(jf.getInputStream(entry))
-				{
-					@Override
-					public void close() throws IOException
-					{
-						try
-						{
-							super.close();
-						}
-						catch(IOException e)
-						{}
-						jf.close();
-					}
-				};
-			}
-		}
-		return fileName;
-	}
-
-	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
-		try
-		{
-			getResolvedFile(fileName, null);
-			return true;
-		}
-		catch(FileNotFoundException e)
-		{
-			return false;
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		InputStream input = null;
-		try
-		{
-			InputStream[] isHolder = new InputStream[1];
-			String systemId = getResolvedFile(fileName, isHolder);
-			input = new BufferedInputStream(isHolder[0]);
-			return consumer.consumeStream(this, systemId, input, monitor);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	public synchronized IFeatureModel getFeatureModel()
-	{
-		if(m_type != InstalledType.FEATURE)
-			return null;
-
-		if(m_model == null)
-			m_model = getBestFeature();
-		return (IFeatureModel)m_model;
-	}
-
-	private IFeatureModel getBestFeature()
-	{
-		return EclipsePlatformReaderType.getBestFeature(m_componentName, getDesiredVersion(), null);
-	}
-
-	private IPluginModelBase getBestPlugin()
-	{
-		return EclipsePlatformReaderType.getBestPlugin(m_componentName, getDesiredVersion(), null);
-	}
-
-	private IVersionDesignator getDesiredVersion()
-	{
-		IVersionDesignator desiredVersion = null;
-		ProviderMatch vsMatch = getProviderMatch();
-		if(vsMatch != null)
-		{
-			IVersion version = vsMatch.getVersionMatch().getVersion();
-			if(version != null)
-				desiredVersion = VersionFactory.createExplicitDesignator(version);
-		}
-		return desiredVersion;
 	}
 }

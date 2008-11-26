@@ -15,15 +15,29 @@ import org.eclipse.pde.internal.core.ibundle.IBundleModelFactory;
 import org.eclipse.pde.internal.core.text.bundle.BundleModelFactory;
 
 /**
- * A BundleModel found at some arbitrary location, i.e. not necessarily in
- * the workspace.
- *
+ * A BundleModel found at some arbitrary location, i.e. not necessarily in the workspace.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class ExternalBundleModel extends BundleModel
 {
 	private static final long serialVersionUID = 6529464212517724764L;
+
+	public IBundleModelFactory getFactory()
+	{
+		return new BundleModelFactory(this);
+	}
+
+	public boolean isEditable()
+	{
+		return false;
+	}
+
+	public boolean isInSync()
+	{
+		return true;
+	}
 
 	@Override
 	public void load()
@@ -33,20 +47,5 @@ public class ExternalBundleModel extends BundleModel
 	@Override
 	protected void updateTimeStamp()
 	{
-	}
-
-	public IBundleModelFactory getFactory()
-	{
-		return new BundleModelFactory(this);
-	}
-
-	public boolean isInSync()
-	{
-		return true;
-	}
-
-	public boolean isEditable()
-	{
-		return false;
 	}
 }

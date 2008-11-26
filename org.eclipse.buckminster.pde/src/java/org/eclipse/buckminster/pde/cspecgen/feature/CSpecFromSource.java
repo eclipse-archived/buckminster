@@ -72,11 +72,8 @@ public class CSpecFromSource extends CSpecGenerator
 		cspec.setName(m_feature.getId());
 		cspec.setVersion(m_feature.getVersion(), IVersionType.OSGI);
 		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
-		cspec.setFilter(FilterUtils.createFilter(
-			m_feature.getOS(),
-			m_feature.getWS(),
-			m_feature.getArch(),
-			m_feature.getNL()));
+		cspec.setFilter(FilterUtils.createFilter(m_feature.getOS(), m_feature.getWS(), m_feature.getArch(), m_feature
+				.getNL()));
 
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
@@ -144,13 +141,13 @@ public class CSpecFromSource extends CSpecGenerator
 					String[] s = TextUtils.split(key.substring(ROOT.length() + 1), ".");
 					switch(s.length)
 					{
-					case 2:	// permissions.digits
+					case 2: // permissions.digits
 						permStr = s[1];
 						break;
 					case 3: // os.ws.arch
 						filter = FilterUtils.createFilter(s[0], s[1], s[2], null);
 						break;
-					case 5:	// os.ws.arch.permissions.digits
+					case 5: // os.ws.arch.permissions.digits
 						permSpec = s;
 						permStr = s[4];
 						break;
@@ -158,7 +155,8 @@ public class CSpecFromSource extends CSpecGenerator
 				}
 
 				if(permStr != null)
-					FeatureBuilder.addRootsPermissions(featureRefs.getInstallerHintsForAdd(), permStr, entry.getValue(), permSpec);
+					FeatureBuilder.addRootsPermissions(featureRefs.getInstallerHintsForAdd(), permStr,
+							entry.getValue(), permSpec);
 				else
 					createRootsArtifact(entry.getValue(), filter);
 			}
@@ -195,8 +193,8 @@ public class CSpecFromSource extends CSpecGenerator
 	protected String getProductOutputFolder(String productId)
 	{
 		return m_buildProperties == null
-			? null
-			: m_buildProperties.get(productId + TOP_FOLDER_SUFFIX);
+				? null
+				: m_buildProperties.get(productId + TOP_FOLDER_SUFFIX);
 	}
 
 	@Override
@@ -237,7 +235,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(plugins == null || plugins.length == 0)
 			return;
 
-		Map<String,String> props = getReader().getNodeQuery().getProperties();
+		Map<String, String> props = getReader().getNodeQuery().getProperties();
 		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
 		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
 		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
@@ -278,7 +276,8 @@ public class CSpecFromSource extends CSpecGenerator
 	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
-		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.PERFECT, filter);
+		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.PERFECT,
+				filter);
 	}
 
 	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException
@@ -300,14 +299,6 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 	}
 
-	private void createFeatureExportsAction() throws CoreException
-	{
-		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
-		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
-		featureExports.addLocalPrerequisite(createCopyPluginsAction());
-		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-	}
-
 	private ActionBuilder createCopyFeaturesAction() throws CoreException
 	{
 		// Copy all features (including this one) to the features directory.
@@ -321,26 +312,12 @@ public class CSpecFromSource extends CSpecGenerator
 		return copyFeatures;
 	}
 
-	private void createFeatureManifestAction() throws CoreException
+	private void createFeatureExportsAction() throws CoreException
 	{
-		// Create the artifact that represents the original feature.xml file
-		//
-		IPath featureFile = new Path(FEATURE_FILE);
-		ArtifactBuilder rawManifest = getCSpec().addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null, null);
-		rawManifest.addPath(featureFile);
-
-		// Create the action that creates the version expanded feature.xml
-		//
-		ActionBuilder manifest = addAntAction(ATTRIBUTE_MANIFEST, TASK_EXPAND_FEATURE_VERSION, true);
-		manifest.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
-		manifest.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS, ALIAS_BUNDLES);
-		manifest.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS, ALIAS_FEATURES);
-		if(getCSpec().getAttribute(ATTRIBUTE_BUILD_PROPERTIES) != null)
-			manifest.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
-
-		manifest.setProductAlias(ALIAS_OUTPUT);
-		manifest.setProductBase(OUTPUT_DIR_TEMP);
-		manifest.addProductPath(featureFile);
+		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
+		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
+		featureExports.addLocalPrerequisite(createCopyPluginsAction());
+		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
 	}
 
 	private void createFeatureJarAction() throws CoreException
@@ -366,6 +343,28 @@ public class CSpecFromSource extends CSpecGenerator
 		featureJars.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
 	}
 
+	private void createFeatureManifestAction() throws CoreException
+	{
+		// Create the artifact that represents the original feature.xml file
+		//
+		IPath featureFile = new Path(FEATURE_FILE);
+		ArtifactBuilder rawManifest = getCSpec().addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null, null);
+		rawManifest.addPath(featureFile);
+
+		// Create the action that creates the version expanded feature.xml
+		//
+		ActionBuilder manifest = addAntAction(ATTRIBUTE_MANIFEST, TASK_EXPAND_FEATURE_VERSION, true);
+		manifest.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
+		manifest.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS, ALIAS_BUNDLES);
+		manifest.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS, ALIAS_FEATURES);
+		if(getCSpec().getAttribute(ATTRIBUTE_BUILD_PROPERTIES) != null)
+			manifest.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
+
+		manifest.setProductAlias(ALIAS_OUTPUT);
+		manifest.setProductBase(OUTPUT_DIR_TEMP);
+		manifest.addProductPath(featureFile);
+	}
+
 	private void createRootsArtifact(String filesAndFolders, Filter filter) throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
@@ -385,7 +384,8 @@ public class CSpecFromSource extends CSpecGenerator
 				// make it hopelessly dependent on install location. Not good. We don't permit
 				// it here.
 				//
-				throw BuckminsterException.fromMessage("Component %s contains absolute paths in build.properties", getCSpec().getName());
+				throw BuckminsterException.fromMessage("Component %s contains absolute paths in build.properties",
+						getCSpec().getName());
 
 			IPath path;
 			boolean isFile = token.startsWith("file:");

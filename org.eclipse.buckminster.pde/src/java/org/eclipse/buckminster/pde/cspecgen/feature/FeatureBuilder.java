@@ -33,11 +33,47 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
  * A CSpec builder that creates a cspec from a Eclipse plugin.xml file.
+ * 
  * @author thhal
  */
 @SuppressWarnings("restriction")
 public class FeatureBuilder extends PDEBuilder
 {
+	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders, String[] spec)
+	{
+		StringBuilder bld = new StringBuilder();
+		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
+		while(tokenizer.hasMoreTokens())
+		{
+			if(bld.length() > 0)
+				bld.append(',');
+			bld.append(tokenizer.nextToken().trim());
+			bld.append(':');
+			bld.append(perm);
+		}
+
+		if(bld.length() > 0)
+		{
+			String key = (spec != null && spec.length >= 3)
+					? String.format("%s/%s.%s.%s", HINT_PERMISSIONS, spec[0], spec[1], spec[2])
+					: HINT_PERMISSIONS;
+
+			String permissions = hints.get(key);
+			if(permissions != null)
+			{
+				bld.append(',');
+				bld.append(permissions);
+			}
+			hints.put(key, bld.toString());
+		}
+	}
+
+	@Override
+	public int compareTo(IResolutionBuilder other)
+	{
+		return 1;
+	}
+
 	@Override
 	public String getComponentTypeID()
 	{
@@ -45,7 +81,8 @@ public class FeatureBuilder extends PDEBuilder
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		IFeature feature;
@@ -61,7 +98,8 @@ public class FeatureBuilder extends PDEBuilder
 			{
 				try
 				{
-					model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor, 40));
+					model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor,
+							40));
 				}
 				catch(FileNotFoundException e)
 				{
@@ -83,7 +121,8 @@ public class FeatureBuilder extends PDEBuilder
 		{
 			try
 			{
-				buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor(monitor, 40));
+				buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor(
+						monitor, 40));
 			}
 			catch(FileNotFoundException e)
 			{
@@ -96,40 +135,5 @@ public class FeatureBuilder extends PDEBuilder
 		CSpecFromSource generator = new CSpecFromSource(cspecBuilder, reader, feature, buildProperties);
 		generator.generate(MonitorUtils.subMonitor(monitor, 20));
 		monitor.done();
-	}
-
-	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders, String[] spec)
-	{
-		StringBuilder bld = new StringBuilder();
-		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ",");
-		while(tokenizer.hasMoreTokens())
-		{
-			if(bld.length() > 0)
-				bld.append(',');
-			bld.append(tokenizer.nextToken().trim());
-			bld.append(':');
-			bld.append(perm);
-		}
-
-		if(bld.length() > 0)
-		{
-			String key = (spec != null && spec.length >= 3)
-				? String.format("%s/%s.%s.%s", HINT_PERMISSIONS, spec[0], spec[1], spec[2])
-				: HINT_PERMISSIONS;
-
-			String permissions = hints.get(key);
-			if(permissions != null)
-			{
-				bld.append(',');
-				bld.append(permissions);
-			}
-			hints.put(key, bld.toString());
-		}
-	}
-
-	@Override
-	public int compareTo(IResolutionBuilder other)
-	{
-		return 1;
 	}
 }

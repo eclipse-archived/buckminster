@@ -28,19 +28,24 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
- * A Reader that knows about features and plugins that are part of an Eclipse
- * installation.
+ * A Reader that knows about features and plugins that are part of an Eclipse installation.
+ * 
  * @author thhal
  */
 @SuppressWarnings("restriction")
 public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 {
-	enum InstalledType { FEATURE, PLUGIN }
+	enum InstalledType
+	{
+		FEATURE, PLUGIN
+	}
 
 	private final String m_componentName;
+
 	private final InstalledType m_type;
 
-	public EclipsePlatformVersionFinder(IReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
+	public EclipsePlatformVersionFinder(IReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
+			throws CoreException
 	{
 		super(provider, ctype, query);
 		String uri = provider.getURI(query.getProperties());
@@ -74,6 +79,8 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 			if(feature != null)
 				v = VersionFactory.OSGiType.fromString(feature.getFeature().getVersion());
 		}
-		return (v == null) ? null : new VersionMatch(v, null, -1L, null, null);
+		return (v == null)
+				? null
+				: new VersionMatch(v, null, -1L, null, null);
 	}
 }

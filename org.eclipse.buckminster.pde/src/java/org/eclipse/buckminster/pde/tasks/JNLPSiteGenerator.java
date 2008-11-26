@@ -36,16 +36,41 @@ import org.osgi.framework.Constants;
 import org.xml.sax.SAXException;
 
 /**
- * Scans a folder for jar files containing an OSGi manifest or an Eclipse feature.xml and
- * generates a JNLP version.xml file based on the information in them. The version.xml
- * file is output in the same folder.
+ * Scans a folder for jar files containing an OSGi manifest or an Eclipse feature.xml and generates a JNLP version.xml
+ * file based on the information in them. The version.xml file is output in the same folder.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class JNLPSiteGenerator
 {
-	private final HashMap<String,JNLPModel.Resource> m_jnlpResources = new HashMap<String, JNLPModel.Resource>();
+	private static void emitFolderVersions(File folder, JNLPVersionModel folderVersions) throws CoreException
+	{
+		if(folderVersions == null)
+			return;
+
+		File versionsFile = new File(folder, "version.xml");
+		OutputStream output = null;
+		try
+		{
+			output = new BufferedOutputStream(new FileOutputStream(versionsFile));
+			Utils.serialize(folderVersions, output);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(SAXException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(output);
+		}
+	}
+
+	private final HashMap<String, JNLPModel.Resource> m_jnlpResources = new HashMap<String, JNLPModel.Resource>();
 
 	private final File m_directory;
 
@@ -99,7 +124,7 @@ public class JNLPSiteGenerator
 						JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_FILE);
 						if(entry == null)
 							continue;
-	
+
 						IFeatureModel model = FeatureModelReader.readFeatureModel(jarFile.getInputStream(entry));
 						feature = model.getFeature();
 					}
@@ -183,32 +208,6 @@ public class JNLPSiteGenerator
 		}
 	}
 
-	private static void emitFolderVersions(File folder, JNLPVersionModel folderVersions) throws CoreException
-	{
-		if(folderVersions == null)
-			return;
-
-		File versionsFile = new File(folder, "version.xml");
-		OutputStream output = null;
-		try
-		{
-			output = new BufferedOutputStream(new FileOutputStream(versionsFile));
-			Utils.serialize(folderVersions, output);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(output);
-		}
-	}
-
 	private void generateFromBundle(JNLPVersionModel folderVersions, String file, Manifest mf) throws CoreException
 	{
 		Attributes a = mf.getMainAttributes();
@@ -228,27 +227,20 @@ public class JNLPSiteGenerator
 		if(version == null)
 			version = "0.0.0";
 
-
-		/* We don't do this now since the requests lack os/arch information for some
-		 * reason.
-		 *
-		JNLPVersionModel.Resource resource = folderVersions.addResource(file, id + ".jar", version);
-		JNLPModel.Resource jnlpResource = m_jnlpResources.get(id + "_B");
-		if(jnlpResource != null)
-		{
-			String os = jnlpResource.getOs();
-			if(os != null)
-				resource.addOs(os);
-			
-			String arch = jnlpResource.getArch();
-			if(arch != null)
-				resource.addArch(arch);
-		}
-		*/
+		/*
+		 * We don't do this now since the requests lack os/arch information for some reason.
+		 * 
+		 * JNLPVersionModel.Resource resource = folderVersions.addResource(file, id + ".jar", version);
+		 * JNLPModel.Resource jnlpResource = m_jnlpResources.get(id + "_B"); if(jnlpResource != null) { String os =
+		 * jnlpResource.getOs(); if(os != null) resource.addOs(os);
+		 * 
+		 * String arch = jnlpResource.getArch(); if(arch != null) resource.addArch(arch); }
+		 */
 		folderVersions.addResource(file, id + ".jar", version);
 	}
 
-	private void generateFromFeature(JNLPVersionModel folderVersions, File featuresFolder, IFeature feature) throws CoreException
+	private void generateFromFeature(JNLPVersionModel folderVersions, File featuresFolder, IFeature feature)
+			throws CoreException
 	{
 		String id = feature.getId();
 		String version = feature.getVersion();
@@ -261,7 +253,7 @@ public class JNLPSiteGenerator
 		os = JNLPGenerator.convertOS(os);
 		if(os != null)
 			resource.addOs(os);
-		
+
 		String arch = JNLPGenerator.convertArch(feature.getArch());
 		if(arch != null)
 			resource.addArch(arch);

@@ -108,249 +108,13 @@ public class CreateProductBase
 
 	private final List<File> m_files;
 
-	public CreateProductBase(File productFile, List<File> files,
-			IPath outputDir, IPath targetLocation, boolean copyJavaLauncher) throws CoreException
-	{
-		if(outputDir == null)
-			throw new IllegalArgumentException("outputDir cannot be null");
-		m_outputDir = outputDir.addTrailingSeparator();
-
-		if(targetLocation == null)
-			throw new IllegalArgumentException("targetLocation cannot be null");
-		m_targetLocation = targetLocation.addTrailingSeparator();
-
-		if(productFile == null)
-			throw new IllegalArgumentException("productFile cannot be null");
-
-		m_files = files;
-		m_actionContext = AbstractActor.getActiveContext();
-
-		InputStream pfInput = null;
-		try
-		{
-			pfInput = new BufferedInputStream(new FileInputStream(productFile));
-			ProductModel productModel = new ProductModel();
-			productModel.load(pfInput, false);
-			m_product = productModel.getProduct();
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.fromMessage("Unable to read file %s", productFile);
-		}
-		finally
-		{
-			IOUtils.close(pfInput);
-		}
-
-		Map<String,String> props = m_actionContext.getProperties();
-		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
-		if(os == null || FilterUtils.MATCH_ALL.equals(os))
-			os = TargetPlatform.getOS();
-		m_os = os;
-
-		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
-		if(ws == null || FilterUtils.MATCH_ALL.equals(ws))
-			ws = TargetPlatform.getWS();
-		m_ws = ws;
-
-		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
-		if(arch == null || FilterUtils.MATCH_ALL.equals(arch))
-			arch = TargetPlatform.getOSArch();
-		m_arch = arch;
-
-		String nl = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_NL);
-		if(nl == null || FilterUtils.MATCH_ALL.equals(nl))
-			nl = TargetPlatform.getNL();
-		m_nl = nl;
-
-		m_copyJavaLauncher = copyJavaLauncher;
-	}
-
-	public String execute() throws Exception
-	{
-		m_hints = null;
-
-		File outputDir = m_outputDir.toFile();
-		if(!outputDir.isDirectory())
-			throw BuckminsterException.fromMessage("%s is not a directory", outputDir);
-
-		if(m_copyJavaLauncher)
-			copyJavaLauncherToRoot();
-
-		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
-		//
-		IProgressMonitor monitor = new NullProgressMonitor();
-		createConfigIniFile(new File(outputDir, "configuration"), monitor);
-		createEclipseProductFile(outputDir, monitor);
-		createLauncherIniFile(outputDir, monitor);
-		return createLauncher();
-	}
-
 	public static final String MACOSX_LAUNCHER_FOLDER = "Eclipse.app/Contents/MacOS";
 
 	public static final String DEFAULT_LAUNCHER = "launcher";
 
 	public static final String DEFAULT_LAUNCHER_WIN32 = DEFAULT_LAUNCHER + ".exe";
 
-	private String createLauncher() throws Exception
-	{
-		String launcherName = getLauncherName();
-		boolean hasDeltaPack = hasDeltaPackFeature();
-
-		if(hasDeltaPack)
-		{
-			boolean nameOK = m_os.equals(Platform.OS_WIN32)
-					? DEFAULT_LAUNCHER_WIN32.equalsIgnoreCase(launcherName)
-					: DEFAULT_LAUNCHER.equals(launcherName);
-
-			if(!nameOK && !(m_os.equals(Platform.OS_MACOSX) || m_os.equals(Platform.OS_WIN32)))
-			{
-				// Launcher name will change so we need to add a new chmod
-				// if this isn't on a Windows (in which case it doesn't matter)
-				// or on a MacOS (in which case the BrandingIron will do it
-				// for us).
-				//
-				addChmodHint("755", launcherName);
-			}
-		}
-		else
-		{
-			// Simulate delta pack from the current platform installation
-			//
-			copyLauncherExecutable();
-		}
-
-		ILauncherInfo info = m_product.getLauncherInfo();
-		if(info == null)
-			return launcherName;
-
-		String images = null;
-		if(Platform.OS_WIN32.equals(m_os))
-		{
-			images = getWin32Images(info);
-		}
-		else if(Platform.OS_SOLARIS.equals(m_os))
-		{
-			images = getSolarisImages(info);
-		}
-		else if(Platform.OS_LINUX.equals(m_os))
-		{
-			images = getExpandedPath(info.getIconPath(ILauncherInfo.LINUX_ICON));
-		}
-		else if(Platform.OS_MACOSX.equals(m_os))
-		{
-			images = getExpandedPath(info.getIconPath(ILauncherInfo.MACOSX_ICON));
-		}
-
-		BrandingIron bi = new BrandingIron();
-		bi.setName(launcherName);
-		bi.setOS(m_os);
-		bi.setRoot(m_outputDir.toOSString());
-		if(images != null)
-			bi.setIcons(images);
-		bi.brand();
-		return launcherName;
-	}
-
-	private boolean hasDeltaPackFeature() throws CoreException
-	{
-		CSpec cspec = m_actionContext.getCSpec();
-		Attribute attr = cspec.getAttribute(IPDEConstants.ATTRIBUTE_PRODUCT_ROOT_FILES);
-		if(attr == null)
-			return false;
-
-		for(Prerequisite pq : attr.getPrerequisites())
-		{
-			String cname = pq.getComponentName();
-			if(cname == null)
-				continue;
-
-			if(cname.equals("org.eclipse.equinox.executable")
-			|| cname.equals("org.eclipse.platform.launchers"))
-			{
-				return (pq.getReferencedAttribute(cspec, m_actionContext) != null);
-			}
-		}
-		return false;
-	}
-
-	private void copyLauncherExecutable() throws CoreException
-	{
-		File homeDir = new File(TargetPlatform.getLocation());
-		File[] rootFiles = homeDir.listFiles();
-		if(rootFiles == null)
-			return;
-
-		String targetOs = TargetPlatform.getOS();
-		boolean isWin32 = Platform.OS_WIN32.equals(targetOs);
-		boolean isMac = Platform.OS_MACOSX.equals(targetOs);
-		IProgressMonitor monitor = new NullProgressMonitor();
-		File dest = m_outputDir.toFile();
-		for(File rootFile : rootFiles)
-		{
-			if(!rootFile.isFile())
-				continue;
-
-			String name = rootFile.getName();
-			boolean copyFile = false;
-			if("startup.jar".equals(name))
-				copyFile = true;
-			else
-			{
-				if(isMac)
-				{
-					if("Eclipse.app".equals(name))
-						FileUtils.deepCopy(rootFile, new File(dest, name), ConflictResolution.REPLACE, new NullProgressMonitor());
-					continue;
-				}
-
-				if(isWin32)
-				{
-					if("eclipse.exe".equals(name))
-					{
-						copyFile = true;
-						name = DEFAULT_LAUNCHER_WIN32;
-					}
-				}
-				else
-				{
-					if("eclipse".equals(name))
-					{
-						copyFile = true;
-						name = DEFAULT_LAUNCHER;
-						addChmodHint("755", getLauncherName());
-					}
-					else if(name.startsWith("libXm.so") || name.startsWith("libcairo-swt.so"))
-					{
-						copyFile = true;
-						addChmodHint("755", name);
-					}
-				}
-			}
-			if(copyFile)
-				FileUtils.copyFile(rootFile, dest, name, monitor);
-		}
-	}
-
-	public Map<String, String> getHints()
-	{
-		if(m_hints == null || m_hints.size() == 0)
-			return Collections.emptyMap();
-
-		Map<String, String> hints = new HashMap<String, String>();
-		StringBuilder bld = new StringBuilder(100);
-		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
-		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
-		for(Map.Entry<String, String> hint : m_hints.entrySet())
-		{
-			bld.setLength(pfLen);
-			bld.append(hint.getKey());
-			bld.append('.');
-			bld.append(m_product.getName());
-			hints.put(bld.toString(), hint.getValue());
-		}
-		return hints;
-	}
+	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
 
 	private static void appendExpandedPath(StringBuilder builder, String path)
 	{
@@ -414,14 +178,110 @@ public class CreateProductBase
 				: null;
 	}
 
+	public CreateProductBase(File productFile, List<File> files, IPath outputDir, IPath targetLocation,
+			boolean copyJavaLauncher) throws CoreException
+	{
+		if(outputDir == null)
+			throw new IllegalArgumentException("outputDir cannot be null");
+		m_outputDir = outputDir.addTrailingSeparator();
+
+		if(targetLocation == null)
+			throw new IllegalArgumentException("targetLocation cannot be null");
+		m_targetLocation = targetLocation.addTrailingSeparator();
+
+		if(productFile == null)
+			throw new IllegalArgumentException("productFile cannot be null");
+
+		m_files = files;
+		m_actionContext = AbstractActor.getActiveContext();
+
+		InputStream pfInput = null;
+		try
+		{
+			pfInput = new BufferedInputStream(new FileInputStream(productFile));
+			ProductModel productModel = new ProductModel();
+			productModel.load(pfInput, false);
+			m_product = productModel.getProduct();
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.fromMessage("Unable to read file %s", productFile);
+		}
+		finally
+		{
+			IOUtils.close(pfInput);
+		}
+
+		Map<String, String> props = m_actionContext.getProperties();
+		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
+		if(os == null || FilterUtils.MATCH_ALL.equals(os))
+			os = TargetPlatform.getOS();
+		m_os = os;
+
+		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
+		if(ws == null || FilterUtils.MATCH_ALL.equals(ws))
+			ws = TargetPlatform.getWS();
+		m_ws = ws;
+
+		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
+		if(arch == null || FilterUtils.MATCH_ALL.equals(arch))
+			arch = TargetPlatform.getOSArch();
+		m_arch = arch;
+
+		String nl = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_NL);
+		if(nl == null || FilterUtils.MATCH_ALL.equals(nl))
+			nl = TargetPlatform.getNL();
+		m_nl = nl;
+
+		m_copyJavaLauncher = copyJavaLauncher;
+	}
+
+	public String execute() throws Exception
+	{
+		m_hints = null;
+
+		File outputDir = m_outputDir.toFile();
+		if(!outputDir.isDirectory())
+			throw BuckminsterException.fromMessage("%s is not a directory", outputDir);
+
+		if(m_copyJavaLauncher)
+			copyJavaLauncherToRoot();
+
+		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
+		//
+		IProgressMonitor monitor = new NullProgressMonitor();
+		createConfigIniFile(new File(outputDir, "configuration"), monitor);
+		createEclipseProductFile(outputDir, monitor);
+		createLauncherIniFile(outputDir, monitor);
+		return createLauncher();
+	}
+
+	public Map<String, String> getHints()
+	{
+		if(m_hints == null || m_hints.size() == 0)
+			return Collections.emptyMap();
+
+		Map<String, String> hints = new HashMap<String, String>();
+		StringBuilder bld = new StringBuilder(100);
+		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
+		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
+		for(Map.Entry<String, String> hint : m_hints.entrySet())
+		{
+			bld.setLength(pfLen);
+			bld.append(hint.getKey());
+			bld.append('.');
+			bld.append(m_product.getName());
+			hints.put(bld.toString(), hint.getValue());
+		}
+		return hints;
+	}
+
 	private void addChmodHint(String perm, String filesAndFolders)
 	{
 		if(m_hints == null)
 			m_hints = new HashMap<String, String>();
 		FeatureBuilder.addRootsPermissions(m_hints, perm, filesAndFolders, null);
 	}
-
-	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
 
 	private void copyJavaLauncherToRoot() throws CoreException, IOException
 	{
@@ -465,40 +325,63 @@ public class CreateProductBase
 		FileUtils.copyFile(startupJar, m_outputDir.toFile(), "startup.jar", new NullProgressMonitor());
 	}
 
-	private State getState()
+	private void copyLauncherExecutable() throws CoreException
 	{
-		State main = TargetPlatformHelper.getState();
-		if(m_os.equals(TargetPlatform.getOS()) && m_ws.equals(TargetPlatform.getWS())
-				&& m_arch.equals(TargetPlatform.getOSArch()))
-			return main;
+		File homeDir = new File(TargetPlatform.getLocation());
+		File[] rootFiles = homeDir.listFiles();
+		if(rootFiles == null)
+			return;
 
-		State stateCopy = main.getFactory().createState(main);
-		stateCopy.setResolver(Platform.getPlatformAdmin().getResolver());
-		stateCopy.setPlatformProperties(main.getPlatformProperties());
-		for(Dictionary<String, String> properties : getStatePlatformProperties(stateCopy))
+		String targetOs = TargetPlatform.getOS();
+		boolean isWin32 = Platform.OS_WIN32.equals(targetOs);
+		boolean isMac = Platform.OS_MACOSX.equals(targetOs);
+		IProgressMonitor monitor = new NullProgressMonitor();
+		File dest = m_outputDir.toFile();
+		for(File rootFile : rootFiles)
 		{
-			properties.put("osgi.os", m_os);
-			properties.put("osgi.ws", m_ws);
-			properties.put("osgi.arch", m_arch);
-		}
-		stateCopy.resolve(false);
-		return stateCopy;
-	}
+			if(!rootFile.isFile())
+				continue;
 
-	private File getCustomIniFile()
-	{
-		IConfigurationFileInfo info = m_product.getConfigurationFileInfo();
-		if(info != null && "custom".equals(info.getUse(m_os)))
-		{
-			String path = getExpandedPath(info.getPath(m_os));
-			if(path != null)
+			String name = rootFile.getName();
+			boolean copyFile = false;
+			if("startup.jar".equals(name))
+				copyFile = true;
+			else
 			{
-				File file = new File(path);
-				if(file.exists() && file.isFile())
-					return file;
+				if(isMac)
+				{
+					if("Eclipse.app".equals(name))
+						FileUtils.deepCopy(rootFile, new File(dest, name), ConflictResolution.REPLACE,
+								new NullProgressMonitor());
+					continue;
+				}
+
+				if(isWin32)
+				{
+					if("eclipse.exe".equals(name))
+					{
+						copyFile = true;
+						name = DEFAULT_LAUNCHER_WIN32;
+					}
+				}
+				else
+				{
+					if("eclipse".equals(name))
+					{
+						copyFile = true;
+						name = DEFAULT_LAUNCHER;
+						addChmodHint("755", getLauncherName());
+					}
+					else if(name.startsWith("libXm.so") || name.startsWith("libcairo-swt.so"))
+					{
+						copyFile = true;
+						addChmodHint("755", name);
+					}
+				}
 			}
+			if(copyFile)
+				FileUtils.copyFile(rootFile, dest, name, monitor);
 		}
-		return null;
 	}
 
 	private void createConfigIniFile(File outputDir, IProgressMonitor monitor) throws CoreException, IOException
@@ -543,6 +426,143 @@ public class CreateProductBase
 		}
 	}
 
+	private void createEclipseProductFile(File outputDir, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		FileUtils.prepareDestination(outputDir, ConflictResolution.UPDATE, monitor);
+		Map<String, String> properties = new HashMap<String, String>();
+		IPluginModelBase model = PluginRegistry.findModel(getBrandingPlugin());
+		if(model != null)
+			properties.put("name", model.getResourceString(m_product.getName()));
+		else
+			properties.put("name", m_product.getName());
+		properties.put("id", m_product.getId());
+		if(model != null)
+			properties.put("version", model.getPluginBase().getVersion());
+
+		OutputStream out = null;
+		try
+		{
+			out = new FileOutputStream(new File(outputDir, ".eclipseproduct"));
+			BMProperties.store(properties, out, "Eclipse Product File");
+		}
+		finally
+		{
+			IOUtils.close(out);
+		}
+	}
+
+	private String createLauncher() throws Exception
+	{
+		String launcherName = getLauncherName();
+		boolean hasDeltaPack = hasDeltaPackFeature();
+
+		if(hasDeltaPack)
+		{
+			boolean nameOK = m_os.equals(Platform.OS_WIN32)
+					? DEFAULT_LAUNCHER_WIN32.equalsIgnoreCase(launcherName)
+					: DEFAULT_LAUNCHER.equals(launcherName);
+
+			if(!nameOK && !(m_os.equals(Platform.OS_MACOSX) || m_os.equals(Platform.OS_WIN32)))
+			{
+				// Launcher name will change so we need to add a new chmod
+				// if this isn't on a Windows (in which case it doesn't matter)
+				// or on a MacOS (in which case the BrandingIron will do it
+				// for us).
+				//
+				addChmodHint("755", launcherName);
+			}
+		}
+		else
+		{
+			// Simulate delta pack from the current platform installation
+			//
+			copyLauncherExecutable();
+		}
+
+		ILauncherInfo info = m_product.getLauncherInfo();
+		if(info == null)
+			return launcherName;
+
+		String images = null;
+		if(Platform.OS_WIN32.equals(m_os))
+		{
+			images = getWin32Images(info);
+		}
+		else if(Platform.OS_SOLARIS.equals(m_os))
+		{
+			images = getSolarisImages(info);
+		}
+		else if(Platform.OS_LINUX.equals(m_os))
+		{
+			images = getExpandedPath(info.getIconPath(ILauncherInfo.LINUX_ICON));
+		}
+		else if(Platform.OS_MACOSX.equals(m_os))
+		{
+			images = getExpandedPath(info.getIconPath(ILauncherInfo.MACOSX_ICON));
+		}
+
+		BrandingIron bi = new BrandingIron();
+		bi.setName(launcherName);
+		bi.setOS(m_os);
+		bi.setRoot(m_outputDir.toOSString());
+		if(images != null)
+			bi.setIcons(images);
+		bi.brand();
+		return launcherName;
+	}
+
+	private void createLauncherIniFile(File outputDir, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		String programArgs = getProgramArguments(m_os);
+		String vmArgs = getVMArguments(m_os);
+
+		if(programArgs.length() == 0 && vmArgs.length() == 0)
+			//
+			// Don't need a launcher.ini
+			//
+			return;
+
+		// need to place launcher.ini file in special directory for MacOSX (bug 164762)
+		//
+		if(Platform.OS_MACOSX.equals(m_os))
+			outputDir = new File(outputDir, MACOSX_LAUNCHER_FOLDER);
+
+		FileUtils.prepareDestination(outputDir, ConflictResolution.UPDATE, monitor);
+		String lineDelimiter = getLineDelimiter();
+		Writer writer = null;
+		try
+		{
+			writer = new FileWriter(new File(outputDir, getLauncherName() + ".ini"));
+			ExecutionArguments args = new ExecutionArguments(vmArgs, programArgs);
+
+			// add program arguments
+			//
+			for(String arg : args.getProgramArgumentsArray())
+			{
+				writer.write(arg);
+				writer.write(lineDelimiter);
+			}
+
+			// add VM arguments
+			//
+			String[] array = args.getVMArgumentsArray();
+			if(array.length > 0)
+			{
+				writer.write("-vmargs");
+				writer.write(lineDelimiter);
+				for(String arg : array)
+				{
+					writer.write(arg);
+					writer.write(lineDelimiter);
+				}
+			}
+		}
+		finally
+		{
+			IOUtils.close(writer);
+		}
+	}
+
 	private String getBrandingPlugin()
 	{
 		String id = m_product.getId();
@@ -550,6 +570,131 @@ public class CreateProductBase
 		return (lastDot < 0)
 				? id.substring(0, lastDot)
 				: null;
+	}
+
+	private File getCustomIniFile()
+	{
+		IConfigurationFileInfo info = m_product.getConfigurationFileInfo();
+		if(info != null && "custom".equals(info.getUse(m_os)))
+		{
+			String path = getExpandedPath(info.getPath(m_os));
+			if(path != null)
+			{
+				File file = new File(path);
+				if(file.exists() && file.isFile())
+					return file;
+			}
+		}
+		return null;
+	}
+
+	private String getLauncherName()
+	{
+		ILauncherInfo info = m_product.getLauncherInfo();
+		if(info != null)
+		{
+			String name = info.getLauncherName();
+			if(name != null && name.length() > 0)
+			{
+				name = name.trim();
+				if(name.endsWith(".exe"))
+					name = name.substring(0, name.length() - 4);
+				return name;
+			}
+		}
+		return DEFAULT_LAUNCHER;
+	}
+
+	private String getLineDelimiter()
+	{
+		return Platform.OS_WIN32.equals(m_os)
+				? "\r\n"
+				: "\n";
+	}
+
+	private List<BundleDescription> getPluginModels() throws CoreException
+	{
+		ArrayList<BundleDescription> list = new ArrayList<BundleDescription>();
+		State state = getState();
+		if(m_files.size() == 0)
+		{
+			for(IProductPlugin plugin : m_product.getPlugins())
+			{
+				BundleDescription bundle = state.getBundle(plugin.getId(), null);
+				if(bundle != null)
+					list.add(bundle);
+			}
+		}
+		else
+		{
+			for(File file : m_files)
+			{
+				String fileName = file.getName();
+				if(!fileName.endsWith(".jar"))
+					continue;
+
+				File folder = file.getParentFile();
+				if(folder == null || !IPDEConstants.PLUGINS_FOLDER.equals(folder.getName()))
+					continue;
+
+				try
+				{
+					JarFile jf = new JarFile(file);
+					try
+					{
+						Manifest mf = jf.getManifest();
+						Attributes attrs = mf.getMainAttributes();
+
+						String value = attrs.getValue(Constants.BUNDLE_SYMBOLICNAME);
+						if(value == null)
+							continue;
+
+						ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, value);
+						if(elements.length == 0)
+							continue;
+
+						ManifestElement elem = elements[0];
+						BundleDescription bundle = state.getBundle(elem.getValue(), null);
+						if(bundle != null)
+							list.add(bundle);
+					}
+					finally
+					{
+						jf.close();
+					}
+				}
+				catch(BundleException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+				catch(IOException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+		}
+
+		IPluginModelBase launcherPlugin = PluginRegistry.findModel("org.eclipse.equinox.launcher");
+		if(launcherPlugin != null)
+		{
+			BundleDescription bundle = launcherPlugin.getBundleDescription();
+			if(!(bundle == null || list.contains(bundle)))
+			{
+				list.add(bundle);
+				for(BundleDescription fragment : bundle.getFragments())
+					if(!list.contains(fragment))
+						list.add(fragment);
+			}
+		}
+		return list;
+	}
+
+	private String getProgramArguments(String os)
+	{
+		IArgumentsInfo info = m_product.getLauncherArguments();
+		return info != null
+				? CoreUtility.normalize(info.getCompleteProgramArguments(os))
+				: "";
 	}
 
 	private String getSplashLocation()
@@ -583,6 +728,55 @@ public class CreateProductBase
 			}
 		}
 		return buffer.toString();
+	}
+
+	private State getState()
+	{
+		State main = TargetPlatformHelper.getState();
+		if(m_os.equals(TargetPlatform.getOS()) && m_ws.equals(TargetPlatform.getWS())
+				&& m_arch.equals(TargetPlatform.getOSArch()))
+			return main;
+
+		State stateCopy = main.getFactory().createState(main);
+		stateCopy.setResolver(Platform.getPlatformAdmin().getResolver());
+		stateCopy.setPlatformProperties(main.getPlatformProperties());
+		for(Dictionary<String, String> properties : getStatePlatformProperties(stateCopy))
+		{
+			properties.put("osgi.os", m_os);
+			properties.put("osgi.ws", m_ws);
+			properties.put("osgi.arch", m_arch);
+		}
+		stateCopy.resolve(false);
+		return stateCopy;
+	}
+
+	private String getVMArguments(String os)
+	{
+		IArgumentsInfo info = m_product.getLauncherArguments();
+		return (info != null)
+				? CoreUtility.normalize(info.getCompleteVMArguments(os))
+				: "";
+	}
+
+	private boolean hasDeltaPackFeature() throws CoreException
+	{
+		CSpec cspec = m_actionContext.getCSpec();
+		Attribute attr = cspec.getAttribute(IPDEConstants.ATTRIBUTE_PRODUCT_ROOT_FILES);
+		if(attr == null)
+			return false;
+
+		for(Prerequisite pq : attr.getPrerequisites())
+		{
+			String cname = pq.getComponentName();
+			if(cname == null)
+				continue;
+
+			if(cname.equals("org.eclipse.equinox.executable") || cname.equals("org.eclipse.platform.launchers"))
+			{
+				return (pq.getReferencedAttribute(cspec, m_actionContext) != null);
+			}
+		}
+		return false;
 	}
 
 	private void printBundleList(Writer writer, String bundleList) throws IOException, CoreException
@@ -664,199 +858,5 @@ public class CreateProductBase
 				throw BuckminsterException.wrap(e);
 			}
 		}
-	}
-
-	private String getLineDelimiter()
-	{
-		return Platform.OS_WIN32.equals(m_os)
-				? "\r\n"
-				: "\n";
-	}
-
-	private void createLauncherIniFile(File outputDir, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		String programArgs = getProgramArguments(m_os);
-		String vmArgs = getVMArguments(m_os);
-
-		if(programArgs.length() == 0 && vmArgs.length() == 0)
-			//
-			// Don't need a launcher.ini
-			//
-			return;
-
-		// need to place launcher.ini file in special directory for MacOSX (bug 164762)
-		//
-		if(Platform.OS_MACOSX.equals(m_os))
-			outputDir = new File(outputDir, MACOSX_LAUNCHER_FOLDER);
-
-		FileUtils.prepareDestination(outputDir, ConflictResolution.UPDATE, monitor);
-		String lineDelimiter = getLineDelimiter();
-		Writer writer = null;
-		try
-		{
-			writer = new FileWriter(new File(outputDir, getLauncherName() + ".ini"));
-			ExecutionArguments args = new ExecutionArguments(vmArgs, programArgs);
-
-			// add program arguments
-			//
-			for(String arg : args.getProgramArgumentsArray())
-			{
-				writer.write(arg);
-				writer.write(lineDelimiter);
-			}
-
-			// add VM arguments
-			//
-			String[] array = args.getVMArgumentsArray();
-			if(array.length > 0)
-			{
-				writer.write("-vmargs");
-				writer.write(lineDelimiter);
-				for(String arg : array)
-				{
-					writer.write(arg);
-					writer.write(lineDelimiter);
-				}
-			}
-		}
-		finally
-		{
-			IOUtils.close(writer);
-		}
-	}
-
-	private String getProgramArguments(String os)
-	{
-		IArgumentsInfo info = m_product.getLauncherArguments();
-		return info != null
-				? CoreUtility.normalize(info.getCompleteProgramArguments(os))
-				: "";
-	}
-
-	private String getVMArguments(String os)
-	{
-		IArgumentsInfo info = m_product.getLauncherArguments();
-		return (info != null)
-				? CoreUtility.normalize(info.getCompleteVMArguments(os))
-				: "";
-	}
-
-	private String getLauncherName()
-	{
-		ILauncherInfo info = m_product.getLauncherInfo();
-		if(info != null)
-		{
-			String name = info.getLauncherName();
-			if(name != null && name.length() > 0)
-			{
-				name = name.trim();
-				if(name.endsWith(".exe"))
-					name = name.substring(0, name.length() - 4);
-				return name;
-			}
-		}
-		return DEFAULT_LAUNCHER;
-	}
-
-	private void createEclipseProductFile(File outputDir, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		FileUtils.prepareDestination(outputDir, ConflictResolution.UPDATE, monitor);
-		Map<String, String> properties = new HashMap<String, String>();
-		IPluginModelBase model = PluginRegistry.findModel(getBrandingPlugin());
-		if(model != null)
-			properties.put("name", model.getResourceString(m_product.getName()));
-		else
-			properties.put("name", m_product.getName());
-		properties.put("id", m_product.getId());
-		if(model != null)
-			properties.put("version", model.getPluginBase().getVersion());
-
-		OutputStream out = null;
-		try
-		{
-			out = new FileOutputStream(new File(outputDir, ".eclipseproduct"));
-			BMProperties.store(properties, out, "Eclipse Product File");
-		}
-		finally
-		{
-			IOUtils.close(out);
-		}
-	}
-
-	private List<BundleDescription> getPluginModels() throws CoreException
-	{
-		ArrayList<BundleDescription> list = new ArrayList<BundleDescription>();
-		State state = getState();
-		if(m_files.size() == 0)
-		{
-			for(IProductPlugin plugin : m_product.getPlugins())
-			{
-				BundleDescription bundle = state.getBundle(plugin.getId(), null);
-				if(bundle != null)
-					list.add(bundle);
-			}
-		}
-		else
-		{
-			for(File file : m_files)
-			{
-				String fileName = file.getName();
-				if(!fileName.endsWith(".jar"))
-					continue;
-
-				File folder = file.getParentFile();
-				if(folder == null || !IPDEConstants.PLUGINS_FOLDER.equals(folder.getName()))
-					continue;
-
-				try
-				{
-					JarFile jf = new JarFile(file);
-					try
-					{
-						Manifest mf = jf.getManifest();
-						Attributes attrs = mf.getMainAttributes();
-
-						String value = attrs.getValue(Constants.BUNDLE_SYMBOLICNAME);
-						if(value == null)
-							continue;
-
-						ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, value);
-						if(elements.length == 0)
-							continue;
-
-						ManifestElement elem = elements[0];
-						BundleDescription bundle = state.getBundle(elem.getValue(), null);
-						if(bundle != null)
-							list.add(bundle);
-					}
-					finally
-					{
-						jf.close();
-					}
-				}
-				catch(BundleException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-				catch(IOException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			}
-		}
-
-		IPluginModelBase launcherPlugin = PluginRegistry.findModel("org.eclipse.equinox.launcher");
-		if(launcherPlugin != null)
-		{
-			BundleDescription bundle = launcherPlugin.getBundleDescription();
-			if(!(bundle == null || list.contains(bundle)))
-			{
-				list.add(bundle);
-				for(BundleDescription fragment : bundle.getFragments())
-					if(!list.contains(fragment))
-						list.add(fragment);
-			}
-		}
-		return list;
 	}
 }

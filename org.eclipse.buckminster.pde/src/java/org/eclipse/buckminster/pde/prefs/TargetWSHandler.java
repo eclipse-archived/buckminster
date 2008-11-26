@@ -24,14 +24,14 @@ public class TargetWSHandler extends TargetVariableHandler
 	}
 
 	@Override
-	String[] getKnownValues()
-	{
-		return Platform.knownWSValues();
-	}
-
-	@Override
 	public void unset() throws BackingStoreException
 	{
 		this.set(Platform.getWS());
+	}
+
+	@Override
+	String[] getKnownValues()
+	{
+		return Platform.knownWSValues();
 	}
 }

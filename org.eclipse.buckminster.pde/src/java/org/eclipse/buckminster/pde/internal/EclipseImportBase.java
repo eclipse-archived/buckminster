@@ -40,25 +40,20 @@ final class EclipseImportBase
 	static class Key
 	{
 		private final String m_repositoryURI;
+
 		private final ComponentRequest m_request;
-		
+
 		Key(String repositoryURI, ComponentRequest request)
 		{
 			m_repositoryURI = repositoryURI;
 			m_request = request;
 		}
-		
+
 		@Override
 		public boolean equals(Object o)
 		{
-			return this == o ||
-			(o instanceof Key) && m_repositoryURI.equals(((Key)o).m_repositoryURI) && m_request.equals(((Key)o).m_request);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return m_repositoryURI.hashCode() * 37 + m_request.hashCode();
+			return this == o || (o instanceof Key) && m_repositoryURI.equals(((Key)o).m_repositoryURI)
+					&& m_request.equals(((Key)o).m_request);
 		}
 
 		public String getRepositoryURI()
@@ -70,12 +65,17 @@ final class EclipseImportBase
 		{
 			return m_request;
 		}
+
+		@Override
+		public int hashCode()
+		{
+			return m_repositoryURI.hashCode() * 37 + m_request.hashCode();
+		}
 	}
 
 	/**
-	 * Parameter in the resource URI that determines the search order when
-	 * resolving the component. Valid values are &quot;binary&quot; and
-	 * &quot;linked&quot; or &quot;source&quot;. Default is &quot;binary&quot;
+	 * Parameter in the resource URI that determines the search order when resolving the component. Valid values are
+	 * &quot;binary&quot; and &quot;linked&quot; or &quot;source&quot;. Default is &quot;binary&quot;
 	 */
 	static final String PARAM_IMPORT_TYPE = "importType";
 
@@ -101,21 +101,6 @@ final class EclipseImportBase
 
 	private static final UUID CACHE_IMPORT_BASE_CACHE = UUID.randomUUID();
 
-	@SuppressWarnings("unchecked")
-	static Map<Key, EclipseImportBase> getImportBaseCacheCache(Map<UUID, Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>)ctxUserCache.get(CACHE_IMPORT_BASE_CACHE);
-			if(listCache == null)
-			{
-				listCache = Collections.synchronizedMap(new HashMap<Key, EclipseImportBase>());
-				ctxUserCache.put(CACHE_IMPORT_BASE_CACHE, listCache);
-			}
-			return listCache;
-		}
-	}
-
 	public static EclipseImportBase obtain(NodeQuery query, String repositoryURI) throws CoreException
 	{
 		Key key = new Key(repositoryURI, query.getComponentRequest());
@@ -129,6 +114,22 @@ final class EclipseImportBase
 				cache.put(key, importBase);
 			}
 			return importBase;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	static Map<Key, EclipseImportBase> getImportBaseCacheCache(Map<UUID, Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>)ctxUserCache
+					.get(CACHE_IMPORT_BASE_CACHE);
+			if(listCache == null)
+			{
+				listCache = Collections.synchronizedMap(new HashMap<Key, EclipseImportBase>());
+				ctxUserCache.put(CACHE_IMPORT_BASE_CACHE, listCache);
+			}
+			return listCache;
 		}
 	}
 
@@ -149,7 +150,7 @@ final class EclipseImportBase
 		URL remoteLocation = null;
 		File location = null;
 		boolean platform = false;
-		
+
 		if(scheme == null)
 		{
 			if(path == null || path.length() == 0)
@@ -211,14 +212,21 @@ final class EclipseImportBase
 		return m_key.getRequest().getName();
 	}
 
-	List<IFeatureModel> getFeatureModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
+	List<IFeatureModel> getFeatureModels(EclipseImportReaderType readerType, IProgressMonitor monitor)
+			throws CoreException
 	{
 		return readerType.getFeatureModels(getLocation(), getComponentName(), monitor);
 	}
 
-	List<ISiteFeatureReference> getFeatureReferences(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
+	List<ISiteFeatureReference> getFeatureReferences(EclipseImportReaderType readerType, IProgressMonitor monitor)
+			throws CoreException
 	{
-		return readerType.getFeatureReferences(getRemoteLocation(),  getComponentName(), monitor);
+		return readerType.getFeatureReferences(getRemoteLocation(), getComponentName(), monitor);
+	}
+
+	Key getKey()
+	{
+		return m_key;
 	}
 
 	final File getLocation() throws CoreException
@@ -228,19 +236,16 @@ final class EclipseImportBase
 		return m_location;
 	}
 
-	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, IConnectContext cctx, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, IConnectContext cctx, NodeQuery query,
+			IProgressMonitor monitor) throws CoreException
 	{
 		return readerType.getPluginEntries(getRemoteLocation(), cctx, query, getComponentName(), monitor);
 	}
 
-	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException
+	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor)
+			throws CoreException
 	{
-		return readerType.getPluginModels(getLocation(),  getComponentName(), monitor);
-	}
-
-	Key getKey()
-	{
-		return m_key;
+		return readerType.getPluginModels(getLocation(), getComponentName(), monitor);
 	}
 
 	String getQuery()

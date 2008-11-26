@@ -16,7 +16,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
- * <p>An instanceof this class represents the JNLP <code>version.xml</code></p>
+ * <p>
+ * An instanceof this class represents the JNLP <code>version.xml</code>
+ * </p>
+ * 
  * <pre>
  *  &lt;!ELEMENT jnlp-versions (resource*, platform*)&gt;
  *  &lt;!ELEMENT resource (pattern, file)&gt;
@@ -35,71 +38,6 @@ import org.xml.sax.SAXException;
  */
 public class JNLPVersionModel extends SAXModel
 {
-	private final ArrayList<Resource> m_resources = new ArrayList<Resource>();
-	
-	public static class Resource implements ISaxableElement
-	{
-		private final String m_name;
-		private final String m_file;
-		private final String m_versionId;
-
-		private List<String> m_oss;
-		private List<String> m_archs;
-		private List<String> m_locales;
-
-		Resource(String file, String name, String versionId)
-		{
-			m_file = file;
-			m_name = name;
-			m_versionId = versionId;
-		}
-
-		public void addOs(String os)
-		{
-			if(m_oss == null)
-				m_oss = new ArrayList<String>();
-			m_oss.add(os);
-		}
-
-		public void addArch(String arch)
-		{
-			if(m_archs == null)
-				m_archs = new ArrayList<String>();
-			m_archs.add(arch);
-		}
-
-		public void addLocale(String locale)
-		{
-			if(m_locales == null)
-				m_locales = new ArrayList<String>();
-			m_locales.add(locale);
-		}
-
-		public String getDefaultTag()
-		{
-			return "resource";
-		}
-
-		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-		{
-			startElement(receiver, localName);
-			emitContent(receiver);
-			endElement(receiver, localName);
-		}
-		
-		void emitContent(ContentHandler receiver) throws SAXException
-		{
-			startElement(receiver, "pattern");
-			emitTextElement(receiver, "name", m_name);
-			emitTextElement(receiver, "version-id", m_versionId);
-			emitTextElements(receiver, "os", m_oss);
-			emitTextElements(receiver, "arch", m_archs);
-			emitTextElements(receiver, "locale", m_locales);
-			endElement(receiver, "pattern");
-			emitTextElement(receiver, "file", m_file);
-		}
-	}
-
 	public static class Platform extends Resource
 	{
 		private final String m_productVersionId;
@@ -124,6 +62,74 @@ public class JNLPVersionModel extends SAXModel
 		}
 	}
 
+	public static class Resource implements ISaxableElement
+	{
+		private final String m_name;
+
+		private final String m_file;
+
+		private final String m_versionId;
+
+		private List<String> m_oss;
+
+		private List<String> m_archs;
+
+		private List<String> m_locales;
+
+		Resource(String file, String name, String versionId)
+		{
+			m_file = file;
+			m_name = name;
+			m_versionId = versionId;
+		}
+
+		public void addArch(String arch)
+		{
+			if(m_archs == null)
+				m_archs = new ArrayList<String>();
+			m_archs.add(arch);
+		}
+
+		public void addLocale(String locale)
+		{
+			if(m_locales == null)
+				m_locales = new ArrayList<String>();
+			m_locales.add(locale);
+		}
+
+		public void addOs(String os)
+		{
+			if(m_oss == null)
+				m_oss = new ArrayList<String>();
+			m_oss.add(os);
+		}
+
+		public String getDefaultTag()
+		{
+			return "resource";
+		}
+
+		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
+				throws SAXException
+		{
+			startElement(receiver, localName);
+			emitContent(receiver);
+			endElement(receiver, localName);
+		}
+
+		void emitContent(ContentHandler receiver) throws SAXException
+		{
+			startElement(receiver, "pattern");
+			emitTextElement(receiver, "name", m_name);
+			emitTextElement(receiver, "version-id", m_versionId);
+			emitTextElements(receiver, "os", m_oss);
+			emitTextElements(receiver, "arch", m_archs);
+			emitTextElements(receiver, "locale", m_locales);
+			endElement(receiver, "pattern");
+			emitTextElement(receiver, "file", m_file);
+		}
+	}
+
 	private static void emitTextElements(ContentHandler receiver, String tag, List<String> values) throws SAXException
 	{
 		if(values != null)
@@ -131,18 +137,20 @@ public class JNLPVersionModel extends SAXModel
 				emitTextElement(receiver, tag, value);
 	}
 
-	public Resource addResource(String file, String name, String versionId)
-	{
-		Resource resource = new Resource(file, name, versionId);
-		m_resources.add(resource);
-		return resource;
-	}
+	private final ArrayList<Resource> m_resources = new ArrayList<Resource>();
 
 	public Platform addPlatform(String file, String name, String versionId, String productVersionId)
 	{
 		Platform platform = new Platform(file, name, versionId, productVersionId);
 		m_resources.add(platform);
 		return platform;
+	}
+
+	public Resource addResource(String file, String name, String versionId)
+	{
+		Resource resource = new Resource(file, name, versionId);
+		m_resources.add(resource);
+		return resource;
 	}
 
 	public void toSax(ContentHandler receiver) throws SAXException
@@ -153,5 +161,5 @@ public class JNLPVersionModel extends SAXModel
 			resource.toSax(receiver, null, null, resource.getDefaultTag());
 		endElement(receiver, "jnlp-versions");
 		receiver.endDocument();
-	}	
+	}
 }

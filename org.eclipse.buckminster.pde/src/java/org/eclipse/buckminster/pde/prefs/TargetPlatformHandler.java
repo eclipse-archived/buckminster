@@ -17,9 +17,8 @@ import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 
 /**
- * Custom preference handler for the targetPlatform preference. Needed since
- * manipulating {@link ICoreConstants#PLATFORM_PATH} preference also changes the
- * preference {@link ICoreConstants#TARGET_MODE}.
+ * Custom preference handler for the targetPlatform preference. Needed since manipulating
+ * {@link ICoreConstants#PLATFORM_PATH} preference also changes the preference {@link ICoreConstants#TARGET_MODE}.
  * 
  * @author Thomas Hallgren
  */

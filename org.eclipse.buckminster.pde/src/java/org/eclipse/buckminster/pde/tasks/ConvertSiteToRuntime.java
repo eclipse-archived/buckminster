@@ -36,17 +36,67 @@ import org.osgi.framework.Constants;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 @SuppressWarnings("restriction")
 public class ConvertSiteToRuntime
 {
 	private static final String FEATURES_DIR = "features";
+
 	private static final String FEATURE_FILE = "feature.xml";
+
 	private static final String PLUGINS_DIR = "plugins";
 
+	public static boolean guessUnpack(File bundleJar) throws CoreException
+	{
+		try
+		{
+			JarFile jf = new JarFile(bundleJar);
+			try
+			{
+				Manifest mf = jf.getManifest();
+				Attributes attrs = mf.getMainAttributes();
+
+				String value = attrs.getValue(Constants.FRAGMENT_HOST);
+				if(value != null)
+				{
+					ManifestElement[] elements = ManifestElement.parseHeader(Constants.FRAGMENT_HOST, value);
+					if(elements.length > 0)
+					{
+						if("org.eclipse.equinox.launcher".equals(elements[0].getValue()))
+							return true;
+					}
+				}
+
+				value = attrs.getValue(Constants.BUNDLE_CLASSPATH);
+				if(value != null)
+				{
+					for(ManifestElement elem : ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, value))
+					{
+						if(elem.getValue().equals("."))
+							return false;
+					}
+					return true;
+				}
+			}
+			finally
+			{
+				jf.close();
+			}
+		}
+		catch(BundleException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		return false;
+	}
+
 	private final File m_productRoot;
-	
+
 	public ConvertSiteToRuntime(File productRoot)
 	{
 		m_productRoot = productRoot;
@@ -72,7 +122,7 @@ public class ConvertSiteToRuntime
 			{
 				if(!featureCandidate.endsWith(".jar"))
 					continue;
-	
+
 				File featureJar = new File(featuresDir, featureCandidate);
 				File featureDir = new File(featuresDir, featureCandidate.substring(0, featureCandidate.length() - 4));
 				InputStream input = null;
@@ -91,12 +141,12 @@ public class ConvertSiteToRuntime
 					featureJar.delete();
 				}
 			}
-	
+
 			for(File featureCandidate : featuresDir.listFiles())
 			{
 				if(!featureCandidate.isDirectory())
 					continue;
-	
+
 				InputStream input = null;
 				try
 				{
@@ -166,53 +216,5 @@ public class ConvertSiteToRuntime
 				pluginJar.delete();
 			}
 		}
-	}
-	
-	public static boolean guessUnpack(File bundleJar) throws CoreException
-	{
-		try
-		{
-			JarFile jf = new JarFile(bundleJar);
-			try
-			{
-				Manifest mf = jf.getManifest();
-				Attributes attrs = mf.getMainAttributes();
-	
-				String value = attrs.getValue(Constants.FRAGMENT_HOST);
-				if(value != null)
-				{
-					ManifestElement[] elements = ManifestElement.parseHeader(Constants.FRAGMENT_HOST, value);
-					if(elements.length > 0)
-					{
-						if("org.eclipse.equinox.launcher".equals(elements[0].getValue()))
-							return true;
-					}
-				}
-	
-				value = attrs.getValue(Constants.BUNDLE_CLASSPATH);
-				if(value != null)
-				{
-					for(ManifestElement elem : ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, value))
-					{
-						if(elem.getValue().equals("."))
-							return false;
-					}
-					return true;
-				}
-			}
-			finally
-			{
-				jf.close();
-			}
-		}
-		catch(BundleException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		return false;
 	}
 }

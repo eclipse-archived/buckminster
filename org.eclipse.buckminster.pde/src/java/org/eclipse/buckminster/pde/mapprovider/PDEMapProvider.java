@@ -64,10 +64,33 @@ public class PDEMapProvider extends Provider
 
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
 
-	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc,
-		Format uri, Filter resolutionFilter, boolean mutable, boolean source, Documentation documentation)
+	private static void collectEntries(File mapFile, Map<ComponentIdentifier, MapFileEntry> map) throws CoreException
 	{
-		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, mutable, source, null, documentation);
+		InputStream input = null;
+		try
+		{
+			input = new FileInputStream(mapFile);
+			ArrayList<MapFileEntry> list = new ArrayList<MapFileEntry>();
+			MapFile.parse(input, mapFile.getCanonicalPath(), list);
+			for(MapFileEntry entry : list)
+				map.put(entry.getComponentIdentifier(), entry);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
+
+	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
+			VersionConverterDesc vcDesc, Format uri, Filter resolutionFilter, boolean mutable, boolean source,
+			Documentation documentation)
+	{
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, mutable, source,
+				null, documentation);
 	}
 
 	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri, Filter resolutionFilter)
@@ -76,8 +99,15 @@ public class PDEMapProvider extends Provider
 	}
 
 	@Override
+	public void addPrefixMappings(HashMap<String, String> prefixMappings)
+	{
+		super.addPrefixMappings(prefixMappings);
+		prefixMappings.put(BM_PDEMAP_PROVIDER_PREFIX, BM_PDEMAP_PROVIDER_NS);
+	}
+
+	@Override
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		monitor.beginTask("", 100);
 		try
@@ -92,8 +122,8 @@ public class PDEMapProvider extends Provider
 				return null;
 			}
 
-			MapFileEntry tv = getMapFileEntry(query, problemCollector, 
-				getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
+			MapFileEntry tv = getMapFileEntry(query, problemCollector, getMap(query, problemCollector, MonitorUtils
+					.subMonitor(monitor, 50)));
 
 			if(tv == null)
 				//
@@ -101,10 +131,12 @@ public class PDEMapProvider extends Provider
 				//
 				return null;
 
-			Map<String,String> properties = tv.getProperties();
+			Map<String, String> properties = tv.getProperties();
 			IVersion v = null;
 			String tag = properties.get("tag");
-			VersionSelector vs = (tag == null) ? null : VersionSelector.tag(tag);
+			VersionSelector vs = (tag == null)
+					? null
+					: VersionSelector.tag(tag);
 			ComponentRequest rq = query.getComponentRequest();
 			IVersionConverter vc = getVersionConverter();
 			if(vc != null)
@@ -122,8 +154,9 @@ public class PDEMapProvider extends Provider
 			IReaderType rt = tv.getReaderType();
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null, getResolutionFilter(), isMutable(),
-					hasSource(), null, null);
+			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(),
+					getVersionConverterDesc(), uri, null, null, getResolutionFilter(), isMutable(), hasSource(), null,
+					null);
 
 			String ctypeID = rq.getComponentTypeID();
 			if(ctypeID == null)
@@ -141,56 +174,6 @@ public class PDEMapProvider extends Provider
 		}
 	}
 
-	private MapFileEntry getMapFileEntry(NodeQuery query, MultiStatus problemCollector, Map<ComponentIdentifier, MapFileEntry> map)
-	{
-		if(map == null)
-			return null;
-
-		ComponentRequest wanted = query.getComponentRequest();
-		String name = wanted.getName();
-		String ctype = wanted.getComponentTypeID();
-		IVersionDesignator vd = wanted.getVersionDesignator();
-
-		IComponentIdentifier candidate = null;
-		MapFileEntry candidateEntry = null;
-		for(Map.Entry<ComponentIdentifier, MapFileEntry> entry : map.entrySet())
-		{
-			ComponentIdentifier cn = entry.getKey();
-			if(cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID()))
-			{
-				IVersion v = cn.getVersion();
-				if(vd != null)
-				{
-					if(!(v == null || vd.designates(v)))
-						continue;
-				}
-				
-				if(candidate != null)
-				{
-					if(v == null)
-						continue;
-					
-					if(candidate.getVersion() != null && candidate.getVersion().compareTo(v) > 0)
-						continue;
-				}			
-				candidate = cn;
-				candidateEntry = entry.getValue();
-			}
-		}
-
-		if(candidateEntry == null)
-		{
-			String msg = String.format("PDEMapProvider %s(%s): Unable to find %s in map",
-				getReaderTypeId(),
-				getURI(query.getProperties()),
-				wanted);
-	
-			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
-			PDEPlugin.getLogger().debug(msg);
-		}
-		return candidateEntry;
-	}
-
 	/**
 	 * Returns a map that contains entries in the following form:
 	 * 
@@ -201,7 +184,7 @@ public class PDEMapProvider extends Provider
 	 * @return
 	 */
 	public Map<ComponentIdentifier, MapFileEntry> getMap(NodeQuery query, MultiStatus problemCollector,
-		IProgressMonitor monitor) throws CoreException
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 700);
 		Map<UUID, Object> userCache = query.getContext().getUserCache();
@@ -214,16 +197,16 @@ public class PDEMapProvider extends Provider
 			File tempFolder = null;
 			try
 			{
-				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
-					new VersionMatch(null, null, -1, new Date(),null), 
-					ProviderScore.GOOD, query);
+				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(
+						IComponentType.UNKNOWN), new VersionMatch(null, null, -1, new Date(), null),
+						ProviderScore.GOOD, query);
 
 				tempFolder = FileUtils.createTempFolder("bucky", ".tmp");
 				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
 				try
 				{
-					((ICatalogReader)reader).innerMaterialize(new Path(tempFolder.toString()),
-						MonitorUtils.subMonitor(monitor, 400));
+					((ICatalogReader)reader).innerMaterialize(new Path(tempFolder.toString()), MonitorUtils.subMonitor(
+							monitor, 400));
 				}
 				finally
 				{
@@ -263,40 +246,12 @@ public class PDEMapProvider extends Provider
 		}
 	}
 
-	private static void collectEntries(File mapFile, Map<ComponentIdentifier,MapFileEntry> map) throws CoreException
-	{
-		InputStream input = null;
-		try
-		{
-			input = new FileInputStream(mapFile);
-			ArrayList<MapFileEntry> list = new ArrayList<MapFileEntry>();
-			MapFile.parse(input, mapFile.getCanonicalPath(), list);
-			for(MapFileEntry entry : list)
-				map.put(entry.getComponentIdentifier(), entry);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	@Override
-	public void addPrefixMappings(HashMap<String, String> prefixMappings)
-	{
-		super.addPrefixMappings(prefixMappings);
-		prefixMappings.put(BM_PDEMAP_PROVIDER_PREFIX, BM_PDEMAP_PROVIDER_NS);
-	}
-
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type",
-			"CDATA", BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider");
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA",
+				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider");
 	}
 
 	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map)
@@ -308,5 +263,54 @@ public class PDEMapProvider extends Provider
 	private Map<ComponentIdentifier, MapFileEntry> getCachedMap(Map<UUID, Object> userCache)
 	{
 		return (Map<ComponentIdentifier, MapFileEntry>)userCache.get(getId());
+	}
+
+	private MapFileEntry getMapFileEntry(NodeQuery query, MultiStatus problemCollector,
+			Map<ComponentIdentifier, MapFileEntry> map)
+	{
+		if(map == null)
+			return null;
+
+		ComponentRequest wanted = query.getComponentRequest();
+		String name = wanted.getName();
+		String ctype = wanted.getComponentTypeID();
+		IVersionDesignator vd = wanted.getVersionDesignator();
+
+		IComponentIdentifier candidate = null;
+		MapFileEntry candidateEntry = null;
+		for(Map.Entry<ComponentIdentifier, MapFileEntry> entry : map.entrySet())
+		{
+			ComponentIdentifier cn = entry.getKey();
+			if(cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID()))
+			{
+				IVersion v = cn.getVersion();
+				if(vd != null)
+				{
+					if(!(v == null || vd.designates(v)))
+						continue;
+				}
+
+				if(candidate != null)
+				{
+					if(v == null)
+						continue;
+
+					if(candidate.getVersion() != null && candidate.getVersion().compareTo(v) > 0)
+						continue;
+				}
+				candidate = cn;
+				candidateEntry = entry.getValue();
+			}
+		}
+
+		if(candidateEntry == null)
+		{
+			String msg = String.format("PDEMapProvider %s(%s): Unable to find %s in map", getReaderTypeId(),
+					getURI(query.getProperties()), wanted);
+
+			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+			PDEPlugin.getLogger().debug(msg);
+		}
+		return candidateEntry;
 	}
 }

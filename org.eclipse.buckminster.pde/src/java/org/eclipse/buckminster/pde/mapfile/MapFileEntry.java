@@ -19,10 +19,13 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 public class MapFileEntry
 {
 	private final ComponentIdentifier m_componentIdentifier;
-	private final IReaderType m_readerType;
-	private final Map<String,String> m_properties;
 
-	protected MapFileEntry(ComponentIdentifier componentIdentifier, IReaderType readerType, Map<String,String> properties)
+	private final IReaderType m_readerType;
+
+	private final Map<String, String> m_properties;
+
+	protected MapFileEntry(ComponentIdentifier componentIdentifier, IReaderType readerType,
+			Map<String, String> properties)
 	{
 		m_componentIdentifier = componentIdentifier;
 		m_readerType = readerType;
@@ -34,7 +37,7 @@ public class MapFileEntry
 		return m_componentIdentifier;
 	}
 
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		return m_properties;
 	}

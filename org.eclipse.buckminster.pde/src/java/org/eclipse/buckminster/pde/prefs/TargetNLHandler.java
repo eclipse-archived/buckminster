@@ -26,6 +26,12 @@ public class TargetNLHandler extends TargetVariableHandler
 	}
 
 	@Override
+	public void unset() throws BackingStoreException
+	{
+		this.set(Platform.getNL());
+	}
+
+	@Override
 	String[] getKnownValues()
 	{
 		Locale[] locales = Locale.getAvailableLocales();
@@ -34,11 +40,5 @@ public class TargetNLHandler extends TargetVariableHandler
 		while(--idx >= 0)
 			result[idx] = locales[idx].toString();
 		return result;
-	}
-
-	@Override
-	public void unset() throws BackingStoreException
-	{
-		this.set(Platform.getNL());
 	}
 }

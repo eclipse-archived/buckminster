@@ -47,15 +47,17 @@ import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.osgi.framework.Constants;
 
 /**
- * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml
- * files.
+ * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml files.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class CSpecFromBinary extends CSpecGenerator
 {
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi";
-	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE);
+
+	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE,
+			IComponentType.OSGI_BUNDLE);
 
 	private final IPluginBase m_plugin;
 
@@ -66,14 +68,14 @@ public class CSpecFromBinary extends CSpecGenerator
 	}
 
 	/**
-	 * Creates the attributes needed for a prebuilt bundle. The target bundle can
-	 * be represented as a folder or a jar file.
+	 * Creates the attributes needed for a prebuilt bundle. The target bundle can be represented as a folder or a jar
+	 * file.
+	 * 
 	 * @param monitor
 	 * @throws CoreException
 	 */
 	@Override
-	public void generate(IProgressMonitor monitor)
-	throws CoreException
+	public void generate(IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 20);
 
@@ -88,7 +90,8 @@ public class CSpecFromBinary extends CSpecGenerator
 			addBundleHostDependency((IFragmentModel)model);
 		else
 		{
-			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
+			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false,
+					ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
 			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
 			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.ACTOR);
@@ -103,7 +106,9 @@ public class CSpecFromBinary extends CSpecGenerator
 
 		IPath parentDir = new Path("..");
 		String location = model.getInstallLocation();
-		File locationFile = (location != null) ? new File(location) : null;
+		File locationFile = (location != null)
+				? new File(location)
+				: null;
 		boolean isFile = (locationFile != null) && locationFile.isFile();
 
 		cspec.setShortDesc(expand(m_plugin.getName()));
@@ -113,8 +118,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			// No unpacked bundle exists (or should ever exist). We're happy with what we have.
 			//
 			cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
-			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_JAR, true,
-				ATTRIBUTE_BUNDLE_JAR, null);
+			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_JAR, true, ATTRIBUTE_BUNDLE_JAR, null);
 			pluginExport.addPath(new Path(buildArtifactName(true)));
 			pluginExport.setBase(parentDir); // we want the site/plugins folder, i.e. the parent of the jar
 			classpath.addLocalPrerequisite(pluginExport);
@@ -140,7 +144,8 @@ public class CSpecFromBinary extends CSpecGenerator
 						bundle = ebm.getBundle();
 					}
 					catch(IOException e)
-					{}
+					{
+					}
 					finally
 					{
 						IOUtils.close(input);
@@ -165,8 +170,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			{
 				// Create an artifact that contains all entries listed in the classpath
 				//
-				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false,
-					ATTRIBUTE_JAVA_BINARIES, null);
+				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false, ATTRIBUTE_JAVA_BINARIES, null);
 				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ",");
 				while(tokens.hasMoreTokens())
 				{
@@ -184,7 +188,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				// In order to create a jar of the unpackedPlugin, we need a temporary directory
 				// since this artifact is not a workspace artifact
 				//
-				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_RECREATE_JAR, true);	
+				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_RECREATE_JAR, true);
 				bundleExport.addProductPath(Path.fromPortableString(jarName));
 				bundleExport.getPrerequisitesBuilder().addSelfRequirement();
 			}
@@ -223,7 +227,7 @@ public class CSpecFromBinary extends CSpecGenerator
 	}
 
 	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
-	throws CoreException
+			throws CoreException
 	{
 		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
 		pqBld.setComponentName(component);

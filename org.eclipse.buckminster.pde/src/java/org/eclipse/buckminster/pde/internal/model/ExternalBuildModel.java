@@ -13,9 +13,8 @@ package org.eclipse.buckminster.pde.internal.model;
 import org.eclipse.pde.internal.core.build.BuildModel;
 
 /**
- * A BuildModel found at some arbitrary location, i.e. not necessarily in
- * the workspace.
- *
+ * A BuildModel found at some arbitrary location, i.e. not necessarily in the workspace.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
@@ -23,14 +22,14 @@ public class ExternalBuildModel extends BuildModel
 {
 	private static final long serialVersionUID = 3697820164252115L;
 
-	@Override
-	protected void updateTimeStamp()
-	{
-	}
-
 	public String getInstallLocation()
 	{
 		return null;
+	}
+
+	public boolean isEditable()
+	{
+		return false;
 	}
 
 	public boolean isInSync()
@@ -43,8 +42,8 @@ public class ExternalBuildModel extends BuildModel
 	{
 	}
 
-	public boolean isEditable()
+	@Override
+	protected void updateTimeStamp()
 	{
-		return false;
 	}
 }

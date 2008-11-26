@@ -50,7 +50,8 @@ import org.eclipse.pde.internal.core.plugin.ExternalFragmentModel;
 import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 
 @SuppressWarnings("restriction")
-public class FeatureConsolidator extends VersionConsolidator implements IModelChangedListener, IPDEConstants, IBuildPropertiesConstants
+public class FeatureConsolidator extends VersionConsolidator implements IModelChangedListener, IPDEConstants,
+		IBuildPropertiesConstants
 {
 	// The 64 characters that are legal in a version qualifier, in lexicographical order.
 	private static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -96,7 +97,9 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 	//
 	private static char base64Character(int number)
 	{
-		return (number < 0 || number > 63) ? ' ' : BASE_64_ENCODING.charAt(number);
+		return (number < 0 || number > 63)
+				? ' '
+				: BASE_64_ENCODING.charAt(number);
 	}
 
 	private static int charValue(char c)
@@ -142,8 +145,8 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 					continue;
 				}
 
-
-				if(version.getMajor() == v.getMajor() && version.getMinor() == v.getMinor() && version.getMicro() == v.getMicro())
+				if(version.getMajor() == v.getMajor() && version.getMinor() == v.getMinor()
+						&& version.getMicro() == v.getMicro())
 				{
 					if(candidate == null || v.compareTo(candidate) > 0)
 						candidate = v;
@@ -193,11 +196,11 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				}
 			};
 		}
-		catch (FileNotFoundException e)
+		catch(FileNotFoundException e)
 		{
 			throw e;
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			throw BuckminsterException.fromMessage(e, "Unable to read %s", dirOrZip);
 		}
@@ -258,7 +261,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		return result.toString();
 	}
 
-	private final Map<String,Integer> m_contextQualifierLengths = new HashMap<String,Integer>();
+	private final Map<String, Integer> m_contextQualifierLengths = new HashMap<String, Integer>();
 
 	private final EditableFeatureModel m_featureModel;
 
@@ -272,7 +275,9 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 	private final int m_significantDigits;
 
-	public FeatureConsolidator(File inputFile, File outputFile, File propertiesFile, List<File> featuresAndBundles, String qualifier, boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits) throws CoreException
+	public FeatureConsolidator(File inputFile, File outputFile, File propertiesFile, List<File> featuresAndBundles,
+			String qualifier, boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits)
+			throws CoreException
 	{
 		super(outputFile, propertiesFile, qualifier);
 		m_featureModel = FeatureModelReader.readEditableFeatureModel(inputFile);
@@ -301,11 +306,11 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 					String id = feature.getId();
 					String version = feature.getVersion();
 
-					int ctxQualLen = -1; 
+					int ctxQualLen = -1;
 					if(version.indexOf('-') > 0)
 					{
 						IOUtils.close(input);
-						input = getInput(featureOrBundle, FEATURE_FILE);					
+						input = getInput(featureOrBundle, FEATURE_FILE);
 						ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
 					}
 					m_contextQualifierLengths.put(id, Integer.valueOf(ctxQualLen));
@@ -455,14 +460,16 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 	}
 
 	/**
-	 * Version suffix generation. Modeled after {@link
-	 * org.eclipse.pde.internal.build.builder.FeatureBuildScriptGenerator#generateFeatureVersionSuffix(org.eclipse.pde.internal.build.site.BuildTimeFeature buildFeature)}
+	 * Version suffix generation. Modeled after
+	 * {@link org.eclipse.pde.internal.build.builder.FeatureBuildScriptGenerator#generateFeatureVersionSuffix(org.eclipse.pde.internal.build.site.BuildTimeFeature buildFeature)}
+	 * 
 	 * @return The generated suffix or <code>null</code>
 	 * @throws CoreException
 	 */
 	private String generateFeatureVersionSuffix() throws CoreException
 	{
-		if(!m_generateVersionSuffix || m_maxVersionSuffixLength <= 0 || m_featureModel.getContextQualifierLength() == -1)
+		if(!m_generateVersionSuffix || m_maxVersionSuffixLength <= 0
+				|| m_featureModel.getContextQualifierLength() == -1)
 			return null; // do nothing
 
 		long majorSum = 0L;
@@ -504,7 +511,9 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 			String qualifier = version.getQualifier();
 			Integer ctxLen = m_contextQualifierLengths.get(refFeature.getId());
-			int contextLength = (ctxLen == null) ? -1 : ctxLen.intValue();
+			int contextLength = (ctxLen == null)
+					? -1
+					: ctxLen.intValue();
 			++contextLength; // account for the '-' separating the context qualifier and suffix
 
 			// The entire qualifier of the nested feature is often too long to

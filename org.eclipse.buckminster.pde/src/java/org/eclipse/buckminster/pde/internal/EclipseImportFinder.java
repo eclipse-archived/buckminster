@@ -30,11 +30,13 @@ import org.eclipse.update.core.ISiteFeatureReference;
 public class EclipseImportFinder extends AbstractVersionFinder
 {
 	private final EclipseImportReaderType m_readerType;
+
 	private final EclipseImportBase m_base;
+
 	private final NodeQuery m_query;
 
-	public EclipseImportFinder(EclipseImportReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
-	throws CoreException
+	public EclipseImportFinder(EclipseImportReaderType readerType, Provider provider, IComponentType ctype,
+			NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
 		m_base = EclipseImportBase.obtain(query, provider.getURI(query.getProperties()));
@@ -42,24 +44,21 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		m_query = query;
 	}
 
-	public VersionMatch getBestVersion(IProgressMonitor monitor)
-	throws CoreException
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
 		return m_base.isFeature()
-			? getBestFeatureVersion(monitor)
-			: getBestPluginVersion(monitor);
+				? getBestFeatureVersion(monitor)
+				: getBestPluginVersion(monitor);
 	}
 
-	private VersionMatch getBestFeatureVersion(IProgressMonitor monitor)
-	throws CoreException
+	private VersionMatch getBestFeatureVersion(IProgressMonitor monitor) throws CoreException
 	{
 		return m_base.isLocal()
-			? getBestLocalFeatureVersion(monitor)
-			: getBestRemoteFeatureVersion(monitor);
+				? getBestLocalFeatureVersion(monitor)
+				: getBestRemoteFeatureVersion(monitor);
 	}
 
-	private VersionMatch getBestLocalFeatureVersion(IProgressMonitor monitor)
-	throws CoreException
+	private VersionMatch getBestLocalFeatureVersion(IProgressMonitor monitor) throws CoreException
 	{
 		IVersion bestFit = null;
 		for(IFeatureModel model : m_base.getFeatureModels(m_readerType, monitor))
@@ -73,8 +72,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		return new VersionMatch(bestFit, null, -1, null, null);
 	}
 
-	private VersionMatch getBestLocalPluginVersion(IProgressMonitor monitor)
-	throws CoreException
+	private VersionMatch getBestLocalPluginVersion(IProgressMonitor monitor) throws CoreException
 	{
 		IVersion bestFit = null;
 		for(IPluginModelBase model : m_base.getPluginModels(m_readerType, monitor))
@@ -87,7 +85,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 				else if(version.compareTo(bestFit) > 0)
 				{
 					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
-					bestFit = version;					
+					bestFit = version;
 				}
 			}
 		}
@@ -96,35 +94,36 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		return new VersionMatch(bestFit, null, -1, null, null);
 	}
 
-	private VersionMatch getBestPluginVersion(IProgressMonitor monitor)
-	throws CoreException
+	private VersionMatch getBestPluginVersion(IProgressMonitor monitor) throws CoreException
 	{
 		return m_base.isLocal()
-			? getBestLocalPluginVersion(monitor)
-			: getBestRemotePluginVersion(monitor);
+				? getBestLocalPluginVersion(monitor)
+				: getBestRemotePluginVersion(monitor);
 	}
 
 	@SuppressWarnings("deprecation")
-	private VersionMatch getBestRemoteFeatureVersion(IProgressMonitor monitor)
-	throws CoreException
+	private VersionMatch getBestRemoteFeatureVersion(IProgressMonitor monitor) throws CoreException
 	{
 		IVersion bestFit = null;
 		monitor.beginTask(null, 100);
 		monitor.subTask("Fetching remote feature references");
 		try
 		{
-			for(ISiteFeatureReference model : m_base.getFeatureReferences(m_readerType, MonitorUtils.subMonitor(monitor, 80)))
+			for(ISiteFeatureReference model : m_base.getFeatureReferences(m_readerType, MonitorUtils.subMonitor(
+					monitor, 80)))
 			{
 				IFeature feature = model.getFeature(MonitorUtils.subMonitor(monitor, 5));
-				IVersion version = VersionFactory.OSGiType.fromString(feature.getVersionedIdentifier().getVersion().toString());
+				IVersion version = VersionFactory.OSGiType.fromString(feature.getVersionedIdentifier().getVersion()
+						.toString());
 				if(getQuery().isMatch(version, null))
 				{
 					if(bestFit == null)
 						bestFit = version;
 					else if(version.compareTo(bestFit) > 0)
 					{
-						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
-						bestFit = version;					
+						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher",
+								version));
+						bestFit = version;
 					}
 				}
 			}
@@ -144,7 +143,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		IVersion bestFit = null;
 		for(IPluginEntry model : m_base.getPluginEntries(m_readerType, getConnectContext(), m_query, monitor))
 		{
-			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion().toString());
+			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion()
+					.toString());
 			if(getQuery().isMatch(version, null))
 			{
 				if(bestFit == null)
@@ -152,7 +152,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 				else if(version.compareTo(bestFit) > 0)
 				{
 					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, String.format("%s is higher", version));
-					bestFit = version;					
+					bestFit = version;
 				}
 			}
 		}

@@ -34,7 +34,7 @@ import org.osgi.framework.Constants;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class BundleConsolidator extends VersionConsolidator
 {
@@ -88,8 +88,8 @@ public class BundleConsolidator extends VersionConsolidator
 				{
 					IVersion version = VersionFactory.OSGiType.fromString(versionStr);
 					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
-					IVersion newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier>emptyList());
-	
+					IVersion newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier> emptyList());
+
 					if(!(newVersion == null || version.equals(newVersion)))
 					{
 						a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion.toString());

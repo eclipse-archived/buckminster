@@ -34,8 +34,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.pde.core.IModel;
 
 /**
- * This abstract builder contains all functionality that is common to the PDE Cspec builders.
- * Subclasses must implement {@link #parseFile(IComponentReader reader)}.
+ * This abstract builder contains all functionality that is common to the PDE Cspec builders. Subclasses must implement
+ * {@link #parseFile(IComponentReader reader)}.
+ * 
  * @author thhal
  */
 public abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConstants
@@ -54,14 +55,17 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 
 	private IModel m_model;
 
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
+			IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof ICatalogReader))
 			reader = new ZipArchiveReader((IFileReader)reader);
 
 		ICatalogReader catRdr = (ICatalogReader)reader;
-		monitor.beginTask(null, forResolutionAidOnly ? 1200 : 1600);
+		monitor.beginTask(null, forResolutionAidOnly
+				? 1200
+				: 1600);
 		monitor.subTask("Generating cspec from PDE artifacts");
 		try
 		{
@@ -73,7 +77,8 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			OPMLBuilder opmlBld = null;
 			if(!forResolutionAidOnly)
 			{
-				String fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, MonitorUtils.subMonitor(monitor, 200));
+				String fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE,
+						MonitorUtils.subMonitor(monitor, 200));
 				try
 				{
 					OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 200));
@@ -107,8 +112,9 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		return m_usingInstalledReader;
 	}
 
-	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException;
-	
+	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
+			IProgressMonitor monitor) throws CoreException;
+
 	protected void setModel(IModel model)
 	{
 		m_model = model;

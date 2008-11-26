@@ -24,14 +24,14 @@ public class TargetArchHandler extends TargetVariableHandler
 	}
 
 	@Override
-	String[] getKnownValues()
-	{
-		return Platform.knownOSArchValues();
-	}
-
-	@Override
 	public void unset() throws BackingStoreException
 	{
 		this.set(Platform.getOSArch());
+	}
+
+	@Override
+	String[] getKnownValues()
+	{
+		return Platform.knownOSArchValues();
 	}
 }

@@ -55,11 +55,49 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 {
 	private static final long serialVersionUID = 5818223312516456482L;
 
+	public static int getContextQualifierLength(InputStream input)
+	{
+		int ctxQualLen = -1;
+		Scanner scanner = new Scanner(input);
+		if(scanner.findWithinHorizon(s_ctxQualLenPattern, 100) != null)
+			ctxQualLen = Integer.parseInt(scanner.match().group(1));
+		return ctxQualLen;
+	}
+
+	private static IPluginModelBase findModel(String id, String version)
+	{
+		IPluginModelBase unversioned = null;
+		for(IPluginModelBase model : PluginRegistry.getActiveModels())
+		{
+			BundleDescription desc = model.getBundleDescription();
+			if(desc == null)
+				continue;
+
+			if(desc.getSymbolicName().equals(id))
+			{
+				Version v = desc.getVersion();
+				if(v == null)
+				{
+					if(version == null)
+						return model;
+					unversioned = model;
+					continue;
+				}
+
+				if(version == null || version.equals(v.toString()))
+					return model;
+			}
+		}
+		return unversioned;
+	}
+
 	private int m_contextQualifierLength = -1;
 
 	private boolean m_dirty;
 
 	private final File m_externalFile;
+
+	private static final Pattern s_ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s");
 
 	public EditableFeatureModel(File externalFile)
 	{
@@ -109,17 +147,6 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 	public boolean isEditable()
 	{
 		return true;
-	}
-
-	private static final Pattern s_ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s");
-
-	public static int getContextQualifierLength(InputStream input)
-	{
-		int ctxQualLen = -1;
-		Scanner scanner = new Scanner(input);
-		if(scanner.findWithinHorizon(s_ctxQualLenPattern, 100) != null)
-			ctxQualLen = Integer.parseInt(scanner.match().group(1));
-		return ctxQualLen;
 	}
 
 	@Override
@@ -229,8 +256,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		m_dirty = dirty;
 	}
 
-	private void addRequirement(String id, String version, int match, List<IFeatureImport> seen)
-			throws CoreException
+	private void addRequirement(String id, String version, int match, List<IFeatureImport> seen) throws CoreException
 	{
 		for(IFeatureImport bundle : seen)
 			if(bundle.getId().equals(id)
@@ -249,37 +275,9 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		seen.add(bundle);
 	}
 
-	private void addRequirements(List<IFeatureImport> seen, IPluginBase plugin)
-			throws CoreException
+	private void addRequirements(List<IFeatureImport> seen, IPluginBase plugin) throws CoreException
 	{
 		for(IPluginImport bundle : plugin.getImports())
 			addRequirement(bundle.getId(), bundle.getVersion(), bundle.getMatch(), seen);
-	}
-
-	private static IPluginModelBase findModel(String id, String version)
-	{
-		IPluginModelBase unversioned = null;
-		for(IPluginModelBase model : PluginRegistry.getActiveModels())
-		{
-			BundleDescription desc = model.getBundleDescription();
-			if(desc == null)
-				continue;
-
-			if(desc.getSymbolicName().equals(id))
-			{
-				Version v = desc.getVersion();
-				if(v == null)
-				{
-					if(version == null)
-						return model;
-					unversioned = model;
-					continue;
-				}
-
-				if(version == null || version.equals(v.toString()))
-					return model;
-			}
-		}
-		return unversioned;
 	}
 }

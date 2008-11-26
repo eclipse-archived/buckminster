@@ -12,14 +12,14 @@
 package org.eclipse.buckminster.pde.internal.datatransfer;
 
 /**
- * Interface which can provide structure and content information for an element
- * (for example, a file system element). Used by the import wizards to abstract
- * the commonalities between importing from the file system and importing from
- * an archive.
+ * Interface which can provide structure and content information for an element (for example, a file system element).
+ * Used by the import wizards to abstract the commonalities between importing from the file system and importing from an
+ * archive.
  * 
  * @since 3.1
  */
-interface ILeveledImportStructureProvider extends IImportStructureProvider {
+interface ILeveledImportStructureProvider extends IImportStructureProvider
+{
 	/**
 	 * Returns the entry that this importer uses as the root sentinel.
 	 * 
@@ -28,19 +28,18 @@ interface ILeveledImportStructureProvider extends IImportStructureProvider {
 	public abstract Object getRoot();
 
 	/**
-	 * Tells the provider to strip N number of directories from the path of any
-	 * path or file name returned by the IImportStructureProvider (Default=0).
+	 * Returns the number of directories that this IImportStructureProvider is stripping from the file name
+	 * 
+	 * @return int Number of entries
+	 */
+	public abstract int getStrip();
+
+	/**
+	 * Tells the provider to strip N number of directories from the path of any path or file name returned by the
+	 * IImportStructureProvider (Default=0).
 	 * 
 	 * @param level
 	 *            The number of directories to strip
 	 */
 	public abstract void setStrip(int level);
-
-	/**
-	 * Returns the number of directories that this IImportStructureProvider is
-	 * stripping from the file name
-	 * 
-	 * @return int Number of entries
-	 */
-	public abstract int getStrip();
 }

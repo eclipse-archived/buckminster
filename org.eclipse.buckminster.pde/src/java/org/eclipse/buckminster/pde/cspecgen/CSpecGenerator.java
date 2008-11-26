@@ -201,7 +201,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	private final ICatalogReader m_reader;
 
-	private Map<String,String> m_properties;
+	private Map<String, String> m_properties;
 
 	protected CSpecGenerator(CSpecBuilder cspecBuilder, ICatalogReader reader)
 	{
@@ -219,183 +219,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	public ICatalogReader getReader()
 	{
 		return m_reader;
-	}
-
-	protected void addProducts(final IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 2000);
-		try
-		{
-			List<FileHandle> productConfigs = m_reader.getRootFiles(PRODUCT_CONFIGURATION_FILE_PATTERN, MonitorUtils
-					.subMonitor(monitor, 500));
-			if(productConfigs.size() > 0)
-			{
-				int ticksPerConfig = 1500 / productConfigs.size();
-				for(FileHandle productConfig : productConfigs)
-					addProduct(productConfig, MonitorUtils.subMonitor(monitor, ticksPerConfig));
-			}
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		monitor.done();
-	}
-
-	protected abstract String getProductOutputFolder(String productId);
-
-	protected Set<String> getRequiredBundleNames(BundleDescription bundleDesc)
-	{
-		HashSet<String> requiredBundles = null;
-		if(bundleDesc != null)
-		{
-			BundleSpecification[] rqBundles = bundleDesc.getRequiredBundles();
-			if(rqBundles != null && rqBundles.length > 0)
-			{
-				requiredBundles = new HashSet<String>();
-				for(BundleSpecification rqBundle : rqBundles)
-					requiredBundles.add(rqBundle.getName());
-			}
-		}
-		return requiredBundles;
-	}
-
-	private void addProduct(FileHandle productConfig, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		InputStream stream = null;
-		try
-		{
-			stream = new BufferedInputStream(new FileInputStream(productConfig.getFile()));
-			ProductModel model = new ProductModel();
-			model.load(stream, true);
-			IProduct product = model.getProduct();
-
-			CSpecBuilder cspec = getCSpec();
-
-			ActionBuilder createProduct = addAntAction("create." + product.getId(), TASK_CREATE_ECLIPSE_PRODUCT, true);
-			ILauncherInfo info = product.getLauncherInfo();
-			if(info != null && "_removethisfile".equalsIgnoreCase(info.getLauncherName()))
-				createProduct.addProperty(PROP_DELETE_UILAUNCHER, "true", false);
-			createProduct.addProperty(PROP_PRODUCT_FILE, productConfig.getName(), false);
-
-			AttributeBuilder rootFiles = cspec.getAttribute(ATTRIBUTE_PRODUCT_ROOT_FILES);
-
-			ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
-			GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
-			if(product.useFeatures())
-			{
-				for(IProductFeature feature : product.getFeatures())
-				{
-					ComponentRequestBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature
-							.getVersion(), IMatchRules.PERFECT, null);
-					if(dep.getName().equals(cspec.getName()))
-						createProduct.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORTS);
-					else if(!skipComponent(query, dep))
-					{
-						addDependency(dep);
-						createProduct.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
-					}
-				}
-			}
-			else
-			{
-				for(IProductPlugin plugin : product.getPlugins())
-				{
-					ComponentRequestBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null, null);
-					if(dep.getName().equals(cspec.getName()))
-						continue;
-					else if(!skipComponent(query, dep))
-					{
-						if(addDependency(dep))
-							bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
-					}
-				}
-
-				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
-				featureExports.addLocalPrerequisite(createCopyPluginsAction());
-				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-				createProduct.addLocalPrerequisite(featureExports);
-
-				IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE, null, null);
-				if(launcherFeature == null)
-					launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE_3_2, null, null);
-
-				if(launcherFeature != null)
-				{
-					IFeature feature = launcherFeature.getFeature();
-					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
-					ComponentRequestBuilder dep = createDependency(feature.getId(),
-							IComponentType.ECLIPSE_FEATURE,
-							version.toString(), IMatchRules.PERFECT,
-							null);
-
-					if(addDependency(dep))
-					{
-						if(rootFiles == null)
-							rootFiles = cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
-						((GroupBuilder)rootFiles).addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
-						featureExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
-					}
-				}
-			}
-
-			boolean hasLauncherFeature = false;
-			for(ComponentRequestBuilder dep : cspec.getDependencies().values())
-			{
-				if(dep.getComponentTypeID() != IComponentType.ECLIPSE_FEATURE)
-					continue;
-
-				if(dep.getName().equals(LAUNCHER_FEATURE) || dep.getName().equals(LAUNCHER_FEATURE_3_2))
-				{
-					hasLauncherFeature = true;
-					break;
-				}
-			}
-
-			if(!hasLauncherFeature)
-			{
-				// Ensure that the launcher is present if it exists in the current target platform
-				//
-				IPluginModelBase launcherBundle = EclipsePlatformReaderType.getBestPlugin("org.eclipse.equinox.launcher", null, null);
-				if(launcherBundle != null)
-				{
-					IPluginBase plugin = launcherBundle.getPluginBase();
-					IVersion version = VersionFactory.OSGiType.fromString(plugin.getVersion());
-					ComponentRequestBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, version.toString(), IMatchRules.PERFECT, null);
-					if(addDependency(dep))
-						bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
-				}
-			}
-
-			if(rootFiles != null)
-				createProduct.addLocalPrerequisite(rootFiles);
-
-			createProduct.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-			createProduct.setProductAlias(ALIAS_OUTPUT);
-			createProduct.setProductBase(OUTPUT_DIR);
-			createProduct.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
-			String outputFolder = TextUtils.notEmptyTrimmedString(getProductOutputFolder(product.getId()));
-			if(outputFolder == null)
-			{
-				ILauncherInfo launcherInfo = product.getLauncherInfo();
-				if(launcherInfo != null)
-				{
-					outputFolder = launcherInfo.getLauncherName();
-					if(outputFolder != null && outputFolder.endsWith(".exe"))
-						outputFolder = outputFolder.substring(0, outputFolder.length() - 4);
-				}
-
-				if(outputFolder == null)
-					outputFolder = "eclipse";
-			}
-			createProduct.addProductPath(Path.fromPortableString(outputFolder).addTrailingSeparator());
-		}
-		finally
-		{
-			IOUtils.close(stream);
-			if(productConfig.isTemporary())
-				productConfig.getFile().delete();
-		}
 	}
 
 	protected ActionBuilder addAntAction(String actionName, String targetName, boolean asPublic) throws CoreException
@@ -477,6 +300,27 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return false;
 	}
 
+	protected void addProducts(final IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 2000);
+		try
+		{
+			List<FileHandle> productConfigs = m_reader.getRootFiles(PRODUCT_CONFIGURATION_FILE_PATTERN, MonitorUtils
+					.subMonitor(monitor, 500));
+			if(productConfigs.size() > 0)
+			{
+				int ticksPerConfig = 1500 / productConfigs.size();
+				for(FileHandle productConfig : productConfigs)
+					addProduct(productConfig, MonitorUtils.subMonitor(monitor, ticksPerConfig));
+			}
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		monitor.done();
+	}
+
 	protected ActionBuilder createCopyPluginsAction() throws CoreException
 	{
 		// Copy all plug-ins that all features (including this one) is including.
@@ -511,10 +355,42 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld;
 	}
 
-	protected ComponentRequestBuilder createDependency(String name, String componentType, String version, int pdeMatchRule,
-			Filter filter) throws CoreException
+	protected ComponentRequestBuilder createDependency(String name, String componentType, String version,
+			int pdeMatchRule, Filter filter) throws CoreException
 	{
 		return createDependency(name, componentType, convertMatchRule(pdeMatchRule, version), filter);
+	}
+
+	protected String expand(String value) throws CoreException
+	{
+		value = TextUtils.notEmptyTrimmedString(value);
+		if(value == null)
+			return null;
+
+		if(value.charAt(0) != '%')
+			return value;
+
+		if(m_properties == null)
+		{
+			try
+			{
+				m_properties = m_reader.readFile(getPropertyFileName(), new PropertiesParser(),
+						new NullProgressMonitor());
+			}
+			catch(FileNotFoundException e)
+			{
+				m_properties = Collections.emptyMap();
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
+		String expValue = m_properties.get(value.substring(1));
+		if(expValue != null)
+			value = expValue;
+
+		return value;
 	}
 
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ) throws CoreException
@@ -530,9 +406,24 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return rmDir;
 	}
 
-	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld)
+	protected abstract String getProductOutputFolder(String productId);
+
+	protected abstract String getPropertyFileName();
+
+	protected Set<String> getRequiredBundleNames(BundleDescription bundleDesc)
 	{
-		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()));
+		HashSet<String> requiredBundles = null;
+		if(bundleDesc != null)
+		{
+			BundleSpecification[] rqBundles = bundleDesc.getRequiredBundles();
+			if(rqBundles != null && rqBundles.length > 0)
+			{
+				requiredBundles = new HashSet<String>();
+				for(BundleSpecification rqBundle : rqBundles)
+					requiredBundles.add(rqBundle.getName());
+			}
+		}
+		return requiredBundles;
 	}
 
 	protected void setFilter(String filterStr) throws CoreException
@@ -558,36 +449,147 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		}
 	}
 
-	protected String expand(String value) throws CoreException
+	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld)
 	{
-		value = TextUtils.notEmptyTrimmedString(value);
-		if(value == null)
-			return null;
-
-		if(value.charAt(0) != '%')
-			return value;
-
-		if(m_properties == null)
-		{
-			try
-			{
-				m_properties = m_reader.readFile(getPropertyFileName(), new PropertiesParser(), new NullProgressMonitor());
-			}
-			catch(FileNotFoundException e)
-			{
-				m_properties = Collections.emptyMap();
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-		}
-		String expValue = m_properties.get(value.substring(1));
-		if(expValue != null)
-			value = expValue;
-
-		return value;
+		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()));
 	}
-	
-	protected abstract String getPropertyFileName();
+
+	private void addProduct(FileHandle productConfig, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		InputStream stream = null;
+		try
+		{
+			stream = new BufferedInputStream(new FileInputStream(productConfig.getFile()));
+			ProductModel model = new ProductModel();
+			model.load(stream, true);
+			IProduct product = model.getProduct();
+
+			CSpecBuilder cspec = getCSpec();
+
+			ActionBuilder createProduct = addAntAction("create." + product.getId(), TASK_CREATE_ECLIPSE_PRODUCT, true);
+			ILauncherInfo info = product.getLauncherInfo();
+			if(info != null && "_removethisfile".equalsIgnoreCase(info.getLauncherName()))
+				createProduct.addProperty(PROP_DELETE_UILAUNCHER, "true", false);
+			createProduct.addProperty(PROP_PRODUCT_FILE, productConfig.getName(), false);
+
+			AttributeBuilder rootFiles = cspec.getAttribute(ATTRIBUTE_PRODUCT_ROOT_FILES);
+
+			ComponentQuery query = m_reader.getNodeQuery().getComponentQuery();
+			GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+			if(product.useFeatures())
+			{
+				for(IProductFeature feature : product.getFeatures())
+				{
+					ComponentRequestBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE,
+							feature.getVersion(), IMatchRules.PERFECT, null);
+					if(dep.getName().equals(cspec.getName()))
+						createProduct.addLocalPrerequisite(ATTRIBUTE_FEATURE_EXPORTS);
+					else if(!skipComponent(query, dep))
+					{
+						addDependency(dep);
+						createProduct.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
+					}
+				}
+			}
+			else
+			{
+				for(IProductPlugin plugin : product.getPlugins())
+				{
+					ComponentRequestBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, null,
+							null);
+					if(dep.getName().equals(cspec.getName()))
+						continue;
+					else if(!skipComponent(query, dep))
+					{
+						if(addDependency(dep))
+							bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+					}
+				}
+
+				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
+				featureExports.addLocalPrerequisite(createCopyPluginsAction());
+				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
+				createProduct.addLocalPrerequisite(featureExports);
+
+				IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE, null, null);
+				if(launcherFeature == null)
+					launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE_3_2, null, null);
+
+				if(launcherFeature != null)
+				{
+					IFeature feature = launcherFeature.getFeature();
+					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
+					ComponentRequestBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE,
+							version.toString(), IMatchRules.PERFECT, null);
+
+					if(addDependency(dep))
+					{
+						if(rootFiles == null)
+							rootFiles = cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
+						((GroupBuilder)rootFiles).addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
+						featureExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
+					}
+				}
+			}
+
+			boolean hasLauncherFeature = false;
+			for(ComponentRequestBuilder dep : cspec.getDependencies().values())
+			{
+				if(dep.getComponentTypeID() != IComponentType.ECLIPSE_FEATURE)
+					continue;
+
+				if(dep.getName().equals(LAUNCHER_FEATURE) || dep.getName().equals(LAUNCHER_FEATURE_3_2))
+				{
+					hasLauncherFeature = true;
+					break;
+				}
+			}
+
+			if(!hasLauncherFeature)
+			{
+				// Ensure that the launcher is present if it exists in the current target platform
+				//
+				IPluginModelBase launcherBundle = EclipsePlatformReaderType.getBestPlugin(
+						"org.eclipse.equinox.launcher", null, null);
+				if(launcherBundle != null)
+				{
+					IPluginBase plugin = launcherBundle.getPluginBase();
+					IVersion version = VersionFactory.OSGiType.fromString(plugin.getVersion());
+					ComponentRequestBuilder dep = createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, version
+							.toString(), IMatchRules.PERFECT, null);
+					if(addDependency(dep))
+						bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+				}
+			}
+
+			if(rootFiles != null)
+				createProduct.addLocalPrerequisite(rootFiles);
+
+			createProduct.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+			createProduct.setProductAlias(ALIAS_OUTPUT);
+			createProduct.setProductBase(OUTPUT_DIR);
+			createProduct.setUpToDatePolicy(UpToDatePolicy.NOT_EMPTY);
+			String outputFolder = TextUtils.notEmptyTrimmedString(getProductOutputFolder(product.getId()));
+			if(outputFolder == null)
+			{
+				ILauncherInfo launcherInfo = product.getLauncherInfo();
+				if(launcherInfo != null)
+				{
+					outputFolder = launcherInfo.getLauncherName();
+					if(outputFolder != null && outputFolder.endsWith(".exe"))
+						outputFolder = outputFolder.substring(0, outputFolder.length() - 4);
+				}
+
+				if(outputFolder == null)
+					outputFolder = "eclipse";
+			}
+			createProduct.addProductPath(Path.fromPortableString(outputFolder).addTrailingSeparator());
+		}
+		finally
+		{
+			IOUtils.close(stream);
+			if(productConfig.isTemporary())
+				productConfig.getFile().delete();
+		}
+	}
 }

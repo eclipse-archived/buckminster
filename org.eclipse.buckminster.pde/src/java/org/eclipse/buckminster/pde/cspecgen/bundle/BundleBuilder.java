@@ -46,15 +46,15 @@ import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 import org.osgi.framework.Constants;
 
 /**
- * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml
- * files.
+ * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml files.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstants
 {
-	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly,
+			IProgressMonitor monitor) throws CoreException
 	{
 		if(reader instanceof EclipsePlatformReader)
 		{
@@ -87,8 +87,9 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 					throw new FileNotFoundException("Not an OSGi manifest");
 
 				fragment = model.isFragmentModel();
-				BundlePluginModelBase bmodel = fragment ? new BundleFragmentModel()
-					: new BundlePluginModel();
+				BundlePluginModelBase bmodel = fragment
+						? new BundleFragmentModel()
+						: new BundlePluginModel();
 				bmodel.setBundleModel(model);
 				bmodel.setEnabled(true);
 
@@ -100,7 +101,9 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				//
 				try
 				{
-					String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
+					String extensionsFile = fragment
+							? FRAGMENT_FILE
+							: PLUGIN_FILE;
 					ExternalExtensionsModel extModel = new ExternalExtensionsModel();
 					loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
 					bmodel.setExtensionsModel(extModel);
@@ -116,7 +119,8 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 					bmodel.setBuildModel(buildModel);
 				}
 				catch(FileNotFoundException e)
-				{}
+				{
+				}
 				return bmodel;
 			}
 			catch(FileNotFoundException e)
@@ -150,15 +154,15 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		}
 	}
 
-	private static void loadModel(ICatalogReader reader, String file, final IModel model,
-		IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	private static void loadModel(ICatalogReader reader, String file, final IModel model, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException
 	{
 		try
 		{
 			reader.readFile(file, new IStreamConsumer<Object>()
 			{
-				public Object consumeStream(IComponentReader fileReader, String streamName,
-					InputStream stream, IProgressMonitor mon) throws CoreException
+				public Object consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
+						IProgressMonitor mon) throws CoreException
 				{
 					int len;
 					byte[] buf = new byte[4096];
@@ -201,12 +205,14 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor) throws CoreException
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		try
 		{
-			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
+			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly,
+					MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
 			cspecBuilder.setComponentTypeID(getComponentTypeID());
 			cspecBuilder.setVersion(pluginBase.getVersion(), IVersionType.OSGI);

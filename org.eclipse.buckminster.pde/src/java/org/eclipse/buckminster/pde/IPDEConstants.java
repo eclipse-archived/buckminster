@@ -29,30 +29,30 @@ public interface IPDEConstants
 	static final String ACTION_COPY_PLUGINS = "copy.plugins";
 
 	/**
-	 * The feature in a format suitable for an update site. No sub-features nor bundles are
-	 * included. The base of the attribute
-	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be the folder containing
-	 * the feature.
+	 * The feature in a format suitable for an update site. No sub-features nor bundles are included. The base of the
+	 * attribute
+	 * 
+	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be the folder containing the feature.
 	 */
 	static final String ATTRIBUTE_FEATURE_JAR = "feature.jar";
 
 	/**
-	 * Denotes group consisting of this feature in jar format and all included features,
-	 * also in jar format.
+	 * Denotes group consisting of this feature in jar format and all included features, also in jar format.
 	 */
 	static final String ATTRIBUTE_FEATURE_JARS = "feature.jars";
 
 	/**
-	 * Denotes group consisting of this feature and all included features and bundles in a format
-	 * sutiable for publishing on an update site. The base of the attribute
-	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be folder that contains
-	 * the <code>features</code> and <code>plugins</code> folders.
+	 * Denotes group consisting of this feature and all included features and bundles in a format sutiable for
+	 * publishing on an update site. The base of the attribute
+	 * 
+	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be folder that contains the
+	 *        <code>features</code> and <code>plugins</code> folders.
 	 */
 	static final String ATTRIBUTE_FEATURE_EXPORTS = "feature.exports";
 
 	/**
-	 * The attribut that, when triggered, will clean out all built artifacts including the Eclipse
-	 * build. This attribute has no resulting product.
+	 * The attribut that, when triggered, will clean out all built artifacts including the Eclipse build. This attribute
+	 * has no resulting product.
 	 */
 	static final String ATTRIBUTE_FULL_CLEAN = WellknownActions.BUCKMINSTER.CLEAN.toString();
 
@@ -72,8 +72,8 @@ public interface IPDEConstants
 	static final String ATTRIBUTE_IMPORTED_JAR = "imported.jar";
 
 	/**
-	 * Denotes a list consisting of a fully deployable bundle in jar format along with all
-	 * bundles that it re-exports, also in jar format.
+	 * Denotes a list consisting of a fully deployable bundle in jar format along with all bundles that it re-exports,
+	 * also in jar format.
 	 */
 	static final String ATTRIBUTE_BUNDLE_JARS = "bundle.jars";
 
@@ -83,14 +83,14 @@ public interface IPDEConstants
 	static final String ATTRIBUTE_BUNDLE_FOLDER = "bundle.folder";
 
 	/**
-	 * Denotes the external classpath for the bundle. This will be the sum of all exported
-	 * binaries from the imported bundles plus the exported contribution of this bundle.
+	 * Denotes the external classpath for the bundle. This will be the sum of all exported binaries from the imported
+	 * bundles plus the exported contribution of this bundle.
 	 */
 	static final String ATTRIBUTE_JAVA_BINARIES = WellKnownExports.JAVA_BINARIES;
 
 	/**
-	 * Denotes the bundle classpath. This will be the sum of all exported
-	 * binaries from the imported bundles plus the full contribution of this bundle.
+	 * Denotes the bundle classpath. This will be the sum of all exported binaries from the imported bundles plus the
+	 * full contribution of this bundle.
 	 */
 	static final String ATTRIBUTE_BUNDLE_CLASSPATH = "bundle.classpath";
 
@@ -101,16 +101,14 @@ public interface IPDEConstants
 	static final String ATTRIBUTE_MANIFEST = "manifest";
 
 	/**
-	 * Appoints all files that PDE features wants to copy to the root of a product they are included
-	 * in.
+	 * Appoints all files that PDE features wants to copy to the root of a product they are included in.
 	 */
 	static final String ATTRIBUTE_PRODUCT_ROOT_FILES = "product.root.files";
 
 	static final String ATTRIBUTE_RAW_MANIFEST = "raw.manifest";
 
 	/**
-	 * Appoints an action that will copy the fragments for the current component from the
-	 * workspace or target platform
+	 * Appoints an action that will copy the fragments for the current component from the workspace or target platform
 	 */
 	static final String ATTRIBUTE_TARGET_FRAGMENTS = "target.fragments";
 
@@ -118,8 +116,7 @@ public interface IPDEConstants
 
 	static final String BUILD_PROPERTIES_FILE = IPDEBuildConstants.PROPERTIES_FILE;
 
-	static final String BUNDLE_FILE = IPDEBuildConstants.MANIFEST_FOLDER + '/'
-		+ IPDEBuildConstants.MANIFEST;
+	static final String BUNDLE_FILE = IPDEBuildConstants.MANIFEST_FOLDER + '/' + IPDEBuildConstants.MANIFEST;
 
 	static final String FEATURE_FILE = "feature.xml";
 
@@ -151,9 +148,9 @@ public interface IPDEConstants
 
 	static final String PROP_DELETE_FILE = "file.to.delete";
 
-	static final String PROP_DELETE_UILAUNCHER="buckminster.eclipse.deleteuilauncher";
+	static final String PROP_DELETE_UILAUNCHER = "buckminster.eclipse.deleteuilauncher";
 
-	static final String PROP_PRODUCT_FILE="buckminster.eclipse.productFile";
+	static final String PROP_PRODUCT_FILE = "buckminster.eclipse.productFile";
 
 	static final String SITE_FILE = "site.xml";
 
@@ -188,6 +185,6 @@ public interface IPDEConstants
 	static final String TASK_UNZIP = "unzip";
 
 	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
-	
+
 	static final String TOP_FOLDER_SUFFIX = ".topfolder";
 }

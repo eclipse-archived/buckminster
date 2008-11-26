@@ -61,7 +61,8 @@ public class ImportBundle
 		// Create the provider that will perform the import.
 		//
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
-		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() }, m_siteURL.toString(), null);
+		Provider provider = new Provider(IReaderType.ECLIPSE_IMPORT, new String[] { ctype.getId() }, m_siteURL
+				.toString(), null);
 
 		// Next, we need a reader and a Resolution builder in order to create the real resolution
 		// from witch we can derive the origin of the component etc.
@@ -69,12 +70,10 @@ public class ImportBundle
 		IProgressMonitor monitor = new NullProgressMonitor();
 		IReaderType rt = provider.getReaderType();
 		IComponentReader[] reader = new IComponentReader[1];
-		reader[0] = rt.getReader(provider, ctype, context.getRootNodeQuery(), VersionMatch.DEFAULT,
-			monitor);
+		reader[0] = rt.getReader(provider, ctype, context.getRootNodeQuery(), VersionMatch.DEFAULT, monitor);
 		try
 		{
-			IResolutionBuilder builder = CorePlugin.getDefault().getResolutionBuilder(
-				IResolutionBuilder.PLUGIN2CSPEC);
+			IResolutionBuilder builder = CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.PLUGIN2CSPEC);
 			BOMNode node = builder.build(reader, false, monitor);
 
 			// Materialize the plugin, i.e. import it into the workspace

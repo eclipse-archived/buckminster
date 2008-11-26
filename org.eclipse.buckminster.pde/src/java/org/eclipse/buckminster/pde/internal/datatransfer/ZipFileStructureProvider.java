@@ -24,155 +24,168 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
- * This class provides information regarding the context structure and
- * content of specified zip file entry objects.
+ * This class provides information regarding the context structure and content of specified zip file entry objects.
  */
 @SuppressWarnings("unchecked")
-public class ZipFileStructureProvider implements IImportStructureProvider {
-    private ZipFile zipFile;
+public class ZipFileStructureProvider implements IImportStructureProvider
+{
+	private ZipFile zipFile;
 
-    private ZipEntry root = new ZipEntry("/");//$NON-NLS-1$
+	private ZipEntry root = new ZipEntry("/");//$NON-NLS-1$
 
-    private Map children;
+	private Map children;
 
-    private Map directoryEntryCache = new HashMap();
+	private Map directoryEntryCache = new HashMap();
 
-    /**
-     * Creates a <code>ZipFileStructureProvider</code>, which will operate
-     * on the passed zip file.
-     */
-    public ZipFileStructureProvider(ZipFile sourceFile) {
-        super();
-        zipFile = sourceFile;
-    }
+	/**
+	 * Creates a <code>ZipFileStructureProvider</code>, which will operate on the passed zip file.
+	 */
+	public ZipFileStructureProvider(ZipFile sourceFile)
+	{
+		super();
+		zipFile = sourceFile;
+	}
 
-    /**
-     * Adds the specified child to the internal collection of the parent's children.
-     */
-    protected void addToChildren(ZipEntry parent, ZipEntry child) {
-        List childList = (List) children.get(parent);
-        if (childList == null) {
-            childList = new ArrayList();
-            children.put(parent, childList);
-        }
+	/*
+	 * (non-Javadoc) Method declared on IImportStructureProvider
+	 */
+	public List getChildren(Object element)
+	{
+		if(children == null)
+			initialize();
 
-        childList.add(child);
-    }
+		return ((List)children.get(element));
+	}
 
-    /**
-     * Creates a new container zip entry with the specified name, iff
-     * it has not already been created.
-     */
-    protected void createContainer(IPath pathname) {
-        if (directoryEntryCache.containsKey(pathname))
-            return;
+	/*
+	 * (non-Javadoc) Method declared on IImportStructureProvider
+	 */
+	public InputStream getContents(Object element)
+	{
+		try
+		{
+			return zipFile.getInputStream((ZipEntry)element);
+		}
+		catch(IOException e)
+		{
+			return null;
+		}
+	}
 
-        ZipEntry parent;
-        if (pathname.segmentCount() == 1)
-            parent = root;
-        else
-            parent = (ZipEntry) directoryEntryCache.get(pathname
-                    .removeLastSegments(1));
+	/*
+	 * (non-Javadoc) Method declared on IImportStructureProvider
+	 */
+	public String getFullPath(Object element)
+	{
+		return ((ZipEntry)element).getName();
+	}
 
-        ZipEntry newEntry = new ZipEntry(pathname.toString());
-        directoryEntryCache.put(pathname, newEntry);
-        addToChildren(parent, newEntry);
-    }
+	/*
+	 * (non-Javadoc) Method declared on IImportStructureProvider
+	 */
+	public String getLabel(Object element)
+	{
+		if(element.equals(root))
+			return ((ZipEntry)element).getName();
 
-    /**
-     * Creates a new file zip entry with the specified name.
-     */
-    protected void createFile(ZipEntry entry) {
-        IPath pathname = new Path(entry.getName());
-        ZipEntry parent;
-        if (pathname.segmentCount() == 1)
-            parent = root;
-        else
-            parent = (ZipEntry) directoryEntryCache.get(pathname
-                    .removeLastSegments(1));
+		return new Path(((ZipEntry)element).getName()).lastSegment();
+	}
 
-        addToChildren(parent, entry);
-    }
+	/**
+	 * Returns the entry that this importer uses as the root sentinel.
+	 * 
+	 * @return java.util.zip.ZipEntry
+	 */
+	public ZipEntry getRoot()
+	{
+		return root;
+	}
 
-    /* (non-Javadoc)
-     * Method declared on IImportStructureProvider
-     */
-    public List getChildren(Object element) {
-        if (children == null)
-            initialize();
+	/**
+	 * Returns the zip file that this provider provides structure for.
+	 */
+	public ZipFile getZipFile()
+	{
+		return zipFile;
+	}
 
-        return ((List) children.get(element));
-    }
+	/*
+	 * (non-Javadoc) Method declared on IImportStructureProvider
+	 */
+	public boolean isFolder(Object element)
+	{
+		return ((ZipEntry)element).isDirectory();
+	}
 
-    /* (non-Javadoc)
-     * Method declared on IImportStructureProvider
-     */
-    public InputStream getContents(Object element) {
-        try {
-            return zipFile.getInputStream((ZipEntry) element);
-        } catch (IOException e) {
-            return null;
-        }
-    }
+	/**
+	 * Adds the specified child to the internal collection of the parent's children.
+	 */
+	protected void addToChildren(ZipEntry parent, ZipEntry child)
+	{
+		List childList = (List)children.get(parent);
+		if(childList == null)
+		{
+			childList = new ArrayList();
+			children.put(parent, childList);
+		}
 
-    /* (non-Javadoc)
-     * Method declared on IImportStructureProvider
-     */
-    public String getFullPath(Object element) {
-        return ((ZipEntry) element).getName();
-    }
+		childList.add(child);
+	}
 
-    /* (non-Javadoc)
-     * Method declared on IImportStructureProvider
-     */
-    public String getLabel(Object element) {
-        if (element.equals(root))
-            return ((ZipEntry) element).getName();
+	/**
+	 * Creates a new container zip entry with the specified name, iff it has not already been created.
+	 */
+	protected void createContainer(IPath pathname)
+	{
+		if(directoryEntryCache.containsKey(pathname))
+			return;
 
-        return new Path(((ZipEntry) element).getName()).lastSegment();
-    }
+		ZipEntry parent;
+		if(pathname.segmentCount() == 1)
+			parent = root;
+		else
+			parent = (ZipEntry)directoryEntryCache.get(pathname.removeLastSegments(1));
 
-    /**
-     * Returns the entry that this importer uses as the root sentinel.
-     *
-     * @return java.util.zip.ZipEntry
-     */
-    public ZipEntry getRoot() {
-        return root;
-    }
+		ZipEntry newEntry = new ZipEntry(pathname.toString());
+		directoryEntryCache.put(pathname, newEntry);
+		addToChildren(parent, newEntry);
+	}
 
-    /**
-     * Returns the zip file that this provider provides structure for.
-     */
-    public ZipFile getZipFile() {
-        return zipFile;
-    }
+	/**
+	 * Creates a new file zip entry with the specified name.
+	 */
+	protected void createFile(ZipEntry entry)
+	{
+		IPath pathname = new Path(entry.getName());
+		ZipEntry parent;
+		if(pathname.segmentCount() == 1)
+			parent = root;
+		else
+			parent = (ZipEntry)directoryEntryCache.get(pathname.removeLastSegments(1));
 
-    /**
-     * Initializes this object's children table based on the contents of
-     * the specified source file.
-     */
-    protected void initialize() {
-        children = new HashMap(1000);
+		addToChildren(parent, entry);
+	}
 
-        Enumeration entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = (ZipEntry) entries.nextElement();
-            if (!entry.isDirectory()) {
-                IPath path = new Path(entry.getName()).addTrailingSeparator();
-                int pathSegmentCount = path.segmentCount();
+	/**
+	 * Initializes this object's children table based on the contents of the specified source file.
+	 */
+	protected void initialize()
+	{
+		children = new HashMap(1000);
 
-                for (int i = 1; i < pathSegmentCount; i++)
-                    createContainer(path.uptoSegment(i));
-                createFile(entry);
-            }
-        }
-    }
+		Enumeration entries = zipFile.entries();
+		while(entries.hasMoreElements())
+		{
+			ZipEntry entry = (ZipEntry)entries.nextElement();
+			if(!entry.isDirectory())
+			{
+				IPath path = new Path(entry.getName()).addTrailingSeparator();
+				int pathSegmentCount = path.segmentCount();
 
-    /* (non-Javadoc)
-     * Method declared on IImportStructureProvider
-     */
-    public boolean isFolder(Object element) {
-        return ((ZipEntry) element).isDirectory();
-    }
+				for(int i = 1; i < pathSegmentCount; i++)
+					createContainer(path.uptoSegment(i));
+				createFile(entry);
+			}
+		}
+	}
 }

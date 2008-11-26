@@ -60,7 +60,7 @@ public class FragmentsActor extends AbstractActor
 		if(outputDir == null)
 			throw BuckminsterException.fromMessage("missing product base in copyTargetFragments actor");
 
-		Map<String,String> properties = ctx.getProperties();
+		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
@@ -86,9 +86,8 @@ public class FragmentsActor extends AbstractActor
 				//
 				continue;
 
-			ComponentRequest request = new ComponentRequest(
-				fragmentName, IComponentType.OSGI_BUNDLE,
-				VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion()))); 
+			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionFactory
+					.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion())));
 
 			String filterStr = fragment.getPlatformFilter();
 			if(filterStr != null)
@@ -128,7 +127,7 @@ public class FragmentsActor extends AbstractActor
 		if(outputDir == null)
 			throw BuckminsterException.fromMessage("missing product base in copyTargetFragments actor");
 
-		Map<String,String> properties = ctx.getProperties();
+		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
@@ -166,9 +165,8 @@ public class FragmentsActor extends AbstractActor
 					//
 					continue;
 
-				ComponentRequest request = new ComponentRequest(
-					fragmentName, IComponentType.OSGI_BUNDLE,
-					VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion()))); 
+				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE,
+						VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion())));
 
 				String filterStr = fragment.getPlatformFilter();
 				if(filterStr != null)
@@ -198,7 +196,8 @@ public class FragmentsActor extends AbstractActor
 				//
 				CSpec cspec = res.getCSpec();
 				Attribute bundleJar = cspec.getAttribute(IPDEConstants.ATTRIBUTE_BUNDLE_JAR);
-				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(), MonitorUtils.subMonitor(monitor, 70));
+				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(), MonitorUtils
+						.subMonitor(monitor, 70));
 
 				// Copy the path groups to the given destination
 				//

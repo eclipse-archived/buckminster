@@ -49,14 +49,15 @@ import org.eclipse.update.internal.core.UpdateSiteFeatureReference;
 import org.xml.sax.SAXException;
 
 /**
- * <p>This class can perform two tasks.</p>
+ * <p>
+ * This class can perform two tasks.
+ * </p>
  * <ul>
- * <li>Create a site.xml style file based on the list of features, a template,
- * and the {@link CSpec} of the current {@link IActionContext}.</li>
- * <li>Calculate the version qualifier of the feature and assign it to a
- * property. The version is fetched from the {@link CSpec} of the current
- * {@link IActionContext} and if it ends with &quot;qualifier&quot; normal
- * qualifier replacement algorithms take place.</li>
+ * <li>Create a site.xml style file based on the list of features, a template, and the {@link CSpec} of the current
+ * {@link IActionContext}.</li>
+ * <li>Calculate the version qualifier of the feature and assign it to a property. The version is fetched from the
+ * {@link CSpec} of the current {@link IActionContext} and if it ends with &quot;qualifier&quot; normal qualifier
+ * replacement algorithms take place.</li>
  * </ul>
  * 
  * @author Thomas Hallgren
@@ -64,11 +65,23 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("restriction")
 public class UpdateSiteGenerator extends VersionConsolidator
 {
+	private static boolean categoryExists(CategoryModel[] categories, String categoryName)
+	{
+		int idx = categories.length;
+		while(--idx >= 0)
+			if(categories[idx].getName().equals(categoryName))
+				return true;
+		return false;
+	}
+
 	private final List<File> m_features;
+
 	private final IActionContext m_actionContext;
+
 	private final SaxableSite m_saxableSite;
 
-	public UpdateSiteGenerator(List<File> features, File template, File outputFile, File propertiesFile, String qualifier) throws CoreException, IOException
+	public UpdateSiteGenerator(List<File> features, File template, File outputFile, File propertiesFile,
+			String qualifier) throws CoreException, IOException
 	{
 		super(outputFile, propertiesFile, qualifier);
 		m_features = features;
@@ -121,7 +134,8 @@ public class UpdateSiteGenerator extends VersionConsolidator
 						generateFromFeature(cspec, file, feature);
 
 					if(generateQualifier)
-						deps.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, osgiType.fromString(feature.getVersion())));
+						deps.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, osgiType
+								.fromString(feature.getVersion())));
 				}
 				finally
 				{
@@ -135,8 +149,8 @@ public class UpdateSiteGenerator extends VersionConsolidator
 
 			IComponentIdentifier ci = cspec.getComponentIdentifier();
 			return generateQualifier
-				? replaceQualifier(cspec.getComponentIdentifier(), deps)
-				: ci.getVersion();
+					? replaceQualifier(cspec.getComponentIdentifier(), deps)
+					: ci.getVersion();
 		}
 		catch(IOException e)
 		{
@@ -150,15 +164,6 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		{
 			IOUtils.close(output);
 		}
-	}
-
-	private static boolean categoryExists(CategoryModel[] categories, String categoryName)
-	{
-		int idx = categories.length;
-		while(--idx >= 0)
-			if(categories[idx].getName().equals(categoryName))
-				return true;
-		return false;
 	}
 
 	private void generateFromFeature(CSpec cspec, File file, IFeature feature) throws CoreException
@@ -200,7 +205,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		{
 			CategoryModel[] categories = site.getCategoryModels();
 			Collection<Attribute> attributes = cspec.getAttributes().values();
-	
+
 			model = new UpdateSiteFeatureReference();
 			model.setFeatureIdentifier(featureName);
 
@@ -208,11 +213,11 @@ public class UpdateSiteGenerator extends VersionConsolidator
 			{
 				if(!(attr instanceof IGroup))
 					continue;
-	
+
 				String categoryName = attr.getName();
 				if(!categoryExists(categories, attr.getName()))
 					continue;
-	
+
 				for(IPrerequisite included : attr.getPrerequisites())
 				{
 					if(!featureName.equals(included.getComponentName()))

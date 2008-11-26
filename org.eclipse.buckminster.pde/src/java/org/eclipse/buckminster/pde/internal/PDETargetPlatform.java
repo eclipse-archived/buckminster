@@ -37,33 +37,13 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return TargetPlatform.getOSArch();
 	}
 
-	public String getNL()
-	{
-		return TargetPlatform.getNL();
-	}
-
-	public String getOS()
-	{
-		return TargetPlatform.getOS();
-	}
-
-	public String getWS()
-	{
-		return TargetPlatform.getWS();
-	}
-
-	public File getLocation()
-	{
-		String location = TargetPlatform.getLocation();
-		return (location == null || location.length() == 0) ? null : new File(location);
-	}
-
 	public List<ComponentIdentifier> getComponents() throws CoreException
 	{
 		PDECore pdeCore = PDECore.getDefault();
 		IFeatureModel[] featureModels = pdeCore.getFeatureModelManager().getModels();
 		IPluginModelBase[] pluginModels = pdeCore.getModelManager().getActiveModels();
-		ArrayList<ComponentIdentifier> bld = new ArrayList<ComponentIdentifier>(featureModels.length + pluginModels.length);
+		ArrayList<ComponentIdentifier> bld = new ArrayList<ComponentIdentifier>(featureModels.length
+				+ pluginModels.length);
 		IVersionType osgiType = VersionFactory.OSGiType;
 
 		for(IFeatureModel featureModel : featureModels)
@@ -82,5 +62,28 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 			}
 		}
 		return bld;
+	}
+
+	public File getLocation()
+	{
+		String location = TargetPlatform.getLocation();
+		return (location == null || location.length() == 0)
+				? null
+				: new File(location);
+	}
+
+	public String getNL()
+	{
+		return TargetPlatform.getNL();
+	}
+
+	public String getOS()
+	{
+		return TargetPlatform.getOS();
+	}
+
+	public String getWS()
+	{
+		return TargetPlatform.getWS();
 	}
 }
