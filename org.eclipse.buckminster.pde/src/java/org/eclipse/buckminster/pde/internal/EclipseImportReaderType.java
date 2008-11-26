@@ -51,6 +51,7 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportBase.Key;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
@@ -74,6 +75,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PDEState;
@@ -118,12 +120,12 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		Map<String, File> siteCache = getSiteCache(ucache);
 		synchronized(siteCache)
 		{
-			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite";
+			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite"; //$NON-NLS-1$
 			File tempSite = siteCache.get(key);
 			if(tempSite != null)
 				return tempSite;
 
-			tempSite = FileUtils.createTempFolder("bmsite", ".tmp");
+			tempSite = FileUtils.createTempFolder("bmsite", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 			new File(tempSite, PLUGINS_FOLDER).mkdir();
 			new File(tempSite, FEATURES_FOLDER).mkdir();
 			siteCache.put(key, tempSite);
@@ -134,10 +136,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, IVersion version,
 			String subDir) throws MalformedURLException, CoreException
 	{
-		if(remoteLocation.getPath().endsWith(".jar"))
+		if(remoteLocation.getPath().endsWith(".jar")) //$NON-NLS-1$
 			return remoteLocation;
 
-		if(remoteLocation.getPath().endsWith(".map"))
+		if(remoteLocation.getPath().endsWith(".map")) //$NON-NLS-1$
 		{
 			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, cctx))
 			{
@@ -146,9 +148,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 						&& version.equalsUnqualified(VersionFactory.OSGiType.coerce(vid.getVersion())))
 					return entry.getRemoteLocation();
 			}
-			throw BuckminsterException.fromMessage("Unable to find %s in map %s", name, remoteLocation);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("EclipseImportReaderType.unable_to_find_0_in_map_1"), name, remoteLocation)); //$NON-NLS-1$
 		}
-		return new URL(remoteLocation, subDir + '/' + name + '_' + version + ".jar");
+		return new URL(remoteLocation, subDir + '/' + name + '_' + version + ".jar"); //$NON-NLS-1$
 	}
 
 	private static RemotePluginEntry[] getMapPluginEntries(URL location, IConnectContext cctx) throws CoreException
@@ -170,8 +173,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					continue;
 
 				Map<String, String> props = entry.getProperties();
-				String src = props.get("src");
-				if(src == null || !(src.endsWith(".jar") || src.endsWith(".zip")))
+				String src = props.get("src"); //$NON-NLS-1$
+				if(src == null || !(src.endsWith(".jar") || src.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 
 				RemotePluginEntry pluginEntry;
@@ -188,7 +191,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				if(cid.getVersion() != null)
 					pluginEntry.setPluginVersion(cid.getVersion().toString());
 
-				pluginEntry.setUnpack(Boolean.parseBoolean(props.get("unpack")));
+				pluginEntry.setUnpack(Boolean.parseBoolean(props.get("unpack"))); //$NON-NLS-1$
 				entries.add(pluginEntry);
 			}
 			return entries.toArray(new RemotePluginEntry[entries.size()]);
@@ -264,7 +267,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		{
 			URL siteURL = new URL(resolution.getRepository());
 			String sitePath = siteURL.getPath();
-			if(!(sitePath.endsWith(".map") || sitePath.endsWith(".xml") || sitePath.endsWith(".jar")))
+			if(!(sitePath.endsWith(".map") || sitePath.endsWith(".xml") || sitePath.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				siteURL = URLUtils.appendTrailingSlash(siteURL);
 
 			String subDir = IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId())
@@ -319,7 +322,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			if(entries != null)
 				return entries;
 
-			if(location.getPath().endsWith(".map"))
+			if(location.getPath().endsWith(".map")) //$NON-NLS-1$
 			{
 				MonitorUtils.complete(monitor);
 				entries = getMapPluginEntries(location, cctx);
@@ -489,7 +492,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(base.isLocal())
 			return base;
 
-		// Synchronize on base, it uses a ligthweight pattern so only
+		// Synchronize on base, it uses a lightweight pattern so only
 		// one instance will exists for any given URI/request combination
 		//
 		synchronized(base)
@@ -497,7 +500,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			Map<UUID, Object> userCache = query.getContext().getUserCache();
 			String name = base.getComponentName();
 			monitor.beginTask(null, 1000);
-			monitor.subTask("Localizing " + name);
+			monitor.subTask(NLS.bind(Messages.getString("EclipseImportReaderType.localizing_0"), name)); //$NON-NLS-1$
 
 			try
 			{
@@ -512,8 +515,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				//
 				IPath path = Path.fromPortableString(pluginURL.getPath());
 				String jarName = path.lastSegment();
-				if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip")))
-					throw BuckminsterException.fromMessage("Invalid url for remote import: %s", pluginURL);
+				if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
+					throw BuckminsterException.fromMessage(NLS.bind(Messages
+							.getString("EclipseImportReaderType.invalid_url_fore_remote_import_0"), pluginURL)); //$NON-NLS-1$
 
 				String vcName = jarName.substring(0, jarName.length() - 4);
 				File tempSite = getTempSite(userCache);
@@ -532,14 +536,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				}
 				Key remoteKey = base.getKey();
 
-				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base
+				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base //$NON-NLS-1$
 						.getQuery(), name).toString());
 
 				File destDir = null;
 				boolean unpack = true;
 				ConflictResolution cres = ConflictResolution.REPLACE;
 
-				if(jarName.endsWith(".zip"))
+				if(jarName.endsWith(".zip")) //$NON-NLS-1$
 				{
 					// Special orbit packaging. Just unzip into the plug-ins folder
 					//
@@ -557,13 +561,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 						if(mf != null)
 						{
 							String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(
-									Constants.BUNDLE_CLASSPATH), ",");
+									Constants.BUNDLE_CLASSPATH), ","); //$NON-NLS-1$
 
 							int top = classPath.length;
 							unpack = (top > 0);
 							for(int idx = 0; idx < top; ++idx)
 							{
-								if(classPath[idx].trim().equals("."))
+								if(classPath[idx].trim().equals(".")) //$NON-NLS-1$
 								{
 									unpack = false;
 									break;
@@ -649,8 +653,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			return new CoreException(resultStatus.get(0));
 
 		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
-		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
-				"Problems loading features", null);
+		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children, Messages
+				.getString("EclipseImportReaderType.problems_loading_feature"), null); //$NON-NLS-1$
 		return new CoreException(multiStatus);
 	}
 
@@ -693,7 +697,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			return new IFeatureModel[0];
 
 		monitor.beginTask(null, dirs.length);
-		monitor.subTask("Building feature list for site " + location);
+		monitor.subTask(NLS.bind(
+				Messages.getString("EclipseImportReaderType.building_feature_list_for_site_0"), location)); //$NON-NLS-1$
 		ArrayList<IFeatureModel> models = new ArrayList<IFeatureModel>(dirs.length);
 		ArrayList<IStatus> resultStatus = null;
 		for(File dir : dirs)
@@ -708,8 +713,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				model.setInstallLocation(dir.getAbsolutePath());
 				model.load(manifestInput, false);
 				if(!model.isValid())
-					throw new CoreException(new Status(IStatus.WARNING, PDEPlugin.getPluginId(), IStatus.OK,
-							"Import location " + dir + " contains invalid feature.", null));
+					throw new CoreException(new Status(IStatus.WARNING, PDEPlugin.getPluginId(), IStatus.OK, NLS.bind(
+							Messages.getString("EclipseImportReaderType.import_location_0_contains_invalid_feature"), //$NON-NLS-1$
+							dir), null)); //$NON-NLS-1$
 
 				models.add(model);
 			}
@@ -745,7 +751,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			return getPlatformPlugins();
 
 		monitor.beginTask(null, 2);
-		monitor.subTask("Building plugin list for site " + location);
+		monitor.subTask(NLS.bind(
+				Messages.getString("EclipseImportReaderType.building_plugin_list_for_site_0"), location)); //$NON-NLS-1$
 		try
 		{
 			File pluginsRoot = new File(location, PLUGINS_FOLDER);
@@ -809,7 +816,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		{
 			try
 			{
-				logger.debug("Downloading %s", ref.getURL());
+				logger.debug(NLS.bind(Messages.getString("EclipseImportReaderType.downloading_0"), ref.getURL())); //$NON-NLS-1$
 				return ref.getFeature(monitor);
 			}
 			catch(FeatureDownloadException ex)
@@ -825,8 +832,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 							try
 							{
 								Thread.sleep(m_connectionRetryDelay);
-								logger.warning("Connection to %s failed on %s. Retry attempt %d started", ref.getURL(),
-										t.getMessage(), new Integer(retryCount));
+								logger
+										.warning(NLS
+												.bind(
+														Messages
+																.getString("EclipseImportReaderType.connection_to_0_failed_on_1_retry_attempt_2_started"), //$NON-NLS-1$ 
+														new Object[] { ref.getURL(), t.getMessage(),
+																new Integer(retryCount) }));
 								continue;
 							}
 							catch(InterruptedException e1)
