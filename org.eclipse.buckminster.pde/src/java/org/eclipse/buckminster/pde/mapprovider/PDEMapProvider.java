@@ -41,6 +41,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.mapfile.MapFile;
 import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
@@ -54,15 +55,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Filter;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PDEMapProvider extends Provider
 {
-	public static final String BM_PDEMAP_PROVIDER_NS = XMLConstants.BM_PREFIX + "PDEMapProvider-1.0";
+	public static final String BM_PDEMAP_PROVIDER_NS = XMLConstants.BM_PREFIX + "PDEMapProvider-1.0"; //$NON-NLS-1$
 
-	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp";
+	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp"; //$NON-NLS-1$
 
 	private static void collectEntries(File mapFile, Map<ComponentIdentifier, MapFileEntry> map) throws CoreException
 	{
@@ -109,7 +111,7 @@ public class PDEMapProvider extends Provider
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
 			throws CoreException
 	{
-		monitor.beginTask("", 100);
+		monitor.beginTask("", 100); //$NON-NLS-1$
 		try
 		{
 			String providerURI = getURI(query.getProperties());
@@ -117,7 +119,9 @@ public class PDEMapProvider extends Provider
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 			if(score == ProviderScore.REJECTED)
 			{
-				String msg = String.format("Provider %s(%s): Score is below threshold", readerType, providerURI);
+				String msg = NLS
+						.bind(
+								Messages.getString("PDEMapProvider.provider_0_for_1_score_below_treshold"), readerType, providerURI); //$NON-NLS-1$
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 				return null;
 			}
@@ -133,7 +137,7 @@ public class PDEMapProvider extends Provider
 
 			Map<String, String> properties = tv.getProperties();
 			IVersion v = null;
-			String tag = properties.get("tag");
+			String tag = properties.get("tag"); //$NON-NLS-1$
 			VersionSelector vs = (tag == null)
 					? null
 					: VersionSelector.tag(tag);
@@ -201,7 +205,7 @@ public class PDEMapProvider extends Provider
 						IComponentType.UNKNOWN), new VersionMatch(null, null, -1, new Date(), null),
 						ProviderScore.GOOD, query);
 
-				tempFolder = FileUtils.createTempFolder("bucky", ".tmp");
+				tempFolder = FileUtils.createTempFolder("bucky", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
 				try
 				{
@@ -223,7 +227,7 @@ public class PDEMapProvider extends Provider
 				int amountPerFile = 100 / mapFiles.length;
 				for(String file : mapFiles)
 				{
-					if(file.endsWith(".map"))
+					if(file.endsWith(".map")) //$NON-NLS-1$
 						collectEntries(new File(tempFolder, file), map);
 					MonitorUtils.worked(monitor, amountPerFile);
 				}
@@ -250,8 +254,8 @@ public class PDEMapProvider extends Provider
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA",
-				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider");
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
 	}
 
 	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map)
@@ -305,8 +309,8 @@ public class PDEMapProvider extends Provider
 
 		if(candidateEntry == null)
 		{
-			String msg = String.format("PDEMapProvider %s(%s): Unable to find %s in map", getReaderTypeId(),
-					getURI(query.getProperties()), wanted);
+			String msg = NLS.bind(Messages.getString("PDEMapProvider.PDEMapProvider_0_for_1_unable_to_find_2_in_map"), //$NON-NLS-1$
+					new Object[] { getReaderTypeId(), getURI(query.getProperties()), wanted });
 
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 			PDEPlugin.getLogger().debug(msg);
