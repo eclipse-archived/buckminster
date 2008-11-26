@@ -29,7 +29,7 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public abstract class SelectionHelper
 {
@@ -52,7 +52,7 @@ public abstract class SelectionHelper
 				res = getResolution((IPluginBase)first);
 			else if(first instanceof BundleSpecification)
 				res = getResolution((BundleSpecification)first);
-	
+
 			if(res != null)
 				return res.getCSpec();
 		}
@@ -88,9 +88,7 @@ public abstract class SelectionHelper
 
 	private static Resolution getResolution(IPluginBase base) throws CoreException
 	{
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(
-				base.getId(),
-				IComponentType.OSGI_BUNDLE,
+		return WorkspaceInfo.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE,
 				VersionFactory.OSGiType.coerce(base.getVersion())));
 	}
 
@@ -100,9 +98,7 @@ public abstract class SelectionHelper
 		if(bundleDesc == null)
 			return null;
 
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(
-			bundleDesc.getSymbolicName(),
-			IComponentType.OSGI_BUNDLE,
-			VersionFactory.OSGiType.coerce(bundleDesc.getVersion())));
+		return WorkspaceInfo.getResolution(new ComponentIdentifier(bundleDesc.getSymbolicName(),
+				IComponentType.OSGI_BUNDLE, VersionFactory.OSGiType.coerce(bundleDesc.getVersion())));
 	}
 }
