@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -50,7 +51,7 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class FragmentsActor extends AbstractActor
 {
-	public static final String ID = "copyTargetFragments";
+	public static final String ID = "copyTargetFragments"; //$NON-NLS-1$
 
 	@Override
 	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
@@ -58,7 +59,7 @@ public class FragmentsActor extends AbstractActor
 		ComponentIdentifier cid = action.getCSpec().getComponentIdentifier();
 		IPath outputDir = action.getProductBase();
 		if(outputDir == null)
-			throw BuckminsterException.fromMessage("missing product base in copyTargetFragments actor");
+			throw BuckminsterException.fromMessage(Messages.getString("FragmentsActor.missing_product_base_in_ctf_actor")); //$NON-NLS-1$
 
 		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
@@ -79,7 +80,7 @@ public class FragmentsActor extends AbstractActor
 		for(BundleDescription fragment : fragments)
 		{
 			String fragmentName = fragment.getName();
-			if(fragmentName.contains(".compatibility"))
+			if(fragmentName.contains(".compatibility")) //$NON-NLS-1$
 				//
 				// Compatibility fragments must be explicitly brought in using
 				// a product or a feature
@@ -95,7 +96,7 @@ public class FragmentsActor extends AbstractActor
 				try
 				{
 					Filter filter = FilterUtils.createFilter(fragment.getPlatformFilter());
-					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX);
+					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
 					if(!filter.match(MapToDictionary.wrap(properties)))
 						continue;
 				}
@@ -125,7 +126,7 @@ public class FragmentsActor extends AbstractActor
 
 		IPath outputDir = ctx.getAction().getProductBase();
 		if(outputDir == null)
-			throw BuckminsterException.fromMessage("missing product base in copyTargetFragments actor");
+			throw BuckminsterException.fromMessage(Messages.getString("FragmentsActor.missing_product_base_in_ctf_actor")); //$NON-NLS-1$
 
 		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
@@ -158,7 +159,7 @@ public class FragmentsActor extends AbstractActor
 			for(BundleDescription fragment : fragments)
 			{
 				String fragmentName = fragment.getName();
-				if(fragmentName.contains(".compatibility"))
+				if(fragmentName.contains(".compatibility")) //$NON-NLS-1$
 					//
 					// Compatibility fragments must be explicitly brought in using
 					// a product or a feature
@@ -174,7 +175,7 @@ public class FragmentsActor extends AbstractActor
 					try
 					{
 						Filter filter = FilterUtils.createFilter(fragment.getPlatformFilter());
-						filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX);
+						filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
 						if(!filter.match(MapToDictionary.wrap(properties)))
 							continue;
 					}
