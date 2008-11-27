@@ -12,14 +12,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
+import org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys;
 
 /**
  * @author Karel Brezina
  *
  */
-public interface IDistroService
+public interface IDistroService extends P2PropertyKeys
 {
 	List<DistroVariant> getDistroVariants(boolean draft, Long stackId, Map<String, String> platformProperties);
 	
 	DistroContent getDistro(boolean draft, Long cspecId, Long distroId);
+	
+	Map<String, String> getDistroP2Properties(boolean draft, Long cspecId, Long distroId);
 }

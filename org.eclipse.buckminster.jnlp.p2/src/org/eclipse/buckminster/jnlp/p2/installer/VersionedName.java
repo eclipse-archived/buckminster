@@ -19,6 +19,17 @@ public class VersionedName
 
 	private Version m_version;
 
+	/**
+	 * Creates and returns a new versioned id from the given spec.  The spec should be
+	 * id/version.
+	 * @param spec the spec for the versioned id to create
+	 * @return the parsed versioned id
+	 */
+	public static VersionedName parse(String spec) {
+		String[] segments = InstallDescriptionParser.getArrayFromString(spec, "/"); //$NON-NLS-1$
+		return new VersionedName(segments[0], segments.length == 1 ? null : segments[1]);
+	}
+
 	public VersionedName(String id, String version)
 	{
 		this.m_id = id;

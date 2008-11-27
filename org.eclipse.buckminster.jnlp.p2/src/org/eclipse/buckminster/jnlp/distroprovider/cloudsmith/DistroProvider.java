@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
@@ -474,6 +475,24 @@ public class DistroProvider implements IRemoteDistroProvider
 				
 				return new Distro(bom, mspec);
 
+			}
+		};
+
+		return method.run();
+	}
+
+	public Properties getDistroP2Properties(final boolean draft, final Long cspecId, final Long distroId) throws Exception
+	{
+		MethodWrapper<Properties> method = new MethodWrapper<Properties>()
+		{
+
+			@Override
+			public Properties process() throws Exception
+			{
+				Properties properties = new Properties();
+				properties.putAll(m_remoteDistroService.getDistroP2Properties(draft, cspecId, distroId));
+				
+				return properties;
 			}
 		};
 

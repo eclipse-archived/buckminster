@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Cloudsmith - ongoing development
  *******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2.installer;
 
@@ -20,6 +21,8 @@ import org.eclipse.core.runtime.*;
  */
 public interface IInstallOperation
 {
+	public static final String DEFAULT_PROFILE_NAME = "default";
+	
 	/**
 	 * Performs the install.
 	 * <p>

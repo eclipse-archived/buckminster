@@ -42,7 +42,7 @@ public class InstallDescription
 
 	private VersionedName[] m_roots;
 
-	private final Map<String, String> m_profileProperties = new HashMap<String, String>();
+	private final Map<Object, Object> m_profileProperties = new HashMap<Object, Object>();
 
 	/**
 	 * Returns the p2 agent location, or <code>null</code> to indicate the default agent location.
@@ -103,7 +103,7 @@ public class InstallDescription
 	/**
 	 * Returns the profile properties for this install.
 	 */
-	public Map<String, String> getProfileProperties()
+	public Map<Object, Object> getProfileProperties()
 	{
 		return m_profileProperties;
 	}
@@ -170,7 +170,7 @@ public class InstallDescription
 	 * @param properties
 	 *            the profile properties to be added
 	 */
-	public void setProfileProperties(Map<String, String> properties)
+	public void setProfileProperties(Map<Object, Object> properties)
 	{
 		m_profileProperties.putAll(properties);
 	}

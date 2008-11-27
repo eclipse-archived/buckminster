@@ -8,15 +8,11 @@
 package org.eclipse.buckminster.jnlp.p2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.buckminster.jnlp.p2.installer.IInstallOperation;
 import org.eclipse.buckminster.jnlp.p2.installer.InstallDescription;
 import org.eclipse.buckminster.jnlp.p2.installer.InstallUpdateProductOperation;
 import org.eclipse.buckminster.jnlp.p2.installer.Messages;
-import org.eclipse.buckminster.jnlp.p2.installer.VersionedName;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -33,25 +29,8 @@ public class P2MaterializerRunnable implements IRunnableWithProgress
 {
 	private final IInstallOperation m_installOperation;
 	
-	public P2MaterializerRunnable(IPath installLocation) throws Exception
+	public P2MaterializerRunnable(InstallDescription installDescription) throws Exception
 	{
-		InstallDescription installDescription = new InstallDescription();
-
-		installDescription.setMetadataRepositories(new URL[]{new URL("http://download.eclipse.org/eclipse/updates/3.4milestones/")});
-		installDescription.setArtifactRepositories(new URL[]{new URL("http://download.eclipse.org/eclipse/updates/3.4milestones/")});
-		installDescription.setLauncherName("eclipse");
-		installDescription.setRoots(new VersionedName[] {new VersionedName("org.eclipse.sdk.ide", (String)null)});
-		installDescription.setAutoStart(true);
-		installDescription.setInstallLocation(installLocation);
-
-		installDescription.setAgentLocation(installLocation.append("p2")); //$NON-NLS-1$
-		installDescription.setBundleLocation(installLocation);
-		
-		Map<String, String> profileProperties = new HashMap<String, String>();
-		profileProperties.put("eclipse.p2.flavor", "tooling");
-		profileProperties.put("eclipse.p2.profileName", "EclipseSDK01");
-		installDescription.setProfileProperties(profileProperties);
-			
 		initializeProxySupport();
 		startRequiredBundles(installDescription);
 		

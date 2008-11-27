@@ -71,6 +71,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.CorePlugin;
@@ -87,6 +88,9 @@ import org.eclipse.buckminster.jnlp.p2.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.p2.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.p2.MissingPropertyException;
 import org.eclipse.buckminster.jnlp.p2.P2MaterializerRunnable;
+import org.eclipse.buckminster.jnlp.p2.installer.InstallDescription;
+import org.eclipse.buckminster.jnlp.p2.installer.InstallDescriptionParser;
+import org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys;
 import org.eclipse.buckminster.jnlp.p2.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.jnlp.p2.wizard.ILoginHandler;
@@ -193,6 +197,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private Long m_distroId;
 
 	private Distro m_distro;
+	
+	private Properties m_distroP2Properties;
 
 	private Map<Long, Distro> m_retrievedDistroCache = new HashMap<Long, Distro>();
 
@@ -243,6 +249,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_authenticatorUserName;
 
 	private String m_authenticatorPassword;
+	
+	private IPath m_installLocation;
+	
+	private String m_profileName;
 
 	private final List<LearnMoreItem> m_learnMores;
 
@@ -454,7 +464,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				Job.getJobManager().setProgressProvider(m_operationPage.getProgressProvider());
 			}
 
-			getContainer().run(true, true, new P2MaterializerRunnable(m_builder.getInstallLocation()));
+			getContainer().run(true, true, new P2MaterializerRunnable(createInstallDescription()));
 
 			getContainer().showPage(m_operationPage);
 
@@ -510,6 +520,18 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return false;
 	}
 
+	private InstallDescription createInstallDescription()
+	{
+		InstallDescription installDescription = InstallDescriptionParser.createDescription(getDistroP2Properties());
+
+		installDescription.setInstallLocation(getInstallLocation());
+		installDescription.setAgentLocation(getInstallLocation().append("p2")); //$NON-NLS-1$
+		installDescription.setBundleLocation(getInstallLocation());
+		installDescription.getProfileProperties().put(P2PropertyKeys.PROP_PROFILE_NAME, getProfileName());
+			
+		return installDescription;
+	}
+	
 	public void removeAuthenticatorLoginKey()
 	{
 		m_loginKey = null;
@@ -741,10 +763,20 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	{
 		m_distro = distro;
 	}
-
+	
 	List<DistroVariant> getDistroVariants()
 	{
 		return m_distroVariants;
+	}
+
+	Properties getDistroP2Properties()
+	{
+		return m_distroP2Properties;
+	}
+
+	void setDistroP2Properties(Properties properties)
+	{
+		m_distroP2Properties = properties;
 	}
 
 	String[] getMaterializers()
@@ -873,6 +905,15 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 						try
 						{
+							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, distroId);
+						}
+						catch(Exception e)
+						{
+							throw new InvocationTargetException(e);
+						}
+
+						try
+						{
 							m_distro = m_distroProvider.getDistro(m_draft, m_cspecId, distroId);
 						}
 						catch(Exception e)
@@ -996,6 +1037,26 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_loginPageRequested = loginPageRequested;
 	}
 
+	IPath getInstallLocation()
+	{
+		return m_installLocation;
+	}
+	
+	void setInstallLocation(IPath location)
+	{
+		m_installLocation = location;
+	}
+	
+	String getProfileName()
+	{
+		return m_profileName;
+	}
+	
+	void setProfileName(String profileName)
+	{
+		m_profileName = profileName;
+	}
+	
 	public BMProperties getLocalProperties()
 	{
 		return m_localProperties;

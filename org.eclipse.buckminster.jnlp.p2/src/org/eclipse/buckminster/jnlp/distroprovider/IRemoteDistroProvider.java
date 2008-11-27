@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.jnlp.distroprovider;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpClient;
 
@@ -120,4 +121,6 @@ public interface IRemoteDistroProvider
 	List<DistroVariant> getDistroVariants(boolean draft, Long stackId) throws Exception;
 	
 	Distro getDistro(boolean draft, Long cspecId, Long distroId) throws Exception;
+	
+	Properties getDistroP2Properties(boolean draft, Long cspecId, Long distroId) throws Exception;
 }
