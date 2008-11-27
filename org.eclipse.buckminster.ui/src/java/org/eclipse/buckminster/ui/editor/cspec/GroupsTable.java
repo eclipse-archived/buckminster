@@ -8,6 +8,7 @@ import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
@@ -82,9 +83,9 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 	@Override
 	public void fillStack(Composite stackComposite)
 	{
-		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
-		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
+		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
+		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
+		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -95,17 +96,17 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		layout.marginHeight = layout.marginWidth = 0;
 		geComposite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(geComposite, "General", 2);
+		EditorUtils.createHeaderLabel(geComposite, Messages.general, 2);
 
-		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.name_with_colon, 1, 0, SWT.NONE);
 
 		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
 
-		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
 
-		UiUtils.createGridLabel(geComposite, "Rebase Path:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.release_path_with_colon, 1, 0, SWT.NONE);
 
 		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_rebasePathText.addModifyListener(FIELD_LISTENER);
@@ -113,7 +114,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
 		
-		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(geComposite, Messages.prerequisites_with_colon, 1, 0, SWT.NONE);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
 		label.setLayoutData(gridData);
@@ -129,7 +130,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				geComposite,
 				preTable,
 				null,
-				"Group - Prerequisite",
+				Messages.group_prerequisite_with_dash,
 				null,
 				null,
 				SWT.NONE);
@@ -138,7 +139,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		gridData.horizontalSpan = 2;
 		m_prerequisitesEditor.setLayoutData(gridData);
 
-		geComposite.setData("focusControl", getNameText());
+		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 		
 		return geComposite;
 	}

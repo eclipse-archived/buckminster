@@ -148,6 +148,8 @@ public class Messages extends NLS
 
 	public static String group;
 
+	public static String group_prerequisite_with_dash;
+
 	public static String groups;
 
 	public static String installer_hints;
@@ -213,6 +215,8 @@ public class Messages extends NLS
 	public static String public_with_colon;
 
 	public static String read_only_in_paranthesis;
+
+	public static String release_path_with_colon;
 
 	public static String remove;
 
