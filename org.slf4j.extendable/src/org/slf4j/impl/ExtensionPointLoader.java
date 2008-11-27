@@ -9,7 +9,7 @@ import org.slf4j.spi.MDCAdapter;
 
 public class ExtensionPointLoader
 {
-	public static final String SLF4J_IMPL_POINT = "org.slf4j.impl";
+	public static final String SLF4J_IMPL_POINT = "org.slf4j.impl"; //$NON-NLS-1$
 
 	private static ILoggerFactory s_loggerFactory;
 
@@ -47,21 +47,21 @@ public class ExtensionPointLoader
 		IConfigurationElement elem = elems[0];
 		try
 		{
-			s_loggerFactory = (ILoggerFactory)elem.createExecutableExtension("loggerFactory");
+			s_loggerFactory = (ILoggerFactory)elem.createExecutableExtension("loggerFactory"); //$NON-NLS-1$
 		}
 		catch(CoreException e)
 		{
 		}
 		try
 		{
-			s_markerFactory = (IMarkerFactory)elem.createExecutableExtension("markerFactory");
+			s_markerFactory = (IMarkerFactory)elem.createExecutableExtension("markerFactory"); //$NON-NLS-1$
 		}
 		catch(CoreException e)
 		{
 		}
 		try
 		{
-			s_mdcAdapter = (MDCAdapter)elem.createExecutableExtension("mdcAdapter");
+			s_mdcAdapter = (MDCAdapter)elem.createExecutableExtension("mdcAdapter"); //$NON-NLS-1$
 		}
 		catch(CoreException e)
 		{
