@@ -81,11 +81,11 @@ public class JNLPModel extends SAXModel
 		}
 	}
 
-	private String m_codeBase = "$$codebase";
+	private String m_codeBase = "$$codebase"; //$NON-NLS-1$
 
 	private String m_description;
 
-	private String m_href = "$$name";
+	private String m_href = "$$name"; //$NON-NLS-1$
 
 	private boolean m_offLineAllowed = true;
 
@@ -93,7 +93,7 @@ public class JNLPModel extends SAXModel
 
 	private Map<String, List<Resource>> m_resourcesByPlatform = new LinkedHashMap<String, List<Resource>>();
 
-	private String m_specVersion = "1.5+";
+	private String m_specVersion = "1.5+"; //$NON-NLS-1$
 
 	private String m_title;
 
@@ -151,19 +151,19 @@ public class JNLPModel extends SAXModel
 		receiver.startDocument();
 		AttributesImpl attrs = new AttributesImpl();
 		if(m_specVersion != null)
-			Utils.addAttribute(attrs, "spec", m_specVersion);
+			Utils.addAttribute(attrs, "spec", m_specVersion); //$NON-NLS-1$
 		if(m_codeBase != null)
-			Utils.addAttribute(attrs, "codebase", m_codeBase);
+			Utils.addAttribute(attrs, "codebase", m_codeBase); //$NON-NLS-1$
 		if(m_version != null)
-			Utils.addAttribute(attrs, "version", m_version);
+			Utils.addAttribute(attrs, "version", m_version); //$NON-NLS-1$
 		if(m_href != null)
-			Utils.addAttribute(attrs, "href", m_href);
-		startElement(receiver, "jnlp", attrs);
+			Utils.addAttribute(attrs, "href", m_href); //$NON-NLS-1$
+		startElement(receiver, "jnlp", attrs); //$NON-NLS-1$
 		emitInformation(receiver);
 		emitSecurity(receiver);
-		emitBooleanElement(receiver, "component-desc");
+		emitBooleanElement(receiver, "component-desc"); //$NON-NLS-1$
 		emitResources(receiver);
-		endElement(receiver, "jnlp");
+		endElement(receiver, "jnlp"); //$NON-NLS-1$
 		receiver.endDocument();
 	}
 
@@ -184,17 +184,17 @@ public class JNLPModel extends SAXModel
 
 	void emitInformation(ContentHandler receiver) throws SAXException
 	{
-		startElement(receiver, "information");
+		startElement(receiver, "information"); //$NON-NLS-1$
 
 		if(m_title != null)
-			emitTextElement(receiver, "title", m_title);
+			emitTextElement(receiver, "title", m_title); //$NON-NLS-1$
 		if(m_vendor != null)
-			emitTextElement(receiver, "vendor", m_vendor);
+			emitTextElement(receiver, "vendor", m_vendor); //$NON-NLS-1$
 		if(m_description != null)
-			emitTextElement(receiver, "description", m_description);
+			emitTextElement(receiver, "description", m_description); //$NON-NLS-1$
 		if(m_offLineAllowed)
-			emitBooleanElement(receiver, "offline-allowed");
-		endElement(receiver, "information");
+			emitBooleanElement(receiver, "offline-allowed"); //$NON-NLS-1$
+		endElement(receiver, "information"); //$NON-NLS-1$
 	}
 
 	void emitResources(ContentHandler receiver) throws SAXException
@@ -208,25 +208,25 @@ public class JNLPModel extends SAXModel
 
 			Resource first = resourceList.get(0);
 			if(first.getOs() != null)
-				Utils.addAttribute(attrs, "os", first.getOs());
+				Utils.addAttribute(attrs, "os", first.getOs()); //$NON-NLS-1$
 			if(first.getArch() != null)
-				Utils.addAttribute(attrs, "arch", first.getArch());
+				Utils.addAttribute(attrs, "arch", first.getArch()); //$NON-NLS-1$
 
-			startElement(receiver, "resources", attrs);
+			startElement(receiver, "resources", attrs); //$NON-NLS-1$
 			for(int idx = 0; idx < top; ++idx)
 			{
 				Resource resource = resourceList.get(idx);
 				resource.toSax(receiver, null, null, resource.getDefaultTag());
 			}
-			endElement(receiver, "resources");
+			endElement(receiver, "resources"); //$NON-NLS-1$
 			attrs.clear();
 		}
 	}
 
 	void emitSecurity(ContentHandler receiver) throws SAXException
 	{
-		startElement(receiver, "security");
-		emitBooleanElement(receiver, "all-permissions");
-		endElement(receiver, "security");
+		startElement(receiver, "security"); //$NON-NLS-1$
+		emitBooleanElement(receiver, "all-permissions"); //$NON-NLS-1$
+		endElement(receiver, "security"); //$NON-NLS-1$
 	}
 }

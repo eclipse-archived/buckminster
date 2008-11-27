@@ -51,14 +51,14 @@ public class JNLPVersionModel extends SAXModel
 		@Override
 		public String getDefaultTag()
 		{
-			return "platform";
+			return "platform"; //$NON-NLS-1$
 		}
 
 		@Override
 		void emitContent(ContentHandler receiver) throws SAXException
 		{
 			super.emitContent(receiver);
-			emitTextElement(receiver, "product-version-id", m_productVersionId);
+			emitTextElement(receiver, "product-version-id", m_productVersionId); //$NON-NLS-1$
 		}
 	}
 
@@ -106,7 +106,7 @@ public class JNLPVersionModel extends SAXModel
 
 		public String getDefaultTag()
 		{
-			return "resource";
+			return "resource"; //$NON-NLS-1$
 		}
 
 		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
@@ -119,14 +119,14 @@ public class JNLPVersionModel extends SAXModel
 
 		void emitContent(ContentHandler receiver) throws SAXException
 		{
-			startElement(receiver, "pattern");
-			emitTextElement(receiver, "name", m_name);
-			emitTextElement(receiver, "version-id", m_versionId);
-			emitTextElements(receiver, "os", m_oss);
-			emitTextElements(receiver, "arch", m_archs);
-			emitTextElements(receiver, "locale", m_locales);
-			endElement(receiver, "pattern");
-			emitTextElement(receiver, "file", m_file);
+			startElement(receiver, "pattern"); //$NON-NLS-1$
+			emitTextElement(receiver, "name", m_name); //$NON-NLS-1$
+			emitTextElement(receiver, "version-id", m_versionId); //$NON-NLS-1$
+			emitTextElements(receiver, "os", m_oss); //$NON-NLS-1$
+			emitTextElements(receiver, "arch", m_archs); //$NON-NLS-1$
+			emitTextElements(receiver, "locale", m_locales); //$NON-NLS-1$
+			endElement(receiver, "pattern"); //$NON-NLS-1$
+			emitTextElement(receiver, "file", m_file); //$NON-NLS-1$
 		}
 	}
 
@@ -156,10 +156,10 @@ public class JNLPVersionModel extends SAXModel
 	public void toSax(ContentHandler receiver) throws SAXException
 	{
 		receiver.startDocument();
-		startElement(receiver, "jnlp-versions");
+		startElement(receiver, "jnlp-versions"); //$NON-NLS-1$
 		for(Resource resource : m_resources)
 			resource.toSax(receiver, null, null, resource.getDefaultTag());
-		endElement(receiver, "jnlp-versions");
+		endElement(receiver, "jnlp-versions"); //$NON-NLS-1$
 		receiver.endDocument();
 	}
 }
