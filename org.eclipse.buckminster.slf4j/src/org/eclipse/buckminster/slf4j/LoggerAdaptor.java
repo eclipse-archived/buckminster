@@ -158,16 +158,16 @@ public class LoggerAdaptor extends MarkerIgnoringBase
 			m_logger.warning(MessageFormatter.format(format, arg));
 	}
 
-	public void warn(String format, Object[] argArray)
-	{
-		if(m_logger.isWarningEnabled())
-			m_logger.warning(MessageFormatter.arrayFormat(format, argArray));
-	}
-
 	public void warn(String format, Object arg1, Object arg2)
 	{
 		if(m_logger.isWarningEnabled())
 			m_logger.warning(MessageFormatter.format(format, arg1, arg2));
+	}
+
+	public void warn(String format, Object[] argArray)
+	{
+		if(m_logger.isWarningEnabled())
+			m_logger.warning(MessageFormatter.arrayFormat(format, argArray));
 	}
 
 	public void warn(String msg, Throwable t)
