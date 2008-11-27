@@ -130,6 +130,8 @@ public class Messages extends NLS
 
 	public static String console_logger_level_with_colon;
 
+	public static String content;
+
 	public static String continue_on_error;
 
 	public static String contributor;
@@ -187,6 +189,8 @@ public class Messages extends NLS
 	public static String extensions;
 
 	public static String external_save_as;
+
+	public static String feed;
 
 	public static String file_does_not_exist;
 
@@ -355,6 +359,10 @@ public class Messages extends NLS
 	public static String publish;
 
 	public static String read_only_in_paranthesis;
+
+	public static String refresh;
+
+	public static String refresh_component_explorer;
 
 	public static String refresh_meta_data;
 

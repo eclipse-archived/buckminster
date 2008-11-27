@@ -15,6 +15,7 @@ import org.eclipse.buckminster.generic.ui.GenericUiPlugin;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
 import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
 import org.eclipse.buckminster.ui.providers.BuckminsterLabelProvider;
@@ -108,7 +109,7 @@ public class ComponentBrowserView extends ViewPart
 	}
 	private void hookContextMenu()
 	{
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener()
 		{
@@ -140,7 +141,7 @@ public class ComponentBrowserView extends ViewPart
 		Object obj = ((IStructuredSelection)selection).getFirstElement();
 
 		// Other plugins can contribute actions to "default" 
-		manager.add(new Separator("default"));
+		manager.add(new Separator("default")); //$NON-NLS-1$
 		
 		if(obj instanceof IAdaptable)
 		{
@@ -164,9 +165,9 @@ public class ComponentBrowserView extends ViewPart
 
 	private void makeActions()
 	{
-		m_viewInBrowser = new ViewInBrowserAction(m_viewer, true, "Content", false);
-		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, "Content", false);
-		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, "Feed", true);
+		m_viewInBrowser = new ViewInBrowserAction(m_viewer, true, Messages.content, false);
+		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, Messages.content, false);
+		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, Messages.feed, true);
 		
 		m_refreshAction = new Action()
 		{
@@ -177,9 +178,9 @@ public class ComponentBrowserView extends ViewPart
 				m_viewer.setInput(getViewSite());
 			}
 		};
-		m_refreshAction.setText("Refresh");
-		m_refreshAction.setToolTipText("Refresh Component Explorer");
-		m_refreshAction.setImageDescriptor(GenericUiPlugin.getImageDescriptor("icons/refresh.gif"));
+		m_refreshAction.setText(Messages.refresh);
+		m_refreshAction.setToolTipText(Messages.refresh_component_explorer);
+		m_refreshAction.setImageDescriptor(GenericUiPlugin.getImageDescriptor("icons/refresh.gif")); //$NON-NLS-1$
 		
 		doubleClickAction = new Action()
 		{
