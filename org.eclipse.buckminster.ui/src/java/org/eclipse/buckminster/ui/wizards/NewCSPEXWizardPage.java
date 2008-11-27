@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
@@ -23,10 +24,9 @@ public class NewCSPEXWizardPage extends NewBMFileWizardPage
 	 */
 	public NewCSPEXWizardPage(ISelection selection)
 	{
-		super(selection, "buckminster.cspex", "cspex");
-		setTitle("New Buckminster Component Specification Extension File");
-		setDescription("This wizard creates a new file with *.cspex extension that can be opened by an XML or text editor. "
-				+ "A CSPEX allows you to extend a generated specification.");
+		super(selection, "buckminster.cspex", "cspex"); //$NON-NLS-1$ //$NON-NLS-2$
+		setTitle(Messages.new_buckminster_component_specification_extension_file);
+		setDescription(Messages.new_buckminster_cspex_wizard_explanation_article);
 	}
 
 }
