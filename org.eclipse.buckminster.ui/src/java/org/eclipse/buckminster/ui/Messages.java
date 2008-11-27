@@ -6,6 +6,8 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.ui.messages"; //$NON-NLS-1$
 
+	public static String add_opml_bookmarks_to_rss_reader;
+
 	public static String components_known_to_buckminster;
 
 	public static String duplicate_0_found_in_plugin_1;
@@ -15,6 +17,8 @@ public class Messages extends NLS
 	public static String name;
 
 	public static String no_component_is_selected;
+
+	public static String not_yet_implemented;
 
 	public static String SplashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
 

@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.ui.actions;
 
 import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.swt.widgets.Shell;
 
 public class AddOPMLBookmarksAction extends AbstractOPMLAction
@@ -19,6 +20,6 @@ public class AddOPMLBookmarksAction extends AbstractOPMLAction
 	protected void run(OPML opml, Shell shell)
 	{
 		// TODO Implement OPML Export
-		showMessage("Not yet implemented", "Add OPML bookmarks to RSS reader");
+		showMessage(Messages.not_yet_implemented, Messages.add_opml_bookmarks_to_rss_reader);
 	}
 }
