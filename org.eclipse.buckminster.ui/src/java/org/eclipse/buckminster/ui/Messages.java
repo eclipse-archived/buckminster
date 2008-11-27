@@ -48,6 +48,8 @@ public class Messages extends NLS
 
 	public static String an_error_occured_when_creating_the_file;
 
+	public static String ant_logger_level_with_colon;
+
 	public static String artifact;
 
 	public static String artifact_path_with_dash;
@@ -76,6 +78,10 @@ public class Messages extends NLS
 
 	public static String buckminster_extensions;
 
+	public static String buckminster_preferences;
+
+	public static String buckminster_project_folder;
+
 	public static String cannot_get_attribute_names_for_the_selected_component;
 
 	public static String category;
@@ -83,6 +89,8 @@ public class Messages extends NLS
 	public static String certificate_details;
 
 	public static String certificate_details_with_dots;
+
+	public static String clear_url_cache;
 
 	public static String command;
 
@@ -98,9 +106,17 @@ public class Messages extends NLS
 
 	public static String confirm_overwrite;
 
+	public static String connection_retry_count;
+
+	public static String connection_retry_delay_in_seconds;
+
+	public static String console_logger_level_with_colon;
+
 	public static String continue_on_error;
 
 	public static String contributor;
+
+	public static String copy_eclipse_log_events_to_console;
 
 	public static String core_plugin_initialized;
 
@@ -125,6 +141,8 @@ public class Messages extends NLS
 	public static String duplicate_0_found_in_plugin_1;
 
 	public static String duplicity_of_key_0;
+
+	public static String eclipse_logger_level_with_colon;
 
 	public static String edit;
 
@@ -205,6 +223,8 @@ public class Messages extends NLS
 	public static String materialization_with_colon;
 
 	public static String materializing;
+
+	public static String max_number_of_parallel_materializations;
 
 	public static String move_down;
 
@@ -290,6 +310,8 @@ public class Messages extends NLS
 
 	public static String read_only_in_paranthesis;
 
+	public static String refresh_meta_data;
+
 	public static String release_path_with_colon;
 
 	public static String remove;
@@ -301,6 +323,8 @@ public class Messages extends NLS
 	public static String resolve_and_materialize;
 
 	public static String resolve_to_wizard;
+
+	public static String resolver_order;
 
 	public static String resolving_qurey;
 
@@ -317,6 +341,8 @@ public class Messages extends NLS
 	public static String short_description_with_colon;
 
 	public static String show_details;
+
+	public static String site_name;
 
 	public static String skip_component_with_colon;
 
@@ -339,6 +365,8 @@ public class Messages extends NLS
 	public static String timestamp_must_conform_to_format_with_colon;
 
 	public static String timestamp_with_colon;
+
+	public static String troubleshooting;
 
 	public static String type;
 

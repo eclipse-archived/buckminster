@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.resolver.IResolverFactory;
 import org.eclipse.buckminster.core.resolver.ResolverFactoryMaintainer;
 import org.eclipse.buckminster.runtime.IBuckminsterPreferenceConstants;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -70,7 +71,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 	public DynamicPreferencePage()
 	{
 		super(GRID);
-		setDescription("Buckminster preferences");
+		setDescription(Messages.buckminster_preferences);
 		setPreferenceStore(UiPlugin.getDefault().getBuckminsterPreferenceStore());
 	}
 
@@ -254,25 +255,25 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 	@Override
 	protected void createFieldEditors()
 	{
-		addField(new StringFieldEditor(SITE_NAME, "Site name", getFieldEditorParent()));
-		addField(new DirectoryFieldEditor(BUCKMINSTER_PROJECT_CONTENTS, "Buckminster project folder", getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_CONSOLE, "Console logger level:", LogLevel.values(), getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, "Eclipse logger level:", LogLevel.values(), getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, "Ant logger level:", LogLevel.values(), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, "Copy Eclipse log events to Console", getFieldEditorParent()));
-		IntegerFieldEditor intEditor = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, "Max number of parallel materializations", getFieldEditorParent());
+		addField(new StringFieldEditor(SITE_NAME, Messages.site_name, getFieldEditorParent()));
+		addField(new DirectoryFieldEditor(BUCKMINSTER_PROJECT_CONTENTS, Messages.buckminster_project_folder, getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_CONSOLE, Messages.console_logger_level_with_colon, LogLevel.values(), getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, Messages.eclipse_logger_level_with_colon, LogLevel.values(), getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, Messages.ant_logger_level_with_colon, LogLevel.values(), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, Messages.copy_eclipse_log_events_to_console, getFieldEditorParent()));
+		IntegerFieldEditor intEditor = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, Messages.max_number_of_parallel_materializations, getFieldEditorParent());
 		intEditor.setValidRange(1, 12);
 		addField(intEditor);
 
-		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_COUNT, "Connection retry count", getFieldEditorParent());
+		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_COUNT, Messages.connection_retry_count, getFieldEditorParent());
 		intEditor.setValidRange(0, 5);
 		addField(intEditor);
 
-		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_DELAY, "Connection retry delay (seconds)", getFieldEditorParent());
+		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_DELAY, Messages.connection_retry_delay_in_seconds, getFieldEditorParent());
 		intEditor.setValidRange(0, 60);
 		addField(intEditor);
 
-		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, "Resolver order", getFieldEditorParent()));
+		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, Messages.resolver_order, getFieldEditorParent()));
 
 		IResolverFactory[] factories = ResolverFactoryMaintainer.getInstance().getResolverFactories();
 		int top = factories.length;
@@ -289,7 +290,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 			// We need a parent that will allow us to switch pane
 			// dependent on what resolver factory that is selected
 			//
-			NestedFieldEditor resolvers = new NestedFieldEditor("", getFieldEditorParent());
+			NestedFieldEditor resolvers = new NestedFieldEditor("", getFieldEditorParent()); //$NON-NLS-1$
 			addField(resolvers);
 			m_resolversParent = resolvers.getControl();
 			for(int idx = 0; idx < top; ++idx)
@@ -311,8 +312,8 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		Group tsGroup = new Group(getFieldEditorParent(), SWT.NONE);
 		tsGroup.setLayout(new GridLayout(2, false));
 		tsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		tsGroup.setText("Troubleshooting");
-		UiUtils.createPushButton(tsGroup, "Clear URL cache", new SelectionAdapter()
+		tsGroup.setText(Messages.troubleshooting);
+		UiUtils.createPushButton(tsGroup, Messages.clear_url_cache, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -323,7 +324,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 			}
 		});
 
-		UiUtils.createPushButton(tsGroup, "Refresh Meta-data", new SelectionAdapter()
+		UiUtils.createPushButton(tsGroup, Messages.refresh_meta_data, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent ev)
