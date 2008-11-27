@@ -14,13 +14,13 @@ package org.eclipse.buckminster.runtime;
  */
 public interface IFileInfo
 {
-	public static final String PROPERTY_CONTENT_TYPE = "contentType";
+	public static final String PROPERTY_CONTENT_TYPE = "contentType"; //$NON-NLS-1$
 
-	public static final String PROPERTY_LAST_MODIFIED = "lastModified";
+	public static final String PROPERTY_LAST_MODIFIED = "lastModified"; //$NON-NLS-1$
 
-	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
 
-	public static final String PROPERTY_SIZE = "size";
+	public static final String PROPERTY_SIZE = "size"; //$NON-NLS-1$
 
 	/**
 	 * @return the contentType (may return null)

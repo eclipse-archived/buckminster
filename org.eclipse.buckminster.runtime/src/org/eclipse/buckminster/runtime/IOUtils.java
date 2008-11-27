@@ -123,7 +123,7 @@ public class IOUtils
 		}
 		catch(URISyntaxException e)
 		{
-			throw new IllegalArgumentException("Unable to convert String into URI: " + uriStr);
+			throw new IllegalArgumentException("Unable to convert String into URI: " + uriStr); //$NON-NLS-1$
 		}
 	}
 
@@ -146,7 +146,7 @@ public class IOUtils
 		}
 		catch(URISyntaxException e)
 		{
-			throw new IllegalArgumentException("Unable to convert URL into URI: " + url);
+			throw new IllegalArgumentException("Unable to convert URL into URI: " + url); //$NON-NLS-1$
 		}
 	}
 
@@ -185,7 +185,7 @@ public class IOUtils
 		}
 		catch(MalformedURLException e)
 		{
-			throw new IllegalArgumentException("Unable to convert URI into URL: " + uri);
+			throw new IllegalArgumentException("Unable to convert URI into URL: " + uri); //$NON-NLS-1$
 		}
 	}
 }

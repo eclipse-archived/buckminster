@@ -177,8 +177,8 @@ public class Logger
 			streams[idx] = sysStream;
 			while(--idx >= 0)
 			{
-				ILogReceiver receiver = (ILogReceiver)elems[idx].createExecutableExtension("class");
-				streams[idx] = receiver.start("Buckminster log", "org.eclipse.ui.MessageConsole", true, errorStream);
+				ILogReceiver receiver = (ILogReceiver)elems[idx].createExecutableExtension("class"); //$NON-NLS-1$
+				streams[idx] = receiver.start("Buckminster log", "org.eclipse.ui.MessageConsole", true, errorStream); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return new PrintStream(new MultiTeeOutputStream(streams), true);
 		}
@@ -194,7 +194,7 @@ public class Logger
 		boolean hasSeverityPrefix = false;
 		String msg = status.getMessage();
 		if(msg != null)
-			hasSeverityPrefix = msg.startsWith("ERROR") || msg.startsWith("WARN") || msg.startsWith("INFO");
+			hasSeverityPrefix = msg.startsWith("ERROR") || msg.startsWith("WARN") || msg.startsWith("INFO"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		for(int idx = 0; idx < indent; ++idx)
 			out.print(' ');
@@ -206,13 +206,13 @@ public class Logger
 			case IStatus.CANCEL:
 				return;
 			case IStatus.ERROR:
-				out.print("ERROR: ");
+				out.print("ERROR: "); //$NON-NLS-1$
 				break;
 			case IStatus.INFO:
-				out.print("INFO:  ");
+				out.print("INFO:  "); //$NON-NLS-1$
 				break;
 			case IStatus.WARNING:
-				out.print("WARN:  ");
+				out.print("WARN:  "); //$NON-NLS-1$
 			}
 		}
 
@@ -228,12 +228,12 @@ public class Logger
 
 	private final ILog m_log;
 
-	public static final String BUILDER_LOG_RECEIVER_POINT = Buckminster.PLUGIN_ID + ".logReceivers";
+	public static final String BUILDER_LOG_RECEIVER_POINT = Buckminster.PLUGIN_ID + ".logReceivers"; //$NON-NLS-1$
 
 	public Logger(Bundle bundle)
 	{
 		if(bundle == null)
-			throw new IllegalArgumentException("The bundle for a logger cannot be null");
+			throw new IllegalArgumentException("The bundle for a logger cannot be null"); //$NON-NLS-1$
 		m_log = Platform.getLog(bundle);
 	}
 

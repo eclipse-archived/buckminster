@@ -9,11 +9,11 @@ package org.eclipse.buckminster.runtime;
 
 public interface IBuckminsterPreferenceConstants
 {
-	public static final String LOG_LEVEL_CONSOLE = "logLevelConsole";
+	public static final String LOG_LEVEL_CONSOLE = "logLevelConsole"; //$NON-NLS-1$
 
-	public static final String LOG_LEVEL_ECLIPSE_LOGGER = "logLevelEclipseLogger";
+	public static final String LOG_LEVEL_ECLIPSE_LOGGER = "logLevelEclipseLogger"; //$NON-NLS-1$
 
-	public static final String LOG_LEVEL_ANT_LOGGER = "logLevelAntLogger";
+	public static final String LOG_LEVEL_ANT_LOGGER = "logLevelAntLogger"; //$NON-NLS-1$
 
 	public static final int LOG_LEVEL_CONSOLE_DEFAULT = Logger.INFO;
 
@@ -21,29 +21,29 @@ public interface IBuckminsterPreferenceConstants
 
 	public static final int LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT = Logger.WARNING;
 
-	public static final String LOG_ECLIPSE_TO_CONSOLE = "logEclipseToConsole";
+	public static final String LOG_ECLIPSE_TO_CONSOLE = "logEclipseToConsole"; //$NON-NLS-1$
 
 	public static final boolean LOG_ECLIPSE_TO_CONSOLE_DEFAULT = false;
 
-	public static final String SITE_NAME = "siteName";
+	public static final String SITE_NAME = "siteName"; //$NON-NLS-1$
 
-	public static final String SITE_NAME_DEFAULT = "default";
+	public static final String SITE_NAME_DEFAULT = "default"; //$NON-NLS-1$
 
-	public static final String BUCKMINSTER_PROJECT_CONTENTS = "bmProjectContents";
+	public static final String BUCKMINSTER_PROJECT_CONTENTS = "bmProjectContents"; //$NON-NLS-1$
 
-	public static final String BUCKMINSTER_PROJECT_CONTENTS_DEFAULT = ".buckminster";
+	public static final String BUCKMINSTER_PROJECT_CONTENTS_DEFAULT = ".buckminster"; //$NON-NLS-1$
 
-	public static final String QUERY_RESOLVER_SORT_ORDER = "queryResolverSortOrder";
+	public static final String QUERY_RESOLVER_SORT_ORDER = "queryResolverSortOrder"; //$NON-NLS-1$
 
-	public static final String QUERY_RESOLVER_SORT_ORDER_DEFAULT = "rmap";
+	public static final String QUERY_RESOLVER_SORT_ORDER_DEFAULT = "rmap"; //$NON-NLS-1$
 
-	public static final String CUSTOM_QUERY_RESOLVER_SORT_ORDER = "customQueryResolverSort";
+	public static final String CUSTOM_QUERY_RESOLVER_SORT_ORDER = "customQueryResolverSort"; //$NON-NLS-1$
 
-	public static final String CONNECTION_RETRY_COUNT = "connectionRetryCount";
+	public static final String CONNECTION_RETRY_COUNT = "connectionRetryCount"; //$NON-NLS-1$
 
 	public static final int CONNECTION_RETRY_COUNT_DEFAULT = 3;
 
-	public static final String CONNECTION_RETRY_DELAY = "connectionRetryDelay";
+	public static final String CONNECTION_RETRY_DELAY = "connectionRetryDelay"; //$NON-NLS-1$
 
 	public static final int CONNECTION_RETRY_DELAY_DEFAULT = 1;
 }

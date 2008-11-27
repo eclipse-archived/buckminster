@@ -56,7 +56,7 @@ public abstract class URLUtils
 				{
 					StringBuilder bld = new StringBuilder();
 					bld.append(urlPath);
-					if(!urlPath.endsWith("/"))
+					if(!urlPath.endsWith("/")) //$NON-NLS-1$
 						bld.append('/');
 					bld.append(path.toPortableString());
 					urlPath = bld.toString();
@@ -85,7 +85,7 @@ public abstract class URLUtils
 	 */
 	public static URL appendTrailingSlash(URL url)
 	{
-		if(!url.getPath().endsWith("/"))
+		if(!url.getPath().endsWith("/")) //$NON-NLS-1$
 		{
 			try
 			{
@@ -152,7 +152,7 @@ public abstract class URLUtils
 	public static boolean isLocalURL(URL url)
 	{
 		String proto = url.getProtocol();
-		if(proto.equals("jar") || proto.equals("reference"))
+		if(proto.equals("jar") || proto.equals("reference")) //$NON-NLS-1$ //$NON-NLS-2$
 		{
 			String spec = url.getFile();
 			int sepIdx = spec.indexOf(':');
@@ -160,7 +160,7 @@ public abstract class URLUtils
 				return false;
 			proto = spec.substring(0, sepIdx);
 		}
-		return "file".equals(proto) || "platform".equals(proto) || proto.startsWith("bundle");
+		return "file".equals(proto) || "platform".equals(proto) || proto.startsWith("bundle"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	public static URI normalizeToURI(String repository, boolean asFolder) throws CoreException
@@ -177,7 +177,7 @@ public abstract class URLUtils
 
 			try
 			{
-				uri = new URI(repository.replaceAll("\\s", "%20"));
+				uri = new URI(repository.replaceAll("\\s", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			catch(URISyntaxException e2)
 			{
@@ -187,16 +187,16 @@ public abstract class URLUtils
 
 		boolean change = false;
 		String path = uri.getPath();
-		if(asFolder && !path.endsWith("/"))
+		if(asFolder && !path.endsWith("/")) //$NON-NLS-1$
 		{
-			path += "/";
+			path += "/"; //$NON-NLS-1$
 			change = true;
 		}
 
 		String scheme = uri.getScheme();
 		if(scheme == null)
 		{
-			scheme = "file";
+			scheme = "file"; //$NON-NLS-1$
 			change = true;
 		}
 
@@ -229,7 +229,7 @@ public abstract class URLUtils
 			{
 				try
 				{
-					return new URL(surl.replaceAll("\\s", "%20"));
+					return new URL(surl.replaceAll("\\s", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				catch(MalformedURLException me1)
 				{

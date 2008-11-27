@@ -24,7 +24,7 @@ public interface IURLConnectionProvider
 
 	public static final int MILLISECS_BETWEEN_RETRIES = 3000;
 
-	public static final String URL_CONNECTION_PROVIDERS_POINT = Buckminster.PLUGIN_ID + ".URLConnectionProviders";
+	public static final String URL_CONNECTION_PROVIDERS_POINT = Buckminster.PLUGIN_ID + ".URLConnectionProviders"; //$NON-NLS-1$
 
 	public URLConnection openConnection(URL url) throws IOException;
 }

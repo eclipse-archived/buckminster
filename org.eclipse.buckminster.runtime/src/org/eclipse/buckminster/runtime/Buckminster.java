@@ -16,9 +16,9 @@ import org.osgi.framework.BundleContext;
  */
 public class Buckminster extends LogAwarePlugin implements IPreferenceChangeListener, IBuckminsterPreferenceConstants
 {
-	public static final String NAMESPACE = "org.eclipse.buckminster";
+	public static final String NAMESPACE = "org.eclipse.buckminster"; //$NON-NLS-1$
 
-	public static final String PLUGIN_ID = "org.eclipse.buckminster.runtime";
+	public static final String PLUGIN_ID = "org.eclipse.buckminster.runtime"; //$NON-NLS-1$
 
 	private static Buckminster s_plugin;
 

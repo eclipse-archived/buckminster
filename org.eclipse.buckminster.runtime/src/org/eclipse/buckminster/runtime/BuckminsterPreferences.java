@@ -122,7 +122,7 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static String[] getQueryResolverSortOrder()
 	{
 		String qrso = s_prefsNode.get(QUERY_RESOLVER_SORT_ORDER, QUERY_RESOLVER_SORT_ORDER_DEFAULT);
-		return qrso.split(",");
+		return qrso.split(","); //$NON-NLS-1$
 	}
 
 	public static String getSiteName()

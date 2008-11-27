@@ -127,11 +127,11 @@ public abstract class BuckminsterException extends CoreException
 		{
 			SAXParseException se = (SAXParseException)t;
 			StringBuffer bld = new StringBuffer(msg);
-			bld.append(": ");
+			bld.append(": "); //$NON-NLS-1$
 			bld.append(se.getSystemId());
-			bld.append(" at line: ");
+			bld.append(" at line: "); //$NON-NLS-1$
 			bld.append(se.getLineNumber());
-			bld.append(" column: ");
+			bld.append(" column: "); //$NON-NLS-1$
 			bld.append(se.getColumnNumber());
 			msg = bld.toString();
 		}
@@ -142,7 +142,7 @@ public abstract class BuckminsterException extends CoreException
 	{
 		if(level > 0)
 		{
-			strm.print("[0");
+			strm.print("[0"); //$NON-NLS-1$
 			for(int idx = 1; idx < level; ++idx)
 			{
 				strm.print('.');
@@ -168,7 +168,7 @@ public abstract class BuckminsterException extends CoreException
 		Throwable cause = status.getException();
 		if(cause != null)
 		{
-			strm.print("Caused by: ");
+			strm.print("Caused by: "); //$NON-NLS-1$
 			if(stackTrace || !(msg.equals(cause.getMessage()) || msg.equals(cause.toString())))
 				deeplyPrint(cause, strm, stackTrace, level);
 		}
@@ -196,7 +196,7 @@ public abstract class BuckminsterException extends CoreException
 				Throwable cause = t.getCause();
 				if(cause != null)
 				{
-					strm.print("Caused by: ");
+					strm.print("Caused by: "); //$NON-NLS-1$
 					deeplyPrint(cause, strm, stackTrace, level);
 				}
 			}
