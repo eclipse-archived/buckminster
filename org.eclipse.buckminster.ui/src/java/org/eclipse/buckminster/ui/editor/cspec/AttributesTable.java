@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
@@ -35,7 +36,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extends StructuredTable<T>
 {
-	private static final String ERROR_MESSAGE_EMPTY_NAME = "Name can not be empty";
+	private static final String ERROR_MESSAGE_EMPTY_NAME = Messages.name_cannnot_be_empty;
 
 	private CSpecEditor m_editor;
 	private CSpecBuilder m_cspec;
@@ -136,7 +137,7 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 		layout.marginHeight = layout.marginWidth = 0;
 		composite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(composite, "Installer Hints", 1);
+		EditorUtils.createHeaderLabel(composite, Messages.installer_hints, 1);
 		
 		PropertiesTable ihTable = new PropertiesTable(m_installerHints);
 		ihTable.addTableModifyListener(FIELD_LISTENER);
@@ -145,7 +146,7 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 				composite,
 				ihTable,
 				null,
-				"Attribute - Installer Hint",
+				Messages.attribute_installer_hints_with_dash,
 				null,
 				null,
 				SWT.NONE);
@@ -162,20 +163,20 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 		layout.marginHeight = layout.marginWidth = 0;
 		docComposite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(docComposite, "Documentation", 1);
+		EditorUtils.createHeaderLabel(docComposite, Messages.documentation, 1);
 
 		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
 		m_documentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		m_documentationText.addModifyListener(FIELD_LISTENER);
 		
-		docComposite.setData("focusControl", m_documentationText);
+		docComposite.setData("focusControl", m_documentationText); //$NON-NLS-1$
 
 		return docComposite;
 	}
 	
 	public String[] getTableViewerColumnHeaders()
 	{
-		return new String[] {"Name", "Public"};
+		return new String[] {Messages.name, Messages.public_label};
 	}
 
 	public int[] getTableViewerColumnWeights()

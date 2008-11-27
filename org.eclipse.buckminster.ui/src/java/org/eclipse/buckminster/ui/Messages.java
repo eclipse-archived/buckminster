@@ -44,6 +44,8 @@ public class Messages extends NLS
 
 	public static String assign_console_support_with_colon;
 
+	public static String attribute_installer_hints_with_dash;
+
 	public static String bad_file_name;
 
 	public static String base_path_with_colon;
@@ -119,6 +121,8 @@ public class Messages extends NLS
 	public static String key_with_colon;
 
 	public static String name;
+
+	public static String name_cannnot_be_empty;
 
 	public static String name_with_colon;
 
