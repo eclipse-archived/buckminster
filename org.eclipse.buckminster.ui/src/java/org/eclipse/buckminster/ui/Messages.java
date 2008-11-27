@@ -132,6 +132,8 @@ public class Messages extends NLS
 
 	public static String container_0_does_not_exist;
 
+	public static String container_with_hotkey;
+
 	public static String content;
 
 	public static String continue_on_error;
@@ -196,7 +198,19 @@ public class Messages extends NLS
 
 	public static String feed;
 
+	public static String file_container_must_be_specified;
+
+	public static String file_container_must_exist;
+
 	public static String file_does_not_exist;
+
+	public static String file_extension_must_be_0;
+
+	public static String file_name_must_be_specified;
+
+	public static String file_name_must_be_valid;
+
+	public static String file_name_with_hotkey;
 
 	public static String file_with_colon;
 
@@ -352,6 +366,8 @@ public class Messages extends NLS
 
 	public static String project_is_not_open;
 
+	public static String project_must_be_writable;
+
 	public static String properties;
 
 	public static String properties_with_colon;
@@ -401,6 +417,8 @@ public class Messages extends NLS
 	public static String revision_with_colon;
 
 	public static String rmap_url_with_colon;
+
+	public static String select_new_file_container;
 
 	public static String selection_criteria;
 

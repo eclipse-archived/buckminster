@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
@@ -16,6 +17,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -44,7 +46,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 
 	protected NewBMFileWizardPage(ISelection selection, String fileName, String extension)
 	{
-		super("wizardPage");
+		super("wizardPage"); //$NON-NLS-1$
 		m_selection = selection;
 		m_fileName = fileName;
 		m_extension = extension;
@@ -61,7 +63,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Container:");
+		label.setText(Messages.container_with_hotkey);
 
 		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -75,7 +77,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		});
 
 		Button button = new Button(container, SWT.PUSH);
-		button.setText("Browse...");
+		button.setText(Messages.browse_with_dots);
 		button.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -85,7 +87,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 			}
 		});
 		label = new Label(container, SWT.NULL);
-		label.setText("&File name:");
+		label.setText(Messages.file_name_with_hotkey);
 
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -138,7 +140,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 	private void handleBrowse()
 	{
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace()
-				.getRoot(), false, "Select new file container");
+				.getRoot(), false, Messages.select_new_file_container);
 		if(dialog.open() == Window.OK)
 		{
 			Object[] result = dialog.getResult();
@@ -159,27 +161,27 @@ public abstract class NewBMFileWizardPage extends WizardPage
 
 		if(getContainerName().length() == 0)
 		{
-			updateStatus("File container must be specified");
+			updateStatus(Messages.file_container_must_be_specified);
 			return;
 		}
 		if(container == null || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0)
 		{
-			updateStatus("File container must exist");
+			updateStatus(Messages.file_container_must_exist);
 			return;
 		}
 		if(!container.isAccessible())
 		{
-			updateStatus("Project must be writable");
+			updateStatus(Messages.project_must_be_writable);
 			return;
 		}
 		if(fileName.length() == 0)
 		{
-			updateStatus("File name must be specified");
+			updateStatus(Messages.file_name_must_be_specified);
 			return;
 		}
 		if(fileName.replace('\\', '/').indexOf('/', 1) > 0)
 		{
-			updateStatus("File name must be valid");
+			updateStatus(Messages.file_name_must_be_valid);
 			return;
 		}
 		int dotLoc = fileName.lastIndexOf('.');
@@ -188,7 +190,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 			String ext = fileName.substring(dotLoc + 1);
 			if(ext.equalsIgnoreCase(m_extension) == false)
 			{
-				updateStatus("File extension must be \"" + m_extension + "\"");
+				updateStatus(NLS.bind(Messages.file_extension_must_be_0, m_extension));
 				return;
 			}
 		}
@@ -213,8 +215,8 @@ public abstract class NewBMFileWizardPage extends WizardPage
 	public String getFileName()
 	{
 		String fileName = fileText.getText();
-		if(!fileName.endsWith("." + m_extension))
-			fileName += "." + m_extension;
+		if(!fileName.endsWith("." + m_extension)) //$NON-NLS-1$
+			fileName += "." + m_extension; //$NON-NLS-1$
 		return fileName;
 	}
 
