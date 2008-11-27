@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.ui.actions;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.internal.CSpecEditorInput;
 import org.eclipse.swt.widgets.Shell;
@@ -46,7 +47,7 @@ public class ViewCSpecAction extends AbstractCSpecAction
 		}
 		catch(PartInitException e)
 		{
-			UiUtils.openError(page.getWorkbenchWindow().getShell(), "Unable to open editor", e);
+			UiUtils.openError(page.getWorkbenchWindow().getShell(), Messages.unable_to_open_editor, e);
 		}
 	}
 }
