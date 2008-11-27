@@ -164,6 +164,8 @@ public class Messages extends NLS
 
 	public static String key;
 
+	public static String key_cannot_be_empty;
+
 	public static String key_with_colon;
 
 	public static String main;

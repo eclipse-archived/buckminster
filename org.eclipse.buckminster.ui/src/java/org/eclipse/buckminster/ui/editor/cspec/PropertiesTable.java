@@ -10,6 +10,7 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.List;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
@@ -27,7 +28,7 @@ public class PropertiesTable extends SimpleTable<Property>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[] {"Key", "Value"};
+		return new String[] {Messages.key, Messages.value};
 	}
 
 	public int[] getColumnWeights()
@@ -57,7 +58,7 @@ public class PropertiesTable extends SimpleTable<Property>
 		switch(idx)
 		{
 		case 0:
-			return SimpleTable.createNotEmptyStringValidator("Key cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator(Messages.key_cannot_be_empty);
 		default:
 			return SimpleTable.getEmptyValidator();
 		}
