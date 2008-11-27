@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
@@ -23,10 +24,9 @@ public class NewCQueryWizardPage extends NewBMFileWizardPage
 	 */
 	public NewCQueryWizardPage(ISelection selection)
 	{
-		super(selection, "new_query.cquery", "cquery");
-		setTitle("New Buckminster Component Query Editor File");
-		setDescription("This wizard creates a new *.cquery file with that can be opened by a CQuery editor. "+
-				"A CQuery is used to create a Bill Of Materials of components and materialize them.");
+		super(selection, "new_query.cquery", "cquery"); //$NON-NLS-1$ //$NON-NLS-2$
+		setTitle(Messages.new_buckminster_component_query_editor_file);
+		setDescription(Messages.new_buckminster_cquery_wizard_explanation_article);
 
 	}
 }
