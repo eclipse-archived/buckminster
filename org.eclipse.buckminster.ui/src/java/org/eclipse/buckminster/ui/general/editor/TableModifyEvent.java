@@ -10,15 +10,18 @@ package org.eclipse.buckminster.ui.general.editor;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class TableModifyEvent<T>
 {
 	private ITable<T> m_table;
+
 	private TableModifyEventType m_eventType;
+
 	private int m_row;
+
 	private T m_changedTableRow;
-	
+
 	public TableModifyEvent(ITable<T> table, TableModifyEventType eventType, int row, T changedTableRow)
 	{
 		m_table = table;
@@ -27,23 +30,23 @@ public class TableModifyEvent<T>
 		m_changedTableRow = changedTableRow;
 	}
 
-	public TableModifyEventType getEventType()
-	{
-		return m_eventType;
-	}
-
-	public ITable<T> getTable()
-	{
-		return m_table;
-	}
-
 	public T getChangedTableRow()
 	{
 		return m_changedTableRow;
 	}
 
+	public TableModifyEventType getEventType()
+	{
+		return m_eventType;
+	}
+
 	public int getRow()
 	{
 		return m_row;
+	}
+
+	public ITable<T> getTable()
+	{
+		return m_table;
 	}
 }

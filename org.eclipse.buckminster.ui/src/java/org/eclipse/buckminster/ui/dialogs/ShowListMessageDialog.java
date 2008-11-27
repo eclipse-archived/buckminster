@@ -36,8 +36,8 @@ public class ShowListMessageDialog extends MessageDialog
 
 	private final Font m_font;
 
-	public ShowListMessageDialog(Shell shell, String title, String msg, String[] list, Font font,
-			int maxHeightHint, int maxWidthHint)
+	public ShowListMessageDialog(Shell shell, String title, String msg, String[] list, Font font, int maxHeightHint,
+			int maxWidthHint)
 	{
 		super(shell, title, null, msg, MessageDialog.NONE, new String[] { Messages.ok }, 0);
 		int shellStyle = this.getShellStyle();

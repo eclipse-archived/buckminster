@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 public class LabeledCombo extends Composite
 {
 	private final Label m_label;
+
 	private final Combo m_combo;
 
 	public LabeledCombo(Composite parent, int style)
@@ -45,37 +46,9 @@ public class LabeledCombo extends Composite
 		m_combo.add(string, index);
 	}
 
-	@Override
-	public void setEnabled(boolean flag)
-	{
-		m_label.setEnabled(flag);
-		m_combo.setEnabled(flag);
-		super.setEnabled(flag);
-	}
-
-	public void setLabel(String labelText)
-	{
-		m_label.setText(labelText);
-	}
-
-	public void select(int index)
-	{
-		m_combo.select(index);
-	}
-
 	public void addSelectionListener(SelectionListener listener)
 	{
 		m_combo.addSelectionListener(listener);
-	}
-
-	public void removeSelectionListener(SelectionListener listener)
-	{
-		m_combo.removeSelectionListener(listener);
-	}
-
-	public int indexOf(String string)
-	{
-		return m_combo.indexOf(string);
 	}
 
 	public String getItem(int index)
@@ -93,8 +66,36 @@ public class LabeledCombo extends Composite
 		return m_combo.getSelectionIndex();
 	}
 
+	public int indexOf(String string)
+	{
+		return m_combo.indexOf(string);
+	}
+
+	public void removeSelectionListener(SelectionListener listener)
+	{
+		m_combo.removeSelectionListener(listener);
+	}
+
+	public void select(int index)
+	{
+		m_combo.select(index);
+	}
+
+	@Override
+	public void setEnabled(boolean flag)
+	{
+		m_label.setEnabled(flag);
+		m_combo.setEnabled(flag);
+		super.setEnabled(flag);
+	}
+
 	public void setItems(String[] items)
 	{
 		m_combo.setItems(items);
+	}
+
+	public void setLabel(String labelText)
+	{
+		m_label.setText(labelText);
 	}
 }

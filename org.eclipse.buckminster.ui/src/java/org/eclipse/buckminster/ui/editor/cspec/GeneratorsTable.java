@@ -23,13 +23,14 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 {
 	private CSpecEditor m_editor;
+
 	private CSpecBuilder m_cspecBuilder;
-	
+
 	public GeneratorsTable(CSpecEditor editor, List<GeneratorBuilder> data, CSpecBuilder cspecBuilder)
 	{
 		super(data);
@@ -37,55 +38,21 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 		m_cspecBuilder = cspecBuilder;
 	}
 
-	public String[] getColumnHeaders()
-	{
-		return new String[]{Messages.name, Messages.attribute, Messages.component};
-	}
-
-	public int[] getColumnWeights()
-	{
-		return new int[]{40, 20, 20};
-	}
-
-	public Object[] toRowArray(GeneratorBuilder t)
-	{
-		Object[] array = new Object[getColumns()];
-		
-		array[0] = t.getName();
-		array[1] = t.getAttribute();
-		array[2] = t.getComponent();
-		
-		return array;
-	}
-
 	public GeneratorBuilder createRowClass()
 	{
 		return m_cspecBuilder.createGeneratorBuilder();
 	}
 
-	public void updateRowClass(GeneratorBuilder builder, Object[] args) throws ValidatorException
+	public String[] getColumnHeaders()
 	{
-		builder.setName(TextUtils.notEmptyString((String) args[0]));
-		builder.setAttribute(TextUtils.notEmptyString((String) args[1]));
-		builder.setComponent(TextUtils.notEmptyString((String) args[2]));
+		return new String[] { Messages.name, Messages.attribute, Messages.component };
 	}
 
-	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
+	public int[] getColumnWeights()
 	{
-		switch(idx)
-		{
-			case 0:
-				return getTextWidgetin(parent, idx, value);
-			case 1:
-				return getComboWidgetin(parent, idx, value, m_editor.getAttributeNames(null), SWT.NONE);
-			case 2:
-				return getComboWidgetin(parent, idx, value, m_editor.getComponentNames(), SWT.NONE);
-			default:
-				return getTextWidgetin(parent, idx, value);
-		}
+		return new int[] { 40, 20, 20 };
 	}
-	
+
 	@Override
 	public IValidator getFieldValidator(int idx)
 	{
@@ -98,5 +65,39 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 		default:
 			return SimpleTable.getEmptyValidator();
 		}
+	}
+
+	@Override
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
+	{
+		switch(idx)
+		{
+		case 0:
+			return getTextWidgetin(parent, idx, value);
+		case 1:
+			return getComboWidgetin(parent, idx, value, m_editor.getAttributeNames(null), SWT.NONE);
+		case 2:
+			return getComboWidgetin(parent, idx, value, m_editor.getComponentNames(), SWT.NONE);
+		default:
+			return getTextWidgetin(parent, idx, value);
+		}
+	}
+
+	public Object[] toRowArray(GeneratorBuilder t)
+	{
+		Object[] array = new Object[getColumns()];
+
+		array[0] = t.getName();
+		array[1] = t.getAttribute();
+		array[2] = t.getComponent();
+
+		return array;
+	}
+
+	public void updateRowClass(GeneratorBuilder builder, Object[] args) throws ValidatorException
+	{
+		builder.setName(TextUtils.notEmptyString((String)args[0]));
+		builder.setAttribute(TextUtils.notEmptyString((String)args[1]));
+		builder.setComponent(TextUtils.notEmptyString((String)args[2]));
 	}
 }

@@ -33,18 +33,39 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 {
 	private Text m_basePathText;
+
 	private Text m_typeText;
+
 	private List<PathWrapper> m_paths = new ArrayList<PathWrapper>();
+
 	private SimpleTableEditor<PathWrapper> m_pathsEditor;
-	
+
 	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec)
 	{
 		super(editor, data, cspec);
+	}
+
+	@Override
+	public void enableFields(boolean enabled)
+	{
+		super.enableFields(enabled);
+
+		m_basePathText.setEnabled(enabled);
+		m_typeText.setEnabled(enabled);
+		m_pathsEditor.setEnabled(enabled);
+	}
+
+	@Override
+	public void fillStack(Composite stackComposite)
+	{
+		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
+		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
+		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@Override
@@ -52,25 +73,40 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 	{
 		return getCSpecBuilder().createArtifactBuilder();
 	}
-	
+
+	@Override
+	protected void refreshRow(ArtifactBuilder builder)
+	{
+		super.refreshRow(builder);
+
+		IPath basePath = builder.getBase();
+		m_basePathText.setText(TextUtils.notNullString(basePath == null
+				? null
+				: basePath.toOSString()));
+		m_typeText.setText(TextUtils.notNullString(builder.getType()));
+
+		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths);
+		m_pathsEditor.refresh();
+	}
+
 	@Override
 	protected void setRowValues(ArtifactBuilder builder) throws ValidatorException
 	{
 		super.setRowValues(builder);
-		
+
 		String basePathString = UiUtils.trimmedValue(m_basePathText);
 		IPath basePath = null;
-		
+
 		if(basePathString != null)
 		{
 			basePath = Path.fromOSString(basePathString);
 		}
 		builder.setBase(basePath);
-		
+
 		builder.setType(UiUtils.trimmedValue(m_typeText));
-		
+
 		Set<IPath> paths = builder.getPaths();
-		
+
 		if(paths != null)
 		{
 			builder.getPaths().clear();
@@ -78,10 +114,10 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		for(PathWrapper path : m_paths)
 		{
 			IPath p = path.getPath();
-			
+
 			if(p == null)
 				continue;
-			
+
 			try
 			{
 				builder.addPath(p);
@@ -91,14 +127,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 				throw new ValidatorException(e.getMessage());
 			}
 		}
-	}
-	
-	@Override
-	public void fillStack(Composite stackComposite)
-	{
-		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
-		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
-		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -118,20 +146,20 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
-		
+
 		UiUtils.createGridLabel(geComposite, Messages.base_path_with_colon, 1, 0, SWT.NONE);
 
 		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_basePathText.addModifyListener(FIELD_LISTENER);
-		
+
 		UiUtils.createGridLabel(geComposite, Messages.type_with_colon, 1, 0, SWT.NONE);
 
 		m_typeText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_typeText.addModifyListener(FIELD_LISTENER);
-		
+
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
-		
+
 		Label label = UiUtils.createGridLabel(geComposite, Messages.paths_with_colon, 1, 0, SWT.NONE);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
@@ -139,16 +167,10 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		PathsTable phTable = new PathsTable(m_paths);
 		phTable.addTableModifyListener(FIELD_LISTENER);
-		
-		m_pathsEditor = new SimpleTableEditor<PathWrapper>(
-				geComposite,
-				phTable,
-				null,
-				Messages.artifact_path_with_dash,
-				null,
-				null,
-				SWT.NONE);
-		
+
+		m_pathsEditor = new SimpleTableEditor<PathWrapper>(geComposite, phTable, null,
+				Messages.artifact_path_with_dash, null, null, SWT.NONE);
+
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 		m_pathsEditor.setLayoutData(gridData);
@@ -156,28 +178,5 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 
 		return geComposite;
-	}
-	
-	@Override
-	protected void refreshRow(ArtifactBuilder builder)
-	{
-		super.refreshRow(builder);
-		
-		IPath basePath = builder.getBase();
-		m_basePathText.setText(TextUtils.notNullString(basePath ==  null ? null : basePath.toOSString()));
-		m_typeText.setText(TextUtils.notNullString(builder.getType()));
-		
-		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths);
-		m_pathsEditor.refresh();
-	}
-
-	@Override
-	public void enableFields(boolean enabled)
-	{
-		super.enableFields(enabled);
-		
-		m_basePathText.setEnabled(enabled);
-		m_typeText.setEnabled(enabled);
-		m_pathsEditor.setEnabled(enabled);
 	}
 }

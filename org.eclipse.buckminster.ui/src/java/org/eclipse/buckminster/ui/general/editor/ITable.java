@@ -20,43 +20,47 @@ import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
 public interface ITable<T>
 {
 	/**
+	 * Adds table modify listener
+	 * 
+	 * @param table
+	 *            modify listener
+	 */
+	public void addTableModifyListener(ITableModifyListener<T> listener);
+
+	/**
 	 * Gets row of this data table
 	 * 
-	 * @param row row number
+	 * @param row
+	 *            row number
 	 * @return required row
 	 */
 	public T getRow(int row);
-	
+
 	/**
 	 * Gets all table rows
 	 * 
 	 * @return all rows
 	 */
-	public List<T> getRows();	
-	
-	/**
-	 * Removes row from this table
-	 * 
-	 * @param row row number
-	 */
-	public void removeRow(int row);
-	
+	public List<T> getRows();
+
 	/**
 	 * Refreshes data table
 	 */
 	public void refresh();
-	
+
 	/**
-	 * Adds table modify listener
+	 * Removes row from this table
 	 * 
-	 * @param table modify listener
+	 * @param row
+	 *            row number
 	 */
-	public void addTableModifyListener(ITableModifyListener<T> listener);
-	
+	public void removeRow(int row);
+
 	/**
 	 * Removes table modify listener
 	 * 
-	 * @param table modify listener
+	 * @param table
+	 *            modify listener
 	 */
 	public void removeTableModifyListener(ITableModifyListener<T> listener);
 }

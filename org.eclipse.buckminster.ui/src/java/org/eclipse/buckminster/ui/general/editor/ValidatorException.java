@@ -10,25 +10,25 @@ package org.eclipse.buckminster.ui.general.editor;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ValidatorException extends Exception
 {
 	private static final long serialVersionUID = -7184605046992342189L;
 
 	private String m_message;
-	
+
 	public ValidatorException(String message)
 	{
 		m_message = message;
 	}
-	
+
 	@Override
 	public String getMessage()
 	{
 		return m_message;
 	}
-	
+
 	@Override
 	public String toString()
 	{

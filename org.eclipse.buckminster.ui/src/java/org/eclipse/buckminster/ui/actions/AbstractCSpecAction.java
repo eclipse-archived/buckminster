@@ -46,13 +46,6 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 		run(m_selectedComponent, m_activePart.getSite().getShell());
 	}
 
-	protected abstract void run(CSpec cspec, Shell shell);
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_activePart = targetPart;
-	}
-
 	public void selectionChanged(IAction action, ISelection selection)
 	{
 		m_selectedComponent = null;
@@ -71,8 +64,15 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 		}
 
 		action.setEnabled(m_selectedComponent != null);
-		
+
 	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart)
+	{
+		m_activePart = targetPart;
+	}
+
+	protected abstract void run(CSpec cspec, Shell shell);
 
 	protected void setSelectedComponent(CSpec cspec)
 	{

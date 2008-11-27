@@ -23,7 +23,7 @@ public class DependenciesDataNode extends BasicTreeParentDataNode
 		super(Messages.dependencies);
 		for(Entry<String, ComponentRequest> d : dependencies.entrySet())
 		{
-			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getKey(), d.getValue(), 
+			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getKey(), d.getValue(),
 					ComponentReference.Mode.OUT)));
 		}
 	}

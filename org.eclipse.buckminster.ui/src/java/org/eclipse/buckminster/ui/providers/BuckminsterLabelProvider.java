@@ -34,147 +34,34 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-
 /**
  * A default LabelProvider for data elements found in Buckminster artifacts and views.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class BuckminsterLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider
 {
 	private Image m_projectImage;
+
 	private Image m_folderImage;
+
 	private Image m_fileImage;
+
 	private Image m_cspecImage;
+
 	private Image m_componentImage;
+
 	private Image m_rssImage;
+
 	private Image m_htmlImage;
+
 	private Image m_dependantImage;
+
 	private Image m_dependencyImage;
 
 	public BuckminsterLabelProvider()
 	{
-	}
-	
-	private Image getProjectImage()
-	{
-		if(m_projectImage == null)
-			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
-		return m_projectImage;
-	}
-	private Image getFolderImage()
-	{
-		if(m_folderImage == null)
-			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage(); //$NON-NLS-1$
-		return m_folderImage;
-	}
-	private Image getFileImage()
-	{
-		if(m_fileImage == null)
-			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
-		return m_fileImage;
-	}
-	private Image getCspecImage()
-	{
-		if(m_cspecImage == null)
-			m_cspecImage = UiPlugin.getImageDescriptor("icons/cspec.png").createImage(); //$NON-NLS-1$
-		return m_cspecImage;
-	}
-	private Image getComponentImage()
-	{
-		if(m_componentImage == null)
-			m_componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage(); //$NON-NLS-1$
-		return m_componentImage;
-	}
-	private Image getRssImage()
-	{
-		if(m_rssImage == null)
-			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage(); //$NON-NLS-1$
-		return m_rssImage;
-	}
-	private Image getHtmlImage()
-	{
-		if(m_htmlImage == null)
-			m_htmlImage = 	UiUtils.getImageDescriptor("file.html").createImage(); //$NON-NLS-1$
-		return m_htmlImage;
-	}
-	private Image getDependantImage()
-	{
-		if(m_dependantImage == null)
-			m_dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage(); //$NON-NLS-1$
-		return m_dependantImage;
-	}
-	private Image getDependencyImage()
-	{
-		if(m_dependencyImage == null)
-			m_dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage(); //$NON-NLS-1$
-		return m_dependencyImage;
-	}
-	
-	@Override
-	public Image getImage(Object selected)
-	{
-		Object element = selected;
-		if(selected instanceof ITreeDataNode)
-			element = ((ITreeDataNode)element).getData();
-		
-		if(element instanceof IProject)
-			return getProjectImage();
-
-		if(element instanceof IFolder)
-			return getFolderImage();
-
-		if(element instanceof IFile)
-		{
-			IFile file = (IFile) element;
-			ImageDescriptor imageDescriptor = UiUtils.getImageDescriptor(file);
-			return imageDescriptor == null ?
-						getFileImage() 
-					: 	UiUtils.getImage(imageDescriptor);
-		}
-		
-		if(element instanceof ICSpecData)
-			return getCspecImage();
-		
-		if(element instanceof IResolution)
-			return getComponentImage();
-		
-		// OPML stuff
-		if(element instanceof IOPML)
-			return getFolderImage();
-		
-		if(element instanceof IOutline)
-		{
-			// An outline that has sub-outlines is shown as a folder
-			//
-			List<? extends IOutline> outlines = ((IOutline)element).getOutlines();
-			if(((IOutline)element).getType() == OutlineType.UNKNOWN || ((IOutline)element).getType() == OutlineType.TEXT || (outlines != null && outlines.size() > 0))
-				return getFolderImage();
-			// An outline that is a link is shown as a browseable image
-			if(((IOutline)element).getType() == OutlineType.LINK)
-				return getHtmlImage();
-			return getRssImage();
-		}
-		if(element instanceof ComponentReference)
-			return ((ComponentReference)element).getMode() == ComponentReference.Mode.IN
-				? getDependantImage()
-				: getDependencyImage();
-
-		// Parents default to Folder
-		if(selected instanceof BasicTreeParentDataNode)
-			return getFolderImage();
-		
-		return null;
-	}
-
-	/**
-	 * Returns the name of an IResourceElement using getName(), else element.toString() is used.
-	 */
-	@Override
-	public String getText(Object element)
-	{
-		return getStyledText(element).toString();
 	}
 
 	@Override
@@ -196,9 +83,66 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			m_dependencyImage.dispose();
 		if(m_dependantImage != null)
 			m_dependantImage.dispose();
-		
+
 		// note - do not dispose of images that were not created !
 		super.dispose();
+	}
+
+	@Override
+	public Image getImage(Object selected)
+	{
+		Object element = selected;
+		if(selected instanceof ITreeDataNode)
+			element = ((ITreeDataNode)element).getData();
+
+		if(element instanceof IProject)
+			return getProjectImage();
+
+		if(element instanceof IFolder)
+			return getFolderImage();
+
+		if(element instanceof IFile)
+		{
+			IFile file = (IFile)element;
+			ImageDescriptor imageDescriptor = UiUtils.getImageDescriptor(file);
+			return imageDescriptor == null
+					? getFileImage()
+					: UiUtils.getImage(imageDescriptor);
+		}
+
+		if(element instanceof ICSpecData)
+			return getCspecImage();
+
+		if(element instanceof IResolution)
+			return getComponentImage();
+
+		// OPML stuff
+		if(element instanceof IOPML)
+			return getFolderImage();
+
+		if(element instanceof IOutline)
+		{
+			// An outline that has sub-outlines is shown as a folder
+			//
+			List<? extends IOutline> outlines = ((IOutline)element).getOutlines();
+			if(((IOutline)element).getType() == OutlineType.UNKNOWN
+					|| ((IOutline)element).getType() == OutlineType.TEXT || (outlines != null && outlines.size() > 0))
+				return getFolderImage();
+			// An outline that is a link is shown as a browseable image
+			if(((IOutline)element).getType() == OutlineType.LINK)
+				return getHtmlImage();
+			return getRssImage();
+		}
+		if(element instanceof ComponentReference)
+			return ((ComponentReference)element).getMode() == ComponentReference.Mode.IN
+					? getDependantImage()
+					: getDependencyImage();
+
+		// Parents default to Folder
+		if(selected instanceof BasicTreeParentDataNode)
+			return getFolderImage();
+
+		return null;
 	}
 
 	public StyledString getStyledText(Object element)
@@ -207,7 +151,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			element = ((ITreeDataNode)element).getData();
 		if(element instanceof IResource)
 			return new StyledString(((IResource)element).getName());
-		
+
 		if(element instanceof IResolution)
 		{
 			Resolution r = (Resolution)element;
@@ -243,7 +187,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			}
 			return bld;
 		}
-			
+
 		if(element instanceof ICSpecData)
 		{
 			return new StyledString(Messages.component_specification_and_cspec_in_paranthesis);
@@ -258,6 +202,78 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			return new StyledString(outline.getText());
 		}
 		return new StyledString(element.toString());
+	}
+
+	/**
+	 * Returns the name of an IResourceElement using getName(), else element.toString() is used.
+	 */
+	@Override
+	public String getText(Object element)
+	{
+		return getStyledText(element).toString();
+	}
+
+	private Image getComponentImage()
+	{
+		if(m_componentImage == null)
+			m_componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage(); //$NON-NLS-1$
+		return m_componentImage;
+	}
+
+	private Image getCspecImage()
+	{
+		if(m_cspecImage == null)
+			m_cspecImage = UiPlugin.getImageDescriptor("icons/cspec.png").createImage(); //$NON-NLS-1$
+		return m_cspecImage;
+	}
+
+	private Image getDependantImage()
+	{
+		if(m_dependantImage == null)
+			m_dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage(); //$NON-NLS-1$
+		return m_dependantImage;
+	}
+
+	private Image getDependencyImage()
+	{
+		if(m_dependencyImage == null)
+			m_dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage(); //$NON-NLS-1$
+		return m_dependencyImage;
+	}
+
+	private Image getFileImage()
+	{
+		if(m_fileImage == null)
+			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
+		return m_fileImage;
+	}
+
+	private Image getFolderImage()
+	{
+		if(m_folderImage == null)
+			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage(); //$NON-NLS-1$
+		return m_folderImage;
+	}
+
+	private Image getHtmlImage()
+	{
+		if(m_htmlImage == null)
+			m_htmlImage = UiUtils.getImageDescriptor("file.html").createImage(); //$NON-NLS-1$
+		return m_htmlImage;
+	}
+
+	private Image getProjectImage()
+	{
+		if(m_projectImage == null)
+			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
+		return m_projectImage;
+	}
+
+	private Image getRssImage()
+	{
+		if(m_rssImage == null)
+			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage(); //$NON-NLS-1$
+		return m_rssImage;
 	}
 
 }

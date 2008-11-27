@@ -40,25 +40,7 @@ public abstract class NewBMFileWizard extends Wizard
 
 	private NewBMFileWizardPage m_page;
 
-	/**
-	 * Sets the single page for this wizard and adds it as a wizard page
-	 * as expected in the callback to addPages.
-	 * A derived class should call this method with the wanted page in its
-	 * addPages method.
-	 * @param page the page to use
-	 */
-	protected void setPage(NewBMFileWizardPage page)
-	{
-		m_page = page;
-		addPage(m_page);
-	}
-
 	private ISelection m_selection;
-
-	protected ISelection getSelection()
-	{
-		return m_selection;
-	}
 
 	protected NewBMFileWizard()
 	{
@@ -69,6 +51,16 @@ public abstract class NewBMFileWizard extends Wizard
 	public String getContainerName()
 	{
 		return m_page.getContainerName();
+	}
+
+	/**
+	 * We will accept the m_selection in the workbench to see if we can initialize from it.
+	 * 
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection)
+	{
+		this.m_selection = selection;
 	}
 
 	/**
@@ -115,6 +107,39 @@ public abstract class NewBMFileWizard extends Wizard
 		return true;
 	}
 
+	protected ISelection getSelection()
+	{
+		return m_selection;
+	}
+
+	/**
+	 * Create the file without content. This default implementation returns empty content.
+	 */
+	protected InputStream openContentStream(String containerName, String fileName)
+	{
+		String contents = ""; //$NON-NLS-1$
+		return new ByteArrayInputStream(contents.getBytes());
+	}
+
+	/**
+	 * Sets the single page for this wizard and adds it as a wizard page as expected in the callback to addPages. A
+	 * derived class should call this method with the wanted page in its addPages method.
+	 * 
+	 * @param page
+	 *            the page to use
+	 */
+	protected void setPage(NewBMFileWizardPage page)
+	{
+		m_page = page;
+		addPage(m_page);
+	}
+
+	protected void throwCoreException(String message) throws CoreException
+	{
+		IStatus status = new Status(IStatus.ERROR, "org.eclipse.buckminster.bmview", IStatus.OK, message, null); //$NON-NLS-1$
+		throw new CoreException(status);
+	}
+
 	/**
 	 * The worker method. It will find the container, create the file if missing or just replace its contents, and open
 	 * the editor on the newly created file.
@@ -127,10 +152,10 @@ public abstract class NewBMFileWizard extends Wizard
 		IResource resource = root.findMember(new Path(containerName));
 		if(!resource.exists() || !(resource instanceof IContainer))
 		{
-			throwCoreException(NLS.bind(Messages.container_0_does_not_exist, containerName ));
+			throwCoreException(NLS.bind(Messages.container_0_does_not_exist, containerName));
 		}
 		IContainer container = (IContainer)resource;
-		
+
 		final IFile file = container.getFile(new Path(fileName));
 		try
 		{
@@ -165,32 +190,6 @@ public abstract class NewBMFileWizard extends Wizard
 			}
 		});
 		monitor.worked(1);
-	}
-
-	/**
-	 * Create the file without content. 
-	 * This default implementation returns empty content.
-	 */
-	protected InputStream openContentStream(String containerName, String fileName)
-	{
-		String contents = ""; //$NON-NLS-1$
-		return new ByteArrayInputStream(contents.getBytes());
-	}
-
-	protected void throwCoreException(String message) throws CoreException
-	{
-		IStatus status = new Status(IStatus.ERROR, "org.eclipse.buckminster.bmview", IStatus.OK, message, null); //$NON-NLS-1$
-		throw new CoreException(status);
-	}
-
-	/**
-	 * We will accept the m_selection in the workbench to see if we can initialize from it.
-	 * 
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection)
-	{
-		this.m_selection = selection;
 	}
 
 }

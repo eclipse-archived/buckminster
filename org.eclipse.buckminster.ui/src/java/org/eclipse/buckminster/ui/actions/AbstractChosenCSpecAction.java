@@ -60,7 +60,8 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 				break;
 			case 1:
 				IVersion vs = cr.getVersion();
-				lbl = vs == null ? "" : vs.toString(); //$NON-NLS-1$
+				lbl = vs == null
+						? "" : vs.toString(); //$NON-NLS-1$
 				break;
 			default:
 				lbl = null;
@@ -111,7 +112,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 				layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
 			}
 			table.setLayout(layout);
-			table.setSize(450,450);
+			table.setSize(450, 450);
 			table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 			m_viewer = new TableViewer(table);
@@ -126,8 +127,8 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 				}
 			});
 			List<Resolution> input = m_resolutions.size() > 15
-				? m_resolutions.subList(0, 15)
-				: m_resolutions;
+					? m_resolutions.subList(0, 15)
+					: m_resolutions;
 			m_viewer.setInput(input);
 			return superArea;
 		}
@@ -173,7 +174,8 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 		Shell shell = m_window.getShell();
 		try
 		{
-			ComponentsDialog dialog = new ComponentsDialog(shell, Messages.components_known_to_buckminster, WorkspaceInfo.getAllResolutions());
+			ComponentsDialog dialog = new ComponentsDialog(shell, Messages.components_known_to_buckminster,
+					WorkspaceInfo.getAllResolutions());
 			if(dialog.open() != Window.OK)
 				return;
 

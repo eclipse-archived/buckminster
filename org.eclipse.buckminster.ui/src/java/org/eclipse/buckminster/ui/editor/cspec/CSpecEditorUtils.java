@@ -25,18 +25,24 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class CSpecEditorUtils
 {
-	static class CSpecElementComparator implements Comparator<CSpecElementBuilder>
+	static class AttributeComparator implements Comparator<AttributeBuilder>
 	{
-		public int compare(CSpecElementBuilder o1, CSpecElementBuilder o2)
+		public int compare(AttributeBuilder o1, AttributeBuilder o2)
 		{
+			if(o1.isPublic() && !o2.isPublic())
+				return -1;
+
+			if(!o1.isPublic() && o2.isPublic())
+				return 1;
+
 			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
-	
+
 	static class ComponentComparator implements Comparator<IComponentName>
 	{
 		public int compare(IComponentName o1, IComponentName o2)
@@ -44,41 +50,35 @@ public class CSpecEditorUtils
 			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
-	
-	static class AttributeComparator implements Comparator<AttributeBuilder>
+
+	static class CSpecElementComparator implements Comparator<CSpecElementBuilder>
 	{
-		public int compare(AttributeBuilder o1, AttributeBuilder o2)
+		public int compare(CSpecElementBuilder o1, CSpecElementBuilder o2)
 		{
-			if(o1.isPublic() && !o2.isPublic())
-				return -1;
-			
-			if(!o1.isPublic() && o2.isPublic())
-				return 1;
-			
 			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
-	
+
 	static class PrerequisiteComparator implements Comparator<PrerequisiteBuilder>
 	{
 		public int compare(PrerequisiteBuilder o1, PrerequisiteBuilder o2)
 		{
 			int result = Trivial.compareAllowNull(o1.getComponentName(), o2.getComponentName());
-			
+
 			if(result != 0)
 				return result;
-			
+
 			result = Trivial.compareAllowNull(o1.getName(), o2.getName());
 
 			if(result != 0)
 				return result;
-			
+
 			result = Trivial.compareAllowNull(o1.getAlias(), o2.getAlias());
 
 			return result;
 		}
 	}
-	
+
 	static class PropertyComparator implements Comparator<Property>
 	{
 		public int compare(Property o1, Property o2)
@@ -88,60 +88,15 @@ public class CSpecEditorUtils
 	};
 
 	private static Comparator<CSpecElementBuilder> s_cspecElementComparator = new CSpecElementComparator();
+
 	private static Comparator<IComponentName> s_componentComparator = new ComponentComparator();
+
 	private static Comparator<AttributeBuilder> s_attributeComparator = new AttributeComparator();
+
 	private static Comparator<PrerequisiteBuilder> s_prerequisiteComparator = new PrerequisiteComparator();
+
 	private static Comparator<Property> s_propertyComparator = new PropertyComparator();
 
-	private CSpecEditorUtils()
-	{
-	}
-
-	public static Comparator<CSpecElementBuilder> getCSpecElementComparator()
-	{
-		return s_cspecElementComparator;
-	}
-
-	public static Comparator<IComponentName> getComponentComparator()
-	{
-		return s_componentComparator;
-	}
-
-	public static Comparator<AttributeBuilder> getAttributeComparator()
-	{
-		return s_attributeComparator;
-	}
-
-	public static Comparator<PrerequisiteBuilder> getPrerequisiteComparator()
-	{
-		return s_prerequisiteComparator;
-	}
-
-	public static Comparator<Property> getPropertyComparator()
-	{
-		return s_propertyComparator;
-	}
-	
-	public static void copyAndSortItems(Map<String,String> src, List<Property> trgt)
-	{
-		trgt.clear();
-		if(src != null)
-		{
-			List<Property> hlpList = new ArrayList<Property>();
-			for(String key : src.keySet())
-			{
-				hlpList.add(new Property(key, src.get(key)));
-			}
-			Property[] propertyArray = hlpList.toArray(new Property[0]);
-			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
-			
-			for(Property property : propertyArray)
-			{
-				trgt.add(property);
-			}
-		}
-	}
-	
 	public static void copyAndSortItems(Collection<IPath> src, List<PathWrapper> trgt)
 	{
 		trgt.clear();
@@ -154,27 +109,76 @@ public class CSpecEditorUtils
 			}
 			IPath[] pathArray = hlpList.toArray(new IPath[0]);
 			Arrays.sort(pathArray, EditorUtils.getPathComparator());
-			
+
 			for(IPath path : pathArray)
 			{
 				trgt.add(new PathWrapper(path));
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> void copyAndSortItems(Collection<T> src, List<? super T> trgt, Comparator<? super T> comparator)
 	{
 		trgt.clear();
 		if(src != null)
 		{
-			T[] pathArray = (T[]) src.toArray();
+			T[] pathArray = (T[])src.toArray();
 			Arrays.sort(pathArray, comparator);
-			
+
 			for(T path : pathArray)
 			{
 				trgt.add(path);
 			}
 		}
+	}
+
+	public static void copyAndSortItems(Map<String, String> src, List<Property> trgt)
+	{
+		trgt.clear();
+		if(src != null)
+		{
+			List<Property> hlpList = new ArrayList<Property>();
+			for(String key : src.keySet())
+			{
+				hlpList.add(new Property(key, src.get(key)));
+			}
+			Property[] propertyArray = hlpList.toArray(new Property[0]);
+			Arrays.sort(propertyArray, CSpecEditorUtils.getPropertyComparator());
+
+			for(Property property : propertyArray)
+			{
+				trgt.add(property);
+			}
+		}
+	}
+
+	public static Comparator<AttributeBuilder> getAttributeComparator()
+	{
+		return s_attributeComparator;
+	}
+
+	public static Comparator<IComponentName> getComponentComparator()
+	{
+		return s_componentComparator;
+	}
+
+	public static Comparator<CSpecElementBuilder> getCSpecElementComparator()
+	{
+		return s_cspecElementComparator;
+	}
+
+	public static Comparator<PrerequisiteBuilder> getPrerequisiteComparator()
+	{
+		return s_prerequisiteComparator;
+	}
+
+	public static Comparator<Property> getPropertyComparator()
+	{
+		return s_propertyComparator;
+	}
+
+	private CSpecEditorUtils()
+	{
 	}
 }

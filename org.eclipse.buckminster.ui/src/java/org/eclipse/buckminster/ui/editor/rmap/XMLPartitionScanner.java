@@ -2,11 +2,14 @@ package org.eclipse.buckminster.ui.editor.rmap;
 
 import org.eclipse.jface.text.rules.*;
 
-public class XMLPartitionScanner extends RuleBasedPartitionScanner {
+public class XMLPartitionScanner extends RuleBasedPartitionScanner
+{
 	public final static String XML_COMMENT = "__xml_comment"; //$NON-NLS-1$
+
 	public final static String XML_TAG = "__xml_tag"; //$NON-NLS-1$
 
-	public XMLPartitionScanner() {
+	public XMLPartitionScanner()
+	{
 
 		IToken xmlComment = new Token(XML_COMMENT);
 		IToken tag = new Token(XML_TAG);

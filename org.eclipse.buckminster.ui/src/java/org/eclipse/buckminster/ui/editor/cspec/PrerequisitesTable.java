@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 {
@@ -61,9 +61,15 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		m_attributeBuilder = attributeBuilder;
 	}
 
+	public PrerequisiteBuilder createRowClass()
+	{
+		return m_attributeBuilder.createPrerequisiteBuilder();
+	}
+
 	public String[] getColumnHeaders()
 	{
-		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor, Messages.optional };
+		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor,
+				Messages.optional };
 	}
 
 	public int[] getColumnWeights()
@@ -71,24 +77,25 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		return new int[] { 20, 10, 10, 0, 0 };
 	}
 
-	public Object[] toRowArray(PrerequisiteBuilder t)
+	@Override
+	public IValidator getRowValidator()
 	{
-		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
-				Boolean.valueOf(t.isOptional()) };
-	}
+		return new IValidator()
+		{
 
-	public PrerequisiteBuilder createRowClass()
-	{
-		return m_attributeBuilder.createPrerequisiteBuilder();
-	}
+			public void validate(Object... arg) throws ValidatorException
+			{
+				// Integer rowNum = (Integer) arg[0];
 
-	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
-	{
-		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
-		builder.setName(TextUtils.notEmptyString((String)args[1]));
-		builder.setAlias(TextUtils.notEmptyString((String)args[2]));
-		builder.setContributor(((Boolean)args[3]).booleanValue());
-		builder.setOptional(((Boolean)args[4]).booleanValue());
+				PrerequisiteBuilder prerequisite = toRowClass((Object[])arg[1]);
+
+				if((prerequisite.getName() == null || prerequisite.getName().length() == 0)
+						&& (prerequisite.getComponentName() == null || prerequisite.getComponentName().length() == 0))
+				{
+					throw new ValidatorException(Messages.name_or_component_has_to_be_entered);
+				}
+			}
+		};
 	}
 
 	@Override
@@ -103,9 +110,9 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		case 1:
 			m_attributeWidgetin = getAttributeWidgetin(parent, idx, value, m_editor
 					.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
-			
+
 			setAttributeItems();
-			
+
 			return m_attributeWidgetin;
 		case 2:
 			return getTextWidgetin(parent, idx, value);
@@ -118,32 +125,19 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		}
 	}
 
-	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
+	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
-		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
-		final IWidgetin widgetin = new WidgetWrapper(combo);
+		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
+				Boolean.valueOf(t.isOptional()) };
+	}
 
-		combo.setItems(items);
-
-		String stringValue = value == null
-				? "" //$NON-NLS-1$
-				: value.toString();
-
-		combo.setText(stringValue);
-		combo.setData(stringValue);
-
-		combo.addModifyListener(new ModifyListener()
-		{
-
-			public void modifyText(ModifyEvent e)
-			{
-				combo.setData(combo.getText());
-				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());
-				setAttributeItems();
-			}
-		});
-
-		return widgetin;
+	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
+	{
+		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
+		builder.setName(TextUtils.notEmptyString((String)args[1]));
+		builder.setAlias(TextUtils.notEmptyString((String)args[2]));
+		builder.setContributor(((Boolean)args[3]).booleanValue());
+		builder.setOptional(((Boolean)args[4]).booleanValue());
 	}
 
 	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
@@ -175,15 +169,43 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		return widgetin;
 	}
 
+	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
+	{
+		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
+		final IWidgetin widgetin = new WidgetWrapper(combo);
+
+		combo.setItems(items);
+
+		String stringValue = value == null
+				? "" //$NON-NLS-1$
+				: value.toString();
+
+		combo.setText(stringValue);
+		combo.setData(stringValue);
+
+		combo.addModifyListener(new ModifyListener()
+		{
+
+			public void modifyText(ModifyEvent e)
+			{
+				combo.setData(combo.getText());
+				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());
+				setAttributeItems();
+			}
+		});
+
+		return widgetin;
+	}
+
 	private void setAttributeItems()
 	{
 		if(m_componentWidgetin == null || m_attributeWidgetin == null)
 			return;
-		
+
 		Combo componentCombo = ((Combo)((WidgetWrapper)m_componentWidgetin).getWidget());
 
 		Combo attributeCombo = ((Combo)((WidgetWrapper)m_attributeWidgetin).getWidget());
-		
+
 		String currentAttribute = attributeCombo.getText();
 
 		if(componentCombo.getText() == null || componentCombo.getText().length() == 0)
@@ -193,14 +215,15 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		else
 		{
 			ComponentRequestBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
-			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder.getVersionDesignator()); 
+			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder
+					.getVersionDesignator());
 
 			TreeSet<String> prereqAttributes = new TreeSet<String>();
 			try
 			{
 				Resolution prereqResolution = WorkspaceInfo.getResolution(cr, false);
 				CSpec prereqCSpec = prereqResolution.getCSpec();
-				
+
 				for(Attribute attribute : prereqCSpec.getAttributes().values())
 					if(attribute.isPublic())
 						prereqAttributes.add(attribute.getName());
@@ -211,34 +234,14 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 			}
 			catch(CoreException e)
 			{
-				ErrorDialog.openError(m_editor.getSite().getShell(), null, Messages.cannot_get_attribute_names_for_the_selected_component, e.getStatus());
+				ErrorDialog.openError(m_editor.getSite().getShell(), null,
+						Messages.cannot_get_attribute_names_for_the_selected_component, e.getStatus());
 			}
-			
+
 			attributeCombo.setItems(prereqAttributes.toArray(new String[0]));
 		}
 
 		attributeCombo.setText(currentAttribute);
 		attributeCombo.update();
-	}
-
-	@Override
-	public IValidator getRowValidator()
-	{
-		return new IValidator()
-		{
-
-			public void validate(Object... arg) throws ValidatorException
-			{
-				// Integer rowNum = (Integer) arg[0];
-
-				PrerequisiteBuilder prerequisite = toRowClass((Object[])arg[1]);
-
-				if((prerequisite.getName() == null || prerequisite.getName().length() == 0)
-						&& (prerequisite.getComponentName() == null || prerequisite.getComponentName().length() == 0))
-				{
-					throw new ValidatorException(Messages.name_or_component_has_to_be_entered);
-				}
-			}
-		};
 	}
 }

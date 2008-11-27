@@ -19,18 +19,19 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TypedEvent;
 
 /**
- * A SelectionAdapter that also can act as a ModifyListener. Useful when listening
- * to both text, button, and combo events.
+ * A SelectionAdapter that also can act as a ModifyListener. Useful when listening to both text, button, and combo
+ * events.
+ * 
  * @author Thomas Hallgren
  */
 public abstract class ChangeAdapter extends SelectionAdapter implements ModifyListener, VersionDesignatorListener
 {
-	public void modifyVersionDesignator(VersionDesignatorEvent e)
+	public void modifyText(ModifyEvent e)
 	{
 		this.onChange(e);
 	}
 
-	public void modifyText(ModifyEvent e)
+	public void modifyVersionDesignator(VersionDesignatorEvent e)
 	{
 		this.onChange(e);
 	}

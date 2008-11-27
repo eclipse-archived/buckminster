@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class PathsTable extends SimpleTable<PathWrapper>
 {
@@ -29,32 +29,21 @@ public class PathsTable extends SimpleTable<PathWrapper>
 		super(data);
 	}
 
-	public String[] getColumnHeaders()
-	{
-		return new String[] {Messages.path};
-	}
-
-	public int[] getColumnWeights()
-	{
-		return new int[] {1};
-	}
-
-	public Object[] toRowArray(PathWrapper t)
-	{
-		return new Object[] {t.getPath().toOSString()};
-	}
-
 	public PathWrapper createRowClass()
 	{
 		return new PathWrapper();
 	}
 
-	public void updateRowClass(PathWrapper path, Object[] args) throws ValidatorException
+	public String[] getColumnHeaders()
 	{
-		String pathString = (String) args[0];
-		path.setPath(pathString == null ? null :(IPath) Path.fromOSString(pathString));
+		return new String[] { Messages.path };
 	}
-	
+
+	public int[] getColumnWeights()
+	{
+		return new int[] { 1 };
+	}
+
 	@Override
 	public IValidator getFieldValidator(int idx)
 	{
@@ -66,16 +55,29 @@ public class PathsTable extends SimpleTable<PathWrapper>
 			return SimpleTable.getEmptyValidator();
 		}
 	}
+
+	public Object[] toRowArray(PathWrapper t)
+	{
+		return new Object[] { t.getPath().toOSString() };
+	}
+
+	public void updateRowClass(PathWrapper path, Object[] args) throws ValidatorException
+	{
+		String pathString = (String)args[0];
+		path.setPath(pathString == null
+				? null
+				: (IPath)Path.fromOSString(pathString));
+	}
 }
 
 class PathWrapper
 {
 	private IPath m_path;
-	
+
 	public PathWrapper()
 	{
 	}
-	
+
 	public PathWrapper(IPath path)
 	{
 		m_path = path;

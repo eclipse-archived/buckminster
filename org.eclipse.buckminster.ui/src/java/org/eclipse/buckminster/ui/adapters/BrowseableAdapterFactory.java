@@ -22,10 +22,57 @@ import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
  * @author Henrik Lindberg
- *
+ * 
  */
 public class BrowseableAdapterFactory implements IAdapterFactory
 {
+	public static class BrowseableFeedURL extends BrowseableURL implements IBrowseableFeed
+	{
+		public BrowseableFeedURL(URI uri, URL url, String name, String tooltip)
+		{
+			super(uri, url, name, tooltip);
+		}
+	}
+
+	public static class BrowseableURL implements IBrowseable
+	{
+		private final URI m_uri;
+
+		private final URL m_url;
+
+		private String m_name;
+
+		private String m_tooltip;
+
+		BrowseableURL(URI uri, URL url, String name, String tooltip)
+		{
+			m_uri = uri;
+			m_url = url;
+			m_name = name;
+			m_tooltip = tooltip;
+		}
+
+		public URI getBrowseableURI()
+		{
+			return m_uri;
+		}
+
+		public URL getBrowseableURL()
+		{
+			return m_url;
+		}
+
+		public String getName()
+		{
+			return m_name;
+		}
+
+		public String getTooltip()
+		{
+			return m_tooltip;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Class[] s_supported = { IBrowseable.class, IBrowseableFeed.class };
 
@@ -39,7 +86,7 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 			outline = (IOutline)((IAdaptable)adaptableObject).getAdapter(Outline.class);
 		if(outline == null && adaptableObject instanceof IOutline)
 			outline = (IOutline)adaptableObject;
-		
+
 		// Convert outline to URL - refuse if there is no HTML URI,
 		// or if this URI is not adaptable to a URL
 		//
@@ -67,7 +114,7 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 
 			if(uri == null)
 				return null;
-			try 
+			try
 			{
 				url = new URL(uri.toString());
 			}
@@ -88,42 +135,5 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 	public Class[] getAdapterList()
 	{
 		return s_supported;
-	}
-	public static class BrowseableURL implements IBrowseable
-	{
-		private final URI m_uri;
-		private final URL m_url;
-		private String m_name;
-		private String m_tooltip;
-		BrowseableURL(URI uri, URL url, String name, String tooltip)
-		{
-			m_uri = uri;
-			m_url = url;
-			m_name = name;
-			m_tooltip = tooltip;
-		}
-		public URL getBrowseableURL()
-		{
-			return m_url;
-		}
-		public URI getBrowseableURI()
-		{
-			return m_uri;
-		}
-		public String getName()
-		{
-		return m_name;
-		}
-		public String getTooltip()
-		{
-		return m_tooltip;
-		}
-	}
-	public static class BrowseableFeedURL extends BrowseableURL implements IBrowseableFeed
-	{
-		public BrowseableFeedURL(URI uri, URL url, String name, String tooltip)
-		{
-			super(uri, url, name, tooltip);
-		}
 	}
 }

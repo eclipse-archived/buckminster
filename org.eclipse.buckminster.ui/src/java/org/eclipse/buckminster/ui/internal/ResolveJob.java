@@ -34,17 +34,18 @@ import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ResolveJob extends Job
 {
 	private final IResolver m_resolver;
 
 	private final boolean m_materialize;
-	
+
 	private final IWorkbenchPartSite m_site;
 
-	public ResolveJob(ComponentQuery query, boolean materialize, IWorkbenchPartSite site, boolean continueOnError) throws CoreException
+	public ResolveJob(ComponentQuery query, boolean materialize, IWorkbenchPartSite site, boolean continueOnError)
+			throws CoreException
 	{
 		super(Messages.resolving_qurey);
 		m_resolver = new MainResolver(new ResolutionContext(query));
@@ -102,7 +103,7 @@ public class ResolveJob extends Job
 				if(bom.isFullyResolved() || ctx.isContinueOnError())
 				{
 					setName(Messages.materializing);
-					
+
 					// Just create a default mspec that materializes to the current
 					// workspace
 					//
@@ -110,7 +111,8 @@ public class ResolveJob extends Job
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 					bom.addMaterializationNodes(mspecBuilder);
-					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), ctx);
+					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder
+							.createMaterializationSpec(), ctx);
 					MaterializationJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
 					status = ctx.getStatus();
 					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())

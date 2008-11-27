@@ -27,13 +27,18 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public abstract class StructuredTable<T> extends Table<T> implements IStructuredTable<T>
 {
 	@SuppressWarnings("unchecked")
 	class CompoundFieldModifyListener implements ModifyListener, SelectionListener, ITableModifyListener
 	{
+		public void modifyTable(TableModifyEvent e)
+		{
+			notifyFieldListeners();
+		}
+
 		public void modifyText(ModifyEvent e)
 		{
 			if(!m_suppressFieldListener)
@@ -42,7 +47,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 
 		public void widgetDefaultSelected(SelectionEvent e)
 		{
-			// nothing			
+			// nothing
 		}
 
 		public void widgetSelected(SelectionEvent e)
@@ -50,15 +55,10 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 			if(!m_suppressFieldListener)
 				notifyFieldListeners();
 		}
-
-		public void modifyTable(TableModifyEvent e)
-		{
-			notifyFieldListeners();
-		}
 	}
-	
+
 	protected final CompoundFieldModifyListener FIELD_LISTENER = new CompoundFieldModifyListener();
-	
+
 	private List<String> m_stackKeys = new ArrayList<String>();
 
 	private Map<String, Control> m_stackMap = new HashMap<String, Control>();
@@ -66,16 +66,17 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 	private List<IFieldModifyListener> m_fieldListeners = new ArrayList<IFieldModifyListener>();
 
 	private boolean m_suppressFieldListener = false;
-	
+
 	/**
 	 * Creates Table instance
 	 * 
-	 * @param data input data that will be edited
+	 * @param data
+	 *            input data that will be edited
 	 */
 	public StructuredTable(List<T> data)
 	{
 		super(data);
-		
+
 		// notify field listeners about row removal
 		addTableModifyListener(new ITableModifyListener<T>()
 		{
@@ -87,20 +88,20 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		});
 	}
 
-	public Control getStackControl(String stackKey)
+	public T addEmptyRow()
 	{
-		return m_stackMap.get(stackKey);
+		T tableRow = createNewRow();
+		getRows().add(tableRow);
+
+		return tableRow;
 	}
 
-	private void clearStackMapping()
+	public void addFieldModifyListener(IFieldModifyListener listener)
 	{
-		m_stackKeys.clear();
-		m_stackMap.clear();
-	}
-
-	public List<String> getStackKeys()
-	{
-		return m_stackKeys;
+		if(!m_fieldListeners.contains(listener))
+		{
+			m_fieldListeners.add(listener);
+		}
 	}
 
 	public void fillStackComposite(Composite stackComposite)
@@ -109,22 +110,42 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		fillStack(stackComposite);
 	}
 
-	/**
-	 * Fills controls to the stack composite
-	 * 
-	 * @param stackComposite
-	 */
-	protected abstract void fillStack(Composite stackComposite);
-
-	protected void addStackMapping(String key, Control control)
+	public Control getStackControl(String stackKey)
 	{
-		m_stackKeys.add(key);
-		m_stackMap.put(key, control);
+		return m_stackMap.get(stackKey);
+	}
+
+	public List<String> getStackKeys()
+	{
+		return m_stackKeys;
 	}
 
 	public int getTableViewerColumns()
 	{
 		return getTableViewerColumnHeaders().length;
+	}
+
+	public void refreshRow(int rowIdx)
+	{
+		T builder;
+
+		if(rowIdx == -1)
+		{
+			builder = createNewRow();
+		}
+		else
+		{
+			builder = getRow(rowIdx);
+		}
+
+		m_suppressFieldListener = true;
+		refreshRow(builder);
+		m_suppressFieldListener = false;
+	}
+
+	public void removeFieldModifyListener(IFieldModifyListener listener)
+	{
+		m_fieldListeners.remove(listener);
 	}
 
 	public void save(int rowIdx) throws ValidatorException
@@ -155,46 +176,6 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		}
 	}
 
-	/**
-	 * Creates new row
-	 * 
-	 * @return new row
-	 */
-	protected abstract T createNewRow();
-
-	/**
-	 * Sets values from controls to row
-	 * 
-	 * @param row data row
-	 * @throws ValidatorException
-	 */
-	protected abstract void setRowValues(T row) throws ValidatorException;
-
-	public void refreshRow(int rowIdx)
-	{
-		T builder;
-
-		if(rowIdx == -1)
-		{
-			builder = createNewRow();
-		}
-		else
-		{
-			builder = getRow(rowIdx);
-		}
-
-		m_suppressFieldListener = true;
-		refreshRow(builder);
-		m_suppressFieldListener = false;
-	}
-
-	/**
-	 * Refreshes controls from a given data row
-	 * 
-	 * @param builder
-	 */
-	protected abstract void refreshRow(T builder);
-
 	public boolean swapRows(int rowIdx, int idxOffset)
 	{
 		int idx = rowIdx + idxOffset;
@@ -220,19 +201,26 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 
 		return true;
 	}
-	
-	public void addFieldModifyListener(IFieldModifyListener listener)
+
+	protected void addStackMapping(String key, Control control)
 	{
-		if(!m_fieldListeners.contains(listener))
-		{
-			m_fieldListeners.add(listener);
-		}
+		m_stackKeys.add(key);
+		m_stackMap.put(key, control);
 	}
 
-	public void removeFieldModifyListener(IFieldModifyListener listener)
-	{
-		m_fieldListeners.remove(listener);
-	}
+	/**
+	 * Creates new row
+	 * 
+	 * @return new row
+	 */
+	protected abstract T createNewRow();
+
+	/**
+	 * Fills controls to the stack composite
+	 * 
+	 * @param stackComposite
+	 */
+	protected abstract void fillStack(Composite stackComposite);
 
 	protected void notifyFieldListeners()
 	{
@@ -240,12 +228,26 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		for(IFieldModifyListener listener : m_fieldListeners)
 			listener.modifyField(e);
 	}
-	
-	public T addEmptyRow()
+
+	/**
+	 * Refreshes controls from a given data row
+	 * 
+	 * @param builder
+	 */
+	protected abstract void refreshRow(T builder);
+
+	/**
+	 * Sets values from controls to row
+	 * 
+	 * @param row
+	 *            data row
+	 * @throws ValidatorException
+	 */
+	protected abstract void setRowValues(T row) throws ValidatorException;
+
+	private void clearStackMapping()
 	{
-		T tableRow = createNewRow();
-		getRows().add(tableRow);
-		
-		return tableRow;
+		m_stackKeys.clear();
+		m_stackMap.clear();
 	}
 }

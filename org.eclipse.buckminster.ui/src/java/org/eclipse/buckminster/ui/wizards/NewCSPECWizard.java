@@ -21,15 +21,16 @@ import org.xml.sax.SAXException;
 public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 {
 	private final String INIT_COMPONENT_TYPE = "buckminster"; //$NON-NLS-1$
-	
+
 	private final String INIT_VERSION_STRING = "1.0.0"; //$NON-NLS-1$
-	
+
 	private final String INIT_VERSION_TYPE = "OSGi"; //$NON-NLS-1$
-	
+
 	public NewCSPECWizard()
 	{
 		super();
 	}
+
 	/**
 	 * Adding the page to the wizard.
 	 */
@@ -42,7 +43,8 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 
 	/**
 	 * We will initialize file contents with a sample text.
-	 * @throws SAXException 
+	 * 
+	 * @throws SAXException
 	 */
 
 	@Override
@@ -56,7 +58,7 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 		CSpecBuilder builder = new CSpecBuilder();
 		builder.setName(name);
 		builder.setComponentTypeID(INIT_COMPONENT_TYPE);
-		
+
 		try
 		{
 			builder.setVersion(INIT_VERSION_STRING, INIT_VERSION_TYPE);
@@ -65,9 +67,9 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 		{
 			// initial version won't be set
 		}
-			
+
 		CSpec cspec = new CSpec(builder);
-		
+
 		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
 		try
 		{
@@ -77,7 +79,7 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 		{
 			throw new RuntimeException(Messages.cannot_create_a_new_buckminster_component_specification_file, e);
 		}
-		
+
 		return bld.getInputStream();
 	}
 }

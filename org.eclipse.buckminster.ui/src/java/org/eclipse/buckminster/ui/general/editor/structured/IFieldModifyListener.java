@@ -10,9 +10,9 @@ package org.eclipse.buckminster.ui.general.editor.structured;
 
 /**
  * Listens for modification of fields
- *
+ * 
  * @author Karel Brezina
- *
+ * 
  */
 public interface IFieldModifyListener
 {

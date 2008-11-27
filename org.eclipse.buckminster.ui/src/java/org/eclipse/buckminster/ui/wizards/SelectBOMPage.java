@@ -289,7 +289,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						IOUtils.close(input);
 						monitor.done();
 					}
-				}	
+				}
 			});
 			setErrorMessage(null);
 		}

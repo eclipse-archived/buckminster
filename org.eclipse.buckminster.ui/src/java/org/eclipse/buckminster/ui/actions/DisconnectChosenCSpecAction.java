@@ -26,7 +26,7 @@ public class DisconnectChosenCSpecAction extends AbstractChosenCSpecAction
 		IWorkbenchPage page = wbWin.getActivePage();
 		if(page == null)
 			return;
-		
+
 		try
 		{
 			ComponentIdentifier wanted = cspec.getComponentIdentifier();

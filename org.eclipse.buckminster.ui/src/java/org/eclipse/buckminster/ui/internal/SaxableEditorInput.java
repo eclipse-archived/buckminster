@@ -29,10 +29,56 @@ import org.xml.sax.SAXException;
 
 public abstract class SaxableEditorInput implements IStorageEditorInput
 {
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter)
+	{
+		return null;
+	}
+
+	public IContentDescription getContentDescription()
+	{
+		InputStream contents = null;
+		try
+		{
+			contents = this.getStorage().getContents();
+			return Platform.getContentTypeManager()
+					.getDescriptionFor(contents, this.getName(), IContentDescription.ALL);
+		}
+		catch(CoreException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			IOUtils.close(contents);
+		}
+	}
+
+	public ImageDescriptor getImageDescriptor()
+	{
+		IContentDescription cd = this.getContentDescription();
+		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(this.getName(), cd.getContentType());
+	}
+
+	public IPersistableElement getPersistable()
+	{
+		return null;
+	}
+
 	public IStorage getStorage() throws CoreException
 	{
 		return new IStorage()
 		{
+			@SuppressWarnings("unchecked")
+			public Object getAdapter(Class adapter)
+			{
+				return null;
+			}
+
 			public InputStream getContents() throws CoreException
 			{
 				try
@@ -60,55 +106,7 @@ public abstract class SaxableEditorInput implements IStorageEditorInput
 				return true;
 			}
 
-			@SuppressWarnings("unchecked")
-			public Object getAdapter(Class adapter)
-			{
-				return null;
-			}
-			
 		};
-	}
-
-	public ImageDescriptor getImageDescriptor()
-	{
-		IContentDescription cd = this.getContentDescription();
-		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(this.getName(), cd.getContentType());
-	}
-
-	public IContentDescription getContentDescription()
-	{
-		InputStream contents = null;
-		try
-		{
-			contents = this.getStorage().getContents();
-			return Platform.getContentTypeManager().getDescriptionFor(
-					contents,
-					this.getName(),
-					IContentDescription.ALL);
-		}
-		catch(CoreException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch(IOException e)
-		{
-			throw new RuntimeException(e);
-		}
-		finally
-		{
-			IOUtils.close(contents);
-		}
-	}
-
-	public IPersistableElement getPersistable()
-	{
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter)
-	{
-		return null;
 	}
 
 	protected abstract ISaxable getContent() throws CoreException;

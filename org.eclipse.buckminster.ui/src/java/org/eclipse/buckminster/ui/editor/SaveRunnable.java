@@ -33,13 +33,12 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
- * A runnable capable of saving a query to a certain location. The location must
- * be relative to the root of the local file-system. Once saved, the resulting
- * {@link org.eclipse.ui.IEditorInput IEditorInput} can be obtained through a
+ * A runnable capable of saving a query to a certain location. The location must be relative to the root of the local
+ * file-system. Once saved, the resulting {@link org.eclipse.ui.IEditorInput IEditorInput} can be obtained through a
  * call to {@link #getSavedInput()}. That editor input will either be an
- * {@link org.eclipse.buckminster.ui.ExternalFileEditorInput ExternalFileEditorInput}
- * or a {@link org.eclipse.ui.IFileEditorInput IFileEditorInput} depending on if
- * the location could be mapped to a file in an existing project or not.
+ * {@link org.eclipse.buckminster.ui.ExternalFileEditorInput ExternalFileEditorInput} or a
+ * {@link org.eclipse.ui.IFileEditorInput IFileEditorInput} depending on if the location could be mapped to a file in an
+ * existing project or not.
  * 
  * @author Thomas Hallgren
  */
@@ -52,8 +51,7 @@ public class SaveRunnable implements IRunnableWithProgress
 	private IEditorInput m_newInput;
 
 	/**
-	 * Creates a new instance that will save the <code>query</code> at the
-	 * specificed <code>location</code>.
+	 * Creates a new instance that will save the <code>query</code> at the specificed <code>location</code>.
 	 * 
 	 * @param saxable
 	 *            The SAX output enabled element to be saved.
@@ -66,13 +64,19 @@ public class SaveRunnable implements IRunnableWithProgress
 		m_location = location;
 	}
 
+	public IEditorInput getSavedInput()
+	{
+		return m_newInput;
+	}
+
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 	{
 		try
 		{
 			if(m_location.segmentCount() > 1)
 			{
-				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(m_location.removeLastSegments(1));
+				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(
+						m_location.removeLastSegments(1));
 				if(container != null)
 				{
 					// Workspace file.
@@ -119,10 +123,5 @@ public class SaveRunnable implements IRunnableWithProgress
 		{
 			throw new InvocationTargetException(e);
 		}
-	}
-
-	public IEditorInput getSavedInput()
-	{
-		return m_newInput;
 	}
 }

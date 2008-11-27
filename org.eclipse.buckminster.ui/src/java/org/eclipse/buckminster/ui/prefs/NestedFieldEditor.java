@@ -18,12 +18,13 @@ import org.eclipse.swt.widgets.Layout;
 
 /**
  * A FieldEditor containing other FieldEditors
- *
+ * 
  * @author Thomas Hallgren
  */
 public class NestedFieldEditor extends FieldEditor
 {
 	private Composite m_group;
+
 	private Label m_label;
 
 	public NestedFieldEditor(String title, Composite parent)
@@ -35,6 +36,12 @@ public class NestedFieldEditor extends FieldEditor
 	public Composite getControl()
 	{
 		return m_group;
+	}
+
+	@Override
+	public int getNumberOfControls()
+	{
+		return 1;
 	}
 
 	@Override
@@ -59,12 +66,12 @@ public class NestedFieldEditor extends FieldEditor
 	protected void doFillIntoGrid(Composite parent, int numColumns)
 	{
 		m_group = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = numColumns;
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        layout.makeColumnsEqualWidth = false;
-        m_group.setLayout(layout);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = numColumns;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.makeColumnsEqualWidth = false;
+		m_group.setLayout(layout);
 		m_group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, numColumns, 1));
 		m_label = new Label(m_group, SWT.NONE);
 		m_label.setText(getLabelText());
@@ -84,11 +91,5 @@ public class NestedFieldEditor extends FieldEditor
 	@Override
 	protected void doStore()
 	{
-	}
-
-	@Override
-	public int getNumberOfControls()
-	{
-		return 1;
 	}
 }

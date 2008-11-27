@@ -29,15 +29,23 @@ public abstract class AbstractQueryPage extends WizardPage
 		this.setControl(this.createControls(parent));
 		this.setErrorMessage(null);
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible)
 	{
 		super.setVisible(visible);
-		if (visible)
+		if(visible)
 			this.pageIsShowing();
 		else
 			this.pageIsHiding();
+	}
+
+	abstract protected Composite createControls(Composite parent);
+
+	protected final void displayException(CoreException e)
+	{
+		CorePlugin.getLogger().warning(e, e.getMessage());
+		setErrorMessage(e.getMessage());
 	}
 
 	protected RMContext getContext()
@@ -50,14 +58,6 @@ public abstract class AbstractQueryPage extends WizardPage
 		return (QueryWizard)this.getWizard();
 	}
 
-	abstract protected Composite createControls(Composite parent);
-
-	protected final void displayException(CoreException e)
-	{
-		CorePlugin.getLogger().warning(e, e.getMessage());
-		setErrorMessage(e.getMessage());
-	}
-
 	protected void pageIsHiding()
 	{
 		// noop
@@ -68,4 +68,3 @@ public abstract class AbstractQueryPage extends WizardPage
 		// noop
 	}
 }
-

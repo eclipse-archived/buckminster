@@ -39,31 +39,10 @@ import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 {
-	class VersionDesignatorValidator implements IValidator
-	{
-		VersionDesignator m_designator;
-		
-		public VersionDesignatorValidator(VersionDesignator designator)
-		{
-			m_designator = designator;
-		}
-		
-		public void validate(Object... arg) throws ValidatorException
-		{
-			try
-			{
-				m_designator.getDirectVersionDesignator();
-			} catch(CoreException e)
-			{
-				throw new ValidatorException(e.getMessage());
-			}
-		}		
-	}
-
 	class FilterValidator implements IValidator
 	{
 		private ValidatorException m_lastFilterException;
@@ -73,16 +52,18 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 			value = TextUtils.notEmptyString(value);
 			Filter filter = null;
 			m_lastFilterException = null;
-			
+
 			try
 			{
-				filter = value == null ? null : FilterUtils.createFilter(value);
+				filter = value == null
+						? null
+						: FilterUtils.createFilter(value);
 			}
 			catch(InvalidSyntaxException e)
 			{
 				m_lastFilterException = new ValidatorException(e.getMessage());
 			}
-			
+
 			return filter;
 		}
 
@@ -90,15 +71,37 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		{
 			if(m_lastFilterException != null)
 				throw m_lastFilterException;
-		}		
+		}
+	}
+
+	class VersionDesignatorValidator implements IValidator
+	{
+		VersionDesignator m_designator;
+
+		public VersionDesignatorValidator(VersionDesignator designator)
+		{
+			m_designator = designator;
+		}
+
+		public void validate(Object... arg) throws ValidatorException
+		{
+			try
+			{
+				m_designator.getDirectVersionDesignator();
+			}
+			catch(CoreException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
 	}
 
 	private CSpecBuilder m_cspecBuilder;
-	
+
 	private VersionDesignatorValidator m_versionDesignatorValidator;
-	
+
 	private FilterValidator m_filterValidator;
-	
+
 	public DependenciesTable(List<ComponentRequestBuilder> data, CSpecBuilder cspecBuilder)
 	{
 		super(data);
@@ -106,117 +109,103 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		m_filterValidator = new FilterValidator();
 	}
 
-	public String[] getColumnHeaders()
-	{
-		return new String[]{Messages.name, Messages.component_type, Messages.version_designator, Messages.filter};
-	}
-
-	public int[] getColumnWeights()
-	{
-		return new int[]{40, 20, 20, 20};
-	}
-
-	public Object[] toRowArray(ComponentRequestBuilder t)
-	{
-		Object[] array = new Object[getColumns()];
-		
-		array[0] = t.getName();
-		array[1] = t.getComponentTypeID();
-		array[2] = t.getVersionDesignator();
-		array[3] = t.getFilter();
-		
-		return array;
-	}
-
 	public ComponentRequestBuilder createRowClass()
 	{
 		return m_cspecBuilder.createDependencyBuilder();
 	}
 
-	public void updateRowClass(ComponentRequestBuilder builder, Object[] args) throws ValidatorException
+	@Override
+	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues)
 	{
-		builder.setName(TextUtils.notEmptyString((String) args[0]));
-		builder.setComponentTypeID(TextUtils.notEmptyString((String) args[1]));
-		builder.setVersionDesignator((IVersionDesignator) args[2]);
-		builder.setFilter((Filter)args[3]);
+		((GridLayout)parent.getLayout()).numColumns = 3;
+
+		IWidgetin[] widgetins = new IWidgetin[getColumns()];
+
+		UiUtils.createGridLabel(parent, getColumnHeaders()[0] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
+		widgetins[0] = getWidgetin(parent, 0, fieldValues[0]);
+
+		UiUtils.createGridLabel(parent, getColumnHeaders()[1] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
+		widgetins[1] = getWidgetin(parent, 1, fieldValues[1]);
+		new Label(parent, SWT.NONE);
+
+		widgetins[2] = getWidgetin(parent, 2, fieldValues[2]);
+
+		UiUtils.createGridLabel(parent, getColumnHeaders()[3] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
+		widgetins[3] = getWidgetin(parent, 3, fieldValues[3]);
+
+		return widgetins;
 	}
-	
+
+	public String[] getColumnHeaders()
+	{
+		return new String[] { Messages.name, Messages.component_type, Messages.version_designator, Messages.filter };
+	}
+
+	public int[] getColumnWeights()
+	{
+		return new int[] { 40, 20, 20, 20 };
+	}
+
+	@Override
+	public IValidator getFieldValidator(int idx)
+	{
+		switch(idx)
+		{
+		case 0:
+			return SimpleTable.createNotEmptyStringValidator(Messages.dependency_name_cannot_be_empty);
+		case 2:
+			return m_versionDesignatorValidator;
+		case 3:
+			return m_filterValidator;
+		default:
+			return SimpleTable.getEmptyValidator();
+		}
+	}
+
 	@Override
 	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
 	{
 		switch(idx)
 		{
-			case 0:
-				return getName(parent, idx, value);
-			case 1:
-				return getComboWidgetin(parent, idx, value, AbstractComponentType.getComponentTypeIDs(true), SWT.READ_ONLY);
-			case 2:
-				VersionDesignator designator = getVersionDesignator(parent, idx, value);
-				m_versionDesignatorValidator = new VersionDesignatorValidator(designator);
-				return designator;
-			case 3:
-				return getFilter(parent, idx, value);
-			default:
-				return getTextWidgetin(parent, idx, value);
+		case 0:
+			return getName(parent, idx, value);
+		case 1:
+			return getComboWidgetin(parent, idx, value, AbstractComponentType.getComponentTypeIDs(true), SWT.READ_ONLY);
+		case 2:
+			VersionDesignator designator = getVersionDesignator(parent, idx, value);
+			m_versionDesignatorValidator = new VersionDesignatorValidator(designator);
+			return designator;
+		case 3:
+			return getFilter(parent, idx, value);
+		default:
+			return getTextWidgetin(parent, idx, value);
 		}
 	}
 
-	private IWidgetin getName(Composite parent, final int idx, Object value)
+	public Object[] toRowArray(ComponentRequestBuilder t)
 	{
-		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
-		
-		final IWidgetin widgetin = new WidgetWrapper(text);
-		
-		String stringValue = value == null ? "" : value.toString(); //$NON-NLS-1$
-		
-		text.setText(stringValue);
-		text.setData(stringValue);
-		
-		text.addModifyListener(new ModifyListener()
-		{
+		Object[] array = new Object[getColumns()];
 
-			public void modifyText(ModifyEvent e)
-			{
-				widgetin.setData(text.getText());
-				validateFieldInFieldListener(widgetin, getFieldValidator(idx), text.getText());
-			}
-		});
+		array[0] = t.getName();
+		array[1] = t.getComponentTypeID();
+		array[2] = t.getVersionDesignator();
+		array[3] = t.getFilter();
 
-		return widgetin;
+		return array;
 	}
 
-	private VersionDesignator getVersionDesignator(Composite parent, final int idx, Object value)
+	public void updateRowClass(ComponentRequestBuilder builder, Object[] args) throws ValidatorException
 	{
-		final VersionDesignator designator = new VersionDesignator(parent);
-		designator.refreshValues((IVersionDesignator)value);
-		
-		designator.setData(value);
-
-		designator.addVersionDesignatorListener(new VersionDesignatorListener()
-		{
-
-			public void modifyVersionDesignator(VersionDesignatorEvent e)
-			{
-				try
-				{
-					IVersionDesignator designatorValue = designator.getDirectVersionDesignator();
-					designator.setData(designatorValue);
-				} catch(CoreException e1)
-				{
-					// nothing - error message is displayed using validateFieldInFieldListener method
-				}
-				
-				validateFieldInFieldListener(designator, getFieldValidator(idx), null);				
-			}
-		});
-
-		return designator;		
+		builder.setName(TextUtils.notEmptyString((String)args[0]));
+		builder.setComponentTypeID(TextUtils.notEmptyString((String)args[1]));
+		builder.setVersionDesignator((IVersionDesignator)args[2]);
+		builder.setFilter((Filter)args[3]);
 	}
 
 	private IWidgetin getFilter(Composite parent, final int idx, Object value)
 	{
 		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
-		
+
 		final IWidgetin widgetin = new WidgetWrapper(text);
 
 		String stringValue = TextUtils.notNullString(value);
@@ -235,41 +224,57 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		return widgetin;
 	}
 
-	@Override
-	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues)
+	private IWidgetin getName(Composite parent, final int idx, Object value)
 	{
-		((GridLayout) parent.getLayout()).numColumns = 3; 
-		
-		IWidgetin[] widgetins = new IWidgetin[getColumns()];
-		
-		UiUtils.createGridLabel(parent, getColumnHeaders()[0] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-		widgetins[0] = getWidgetin(parent, 0, fieldValues[0]);
-		
-		UiUtils.createGridLabel(parent, getColumnHeaders()[1] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-		widgetins[1] = getWidgetin(parent, 1, fieldValues[1]);
-		new Label(parent, SWT.NONE);
-		
-		widgetins[2] = getWidgetin(parent, 2, fieldValues[2]);
+		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
 
-		UiUtils.createGridLabel(parent, getColumnHeaders()[3] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-		widgetins[3] = getWidgetin(parent, 3, fieldValues[3]);
-		
-		return widgetins;
+		final IWidgetin widgetin = new WidgetWrapper(text);
+
+		String stringValue = value == null
+				? "" : value.toString(); //$NON-NLS-1$
+
+		text.setText(stringValue);
+		text.setData(stringValue);
+
+		text.addModifyListener(new ModifyListener()
+		{
+
+			public void modifyText(ModifyEvent e)
+			{
+				widgetin.setData(text.getText());
+				validateFieldInFieldListener(widgetin, getFieldValidator(idx), text.getText());
+			}
+		});
+
+		return widgetin;
 	}
 
-	@Override
-	public IValidator getFieldValidator(int idx)
+	private VersionDesignator getVersionDesignator(Composite parent, final int idx, Object value)
 	{
-		switch(idx)
+		final VersionDesignator designator = new VersionDesignator(parent);
+		designator.refreshValues((IVersionDesignator)value);
+
+		designator.setData(value);
+
+		designator.addVersionDesignatorListener(new VersionDesignatorListener()
 		{
-		case 0:
-			return SimpleTable.createNotEmptyStringValidator(Messages.dependency_name_cannot_be_empty);
-		case 2:
-			return m_versionDesignatorValidator;
-		case 3:
-			return m_filterValidator;
-		default:
-			return SimpleTable.getEmptyValidator();
-		}
+
+			public void modifyVersionDesignator(VersionDesignatorEvent e)
+			{
+				try
+				{
+					IVersionDesignator designatorValue = designator.getDirectVersionDesignator();
+					designator.setData(designatorValue);
+				}
+				catch(CoreException e1)
+				{
+					// nothing - error message is displayed using validateFieldInFieldListener method
+				}
+
+				validateFieldInFieldListener(designator, getFieldValidator(idx), null);
+			}
+		});
+
+		return designator;
 	}
 }

@@ -20,10 +20,10 @@ public class ResolutionDataNode extends BasicTreeParentDataNode
 		super(data);
 		// add cspec child node
 		addChild(new CSpecDataNode(data.getCSpec()));
-		
+
 		// add opml child node
 		IOPML opml = data.getOPML();
 		if(opml != null)
-			addChild(new OPMLDataNode(data.getOPML()));		
-	}		
+			addChild(new OPMLDataNode(data.getOPML()));
+	}
 }

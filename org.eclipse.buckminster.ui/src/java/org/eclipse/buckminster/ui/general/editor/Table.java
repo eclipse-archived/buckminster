@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Data wrapped for general table editor.
- *  
+ * 
  * @author Karel Brezina
  */
 public abstract class Table<T> implements ITable<T>
@@ -25,12 +25,14 @@ public abstract class Table<T> implements ITable<T>
 	/**
 	 * Creates Table instance
 	 * 
-	 * @param data input data that will be edited
+	 * @param data
+	 *            input data that will be edited
 	 */
 	public Table(List<T> data)
 	{
 		m_data = data;
 	}
+
 	public void addTableModifyListener(ITableModifyListener<T> listener)
 	{
 		if(!m_listeners.contains(listener))
@@ -49,17 +51,17 @@ public abstract class Table<T> implements ITable<T>
 		return m_data;
 	}
 
+	// no need for refreshing
+	public void refresh()
+	{
+	}
+
 	public void removeRow(int row)
 	{
 		T oldTableRow = m_data.remove(row);
 		notifyListeners(TableModifyEventType.REMOVE_ROW, row, oldTableRow);
 	}
 
-	// no need for refreshing
-	public void refresh()
-	{
-	}
-	
 	public void removeTableModifyListener(ITableModifyListener<T> listener)
 	{
 		m_listeners.remove(listener);

@@ -33,17 +33,21 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
- * An <code>IEditorInput</code> implementation for files external to the workspace. Modelled after the
- * Eclipse internal class <code>JavaFileEditorInput</code>
- *
+ * An <code>IEditorInput</code> implementation for files external to the workspace. Modelled after the Eclipse internal
+ * class <code>JavaFileEditorInput</code>
+ * 
  * @author Thomas Hallgren
  */
 public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvider, IWorkbenchAdapter
 {
 	private final String m_label;
+
 	private final String m_tooltipText;
+
 	private final File m_file;
-Dialog x;
+
+	Dialog x;
+
 	public ExternalFileEditorInput(File file)
 	{
 		this(file, file.getName(), file.getAbsolutePath());
@@ -59,14 +63,14 @@ Dialog x;
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
-		if (!(o instanceof ExternalFileEditorInput))
+		if(!(o instanceof ExternalFileEditorInput))
 			return false;
 		ExternalFileEditorInput that = (ExternalFileEditorInput)o;
 
-		if (!this.getPath().equals(that.getPath()))
+		if(!this.getPath().equals(that.getPath()))
 			return false;
 
 		return true;
@@ -80,15 +84,16 @@ Dialog x;
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter)
 	{
-		if(ILocationProvider.class.equals(adapter)
-		|| IWorkbenchAdapter.class.equals(adapter))
+		if(ILocationProvider.class.equals(adapter) || IWorkbenchAdapter.class.equals(adapter))
 			return this;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
 	public Object[] getChildren(Object o)
 	{
-		return (o instanceof ExternalFileEditorInput) ? ((ExternalFileEditorInput)o).getChildren() : null;
+		return (o instanceof ExternalFileEditorInput)
+				? ((ExternalFileEditorInput)o).getChildren()
+				: null;
 	}
 
 	public ImageDescriptor getImageDescriptor()
@@ -98,12 +103,16 @@ Dialog x;
 
 	public ImageDescriptor getImageDescriptor(Object o)
 	{
-		return (o instanceof IEditorInput) ? ((IEditorInput)o).getImageDescriptor() : null;
+		return (o instanceof IEditorInput)
+				? ((IEditorInput)o).getImageDescriptor()
+				: null;
 	}
 
 	public String getLabel(Object o)
 	{
-		return (o instanceof ExternalFileEditorInput) ? ((ExternalFileEditorInput)o).getName() : null;
+		return (o instanceof ExternalFileEditorInput)
+				? ((ExternalFileEditorInput)o).getName()
+				: null;
 	}
 
 	public String getName()
@@ -113,7 +122,9 @@ Dialog x;
 
 	public Object getParent(Object o)
 	{
-		return (o instanceof ExternalFileEditorInput) ? ((ExternalFileEditorInput)o).getParent() : null;
+		return (o instanceof ExternalFileEditorInput)
+				? ((ExternalFileEditorInput)o).getParent()
+				: null;
 	}
 
 	public IPath getPath()
@@ -123,7 +134,9 @@ Dialog x;
 
 	public IPath getPath(Object o)
 	{
-		return (o instanceof IPathEditorInput) ? ((IPathEditorInput)o).getPath() : null;
+		return (o instanceof IPathEditorInput)
+				? ((IPathEditorInput)o).getPath()
+				: null;
 	}
 
 	public IPersistableElement getPersistable()
@@ -155,6 +168,8 @@ Dialog x;
 	protected IWorkbenchAdapter getParent()
 	{
 		File parentFile = m_file.getParentFile();
-		return parentFile == null ? null : new ExternalFileEditorInput(parentFile);
+		return parentFile == null
+				? null
+				: new ExternalFileEditorInput(parentFile);
 	}
 }

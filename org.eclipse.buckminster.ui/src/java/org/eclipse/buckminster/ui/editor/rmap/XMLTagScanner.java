@@ -3,12 +3,12 @@ package org.eclipse.buckminster.ui.editor.rmap;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.rules.*;
 
-public class XMLTagScanner extends RuleBasedScanner {
+public class XMLTagScanner extends RuleBasedScanner
+{
 
-	public XMLTagScanner(ColorManager manager) {
-		IToken string =
-			new Token(
-				new TextAttribute(manager.getColor(IXMLColorConstants.STRING)));
+	public XMLTagScanner(ColorManager manager)
+	{
+		IToken string = new Token(new TextAttribute(manager.getColor(IXMLColorConstants.STRING)));
 
 		IRule[] rules = new IRule[3];
 

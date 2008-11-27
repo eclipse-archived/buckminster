@@ -20,15 +20,15 @@ import org.eclipse.swt.widgets.Shell;
 public class SplashScreen
 {
 	private final String CLOSE_TEXT = Messages.splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
-	
+
 	private final Shell m_splashShell;
-	
+
 	private final Label m_textLabel;
 
 	public SplashScreen(final Image image, final int closeTimeout, final boolean closeTextFlag, final boolean waitFlag)
 	{
 		Display display = Display.getDefault();
-		
+
 		m_splashShell = new Shell(SWT.ON_TOP);
 		m_splashShell.addMouseListener(new MouseAdapter()
 		{
@@ -38,13 +38,13 @@ public class SplashScreen
 				splashClose();
 			}
 		});
-		
+
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = gridLayout.verticalSpacing = 0;
 		m_splashShell.setLayout(gridLayout);
 		m_splashShell.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
 		m_splashShell.setBackgroundMode(SWT.INHERIT_FORCE);
-		
+
 		Label imageLabel = new Label(m_splashShell, SWT.NONE);
 		imageLabel.setImage(image);
 		imageLabel.addMouseListener(new MouseAdapter()
@@ -73,21 +73,22 @@ public class SplashScreen
 					splashClose();
 				}
 			});
-		} else
+		}
+		else
 		{
 			m_textLabel = null;
 		}
-		
+
 		m_splashShell.pack();
-		
+
 		Rectangle splashRect = m_splashShell.getBounds();
 		Rectangle displayRect = display.getBounds();
 		int x = (displayRect.width - splashRect.width) / 2;
 		int y = (displayRect.height - splashRect.height) / 2;
 		m_splashShell.setLocation(x, y);
-		
+
 		m_splashShell.open();
-	
+
 		Thread timer = new Thread(new Runnable()
 		{
 
@@ -99,27 +100,27 @@ public class SplashScreen
 					{
 						return;
 					}
-					
+
 					if(closeTextFlag)
 					{
 						displayClosingText(i);
 					}
-					
+
 					try
 					{
 						Thread.sleep(1000);
 					}
 					catch(InterruptedException e)
-					{					
+					{
 						break;
 					}
 				}
 				splashClose();
 			}
 		});
-		
+
 		timer.start();
-		
+
 		if(waitFlag)
 		{
 			while(!m_splashShell.isDisposed())
@@ -138,7 +139,7 @@ public class SplashScreen
 		{
 			return;
 		}
-		
+
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
@@ -147,7 +148,7 @@ public class SplashScreen
 			}
 		});
 	}
-	
+
 	private void splashClose()
 	{
 		Display.getDefault().asyncExec(new Runnable()

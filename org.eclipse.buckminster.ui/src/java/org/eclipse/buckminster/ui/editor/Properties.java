@@ -215,7 +215,8 @@ public class Properties extends Composite
 
 	private void addPropertyErrorDialog(Throwable e)
 	{
-		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added, e.getMessage()));
+		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added, e
+				.getMessage()));
 	}
 
 	private void createButtonBox(Composite parent)
@@ -252,6 +253,19 @@ public class Properties extends Composite
 		});
 
 		enableDisableButtonGroup();
+	}
+
+	private void editProperty()
+	{
+		PropertyDialog dialog = new PropertyDialog(this.getShell(), getSelectedProperty());
+		int idx = m_tableViewer.getTable().getSelectionIndex();
+
+		if(dialog.open() == IDialogConstants.OK_ID)
+		{
+			m_properties.set(idx, dialog.getProperty());
+			notifyListeners();
+			refreshList();
+		}
 	}
 
 	private void enableDisableButtonGroup()
@@ -345,17 +359,11 @@ public class Properties extends Composite
 		}
 	}
 
-	private void editProperty()
+	private void notifyListeners()
 	{
-		PropertyDialog dialog = new PropertyDialog(this.getShell(), getSelectedProperty());
-		int idx = m_tableViewer.getTable().getSelectionIndex();
-
-		if(dialog.open() == IDialogConstants.OK_ID)
-		{
-			m_properties.set(idx, dialog.getProperty());
-			notifyListeners();
-			refreshList();
-		}
+		PropertiesModifyEvent e = new PropertiesModifyEvent(this);
+		for(PropertiesModifyListener listener : m_listeners)
+			listener.modifyProperties(e);
 	}
 
 	private void removeProperty()
@@ -364,12 +372,5 @@ public class Properties extends Composite
 		m_properties.remove(prop);
 		notifyListeners();
 		refreshList();
-	}
-
-	private void notifyListeners()
-	{
-		PropertiesModifyEvent e = new PropertiesModifyEvent(this);
-		for(PropertiesModifyListener listener : m_listeners)
-			listener.modifyProperties(e);
 	}
 }

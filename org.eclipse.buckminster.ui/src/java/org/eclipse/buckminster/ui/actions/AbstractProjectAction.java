@@ -36,11 +36,6 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate
 
 	private IWorkbenchPart m_workbenchPart;
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_workbenchPart = targetPart;
-	}
-
 	public void run(IAction action)
 	{
 		final IProject[] projs = this.getSelectedProjects();
@@ -83,7 +78,8 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate
 					if(t instanceof CoreException)
 					{
 						CoreException ce = (CoreException)t;
-						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(), Messages.an_error_occured_during_creation_of_the_project, null, ce.getStatus());
+						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(),
+								Messages.an_error_occured_during_creation_of_the_project, null, ce.getStatus());
 					}
 					else
 					{
@@ -91,7 +87,8 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate
 						String rawMsg = t.getLocalizedMessage();
 						if(rawMsg == null)
 							rawMsg = t.toString();
-						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, NLS.bind(Messages.internal_error_0, rawMsg));
+						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, NLS.bind(
+								Messages.internal_error_0, rawMsg));
 					}
 				}
 			}
@@ -121,6 +118,11 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate
 				projects.add(s);
 		}
 		m_selectedProjects = projects.toArray(new IProject[0]);
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart)
+	{
+		m_workbenchPart = targetPart;
 	}
 
 	protected IProject[] getSelectedProjects()

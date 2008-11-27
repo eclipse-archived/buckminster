@@ -171,8 +171,7 @@ public class VersionDesignator extends Widgetin
 		@Override
 		protected void onChange(TypedEvent te)
 		{
-			VersionDesignatorEvent e = new VersionDesignatorEvent(VersionDesignator.this, te.widget,
-					te.data);
+			VersionDesignatorEvent e = new VersionDesignatorEvent(VersionDesignator.this, te.widget, te.data);
 			for(VersionDesignatorListener listener : m_listeners)
 				listener.modifyVersionDesignator(e);
 		}
@@ -204,7 +203,8 @@ public class VersionDesignator extends Widgetin
 	{
 		m_parentComposite = parent;
 
-		m_versionDsTypeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.designator_with_colon, 1, 0, SWT.NONE);
+		m_versionDsTypeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.designator_with_colon, 1, 0,
+				SWT.NONE);
 
 		SelectionListener versionDSListener = new SelectionAdapter()
 		{
@@ -224,7 +224,7 @@ public class VersionDesignator extends Widgetin
 		m_rangeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.version_with_colon, 1, 0, SWT.NONE);
 
 		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, SWT.NONE, m_notifier);
-		
+
 		m_toComposite = new Composite(m_parentComposite, SWT.NONE);
 		m_toComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		m_toStackLayout = new StackLayout();
@@ -233,7 +233,7 @@ public class VersionDesignator extends Widgetin
 		m_toEmptyLabel = UiUtils.createEmptyLabel(m_toComposite);
 
 		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, SWT.NONE, m_notifier);
-		
+
 		UiUtils.createGridLabel(m_parentComposite, Messages.type_with_colon, 1, 0, SWT.NONE);
 		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
@@ -254,21 +254,21 @@ public class VersionDesignator extends Widgetin
 			m_listeners.add(listener);
 	}
 
-	public Display getDisplay()
-	{
-		return m_parentComposite.getDisplay();
-	}
-	
 	public IVersionDesignator getDirectVersionDesignator() throws CoreException
 	{
 		int vdIndex = m_versionDsType.getSelectionIndex();
 		if(vdIndex < 0)
 			return null;
 
-		return DesignatorType.values()[vdIndex].createDesignator(this.getVersionType(), m_fromVersion,
-				m_fromVersion, m_toVersion);
+		return DesignatorType.values()[vdIndex].createDesignator(this.getVersionType(), m_fromVersion, m_fromVersion,
+				m_toVersion);
 	}
-	
+
+	public Display getDisplay()
+	{
+		return m_parentComposite.getDisplay();
+	}
+
 	public IVersionDesignator getVersionDesignator()
 	{
 		try

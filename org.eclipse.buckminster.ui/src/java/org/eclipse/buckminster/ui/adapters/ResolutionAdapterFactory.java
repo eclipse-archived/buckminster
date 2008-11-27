@@ -12,31 +12,29 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Adapter Factory that converts between 
- * Resolution and ResolutionDataNode.
+ * Adapter Factory that converts between Resolution and ResolutionDataNode.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class ResolutionAdapterFactory implements IAdapterFactory
 {
 	@SuppressWarnings("unchecked")
 	private static Class[] s_adapterList = { Resolution.class, ResolutionDataNode.class };
-	
+
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
 		if(adaptableObject instanceof Resolution && adapterType.isAssignableFrom(ResolutionDataNode.class))
 			return new ResolutionDataNode((Resolution)adaptableObject);
-		
+
 		if(adaptableObject instanceof ResolutionDataNode && adapterType.isAssignableFrom(Resolution.class))
 			return ((ResolutionDataNode)adaptableObject).getData();
-					
+
 		// give up
 		return null;
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public Class[] getAdapterList()
 	{

@@ -14,22 +14,17 @@ import org.eclipse.swt.widgets.Widget;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class WidgetWrapper implements IWidgetin
 {
 	private Widget m_widget;
-	
+
 	public WidgetWrapper(Widget widget)
 	{
 		m_widget = widget;
 	}
-	
-	public Widget getWidget()
-	{
-		return m_widget;
-	}
-	
+
 	public void addListener(int eventType, Listener listener)
 	{
 		m_widget.addListener(eventType, listener);
@@ -40,18 +35,23 @@ public class WidgetWrapper implements IWidgetin
 		return m_widget.getData();
 	}
 
+	public Widget getWidget()
+	{
+		return m_widget;
+	}
+
 	public void notifyListeners(int eventType, Event event)
 	{
-		m_widget.notifyListeners(eventType, event);	
+		m_widget.notifyListeners(eventType, event);
 	}
 
 	public void removeListener(int eventType, Listener listener)
 	{
-		m_widget.removeListener(eventType, listener);	
+		m_widget.removeListener(eventType, listener);
 	}
 
 	public void setData(Object data)
 	{
-		m_widget.setData(data);		
+		m_widget.setData(data);
 	}
 }

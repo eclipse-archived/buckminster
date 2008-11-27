@@ -44,8 +44,6 @@ public enum LogLevel
 			return Logger.ERROR;
 		}
 	};
-	public abstract int getLogLevel();
-
 	public static void setComboLogLevel(LabeledCombo logLevelCombo, int logLevel)
 	{
 		LogLevel[] levels = LogLevel.values();
@@ -60,4 +58,6 @@ public enum LogLevel
 		}
 		logLevelCombo.select(0);
 	}
+
+	public abstract int getLogLevel();
 }

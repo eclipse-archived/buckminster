@@ -15,43 +15,28 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Adapter Factory that converts:
- * CSpec and CSpecDataNode to each other, and to Resolution and ResolutionDataNode
+ * Adapter Factory that converts: CSpec and CSpecDataNode to each other, and to Resolution and ResolutionDataNode
  * IResource to CSpec, or CSpecDataNode.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class CSpecAdapterFactory implements IAdapterFactory
 {
 	@SuppressWarnings("unchecked")
-	private static Class[] s_adapterList = { 
-		CSpec.class, CSpecDataNode.class, 
-		Resolution.class, ResolutionDataNode.class 
-		};
-	
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Object adaptableObject, Class adapterType)
-	{
-		if(adaptableObject instanceof CSpec)
-			return adaptCSpec((CSpec)adaptableObject, adapterType);
-		
-		if(adaptableObject instanceof CSpecDataNode)
-			return adaptCSpec((CSpec)((CSpecDataNode)adaptableObject).getData(), adapterType);
-					
-		// give up
-		return null;
-	}
+	private static Class[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
+			ResolutionDataNode.class };
+
 	@SuppressWarnings("unchecked")
 	public Object adaptCSpec(CSpec cspec, Class adapterType)
 	{
 		if(adapterType.isAssignableFrom(CSpec.class))
 			return cspec; // duh
-		
+
 		if(adapterType.isAssignableFrom(CSpecDataNode.class))
 			return new CSpecDataNode(cspec);
-		
-		if(adapterType.isAssignableFrom(Resolution.class))				
+
+		if(adapterType.isAssignableFrom(Resolution.class))
 			try
 			{
 				return WorkspaceInfo.getResolution(cspec.getComponentIdentifier());
@@ -71,6 +56,20 @@ public class CSpecAdapterFactory implements IAdapterFactory
 			}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Object adaptableObject, Class adapterType)
+	{
+		if(adaptableObject instanceof CSpec)
+			return adaptCSpec((CSpec)adaptableObject, adapterType);
+
+		if(adaptableObject instanceof CSpecDataNode)
+			return adaptCSpec((CSpec)((CSpecDataNode)adaptableObject).getData(), adapterType);
+
+		// give up
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public Class[] getAdapterList()
 	{

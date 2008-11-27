@@ -24,34 +24,19 @@ import org.eclipse.swt.widgets.Control;
 public interface IStructuredTable<T> extends ITable<T>
 {
 	/**
-	 * Gets a value from table row at a given TableViewer position. It's used for ITableLabelProvider
+	 * Adds an empty record to the table
 	 * 
-	 * @param t data table row
-	 * @param columnIndex column index in a TableViewer
-	 * @return required value
+	 * @return
 	 */
-	public Object getTableViewerField(T t, int columnIndex);
+	public T addEmptyRow();
 
 	/**
-	 * Number of columns in a TableViewer
+	 * Enables or disables controls for keyboard focus
 	 * 
-	 * @return number of columns
+	 * @param enabled
+	 *            true=enables controls
 	 */
-	public int getTableViewerColumns();
-
-	/**
-	 * Gets column headers for a TableViewer
-	 * 
-	 * @return column headers
-	 */
-	public String[] getTableViewerColumnHeaders();
-
-	/**
-	 * Gets column weights of columns in a TableViewer. Higher weight means larger space in the TableViewer.
-	 * 
-	 * @return column weights
-	 */
-	public int[] getTableViewerColumnWeights();
+	public void enableFields(boolean enabled);
 
 	/**
 	 * Fills controls to the stack composite
@@ -61,6 +46,15 @@ public interface IStructuredTable<T> extends ITable<T>
 	public void fillStackComposite(Composite stackComposite);
 
 	/**
+	 * Gets stack control for a given stack key
+	 * 
+	 * @param stackKey
+	 *            key of a stack level
+	 * @return control of a stack level
+	 */
+	public Control getStackControl(String stackKey);
+
+	/**
 	 * Gets keys of stack levels
 	 * 
 	 * @return keys of stack levels
@@ -68,25 +62,51 @@ public interface IStructuredTable<T> extends ITable<T>
 	public List<String> getStackKeys();
 
 	/**
-	 * Gets stack control for a given stack key
+	 * Gets column headers for a TableViewer
 	 * 
-	 * @param stackKey key of a stack level
-	 * @return control of a stack level
+	 * @return column headers
 	 */
-	public Control getStackControl(String stackKey);
+	public String[] getTableViewerColumnHeaders();
+
+	/**
+	 * Number of columns in a TableViewer
+	 * 
+	 * @return number of columns
+	 */
+	public int getTableViewerColumns();
+
+	/**
+	 * Gets column weights of columns in a TableViewer. Higher weight means larger space in the TableViewer.
+	 * 
+	 * @return column weights
+	 */
+	public int[] getTableViewerColumnWeights();
+
+	/**
+	 * Gets a value from table row at a given TableViewer position. It's used for ITableLabelProvider
+	 * 
+	 * @param t
+	 *            data table row
+	 * @param columnIndex
+	 *            column index in a TableViewer
+	 * @return required value
+	 */
+	public Object getTableViewerField(T t, int columnIndex);
 
 	/**
 	 * Refreshes controls with values from row rowIdx of the data table
 	 * 
-	 * @param rowIdx row from the data table
+	 * @param rowIdx
+	 *            row from the data table
 	 */
 	public void refreshRow(int rowIdx);
 
 	/**
-	 * Saves values from controls to row rowIdx of the data table.
-	 * If rowIdx == -1, saves values to the end of the data table.
+	 * Saves values from controls to row rowIdx of the data table. If rowIdx == -1, saves values to the end of the data
+	 * table.
 	 * 
-	 * @param rowIdx row number where values should be saved
+	 * @param rowIdx
+	 *            row number where values should be saved
 	 * @throws ValidatorException
 	 */
 	public void save(int rowIdx) throws ValidatorException;
@@ -94,23 +114,12 @@ public interface IStructuredTable<T> extends ITable<T>
 	/**
 	 * Swaps rows in TableViewer
 	 * 
-	 * @param rowIdx row number
-	 * @param idxOffset index offset (1 moves row down, 0 moves row up)
+	 * @param rowIdx
+	 *            row number
+	 * @param idxOffset
+	 *            index offset (1 moves row down, 0 moves row up)
 	 * @return
 	 */
 	// TODO has to inform listeners about change
 	public boolean swapRows(int rowIdx, int idxOffset);
-
-	/**
-	 * Enables or disables controls for keyboard focus
-	 * 
-	 * @param enabled true=enables controls
-	 */
-	public void enableFields(boolean enabled);
-	
-	/**
-	 * Adds an empty record to the table
-	 * @return
-	 */
-	public T addEmptyRow();
 }

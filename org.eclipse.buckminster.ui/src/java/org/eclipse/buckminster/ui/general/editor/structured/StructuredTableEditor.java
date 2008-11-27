@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public abstract class StructuredTableEditor<T> extends Composite
 {
@@ -76,17 +76,17 @@ public abstract class StructuredTableEditor<T> extends Composite
 					: field.toString();
 		}
 	}
-	
+
 	private final static int DONT_SAVE = -99;
 
 	private final IStructuredTable<T> m_table;
 
 	private final boolean m_swapButtonsFlag;
-	
+
 	private TableViewer m_tableViewer;
 
 	private int m_lastSelectedRow = -1;
-	
+
 	private int m_lastEditedRow = -1;
 
 	private Button m_newButton;
@@ -106,7 +106,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 	private Composite m_stackComposite;
 
 	private boolean m_enabled = true;
-	
+
 	public StructuredTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
 		super(parent, style);
@@ -116,148 +116,66 @@ public abstract class StructuredTableEditor<T> extends Composite
 		initComposite();
 	}
 
-	protected IStructuredTable<T> getTable()
+	@Override
+	public boolean isEnabled()
 	{
-		return m_table;
-	}
-	
-	protected Button getEditButton()
-	{
-		return m_editButton;
+		return m_enabled;
 	}
 
-	protected void setEditButton(Button editButton)
+	public abstract void refresh();
+
+	public boolean selectRow(T row)
 	{
-		m_editButton = editButton;
+		int idx = m_table.getRows().indexOf(row);
+
+		if(idx == -1)
+			return false;
+
+		m_tableViewer.getTable().setSelection(idx);
+		updateLastRow();
+
+		return true;
 	}
 
-	protected Button getMoveDownButton()
+	@Override
+	public void setEnabled(boolean enabled)
 	{
-		return m_moveDownButton;
+		m_enabled = enabled;
+		enableDisableButtonGroup();
+		m_tableViewer.getTable().setForeground(enabled
+				? null
+				: m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
-	protected void setMoveDownButton(Button moveDownButton)
+	protected void createStack(Composite parent)
 	{
-		m_moveDownButton = moveDownButton;
+		m_stackComposite = new Composite(parent, SWT.NONE);
+		m_stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		m_stackLayout = new StackLayout();
+		m_stackLayout.marginHeight = m_stackLayout.marginWidth = 0;
+		m_stackComposite.setLayout(m_stackLayout);
+
+		m_table.fillStackComposite(m_stackComposite);
 	}
 
-	protected Button getMoveUpButton()
+	protected void createStackOptions(Composite parent)
 	{
-		return m_moveUpButton;
-	}
-
-	protected void setMoveUpButton(Button moveUpButton)
-	{
-		m_moveUpButton = moveUpButton;
-	}
-
-	protected Button getNewButton()
-	{
-		return m_newButton;
-	}
-
-	protected void setNewButton(Button newButton)
-	{
-		m_newButton = newButton;
-	}
-
-	protected Button getRemoveButton()
-	{
-		return m_removeButton;
-	}
-
-	protected void setRemoveButton(Button removeButton)
-	{
-		m_removeButton = removeButton;
-	}
-
-	protected TableViewer getTableViewer()
-	{
-		return m_tableViewer;
-	}
-
-	protected boolean isSwapButtonAllowed()
-	{
-		return m_swapButtonsFlag;
-	}
-
-	protected void updateLastRow()
-	{
-		if(getSelectionIndex() != -1)
+		m_stackOptions = new Tree(parent, SWT.BORDER);
+		m_stackOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+		m_stackOptions.addSelectionListener(new SelectionAdapter()
 		{
-			m_lastSelectedRow = getSelectionIndex();
-		}
-		
-		m_lastEditedRow = getSelectionIndex();
-	}
-
-	protected int getLastSelectedRow()
-	{
-		return m_lastSelectedRow;
-	}
-	
-	protected int getLastEditedRow()
-	{
-		return m_lastEditedRow;
-	}
-	
-	protected abstract void initComposite();
-
-	protected abstract Composite createTableGroupComposite(Composite parent);
-
-	protected abstract Composite createTableButtonsComposite(Composite parent);
-
-	protected void createTableGroup(Composite parent)
-	{
-		Composite componentTableGroup = createTableGroupComposite(parent);
-
-		Table table = new Table(componentTableGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION);
-
-		//table.setHeaderVisible(false);
-		table.setHeaderVisible(true);
-		DynamicTableLayout layout = new DynamicTableLayout(50);
-
-		int tableIdx = 0;
-		for(int idx = 0; idx < m_table.getTableViewerColumns(); idx++)
-		{
-			if(m_table.getTableViewerColumnWeights()[idx] > 0)
+			@Override
+			public void widgetSelected(SelectionEvent e)
 			{
-				TableColumn tableColumn = new TableColumn(table, SWT.LEFT, tableIdx);
-				tableColumn.setText(m_table.getTableViewerColumnHeaders()[idx]);
-				layout.addColumnData(new ColumnWeightData(m_table.getTableViewerColumnWeights()[idx], true));
-				tableIdx++;
-			}
-		}
-		table.setLayout(layout);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		// gridData.widthHint = 600;
-		table.setLayoutData(gridData);
-		
-		m_tableViewer = new TableViewer(table);
-		m_tableViewer.setLabelProvider(new TableLabelProvider());
-		m_tableViewer.setContentProvider(new TableContentProvider());
-		m_tableViewer.setInput(m_table);
-		m_tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
-		{
-			public void selectionChanged(SelectionChangedEvent event)
-			{
-				rowSelection();
-			}
-		});
-		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
-		{
-			public void doubleClick(DoubleClickEvent event)
-			{
-				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
+				if(e.item != null)
 				{
-					if(m_enabled)
-						editRow();
+					TreeItem item = (TreeItem)e.item;
+					m_stackLayout.topControl = m_table.getStackControl(item.getText());
+					m_stackComposite.layout();
+					focusStackComposite();
 				}
 			}
 		});
-
-		createTableButtons(componentTableGroup);
 	}
 
 	protected void createTableButtons(Composite parent)
@@ -313,38 +231,123 @@ public abstract class StructuredTableEditor<T> extends Composite
 		}
 	}
 
-	protected abstract void newRow();
+	protected abstract Composite createTableButtonsComposite(Composite parent);
+
+	protected void createTableGroup(Composite parent)
+	{
+		Composite componentTableGroup = createTableGroupComposite(parent);
+
+		Table table = new Table(componentTableGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.FULL_SELECTION);
+
+		// table.setHeaderVisible(false);
+		table.setHeaderVisible(true);
+		DynamicTableLayout layout = new DynamicTableLayout(50);
+
+		int tableIdx = 0;
+		for(int idx = 0; idx < m_table.getTableViewerColumns(); idx++)
+		{
+			if(m_table.getTableViewerColumnWeights()[idx] > 0)
+			{
+				TableColumn tableColumn = new TableColumn(table, SWT.LEFT, tableIdx);
+				tableColumn.setText(m_table.getTableViewerColumnHeaders()[idx]);
+				layout.addColumnData(new ColumnWeightData(m_table.getTableViewerColumnWeights()[idx], true));
+				tableIdx++;
+			}
+		}
+		table.setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		// gridData.widthHint = 600;
+		table.setLayoutData(gridData);
+
+		m_tableViewer = new TableViewer(table);
+		m_tableViewer.setLabelProvider(new TableLabelProvider());
+		m_tableViewer.setContentProvider(new TableContentProvider());
+		m_tableViewer.setInput(m_table);
+		m_tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				rowSelection();
+			}
+		});
+		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
+		{
+			public void doubleClick(DoubleClickEvent event)
+			{
+				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
+				{
+					if(m_enabled)
+						editRow();
+				}
+			}
+		});
+
+		createTableButtons(componentTableGroup);
+	}
+
+	protected abstract Composite createTableGroupComposite(Composite parent);
 
 	protected abstract void editRow();
 
-	protected abstract boolean rowSelectionEvent();
+	protected abstract void enableDisableButtonGroup();
 
-	private void rowSelection()
+	protected void enableFields(boolean enabled)
 	{
-		if(rowSelectionEvent())
-			updateLastRow();
+		m_table.enableFields(enabled);
 	}
 
-	protected void saveRow() throws ValidatorException
+	protected void fillStackOptions()
 	{
-		if(m_lastEditedRow == DONT_SAVE)
-			return;
-		
-		m_table.save(m_lastEditedRow);
-		refresh();
-
-		enableDisableButtonGroup();
-	}
-
-	protected void removeRow()
-	{
-		int row = getSelectionIndex();
-		if(row != -1)
+		for(String stackKey : m_table.getStackKeys())
 		{
-			m_table.removeRow(row);
-			m_lastEditedRow = DONT_SAVE;
-			refresh();
+			TreeItem item = new TreeItem(m_stackOptions, SWT.NONE);
+			item.setText(stackKey);
 		}
+	}
+
+	protected void focusStackComposite()
+	{
+		Control focusControl = (Control)m_stackLayout.topControl.getData("focusControl"); //$NON-NLS-1$
+		if(focusControl != null)
+		{
+			focusControl.setFocus();
+		}
+	}
+
+	protected Button getEditButton()
+	{
+		return m_editButton;
+	}
+
+	protected int getLastEditedRow()
+	{
+		return m_lastEditedRow;
+	}
+
+	protected int getLastSelectedRow()
+	{
+		return m_lastSelectedRow;
+	}
+
+	protected Button getMoveDownButton()
+	{
+		return m_moveDownButton;
+	}
+
+	protected Button getMoveUpButton()
+	{
+		return m_moveUpButton;
+	}
+
+	protected Button getNewButton()
+	{
+		return m_newButton;
+	}
+
+	protected Button getRemoveButton()
+	{
+		return m_removeButton;
 	}
 
 	protected int getSelectionIndex()
@@ -352,20 +355,34 @@ public abstract class StructuredTableEditor<T> extends Composite
 		return m_tableViewer.getTable().getSelectionIndex();
 	}
 
-	protected void swapAndReselect(int idxOffset, int selectionOffset)
+	protected IStructuredTable<T> getTable()
 	{
-		if(m_table.swapRows(getSelectionIndex(), idxOffset))
-		{
-			refresh();
-
-			Table table = m_tableViewer.getTable();
-			int idx = table.getSelectionIndex() + idxOffset;
-			table.select(idx + selectionOffset);
-			enableDisableButtonGroup();
-		}
+		return m_table;
 	}
 
-	public abstract void refresh();
+	protected TableViewer getTableViewer()
+	{
+		return m_tableViewer;
+	}
+
+	protected abstract void initComposite();
+
+	protected boolean isSwapButtonAllowed()
+	{
+		return m_swapButtonsFlag;
+	}
+
+	protected abstract void newRow();
+
+	protected void refreshRow()
+	{
+		m_table.refreshRow(getSelectionIndex());
+
+		if(m_stackOptions.getSelectionCount() == 0)
+		{
+			setStackOption(0);
+		}
+	}
 
 	protected void refreshTable()
 	{
@@ -390,48 +407,53 @@ public abstract class StructuredTableEditor<T> extends Composite
 		updateLastRow();
 	}
 
-	protected void refreshRow()
+	protected void removeRow()
 	{
-		m_table.refreshRow(getSelectionIndex());
-
-		if(m_stackOptions.getSelectionCount() == 0)
+		int row = getSelectionIndex();
+		if(row != -1)
 		{
-			setStackOption(0);
+			m_table.removeRow(row);
+			m_lastEditedRow = DONT_SAVE;
+			refresh();
 		}
 	}
 
-	@Override
-	public void setEnabled(boolean enabled)
+	protected abstract boolean rowSelectionEvent();
+
+	protected void saveRow() throws ValidatorException
 	{
-		m_enabled = enabled;
+		if(m_lastEditedRow == DONT_SAVE)
+			return;
+
+		m_table.save(m_lastEditedRow);
+		refresh();
+
 		enableDisableButtonGroup();
-		m_tableViewer.getTable().setForeground(enabled ? null : m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
-	@Override
-	public boolean isEnabled()
+	protected void setEditButton(Button editButton)
 	{
-		return m_enabled;
-	}
-	
-	public boolean selectRow(T row)
-	{
-		int idx = m_table.getRows().indexOf(row);
-		
-		if(idx == -1)
-			return false;
-		
-		m_tableViewer.getTable().setSelection(idx);
-		updateLastRow();
-
-		return true;
+		m_editButton = editButton;
 	}
 
-	protected abstract void enableDisableButtonGroup();
-
-	protected void enableFields(boolean enabled)
+	protected void setMoveDownButton(Button moveDownButton)
 	{
-		m_table.enableFields(enabled);
+		m_moveDownButton = moveDownButton;
+	}
+
+	protected void setMoveUpButton(Button moveUpButton)
+	{
+		m_moveUpButton = moveUpButton;
+	}
+
+	protected void setNewButton(Button newButton)
+	{
+		m_newButton = newButton;
+	}
+
+	protected void setRemoveButton(Button removeButton)
+	{
+		m_removeButton = removeButton;
 	}
 
 	protected void setStackOption(int idx)
@@ -442,52 +464,32 @@ public abstract class StructuredTableEditor<T> extends Composite
 		m_stackComposite.layout();
 	}
 
-	protected void createStackOptions(Composite parent)
+	protected void swapAndReselect(int idxOffset, int selectionOffset)
 	{
-		m_stackOptions = new Tree(parent, SWT.BORDER);
-		m_stackOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-		m_stackOptions.addSelectionListener(new SelectionAdapter()
+		if(m_table.swapRows(getSelectionIndex(), idxOffset))
 		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				if(e.item != null)
-				{
-					TreeItem item = (TreeItem)e.item;
-					m_stackLayout.topControl = m_table.getStackControl(item.getText());
-					m_stackComposite.layout();
-					focusStackComposite();
-				}
-			}
-		});
-	}
+			refresh();
 
-	protected void focusStackComposite()
-	{
-		Control focusControl = (Control) m_stackLayout.topControl.getData("focusControl"); //$NON-NLS-1$
-		if(focusControl != null)
-		{
-			focusControl.setFocus();
-		}
-	}
-	
-	protected void fillStackOptions()
-	{
-		for(String stackKey : m_table.getStackKeys())
-		{
-			TreeItem item = new TreeItem(m_stackOptions, SWT.NONE);
-			item.setText(stackKey);
+			Table table = m_tableViewer.getTable();
+			int idx = table.getSelectionIndex() + idxOffset;
+			table.select(idx + selectionOffset);
+			enableDisableButtonGroup();
 		}
 	}
 
-	protected void createStack(Composite parent)
+	protected void updateLastRow()
 	{
-		m_stackComposite = new Composite(parent, SWT.NONE);
-		m_stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		m_stackLayout = new StackLayout();
-		m_stackLayout.marginHeight = m_stackLayout.marginWidth = 0;
-		m_stackComposite.setLayout(m_stackLayout);
+		if(getSelectionIndex() != -1)
+		{
+			m_lastSelectedRow = getSelectionIndex();
+		}
 
-		m_table.fillStackComposite(m_stackComposite);
+		m_lastEditedRow = getSelectionIndex();
+	}
+
+	private void rowSelection()
+	{
+		if(rowSelectionEvent())
+			updateLastRow();
 	}
 }

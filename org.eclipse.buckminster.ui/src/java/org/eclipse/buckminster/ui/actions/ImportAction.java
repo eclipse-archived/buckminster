@@ -19,6 +19,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class ImportAction implements IObjectActionDelegate
 {
 	private IWorkbenchPart m_workbenchPart;
+
 	private IFile m_fileToImport;
 
 	public void dispose()

@@ -75,8 +75,8 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 	{
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		Shell shell = m_workbenchWindow.getShell();
-		InputDialog askURL = new InputDialog(shell, null, Messages.url_for_query_with_colon, preferences.getString(LAST_CQUERY_URL),
-				new URLValidator());
+		InputDialog askURL = new InputDialog(shell, null, Messages.url_for_query_with_colon, preferences
+				.getString(LAST_CQUERY_URL), new URLValidator());
 
 		if(askURL.open() != Window.OK)
 			return;
@@ -108,7 +108,8 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 				IOUtils.close(output);
 			}
 			m_workbenchWindow.getActivePage().openEditor(
-					new ExternalFileEditorInput(tempFile, new Path(url.toURI().getPath()).lastSegment(), urlStr), ed.getId());
+					new ExternalFileEditorInput(tempFile, new Path(url.toURI().getPath()).lastSegment(), urlStr),
+					ed.getId());
 		}
 		catch(Exception e)
 		{

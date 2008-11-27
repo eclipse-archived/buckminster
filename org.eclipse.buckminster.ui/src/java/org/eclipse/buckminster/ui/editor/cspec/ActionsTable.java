@@ -45,45 +45,79 @@ import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ActionsTable extends AttributesTable<ActionBuilder>
 {
 	private Map<ActionBuilder, List<ActionArtifactBuilder>> m_actionArtifacts;
-	
+
 	private Text m_actorNameText;
+
 	private Button m_alwaysCheck;
+
 	private Button m_assignConsoleSupportCheck;
+
 	private Text m_actionFilter;
+
 	private Text m_prodAliasText;
+
 	private Text m_prodBaseText;
-	
+
 	private List<Property> m_actorProperties = new ArrayList<Property>();
+
 	private SimpleTableEditor<Property> m_actorPropertiesEditor;
+
 	private Button m_pathsButton;
+
 	private List<PathWrapper> m_productPaths = new ArrayList<PathWrapper>();
+
 	private SimpleTableEditor<PathWrapper> m_productPathsEditor;
+
 	private Button m_artifactsButton;
+
 	private List<ArtifactBuilder> m_productArtifacts = new ArrayList<ArtifactBuilder>();
+
 	private TwoPagesTableEditor<ArtifactBuilder> m_productArtifactsEditor;
+
 	private List<Property> m_properties = new ArrayList<Property>();
+
 	private SimpleTableEditor<Property> m_propertiesEditor;
-	
+
 	private Text m_prereqNameText;
+
 	private Text m_prereqRebasePathText;
+
 	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
+
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
-	public ActionsTable(CSpecEditor editor, List<ActionBuilder> data, Map<ActionBuilder, List<ActionArtifactBuilder>> actionArtifacts, CSpecBuilder cspec)
+	public ActionsTable(CSpecEditor editor, List<ActionBuilder> data,
+			Map<ActionBuilder, List<ActionArtifactBuilder>> actionArtifacts, CSpecBuilder cspec)
 	{
 		super(editor, data, cspec);
 		m_actionArtifacts = actionArtifacts;
 	}
 
 	@Override
-	protected ActionBuilder createNewRow()
+	public void enableFields(boolean enabled)
 	{
-		return getCSpecBuilder().createActionBuilder();
+		super.enableFields(enabled);
+
+		m_actorNameText.setEnabled(enabled);
+		m_alwaysCheck.setEnabled(enabled);
+		m_assignConsoleSupportCheck.setEnabled(enabled);
+		m_actionFilter.setEnabled(enabled);
+		m_prodAliasText.setEnabled(enabled);
+		m_prodBaseText.setEnabled(enabled);
+		m_actorPropertiesEditor.setEnabled(enabled);
+		m_pathsButton.setEnabled(enabled);
+		m_productPathsEditor.setEnabled(enabled && m_pathsButton.getSelection());
+		m_artifactsButton.setEnabled(enabled);
+		m_productArtifactsEditor.setEnabled(enabled && m_artifactsButton.getSelection());
+		m_propertiesEditor.setEnabled(enabled);
+		m_prereqNameText.setEnabled(enabled);
+		m_prereqRebasePathText.setEnabled(enabled);
+		m_prerequisitesEditor.setEnabled(enabled);
 	}
 
 	@Override
@@ -94,6 +128,219 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		addStackMapping(Messages.products, createProductsStackLayer(stackComposite));
 		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
 		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
+	}
+
+	@Override
+	protected ActionBuilder createNewRow()
+	{
+		return getCSpecBuilder().createActionBuilder();
+	}
+
+	@Override
+	protected void refreshRow(ActionBuilder builder)
+	{
+		super.refreshRow(builder);
+
+		m_actorNameText.setText(TextUtils.notNullString(builder.getActorName()));
+		m_alwaysCheck.setSelection(builder.isAlways());
+		m_assignConsoleSupportCheck.setSelection(builder.isAssignConsoleSupport());
+		m_actionFilter.setText(TextUtils.notNullString(builder.getFilter()));
+		m_prodAliasText.setText(TextUtils.notNullString(builder.getProductAlias()));
+
+		IPath prodBasePath = builder.getProductBase();
+		m_prodBaseText.setText(TextUtils.notNullString(prodBasePath == null
+				? null
+				: prodBasePath.toOSString()));
+
+		CSpecEditorUtils.copyAndSortItems(builder.getActorProperties(), m_actorProperties);
+		m_actorPropertiesEditor.refresh();
+
+		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths);
+		m_productPathsEditor.refresh();
+
+		CSpecEditorUtils.copyAndSortItems(m_actionArtifacts.get(builder), m_productArtifacts, CSpecEditorUtils
+				.getAttributeComparator());
+		createProductArtifactsCopy();
+		m_productArtifactsEditor.refresh();
+
+		chooseProductPathsButton(m_productPaths.size() > 0 || m_productArtifacts.size() == 0);
+
+		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);
+		m_propertiesEditor.refresh();
+
+		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
+
+		m_prereqNameText.setText(TextUtils.notNullString(prereqBuilder.getName()));
+
+		IPath rebasePath = prereqBuilder.getPrerequisiteRebase();
+		m_prereqRebasePathText.setText(TextUtils.notNullString(rebasePath == null
+				? null
+				: rebasePath.toOSString()));
+
+		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils
+				.getPrerequisiteComparator());
+		m_prerequisitesEditor.refresh();
+	}
+
+	@Override
+	protected void setRowValues(ActionBuilder builder) throws ValidatorException
+	{
+		super.setRowValues(builder);
+
+		builder.setActorName(UiUtils.trimmedValue(m_actorNameText));
+		builder.setAlways(m_alwaysCheck.getSelection());
+		builder.setAssignConsoleSupport(m_assignConsoleSupportCheck.getSelection());
+		String filterStr = UiUtils.trimmedValue(m_actionFilter);
+		if(filterStr != null)
+		{
+			try
+			{
+				builder.setFilter(FilterUtils.createFilter(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+		else
+			builder.setFilter(null);
+
+		builder.setProductAlias(UiUtils.trimmedValue(m_prodAliasText));
+
+		String prodBasePathString = UiUtils.trimmedValue(m_prodBaseText);
+		IPath prodBasePath = null;
+		if(prodBasePathString != null)
+		{
+			prodBasePath = Path.fromOSString(prodBasePathString);
+		}
+		builder.setProductBase(prodBasePath);
+
+		ExpandingProperties properties = builder.getActorProperties();
+
+		if(properties != null)
+		{
+			properties.clear();
+		}
+		for(Property property : m_actorProperties)
+		{
+			builder.addActorProperty(property.getKey(), property.getValue(), true);
+		}
+
+		Set<IPath> paths = builder.getProductPaths();
+
+		if(paths != null)
+		{
+			paths.clear();
+		}
+
+		// save only if selected
+		if(m_pathsButton.getSelection())
+		{
+			for(PathWrapper path : m_productPaths)
+			{
+				IPath p = path.getPath();
+
+				if(p == null)
+					continue;
+
+				builder.addProductPath(p);
+			}
+		}
+
+		m_actionArtifacts.remove(builder);
+
+		// save only if selected
+		if(m_artifactsButton.getSelection())
+		{
+			if(m_productArtifacts.size() > 0)
+			{
+				List<ActionArtifactBuilder> list = new ArrayList<ActionArtifactBuilder>();
+
+				for(ArtifactBuilder artifactBuilder : m_productArtifacts)
+				{
+					((ActionArtifactBuilder)artifactBuilder).setActionName(builder.getName());
+					list.add((ActionArtifactBuilder)artifactBuilder);
+				}
+
+				m_actionArtifacts.put(builder, list);
+			}
+		}
+
+		properties = builder.getProperties();
+
+		if(properties != null)
+		{
+			properties.clear();
+		}
+		for(Property property : m_properties)
+		{
+			builder.addProperty(property.getKey(), property.getValue(), true);
+		}
+
+		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
+
+		prereqBuilder.setName(UiUtils.trimmedValue(m_prereqNameText));
+
+		String rebasePathString = UiUtils.trimmedValue(m_prereqRebasePathText);
+		IPath rebasePath = null;
+
+		if(rebasePathString != null)
+		{
+			rebasePath = Path.fromOSString(rebasePathString);
+		}
+		prereqBuilder.setPrerequisiteRebase(rebasePath);
+
+		List<PrerequisiteBuilder> prerequisites = prereqBuilder.getPrerequisites();
+
+		if(prerequisites != null)
+		{
+			prerequisites.clear();
+		}
+		for(PrerequisiteBuilder prerequisite : m_prerequisites)
+		{
+			// Original "prerequisite" is created with a different PrerequisitesBuilder (an empty one)
+			// Need to created again and copy attributes
+			PrerequisiteBuilder newPrerequisite = prereqBuilder.createPrerequisiteBuilder();
+			newPrerequisite.initFrom(prerequisite.createPrerequisite());
+
+			try
+			{
+				prereqBuilder.addPrerequisite(newPrerequisite);
+			}
+			catch(PrerequisiteAlreadyDefinedException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+	}
+
+	void showProductArtifact(ArtifactBuilder builder)
+	{
+		// find according to name
+		ArtifactBuilder foundBuilder = null;
+		for(ArtifactBuilder item : m_productArtifacts)
+		{
+			if(item.getName().equals(builder.getName()))
+			{
+				foundBuilder = item;
+				break;
+			}
+		}
+
+		if(foundBuilder != null)
+		{
+			m_productArtifactsEditor.setFocus();
+			m_productArtifactsEditor.show(foundBuilder);
+		}
+	}
+
+	private void chooseProductPathsButton(boolean choose)
+	{
+		m_pathsButton.setSelection(choose);
+		m_artifactsButton.setSelection(!choose);
+
+		if(m_pathsButton.getEnabled())
+			enableProductPathsEditor(choose);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -138,7 +385,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
-		
+
 		Label label = UiUtils.createGridLabel(geComposite, Messages.prerequisites_with_colon, 1, 0, SWT.NONE);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
@@ -148,18 +395,13 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow().getPrerequisitesBuilder());
+		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow()
+				.getPrerequisitesBuilder());
 		preTable.addTableModifyListener(FIELD_LISTENER);
-		
-		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
-				geComposite,
-				preTable,
-				null,
-				Messages.action_prerequisite_with_dash,
-				null,
-				null,
-				SWT.NONE);
-		
+
+		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null,
+				Messages.action_prerequisite_with_dash, null, null, SWT.NONE);
+
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 		m_prerequisitesEditor.setLayoutData(gridData);
@@ -167,6 +409,17 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 
 		return geComposite;
+	}
+
+	private void createProductArtifactsCopy()
+	{
+		for(int i = 0; i < m_productArtifacts.size(); i++)
+		{
+			ActionArtifactBuilder builder = (ActionArtifactBuilder)m_productArtifacts.get(i);
+			ActionArtifactBuilder newBuilder = getCSpecBuilder().createActionArtifactBuilder();
+			newBuilder.initFrom(builder.createAttribute());
+			m_productArtifacts.set(i, newBuilder);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -186,10 +439,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createGridLabel(composite, Messages.product_base_path_with_colon, 1, 0, SWT.NONE);
 		m_prodBaseText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
 		m_prodBaseText.addModifyListener(FIELD_LISTENER);
-		
+
 		UiUtils.createEmptyLabel(composite);
 		UiUtils.createEmptyLabel(composite);
-		
+
 		m_pathsButton = new Button(composite, SWT.RADIO);
 		m_pathsButton.setText(Messages.product_paths_with_colon);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
@@ -207,23 +460,17 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		PathsTable table = new PathsTable(m_productPaths);
 		table.addTableModifyListener(FIELD_LISTENER);
-		
-		m_productPathsEditor = new SimpleTableEditor<PathWrapper>(
-				composite,
-				table,
-				null,
-				Messages.action_product_path_with_dash,
-				null,
-				null,
-				SWT.NONE);
-		
+
+		m_productPathsEditor = new SimpleTableEditor<PathWrapper>(composite, table, null,
+				Messages.action_product_path_with_dash, null, null, SWT.NONE);
+
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 		m_productPathsEditor.setLayoutData(gridData);
-		
+
 		UiUtils.createEmptyLabel(composite);
 		UiUtils.createEmptyLabel(composite);
-		
+
 		m_artifactsButton = new Button(composite, SWT.RADIO);
 		m_artifactsButton.setText(Messages.product_artifacts);
 		gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
@@ -249,15 +496,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		};
 		artifactsTable.addTableModifyListener(FIELD_LISTENER);
 
-		m_productArtifactsEditor = new TwoPagesTableEditor<ArtifactBuilder>(
-				composite,
-				artifactsTable,
-				false,
-				null,
-				Messages.action_product_artifact_with_dash,
-				null,
-				null,
-				SWT.NONE);
+		m_productArtifactsEditor = new TwoPagesTableEditor<ArtifactBuilder>(composite, artifactsTable, false, null,
+				Messages.action_product_artifact_with_dash, null, null, SWT.NONE);
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 		m_productArtifactsEditor.setLayoutData(gridData);
@@ -266,7 +506,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		return composite;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private Control createPropertiesStackLayer(Composite stackComposite)
 	{
@@ -279,276 +519,26 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		PropertiesTable table = new PropertiesTable(m_properties);
 		table.addTableModifyListener(FIELD_LISTENER);
-		
-		m_propertiesEditor = new SimpleTableEditor<Property>(
-				composite,
-				table,
-				null,
-				Messages.action_properties_with_dash,
-				null,
-				null,
-				SWT.NONE);
+
+		m_propertiesEditor = new SimpleTableEditor<Property>(composite, table, null,
+				Messages.action_properties_with_dash, null, null, SWT.NONE);
 
 		UiUtils.createEmptyLabel(composite);
-		
+
 		EditorUtils.createHeaderLabel(composite, Messages.actor_properties, 1);
 
 		table = new PropertiesTable(m_actorProperties);
 		table.addTableModifyListener(FIELD_LISTENER);
-		
-		m_actorPropertiesEditor = new SimpleTableEditor<Property>(
-				composite,
-				table,
-				null,
-				Messages.action_actor_properties_with_dash,
-				null,
-				null,
-				SWT.NONE);
-	
+
+		m_actorPropertiesEditor = new SimpleTableEditor<Property>(composite, table, null,
+				Messages.action_actor_properties_with_dash, null, null, SWT.NONE);
+
 		return composite;
-	}
-	
-	@Override
-	protected void setRowValues(ActionBuilder builder) throws ValidatorException
-	{
-		super.setRowValues(builder);
-
-		builder.setActorName(UiUtils.trimmedValue(m_actorNameText));
-		builder.setAlways(m_alwaysCheck.getSelection());
-		builder.setAssignConsoleSupport(m_assignConsoleSupportCheck.getSelection());
-		String filterStr = UiUtils.trimmedValue(m_actionFilter);
-		if(filterStr != null)
-		{
-			try
-			{
-				builder.setFilter(FilterUtils.createFilter(filterStr));
-			}
-			catch(InvalidSyntaxException e)
-			{
-				throw new ValidatorException(e.getMessage());
-			}
-		}
-		else
-			builder.setFilter(null);
-
-		builder.setProductAlias(UiUtils.trimmedValue(m_prodAliasText));
-		
-		String prodBasePathString = UiUtils.trimmedValue(m_prodBaseText);
-		IPath prodBasePath = null;		
-		if(prodBasePathString != null)
-		{
-			prodBasePath = Path.fromOSString(prodBasePathString);
-		}
-		builder.setProductBase(prodBasePath);
-
-		ExpandingProperties properties = builder.getActorProperties();
-		
-		if(properties != null)
-		{
-			properties.clear();
-		}
-		for(Property property : m_actorProperties)
-		{
-			builder.addActorProperty(property.getKey(), property.getValue(), true);
-		}
-		
-		Set<IPath> paths = builder.getProductPaths();
-		
-		if(paths != null)
-		{
-			paths.clear();
-		}
-		
-		// save only if selected
-		if(m_pathsButton.getSelection())
-		{
-			for(PathWrapper path : m_productPaths)
-			{
-				IPath p = path.getPath();
-				
-				if(p == null)
-					continue;
-				
-				builder.addProductPath(p);
-			}
-		}
-
-		m_actionArtifacts.remove(builder);
-		
-		// save only if selected
-		if(m_artifactsButton.getSelection())
-		{
-			if(m_productArtifacts.size() > 0)
-			{
-				List<ActionArtifactBuilder> list = new ArrayList<ActionArtifactBuilder>();
-				
-				for(ArtifactBuilder artifactBuilder : m_productArtifacts)
-				{
-					((ActionArtifactBuilder)artifactBuilder).setActionName(builder.getName());
-					list.add((ActionArtifactBuilder)artifactBuilder);
-				}
-				
-				m_actionArtifacts.put(builder, list);
-			}
-		}
-		
-		properties = builder.getProperties();
-		
-		if(properties != null)
-		{
-			properties.clear();
-		}
-		for(Property property : m_properties)
-		{
-			builder.addProperty(property.getKey(), property.getValue(), true);
-		}
-		
-		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
-		
-		prereqBuilder.setName(UiUtils.trimmedValue(m_prereqNameText));	
-		
-		String rebasePathString = UiUtils.trimmedValue(m_prereqRebasePathText);
-		IPath rebasePath = null;
-
-		if(rebasePathString != null)
-		{
-			rebasePath = Path.fromOSString(rebasePathString);
-		}
-		prereqBuilder.setPrerequisiteRebase(rebasePath);
-
-		List<PrerequisiteBuilder> prerequisites = prereqBuilder.getPrerequisites();
-
-		if(prerequisites != null)
-		{
-			prerequisites.clear();
-		}
-		for(PrerequisiteBuilder prerequisite : m_prerequisites)
-		{
-			// Original "prerequisite" is created with a different PrerequisitesBuilder (an empty one)
-			// Need to created again and copy attributes
-			PrerequisiteBuilder newPrerequisite = prereqBuilder.createPrerequisiteBuilder();
-			newPrerequisite.initFrom(prerequisite.createPrerequisite());
-			
-			try
-			{
-				prereqBuilder.addPrerequisite(newPrerequisite);
-			}
-			catch(PrerequisiteAlreadyDefinedException e)
-			{
-				throw new ValidatorException(e.getMessage());
-			}
-		}
-	}
-	@Override
-	protected void refreshRow(ActionBuilder builder)
-	{
-		super.refreshRow(builder);
-
-		m_actorNameText.setText(TextUtils.notNullString(builder.getActorName()));
-		m_alwaysCheck.setSelection(builder.isAlways());
-		m_assignConsoleSupportCheck.setSelection(builder.isAssignConsoleSupport());
-		m_actionFilter.setText(TextUtils.notNullString(builder.getFilter()));
-		m_prodAliasText.setText(TextUtils.notNullString(builder.getProductAlias()));
-
-		IPath prodBasePath = builder.getProductBase();		
-		m_prodBaseText.setText(
-				TextUtils.notNullString(prodBasePath == null ?
-						null :
-						prodBasePath.toOSString()));
-		
-		CSpecEditorUtils.copyAndSortItems(builder.getActorProperties(), m_actorProperties);
-		m_actorPropertiesEditor.refresh();
-
-		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths);
-		m_productPathsEditor.refresh();
-
-		CSpecEditorUtils.copyAndSortItems(m_actionArtifacts.get(builder), m_productArtifacts, CSpecEditorUtils.getAttributeComparator());
-		createProductArtifactsCopy();
-		m_productArtifactsEditor.refresh();
-		
-		chooseProductPathsButton(m_productPaths.size() > 0 || m_productArtifacts.size() == 0);
-		
-		CSpecEditorUtils.copyAndSortItems(builder.getProperties(), m_properties);
-		m_propertiesEditor.refresh();
-	
-		PrerequisitesBuilder prereqBuilder = builder.getPrerequisitesBuilder();
-		
-		m_prereqNameText.setText(TextUtils.notNullString(prereqBuilder.getName()));
-		
-		IPath rebasePath = prereqBuilder.getPrerequisiteRebase();
-		m_prereqRebasePathText.setText(TextUtils.notNullString(rebasePath == null
-				? null
-				: rebasePath.toOSString()));
-
-		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getPrerequisiteComparator());
-		m_prerequisitesEditor.refresh();
-	}
-
-	private void chooseProductPathsButton(boolean choose)
-	{
-		m_pathsButton.setSelection(choose);
-		m_artifactsButton.setSelection(!choose);
-		
-		if(m_pathsButton.getEnabled())
-			enableProductPathsEditor(choose);
 	}
 
 	private void enableProductPathsEditor(boolean enable)
 	{
 		m_productPathsEditor.setEnabled(enable);
 		m_productArtifactsEditor.setEnabled(!enable);
-	}
-
-	private void createProductArtifactsCopy()
-	{
-		for(int i = 0; i < m_productArtifacts.size(); i++)
-		{
-			ActionArtifactBuilder builder = (ActionArtifactBuilder) m_productArtifacts.get(i);
-			ActionArtifactBuilder newBuilder = getCSpecBuilder().createActionArtifactBuilder();
-			newBuilder.initFrom(builder.createAttribute());
-			m_productArtifacts.set(i, newBuilder);
-		}
-	}
-
-	@Override
-	public void enableFields(boolean enabled)
-	{
-		super.enableFields(enabled);
-
-		m_actorNameText.setEnabled(enabled);
-		m_alwaysCheck.setEnabled(enabled);
-		m_assignConsoleSupportCheck.setEnabled(enabled);
-		m_actionFilter.setEnabled(enabled);
-		m_prodAliasText.setEnabled(enabled);
-		m_prodBaseText.setEnabled(enabled);
-		m_actorPropertiesEditor.setEnabled(enabled);
-		m_pathsButton.setEnabled(enabled);
-		m_productPathsEditor.setEnabled(enabled && m_pathsButton.getSelection());
-		m_artifactsButton.setEnabled(enabled);
-		m_productArtifactsEditor.setEnabled(enabled && m_artifactsButton.getSelection());
-		m_propertiesEditor.setEnabled(enabled);		
-		m_prereqNameText.setEnabled(enabled);
-		m_prereqRebasePathText.setEnabled(enabled);
-		m_prerequisitesEditor.setEnabled(enabled);
-	}
-	
-	void showProductArtifact(ArtifactBuilder builder)
-	{
-		// find according to name
-		ArtifactBuilder foundBuilder = null;
-		for(ArtifactBuilder item : m_productArtifacts)
-		{
-			if(item.getName().equals(builder.getName()))
-			{
-				foundBuilder = item;
-				break;
-			}
-		}
-		
-		if(foundBuilder != null)
-		{
-			m_productArtifactsEditor.setFocus();
-			m_productArtifactsEditor.show(foundBuilder);
-		}
 	}
 }

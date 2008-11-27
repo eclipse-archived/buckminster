@@ -14,7 +14,7 @@ import org.eclipse.ui.IStartup;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class EarlyStartup implements IStartup
 {

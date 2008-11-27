@@ -16,20 +16,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Adapter Factory that converts:
- * IResource to CSpec, CSpecDataNode, Resolution, and ResolutionDataNode
+ * Adapter Factory that converts: IResource to CSpec, CSpecDataNode, Resolution, and ResolutionDataNode
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class ResourceAdapterFactory implements IAdapterFactory
 {
 	@SuppressWarnings("unchecked")
-	private static Class[] s_adapterList = { 
-		CSpec.class, CSpecDataNode.class, 
-		Resolution.class, ResolutionDataNode.class 
-		};
-	
+	private static Class[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
+			ResolutionDataNode.class };
+
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
@@ -39,9 +36,9 @@ public class ResourceAdapterFactory implements IAdapterFactory
 			CSpec cspec = getCSpecFromResource((IResource)adaptableObject);
 			if(cspec == null)
 				return null;
-			
+
 			if(adapterType.isAssignableFrom(CSpec.class))
-				return cspec;			
+				return cspec;
 			if(adapterType.isAssignableFrom(CSpecDataNode.class))
 				return new CSpecDataNode(cspec);
 
@@ -62,11 +59,17 @@ public class ResourceAdapterFactory implements IAdapterFactory
 			if(adapterType.isAssignableFrom(ResolutionDataNode.class))
 				return new ResolutionDataNode(r);
 		}
-			
+
 		// give up
 		return null;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public Class[] getAdapterList()
+	{
+		return s_adapterList;
+	}
+
 	public CSpec getCSpecFromResource(IResource resource)
 	{
 		while(resource != null)
@@ -84,13 +87,8 @@ public class ResourceAdapterFactory implements IAdapterFactory
 			{
 				// ignore
 			}
-		}		
+		}
 		return null;
-	}
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList()
-	{
-		return s_adapterList;
 	}
 
 }

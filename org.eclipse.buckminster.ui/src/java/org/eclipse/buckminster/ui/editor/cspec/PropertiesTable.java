@@ -17,7 +17,7 @@ import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class PropertiesTable extends SimpleTable<Property>
 {
@@ -26,32 +26,21 @@ public class PropertiesTable extends SimpleTable<Property>
 		super(data);
 	}
 
-	public String[] getColumnHeaders()
-	{
-		return new String[] {Messages.key, Messages.value};
-	}
-
-	public int[] getColumnWeights()
-	{
-		return new int[] {20, 30};
-	}
-
-	public Object[] toRowArray(Property t)
-	{
-		return new Object[]{t.getKey(), t.getValue()};
-	}
-
 	public Property createRowClass()
 	{
 		return new Property(null, null);
 	}
 
-	public void updateRowClass(Property property, Object[] args) throws ValidatorException
+	public String[] getColumnHeaders()
 	{
-		property.setKey((String) args[0]);
-		property.setValue((String) args[1]);
+		return new String[] { Messages.key, Messages.value };
 	}
-	
+
+	public int[] getColumnWeights()
+	{
+		return new int[] { 20, 30 };
+	}
+
 	@Override
 	public IValidator getFieldValidator(int idx)
 	{
@@ -63,35 +52,48 @@ public class PropertiesTable extends SimpleTable<Property>
 			return SimpleTable.getEmptyValidator();
 		}
 	}
+
+	public Object[] toRowArray(Property t)
+	{
+		return new Object[] { t.getKey(), t.getValue() };
+	}
+
+	public void updateRowClass(Property property, Object[] args) throws ValidatorException
+	{
+		property.setKey((String)args[0]);
+		property.setValue((String)args[1]);
+	}
 }
 
 class Property
 {
 	private String m_key;
+
 	private String m_value;
-	
+
 	public Property(String key, String value)
 	{
 		m_key = key;
 		m_value = value;
 	}
-	
+
 	public String getKey()
 	{
 		return m_key;
 	}
-	public void setKey(String key)
-	{
-		m_key = key;
-	}
+
 	public String getValue()
 	{
 		return m_value;
 	}
+
+	public void setKey(String key)
+	{
+		m_key = key;
+	}
+
 	public void setValue(String value)
 	{
 		m_value = value;
 	}
 }
-
-

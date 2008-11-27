@@ -40,7 +40,8 @@ public class ViewCSpecAction extends AbstractCSpecAction
 
 		IEditorRegistry editorRegistry = workbench.getEditorRegistry();
 		CSpecEditorInput input = new CSpecEditorInput(cspec);
-		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(), input.getContentDescription().getContentType());
+		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(), input.getContentDescription()
+				.getContentType());
 		try
 		{
 			page.openEditor(input, ed.getId());

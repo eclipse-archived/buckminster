@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Henrik Lindberg
  */
-public abstract  class AbstractOPMLAction extends AbstractObjectAction<OPML>
+public abstract class AbstractOPMLAction extends AbstractObjectAction<OPML>
 {
 
 	@Override

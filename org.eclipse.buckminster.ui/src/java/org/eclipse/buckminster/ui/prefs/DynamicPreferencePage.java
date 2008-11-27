@@ -53,9 +53,10 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
-public class DynamicPreferencePage extends FieldEditorPreferencePage  implements IWorkbenchPreferencePage, IBuckminsterPreferenceConstants
+public class DynamicPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage,
+		IBuckminsterPreferenceConstants
 {
 	private static IPreferenceValidator s_nullValidator = new IPreferenceValidator()
 	{
@@ -64,6 +65,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 			return true;
 		}
 	};
+
 	private Composite m_resolversParent;
 
 	private StackLayout m_resolversStack;
@@ -77,6 +79,18 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 
 	public void init(IWorkbench workbench)
 	{
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event)
+	{
+		if(event.getProperty().equals(FieldEditor.VALUE))
+		{
+			if(event.getSource() instanceof ResolutionResolverListEditor)
+				selectResolverPropertyPane(event.getNewValue());
+		}
+		else
+			super.propertyChange(event);
 	}
 
 	protected void addDynamicFieldEditors(Composite parent, String nodeName, IPreferenceDescriptor[] descriptors)
@@ -107,15 +121,15 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				editor = new DirectoryFieldEditor(name, label, parent)
 				{
 					@Override
-					protected boolean checkState()
-					{
-						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
-					}
-
-					@Override
 					public IPreferenceStore getPreferenceStore()
 					{
 						return nodePrefs;
+					}
+
+					@Override
+					protected boolean checkState()
+					{
+						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
 					}
 				};
 				break;
@@ -141,15 +155,15 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				editor = new FileFieldEditor(name, label, parent)
 				{
 					@Override
-					protected boolean checkState()
-					{
-						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
-					}
-
-					@Override
 					public IPreferenceStore getPreferenceStore()
 					{
 						return nodePrefs;
+					}
+
+					@Override
+					protected boolean checkState()
+					{
+						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
 					}
 				};
 				break;
@@ -157,15 +171,15 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				editor = new IntegerFieldEditor(name, label, parent, descriptor.getTextWidth())
 				{
 					@Override
-					protected boolean checkState()
-					{
-						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
-					}
-
-					@Override
 					public IPreferenceStore getPreferenceStore()
 					{
 						return nodePrefs;
+					}
+
+					@Override
+					protected boolean checkState()
+					{
+						return super.checkState() && validator.validate(UiUtils.trimmedValue(getTextControl()));
 					}
 				};
 				int[] range = descriptor.getIntegerRange();
@@ -186,15 +200,15 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				editor = new PasswordFieldEditor(name, label, descriptor.getTextWidth(), parent, nodeName)
 				{
 					@Override
-					protected boolean checkState()
-					{
-						return validator.validate(UiUtils.trimmedValue(getTextControl()));
-					}
-
-					@Override
 					public IPreferenceStore getPreferenceStore()
 					{
 						return nodePrefs;
+					}
+
+					@Override
+					protected boolean checkState()
+					{
+						return validator.validate(UiUtils.trimmedValue(getTextControl()));
 					}
 				};
 				break;
@@ -202,15 +216,15 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				editor = new StringFieldEditor(name, label, descriptor.getTextWidth(), parent)
 				{
 					@Override
-					protected boolean checkState()
-					{
-						return validator.validate(UiUtils.trimmedValue(getTextControl()));
-					}
-
-					@Override
 					public IPreferenceStore getPreferenceStore()
 					{
 						return nodePrefs;
+					}
+
+					@Override
+					protected boolean checkState()
+					{
+						return validator.validate(UiUtils.trimmedValue(getTextControl()));
 					}
 				};
 			}
@@ -218,62 +232,37 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 		}
 	}
 
-	void selectResolverPropertyPane(Object factoryId)
-	{
-		if(m_resolversParent == null)
-			return;
-
-		Control[] children = m_resolversParent.getChildren();
-		int idx = children.length;
-		while(--idx >= 0)
-		{
-			Control child = children[idx];
-			if(Trivial.equalsAllowNull(child.getData(), factoryId))
-			{
-				m_resolversStack.topControl = child;
-				break;
-			}
-		}
-		boolean visible = idx >= 0;
-		m_resolversParent.setVisible(visible);
-		if(visible)
-			m_resolversParent.layout();
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent event)
-	{
-		if(event.getProperty().equals(FieldEditor.VALUE))
-		{
-			if(event.getSource() instanceof ResolutionResolverListEditor)
-				selectResolverPropertyPane(event.getNewValue());
-		}
-		else
-			super.propertyChange(event);
-	}
-
 	@Override
 	protected void createFieldEditors()
 	{
 		addField(new StringFieldEditor(SITE_NAME, Messages.site_name, getFieldEditorParent()));
-		addField(new DirectoryFieldEditor(BUCKMINSTER_PROJECT_CONTENTS, Messages.buckminster_project_folder, getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_CONSOLE, Messages.console_logger_level_with_colon, LogLevel.values(), getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, Messages.eclipse_logger_level_with_colon, LogLevel.values(), getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, Messages.ant_logger_level_with_colon, LogLevel.values(), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, Messages.copy_eclipse_log_events_to_console, getFieldEditorParent()));
-		IntegerFieldEditor intEditor = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS, Messages.max_number_of_parallel_materializations, getFieldEditorParent());
+		addField(new DirectoryFieldEditor(BUCKMINSTER_PROJECT_CONTENTS, Messages.buckminster_project_folder,
+				getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_CONSOLE, Messages.console_logger_level_with_colon, LogLevel.values(),
+				getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, Messages.eclipse_logger_level_with_colon, LogLevel
+				.values(), getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, Messages.ant_logger_level_with_colon, LogLevel.values(),
+				getFieldEditorParent()));
+		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, Messages.copy_eclipse_log_events_to_console,
+				getFieldEditorParent()));
+		IntegerFieldEditor intEditor = new IntegerFieldEditor(MaterializationJob.MAX_PARALLEL_JOBS,
+				Messages.max_number_of_parallel_materializations, getFieldEditorParent());
 		intEditor.setValidRange(1, 12);
 		addField(intEditor);
 
-		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_COUNT, Messages.connection_retry_count, getFieldEditorParent());
+		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_COUNT, Messages.connection_retry_count,
+				getFieldEditorParent());
 		intEditor.setValidRange(0, 5);
 		addField(intEditor);
 
-		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_DELAY, Messages.connection_retry_delay_in_seconds, getFieldEditorParent());
+		intEditor = new IntegerFieldEditor(CONNECTION_RETRY_DELAY, Messages.connection_retry_delay_in_seconds,
+				getFieldEditorParent());
 		intEditor.setValidRange(0, 60);
 		addField(intEditor);
 
-		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, Messages.resolver_order, getFieldEditorParent()));
+		addField(new ResolutionResolverListEditor(QUERY_RESOLVER_SORT_ORDER, Messages.resolver_order,
+				getFieldEditorParent()));
 
 		IResolverFactory[] factories = ResolverFactoryMaintainer.getInstance().getResolverFactories();
 		int top = factories.length;
@@ -367,5 +356,27 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage  implements
 				}
 			}
 		});
+	}
+
+	void selectResolverPropertyPane(Object factoryId)
+	{
+		if(m_resolversParent == null)
+			return;
+
+		Control[] children = m_resolversParent.getChildren();
+		int idx = children.length;
+		while(--idx >= 0)
+		{
+			Control child = children[idx];
+			if(Trivial.equalsAllowNull(child.getData(), factoryId))
+			{
+				m_resolversStack.topControl = child;
+				break;
+			}
+		}
+		boolean visible = idx >= 0;
+		m_resolversParent.setVisible(visible);
+		if(visible)
+			m_resolversParent.layout();
 	}
 }

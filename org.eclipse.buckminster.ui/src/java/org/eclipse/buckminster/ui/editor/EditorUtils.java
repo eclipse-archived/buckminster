@@ -35,7 +35,7 @@ import org.eclipse.ui.IURIEditorInput;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class EditorUtils
 {
@@ -46,13 +46,51 @@ public class EditorUtils
 			return o1.toOSString().compareTo(o2.toOSString());
 		}
 	}
-	
+
 	private static Comparator<IPath> s_pathComparator = new PathComparator();
 
-	private EditorUtils()
+	public static Label createHeaderLabel(Composite parent, String headerText, int horizontalSpan)
 	{
+		Label label = UiUtils.createGridLabel(parent, headerText, horizontalSpan, 0, SWT.NONE);
+		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+
+		return label;
 	}
-	
+
+	public static ExternalFileEditorInput getExternalFileEditorInput(IURIEditorInput input, ArtifactType artifactType)
+			throws CoreException, IOException
+	{
+		URI uri = input.getURI();
+		URL url = uri.toURL();
+		String protocol = url.getProtocol();
+
+		File cspecFile = null;
+
+		if(protocol == null || "file".equals(protocol)) //$NON-NLS-1$
+		{
+			cspecFile = new File(uri);
+		}
+
+		if(cspecFile == null || !cspecFile.canWrite())
+		{
+			cspecFile = File.createTempFile(artifactType.getTempPrefix(), artifactType.getTempExtension());
+			cspecFile.deleteOnExit();
+			OutputStream os = null;
+			try
+			{
+				os = new FileOutputStream(cspecFile);
+				DownloadManager.readInto(url, null, os, null);
+			}
+			finally
+			{
+				IOUtils.close(os);
+			}
+		}
+
+		return new DerivedExternalFileEditorInput(input, cspecFile, new Path(uri.getPath()).lastSegment(), url
+				.toString());
+	}
+
 	public static Composite getNamedTabComposite(Composite parent, String header)
 	{
 		Composite tabComposite = new Composite(parent, SWT.NONE);
@@ -72,49 +110,13 @@ public class EditorUtils
 
 		return tabComposite;
 	}
-	
-	public static Label createHeaderLabel(Composite parent, String headerText, int horizontalSpan)
-	{
-		Label label = UiUtils.createGridLabel(parent, headerText, horizontalSpan, 0, SWT.NONE);
-		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-		return label;
-	}
-	
 	public static Comparator<IPath> getPathComparator()
 	{
 		return s_pathComparator;
 	}
 
-	public static ExternalFileEditorInput getExternalFileEditorInput(IURIEditorInput input, ArtifactType artifactType) throws CoreException, IOException
+	private EditorUtils()
 	{
-		URI uri = input.getURI();
-		URL url = uri.toURL();
-		String protocol = url.getProtocol();
-		
-		File cspecFile = null;
-		
-		if(protocol == null || "file".equals(protocol)) //$NON-NLS-1$
-		{
-			cspecFile = new File(uri);
-		}
-		
-		if(cspecFile == null || !cspecFile.canWrite())
-		{
-			cspecFile = File.createTempFile(artifactType.getTempPrefix(), artifactType.getTempExtension());
-			cspecFile.deleteOnExit();
-			OutputStream os = null;
-			try
-			{
-				os = new FileOutputStream(cspecFile);
-				DownloadManager.readInto(url, null, os, null);
-			}
-			finally
-			{
-				IOUtils.close(os);
-			}
-		}
-		
-		return new DerivedExternalFileEditorInput(input, cspecFile, new Path(uri.getPath()).lastSegment(), url.toString());
 	}
 }

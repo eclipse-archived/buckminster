@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.List;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class ResolutionResolverListEditor extends FieldEditor
 {
@@ -86,7 +86,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 			Composite buttonBox = new Composite(m_resolveOrderGroup, SWT.NONE);
 			buttonBox.setLayout(new GridLayout(1, true));
 			buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
-	
+
 			m_addButton = UiUtils.createPushButton(buttonBox, Messages.add_with_arrow_left, new SelectionAdapter()
 			{
 				@Override
@@ -96,17 +96,18 @@ public class ResolutionResolverListEditor extends FieldEditor
 				}
 			});
 			m_addButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-	
-			m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove_with_arrow_right, new SelectionAdapter()
-			{
-				@Override
-				public void widgetSelected(SelectionEvent e)
-				{
-					removeResolver();
-				}
-			});
+
+			m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove_with_arrow_right,
+					new SelectionAdapter()
+					{
+						@Override
+						public void widgetSelected(SelectionEvent e)
+						{
+							removeResolver();
+						}
+					});
 			m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-	
+
 			m_moveUpButton = UiUtils.createPushButton(buttonBox, Messages.move_up, new SelectionAdapter()
 			{
 				@Override
@@ -116,7 +117,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 				}
 			});
 			m_moveUpButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-	
+
 			m_moveDownButton = UiUtils.createPushButton(buttonBox, Messages.move_down, new SelectionAdapter()
 			{
 				@Override
@@ -126,7 +127,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 				}
 			});
 			m_moveDownButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-	
+
 			m_queryResolversToAdd = new ListViewer(m_resolveOrderGroup, SWT.BORDER);
 			m_queryResolversToAdd.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			m_queryResolversToAdd.setContentProvider(new ArrayContentProvider());
@@ -210,7 +211,9 @@ public class ResolutionResolverListEditor extends FieldEditor
 		int idx = list.getSelectionIndex();
 		if(fromResolvers)
 		{
-			m_value = idx >= 0 ? list.getItem(idx) : null;
+			m_value = idx >= 0
+					? list.getItem(idx)
+					: null;
 			if(!Trivial.equalsAllowNull(oldValue, m_value))
 				fireValueChanged(VALUE, oldValue, m_value);
 		}
@@ -281,7 +284,9 @@ public class ResolutionResolverListEditor extends FieldEditor
 
 	private void loadLists(String prefValue)
 	{
-		String[] resolvers = (prefValue == null || prefValue.length() == 0) ? Trivial.EMPTY_STRING_ARRAY : prefValue.split(","); //$NON-NLS-1$
+		String[] resolvers = (prefValue == null || prefValue.length() == 0)
+				? Trivial.EMPTY_STRING_ARRAY
+				: prefValue.split(","); //$NON-NLS-1$
 		m_queryResolvers.setInput(resolvers);
 		m_queryResolvers.getList().select(0);
 		m_queryResolversToAdd.setInput(getPossibleResolverAdditions());

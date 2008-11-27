@@ -35,9 +35,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * General table editor.
- * Needs data wrapped ITable (Table) instance. Prepare ITable instance and start using this editor.
- *   
+ * General table editor. Needs data wrapped ITable (Table) instance. Prepare ITable instance and start using this
+ * editor.
+ * 
  * @author Karel Brezina
  */
 public class SimpleTableEditor<T> extends Composite
@@ -72,20 +72,21 @@ public class SimpleTableEditor<T> extends Composite
 		public String getColumnText(Object element, int columnIndex)
 		{
 			Object field = m_table.getEditorField((T)element, columnIndex);
-			return field == null ? "" : field.toString(); //$NON-NLS-1$
+			return field == null
+					? "" : field.toString(); //$NON-NLS-1$
 		}
 	}
 
 	private final ISimpleTable<T> m_table;
-	
+
 	private final Image m_windowImage;
-	
+
 	private final String m_windowTitle;
 
 	private final Image m_wizardImage;
-	
+
 	private final String m_helpURL;
-	
+
 	private TableViewer m_tableViewer;
 
 	private Button m_newButton;
@@ -95,19 +96,27 @@ public class SimpleTableEditor<T> extends Composite
 	private Button m_removeButton;
 
 	private boolean m_enabled = true;
-	
+
 	/**
 	 * Creates general table editor.
 	 * 
-	 * @param parent parent composite
-	 * @param table wrapped editor data
-	 * @param windowImage window icon
-	 * @param windowTitle window title
-	 * @param wizardImage wizard image - bypass to row editor TableRowDialog
-	 * @param helpURL URL of help info - bypass to row editor TableRowDialog
-	 * @param style current composite style
+	 * @param parent
+	 *            parent composite
+	 * @param table
+	 *            wrapped editor data
+	 * @param windowImage
+	 *            window icon
+	 * @param windowTitle
+	 *            window title
+	 * @param wizardImage
+	 *            wizard image - bypass to row editor TableRowDialog
+	 * @param helpURL
+	 *            URL of help info - bypass to row editor TableRowDialog
+	 * @param style
+	 *            current composite style
 	 */
-	public SimpleTableEditor(Composite parent, ISimpleTable<T> table, Image windowImage, String windowTitle, Image wizardImage, String helpURL, int style)
+	public SimpleTableEditor(Composite parent, ISimpleTable<T> table, Image windowImage, String windowTitle,
+			Image wizardImage, String helpURL, int style)
 	{
 		super(parent, style);
 		m_table = table;
@@ -127,8 +136,8 @@ public class SimpleTableEditor<T> extends Composite
 	public void setEnabled(boolean enabled)
 	{
 		m_enabled = enabled;
-		
-		//m_tableViewer.getTable().setEnabled(enabled);
+
+		// m_tableViewer.getTable().setEnabled(enabled);
 
 		if(enabled)
 		{
@@ -142,8 +151,10 @@ public class SimpleTableEditor<T> extends Composite
 			m_editButton.setEnabled(false);
 			m_removeButton.setEnabled(false);
 		}
-		
-		m_tableViewer.getTable().setForeground(enabled ? null : m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
+
+		m_tableViewer.getTable().setForeground(enabled
+				? null
+				: m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
 	private void createButtonBox(Composite parent)
@@ -182,17 +193,28 @@ public class SimpleTableEditor<T> extends Composite
 		enableDisableButtonGroup();
 	}
 
+	private void editRow()
+	{
+		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
+				m_wizardImage, m_helpURL, m_table, m_tableViewer.getTable().getSelectionIndex());
+
+		if(dialog.open() == IDialogConstants.OK_ID)
+		{
+			refresh();
+		}
+	}
+
 	private void enableDisableButtonGroup()
 	{
 		if(m_enabled)
 		{
 			boolean rowSelected = false;
-	
+
 			if(m_tableViewer.getTable().getSelectionIndex() >= 0)
 			{
 				rowSelected = true;
 			}
-	
+
 			m_editButton.setEnabled(rowSelected);
 			m_removeButton.setEnabled(rowSelected);
 		}
@@ -207,10 +229,10 @@ public class SimpleTableEditor<T> extends Composite
 
 		Table table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
-		//table.setHeaderVisible(false);
+		// table.setHeaderVisible(false);
 		table.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(50);
-		
+
 		int tableIdx = 0;
 		for(int idx = 0; idx < m_table.getColumns(); idx++)
 		{
@@ -255,22 +277,9 @@ public class SimpleTableEditor<T> extends Composite
 
 	private void newRow()
 	{
-		SimpleTableRowDialog<T> dialog =
-			new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, m_table, -1);
-		
-		if(dialog.open() == IDialogConstants.OK_ID)
-		{
-			refresh();
-		}
-	}
+		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
+				m_wizardImage, m_helpURL, m_table, -1);
 
-	private void editRow()
-	{
-		SimpleTableRowDialog<T> dialog =
-			new SimpleTableRowDialog<T>(
-					this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL,
-					m_table, m_tableViewer.getTable().getSelectionIndex());
-		
 		if(dialog.open() == IDialogConstants.OK_ID)
 		{
 			refresh();

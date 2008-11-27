@@ -46,29 +46,28 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * This a Buckminster Component Explorer View. It shows components known to Buckminster, and
- * allows the user to perform actions on these components.
+ * This a Buckminster Component Explorer View. It shows components known to Buckminster, and allows the user to perform
+ * actions on these components.
  */
 
 public class ComponentBrowserView extends ViewPart
 {
-	protected TreeViewer m_viewer;
-	
-	private Action m_refreshAction;
-
-	private Action doubleClickAction;
-	
-	private ViewInBrowserAction m_viewInBrowser;
-	private ViewInBrowserAction m_viewInExternalBrowser;
-	private ViewInBrowserAction m_viewFeedInBrowser;
-	
 	class NameSorter extends ViewerSorter
 	{
 	}
-	public boolean isAutoExpand()
-	{
-		return false;
-	}
+
+	protected TreeViewer m_viewer;
+
+	private Action m_refreshAction;
+
+	private Action doubleClickAction;
+
+	private ViewInBrowserAction m_viewInBrowser;
+
+	private ViewInBrowserAction m_viewInExternalBrowser;
+
+	private ViewInBrowserAction m_viewFeedInBrowser;
+
 	/**
 	 * Call-back that creates and initializes the viewer.
 	 */
@@ -77,36 +76,94 @@ public class ComponentBrowserView extends ViewPart
 	{
 		m_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		m_viewer.setContentProvider(getContentProvider());
-		
+
 		m_viewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new BuckminsterLabelProvider()));
 		m_viewer.setSorter(new NameSorter());
-		m_viewer.addTreeListener(new ITreeViewerListener(){
+		m_viewer.addTreeListener(new ITreeViewerListener()
+		{
 			public void treeCollapsed(TreeExpansionEvent event)
 			{
 				// ignored
 			}
+
 			public void treeExpanded(TreeExpansionEvent event)
 			{
 				// if there are pending nodes let them go fetch their stuff...
 				Object o = event.getElement();
 				if(o instanceof ITreeParentDataNode)
 					((ITreeParentDataNode)o).onOpen();
-			}			
+			}
 		});
 
 		// This tells the resolution content provider to produce a default tree of all resolutions.
 		m_viewer.setInput(getViewSite());
-		
+
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
 		getViewSite().setSelectionProvider(m_viewer);
 	}
+
+	public boolean isAutoExpand()
+	{
+		return false;
+	}
+
+	/**
+	 * Passing the focus request to the viewer's control.
+	 */
+	@Override
+	public void setFocus()
+	{
+		m_viewer.getControl().setFocus();
+	}
+
 	protected ResolutionsTreeContentProvider getContentProvider()
 	{
 		return new ResolutionsTreeContentProvider();
 	}
+
+	private void contributeToActionBars()
+	{
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalPullDown(bars.getMenuManager());
+		fillLocalToolBar(bars.getToolBarManager());
+	}
+
+	private void fillContextMenu(IMenuManager manager)
+	{
+		ISelection selection = m_viewer.getSelection();
+		Object obj = ((IStructuredSelection)selection).getFirstElement();
+
+		// Other plugins can contribute actions to "default"
+		manager.add(new Separator("default")); //$NON-NLS-1$
+
+		if(obj instanceof IAdaptable)
+		{
+			if(((IAdaptable)obj).getAdapter(IBrowseableFeed.class) != null)
+				manager.add(m_viewFeedInBrowser);
+			if(((IAdaptable)obj).getAdapter(IBrowseable.class) != null)
+			{
+				manager.add(m_viewInBrowser);
+				manager.add(m_viewInExternalBrowser);
+			}
+		}
+
+		// Other plug-ins can contribute there actions here
+		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+	}
+
+	private void fillLocalPullDown(IMenuManager manager)
+	{
+		manager.add(m_refreshAction);
+	}
+
+	private void fillLocalToolBar(IToolBarManager manager)
+	{
+		manager.add(m_refreshAction);
+	}
+
 	private void hookContextMenu()
 	{
 		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
@@ -123,52 +180,28 @@ public class ComponentBrowserView extends ViewPart
 		getSite().registerContextMenu(menuMgr, m_viewer);
 	}
 
-	private void contributeToActionBars()
+	private void hookDoubleClickAction()
 	{
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager)
-	{		
-		manager.add(m_refreshAction);
-	}
-
-	private void fillContextMenu(IMenuManager manager)
-	{
-		ISelection selection = m_viewer.getSelection();
-		Object obj = ((IStructuredSelection)selection).getFirstElement();
-
-		// Other plugins can contribute actions to "default" 
-		manager.add(new Separator("default")); //$NON-NLS-1$
-		
-		if(obj instanceof IAdaptable)
+		m_viewer.addDoubleClickListener(new IDoubleClickListener()
 		{
-			if(((IAdaptable)obj).getAdapter(IBrowseableFeed.class) != null)	
-				manager.add(m_viewFeedInBrowser);
-			if(((IAdaptable)obj).getAdapter(IBrowseable.class) != null)
+			public void doubleClick(DoubleClickEvent event)
 			{
-				manager.add(m_viewInBrowser);
-				manager.add(m_viewInExternalBrowser);
+				doubleClickAction.run();
 			}
-		}
-
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		});
 	}
 
-	private void fillLocalToolBar(IToolBarManager manager)
-	{
-		manager.add(m_refreshAction);
-	}
+	// private void showMessage(String message)
+	// {
+	// MessageDialog.openInformation(m_viewer.getControl().getShell(), "Component Browser View", message);
+	// }
 
 	private void makeActions()
 	{
 		m_viewInBrowser = new ViewInBrowserAction(m_viewer, true, Messages.content, false);
 		m_viewInExternalBrowser = new ViewInBrowserAction(m_viewer, false, Messages.content, false);
 		m_viewFeedInBrowser = new ViewInBrowserAction(m_viewer, false, Messages.feed, true);
-		
+
 		m_refreshAction = new Action()
 		{
 			@Override
@@ -181,7 +214,7 @@ public class ComponentBrowserView extends ViewPart
 		m_refreshAction.setText(Messages.refresh);
 		m_refreshAction.setToolTipText(Messages.refresh_component_explorer);
 		m_refreshAction.setImageDescriptor(GenericUiPlugin.getImageDescriptor("icons/refresh.gif")); //$NON-NLS-1$
-		
+
 		doubleClickAction = new Action()
 		{
 			@Override
@@ -204,14 +237,14 @@ public class ComponentBrowserView extends ViewPart
 					IBrowseableFeed feed = (IBrowseableFeed)((IAdaptable)obj).getAdapter(IBrowseableFeed.class);
 					if(feed != null)
 					{
-						 IObjectActionDelegate delegate = UiPlugin.getDefault().getOpenRssFeedAction();
-						 if(delegate != null)
-						 {
-							 delegate.setActivePart(this, ComponentBrowserView.this);
-							 delegate.selectionChanged(this, new StructuredSelection(feed));
-							 delegate.run(this);
-							 return;
-						 }	 
+						IObjectActionDelegate delegate = UiPlugin.getDefault().getOpenRssFeedAction();
+						if(delegate != null)
+						{
+							delegate.setActivePart(this, ComponentBrowserView.this);
+							delegate.selectionChanged(this, new StructuredSelection(feed));
+							delegate.run(this);
+							return;
+						}
 					}
 					IBrowseable site = (IBrowseable)((IAdaptable)obj).getAdapter(IBrowseable.class);
 					if(site != null)
@@ -219,34 +252,9 @@ public class ComponentBrowserView extends ViewPart
 						m_viewInBrowser.run();
 						return;
 					}
-				
+
 				}
 			}
 		};
-	}
-
-	private void hookDoubleClickAction()
-	{
-		m_viewer.addDoubleClickListener(new IDoubleClickListener()
-		{
-			public void doubleClick(DoubleClickEvent event)
-			{
-				doubleClickAction.run();
-			}
-		});
-	}
-
-//	private void showMessage(String message)
-//	{
-//		MessageDialog.openInformation(m_viewer.getControl().getShell(), "Component Browser View", message);
-//	}
-
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
-	@Override
-	public void setFocus()
-	{
-		m_viewer.getControl().setFocus();
 	}
 }

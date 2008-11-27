@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Table;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 {
@@ -36,6 +36,26 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		}
 
 		@Override
+		protected void buttonPressed(int buttonId)
+		{
+			if(buttonId == IDialogConstants.OK_ID)
+			{
+				try
+				{
+					saveRow();
+				}
+				catch(ValidatorException e)
+				{
+					setErrorMessage(e.getMessage());
+					return;
+				}
+			}
+
+			setReturnCode(buttonId);
+			close();
+		}
+
+		@Override
 		protected Control createDialogArea(Composite parent)
 		{
 			Composite composite = (Composite)super.createDialogArea(parent);
@@ -43,7 +63,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 			Composite rowComposite = new Composite(composite, SWT.NONE);
 
 			GridLayout layout = new GridLayout(2, false);
-			layout.marginHeight = layout.marginWidth = 10;		
+			layout.marginHeight = layout.marginWidth = 10;
 			rowComposite.setLayout(layout);
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			rowComposite.setLayoutData(gridData);
@@ -66,26 +86,6 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		{
 			getButton(IDialogConstants.OK_ID).setEnabled(true);
 		}
-
-		@Override
-		protected void buttonPressed(int buttonId)
-		{
-			if(buttonId == IDialogConstants.OK_ID)
-			{
-				try
-				{
-					saveRow();
-				}
-				catch(ValidatorException e)
-				{
-					setErrorMessage(e.getMessage());
-					return;
-				}
-			}
-
-			setReturnCode(buttonId);
-			close();
-		}
 	}
 
 	private final Image m_windowImage;
@@ -107,15 +107,30 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void initComposite()
+	public void refresh()
 	{
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		setLayout(layout);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		setLayoutData(gridData);
+		refreshTable();
+		enableDisableButtonGroup();
+	}
 
-		createTableGroup(this);
+	public boolean show(T row)
+	{
+		if(!selectRow(row))
+			return false;
+
+		// editRow();
+
+		return true;
+	}
+
+	@Override
+	protected Composite createTableButtonsComposite(Composite parent)
+	{
+		Composite buttonBox = new Composite(parent, SWT.NONE);
+		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
+		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+
+		return buttonBox;
 	}
 
 	@Override
@@ -131,41 +146,9 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected Composite createTableButtonsComposite(Composite parent)
-	{
-		Composite buttonBox = new Composite(parent, SWT.NONE);
-		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
-		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-
-		return buttonBox;
-	}
-
-	@Override
-	protected void newRow()
-	{
-		getTableViewer().getTable().deselectAll();
-		updateLastRow();
-		editRow();
-	}
-
-	@Override
 	protected void editRow()
 	{
 		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, true).open();
-	}
-
-	@Override
-	protected boolean rowSelectionEvent()
-	{
-		enableDisableButtonGroup();
-		return true;
-	}
-
-	@Override
-	public void refresh()
-	{
-		refreshTable();
-		enableDisableButtonGroup();
 	}
 
 	@Override
@@ -176,17 +159,18 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 			Table table = getTableViewer().getTable();
 			int top = table.getItemCount();
 			int idx = getSelectionIndex();
-	
+
 			getNewButton().setEnabled(true);
 			getEditButton().setEnabled(idx >= 0);
 			getRemoveButton().setEnabled(idx >= 0);
-	
+
 			if(isSwapButtonAllowed())
 			{
 				getMoveUpButton().setEnabled(idx > 0);
 				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
 			}
-		} else
+		}
+		else
 		{
 			getNewButton().setEnabled(false);
 			getEditButton().setEnabled(false);
@@ -198,14 +182,31 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 			}
 		}
 	}
-	
-	public boolean show(T row)
+
+	@Override
+	protected void initComposite()
 	{
-		if(!selectRow(row))
-			return false;
-			
-		//editRow();
-		
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		setLayoutData(gridData);
+
+		createTableGroup(this);
+	}
+
+	@Override
+	protected void newRow()
+	{
+		getTableViewer().getTable().deselectAll();
+		updateLastRow();
+		editRow();
+	}
+
+	@Override
+	protected boolean rowSelectionEvent()
+	{
+		enableDisableButtonGroup();
 		return true;
 	}
 }

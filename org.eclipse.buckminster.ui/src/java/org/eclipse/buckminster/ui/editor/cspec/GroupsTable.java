@@ -25,21 +25,53 @@ import org.eclipse.swt.widgets.Text;
 
 public class GroupsTable extends AttributesTable<GroupBuilder>
 {
-	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec)
-	{
-		super(editor, data, cspec);
-	}
-
 	private Text m_rebasePathText;
 
 	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
+	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec)
+	{
+		super(editor, data, cspec);
+	}
+
+	@Override
+	public void enableFields(boolean enabled)
+	{
+		super.enableFields(enabled);
+
+		m_rebasePathText.setEnabled(enabled);
+		m_prerequisitesEditor.setEnabled(enabled);
+	}
+
+	@Override
+	public void fillStack(Composite stackComposite)
+	{
+		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
+		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
+		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
+	}
+
 	@Override
 	protected GroupBuilder createNewRow()
 	{
 		return getCSpecBuilder().createGroupBuilder();
+	}
+
+	@Override
+	protected void refreshRow(GroupBuilder builder)
+	{
+		super.refreshRow(builder);
+
+		IPath rebasePath = builder.getPrerequisiteRebase();
+		m_rebasePathText.setText(TextUtils.notNullString(rebasePath == null
+				? null
+				: rebasePath.toOSString()));
+
+		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites, CSpecEditorUtils
+				.getPrerequisiteComparator());
+		m_prerequisitesEditor.refresh();
 	}
 
 	@Override
@@ -68,7 +100,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 			// Need to created again and copy attributes
 			PrerequisiteBuilder newPrerequisite = builder.createPrerequisiteBuilder();
 			newPrerequisite.initFrom(prerequisite.createPrerequisite());
-			
+
 			try
 			{
 				builder.addPrerequisite(newPrerequisite);
@@ -78,14 +110,6 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				throw new ValidatorException(e.getMessage());
 			}
 		}
-	}
-
-	@Override
-	public void fillStack(Composite stackComposite)
-	{
-		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
-		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
-		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -113,7 +137,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
-		
+
 		Label label = UiUtils.createGridLabel(geComposite, Messages.prerequisites_with_colon, 1, 0, SWT.NONE);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
@@ -123,47 +147,19 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		GroupPrerequisitesTable preTable = new GroupPrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow());
+		GroupPrerequisitesTable preTable = new GroupPrerequisitesTable(getCSpecEditor(), this, m_prerequisites,
+				createNewRow());
 		preTable.addTableModifyListener(FIELD_LISTENER);
-		
-		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(
-				geComposite,
-				preTable,
-				null,
-				Messages.group_prerequisite_with_dash,
-				null,
-				null,
-				SWT.NONE);
+
+		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null,
+				Messages.group_prerequisite_with_dash, null, null, SWT.NONE);
 
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 		m_prerequisitesEditor.setLayoutData(gridData);
 
 		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
-		
+
 		return geComposite;
-	}
-
-	@Override
-	protected void refreshRow(GroupBuilder builder)
-	{
-		super.refreshRow(builder);
-
-		IPath rebasePath = builder.getPrerequisiteRebase();
-		m_rebasePathText.setText(TextUtils.notNullString(rebasePath == null
-				? null
-				: rebasePath.toOSString()));
-
-		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites, CSpecEditorUtils.getPrerequisiteComparator());
-		m_prerequisitesEditor.refresh();
-	}
-
-	@Override
-	public void enableFields(boolean enabled)
-	{
-		super.enableFields(enabled);
-
-		m_rebasePathText.setEnabled(enabled);
-		m_prerequisitesEditor.setEnabled(enabled);
 	}
 }

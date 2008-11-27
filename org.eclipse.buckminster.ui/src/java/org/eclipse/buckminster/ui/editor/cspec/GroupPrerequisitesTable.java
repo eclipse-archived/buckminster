@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
  * PrerequisitesTable without Alias field
  * 
  * @author Karel Brezina
- *
+ * 
  */
 public class GroupPrerequisitesTable extends PrerequisitesTable
 {
@@ -36,34 +36,15 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public String[] getColumnHeaders()
 	{
-		return new String[] {Messages.component, Messages.name, Messages.contributor, Messages.optional};
+		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.optional };
 	}
 
 	@Override
 	public int[] getColumnWeights()
 	{
-		return new int[] {20, 10, 0, 0};
+		return new int[] { 20, 10, 0, 0 };
 	}
 
-	@Override
-	public Object[] toRowArray(PrerequisiteBuilder t)
-	{
-		return new Object[] {
-				t.getComponentName(),
-				t.getName(),
-				Boolean.valueOf(t.isContributor()),
-				Boolean.valueOf(t.isOptional())};
-	}
-
-	@Override
-	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
-	{
-		builder.setComponentName(TextUtils.notEmptyString((String) args[0]));
-		builder.setName(TextUtils.notEmptyString((String) args[1]));
-		builder.setContributor(((Boolean) args[2]).booleanValue());
-		builder.setOptional(((Boolean) args[3]).booleanValue());
-	}
-	
 	@Override
 	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
 	{
@@ -72,5 +53,21 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 
 		// Alias is removed here
 		return super.getWidgetin(parent, ++idx, value);
+	}
+
+	@Override
+	public Object[] toRowArray(PrerequisiteBuilder t)
+	{
+		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()),
+				Boolean.valueOf(t.isOptional()) };
+	}
+
+	@Override
+	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
+	{
+		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
+		builder.setName(TextUtils.notEmptyString((String)args[1]));
+		builder.setContributor(((Boolean)args[2]).booleanValue());
+		builder.setOptional(((Boolean)args[3]).booleanValue());
 	}
 }

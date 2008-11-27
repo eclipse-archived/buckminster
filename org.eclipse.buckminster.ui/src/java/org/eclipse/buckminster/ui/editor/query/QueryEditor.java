@@ -132,7 +132,8 @@ public class QueryEditor extends EditorPart
 			switch(columnIndex)
 			{
 			case 0:
-				lbl = node.getNamePattern() == null ? "" : node.getNamePattern().toString();  //$NON-NLS-1$
+				lbl = node.getNamePattern() == null
+						? "" : node.getNamePattern().toString(); //$NON-NLS-1$
 				break;
 			case 1:
 				lbl = node.getComponentTypeID();
@@ -144,7 +145,30 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
-	class CompoundModifyListener implements VersionDesignatorListener, ModifyListener, PropertiesModifyListener, SelectionListener
+	class CheckboxSelectionListener extends SelectionAdapter
+	{
+		private Control[] m_controlsToEnable;
+
+		public CheckboxSelectionListener(Control[] controlsToEnable)
+		{
+			m_controlsToEnable = controlsToEnable;
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent e)
+		{
+			Button button = (Button)e.widget;
+			boolean enable = button.getSelection();
+
+			for(Control control : m_controlsToEnable)
+			{
+				control.setEnabled(enable);
+			}
+		}
+	}
+
+	class CompoundModifyListener implements VersionDesignatorListener, ModifyListener, PropertiesModifyListener,
+			SelectionListener
 	{
 
 		public void modifyProperties(PropertiesModifyEvent e)
@@ -176,28 +200,6 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
-	class CheckboxSelectionListener extends SelectionAdapter
-	{
-		private Control[] m_controlsToEnable;
-
-		public CheckboxSelectionListener(Control[] controlsToEnable)
-		{
-			m_controlsToEnable = controlsToEnable;
-		}
-
-		@Override
-		public void widgetSelected(SelectionEvent e)
-		{
-			Button button = (Button)e.widget;
-			boolean enable = button.getSelection();
-
-			for(Control control : m_controlsToEnable)
-			{
-				control.setEnabled(enable);
-			}
-		}
-	}
-
 	private static final IActivator EMPTY_ACTIVATOR = new IActivator()
 	{
 
@@ -206,7 +208,7 @@ public class QueryEditor extends EditorPart
 			// nothing to activate
 		}
 	};
-	
+
 	private final static int DONT_SAVE = -99;
 
 	private CTabFolder m_tabFolder;
@@ -306,19 +308,19 @@ public class QueryEditor extends EditorPart
 	private Text m_shortDesc;
 
 	private Text m_documentation;
-	
+
 	private CTabItem m_xmlTab;
-	
+
 	private Text m_xml;
 
 	private CompoundModifyListener m_compoundModifyListener;
 
 	private final DateFormat m_timestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-	
+
 	private int m_lastSelectedNode = -1;
-	
+
 	private int m_lastEditedNode = -1;
-	
+
 	private boolean m_suppressModifyListener = false;
 
 	public String commitChanges(IComponentRequest[] requestRet)
@@ -379,7 +381,7 @@ public class QueryEditor extends EditorPart
 					m_tabFolder.setSelection(advisorTab);
 				}
 			};
-			
+
 			private CTabItem m_lastTab = mainTab;
 
 			@Override
@@ -396,7 +398,8 @@ public class QueryEditor extends EditorPart
 				if(m_xmlTab == e.item)
 				{
 					if(!commitChangesToQuery())
-						MessageDialog.openWarning(getSite().getShell(), null, Messages.xml_content_was_not_updated_due_to_errors);
+						MessageDialog.openWarning(getSite().getShell(), null,
+								Messages.xml_content_was_not_updated_due_to_errors);
 					else
 						m_xml.setText(getCQueryXML());
 				}
@@ -404,25 +407,8 @@ public class QueryEditor extends EditorPart
 			}
 		});
 
-		
 		createActionButtons(topComposite);
 	}
-
-	private String getCQueryXML()
-	{
-		String cqueryXML = ""; //$NON-NLS-1$
-		try
-		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Utils.serialize(m_componentQuery.createComponentQuery(), baos);
-			cqueryXML = baos.toString();
-		}
-		catch(Exception e)
-		{
-			// nothing
-		}
-		return cqueryXML;
-	}			
 
 	public void doExternalSaveAs()
 	{
@@ -501,7 +487,7 @@ public class QueryEditor extends EditorPart
 				throw new PartInitException(Messages.unable_to_open_editor, e);
 			}
 		}
-		
+
 		InputStream stream = null;
 		try
 		{
@@ -539,7 +525,8 @@ public class QueryEditor extends EditorPart
 					contextURL = file.toURI().toURL();
 				}
 				m_componentQuery.initFrom(ComponentQuery.fromStream(contextURL, null, stream, true));
-				CorePlugin.getLogger().debug(NLS.bind(Messages.cquery_context_url_set_to_0, m_componentQuery.getContextURL()));
+				CorePlugin.getLogger().debug(
+						NLS.bind(Messages.cquery_context_url_set_to_0, m_componentQuery.getContextURL()));
 			}
 			m_needsRefresh = true;
 			if(m_componentName != null)
@@ -582,23 +569,47 @@ public class QueryEditor extends EditorPart
 			refreshQuery();
 	}
 
+	private AdvisorNodeBuilder addEmptyNode()
+	{
+		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
+		node.setNamePattern(Pattern.compile("")); //$NON-NLS-1$
+		m_componentQuery.addAdvisorNode(node);
+
+		return node;
+	}
+
+	private void changeNodeSelection()
+	{
+		if(!saveLastNode())
+		{
+			if(m_lastSelectedNode != -1)
+				m_nodeTable.getTable().setSelection(m_lastSelectedNode);
+
+			return;
+		}
+
+		nodeSelectionEvent();
+	}
+
 	private boolean commitChangesToQuery()
 	{
 		if(m_nodeTable.getControl().isVisible())
 			if(!saveLastNode())
-				return false;		
+				return false;
 
 		m_componentQuery.setResourceMapURL(UiUtils.trimmedValue(m_requestURL));
 		m_componentQuery.setPropertiesURL(UiUtils.trimmedValue(m_propertyURL));
 		m_properties.fillProperties(m_componentQuery.getDeclaredProperties());
-		
+
 		String doc = UiUtils.trimmedValue(m_shortDesc);
 		m_componentQuery.setShortDesc(doc);
 
 		doc = UiUtils.trimmedValue(m_documentation);
 		try
 		{
-			m_componentQuery.setDocumentation(doc == null ? null : Documentation.parse(doc));
+			m_componentQuery.setDocumentation(doc == null
+					? null
+					: Documentation.parse(doc));
 		}
 		catch(CoreException e)
 		{
@@ -662,14 +673,15 @@ public class QueryEditor extends EditorPart
 				});
 		m_materializeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
-		m_externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, Messages.external_save_as, new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				doExternalSaveAs();
-			}
-		});
+		m_externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, Messages.external_save_as,
+				new SelectionAdapter()
+				{
+					@Override
+					public void widgetSelected(SelectionEvent e)
+					{
+						doExternalSaveAs();
+					}
+				});
 		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		m_externalSaveAsButton.setEnabled(false);
 	}
@@ -767,8 +779,7 @@ public class QueryEditor extends EditorPart
 
 		UiUtils.createGridLabel(geComposite, Messages.matched_component_type_with_colon, 1, 0, SWT.NONE);
 
-		m_category = UiUtils.createGridCombo(geComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SIMPLE);
+		m_category = UiUtils.createGridCombo(geComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
 		m_category.setItems(AbstractComponentType.getComponentTypeIDs(true));
 		m_category.addModifyListener(m_compoundModifyListener);
 
@@ -955,13 +966,6 @@ public class QueryEditor extends EditorPart
 		 */
 	}
 
-	private void initStackControl()
-	{
-		m_nodeTree.setSelection(m_nodeTree.getItem(0));
-		m_nodesStackLayout.topControl = m_nodesHash.get(m_nodeTree.getItem(0).getText());
-		m_nodesStackComposite.layout();
-	}
-	
 	private void createNodeTableGroup(Composite parent)
 	{
 		Composite componentTableGroup = new Composite(parent, SWT.NONE);
@@ -1006,7 +1010,7 @@ public class QueryEditor extends EditorPart
 	private void createNodeTree(Composite parent)
 	{
 		m_nodeTree = new Tree(parent, SWT.BORDER);
-		m_nodeTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));		
+		m_nodeTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 		m_nodeTree.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -1113,6 +1117,22 @@ public class QueryEditor extends EditorPart
 		return tabComposite;
 	}
 
+	private String getCQueryXML()
+	{
+		String cqueryXML = ""; //$NON-NLS-1$
+		try
+		{
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			Utils.serialize(m_componentQuery.createComponentQuery(), baos);
+			cqueryXML = baos.toString();
+		}
+		catch(Exception e)
+		{
+			// nothing
+		}
+		return cqueryXML;
+	}
+
 	private Control getDocumentationTabControl(Composite parent)
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.documentation);
@@ -1128,24 +1148,9 @@ public class QueryEditor extends EditorPart
 
 		Label label = UiUtils.createGridLabel(descComposite, Messages.documentation_with_colon, 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL, m_compoundModifyListener);
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL,
+				m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		return tabComposite;
-	}
-
-	private Control getXMLTabControl(Composite parent)
-	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.xml_content);
-
-		Composite xmlComposite = new Composite(tabComposite, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = layout.marginWidth = 0;
-		xmlComposite.setLayout(layout);
-		xmlComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY, null);
-		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
 	}
@@ -1212,25 +1217,26 @@ public class QueryEditor extends EditorPart
 		propertiesGroup.setLayout(layout);
 		propertiesGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		m_propertyURLCheckbox = UiUtils.createCheckButton(propertiesGroup, Messages.user_properties, new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				Button button = (Button)e.widget;
-
-				if(!button.getSelection())
+		m_propertyURLCheckbox = UiUtils.createCheckButton(propertiesGroup, Messages.user_properties,
+				new SelectionAdapter()
 				{
-					m_propertyURL.setText(""); //$NON-NLS-1$
-				}
-			}
-		});
+					@Override
+					public void widgetSelected(SelectionEvent e)
+					{
+						Button button = (Button)e.widget;
+
+						if(!button.getSelection())
+						{
+							m_propertyURL.setText(""); //$NON-NLS-1$
+						}
+					}
+				});
 		gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
 		gridData.horizontalSpan = 2;
 		m_propertyURLCheckbox.setLayoutData(gridData);
 
-		label = UiUtils.createGridLabel(propertiesGroup, Messages.properties_with_colon, 1, labelWidth - layout.marginWidth - 3,
-				SWT.NONE);
+		label = UiUtils.createGridLabel(propertiesGroup, Messages.properties_with_colon, 1, labelWidth
+				- layout.marginWidth - 3, SWT.NONE);
 
 		Composite propertiesComposite = new Composite(propertiesGroup, SWT.NONE);
 
@@ -1296,7 +1302,8 @@ public class QueryEditor extends EditorPart
 		gridData.horizontalSpan = 2;
 		m_requestURLCheckbox.setLayoutData(gridData);
 
-		label = UiUtils.createGridLabel(rmapGroup, Messages.rmap_url_with_colon, 1, labelWidth - layout.marginWidth - 3, SWT.NONE);
+		label = UiUtils.createGridLabel(rmapGroup, Messages.rmap_url_with_colon, 1,
+				labelWidth - layout.marginWidth - 3, SWT.NONE);
 
 		Composite rmapComposite = new Composite(rmapGroup, SWT.NONE);
 
@@ -1368,6 +1375,35 @@ public class QueryEditor extends EditorPart
 				: null;
 	}
 
+	private int getSelectionIndex()
+	{
+		return m_nodeTable.getTable().getSelectionIndex();
+	}
+
+	private Control getXMLTabControl(Composite parent)
+	{
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.xml_content);
+
+		Composite xmlComposite = new Composite(tabComposite, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = layout.marginWidth = 0;
+		xmlComposite.setLayout(layout);
+		xmlComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY,
+				null);
+		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		return tabComposite;
+	}
+
+	private void initStackControl()
+	{
+		m_nodeTree.setSelection(m_nodeTree.getItem(0));
+		m_nodesStackLayout.topControl = m_nodesHash.get(m_nodeTree.getItem(0).getText());
+		m_nodesStackComposite.layout();
+	}
+
 	private void loadComponent(boolean materialize)
 	{
 		if(!commitChangesToQuery())
@@ -1375,7 +1411,8 @@ public class QueryEditor extends EditorPart
 
 		try
 		{
-			ResolveJob resolveJob = new ResolveJob(m_componentQuery.createComponentQuery(), materialize, getSite(), m_continueOnError);
+			ResolveJob resolveJob = new ResolveJob(m_componentQuery.createComponentQuery(), materialize, getSite(),
+					m_continueOnError);
 			resolveJob.schedule();
 		}
 		catch(CoreException e)
@@ -1392,64 +1429,12 @@ public class QueryEditor extends EditorPart
 		AdvisorNodeBuilder node = addEmptyNode();
 		refreshList();
 		selectRow(node);
-		
+
 		setDirty(true);
 
 		nodeSelectionEvent();
 	}
 
-	private int getSelectionIndex()
-	{
-		return m_nodeTable.getTable().getSelectionIndex();
-	}
-
-	private AdvisorNodeBuilder addEmptyNode()
-	{
-		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
-		node.setNamePattern(Pattern.compile("")); //$NON-NLS-1$
-		m_componentQuery.addAdvisorNode(node);
-		
-		return node;
-	}
-	
-	private boolean selectRow(AdvisorNodeBuilder node)
-	{
-		int idx = m_componentQuery.getAdvisoryNodes().indexOf(node);
-		
-		if(idx == -1)
-			return false;
-		
-		m_nodeTable.getTable().setSelection(idx);
-
-		return true;
-	}
-
-	private void changeNodeSelection()
-	{
-		if(!saveLastNode())
-		{
-			if(m_lastSelectedNode != -1)
-				m_nodeTable.getTable().setSelection(m_lastSelectedNode);
-			
-			return;
-		}
-		
-		nodeSelectionEvent();
-	}
-	
-	private boolean saveLastNode(IActivator failureActivator)
-	{
-		if(m_lastEditedNode != -1 && m_lastEditedNode != DONT_SAVE)
-			return saveNode(m_lastEditedNode, failureActivator);
-		
-		return true;
-	}
-	
-	private boolean saveLastNode()
-	{
-		return saveLastNode(EMPTY_ACTIVATOR);
-	}
-	
 	private void nodeSelectionEvent()
 	{
 		updateLastNode();
@@ -1457,16 +1442,6 @@ public class QueryEditor extends EditorPart
 		enableDisableButtonGroup();
 		initStackControl();
 		m_namePattern.setFocus();
-	}
-	
-	private void updateLastNode()
-	{
-		if(getSelectionIndex() != -1)
-		{
-			m_lastSelectedNode = getSelectionIndex();
-		}
-		
-		m_lastEditedNode = getSelectionIndex();
 	}
 
 	private void refreshList()
@@ -1486,7 +1461,7 @@ public class QueryEditor extends EditorPart
 				// Use an empty node as template to get the defaults right.
 				//
 				node = new AdvisorNodeBuilder();
-	
+
 			m_allowCircular.setSelection(node.allowCircularDependency());
 			m_namePattern.setText(TextUtils.notNullString(node.getNamePattern()));
 			m_category.select(m_category.indexOf(TextUtils.notNullString(node.getComponentTypeID())));
@@ -1500,22 +1475,24 @@ public class QueryEditor extends EditorPart
 			m_useWorkspace.setSelection(node.isUseWorkspace());
 			m_useMaterialization.setSelection(node.isUseMaterialization());
 			m_useResolutionService.setSelection(node.isUseRemoteResolution());
-	
+
 			m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
 			long revision = node.getRevision();
-			m_revision.setText(revision == -1 ? "" : Long.toString(revision)); //$NON-NLS-1$
+			m_revision.setText(revision == -1
+					? "" : Long.toString(revision)); //$NON-NLS-1$
 			Date timestamp = node.getTimestamp();
-			m_timestamp.setText(timestamp == null ? "" : m_timestampFormat.format(timestamp)); //$NON-NLS-1$
-	
+			m_timestamp.setText(timestamp == null
+					? "" : m_timestampFormat.format(timestamp)); //$NON-NLS-1$
+
 			IVersionDesignator vs = node.getVersionOverride();
 			boolean enableOverride = (vs != null);
 			m_enableOverride.setSelection(enableOverride);
 			m_versionOverride.setEnabled(enableOverride);
 			m_versionOverride.refreshValues(vs);
-	
+
 			m_nodeProperties.setProperties(node.getProperties());
 			m_nodeProperties.refreshList();
-	
+
 			Documentation doc = node.getDocumentation();
 			m_nodeDocumentation.setText(TextUtils.notNullString(doc == null
 					? null
@@ -1570,24 +1547,39 @@ public class QueryEditor extends EditorPart
 		if(node != null)
 		{
 			int last_idx = getSelectionIndex();
-			
+
 			m_componentQuery.removeAdvisorNode(node);
 			setDirty(true);
 			m_lastEditedNode = DONT_SAVE;
 			refreshList();
-			
+
 			if(m_componentQuery.getAdvisoryNodes().size() > last_idx)
 			{
 				m_nodeTable.getTable().setSelection(last_idx);
-			} else if(m_componentQuery.getAdvisoryNodes().size() > 0)
+			}
+			else if(m_componentQuery.getAdvisoryNodes().size() > 0)
 			{
 				m_nodeTable.getTable().setSelection(last_idx - 1);
-			} else
+			}
+			else
 			{
 				m_nodeTable.getTable().deselectAll();
 			}
 			nodeSelectionEvent();
 		}
+	}
+
+	private boolean saveLastNode()
+	{
+		return saveLastNode(EMPTY_ACTIVATOR);
+	}
+
+	private boolean saveLastNode(IActivator failureActivator)
+	{
+		if(m_lastEditedNode != -1 && m_lastEditedNode != DONT_SAVE)
+			return saveNode(m_lastEditedNode, failureActivator);
+
+		return true;
 	}
 
 	private boolean saveNode(int nodeIdx, IActivator failureActivator)
@@ -1635,7 +1627,8 @@ public class QueryEditor extends EditorPart
 			if(patternEqual != null)
 			{
 				failureActivator.activate();
-				if(!MessageDialog.openQuestion(getSite().getShell(), null, Messages.overwrite_existing_node_with_same_pattern))
+				if(!MessageDialog.openQuestion(getSite().getShell(), null,
+						Messages.overwrite_existing_node_with_same_pattern))
 					return false;
 				m_componentQuery.removeAdvisorNode(patternEqual);
 			}
@@ -1725,7 +1718,8 @@ public class QueryEditor extends EditorPart
 			catch(ParseException e)
 			{
 				failureActivator.activate();
-				MessageDialog.openError(getSite().getShell(), null, Messages.timestamp_must_conform_to_format_with_colon + m_timestampFormat.toString());
+				MessageDialog.openError(getSite().getShell(), null,
+						Messages.timestamp_must_conform_to_format_with_colon + m_timestampFormat.toString());
 				return false;
 			}
 		}
@@ -1737,10 +1731,12 @@ public class QueryEditor extends EditorPart
 		m_nodeProperties.fillProperties(node.getProperties());
 
 		String doc = UiUtils.trimmedValue(m_nodeDocumentation);
-		
+
 		try
 		{
-			node.setDocumentation(doc == null ? null : Documentation.parse(doc));
+			node.setDocumentation(doc == null
+					? null
+					: Documentation.parse(doc));
 		}
 		catch(Exception e)
 		{
@@ -1761,7 +1757,7 @@ public class QueryEditor extends EditorPart
 			refreshList();
 			nodeSelectionEvent();
 		}
-		
+
 		enableDisableButtonGroup();
 		return true;
 	}
@@ -1789,6 +1785,18 @@ public class QueryEditor extends EditorPart
 		}
 	}
 
+	private boolean selectRow(AdvisorNodeBuilder node)
+	{
+		int idx = m_componentQuery.getAdvisoryNodes().indexOf(node);
+
+		if(idx == -1)
+			return false;
+
+		m_nodeTable.getTable().setSelection(idx);
+
+		return true;
+	}
+
 	private void setDirty(boolean flag)
 	{
 		if(m_mute || m_hasChanges == flag)
@@ -1804,7 +1812,7 @@ public class QueryEditor extends EditorPart
 		{
 			return;
 		}
-		
+
 		Table table = m_nodeTable.getTable();
 		int idx = table.getSelectionIndex() + idxOffset;
 		if(idx <= 0)
@@ -1819,5 +1827,15 @@ public class QueryEditor extends EditorPart
 		table.select(idx + selectionOffset);
 		nodeSelectionEvent();
 		setDirty(true);
+	}
+
+	private void updateLastNode()
+	{
+		if(getSelectionIndex() != -1)
+		{
+			m_lastSelectedNode = getSelectionIndex();
+		}
+
+		m_lastEditedNode = getSelectionIndex();
 	}
 }

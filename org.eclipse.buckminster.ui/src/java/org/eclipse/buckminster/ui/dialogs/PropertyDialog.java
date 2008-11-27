@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class PropertyDialog extends Dialog
 {
@@ -35,7 +35,7 @@ public class PropertyDialog extends Dialog
 	private Property m_property = null;
 
 	private boolean m_newProperty = false;
-	
+
 	private Text m_keyText;
 
 	private Text m_valueText;
@@ -44,22 +44,51 @@ public class PropertyDialog extends Dialog
 
 	/**
 	 * PropertyDialog constructor
-	 *
-	 * @param parent the parent shell
+	 * 
+	 * @param parent
+	 *            the parent shell
 	 */
 	public PropertyDialog(Shell parent, Property property)
 	{
 		super(parent);
-		
+
 		m_property = property;
 		m_newProperty = property == null;
+	}
+
+	public Property getProperty()
+	{
+		return m_property;
+	}
+
+	/**
+	 * Handles a button press
+	 * 
+	 * @param buttonId
+	 *            the ID of the pressed button
+	 */
+	@Override
+	protected void buttonPressed(int buttonId)
+	{
+		// If they press I Dunno, close the dialog
+		if(buttonId == IDialogConstants.CANCEL_ID)
+		{
+			m_property = null;
+		}
+		else
+		{
+			m_property = new Property(m_keyText.getText(), m_valueText.getText());
+		}
+
+		setReturnCode(buttonId);
+		close();
 	}
 
 	@Override
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		
+
 		if(m_newProperty)
 		{
 			newShell.setText(Messages.new_property);
@@ -71,9 +100,24 @@ public class PropertyDialog extends Dialog
 	}
 
 	/**
+	 * Creates the buttons
+	 * 
+	 * @param parent
+	 *            the parent composite
+	 */
+	@Override
+	protected void createButtonsForButtonBar(Composite parent)
+	{
+		m_okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		m_keyText.notifyListeners(SWT.Modify, new Event());
+	}
+
+	/**
 	 * Creates the dialog area
-	 *
-	 * @param parent the parent composite
+	 * 
+	 * @param parent
+	 *            the parent composite
 	 * @return Control
 	 */
 	@Override
@@ -102,8 +146,10 @@ public class PropertyDialog extends Dialog
 		UiUtils.createGridLabel(textComposite, Messages.value_with_colon, 1, 0, SWT.NONE);
 		m_valueText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
 
-		m_keyText.setText(m_property == null ? "" : m_property.getKey()); //$NON-NLS-1$
-		m_valueText.setText(m_property == null	? "" : m_property.getValue()); //$NON-NLS-1$
+		m_keyText.setText(m_property == null
+				? "" : m_property.getKey()); //$NON-NLS-1$
+		m_valueText.setText(m_property == null
+				? "" : m_property.getValue()); //$NON-NLS-1$
 
 		m_keyText.addModifyListener(new ModifyListener()
 		{
@@ -122,47 +168,7 @@ public class PropertyDialog extends Dialog
 				}
 			}
 		});
-		
+
 		return textComposite;
-	}
-
-	/**
-	 * Creates the buttons
-	 *
-	 * @param parent the parent composite
-	 */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent)
-	{
-		m_okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-		m_keyText.notifyListeners(SWT.Modify, new Event());
-	}
-
-	/**
-	 * Handles a button press
-	 *
-	 * @param buttonId the ID of the pressed button
-	 */
-	@Override
-	protected void buttonPressed(int buttonId)
-	{
-		// If they press I Dunno, close the dialog
-		if(buttonId == IDialogConstants.CANCEL_ID)
-		{
-			m_property = null;
-		}
-		else
-		{
-			m_property = new Property(m_keyText.getText(), m_valueText.getText());
-		}
-		
-		setReturnCode(buttonId);
-		close();		
-	}
-	
-	public Property getProperty()
-	{
-		return m_property;
 	}
 }

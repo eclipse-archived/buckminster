@@ -27,7 +27,8 @@ public class CSpecEditorInput extends SaxableEditorInput
 	@Override
 	public boolean equals(Object other)
 	{
-		return other == this || (other instanceof CSpecEditorInput && ((CSpecEditorInput)other).m_cspec.equals(m_cspec));
+		return other == this
+				|| (other instanceof CSpecEditorInput && ((CSpecEditorInput)other).m_cspec.equals(m_cspec));
 	}
 
 	public boolean exists()

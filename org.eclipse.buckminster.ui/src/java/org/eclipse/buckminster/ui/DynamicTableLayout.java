@@ -25,18 +25,18 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * A dynamic layout for a table that will resize the columns according to
- * the client area. The layout will also deal with the fact that a vertical
- * scrollbar may or may not be visible.<br/>
+ * A dynamic layout for a table that will resize the columns according to the client area. The layout will also deal
+ * with the fact that a vertical scrollbar may or may not be visible.<br/>
  * Call {@link #addColumnData(ColumnLayoutData)} to add columns.
+ * 
  * @author Thomas Hallgren
  */
 public class DynamicTableLayout extends Layout
 {
 	/**
-	 * The number of extra pixels taken as horizontal trim by the table column.
-	 * To ensure there are N pixels available for the content of the column,
-	 * assign N+COLUMN_TRIM for the column width.
+	 * The number of extra pixels taken as horizontal trim by the table column. To ensure there are N pixels available
+	 * for the content of the column, assign N+COLUMN_TRIM for the column width.
+	 * 
 	 * @since 3.1
 	 */
 	private static final int COLUMN_TRIM = "carbon".equals(SWT.getPlatform()) ? 24 : 3; //$NON-NLS-1$
@@ -45,7 +45,7 @@ public class DynamicTableLayout extends Layout
 	 * The list of column layout data.
 	 */
 	private final ArrayList<ColumnLayoutData> m_columns = new ArrayList<ColumnLayoutData>();
-	
+
 	/**
 	 * Minimum height of the table.
 	 */
@@ -61,7 +61,9 @@ public class DynamicTableLayout extends Layout
 
 	/**
 	 * Adds a new column of data to this table layout.
-	 * @param data the column layout data
+	 * 
+	 * @param data
+	 *            the column layout data
 	 */
 	public void addColumnData(ColumnLayoutData data)
 	{
@@ -185,7 +187,9 @@ public class DynamicTableLayout extends Layout
 					// int weight = firstTime ? cw.weight :
 					// tableColumns[i].getWidth();
 					int weight = cw.weight;
-					int pixels = totalWeight == 0 ? 0 : weight * rest / totalWeight;
+					int pixels = totalWeight == 0
+							? 0
+							: weight * rest / totalWeight;
 					if(pixels < cw.minimumWidth)
 						pixels = cw.minimumWidth;
 					totalDistributed += pixels;

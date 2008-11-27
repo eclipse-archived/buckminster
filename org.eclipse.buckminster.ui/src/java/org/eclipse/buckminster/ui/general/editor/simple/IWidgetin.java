@@ -19,12 +19,12 @@ import org.eclipse.swt.widgets.Listener;
 public interface IWidgetin
 {
 	public void addListener(int eventType, Listener listener);
-	
+
 	public Object getData();
-	
+
 	public void notifyListeners(int eventType, Event event);
-	
+
 	public void removeListener(int eventType, Listener listener);
-	
+
 	public void setData(Object data);
 }

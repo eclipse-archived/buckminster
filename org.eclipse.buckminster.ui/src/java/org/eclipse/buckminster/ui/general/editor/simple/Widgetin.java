@@ -18,25 +18,25 @@ import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class Widgetin implements IWidgetin
 {
 	private Object m_data = null;
-	
+
 	private Map<Integer, List<Listener>> m_listenersMap = new HashMap<Integer, List<Listener>>();
-	
+
 	public void addListener(int eventType, Listener listener)
 	{
 		List<Listener> eventListeners = m_listenersMap.get(Integer.valueOf(eventType));
-		
+
 		if(eventListeners == null)
 		{
 			eventListeners = new ArrayList<Listener>();
 			m_listenersMap.put(Integer.valueOf(eventType), eventListeners);
 		}
-		
-		if(! eventListeners.contains(listener))
+
+		if(!eventListeners.contains(listener))
 		{
 			eventListeners.add(listener);
 		}
@@ -50,7 +50,7 @@ public class Widgetin implements IWidgetin
 	public void notifyListeners(int eventType, Event event)
 	{
 		List<Listener> eventListeners = m_listenersMap.get(Integer.valueOf(eventType));
-		
+
 		if(eventListeners != null)
 		{
 			for(Listener listener : eventListeners)
@@ -70,5 +70,4 @@ public class Widgetin implements IWidgetin
 		m_data = data;
 	}
 
-	
 }

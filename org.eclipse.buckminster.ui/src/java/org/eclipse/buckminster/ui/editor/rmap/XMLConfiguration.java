@@ -13,8 +13,11 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 public class XMLConfiguration extends SourceViewerConfiguration
 {
 	private XMLDoubleClickStrategy m_doubleClickStrategy;
+
 	private XMLTagScanner m_tagScanner;
+
 	private XMLScanner m_scanner;
+
 	private final ColorManager m_colorManager;
 
 	public XMLConfiguration(ColorManager colorManager)
@@ -37,28 +40,6 @@ public class XMLConfiguration extends SourceViewerConfiguration
 		return m_doubleClickStrategy;
 	}
 
-	protected XMLScanner getXMLScanner()
-	{
-		if(m_scanner == null)
-		{
-			m_scanner = new XMLScanner(m_colorManager);
-			m_scanner.setDefaultReturnToken(new Token(
-					new TextAttribute(m_colorManager.getColor(IXMLColorConstants.DEFAULT))));
-		}
-		return m_scanner;
-	}
-
-	protected XMLTagScanner getXMLTagScanner()
-	{
-		if(m_tagScanner == null)
-		{
-			m_tagScanner = new XMLTagScanner(m_colorManager);
-			m_tagScanner
-					.setDefaultReturnToken(new Token(new TextAttribute(m_colorManager.getColor(IXMLColorConstants.TAG))));
-		}
-		return m_tagScanner;
-	}
-
 	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer)
 	{
@@ -78,6 +59,28 @@ public class XMLConfiguration extends SourceViewerConfiguration
 		reconciler.setRepairer(ndr, XMLPartitionScanner.XML_COMMENT);
 
 		return reconciler;
+	}
+
+	protected XMLScanner getXMLScanner()
+	{
+		if(m_scanner == null)
+		{
+			m_scanner = new XMLScanner(m_colorManager);
+			m_scanner.setDefaultReturnToken(new Token(new TextAttribute(m_colorManager
+					.getColor(IXMLColorConstants.DEFAULT))));
+		}
+		return m_scanner;
+	}
+
+	protected XMLTagScanner getXMLTagScanner()
+	{
+		if(m_tagScanner == null)
+		{
+			m_tagScanner = new XMLTagScanner(m_colorManager);
+			m_tagScanner.setDefaultReturnToken(new Token(new TextAttribute(m_colorManager
+					.getColor(IXMLColorConstants.TAG))));
+		}
+		return m_tagScanner;
 	}
 
 }

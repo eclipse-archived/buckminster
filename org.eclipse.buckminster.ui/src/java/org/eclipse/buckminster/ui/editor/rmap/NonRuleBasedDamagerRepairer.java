@@ -17,6 +17,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
 
 	/** The document this object works on */
 	private IDocument m_document;
+
 	/** The default text attribute if non is returned as data by the current token */
 	private TextAttribute m_defaultTextAttribute;
 
@@ -31,40 +32,11 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
 	}
 
 	/**
-	 * @see IPresentationRepairer#setDocument(IDocument)
+	 * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
 	 */
-	public void setDocument(IDocument document)
+	public void createPresentation(TextPresentation presentation, ITypedRegion region)
 	{
-		m_document = document;
-	}
-
-	/**
-	 * Returns the end offset of the line that contains the specified offset or if the offset is inside a line
-	 * delimiter, the end offset of the next line.
-	 * 
-	 * @param offset
-	 *            the offset whose line end offset must be computed
-	 * @return the line end offset for the given offset
-	 * @exception BadLocationException
-	 *                if offset is invalid in the current document
-	 */
-	protected int endOfLineOf(int offset) throws BadLocationException
-	{
-
-		IRegion info = m_document.getLineInformationOfOffset(offset);
-		if(offset <= info.getOffset() + info.getLength())
-			return info.getOffset() + info.getLength();
-
-		int line = m_document.getLineOfOffset(offset);
-		try
-		{
-			info = m_document.getLineInformation(line + 1);
-			return info.getOffset() + info.getLength();
-		}
-		catch(BadLocationException x)
-		{
-			return m_document.getLength();
-		}
+		addRange(presentation, region.getOffset(), region.getLength(), m_defaultTextAttribute);
 	}
 
 	/**
@@ -105,11 +77,11 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
 	}
 
 	/**
-	 * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
+	 * @see IPresentationRepairer#setDocument(IDocument)
 	 */
-	public void createPresentation(TextPresentation presentation, ITypedRegion region)
+	public void setDocument(IDocument document)
 	{
-		addRange(presentation, region.getOffset(), region.getLength(), m_defaultTextAttribute);
+		m_document = document;
 	}
 
 	/**
@@ -129,5 +101,34 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
 		if(attr != null)
 			presentation.addStyleRange(new StyleRange(offset, length, attr.getForeground(), attr.getBackground(), attr
 					.getStyle()));
+	}
+
+	/**
+	 * Returns the end offset of the line that contains the specified offset or if the offset is inside a line
+	 * delimiter, the end offset of the next line.
+	 * 
+	 * @param offset
+	 *            the offset whose line end offset must be computed
+	 * @return the line end offset for the given offset
+	 * @exception BadLocationException
+	 *                if offset is invalid in the current document
+	 */
+	protected int endOfLineOf(int offset) throws BadLocationException
+	{
+
+		IRegion info = m_document.getLineInformationOfOffset(offset);
+		if(offset <= info.getOffset() + info.getLength())
+			return info.getOffset() + info.getLength();
+
+		int line = m_document.getLineOfOffset(offset);
+		try
+		{
+			info = m_document.getLineInformation(line + 1);
+			return info.getOffset() + info.getLength();
+		}
+		catch(BadLocationException x)
+		{
+			return m_document.getLength();
+		}
 	}
 }

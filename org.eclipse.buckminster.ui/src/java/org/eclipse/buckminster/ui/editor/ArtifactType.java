@@ -10,30 +10,29 @@ package org.eclipse.buckminster.ui.editor;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public enum ArtifactType
 {
 	CQUERY("bmqtmp-", ".cquery"), CSPEC("bmstmp-", ".cspec"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	
+
 	private String m_tempPrefix;
-	
+
 	private String m_tempExtension;
-	
+
 	private ArtifactType(String tempPrefix, String tempExtension)
 	{
 		m_tempPrefix = tempPrefix;
 		m_tempExtension = tempExtension;
 	}
-	
-	public String getTempPrefix()
-	{
-		return m_tempPrefix;
-	}
-	
+
 	public String getTempExtension()
 	{
 		return m_tempExtension;
 	}
-}
 
+	public String getTempPrefix()
+	{
+		return m_tempPrefix;
+	}
+}

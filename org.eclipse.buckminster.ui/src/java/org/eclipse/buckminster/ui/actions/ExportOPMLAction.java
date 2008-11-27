@@ -36,10 +36,10 @@ public class ExportOPMLAction extends AbstractOPMLAction
 		FileDialog saveAs = new FileDialog(getShell(), SWT.SAVE);
 		saveAs.setFileName("component.opml"); //$NON-NLS-1$
 		String path = saveAs.open();
-		
+
 		if(path == null)
 			return; // nothing entered.
-		
+
 		URI fileURI;
 		try
 		{
@@ -57,7 +57,8 @@ public class ExportOPMLAction extends AbstractOPMLAction
 		{
 			if(!file.createNewFile())
 			{
-				if(!showConfirm(Messages.confirm_overwrite, NLS.bind(Messages.the_file_0_already_exists_overwrite_question, file.toString())))
+				if(!showConfirm(Messages.confirm_overwrite, NLS.bind(
+						Messages.the_file_0_already_exists_overwrite_question, file.toString())))
 					return;
 			}
 		}
@@ -77,11 +78,11 @@ public class ExportOPMLAction extends AbstractOPMLAction
 		}
 		catch(FileNotFoundException e)
 		{
-			showError(Messages.write_error, Messages.error_while_opening_file_for_writing,e);
+			showError(Messages.write_error, Messages.error_while_opening_file_for_writing, e);
 		}
 		catch(SAXException e)
 		{
-			showError(Messages.opml_format_error, Messages.internal_problem_when_generating_opml_xml,e);
+			showError(Messages.opml_format_error, Messages.internal_problem_when_generating_opml_xml, e);
 		}
 	}
 }

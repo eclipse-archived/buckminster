@@ -51,6 +51,22 @@ import org.osgi.framework.BundleContext;
  */
 public class UiPlugin extends AbstractUIPlugin
 {
+	private static class OpenRssFeedActionHandle extends PluginClassHandle<IObjectActionDelegate>
+	{
+		private final String m_operationId;
+
+		public OpenRssFeedActionHandle(IConfigurationElement configElement)
+		{
+			super(s_plugin, configElement, IObjectActionDelegate.class, UiPlugin.EPOINT_OPEN_FEED);
+			m_operationId = PluginUtils.getAttribute(configElement, UiPlugin.ATT_CLASS, null);
+		}
+
+		public String getOperationId()
+		{
+			return m_operationId;
+		}
+	}
+
 	private static UiPlugin s_plugin;
 
 	private ScopedPreferenceStore m_preferenceStore;
@@ -62,7 +78,7 @@ public class UiPlugin extends AbstractUIPlugin
 	private static CSpecAdapterFactory s_cspecAdapterFactory;
 
 	private static BrowseableAdapterFactory s_adapterFactory;
-	
+
 	private static ResolutionAdapterFactory s_resolutionAdapterFactory;
 
 	// must be the same as the id in plugin.xml
@@ -77,73 +93,7 @@ public class UiPlugin extends AbstractUIPlugin
 
 	public static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
-	static public String getID()
-	{
-		return s_id;
-	}
-
-	/**
-	 * The constructor.
-	 */
-	public UiPlugin()
-	{
-		super();
-		s_plugin = this;
-	}
-
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception
-	{
-		super.start(context);
-		
-		// register factory to convert an Outline to browseable URLs
-		s_adapterFactory = new BrowseableAdapterFactory();
-		s_cspecAdapterFactory = new CSpecAdapterFactory();
-		s_opmlAdapterFactory = new OPMLAdapterFactory();
-		s_resolutionAdapterFactory = new ResolutionAdapterFactory();
-		s_resourceAdapterFactory = new ResourceAdapterFactory();
-		
-		IAdapterManager adapterManager = Platform.getAdapterManager();
-		adapterManager.registerAdapters(s_adapterFactory, Outline.class);
-		adapterManager.registerAdapters(s_adapterFactory, OutlineDataNode.class);
-		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpec.class);
-		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
-
-		adapterManager.registerAdapters(s_opmlAdapterFactory, Resolution.class);		
-		adapterManager.registerAdapters(s_opmlAdapterFactory, ResolutionDataNode.class);		
-		adapterManager.registerAdapters(s_opmlAdapterFactory, OPML.class);		
-		adapterManager.registerAdapters(s_opmlAdapterFactory, OPMLDataNode.class);		
-		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);		
-		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);		
-			
-		adapterManager.registerAdapters(s_resolutionAdapterFactory, Resolution.class);		
-		adapterManager.registerAdapters(s_resolutionAdapterFactory, ResolutionDataNode.class);		
-
-		adapterManager.registerAdapters(s_resourceAdapterFactory, IResource.class);
-		adapterManager.registerAdapters(s_resourceAdapterFactory, IProject.class);
-		adapterManager.registerAdapters(s_resourceAdapterFactory, IFile.class);
-		
-	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		IAdapterManager adapterManager = Platform.getAdapterManager();
-		adapterManager.unregisterAdapters(s_adapterFactory);
-		adapterManager.unregisterAdapters(s_cspecAdapterFactory);
-		adapterManager.unregisterAdapters(s_opmlAdapterFactory);
-		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
-		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
-		
-		super.stop(context);
-		s_plugin = null;
-	}
+	private static OpenRssFeedActionHandle s_openRssFeedActionHandle;
 
 	/**
 	 * Returns the shared instance.
@@ -153,16 +103,9 @@ public class UiPlugin extends AbstractUIPlugin
 		return s_plugin;
 	}
 
-	public IPreferenceStore getBuckminsterPreferenceStore()
+	static public String getID()
 	{
-		if(m_preferenceStore == null)
-			m_preferenceStore = new ScopedPreferenceStore(new InstanceScope(), Buckminster.PLUGIN_ID);
-		return m_preferenceStore;
-	}
-
-	public IPreferenceStore getBuckminsterPreferenceStore(String subKey)
-	{
-		return new ScopedPreferenceStore(new InstanceScope(), Buckminster.PLUGIN_ID + '/' + subKey);
+		return s_id;
 	}
 
 	/**
@@ -186,9 +129,29 @@ public class UiPlugin extends AbstractUIPlugin
 			status = new Status(IStatus.ERROR, getID(), -1, t.getMessage(), t);
 		return status;
 	}
-	private static OpenRssFeedActionHandle s_openRssFeedActionHandle;
 
-	public  IObjectActionDelegate getOpenRssFeedAction()
+	/**
+	 * The constructor.
+	 */
+	public UiPlugin()
+	{
+		super();
+		s_plugin = this;
+	}
+
+	public IPreferenceStore getBuckminsterPreferenceStore()
+	{
+		if(m_preferenceStore == null)
+			m_preferenceStore = new ScopedPreferenceStore(new InstanceScope(), Buckminster.PLUGIN_ID);
+		return m_preferenceStore;
+	}
+
+	public IPreferenceStore getBuckminsterPreferenceStore(String subKey)
+	{
+		return new ScopedPreferenceStore(new InstanceScope(), Buckminster.PLUGIN_ID + '/' + subKey);
+	}
+
+	public IObjectActionDelegate getOpenRssFeedAction()
 	{
 		// make sure we have the handle to the operation
 		if(s_openRssFeedActionHandle == null)
@@ -206,32 +169,73 @@ public class UiPlugin extends AbstractUIPlugin
 					if(s_openRssFeedActionHandle != null)
 					{
 						// duplicate
-						getLog().log(new Status(IStatus.ERROR, this.getBundle().getSymbolicName(),
-								NLS.bind(Messages.duplicate_0_found_in_plugin_1, "OpenFeedAction", //$NON-NLS-1$
-								configElement.getDeclaringExtension().getNamespaceIdentifier())));
+						getLog().log(
+								new Status(IStatus.ERROR, this.getBundle().getSymbolicName(), NLS.bind(
+										Messages.duplicate_0_found_in_plugin_1, "OpenFeedAction", //$NON-NLS-1$
+										configElement.getDeclaringExtension().getNamespaceIdentifier())));
 					}
 					s_openRssFeedActionHandle = new OpenRssFeedActionHandle(configElement);
 				}
 			}
 		}
-		
-		return s_openRssFeedActionHandle == null ? null : s_openRssFeedActionHandle.getHandle();
+
+		return s_openRssFeedActionHandle == null
+				? null
+				: s_openRssFeedActionHandle.getHandle();
 	}
 
-	private static class OpenRssFeedActionHandle extends PluginClassHandle<IObjectActionDelegate>
+	/**
+	 * This method is called upon plug-in activation
+	 */
+	@Override
+	public void start(BundleContext context) throws Exception
 	{
-		private final String m_operationId;
+		super.start(context);
 
-		public OpenRssFeedActionHandle(IConfigurationElement configElement)
-		{
-			super(s_plugin, configElement, IObjectActionDelegate.class, UiPlugin.EPOINT_OPEN_FEED);
-			m_operationId = PluginUtils.getAttribute(configElement, UiPlugin.ATT_CLASS, null);
-		}
+		// register factory to convert an Outline to browseable URLs
+		s_adapterFactory = new BrowseableAdapterFactory();
+		s_cspecAdapterFactory = new CSpecAdapterFactory();
+		s_opmlAdapterFactory = new OPMLAdapterFactory();
+		s_resolutionAdapterFactory = new ResolutionAdapterFactory();
+		s_resourceAdapterFactory = new ResourceAdapterFactory();
 
-		public String getOperationId()
-		{
-			return m_operationId;
-		}
+		IAdapterManager adapterManager = Platform.getAdapterManager();
+		adapterManager.registerAdapters(s_adapterFactory, Outline.class);
+		adapterManager.registerAdapters(s_adapterFactory, OutlineDataNode.class);
+		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpec.class);
+		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
+
+		adapterManager.registerAdapters(s_opmlAdapterFactory, Resolution.class);
+		adapterManager.registerAdapters(s_opmlAdapterFactory, ResolutionDataNode.class);
+		adapterManager.registerAdapters(s_opmlAdapterFactory, OPML.class);
+		adapterManager.registerAdapters(s_opmlAdapterFactory, OPMLDataNode.class);
+		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);
+		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);
+
+		adapterManager.registerAdapters(s_resolutionAdapterFactory, Resolution.class);
+		adapterManager.registerAdapters(s_resolutionAdapterFactory, ResolutionDataNode.class);
+
+		adapterManager.registerAdapters(s_resourceAdapterFactory, IResource.class);
+		adapterManager.registerAdapters(s_resourceAdapterFactory, IProject.class);
+		adapterManager.registerAdapters(s_resourceAdapterFactory, IFile.class);
+
 	}
-	
+
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception
+	{
+		IAdapterManager adapterManager = Platform.getAdapterManager();
+		adapterManager.unregisterAdapters(s_adapterFactory);
+		adapterManager.unregisterAdapters(s_cspecAdapterFactory);
+		adapterManager.unregisterAdapters(s_opmlAdapterFactory);
+		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
+		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
+
+		super.stop(context);
+		s_plugin = null;
+	}
+
 }

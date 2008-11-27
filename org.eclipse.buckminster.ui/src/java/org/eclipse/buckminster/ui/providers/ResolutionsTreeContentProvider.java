@@ -11,7 +11,6 @@ package org.eclipse.buckminster.ui.providers;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -33,30 +32,15 @@ import org.eclipse.ui.IViewSite;
  * Provides one or several instances of Resolution as a Tree.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 {
-	public enum Mode
-	{
-		ALL,
-		SINGLE,
-		;
-	}
-	Mode m_mode;
-	
-	public ResolutionsTreeContentProvider()
-	{
-		this(Mode.ALL);
-	}
-	public ResolutionsTreeContentProvider(Mode mode)
-	{
-		m_mode = mode;
-	}
 	/**
 	 * A node that expands itself into a tree of all resolutions in a background thread.
+	 * 
 	 * @author Henrik Lindberg
-	 *
+	 * 
 	 */
 	public static class AllResolutionsNode extends PendingTreeDataNode
 	{
@@ -84,39 +68,45 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			}
 			ITreeDataNode[] result = new ITreeDataNode[2];
 			ITreeParentDataNode ws = new BasicTreeParentDataNode(Messages.workspace_components);
-			ITreeParentDataNode tp = new BasicTreeParentDataNode(Messages.target_platform_components);  
+			ITreeParentDataNode tp = new BasicTreeParentDataNode(Messages.target_platform_components);
 			result[0] = ws;
 			result[1] = tp;
-			
-			for(Resolution r: resolutions)
+
+			for(Resolution r : resolutions)
 			{
 				// Divide nodes on target platform and workspace parent nodes
 				ResolutionDataNode rd = new ResolutionDataNode(r);
-				if(IReaderType.ECLIPSE_PLATFORM.equals(r.getProvider().getReaderTypeId())) 
+				if(IReaderType.ECLIPSE_PLATFORM.equals(r.getProvider().getReaderTypeId()))
 					tp.addChild(rd);
 				else
 					ws.addChild(rd);
 				monitor.worked(1);
 			}
 			return result;
-		}		
+		}
 	}
-	
-	/**
-	 * Initializes the content provider with a tree root that delivers events in a UI safe way.
-	 */
-	@Override
-	protected void initialize()
-	{		
-		UISafeTreeRootDataNode hiddenRoot = new UISafeTreeRootDataNode(Messages.resolutions);
-		setHiddenRoot(hiddenRoot);
+
+	public enum Mode
+	{
+		ALL, SINGLE, ;
 	}
-	
+
+	Mode m_mode;
+
+	public ResolutionsTreeContentProvider()
+	{
+		this(Mode.ALL);
+	}
+
+	public ResolutionsTreeContentProvider(Mode mode)
+	{
+		m_mode = mode;
+	}
+
 	/**
-	 * When the input is a single Resolution, or a List<Resolution> a tree is produced.
-	 * Changing input first removes the entire current tree, and a new tree is erected.
-	 * If the newInput is an instance of IViewSite all resolutions are collected in the
-	 * background.
+	 * When the input is a single Resolution, or a List<Resolution> a tree is produced. Changing input first removes the
+	 * entire current tree, and a new tree is erected. If the newInput is an instance of IViewSite all resolutions are
+	 * collected in the background.
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -125,7 +115,7 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 		// if nothing changes
 		if(oldInput == newInput && !(newInput instanceof IViewSite))
 			return;
-		
+
 		super.inputChanged(viewer, oldInput, newInput);
 		ITreeParentDataNode root = getHiddenRoot();
 		if(root == null)
@@ -139,15 +129,15 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			List<Resolution> resolutions = (List<Resolution>)newInput;
 			if(resolutions.size() < 1)
 				return; // empty
-			for(Resolution r: resolutions)
+			for(Resolution r : resolutions)
 				root.addChild(new ResolutionDataNode(r));
 			return;
 		}
 		if(newInput instanceof Resolution)
 		{
 			ITreeDataNode[] children = root.getChildren();
-			if(!(children.length > 0 && children[0] instanceof ResolutionDataNode 
-					&& newInput.equals(((ResolutionDataNode)children[0]).getData())))
+			if(!(children.length > 0 && children[0] instanceof ResolutionDataNode && newInput
+					.equals(((ResolutionDataNode)children[0]).getData())))
 			{
 				root.removeAllChildren();
 				root.addChild(new ResolutionDataNode((Resolution)newInput));
@@ -173,5 +163,15 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 				root.addChild(new BasicTreeDataNode(Messages.nothing_to_display_with_dot));
 			}
 		}
+	}
+
+	/**
+	 * Initializes the content provider with a tree root that delivers events in a UI safe way.
+	 */
+	@Override
+	protected void initialize()
+	{
+		UISafeTreeRootDataNode hiddenRoot = new UISafeTreeRootDataNode(Messages.resolutions);
+		setHiddenRoot(hiddenRoot);
 	}
 }

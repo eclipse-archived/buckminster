@@ -23,68 +23,84 @@ import org.eclipse.swt.widgets.Table;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 {
 	private final boolean m_disableNew; // disables New button
 
 	private final boolean m_disableRemove; // disables Remove button
-	
-	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
-	{
-		this(parent, table, swapButtonsFlag, false, false, style);
-	}
 
-	public OnePageTableEditor(
-			Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, boolean disableNew, boolean disableRemove, int style)
+	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, boolean disableNew,
+			boolean disableRemove, int style)
 	{
 		super(parent, table, swapButtonsFlag, style);
 		m_disableNew = disableNew;
 		m_disableRemove = disableRemove;
 	}
 
-	@Override
-	protected void initComposite()
+	public OnePageTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, int style)
 	{
-		GridLayout layout = new GridLayout(3, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		setLayout(layout);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		setLayoutData(gridData);
+		this(parent, table, swapButtonsFlag, false, false, style);
+	}
 
-		createTableGroup(this);
-
-		createStackOptions(this);
-
-		createStack(this);
-
-		fillStackOptions();
+	public void cancelRow()
+	{
+		enableDisableButtonGroup();
+		refreshRow();
 	}
 
 	@Override
-	protected Composite createTableGroupComposite(Composite parent)
+	public void refresh()
 	{
-		Composite componentTableGroup = new Composite(parent, SWT.NONE);
-		GridLayout gl = new GridLayout(1, false);
-		gl.marginHeight = gl.marginWidth = 0;
-		componentTableGroup.setLayout(gl);
-		componentTableGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		return componentTableGroup;
+		refreshTable();
+		enableDisableButtonGroup();
+		refreshRow();
 	}
 
-	@Override
-	protected Composite createTableButtonsComposite(Composite parent)
+	public boolean save()
 	{
-		Composite buttonBox = new Composite(parent, SWT.NULL);
-		buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		FillLayout layout = new FillLayout(SWT.VERTICAL);
-		layout.marginWidth = layout.marginHeight = 0;
-		layout.spacing = 3;
-		buttonBox.setLayout(layout);
+		return save(null);
+	}
 
-		return buttonBox;
+	public boolean save(IActivator activator)
+	{
+		if(getTableViewer().getTable().getSelectionIndex() >= 0)
+		{
+			try
+			{
+				saveRow();
+			}
+			catch(ValidatorException e)
+			{
+				if(activator != null)
+					activator.activate();
+				MessageDialog.openError(getShell(), Messages.error, e.getMessage());
+				getTableViewer().getTable().select(getLastSelectedRow());
+				return false;
+			}
+
+			enableDisableButtonGroup();
+		}
+
+		return true;
+	}
+
+	public boolean show(T row, String tab)
+	{
+		int stackIdx = getTable().getStackKeys().indexOf(tab);
+
+		if(stackIdx == -1)
+			return false;
+
+		if(!selectRow(row))
+			return false;
+
+		refreshRow();
+
+		setStackOption(stackIdx);
+
+		return true;
 	}
 
 	@Override
@@ -147,79 +163,34 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void newRow()
+	protected Composite createTableButtonsComposite(Composite parent)
 	{
-		if(getSelectionIndex() >= 0)
-			if(!save())
-				return;
+		Composite buttonBox = new Composite(parent, SWT.NULL);
+		buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		FillLayout layout = new FillLayout(SWT.VERTICAL);
+		layout.marginWidth = layout.marginHeight = 0;
+		layout.spacing = 3;
+		buttonBox.setLayout(layout);
 
-		T row = getTable().addEmptyRow();
-		refreshTable();
-		selectRow(row);
-		updateLastRow();
-		enableDisableButtonGroup();
-		refreshRow();
-		focusStackComposite();
+		return buttonBox;
+	}
+
+	@Override
+	protected Composite createTableGroupComposite(Composite parent)
+	{
+		Composite componentTableGroup = new Composite(parent, SWT.NONE);
+		GridLayout gl = new GridLayout(1, false);
+		gl.marginHeight = gl.marginWidth = 0;
+		componentTableGroup.setLayout(gl);
+		componentTableGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		return componentTableGroup;
 	}
 
 	@Override
 	protected void editRow()
 	{
 		// automatic
-	}
-
-	public void cancelRow()
-	{
-		enableDisableButtonGroup();
-		refreshRow();
-	}
-
-	public boolean save()
-	{
-		return save(null);
-	}
-	
-	public boolean save(IActivator activator)
-	{
-		if(getTableViewer().getTable().getSelectionIndex() >= 0)
-		{
-			try
-			{
-				saveRow();
-			}
-			catch(ValidatorException e)
-			{
-				if(activator != null)
-					activator.activate();
-				MessageDialog.openError(getShell(), Messages.error, e.getMessage());
-				getTableViewer().getTable().select(getLastSelectedRow());
-				return false;
-			}
-
-			enableDisableButtonGroup();
-		}
-		
-		return true;
-	}
-
-	@Override
-	protected boolean rowSelectionEvent()
-	{
-		if(!save())
-			return false;
-				
-		enableDisableButtonGroup();
-		refreshRow();
-		
-		return true;
-	}
-
-	@Override
-	public void refresh()
-	{
-		refreshTable();
-		enableDisableButtonGroup();
-		refreshRow();
 	}
 
 	@Override
@@ -238,10 +209,11 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
 			}
 			enableFields(idx >= 0);
-		} else
+		}
+		else
 		{
 			getNewButton().setEnabled(false);
-			getRemoveButton().setEnabled(false);			
+			getRemoveButton().setEnabled(false);
 			if(isSwapButtonAllowed())
 			{
 				getMoveUpButton().setEnabled(false);
@@ -249,24 +221,53 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			}
 			enableFields(isEnabled());
 		}
-		
+
 		getTableViewer().getTable().setEnabled(isEnabled());
 	}
-	
-	public boolean show(T row, String tab)
+
+	@Override
+	protected void initComposite()
 	{
-		int stackIdx = getTable().getStackKeys().indexOf(tab);
-		
-		if(stackIdx == -1)
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		setLayoutData(gridData);
+
+		createTableGroup(this);
+
+		createStackOptions(this);
+
+		createStack(this);
+
+		fillStackOptions();
+	}
+
+	@Override
+	protected void newRow()
+	{
+		if(getSelectionIndex() >= 0)
+			if(!save())
+				return;
+
+		T row = getTable().addEmptyRow();
+		refreshTable();
+		selectRow(row);
+		updateLastRow();
+		enableDisableButtonGroup();
+		refreshRow();
+		focusStackComposite();
+	}
+
+	@Override
+	protected boolean rowSelectionEvent()
+	{
+		if(!save())
 			return false;
-		
-		if(!selectRow(row))
-			return false;
-				
+
+		enableDisableButtonGroup();
 		refreshRow();
 
-		setStackOption(stackIdx);
-		
 		return true;
 	}
 }

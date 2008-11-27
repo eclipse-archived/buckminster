@@ -104,51 +104,22 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		setControl(container);
 	}
 
-	/**
-	 * Tests if the current workbench m_selection is a suitable container to use.
-	 */
-	private void initialize()
+	public String getContainerName()
 	{
-		if(m_selection != null && m_selection.isEmpty() == false && m_selection instanceof IStructuredSelection)
-		{
-			IStructuredSelection ssel = (IStructuredSelection)m_selection;
-			if(ssel.size() > 1)
-				return;
-			Object obj = ssel.getFirstElement();
-			
-			if(obj instanceof IProjectNature)
-			{
-				obj = ((IProjectNature)obj).getProject();
-			}
-			
-			if(obj instanceof IResource)
-			{
-				IContainer container;
-				if(obj instanceof IContainer)
-					container = (IContainer)obj;
-				else
-					container = ((IResource)obj).getParent();
-				containerText.setText(container.getFullPath().toString());
-			}
-		}
-		fileText.setText(m_fileName);
+		return containerText.getText();
 	}
 
 	/**
-	 * Uses the standard container m_selection dialog to choose the new value for the container field.
+	 * Returns the entered filename with correct extension.
+	 * 
+	 * @return
 	 */
-	private void handleBrowse()
+	public String getFileName()
 	{
-		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace()
-				.getRoot(), false, Messages.select_new_file_container);
-		if(dialog.open() == Window.OK)
-		{
-			Object[] result = dialog.getResult();
-			if(result.length == 1)
-			{
-				containerText.setText(((Path)result[0]).toString());
-			}
-		}
+		String fileName = fileText.getText();
+		if(!fileName.endsWith("." + m_extension)) //$NON-NLS-1$
+			fileName += "." + m_extension; //$NON-NLS-1$
+		return fileName;
 	}
 
 	/**
@@ -197,27 +168,57 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		updateStatus(null);
 	}
 
+	/**
+	 * Uses the standard container m_selection dialog to choose the new value for the container field.
+	 */
+	private void handleBrowse()
+	{
+		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace()
+				.getRoot(), false, Messages.select_new_file_container);
+		if(dialog.open() == Window.OK)
+		{
+			Object[] result = dialog.getResult();
+			if(result.length == 1)
+			{
+				containerText.setText(((Path)result[0]).toString());
+			}
+		}
+	}
+
+	/**
+	 * Tests if the current workbench m_selection is a suitable container to use.
+	 */
+	private void initialize()
+	{
+		if(m_selection != null && m_selection.isEmpty() == false && m_selection instanceof IStructuredSelection)
+		{
+			IStructuredSelection ssel = (IStructuredSelection)m_selection;
+			if(ssel.size() > 1)
+				return;
+			Object obj = ssel.getFirstElement();
+
+			if(obj instanceof IProjectNature)
+			{
+				obj = ((IProjectNature)obj).getProject();
+			}
+
+			if(obj instanceof IResource)
+			{
+				IContainer container;
+				if(obj instanceof IContainer)
+					container = (IContainer)obj;
+				else
+					container = ((IResource)obj).getParent();
+				containerText.setText(container.getFullPath().toString());
+			}
+		}
+		fileText.setText(m_fileName);
+	}
+
 	private void updateStatus(String message)
 	{
 		setErrorMessage(message);
 		setPageComplete(message == null);
-	}
-
-	public String getContainerName()
-	{
-		return containerText.getText();
-	}
-
-	/**
-	 * Returns the entered filename with correct extension.
-	 * @return
-	 */
-	public String getFileName()
-	{
-		String fileName = fileText.getText();
-		if(!fileName.endsWith("." + m_extension)) //$NON-NLS-1$
-			fileName += "." + m_extension; //$NON-NLS-1$
-		return fileName;
 	}
 
 }

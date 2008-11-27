@@ -18,11 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Editor used for <code>enum</code> type values. The stored preference is the ordinal
- * of the enum. A {@link Combo} is used for displaying and changing the value. The displayed
- * values are obtained by calling the {@link Enum#toString()}
+ * Editor used for <code>enum</code> type values. The stored preference is the ordinal of the enum. A {@link Combo} is
+ * used for displaying and changing the value. The displayed values are obtained by calling the {@link Enum#toString()}
  * in the respective <code>enum</code> values.
- *
+ * 
  * @author Thomas Hallgren
  */
 public class EnumFieldEditor extends FieldEditor
@@ -30,7 +29,7 @@ public class EnumFieldEditor extends FieldEditor
 	private Combo m_combo;
 
 	private Enum<?> m_value;
-	
+
 	private final Enum<?>[] m_enumValues;
 
 	public EnumFieldEditor(String name, String labelText, Enum<?>[] enumValues, Composite parent)
@@ -38,6 +37,36 @@ public class EnumFieldEditor extends FieldEditor
 		m_enumValues = enumValues;
 		init(name, labelText);
 		createControl(parent);
+	}
+
+	public Combo getControl(Composite parent)
+	{
+		if(m_combo == null)
+		{
+			m_combo = new Combo(parent, SWT.READ_ONLY);
+			int top = m_enumValues.length;
+			for(int idx = 0; idx < top; ++idx)
+				m_combo.add(m_enumValues[idx].toString(), idx);
+			m_combo.setFont(parent.getFont());
+			m_combo.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent evt)
+				{
+					Enum<?> oldValue = m_value;
+					m_value = getValueForName(m_combo.getText());
+					setPresentsDefaultValue(false);
+					fireValueChanged(VALUE, oldValue, m_value);
+				}
+			});
+		}
+		return m_combo;
+	}
+
+	@Override
+	public int getNumberOfControls()
+	{
+		return 2;
 	}
 
 	@Override
@@ -87,36 +116,6 @@ public class EnumFieldEditor extends FieldEditor
 		}
 
 		getPreferenceStore().setValue(getPreferenceName(), m_value.ordinal());
-	}
-
-	@Override
-	public int getNumberOfControls()
-	{
-		return 2;
-	}
-
-	public Combo getControl(Composite parent)
-	{
-		if(m_combo == null)
-		{
-			m_combo = new Combo(parent, SWT.READ_ONLY);
-			int top = m_enumValues.length;
-			for(int idx = 0; idx < top; ++idx)
-				m_combo.add(m_enumValues[idx].toString(), idx);
-			m_combo.setFont(parent.getFont());
-			m_combo.addSelectionListener(new SelectionAdapter()
-			{
-				@Override
-				public void widgetSelected(SelectionEvent evt)
-				{
-					Enum<?> oldValue = m_value;
-					m_value = getValueForName(m_combo.getText());
-					setPresentsDefaultValue(false);
-					fireValueChanged(VALUE, oldValue, m_value);
-				}
-			});
-		}
-		return m_combo;
 	}
 
 	protected Enum<?> getValueForName(String name)

@@ -20,5 +20,5 @@ public class OutlineDataNode extends BasicTreeParentDataNode
 		for(IOutline outline : data.getOutlines())
 			addChild(new OutlineDataNode(outline));
 	}
-	
+
 }

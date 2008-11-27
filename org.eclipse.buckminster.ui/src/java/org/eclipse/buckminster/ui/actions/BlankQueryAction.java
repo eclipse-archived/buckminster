@@ -24,17 +24,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
-
 public class BlankQueryAction implements IObjectActionDelegate
 {
 	public static final String TEMP_FILE_PREFIX = "bmqtmp-"; //$NON-NLS-1$
 
 	private IWorkbenchPart m_targetPart;
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_targetPart = targetPart;
-	}
 
 	public void run(IAction action)
 	{
@@ -56,5 +50,9 @@ public class BlankQueryAction implements IObjectActionDelegate
 	public void selectionChanged(IAction action, ISelection selection)
 	{
 	}
-}
 
+	public void setActivePart(IAction action, IWorkbenchPart targetPart)
+	{
+		m_targetPart = targetPart;
+	}
+}

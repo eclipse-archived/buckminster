@@ -19,7 +19,9 @@ public class OPMLDataNode extends BasicTreeParentDataNode
 
 	public OPMLDataNode(IOPML data)
 	{
-		super(data == null ? Messages.no_ompl : data);
+		super(data == null
+				? Messages.no_ompl
+				: data);
 		IBody body = data.getBody();
 		for(IOutline outline : body.getOutlines())
 		{

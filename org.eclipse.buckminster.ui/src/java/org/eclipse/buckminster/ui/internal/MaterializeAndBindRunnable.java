@@ -21,14 +21,13 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 public class MaterializeAndBindRunnable implements IRunnableWithProgress
 {
 	private final MaterializationContext m_context;
-	
+
 	public MaterializeAndBindRunnable(MaterializationContext context)
 	{
 		m_context = context;
 	}
 
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-    InterruptedException
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 	{
 		try
 		{

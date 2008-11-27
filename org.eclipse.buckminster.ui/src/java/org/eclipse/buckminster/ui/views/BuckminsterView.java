@@ -95,13 +95,171 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author kaja
- *
+ * 
  */
 public class BuckminsterView extends ViewPart
 {
 
+	class ActionsNode extends TreeNode
+	{
+
+		private CSpec m_cspec;
+
+		public ActionsNode(CSpec cspec)
+		{
+			m_cspec = cspec;
+		}
+
+		@Override
+		public TreeNode[] getChildren()
+		{
+			try
+			{
+				/* List<Attribute> viableAttributes = */m_cspec.getAttributesProducedByActions(false);
+			}
+			catch(CoreException e)
+			{
+				UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
+			}
+			return null;
+		}
+
+		@Override
+		public String getName()
+		{
+			return Messages.actions;
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_cspec;
+		}
+	}
+
+	// TODO use extension point to get files for BM view
+	class BuckminsterFileFilter
+	{
+		public static final String CONTENT_TYPES_POINT = "org.eclipse.core.runtime.contentTypes"; //$NON-NLS-1$
+
+		public static final String BUCKMINSTER_CORE_PLUGIN = "org.eclipse.buckminster.core"; //$NON-NLS-1$
+
+		private List<String> m_fileExts = new ArrayList<String>();
+
+		public BuckminsterFileFilter()
+		{
+			IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+					BuckminsterFileFilter.CONTENT_TYPES_POINT);
+
+			for(IConfigurationElement elem : elems)
+			{
+				if(BuckminsterFileFilter.BUCKMINSTER_CORE_PLUGIN.equals(elem.getContributor().getName()))
+				{
+					String[] fileExt = elem.getAttribute("file-extensions").split(","); //$NON-NLS-1$ //$NON-NLS-2$
+					m_fileExts.addAll(Arrays.asList(fileExt));
+				}
+			}
+
+			// TODO remove
+			m_fileExts.add("cquery"); //$NON-NLS-1$
+		}
+
+		public boolean matchesFile(IFile member)
+		{
+			for(String fileExt : m_fileExts)
+			{
+				if(member.getName().endsWith(fileExt))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	static class BuckminsterPreferences
+	{
+		final private static String BUCKMINSTER_PLUGIN_PREFIX = "org.eclipse.buckminster"; //$NON-NLS-1$
+
+		final private static String PREFERENCES_POINT = "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
+
+		private static List<String> s_preferenceIds;
+
+		static
+		{
+			s_preferenceIds = new ArrayList<String>();
+
+			IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+					BuckminsterPreferences.PREFERENCES_POINT);
+
+			for(IConfigurationElement elem : elems)
+			{
+				String contributor = elem.getContributor().getName();
+				if(contributor.startsWith(BuckminsterPreferences.BUCKMINSTER_PLUGIN_PREFIX))
+				{
+					s_preferenceIds.add(elem.getAttribute("id")); //$NON-NLS-1$
+				}
+			}
+		}
+
+		public static String[] getIds()
+		{
+			return s_preferenceIds.toArray(new String[0]);
+		}
+	}
+
+	class CqueryNode extends TreeNode
+	{
+		private IFile m_cqueryFile;
+
+		public CqueryNode(IFile cqueryFile)
+		{
+			m_cqueryFile = cqueryFile;
+		}
+
+		@Override
+		public String getName()
+		{
+			return Messages.component_query;
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_cqueryFile;
+		}
+	}
+
+	class CspecNode extends TreeNode
+	{
+
+		private ICSpecData m_cspec;
+
+		public CspecNode(ICSpecData cspec)
+		{
+			m_cspec = cspec;
+		}
+
+		@Override
+		public String getName()
+		{
+			return Messages.component_specification;
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_cspec;
+		}
+	}
+
 	class NavigatorContentProvider implements ITreeContentProvider
 	{
+
+		public void dispose()
+		{
+		}
 
 		public Object[] getChildren(Object parentElement)
 		{
@@ -132,6 +290,11 @@ public class BuckminsterView extends ViewPart
 			return null;
 		}
 
+		public Object[] getElements(Object inputElement)
+		{
+			return ((IWorkspaceRoot)inputElement).getProjects();
+		}
+
 		public Object getParent(Object element)
 		{
 			return ((IResource)element).getParent();
@@ -143,15 +306,6 @@ public class BuckminsterView extends ViewPart
 			return children == null
 					? false
 					: children.length > 0;
-		}
-
-		public Object[] getElements(Object inputElement)
-		{
-			return ((IWorkspaceRoot)inputElement).getProjects();
-		}
-
-		public void dispose()
-		{
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
@@ -179,6 +333,15 @@ public class BuckminsterView extends ViewPart
 			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
 		}
 
+		public void addListener(ILabelProviderListener listener)
+		{
+			m_listeners.add(listener);
+		}
+
+		public void dispose()
+		{
+		}
+
 		public Image getImage(Object element)
 		{
 			if(element instanceof IProject)
@@ -193,13 +356,15 @@ public class BuckminsterView extends ViewPart
 
 			if(element instanceof IFile)
 			{
-				IFile file = (IFile) element;
-				
+				IFile file = (IFile)element;
+
 				IEditorRegistry editorRegistry = getWorkbenchWindow().getWorkbench().getEditorRegistry();
 
 				ImageDescriptor imageDescriptor = editorRegistry.getImageDescriptor(file.getName());
-					
-				return imageDescriptor == null ? m_fileImage : new Image(Display.getDefault(), imageDescriptor.getImageData());
+
+				return imageDescriptor == null
+						? m_fileImage
+						: new Image(Display.getDefault(), imageDescriptor.getImageData());
 			}
 
 			return null;
@@ -208,15 +373,6 @@ public class BuckminsterView extends ViewPart
 		public String getText(Object element)
 		{
 			return ((IResource)element).getName();
-		}
-
-		public void addListener(ILabelProviderListener listener)
-		{
-			m_listeners.add(listener);
-		}
-
-		public void dispose()
-		{
 		}
 
 		public boolean isLabelProperty(Object element, String property)
@@ -230,95 +386,105 @@ public class BuckminsterView extends ViewPart
 		}
 	}
 
-	// TODO use extension point to get files for BM view
-	class BuckminsterFileFilter
+	class ProjectNode extends TreeNode
 	{
-		public static final String CONTENT_TYPES_POINT = "org.eclipse.core.runtime.contentTypes"; //$NON-NLS-1$
 
-		public static final String BUCKMINSTER_CORE_PLUGIN = "org.eclipse.buckminster.core"; //$NON-NLS-1$
+		private IProject m_project;
 
-		private List<String> m_fileExts = new ArrayList<String>();
-
-		public BuckminsterFileFilter()
+		public ProjectNode(IProject project)
 		{
-			IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-					BuckminsterFileFilter.CONTENT_TYPES_POINT);
-
-			for(IConfigurationElement elem : elems)
-			{
-				if(BuckminsterFileFilter.BUCKMINSTER_CORE_PLUGIN.equals(elem.getContributor().getName()))
-				{
-					String[] fileExt = elem.getAttribute("file-extensions").split(","); //$NON-NLS-1$ //$NON-NLS-2$
-					m_fileExts.addAll(Arrays.asList(fileExt));
-				}
-			}
-
-			//TODO remove
-			m_fileExts.add("cquery"); //$NON-NLS-1$
+			m_project = project;
 		}
 
-		public boolean matchesFile(IFile member)
+		@Override
+		public TreeNode[] getChildren()
 		{
-			for(String fileExt : m_fileExts)
+			List<TreeNode> children = new ArrayList<TreeNode>();
+
+			try
 			{
-				if(member.getName().endsWith(fileExt))
+				CSpec cspec = WorkspaceInfo.getCSpec(m_project);
+				cspec.getAttributesProducedByActions(false);
+				TreeNode child = new CspecNode(cspec);
+				child.setParent(this);
+				children.add(child);
+
+				for(IResource resource : m_project.members())
 				{
-					return true;
+					if(resource instanceof IFile && resource.getName().endsWith("cquery")) //$NON-NLS-1$
+					{
+						child = new CqueryNode((IFile)resource);
+						child.setParent(this);
+						children.add(child);
+						break;
+					}
+				}
+
+				if(cspec.getAttributesProducedByActions(false).size() > 0)
+				{
+					child = new ActionsNode(cspec);
+					child.setParent(this);
+					children.add(child);
 				}
 			}
+			catch(CoreException e)
+			{
+				UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
+			}
 
-			return false;
+			return children.toArray(new TreeNode[0]);
+		}
+
+		@Override
+		public String getName()
+		{
+			return m_project.getName();
+		}
+
+		@Override
+		public Object getValue()
+		{
+			return m_project;
 		}
 	}
 
-	static class BuckminsterPreferences
+	class RootNode extends TreeNode
 	{
-		final private static String BUCKMINSTER_PLUGIN_PREFIX = "org.eclipse.buckminster"; //$NON-NLS-1$
-		
-		final private static String PREFERENCES_POINT = "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
-		
-		private static List<String> s_preferenceIds;
-		
-		static
-		{
-			s_preferenceIds = new ArrayList<String>();
-			
-			IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-					BuckminsterPreferences.PREFERENCES_POINT);
 
-			for(IConfigurationElement elem : elems)
-			{
-				String contributor = elem.getContributor().getName();
-				if(contributor.startsWith(BuckminsterPreferences.BUCKMINSTER_PLUGIN_PREFIX))
-				{
-					s_preferenceIds.add(elem.getAttribute("id")); //$NON-NLS-1$
-				}
-			}
-		}
-		
-		public static String[] getIds()
+		@Override
+		public TreeNode[] getChildren()
 		{
-			return s_preferenceIds.toArray(new String[0]);
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			List<TreeNode> children = new ArrayList<TreeNode>();
+
+			for(IProject project : projects)
+			{
+				TreeNode child = new ProjectNode(project);
+				child.setParent(this);
+				children.add(child);
+			}
+
+			return children.toArray(new TreeNode[0]);
 		}
 	}
-	
+
 	abstract class TreeNode
 	{
 		private TreeNode m_parent = null;
 
-		public TreeNode getParent()
-		{
-			return m_parent;
-		}
-		
-		public void setParent(TreeNode parent)
-		{
-			m_parent = parent;
-		}
-
 		public TreeNode[] getChildren()
 		{
 			return null;
+		}
+
+		public String getName()
+		{
+			return ""; //$NON-NLS-1$
+		}
+
+		public TreeNode getParent()
+		{
+			return m_parent;
 		}
 
 		public Object getValue()
@@ -329,211 +495,49 @@ public class BuckminsterView extends ViewPart
 		public boolean hasChildren()
 		{
 			TreeNode[] children = getChildren();
-			return children == null ? false : getChildren().length > 0;
+			return children == null
+					? false
+					: getChildren().length > 0;
 		}
-		
-		public String getName()
+
+		public void setParent(TreeNode parent)
 		{
-			return ""; //$NON-NLS-1$
+			m_parent = parent;
 		}
 	}
-	
-	class RootNode extends TreeNode
-	{
 
-		@Override
-		public TreeNode[] getChildren()
-		{
-			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-			List<TreeNode> children = new ArrayList<TreeNode>(); 
-			
-			for(IProject project : projects)
-			{
-				TreeNode child = new ProjectNode(project);
-				child.setParent(this);
-				children.add(child);
-			}
-			
-			return children.toArray(new TreeNode[0]);
-		}
-	}
-	
-	class ProjectNode extends TreeNode
-	{
-		
-		private IProject m_project;
-		
-		public ProjectNode(IProject project)
-		{
-			m_project = project;
-		}
-
-		@Override
-		public TreeNode[] getChildren()
-		{
-			List<TreeNode> children = new ArrayList<TreeNode>();
-			
-			try
-			{
-				CSpec cspec = WorkspaceInfo.getCSpec(m_project);
-				cspec.getAttributesProducedByActions(false);
-				TreeNode child = new CspecNode(cspec);
-				child.setParent(this);
-				children.add(child);
-			
-				for(IResource resource : m_project.members())
-				{
-					if(resource instanceof IFile && resource.getName().endsWith("cquery")) //$NON-NLS-1$
-					{
-						child = new CqueryNode((IFile) resource);
-						child.setParent(this);
-						children.add(child);
-						break;
-					}
-				}
-				
-				if(cspec.getAttributesProducedByActions(false).size() > 0)
-				{
-					child = new ActionsNode(cspec);
-					child.setParent(this);
-					children.add(child);					
-				}
-			}
-			catch(CoreException e)
-			{
-				UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
-			}
-			
-			return children.toArray(new TreeNode[0]);
-		}
-
-		@Override
-		public Object getValue()
-		{
-			return m_project;
-		}
-		
-		@Override
-		public String getName()
-		{
-			return m_project.getName();
-		}
-	}
-	
-	class CspecNode extends TreeNode
-	{
-		
-		private ICSpecData m_cspec;
-		
-		public CspecNode(ICSpecData cspec)
-		{
-			m_cspec = cspec;
-		}
-
-		@Override
-		public Object getValue()
-		{
-			return m_cspec;
-		}
-
-		@Override
-		public String getName()
-		{
-			return Messages.component_specification;
-		}
-	}
-	
-	class CqueryNode extends TreeNode
-	{
-		private IFile m_cqueryFile;
-		
-		public CqueryNode(IFile cqueryFile)
-		{
-			m_cqueryFile = cqueryFile;
-		}
-		
-		@Override
-		public Object getValue()
-		{
-			return m_cqueryFile;
-		}
-
-		@Override
-		public String getName()
-		{
-			return Messages.component_query;
-		}
-	}
-	
-	class ActionsNode extends TreeNode
-	{
-		
-		private CSpec m_cspec;
-		
-		public ActionsNode(CSpec cspec)
-		{
-			m_cspec = cspec;
-		}
-
-		@Override
-		public TreeNode[] getChildren()
-		{
-			try
-			{
-				/* List<Attribute> viableAttributes = */ m_cspec.getAttributesProducedByActions(false);
-			}
-			catch(CoreException e)
-			{
-				UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
-			}
-			return null;
-		}
-
-		@Override
-		public Object getValue()
-		{
-			return m_cspec;
-		}
-
-		@Override
-		public String getName()
-		{
-			return Messages.actions;
-		}
-	}
-	
 	private CTabFolder m_tabFolder;
-	
+
 	private TreeViewer m_treeViewer;
-	
+
 	private Text m_infoText;
 
 	private IWorkspaceRoot m_workspaceRoot;
 
 	private BuckminsterFileFilter m_fileFilter;
-	
+
 	private Image m_bmImage;
 
 	private IAction m_openEditorAction;
-	
+
 	private IAction m_viewCSpecAction;
 
 	private IAction m_openCQueryAction;
-	
+
 	private IAction m_viewPreferencesAction;
 
 	private IAction m_viewAboutAction;
-	
+
 	private IAction m_invokeActionAction;
 
 	private IAction m_viewCspecAction;
-	
+
 	private IAction m_publishAction;
-	
+
 	private IAction m_resolveToWizardAction;
 
 	private IAction m_resolveAndMaterializeAction;
-	
+
 	public BuckminsterView()
 	{
 		m_workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -562,7 +566,7 @@ public class BuckminsterView extends ViewPart
 		createActions();
 		createMenu();
 		createToolbar();
-		
+
 		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
 		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -575,53 +579,34 @@ public class BuckminsterView extends ViewPart
 		repositoryTab.setControl(getRepositoryTabControl(m_tabFolder));
 
 		m_tabFolder.setSelection(navigatorTab);
-		
+
 		Label imageLabel = new Label(topComposite, SWT.NONE);
 		imageLabel.setAlignment(SWT.CENTER);
 		imageLabel.setImage(m_bmImage);
 		imageLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BOTTOM, false, false));
-		
+
 		createContextMenu();
 	}
 
-	private Control getNavigatorTabControl(Composite parent)
+	@Override
+	public void setFocus()
 	{
-		Composite tabComposite = getTabComposite(parent);
-
-		createNavigator(tabComposite);
-		createInfo(tabComposite);
-
-		return tabComposite;
+		m_tabFolder.setFocus();
 	}
 
-	private Control getRepositoryTabControl(Composite parent)
+	private void changeInfo()
 	{
-		Composite tabComposite = getTabComposite(parent);
+		IResource resource = getResourceSelection();
 
-		Link newAccountLink = new Link(tabComposite, SWT.NONE);
-		newAccountLink.setText("<A>" + Messages.create_new_repository_identity + "</A");
-		newAccountLink.addSelectionListener(new SelectionAdapter()
+		String info = ""; //$NON-NLS-1$
+
+		if(resource != null)
 		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				Program.launch("www.cloudsmith.com"); //$NON-NLS-1$
-			}
-		});
-		
-		return tabComposite;
+			info = getProjectInfo(resource.getProject());
+		}
+
+		m_infoText.setText(info);
 	}
-
-	private Composite getTabComposite(Composite parent)
-	{
-		Composite tabComposite = new Composite(parent, SWT.NONE);
-		tabComposite.setLayout(new GridLayout(1, true));
-		tabComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		tabComposite.setBackgroundMode(SWT.INHERIT_FORCE);
-
-		return tabComposite;
-	}
-
 
 	// TODO Most of the actions should come here from extension point
 	private void createActions()
@@ -629,7 +614,7 @@ public class BuckminsterView extends ViewPart
 		m_openEditorAction = new Action(Messages.open)
 		{
 			@Override
-			public void run() 
+			public void run()
 			{
 				IResource resource = getResourceSelection();
 
@@ -639,7 +624,8 @@ public class BuckminsterView extends ViewPart
 					IWorkbenchPage workbenchPage = getSite().getWorkbenchWindow().getActivePage();
 					try
 					{
-						IEditorRegistry editorRegistry = getViewSite().getWorkbenchWindow().getWorkbench().getEditorRegistry();
+						IEditorRegistry editorRegistry = getViewSite().getWorkbenchWindow().getWorkbench()
+								.getEditorRegistry();
 
 						IEditorDescriptor editorDescriptor = editorRegistry.getDefaultEditor(file.getName());
 						String editorId = editorDescriptor.getId();
@@ -656,7 +642,7 @@ public class BuckminsterView extends ViewPart
 
 			}
 		};
-		
+
 		m_viewCSpecAction = new Action(Messages.view_the_cspec_of_a_component)
 		{
 			@Override
@@ -670,7 +656,7 @@ public class BuckminsterView extends ViewPart
 			}
 		};
 		m_viewCSpecAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cspec.png")); //$NON-NLS-1$
-		
+
 		m_openCQueryAction = new Action(Messages.open_a_component_query)
 		{
 			@Override
@@ -684,20 +670,17 @@ public class BuckminsterView extends ViewPart
 			}
 		};
 		m_openCQueryAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cquery.png")); //$NON-NLS-1$
-		
+
 		m_viewPreferencesAction = new Action(Messages.preferences)
 		{
 			@Override
 			public void run()
 			{
-				PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
-						getWorkbenchWindow().getShell(),
-						null,
-						BuckminsterPreferences.getIds(),
-						null);
+				PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(getWorkbenchWindow().getShell(),
+						null, BuckminsterPreferences.getIds(), null);
 				dialog.open();
 			}
-		};		
+		};
 
 		m_viewAboutAction = new Action(Messages.about)
 		{
@@ -708,7 +691,7 @@ public class BuckminsterView extends ViewPart
 				dialog.open();
 			}
 		};
-		
+
 		m_invokeActionAction = new Action(Messages.invoke_action)
 		{
 			@Override
@@ -718,11 +701,17 @@ public class BuckminsterView extends ViewPart
 				action.setActivePart(this, getWorkbenchWindow().getActivePage().getActivePart());
 				action.selectionChanged(this, m_treeViewer.getSelection());
 				action.run(this);
-			}			
+			}
 		};
 
 		m_viewCspecAction = new Action(Messages.view_cspec)
 		{
+			@Override
+			public ImageDescriptor getImageDescriptor()
+			{
+				return UiPlugin.getImageDescriptor("icons/cspec.png"); //$NON-NLS-1$
+			}
+
 			@Override
 			public void run()
 			{
@@ -731,78 +720,93 @@ public class BuckminsterView extends ViewPart
 				action.selectionChanged(this, m_treeViewer.getSelection());
 				action.run(this);
 			}
-			
-			@Override
-			public ImageDescriptor getImageDescriptor()
-			{
-				return UiPlugin.getImageDescriptor("icons/cspec.png"); //$NON-NLS-1$
-			}
 		};
-		
+
 		m_publishAction = new Action(Messages.publish)
 		{
-			@Override
-			public void run()
-			{
-				// TODO implement
-			}
-			
 			@Override
 			public ImageDescriptor getImageDescriptor()
 			{
 				return UiPlugin.getImageDescriptor("icons/publish.png"); //$NON-NLS-1$
 			}
+
+			@Override
+			public void run()
+			{
+				// TODO implement
+			}
 		};
-		
+
 		m_resolveToWizardAction = new Action(Messages.resolve_to_wizard)
 		{
+			@Override
+			public ImageDescriptor getImageDescriptor()
+			{
+				return UiPlugin.getImageDescriptor("icons/resolve.png"); //$NON-NLS-1$
+			}
+
 			@Override
 			public void run()
 			{
 				loadComponent(false);
 			}
-			
+		};
+
+		m_resolveAndMaterializeAction = new Action(Messages.resolve_and_materialize)
+		{
 			@Override
 			public ImageDescriptor getImageDescriptor()
 			{
 				return UiPlugin.getImageDescriptor("icons/resolve.png"); //$NON-NLS-1$
 			}
-		};
-		
-		m_resolveAndMaterializeAction = new Action(Messages.resolve_and_materialize)
-		{
+
 			@Override
 			public void run()
 			{
 				loadComponent(true);
 			}
-			
-			@Override
-			public ImageDescriptor getImageDescriptor()
-			{
-				return UiPlugin.getImageDescriptor("icons/resolve.png"); //$NON-NLS-1$
-			}
 		};
 	}
-	
-	private IWorkbenchWindow getWorkbenchWindow()
+
+	private void createContextMenu()
 	{
-		return getViewSite().getWorkbenchWindow();
+		// Create menu manager
+		MenuManager menuMgr = new MenuManager();
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener()
+		{
+
+			public void menuAboutToShow(IMenuManager manager)
+			{
+				fillContextMenu(manager);
+			}
+
+		});
+
+		// Create menu
+		Menu menu = menuMgr.createContextMenu(m_treeViewer.getControl());
+		m_treeViewer.getControl().setMenu(menu);
+		// Register menu for extension - I don't want extensions here
+		// getSite().registerContextMenu(menuMgr, m_treeViewer);
 	}
-	
+
+	private void createInfo(Composite parent)
+	{
+		Label label = UiUtils.createGridLabel(parent, Messages.info_with_colon, 0, 0, SWT.NONE);
+		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+		m_infoText = UiUtils.createGridText(parent, 0, 0, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
+		// m_projectInfoText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+
+		GridData layoutData = (GridData)m_infoText.getLayoutData();
+		layoutData.heightHint = 80;
+	}
+
 	private void createMenu()
 	{
 		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
 		mgr.add(m_viewPreferencesAction);
 		mgr.add(new Separator());
 		mgr.add(m_viewAboutAction);
-	}
-
-	private void createToolbar()
-	{
-		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
-		mgr.add(m_viewCSpecAction);
-		mgr.add(m_openCQueryAction);
 	}
 
 	private void createNavigator(Composite parent)
@@ -823,7 +827,7 @@ public class BuckminsterView extends ViewPart
 				m_openEditorAction.run();
 			}
 		});
-		
+
 		m_treeViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 
@@ -834,24 +838,73 @@ public class BuckminsterView extends ViewPart
 		});
 	}
 
-	private void changeInfo()
+	private void createToolbar()
 	{
-		IResource resource = getResourceSelection();
-		
-		String info = ""; //$NON-NLS-1$
-		
-		if(resource != null)
-		{
-			info = getProjectInfo(resource.getProject());
-		}
-		
-		m_infoText.setText(info);
+		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		mgr.add(m_viewCSpecAction);
+		mgr.add(m_openCQueryAction);
 	}
-	
+
+	private void fillContextMenu(IMenuManager menuMgr)
+	{
+		IResource selectedResource = getResourceSelection();
+
+		if(selectedResource == null)
+		{
+			return;
+		}
+
+		if(selectedResource instanceof IFile)
+		{
+			menuMgr.add(m_openEditorAction);
+
+			MenuManager subMenuMgr = new MenuManager(Messages.open_with);
+			OpenWithMenu openWithMenu = new OpenWithMenu(getWorkbenchWindow().getActivePage(), selectedResource);
+			subMenuMgr.add(openWithMenu);
+			menuMgr.add(subMenuMgr);
+
+			String fileExt = ((IFile)selectedResource).getFileExtension();
+
+			// TODO Action (or it's wrapper) should have it's own filter test
+			if(Arrays.asList(new String[] { "cspec", "cquery", "bom" }).contains(fileExt)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			{
+				menuMgr.add(new Separator());
+				menuMgr.add(m_publishAction);
+			}
+
+			// TODO Action (or it's wrapper) should have it's own filter test
+			if(Arrays.asList(new String[] { "cquery" }).contains(fileExt)) //$NON-NLS-1$
+			{
+				menuMgr.add(m_resolveToWizardAction);
+				menuMgr.add(m_resolveAndMaterializeAction);
+			}
+
+			// Place for extensions - I don't want extensions here
+			// menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		}
+
+		if(selectedResource instanceof IProject)
+		{
+			menuMgr.add(m_invokeActionAction);
+			menuMgr.add(m_viewCspecAction);
+		}
+
+	}
+
+	private Control getNavigatorTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent);
+
+		createNavigator(tabComposite);
+		createInfo(tabComposite);
+
+		return tabComposite;
+	}
+
 	private String getProjectInfo(IProject project)
 	{
 		boolean knownProject = isProjectKnown(project);
-		
+
 		if(knownProject)
 		{
 			return Messages.buckminster_understands_project_metadata;
@@ -859,13 +912,61 @@ public class BuckminsterView extends ViewPart
 
 		return Messages.buckminster_does_not_understand_project_metadata;
 	}
-	
+
+	private Control getRepositoryTabControl(Composite parent)
+	{
+		Composite tabComposite = getTabComposite(parent);
+
+		Link newAccountLink = new Link(tabComposite, SWT.NONE);
+		newAccountLink.setText("<A>" + Messages.create_new_repository_identity + "</A");
+		newAccountLink.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				Program.launch("www.cloudsmith.com"); //$NON-NLS-1$
+			}
+		});
+
+		return tabComposite;
+	}
+
+	private IResource getResourceSelection()
+	{
+		ISelection selection = m_treeViewer.getSelection();
+		if(selection != null && selection instanceof TreeSelection)
+		{
+			Object selected = ((TreeSelection)selection).getFirstElement();
+			if(selected instanceof IResource)
+			{
+				return (IResource)selected;
+			}
+		}
+
+		return null;
+	}
+
+	private Composite getTabComposite(Composite parent)
+	{
+		Composite tabComposite = new Composite(parent, SWT.NONE);
+		tabComposite.setLayout(new GridLayout(1, true));
+		tabComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		tabComposite.setBackgroundMode(SWT.INHERIT_FORCE);
+
+		return tabComposite;
+	}
+
+	private IWorkbenchWindow getWorkbenchWindow()
+	{
+		return getViewSite().getWorkbenchWindow();
+	}
+
 	private boolean isProjectKnown(IProject project)
 	{
 		try
 		{
 			String[] natureIds = project.getDescription().getNatureIds();
-			
+
 			for(String natureId : natureIds)
 			{
 				if(natureId.endsWith("PluginNature") || natureId.endsWith("FeatureNature")) //$NON-NLS-1$ //$NON-NLS-2$
@@ -878,109 +979,10 @@ public class BuckminsterView extends ViewPart
 		{
 			UiUtils.openError(getViewSite().getShell(), Messages.project_is_not_open, e);
 		}
-		
+
 		return false;
 	}
-	
-	private void createInfo(Composite parent)
-	{
-		Label label = UiUtils.createGridLabel(parent, Messages.info_with_colon, 0, 0, SWT.NONE);
-		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-		m_infoText = UiUtils.createGridText(parent, 0, 0, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
-		//m_projectInfoText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
-		GridData layoutData = (GridData) m_infoText.getLayoutData();
-		layoutData.heightHint = 80;	
-	}
-
-	private void createContextMenu()
-	{
-		// Create menu manager
-		MenuManager menuMgr = new MenuManager();
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-
-			public void menuAboutToShow(IMenuManager manager)
-			{
-				fillContextMenu(manager);
-			}
-
-		});
-		
-		// Create menu
-		Menu menu = menuMgr.createContextMenu(m_treeViewer.getControl());
-		m_treeViewer.getControl().setMenu(menu);
-		// Register menu for extension - I don't want extensions here
-		//getSite().registerContextMenu(menuMgr, m_treeViewer);
-	}
-
-	private void fillContextMenu(IMenuManager menuMgr)
-	{
-		IResource selectedResource = getResourceSelection();
-		
-		if(selectedResource == null)
-		{
-			return;
-		}
-		
-		if(selectedResource instanceof IFile)
-		{
-			menuMgr.add(m_openEditorAction);			
-			
-			MenuManager subMenuMgr = new MenuManager(Messages.open_with);
-			OpenWithMenu openWithMenu = new OpenWithMenu(getWorkbenchWindow().getActivePage(), selectedResource);
-			subMenuMgr.add(openWithMenu);
-			menuMgr.add(subMenuMgr);
-			
-			String fileExt = ((IFile) selectedResource).getFileExtension();
-			
-			// TODO Action (or it's wrapper) should have it's own filter test
-			if(Arrays.asList(new String[] {"cspec", "cquery", "bom"}).contains(fileExt)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			{
-				menuMgr.add(new Separator());
-				menuMgr.add(m_publishAction);
-			}
-			
-			// TODO Action (or it's wrapper) should have it's own filter test
-			if(Arrays.asList(new String[] {"cquery"}).contains(fileExt)) //$NON-NLS-1$
-			{
-				menuMgr.add(m_resolveToWizardAction);
-				menuMgr.add(m_resolveAndMaterializeAction);
-			}			
-			
-			// Place for extensions - I don't want extensions here
-			//menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		}
-		
-		if(selectedResource instanceof IProject)
-		{
-			menuMgr.add(m_invokeActionAction);
-			menuMgr.add(m_viewCspecAction);
-		}		
-		
-	}
-	
-	@Override
-	public void setFocus()
-	{
-		m_tabFolder.setFocus();
-	}
-
-	private IResource getResourceSelection()
-	{
-		ISelection selection = m_treeViewer.getSelection();
-		if(selection != null && selection instanceof TreeSelection)
-		{
-			Object selected = ((TreeSelection)selection).getFirstElement();
-			if(selected instanceof IResource)
-			{
-				return (IResource) selected;
-			}
-		}
-		
-		return null;
-	}
-	
 	private void loadComponent(boolean materialize)
 	{
 		IResource resource = getResourceSelection();
@@ -1021,17 +1023,18 @@ public class BuckminsterView extends ViewPart
 			{
 				try
 				{
-					ResolveJob resolveJob = new ResolveJob(componentQuery.createComponentQuery(), materialize, getSite(), false);
+					ResolveJob resolveJob = new ResolveJob(componentQuery.createComponentQuery(), materialize,
+							getSite(), false);
 					resolveJob.schedule();
 				}
 				catch(CoreException e)
 				{
 					UiUtils.openError(getViewSite().getShell(), null, e);
-				}				
+				}
 			}
 		}
 	}
-	
+
 	private void refreshTree()
 	{
 		this.getViewSite().getShell().getDisplay().asyncExec(new Runnable()
