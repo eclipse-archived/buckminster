@@ -10,6 +10,7 @@ package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.List;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
@@ -30,7 +31,7 @@ public class PathsTable extends SimpleTable<PathWrapper>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[] {"Path"};
+		return new String[] {Messages.path};
 	}
 
 	public int[] getColumnWeights()
@@ -60,7 +61,7 @@ public class PathsTable extends SimpleTable<PathWrapper>
 		switch(idx)
 		{
 		case 0:
-			return SimpleTable.createNotEmptyStringValidator("Path cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator(Messages.path_cannot_be_empty);
 		default:
 			return SimpleTable.getEmptyValidator();
 		}

@@ -186,6 +186,10 @@ public class Messages extends NLS
 
 	public static String optional;
 
+	public static String path;
+
+	public static String path_cannot_be_empty;
+
 	public static String paths_with_colon;
 
 	public static String please_enter_a_valid_url;
