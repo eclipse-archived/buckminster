@@ -16,6 +16,7 @@ import java.net.URL;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.ui.ExternalFileEditorInput;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.Path;
@@ -53,11 +54,11 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 					}
 				}
 			}
-			return "Please enter a valid URL";
+			return Messages.please_enter_a_valid_url;
 		}
 	}
 
-	private static final String LAST_CQUERY_URL = "lastCQueryURL";
+	private static final String LAST_CQUERY_URL = "lastCQueryURL"; //$NON-NLS-1$
 
 	private IWorkbenchWindow m_workbenchWindow;
 
@@ -74,7 +75,7 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 	{
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		Shell shell = m_workbenchWindow.getShell();
-		InputDialog askURL = new InputDialog(shell, null, "URL for query:", preferences.getString(LAST_CQUERY_URL),
+		InputDialog askURL = new InputDialog(shell, null, Messages.url_for_query_with_colon, preferences.getString(LAST_CQUERY_URL),
 				new URLValidator());
 
 		if(askURL.open() != Window.OK)
@@ -92,10 +93,10 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		try
 		{
 			URL url = new URL(urlStr);
-			File tempFile = File.createTempFile(BlankQueryAction.TEMP_FILE_PREFIX, ".cquery");
+			File tempFile = File.createTempFile(BlankQueryAction.TEMP_FILE_PREFIX, ".cquery"); //$NON-NLS-1$
 			tempFile.deleteOnExit();
 			IWorkbench workbench = PlatformUI.getWorkbench();
-			IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery");
+			IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery"); //$NON-NLS-1$
 			OutputStream output = null;
 			try
 			{
@@ -111,7 +112,7 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		}
 		catch(Exception e)
 		{
-			UiUtils.openError(shell, "Unable to open editor", e);
+			UiUtils.openError(shell, Messages.unable_to_open_editor, e);
 		}
 	}
 
