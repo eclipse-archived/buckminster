@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.remote.IProgressInfo;
+import org.eclipse.buckminster.remote.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -85,7 +86,7 @@ public class RemoteResolver implements IResolver
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
 		if(bom == null)
-			throw BuckminsterException.fromMessage("Null BOM resolution request");
+			throw BuckminsterException.fromMessage(Messages.getString("RemoteResolver.null_BOM_resolution_request")); //$NON-NLS-1$
 
 		if(bom.isFullyResolved())
 		{
@@ -102,18 +103,18 @@ public class RemoteResolver implements IResolver
 		{
 			m_remoteService.reset();
 
-			monitor.beginTask("Query resolution is in progress...", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.getString("RemoteResolver.query_resolution_in_progress"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 			int lastWorked = 0;
 
 			Logger logger = CorePlugin.getLogger();
 
 			try
 			{
-				monitor.subTask("Starting query resolution");
+				monitor.subTask(Messages.getString("RemoteResolver.starting_query_resolution")); //$NON-NLS-1$
 
-				logger.debug("Starting query...");
+				logger.debug("Starting query..."); //$NON-NLS-1$
 				m_remoteService.fireQueryResolution(bom);
-				logger.debug("Query started, waiting for reply...");
+				logger.debug("Query started, waiting for reply..."); //$NON-NLS-1$
 			}
 			catch(Exception e)
 			{
@@ -141,21 +142,21 @@ public class RemoteResolver implements IResolver
 
 				if(monitor.isCanceled() && !m_remoteService.isCancelSent())
 				{
-					logger.debug("Starting cancel service...");
+					logger.debug("Starting cancel service..."); //$NON-NLS-1$
 					m_remoteService.cancel();
-					logger.debug("Cancel service started...");
+					logger.debug("Cancel service started..."); //$NON-NLS-1$
 					throw new OperationCanceledException();
 				}
 			}
 
 			try
 			{
-				logger.debug("Getting query result...");
+				logger.debug("Getting query result..."); //$NON-NLS-1$
 				bomReturned = m_remoteService.getResolutionResult();
 
 				if(bomReturned == null)
 				{
-					logger.debug("No resolution progress detected, using the original BOM...");
+					logger.debug("No resolution progress detected, using the original BOM..."); //$NON-NLS-1$
 					bomReturned = bom;
 				}
 			}
