@@ -86,8 +86,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages
-							.getString("EclipseImportFinder.0_is_higher"), version)); //$NON-NLS-1$
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS
+							.bind(Messages._0_is_higher, version));
 					bestFit = version;
 				}
 			}
@@ -109,7 +109,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	{
 		IVersion bestFit = null;
 		monitor.beginTask(null, 100);
-		monitor.subTask(Messages.getString("EclipseImportFinder.fetching_remote_feature_references")); //$NON-NLS-1$
+		monitor.subTask(Messages.fetching_remote_feature_references);
 		try
 		{
 			for(ISiteFeatureReference model : m_base.getFeatureReferences(m_readerType, MonitorUtils.subMonitor(
@@ -124,8 +124,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 						bestFit = version;
 					else if(version.compareTo(bestFit) > 0)
 					{
-						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages
-								.getString("EclipseImportFinder.0_is_higher"), //$NON-NLS-1$
+						logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages._0_is_higher,
 								version));
 						bestFit = version;
 					}
@@ -155,8 +154,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS.bind(Messages
-							.getString("EclipseImportFinder.0_is_higher"), version)); //$NON-NLS-1$
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS
+							.bind(Messages._0_is_higher, version));
 					bestFit = version;
 				}
 			}

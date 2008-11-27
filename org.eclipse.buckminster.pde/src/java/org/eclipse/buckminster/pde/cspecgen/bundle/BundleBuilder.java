@@ -85,7 +85,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				BundleModel model = new ExternalBundleModel();
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
 				if(model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
-					throw new FileNotFoundException(Messages.getString("BundleBuilder.not_an_OSGi_manifest")); //$NON-NLS-1$
+					throw new FileNotFoundException(Messages.not_an_OSGi_manifest);
 
 				fragment = model.isFragmentModel();
 				BundlePluginModelBase bmodel = fragment

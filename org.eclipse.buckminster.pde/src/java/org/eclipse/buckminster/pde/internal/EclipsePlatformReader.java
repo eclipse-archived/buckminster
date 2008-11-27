@@ -134,7 +134,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 	public synchronized IPluginModelBase getPluginModelBase() throws CoreException
 	{
 		if(m_type != InstalledType.PLUGIN)
-			throw new IllegalStateException(Messages.getString("EclipsePlatformReader.plugin_requested_from_feature_reader")); //$NON-NLS-1$
+			throw new IllegalStateException(Messages.plugin_requested_from_feature_reader);
 
 		if(m_model == null)
 		{

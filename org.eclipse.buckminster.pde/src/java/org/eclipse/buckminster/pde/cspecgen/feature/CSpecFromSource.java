@@ -386,9 +386,8 @@ public class CSpecFromSource extends CSpecGenerator
 				// make it hopelessly dependent on install location. Not good. We don't permit
 				// it here.
 				//
-				throw BuckminsterException.fromMessage(NLS.bind(Messages
-						.getString("CSpecFromSource.component_0_contains_absolute_path_in_buildproperties"), //$NON-NLS-1$
-						getCSpec().getName()));
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.component_0_contains_absolute_path_in_buildproperties, getCSpec().getName()));
 
 			IPath path;
 			boolean isFile = token.startsWith("file:"); //$NON-NLS-1$

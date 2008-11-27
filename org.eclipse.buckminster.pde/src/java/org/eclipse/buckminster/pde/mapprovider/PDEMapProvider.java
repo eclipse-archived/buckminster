@@ -119,9 +119,7 @@ public class PDEMapProvider extends Provider
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 			if(score == ProviderScore.REJECTED)
 			{
-				String msg = NLS
-						.bind(
-								Messages.getString("PDEMapProvider.provider_0_for_1_score_below_treshold"), readerType, providerURI); //$NON-NLS-1$
+				String msg = NLS.bind(Messages.provider_0_for_1_score_below_treshold, readerType, providerURI);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 				return null;
 			}
@@ -309,8 +307,8 @@ public class PDEMapProvider extends Provider
 
 		if(candidateEntry == null)
 		{
-			String msg = NLS.bind(Messages.getString("PDEMapProvider.PDEMapProvider_0_for_1_unable_to_find_2_in_map"), //$NON-NLS-1$
-					new Object[] { getReaderTypeId(), getURI(query.getProperties()), wanted });
+			String msg = NLS.bind(Messages.PDEMapProvider_0_for_1_unable_to_find_2_in_map, new Object[] {
+					getReaderTypeId(), getURI(query.getProperties()), wanted });
 
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 			PDEPlugin.getLogger().debug(msg);

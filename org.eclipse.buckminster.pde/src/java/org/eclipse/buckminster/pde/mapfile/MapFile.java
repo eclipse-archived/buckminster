@@ -81,7 +81,7 @@ public class MapFile
 				fetchType = "CVS"; //$NON-NLS-1$
 			else if(fetchType.equals("COPY")) //$NON-NLS-1$
 			{
-				logger.warning(NLS.bind(Messages.getString("MapFile.fetch_type_COPY_not_supported_map_0"), streamName)); //$NON-NLS-1$
+				logger.warning(NLS.bind(Messages.fetch_type_COPY_not_supported_map_0, streamName));
 				continue;
 			}
 
@@ -97,8 +97,7 @@ public class MapFile
 				ff = s_fetchTaskFactories.getFactory(fetchType);
 				if(ff == null)
 				{
-					logger.warning(NLS.bind(
-							Messages.getString("MapFile.no_factory_found_for_0_in_PDEmap_1"), fetchType, streamName)); //$NON-NLS-1$
+					logger.warning(NLS.bind(Messages.no_factory_found_for_0_in_PDEmap_1, fetchType, streamName));
 					continue;
 				}
 			}
@@ -113,8 +112,7 @@ public class MapFile
 			{
 				// We don't recognize this type
 				//
-				logger.warning(NLS.bind(
-						Messages.getString("MapFile.unrecognized_component_type_0_in_PDEmap_1"), type, streamName)); //$NON-NLS-1$
+				logger.warning(NLS.bind(Messages.unrecognized_component_type_0_in_PDEmap_1, type, streamName));
 				continue;
 			}
 
@@ -130,8 +128,7 @@ public class MapFile
 			{
 				// Version is corrupt. Skip this line
 				//
-				logger.warning(NLS.bind(
-						Messages.getString("MapFile.badly_formatted_version_0_in_PDEmap_1"), vstr, streamName)); //$NON-NLS-1$
+				logger.warning(NLS.bind(Messages.badly_formatted_version_0_in_PDEmap_1, vstr, streamName));
 				continue;
 			}
 
@@ -144,8 +141,8 @@ public class MapFile
 			}
 			catch(Exception e)
 			{
-				logger.warning(NLS.bind(Messages.getString("MapFile.fetch_factory_0_unable_to_parse_1_in_PDEmap_2"), //$NON-NLS-1$
-						new Object[] { fetchType, fetchTypeSpecific, streamName }));
+				logger.warning(NLS.bind(Messages.fetch_factory_0_unable_to_parse_1_in_PDEmap_2, new Object[] {
+						fetchType, fetchTypeSpecific, streamName }));
 				continue;
 			}
 
@@ -186,8 +183,7 @@ public class MapFile
 			}
 			catch(CoreException e)
 			{
-				logger.warning(NLS.bind(Messages
-						.getString("MapFile.Unable_to_obtain_readertype_for_fetchtype_0_in_PDEmap_1"), fetchType, //$NON-NLS-1$
+				logger.warning(NLS.bind(Messages.Unable_to_obtain_readertype_for_fetchtype_0_in_PDEmap_1, fetchType,
 						streamName));
 				continue;
 			}

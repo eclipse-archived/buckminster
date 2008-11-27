@@ -63,8 +63,8 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				: getPluginModel(version, new NullProgressMonitor());
 
 		if(m_model == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("EclipseImportReader.unable_to_load_model_for_0"), m_base.getComponentName())); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_model_for_0, m_base
+					.getComponentName()));
 	}
 
 	public IPluginModelBase getPluginModelBase(String pluginId, String version) throws CoreException
@@ -143,7 +143,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		monitor.beginTask(null, m_base.isLocal()
 				? 1000
 				: 2000);
-		monitor.subTask(NLS.bind(Messages.getString("EclipseImportReader.downloading_0"), m_base.getComponentName())); //$NON-NLS-1$
+		monitor.subTask(NLS.bind(Messages.downloading_0, m_base.getComponentName()));
 		try
 		{
 			EclipseImportReaderType readerType = (EclipseImportReaderType)getReaderType();
@@ -239,8 +239,8 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				? getPluginModel(version, subMon)
 				: getFeatureModel(version, subMon);
 		if(m_model == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("EclipseImportReader.unable_to_load_localized_model_for_0"), m_base.getComponentName())); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_localized_model_for_0, m_base
+					.getComponentName()));
 		monitor.done();
 	}
 }

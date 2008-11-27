@@ -145,7 +145,7 @@ public class PluginImportOperation extends JarImportOperation
 		ComponentRequest request = m_query.getComponentRequest();
 		String projectName = request.getProjectName();
 		String id = m_model.getPluginBase().getId();
-		MonitorUtils.begin(monitor, NLS.bind(Messages.getString("PluginImportOperation.importing_plugin_0"), id), 7); //$NON-NLS-1$
+		MonitorUtils.begin(monitor, NLS.bind(Messages.importing_plugin_0, id), 7);
 		try
 		{
 			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
@@ -168,13 +168,7 @@ public class PluginImportOperation extends JarImportOperation
 					// TODO: There's a misfit in execution environment. The AdvisorNode should have
 					// a way
 					// to handle this.
-					PDEPlugin
-							.getLogger()
-							.info(
-									NLS
-											.bind(
-													Messages
-															.getString("PluginImportOperation.execution_env_misfit_skipping_plugin_0"), id)); //$NON-NLS-1$
+					PDEPlugin.getLogger().info(NLS.bind(Messages.execution_env_misfit_skipping_plugin_0, id));
 					return;
 				}
 			}
@@ -185,8 +179,7 @@ public class PluginImportOperation extends JarImportOperation
 				switch(conflictResolution)
 				{
 				case FAIL:
-					throw BuckminsterException.fromMessage(NLS.bind(Messages
-							.getString("PluginImportOperation.project_0_already_exists"), projectName)); //$NON-NLS-1$
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.project_0_already_exists, projectName));
 				case KEEP:
 					return;
 				default:
@@ -683,8 +676,7 @@ public class PluginImportOperation extends JarImportOperation
 
 		File installLocation = new File(m_model.getInstallLocation());
 		File[] items = installLocation.listFiles();
-		MonitorUtils.begin(monitor,
-				Messages.getString("PluginImportOperation.linking_imported_plugin"), items.length + 1); //$NON-NLS-1$
+		MonitorUtils.begin(monitor, Messages.linking_imported_plugin, items.length + 1);
 		if(items != null)
 		{
 			for(int i = 0; i < items.length; i++)
@@ -855,7 +847,7 @@ public class PluginImportOperation extends JarImportOperation
 		if(libraries.length == 0)
 			return;
 
-		MonitorUtils.begin(monitor, Messages.getString("PluginImportOperation.copying_source"), libraries.length); //$NON-NLS-1$
+		MonitorUtils.begin(monitor, Messages.copying_source, libraries.length);
 
 		SourceLocationManager manager = PDECore.getDefault().getSourceLocationManager();
 		Set<?> roots = null;
@@ -983,7 +975,7 @@ public class PluginImportOperation extends JarImportOperation
 	{
 
 		String[] libraries = getLibraryNames(true);
-		monitor.beginTask(Messages.getString("PluginImportOperation.copying_imported_source"), libraries.length); //$NON-NLS-1$
+		monitor.beginTask(Messages.copying_imported_source, libraries.length);
 
 		SourceLocationManager manager = PDECore.getDefault().getSourceLocationManager();
 		if(manager.hasBundleManifestLocation(m_model.getPluginBase()))

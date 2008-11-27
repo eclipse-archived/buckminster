@@ -204,8 +204,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		}
 		catch(Exception e)
 		{
-			throw BuckminsterException.fromMessage(e, NLS.bind(Messages
-					.getString("FeatureConsolidator.unable_to_read_0"), dirOrZip)); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_read_0, dirOrZip));
 		}
 		finally
 		{
@@ -217,8 +216,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				}
 				catch(IOException e)
 				{
-					PDEPlugin.getLogger().error(e,
-							NLS.bind(Messages.getString("FeatureConsolidator.error_while_closing_0"), dirOrZip)); //$NON-NLS-1$
+					PDEPlugin.getLogger().error(e, NLS.bind(Messages.error_while_closing_0, dirOrZip));
 				}
 			}
 		}

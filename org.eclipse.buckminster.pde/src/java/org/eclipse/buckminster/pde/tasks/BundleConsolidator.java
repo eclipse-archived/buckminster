@@ -55,8 +55,7 @@ public class BundleConsolidator extends VersionConsolidator
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("BundleConsolidator.unable_to_manifest_from_0"), inputFile)); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_manifest_from_0, inputFile));
 		}
 		finally
 		{

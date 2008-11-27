@@ -184,15 +184,15 @@ public class CreateProductBase
 			boolean copyJavaLauncher) throws CoreException
 	{
 		if(outputDir == null)
-			throw new IllegalArgumentException(Messages.getString("CreateProductBase.outputdir_can_not_be_null")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.outputdir_can_not_be_null);
 		m_outputDir = outputDir.addTrailingSeparator();
 
 		if(targetLocation == null)
-			throw new IllegalArgumentException(Messages.getString("CreateProductBase.target_loc_cannot_be_null")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.target_loc_cannot_be_null);
 		m_targetLocation = targetLocation.addTrailingSeparator();
 
 		if(productFile == null)
-			throw new IllegalArgumentException(Messages.getString("CreateProductBase.productFile_cannot_be_null")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.productFile_cannot_be_null);
 
 		m_files = files;
 		m_actionContext = AbstractActor.getActiveContext();
@@ -207,8 +207,7 @@ public class CreateProductBase
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("CreateProductBase.unable_to_read_file_0"), productFile)); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_read_file_0, productFile));
 		}
 		finally
 		{
@@ -245,8 +244,7 @@ public class CreateProductBase
 
 		File outputDir = m_outputDir.toFile();
 		if(!outputDir.isDirectory())
-			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.getString("CreateProductBase.0_is_not_directory"), outputDir)); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages._0_is_not_directory, outputDir));
 
 		if(m_copyJavaLauncher)
 			copyJavaLauncherToRoot();
@@ -296,7 +294,7 @@ public class CreateProductBase
 		File pluginsDir = new File(targetRoot, "plugins"); //$NON-NLS-1$
 		String[] names = pluginsDir.list();
 		if(names == null)
-			throw new IOException(NLS.bind(Messages.getString("CreateProductBase.0_is_not_directory"), pluginsDir)); //$NON-NLS-1$
+			throw new IOException(NLS.bind(Messages._0_is_not_directory, pluginsDir));
 
 		String found = null;
 		IVersion foundVer = null;

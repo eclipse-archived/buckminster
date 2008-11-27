@@ -67,7 +67,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		monitor.beginTask(null, forResolutionAidOnly
 				? 1200
 				: 1600);
-		monitor.subTask(Messages.getString("PDEBuilder.generating_cspec_from_PDE_artifacts")); //$NON-NLS-1$
+		monitor.subTask(Messages.generating_cspec_from_PDE_artifacts);
 		try
 		{
 			m_usingInstalledReader = reader instanceof EclipsePlatformReader;

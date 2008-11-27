@@ -125,7 +125,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		MaterializationContext context = (MaterializationContext)m_query.getContext();
 		ComponentRequest request = m_query.getComponentRequest();
 		String projectName = request.getProjectName();
-		monitor.beginTask(NLS.bind(Messages.getString("FeatureImportOperation.importing_feature_0"), projectName), 100); //$NON-NLS-1$
+		monitor.beginTask(NLS.bind(Messages.importing_feature_0, projectName), 100);
 		IProject project = m_root.getProject(projectName);
 		try
 		{
@@ -135,8 +135,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 				switch(conflictResolution)
 				{
 				case FAIL:
-					throw BuckminsterException.fromMessage(NLS.bind(Messages
-							.getString("FeatureImportOperation.project_0_already_exists"), projectName)); //$NON-NLS-1$
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.project_0_already_exists, projectName));
 				case KEEP:
 					return;
 				default:

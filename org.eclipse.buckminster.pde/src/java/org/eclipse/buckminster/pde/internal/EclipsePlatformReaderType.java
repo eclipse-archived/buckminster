@@ -108,8 +108,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			if(!(versionDesignator == null || versionDesignator.designates(v)))
 			{
 				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages
-							.getString("EclipsePlatformReaderType.not_designated_by_0"), //$NON-NLS-1$
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0,
 							versionDesignator));
 				continue;
 			}
@@ -149,9 +148,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			if(!(versionDesignator == null || versionDesignator.designates(v)))
 			{
 				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format(Messages
-							.getString("EclipsePlatformReaderType.not_designated_by_0"), //$NON-NLS-1$
-							versionDesignator));
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format(
+							Messages.not_designated_by_0, versionDesignator));
 				continue;
 			}
 
@@ -170,8 +168,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		//
 		URI artifactURI = res.getArtifactURI(context);
 		if(artifactURI == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("EclipsePlatformReaderType.unable_to_obtain_URI_for_0"), res.getComponentIdentifier())); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_obtain_URI_for_0, res
+					.getComponentIdentifier()));
 		try
 		{
 			URL artifactURL = artifactURI.toURL();
@@ -179,8 +177,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		}
 		catch(MalformedURLException e)
 		{
-			throw BuckminsterException.fromMessage(e, NLS.bind(Messages
-					.getString("EclipsePlatformReaderType.unable_to_obtain_URL_for_0"), res.getComponentIdentifier())); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_obtain_URL_for_0, res
+					.getComponentIdentifier()));
 		}
 	}
 
@@ -216,8 +214,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				if(vd == null)
 				{
 					CorePlugin.getLogger().warning(
-							NLS.bind(Messages.getString("EclipsePlatformReaderType.bogus_ref_to_0_in_1_at_2"), //$NON-NLS-1$
-									new Object[] { dep.getName(), res.getComponentIdentifier(), siteURL }));
+							NLS.bind(Messages.bogus_ref_to_0_in_1_at_2, new Object[] { dep.getName(),
+									res.getComponentIdentifier(), siteURL }));
 					continue;
 				}
 				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd == null
@@ -288,7 +286,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				generatedFeatureModel = new EditableFeatureModel(null);
 				generatedFeature = generatedFeatureModel.getFeature();
 				generatedFeature.setId(TEMP_FEATURE_ID);
-				generatedFeature.setLabel(Messages.getString("EclipsePlatformReaderType.placeholder_feature")); //$NON-NLS-1$
+				generatedFeature.setLabel(Messages.placeholder_feature);
 				generatedFeature.setVersion(featureVer);
 			}
 

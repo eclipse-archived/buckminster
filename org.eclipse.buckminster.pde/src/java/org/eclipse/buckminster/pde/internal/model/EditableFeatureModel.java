@@ -174,8 +174,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 			// Parsing failed but AbstractFeatureParser silently ignores
 			// SAXExceptions
 			//
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("EditableFeatureModel.unable_to_parse_feature_0"), m_externalFile)); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_0, m_externalFile));
 		}
 
 		int ctxQualLen = -1;
@@ -207,7 +206,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		}
 		catch(FileNotFoundException e)
 		{
-			PDEPlugin.getLogger().error(e, Messages.getString("EditableFeatureModel.unable_to_save_feature_model")); //$NON-NLS-1$
+			PDEPlugin.getLogger().error(e, Messages.unable_to_save_feature_model);
 		}
 	}
 
@@ -235,7 +234,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		}
 		catch(UnsupportedEncodingException e)
 		{
-			PDEPlugin.getLogger().error(e, Messages.getString("EditableFeatureModel.utf8_not_supported")); //$NON-NLS-1$
+			PDEPlugin.getLogger().error(e, Messages.utf8_not_supported);
 			throw new RuntimeException(e);
 		}
 	}

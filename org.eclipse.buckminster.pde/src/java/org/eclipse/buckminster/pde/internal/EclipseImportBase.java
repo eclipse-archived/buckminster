@@ -193,8 +193,7 @@ final class EclipseImportBase
 		else if(IMPORT_TYPE_SOURCE.equalsIgnoreCase(importType))
 			m_type = PluginImportOperation.IMPORT_WITH_SOURCE;
 		else
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("EclipseImportBase.invalid_import_type_0"), importType)); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_import_type_0, importType));
 
 	}
 
@@ -235,7 +234,7 @@ final class EclipseImportBase
 	final File getLocation() throws CoreException
 	{
 		if(m_location == null && !m_platform)
-			throw BuckminsterException.fromMessage(Messages.getString("EclipseImportBase.site_is_not_local")); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(Messages.site_is_not_local);
 		return m_location;
 	}
 

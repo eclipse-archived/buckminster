@@ -59,7 +59,7 @@ public class FragmentsActor extends AbstractActor
 		ComponentIdentifier cid = action.getCSpec().getComponentIdentifier();
 		IPath outputDir = action.getProductBase();
 		if(outputDir == null)
-			throw BuckminsterException.fromMessage(Messages.getString("FragmentsActor.missing_product_base_in_ctf_actor")); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(Messages.missing_product_base_in_ctf_actor);
 
 		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
@@ -126,7 +126,7 @@ public class FragmentsActor extends AbstractActor
 
 		IPath outputDir = ctx.getAction().getProductBase();
 		if(outputDir == null)
-			throw BuckminsterException.fromMessage(Messages.getString("FragmentsActor.missing_product_base_in_ctf_actor")); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(Messages.missing_product_base_in_ctf_actor);
 
 		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));

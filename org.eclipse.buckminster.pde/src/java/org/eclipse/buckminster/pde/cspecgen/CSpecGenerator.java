@@ -442,7 +442,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		{
 			NodeQuery query = m_reader.getNodeQuery();
 			IStatus status = new Status(IStatus.WARNING, PDEPlugin.getPluginId(),
-					Messages.getString("CSpecGenerator.manifest_has_malformed_LDAP_rule_for") + ICoreConstants.PLATFORM_FILTER + ": " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.manifest_has_malformed_LDAP_rule_for + ICoreConstants.PLATFORM_FILTER
+							+ ": " + e.getMessage()); //$NON-NLS-1$
 			RMContext ctx = query.getContext();
 			if(!ctx.isContinueOnError())
 				throw new CoreException(status);

@@ -48,8 +48,7 @@ abstract class TargetVariableHandler extends BasicPreferenceHandler implements I
 				return;
 			}
 		}
-		throw new BackingStoreException(NLS.bind(Messages
-				.getString("TargetVariableHandler.0_is_not_valid_setting_for_target_1_pref"), value, m_prefName)); //$NON-NLS-1$
+		throw new BackingStoreException(NLS.bind(Messages._0_is_not_valid_setting_for_target_1_pref, value, m_prefName));
 	}
 
 	abstract String[] getKnownValues();
