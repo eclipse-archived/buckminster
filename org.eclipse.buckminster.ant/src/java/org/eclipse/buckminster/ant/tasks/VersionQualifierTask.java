@@ -54,8 +54,8 @@ public class VersionQualifierTask
 	public VersionQualifierTask(File propertiesFile, String qualifier) throws CoreException
 	{
 		m_qualifier = qualifier;
-		
-		Map<String,String> globalProps = AbstractActor.getActiveContext().getProperties();
+
+		Map<String, String> globalProps = AbstractActor.getActiveContext().getProperties();
 
 		if(propertiesFile == null)
 			m_properties = globalProps;
@@ -79,67 +79,9 @@ public class VersionQualifierTask
 		}
 	}
 
-	public IVersion replaceQualifier(ComponentIdentifier ci, List<ComponentIdentifier> deps)
-	{
-		IVersion version = ci.getVersion();
-		if(version == null)
-			return version;
-		
-		String qualifier = version.getQualifier();
-		if(qualifier == null)
-			return version;
-
-		if(!qualifier.endsWith(QUALIFIER_SUFFIX))
-			return version;
-
-		String newQualifier = getQualifierReplacement(ci);
-		if(newQualifier == null)
-			return version.replaceQualifier(null);
-
-		if(newQualifier.startsWith(GENERATOR_PREFIX))
-		{
-			String generatorId = newQualifier.substring(GENERATOR_PREFIX.length());
-			try
-			{
-				IQualifierGenerator generator = CorePlugin.getDefault().getQualifierGenerator(generatorId);
-				version = generator.generateQualifier(AbstractActor.getActiveContext(), ci, deps);
-			}
-			catch(CoreException e)
-			{
-				CorePlugin.getLogger().warning(e, "Unable to qualify version");
-			}
-		}
-		else
-		{
-			newQualifier = qualifier.replaceFirst(QUALIFIER_SUFFIX, newQualifier);
-			if(!qualifier.equals(newQualifier))
-				version = version.replaceQualifier(newQualifier);
-		}
-		return version;
-	}
-
 	public Map<String, String> getProperties()
 	{
 		return m_properties;
-	}
-
-	public boolean isUsingGenerator(ComponentIdentifier ci)
-	{
-		IVersion version = ci.getVersion();
-		if(version == null)
-			return false;
-		
-		String qualifier = version.getQualifier();
-		if(qualifier == null || !qualifier.endsWith(QUALIFIER_SUFFIX))
-			return false;
-
-		String newQualifier = getQualifierReplacement(ci);
-		return newQualifier != null && newQualifier.startsWith(GENERATOR_PREFIX);
-	}
-
-	public boolean isContextReplacement()
-	{
-		return m_qualifier == null || m_qualifier.equalsIgnoreCase(PROPERTY_CONTEXT);		
 	}
 
 	private String getQualifierReplacement(ComponentIdentifier id)
@@ -185,5 +127,63 @@ public class VersionQualifierTask
 		else if(!m_qualifier.equalsIgnoreCase(PROPERTY_NONE))
 			newQualifier = m_qualifier;
 		return newQualifier;
+	}
+
+	public boolean isContextReplacement()
+	{
+		return m_qualifier == null || m_qualifier.equalsIgnoreCase(PROPERTY_CONTEXT);
+	}
+
+	public boolean isUsingGenerator(ComponentIdentifier ci)
+	{
+		IVersion version = ci.getVersion();
+		if(version == null)
+			return false;
+
+		String qualifier = version.getQualifier();
+		if(qualifier == null || !qualifier.endsWith(QUALIFIER_SUFFIX))
+			return false;
+
+		String newQualifier = getQualifierReplacement(ci);
+		return newQualifier != null && newQualifier.startsWith(GENERATOR_PREFIX);
+	}
+
+	public IVersion replaceQualifier(ComponentIdentifier ci, List<ComponentIdentifier> deps)
+	{
+		IVersion version = ci.getVersion();
+		if(version == null)
+			return version;
+
+		String qualifier = version.getQualifier();
+		if(qualifier == null)
+			return version;
+
+		if(!qualifier.endsWith(QUALIFIER_SUFFIX))
+			return version;
+
+		String newQualifier = getQualifierReplacement(ci);
+		if(newQualifier == null)
+			return version.replaceQualifier(null);
+
+		if(newQualifier.startsWith(GENERATOR_PREFIX))
+		{
+			String generatorId = newQualifier.substring(GENERATOR_PREFIX.length());
+			try
+			{
+				IQualifierGenerator generator = CorePlugin.getDefault().getQualifierGenerator(generatorId);
+				version = generator.generateQualifier(AbstractActor.getActiveContext(), ci, deps);
+			}
+			catch(CoreException e)
+			{
+				CorePlugin.getLogger().warning(e, "Unable to qualify version");
+			}
+		}
+		else
+		{
+			newQualifier = qualifier.replaceFirst(QUALIFIER_SUFFIX, newQualifier);
+			if(!qualifier.equals(newQualifier))
+				version = version.replaceQualifier(newQualifier);
+		}
+		return version;
 	}
 }

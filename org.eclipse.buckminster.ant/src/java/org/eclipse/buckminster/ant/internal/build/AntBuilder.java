@@ -28,23 +28,18 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * <p>
- * This builder will execute Ant scripts fast and efficiently. Contrary to the
- * normal Eclipse builder, it not instantiate a new ClassLoader each time it is
- * called. The <code>ClassLoader</code> is in fact only instantiated once for
- * all bulder instances and the classpath can therefore not vary between those
- * instances.
+ * This builder will execute Ant scripts fast and efficiently. Contrary to the normal Eclipse builder, it not
+ * instantiate a new ClassLoader each time it is called. The <code>ClassLoader</code> is in fact only instantiated once
+ * for all bulder instances and the classpath can therefore not vary between those instances.
  * </p>
  * <p>
- * The drawback with this design is that it is less flexible. The class path
- * cannot be modified on a per-builder basis (only for Ant as a whole)</code>
- * can vary.
+ * The drawback with this design is that it is less flexible. The class path cannot be modified on a per-builder basis
+ * (only for Ant as a whole)</code> can vary.
  * </p>
  * <p>
- * A strong motivation for the selected design was that an approach where a new
- * chain of ClassLoaders where set up each time around was extremely memory
- * consuming. Caches used by the <code>sun.misc.URL.Classpath</code> (probably
- * timed caches) caused <code>OutOfMemoryException</code> when many builds
- * where executed within a short timeframe.
+ * A strong motivation for the selected design was that an approach where a new chain of ClassLoaders where set up each
+ * time around was extremely memory consuming. Caches used by the <code>sun.misc.URL.Classpath</code> (probably timed
+ * caches) caused <code>OutOfMemoryException</code> when many builds where executed within a short timeframe.
  * </p>
  * 
  * @author Thomas Hallgren
@@ -54,22 +49,24 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 	private IFile m_scriptFile;
 
 	@Override
-	protected IProject[] doBuild(int kind, Map<String,String> args, IProgressMonitor monitor) throws CoreException
+	protected IProject[] doBuild(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
 		PrintStream origOut = System.out;
 		PrintStream origErr = System.err;
 		try
 		{
 			String target = getTarget(args, kind);
-			String[] targets = target == null ? null : new String[] { target };
-	
+			String[] targets = target == null
+					? null
+					: new String[] { target };
+
 			// only set the 'kind' property if a propname is given
 			//
 			String kindPropName = AbstractBuckminsterBuilder.getValue(args, ARG_BUILD_KIND_PROPERTY_KEY);
 			Map<String, String> props = getFixedProperties(args);
 			if(kindPropName != null)
 				props.put(kindPropName, AbstractBuckminsterBuilder.kindToString(kind));
-			
+
 			IPath baseDir = getBaseDir(args);
 			if(baseDir != null)
 				props.put("basedir", baseDir.toOSString());
@@ -98,31 +95,10 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 	}
 
 	/**
-	 * Returns the script file
-	 * @param args The map of arguments that where passed to the build.
-	 * @return The script file.
-	 */
-	protected IFile getScriptFile(Map<String, String> args) throws CoreException
-	{
-		if(m_scriptFile == null)
-		{
-			// script name must always be relative to project root
-			//
-			String scriptFile = getValue(args, ARG_SCRIPT_FILE_KEY);
-			if(scriptFile == null)
-				scriptFile = DEFAULT_SCRIPT_FILE;
-			IPath relativeScriptFilePath = new Path(scriptFile);
-			if(relativeScriptFilePath.isAbsolute())
-				throw BuckminsterException.fromMessage("The script file name must be relative to the project root: %s", scriptFile);
-			m_scriptFile = getProject().getFile(relativeScriptFilePath);
-			notifyOnChangedResources(new IResource[] { m_scriptFile });
-		}
-		return m_scriptFile;
-	}
-
-	/**
 	 * The path to use as <code>basedir</code> in the ant build.
-	 * @param args The map of arguments that where passed to the build.
+	 * 
+	 * @param args
+	 *            The map of arguments that where passed to the build.
 	 * @return The basedir of the build or <code>null</code> if not set.
 	 */
 	protected IPath getBaseDir(Map<String, String> args)
@@ -139,12 +115,59 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 	}
 
 	/**
-	 * Returns the target for a specific <code>kind</code> of build or <code>null</code> if no
-	 * target has been specificed for the <code>kind</code>.
-	 * @param args The map of arguments that where passed to the build.
-	 * @param kind The
-	 *            {@link org.eclipse.core.resources.IncrementalProjectBuilder IncrementalProjectBuilder}
-	 *            build kind.
+	 * Returns a new map with fixed properties that are guaranteed not to change between each build. The method will
+	 * return a new map for each call and it is ok if the caller wishes to add more entries to that map.
+	 * 
+	 * @param args
+	 *            The map of arguments that where passed to the build.
+	 * @return A map of fixed properties.
+	 */
+	protected Map<String, String> getFixedProperties(Map<String, String> args)
+	{
+		Map<String, String> props = new HashMap<String, String>();
+
+		// only set the 'component name' property if a propname is given
+		//
+		String componentPropName = getValue(args, ARG_COMPONENT_NAME_PROPERTY_KEY);
+		if(componentPropName != null)
+			props.put(componentPropName, getProject().getName());
+		return props;
+	}
+
+	/**
+	 * Returns the script file
+	 * 
+	 * @param args
+	 *            The map of arguments that where passed to the build.
+	 * @return The script file.
+	 */
+	protected IFile getScriptFile(Map<String, String> args) throws CoreException
+	{
+		if(m_scriptFile == null)
+		{
+			// script name must always be relative to project root
+			//
+			String scriptFile = getValue(args, ARG_SCRIPT_FILE_KEY);
+			if(scriptFile == null)
+				scriptFile = DEFAULT_SCRIPT_FILE;
+			IPath relativeScriptFilePath = new Path(scriptFile);
+			if(relativeScriptFilePath.isAbsolute())
+				throw BuckminsterException.fromMessage("The script file name must be relative to the project root: %s",
+						scriptFile);
+			m_scriptFile = getProject().getFile(relativeScriptFilePath);
+			notifyOnChangedResources(new IResource[] { m_scriptFile });
+		}
+		return m_scriptFile;
+	}
+
+	/**
+	 * Returns the target for a specific <code>kind</code> of build or <code>null</code> if no target has been
+	 * specificed for the <code>kind</code>.
+	 * 
+	 * @param args
+	 *            The map of arguments that where passed to the build.
+	 * @param kind
+	 *            The {@link org.eclipse.core.resources.IncrementalProjectBuilder IncrementalProjectBuilder} build kind.
 	 * @return The name of the target.
 	 */
 	protected String getTarget(Map<String, String> args, int kind)
@@ -163,25 +186,6 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 		else if(kind == INCREMENTAL_BUILD)
 			target = getValue(args, ARG_INCREMENTAL_KIND_TARGET_KEY);
 		return target;
-	}
-
-	/**
-	 * Returns a new map with fixed properties that are guaranteed not to change between each build.
-	 * The method will return a new map for each call and it is ok if the caller wishes to add more
-	 * entries to that map.
-	 * @param args The map of arguments that where passed to the build.
-	 * @return A map of fixed properties.
-	 */
-	protected Map<String, String> getFixedProperties(Map<String, String> args)
-	{
-		Map<String, String> props = new HashMap<String, String>();
-
-		// only set the 'component name' property if a propname is given
-		//
-		String componentPropName = getValue(args, ARG_COMPONENT_NAME_PROPERTY_KEY);
-		if(componentPropName != null)
-			props.put(componentPropName, getProject().getName());
-		return props;
 	}
 
 	@Override

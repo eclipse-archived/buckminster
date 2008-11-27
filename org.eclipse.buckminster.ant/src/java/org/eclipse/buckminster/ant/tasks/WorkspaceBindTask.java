@@ -1,10 +1,10 @@
 /**************************************************************************
-* Copyright (c) 2006-2007, Cloudsmith Inc.
-* The code, documentation and other materials contained herein have been
-* licensed under the Eclipse Public License - v 1.0 by the copyright holder
-* listed above, as the Initial Contributor under such license. The text of
-* such license is available at www.eclipse.org.
-***************************************************************************/
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ ***************************************************************************/
 package org.eclipse.buckminster.ant.tasks;
 
 import java.io.BufferedInputStream;
@@ -40,16 +40,15 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
- * Makes Buckminster aware of a project and performs a workspace bind. This task
- * is ment to be used when projects are created on the fly as the result of a
- * prebind action.
- *
+ * Makes Buckminster aware of a project and performs a workspace bind. This task is ment to be used when projects are
+ * created on the fly as the result of a prebind action.
+ * 
  * @author Thomas Hallgren
  */
 public class WorkspaceBindTask
 {
 	private final File m_projectDir;
-	
+
 	public WorkspaceBindTask(File projectDir)
 	{
 		m_projectDir = projectDir;
@@ -61,7 +60,8 @@ public class WorkspaceBindTask
 		IProjectDescription projDesc = null;
 		try
 		{
-			input = new BufferedInputStream(new FileInputStream(new File(m_projectDir, IProjectDescription.DESCRIPTION_FILE_NAME)));
+			input = new BufferedInputStream(new FileInputStream(new File(m_projectDir,
+					IProjectDescription.DESCRIPTION_FILE_NAME)));
 			projDesc = ResourcesPlugin.getWorkspace().loadProjectDescription(input);
 		}
 		catch(IOException e)

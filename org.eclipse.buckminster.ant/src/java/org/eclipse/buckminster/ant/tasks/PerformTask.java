@@ -1,10 +1,10 @@
 /**************************************************************************
-* Copyright (c) 2006-2007, Cloudsmith Inc.
-* The code, documentation and other materials contained herein have been
-* licensed under the Eclipse Public License - v 1.0 by the copyright holder
-* listed above, as the Initial Contributor under such license. The text of
-* such license is available at www.eclipse.org.
-***************************************************************************/
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ ***************************************************************************/
 package org.eclipse.buckminster.ant.tasks;
 
 import java.util.Map;
@@ -18,14 +18,15 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * Perform a Buckminster action
- *
+ * 
  * @author Thomas Hallgren
  */
 public class PerformTask
 {
 	private final Perform m_command;
 
-	public PerformTask(String component, String attribute, boolean inWorkspace, boolean quiet, Map<String,String> properties) throws CoreException
+	public PerformTask(String component, String attribute, boolean inWorkspace, boolean quiet,
+			Map<String, String> properties) throws CoreException
 	{
 		m_command = new Perform();
 

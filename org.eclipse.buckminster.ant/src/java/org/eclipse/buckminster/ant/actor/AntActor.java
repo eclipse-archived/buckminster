@@ -49,6 +49,67 @@ public class AntActor extends AbstractActor
 
 	public final static String BUILD_SCRIPT_RESOURCE = "resource";
 
+	private static void addPathGroupArraysToProperties(Map<String, PathGroup[]> namedPGA, Map<String, String> props)
+	{
+		if(namedPGA == null)
+			return;
+
+		StringBuilder sp_bld = new StringBuilder();
+		StringBuilder fs_bld = new StringBuilder();
+		StringBuilder key_bld = new StringBuilder();
+		for(Map.Entry<String, PathGroup[]> namedPG : namedPGA.entrySet())
+		{
+			PathGroup[] pathGroups = namedPG.getValue();
+			boolean singleton = (pathGroups.length == 1);
+			fs_bld.setLength(0);
+			sp_bld.setLength(0);
+			for(PathGroup pathGroup : pathGroups)
+			{
+				IPath basePath = pathGroup.getBase();
+				String base = basePath.toOSString();
+				fs_bld.append('?'); // Start of path group marker
+				fs_bld.append(base);
+				IPath[] paths = pathGroup.getPaths();
+				if(paths.length > 1)
+					singleton = false;
+
+				if(singleton)
+					sp_bld.append(base);
+
+				for(IPath path : paths)
+				{
+					String osPath = path.toOSString();
+					fs_bld.append(FileUtils.PATH_SEP);
+					fs_bld.append(osPath);
+					if(singleton)
+					{
+						if(!basePath.hasTrailingSeparator())
+							sp_bld.append(FileUtils.FILE_SEP);
+						sp_bld.append(osPath);
+					}
+				}
+			}
+			String propKey = namedPG.getKey();
+			key_bld.setLength(0);
+			key_bld.append("fs:");
+			key_bld.append(propKey);
+			props.put(key_bld.toString(), fs_bld.toString());
+
+			if(singleton)
+			{
+				key_bld.setLength(0);
+				key_bld.append("sp:");
+				key_bld.append(propKey);
+				props.put(key_bld.toString(), sp_bld.toString());
+			}
+		}
+	}
+
+	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays)
+			throws CoreException
+	{
+	}
+
 	protected final IPath getBuildFile(IActionContext ctx) throws CoreException
 	{
 		// script name must always be relative to project root
@@ -58,7 +119,8 @@ public class AntActor extends AbstractActor
 		if(buildFile == null)
 		{
 			if(buildFileId == null)
-				throw BuckminsterException.fromMessage("Property not set: %s", AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE);
+				throw BuckminsterException.fromMessage("Property not set: %s",
+						AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE);
 
 			buildFileId = ExpandingProperties.expand(ctx.getProperties(), buildFileId, 0);
 			return this.getBuildFileExtension(buildFileId);
@@ -77,23 +139,68 @@ public class AntActor extends AbstractActor
 		return buildFilePath;
 	}
 
-	protected String getBuildFileProperty(IActionContext ctx) throws CoreException
+	private IPath getBuildFileExtension(String buildFileId) throws CoreException
 	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
+		IConfigurationElement resourceElem = null;
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntBuilderConstants.BUILD_SCRIPT_POINT))
+		{
+			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
+			{
+				resourceElem = elem;
+				break;
+			}
+		}
+
+		if(resourceElem == null)
+			throw BuckminsterException.fromMessage("No extension found defines %s: %s",
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
+
+		// The resource must be loaded by the bundle that contributes it
+		//
+		String contributor = resourceElem.getContributor().getName();
+		Bundle contributorBundle = Platform.getBundle(contributor);
+		if(contributorBundle == null)
+			throw BuckminsterException.fromMessage("Unable to load bundle %s", contributor);
+
+		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
+		if(rsURL == null)
+			throw BuckminsterException.fromMessage("Extension found using %s: %s appoints a non existing resource",
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
+
+		try
+		{
+			rsURL = FileLocator.toFileURL(rsURL);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+
+		if(!"file".equalsIgnoreCase(rsURL.getProtocol()))
+			//
+			// This should never happen. It's a resource in an active plug-in right?
+			//
+			throw BuckminsterException.fromMessage("Unexpected protocol: %s", rsURL.getProtocol());
+
+		return FileUtils.getFileAsPath(rsURL);
 	}
 
 	protected String getBuildFileIdProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
+		return TextUtils.notEmptyTrimmedString(this
+				.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
 	}
 
-	protected final String getTargetsString(IActionContext ctx)
+	protected String getBuildFileProperty(IActionContext ctx) throws CoreException
 	{
-		String tlist = this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_TARGETS);
+		return TextUtils
+				.notEmptyTrimmedString(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
+	}
 
-		// if no targets field has been defined, use the action name
-		//
-		return tlist == null ? ctx.getAction().getName() : tlist.trim();
+	protected Map<String, String> getDefaultProperties(IActionContext ctx) throws CoreException
+	{
+		return Collections.emptyMap();
 	}
 
 	protected final String[] getTargets(IActionContext ctx) throws CoreException
@@ -117,13 +224,15 @@ public class AntActor extends AbstractActor
 		return tlist.split("\\s+");
 	}
 
-	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays) throws CoreException
+	protected final String getTargetsString(IActionContext ctx)
 	{
-	}
+		String tlist = this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_TARGETS);
 
-	protected Map<String, String> getDefaultProperties(IActionContext ctx) throws CoreException
-	{
-		return Collections.emptyMap();
+		// if no targets field has been defined, use the action name
+		//
+		return tlist == null
+				? ctx.getAction().getName()
+				: tlist.trim();
 	}
 
 	@Override
@@ -132,7 +241,7 @@ public class AntActor extends AbstractActor
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 100);
 		monitor.subTask(ctx.getAction().getQualifiedName());
-		
+
 		PrintStream origOut = System.out;
 		PrintStream origErr = System.err;
 		try
@@ -189,109 +298,6 @@ public class AntActor extends AbstractActor
 			System.setOut(origOut);
 			System.setErr(origErr);
 			monitor.done();
-		}
-	}
-
-	private IPath getBuildFileExtension(String buildFileId) throws CoreException
-	{
-		IConfigurationElement resourceElem = null;
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntBuilderConstants.BUILD_SCRIPT_POINT))
-		{
-			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
-			{
-				resourceElem = elem;
-				break;
-			}
-		}
-
-		if(resourceElem == null)
-			throw BuckminsterException.fromMessage("No extension found defines %s: %s",
-				AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
-
-		// The resource must be loaded by the bundle that contributes it
-		//
-		String contributor = resourceElem.getContributor().getName();
-		Bundle contributorBundle = Platform.getBundle(contributor);
-		if(contributorBundle == null)
-			throw BuckminsterException.fromMessage("Unable to load bundle %s", contributor);
-
-		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
-		if(rsURL == null)
-			throw BuckminsterException.fromMessage("Extension found using %s: %s appoints a non existing resource",
-				AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
-
-		try
-		{
-			rsURL = FileLocator.toFileURL(rsURL);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-
-		if(!"file".equalsIgnoreCase(rsURL.getProtocol()))
-			//
-			// This should never happen. It's a resource in an active plug-in right?
-			//
-			throw BuckminsterException.fromMessage("Unexpected protocol: %s", rsURL.getProtocol());
-
-		return FileUtils.getFileAsPath(rsURL);
-	}
-
-	private static void addPathGroupArraysToProperties(Map<String, PathGroup[]> namedPGA, Map<String, String> props)
-	{
-		if(namedPGA == null)
-			return;
-
-		StringBuilder sp_bld = new StringBuilder();
-		StringBuilder fs_bld = new StringBuilder();
-		StringBuilder key_bld = new StringBuilder();
-		for(Map.Entry<String, PathGroup[]> namedPG : namedPGA.entrySet())
-		{
-			PathGroup[] pathGroups = namedPG.getValue();
-			boolean singleton = (pathGroups.length == 1);
-			fs_bld.setLength(0);
-			sp_bld.setLength(0);
-			for(PathGroup pathGroup : pathGroups)
-			{
-				IPath basePath = pathGroup.getBase();
-				String base = basePath.toOSString();
-				fs_bld.append('?');	// Start of path group marker
-				fs_bld.append(base);
-				IPath[] paths = pathGroup.getPaths();
-				if(paths.length > 1)
-					singleton = false;
-
-				if(singleton)
-					sp_bld.append(base);
-
-				for(IPath path : paths)
-				{
-					String osPath = path.toOSString();
-					fs_bld.append(FileUtils.PATH_SEP);
-					fs_bld.append(osPath);
-					if(singleton)
-					{
-						if(!basePath.hasTrailingSeparator())
-							sp_bld.append(FileUtils.FILE_SEP);
-						sp_bld.append(osPath);
-					}
-				}
-			}
-			String propKey = namedPG.getKey();
-			key_bld.setLength(0);
-			key_bld.append("fs:");
-			key_bld.append(propKey);
-			props.put(key_bld.toString(), fs_bld.toString());
-
-			if(singleton)
-			{
-				key_bld.setLength(0);
-				key_bld.append("sp:");
-				key_bld.append(propKey);
-				props.put(key_bld.toString(), sp_bld.toString());
-			}
 		}
 	}
 }

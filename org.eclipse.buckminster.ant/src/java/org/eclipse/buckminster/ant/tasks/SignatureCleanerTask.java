@@ -18,11 +18,12 @@ import org.eclipse.buckminster.runtime.IOUtils;
 
 /**
  * @author thhal
- *
+ * 
  */
 public class SignatureCleanerTask
 {
 	private final List<File> m_jarFiles;
+
 	private final byte[] m_buffer = new byte[0x8000];
 
 	public SignatureCleanerTask(List<File> jarFiles)
@@ -46,13 +47,13 @@ public class SignatureCleanerTask
 				{
 					zipInput = new ZipInputStream(new BufferedInputStream(new FileInputStream(jarFile), 0x8000));
 					zipOutput = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(tmpFile1), 0x8000));
-					
+
 					ZipEntry entry;
 					while((entry = zipInput.getNextEntry()) != null)
 					{
 						String name = entry.getName();
-						if(name.startsWith("META-INF/")
-						&& name.indexOf('/', 9) < 0 && (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF")))
+						if(name.startsWith("META-INF/") && name.indexOf('/', 9) < 0
+								&& (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF")))
 						{
 							// Skip this entry
 							cleaned = true;
@@ -77,7 +78,7 @@ public class SignatureCleanerTask
 					File tmpFile2 = new File(tmpFile1.getAbsolutePath() + ".delete");
 					if(!jarFile.renameTo(tmpFile2))
 						throw new IOException("Unable to rename " + jarFile + " to " + tmpFile2);
-	
+
 					if(!tmpFile1.renameTo(jarFile))
 					{
 						// Make an attempt to undo the previous rename.

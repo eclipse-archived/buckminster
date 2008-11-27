@@ -118,7 +118,9 @@ public class TarExpander extends AbstractExtension implements IExpander
 	private String getName(TarEntry entry)
 	{
 		final String name = entry.getName();
-		return m_flatten ? new File(name).getName() : name;
+		return m_flatten
+				? new File(name).getName()
+				: name;
 	}
 
 	public void setFilter(FileFilter filter)
