@@ -23,12 +23,14 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.IFetchPolicy;
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.download.internal.CacheImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -97,11 +99,11 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 		File toDelete = null;
 		if(destFile.exists())
 		{
-			toDelete = new File(destFile.getPath() + ".old");
+			toDelete = new File(destFile.getPath() + ".old"); //$NON-NLS-1$
 			if(toDelete.exists())
 				toDelete.delete();
 			if(!destFile.renameTo(toDelete))
-				throw BuckminsterException.fromMessage("Unable to rename %s", destFile);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_rename_0, destFile));
 		}
 
 		if(sourceFile.renameTo(destFile))
@@ -113,7 +115,7 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 		{
 			if(toDelete != null)
 				toDelete.renameTo(destFile);
-			throw BuckminsterException.fromMessage("Unable to rename temp file to %s", destFile);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_rename_temp_0, destFile));
 		}
 	}
 	
@@ -122,6 +124,6 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 		CacheImpl cache = (CacheImpl)getCache();
 		File folder = cache.getSubFolder(url);
 		UUID hash = cache.getHash(url.toString());
-		return new File(folder, hash.toString() + ".properties");
+		return new File(folder, hash.toString() + ".properties"); //$NON-NLS-1$
 	}
 }

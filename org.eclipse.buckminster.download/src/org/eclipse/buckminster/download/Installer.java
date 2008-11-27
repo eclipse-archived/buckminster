@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ecf.core.util.StringUtils;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -81,7 +82,7 @@ public class Installer
 			int idx = elems.length;
 			String[][] suffixes = new String[idx][];
 			while(--idx >= 0)
-				suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ',');
+				suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ','); //$NON-NLS-1$
 
 			ArrayList<IDecompressor> decompressorList = null;
 			String chewedName = fileName;
@@ -113,7 +114,7 @@ public class Installer
 					decompressorList = new ArrayList<IDecompressor>();
 
 				IConfigurationElement elem = elems[matchIdx];
-				decompressorList.add(IDecompressor.class.cast(elem.createExecutableExtension("class")));
+				decompressorList.add(IDecompressor.class.cast(elem.createExecutableExtension("class"))); //$NON-NLS-1$
 
 				// Strip of suffix managed by this decompressor
 				//
@@ -127,7 +128,7 @@ public class Installer
 				idx = elems.length;
 				suffixes = new String[idx][];
 				while(--idx >= 0)
-					suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ',');
+					suffixes[idx] = StringUtils.split(elems[idx].getAttribute("suffixes"), ','); //$NON-NLS-1$
 
 				// Find the suffix that matches the most characters at the
 				// end of the path
@@ -151,7 +152,7 @@ public class Installer
 				if(matchIdx >= 0)
 				{
 					chewedName = chewedName.substring(0, chewedName.length() - matchLen);
-					expander = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class"));
+					expander = IExpander.class.cast(elems[matchIdx].createExecutableExtension("class")); //$NON-NLS-1$
 				}
 			}
 
@@ -246,7 +247,7 @@ public class Installer
 					{
 						File parentFolder = destination.getParentFile();
 						if(!(parentFolder == null || parentFolder.isDirectory() || parentFolder.mkdirs()))
-							throw BuckminsterException.fromMessage("Unable to access directory %s", parentFolder);
+							throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_access_directory_0, parentFolder));
 						output = new FileOutputStream(destination);
 					}
 					IOUtils.copy(input, output, subMon);

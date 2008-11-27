@@ -17,12 +17,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.download.IExpander;
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -43,7 +45,8 @@ public class ZipExpander implements IExpander
 		if(destinationFolder != null)
 		{
 			if(!(destinationFolder.isDirectory() || destinationFolder.mkdirs()))
-				throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0,
+						destinationFolder));
 			MonitorUtils.worked(monitor, 10);
 			ticksLeft -= 10;
 		}
@@ -61,7 +64,8 @@ public class ZipExpander implements IExpander
 						continue;
 					File subDir = new File(destinationFolder, name);
 					if(!(subDir.isDirectory() || subDir.mkdirs()))
-						throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+						throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0,
+								destinationFolder));
 					if(ticksLeft >= 10)
 					{
 						MonitorUtils.worked(monitor, 10);
@@ -80,8 +84,8 @@ public class ZipExpander implements IExpander
 						// folders need to be created
 						File subDir = new File(destinationFolder, name).getParentFile();
 						if(subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
-							throw BuckminsterException.fromMessage("Unable to unzip into directory %s",
-									destinationFolder);
+							throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0,
+									destinationFolder));
 
 						if(m_filter == null || m_filter.accept(new File(entry.getName())))
 							output = new FileOutputStream(new File(destinationFolder, name));
@@ -117,7 +121,9 @@ public class ZipExpander implements IExpander
 	private String getName(ZipEntry entry)
 	{
 		String name = entry.getName();
-		return m_flatten ? new File(name).getName() : name;
+		return m_flatten
+				? new File(name).getName()
+				: name;
 	}
 
 	public void setFilter(FileFilter filter)

@@ -1,9 +1,11 @@
 package org.eclipse.buckminster.download.prefs;
 
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IBuckminsterPreferenceConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ConnectionRetryDelay extends BasicPreferenceHandler
@@ -28,8 +30,7 @@ public class ConnectionRetryDelay extends BasicPreferenceHandler
 		{
 		}
 		throw new IllegalArgumentException(String.format(
-				"%s is an illegal value for connectionRetryDelay. It must be an integer value.", prefValue));
-
+				NLS.bind(Messages.value_0_illegal_for_1, prefValue, Messages.connection_retry_delay)));
 	}
 
 	@Override

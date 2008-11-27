@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import org.eclipse.buckminster.download.ICache;
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.download.internal.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
@@ -32,6 +33,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -51,8 +53,8 @@ public class DigestPolicy extends AbstractFetchPolicy
 		public synchronized byte[] getBytes() throws CoreException
 		{
 			if(m_byteCount > count)
-				throw BuckminsterException.fromMessage("Digest was not fully read. Expeced %d bytes but only got %d",
-					Integer.valueOf(m_byteCount), Integer.valueOf(count));
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1,
+					String.valueOf(m_byteCount), String.valueOf(count)));
 			return Hex.decode(buf, m_byteCount);
 		}
 	}
@@ -141,7 +143,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 			}
 
 			MonitorUtils.worked(monitor, 100);	
-			File tempFile = new File(localFile.getPath() + ".tmp");
+			File tempFile = new File(localFile.getPath() + ".tmp"); //$NON-NLS-1$
 
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 800);
 			for(int idx = 0;; ++idx)
@@ -185,7 +187,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 				if(idx < MAX_RETRIES)
 					continue;
 	
-				throw BuckminsterException.fromMessage("Digest mismatch when reading %s", remoteFile);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_mismatch_reading_0, remoteFile));
 			}
 		}
 		finally

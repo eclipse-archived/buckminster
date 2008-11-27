@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.IFetchPolicy;
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.download.policy.ArchivePolicy;
 import org.eclipse.buckminster.download.policy.DigestPolicy;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -23,6 +24,7 @@ import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -37,7 +39,7 @@ public class CacheImpl implements ICache
 	{
 		m_location = location;
 		if(!(m_location.isDirectory() || m_location.mkdirs()))
-			throw BuckminsterException.fromMessage("Unable to access cache folder at %s", location);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_access_cache_0, location));
 	}
 
 	public File getLocation()
@@ -111,7 +113,7 @@ public class CacheImpl implements ICache
 	{
 		File protoFolder = new File(m_location, protocol);
 		if(domain == null)
-			domain = "localhost";
+			domain = "localhost"; //$NON-NLS-1$
 		return new File(protoFolder, domain);
 	}
 

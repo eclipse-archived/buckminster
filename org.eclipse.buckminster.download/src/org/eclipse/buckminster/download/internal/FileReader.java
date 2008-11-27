@@ -16,6 +16,7 @@ import java.io.PipedOutputStream;
 import java.net.URL;
 import java.util.Date;
 
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -39,6 +40,7 @@ import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferReceiveDoneEvent
 import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferReceiveStartEvent;
 import org.eclipse.ecf.filetransfer.identity.FileIDFactory;
 import org.eclipse.ecf.filetransfer.identity.IFileID;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -66,17 +68,21 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 	private final int m_connectionRetryCount;
 
 	private final long m_connectionRetryDelay;
-	
+
 	private final IConnectContext m_connectContext;
 
 	/**
-	 * Create a new FileReader that will retry failed connection attempts and sleep some amount of time between each attempt.
-	 * @param connectionRetryCount The number of times to retry the connection. Set to zero to fail on first attempt.
-	 * @param connectionRetryDelay The number of milliseconds to sleep between each attempt.
+	 * Create a new FileReader that will retry failed connection attempts and sleep some amount of time between each
+	 * attempt.
+	 * 
+	 * @param connectionRetryCount
+	 *            The number of times to retry the connection. Set to zero to fail on first attempt.
+	 * @param connectionRetryDelay
+	 *            The number of milliseconds to sleep between each attempt.
 	 */
 	public FileReader(IConnectContext connectContext)
 	{
-		super("URL reader");
+		super(Messages.URL_reader);
 
 		// Hide this job.
 		setSystem(true);
@@ -172,8 +178,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		{
 			throw BuckminsterException.wrap(e);
 		}
-		Buckminster.getLogger().debug("Downloading %s", url);
-		
+		Buckminster.getLogger().debug("Downloading %s", url); //$NON-NLS-1$
+
 		final IProgressMonitor cancellationMonitor = new NullProgressMonitor();
 		sendRetrieveRequest(url, output, true, false, cancellationMonitor);
 
@@ -266,7 +272,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		return getLastFileInfo();
 	}
 
-	public void readInto(URL url, OutputStream outputStream, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public void readInto(URL url, OutputStream outputStream, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException
 	{
 		try
 		{
@@ -294,7 +301,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		}
 	}
 
-	protected void sendRetrieveRequest(URL url, OutputStream outputStream, boolean closeStreamWhenFinished, boolean onlyGetInfo, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	protected void sendRetrieveRequest(URL url, OutputStream outputStream, boolean closeStreamWhenFinished,
+			boolean onlyGetInfo, IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		IRetrieveFileTransferContainerAdapter adapter = Activator.getDefault().createRetrieveFileTransfer();
 		adapter.setConnectContextForAuthentication(m_connectContext);
@@ -350,7 +358,9 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 					m_exception = null;
 					try
 					{
-						Buckminster.getLogger().warning("Connection to %s failed on %s. Retry attempt %d started", url, t.getMessage(), new Integer(retryCount));
+						Buckminster.getLogger().warning(
+								NLS.bind(Messages.connection_to_0_failed_on_1_retry_attempt_2, new String[] {
+										url.toString(), t.getMessage(), String.valueOf(retryCount) }));
 						Thread.sleep(m_connectionRetryDelay);
 						continue;
 					}

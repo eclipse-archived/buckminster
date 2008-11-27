@@ -17,6 +17,7 @@ import java.net.URL;
 
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.Installer;
+import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.download.internal.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
@@ -25,6 +26,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -45,8 +47,8 @@ public class ArchivePolicy extends AbstractFetchPolicy
 		m_connectContext = cctx;
 	}
 
-	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor)
-			throws CoreException
+	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.begin(monitor, 1000);
 		try
@@ -74,7 +76,8 @@ public class ArchivePolicy extends AbstractFetchPolicy
 					localFile.delete();
 					throw BuckminsterException.wrap(e);
 				}
-				if(fi.getSize() == localFile.length() && fi.getLastModified() != 0L && fi.getLastModified() <= localFile.lastModified())
+				if(fi.getSize() == localFile.length() && fi.getLastModified() != 0L
+						&& fi.getLastModified() <= localFile.lastModified())
 				{
 					// Update the timestamp on the local file to reflec the check that
 					// we just made.
@@ -87,7 +90,7 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			if(checkOnly)
 				return true;
 
-			File tempFile = new File(localFile.getPath() + ".tmp");
+			File tempFile = new File(localFile.getPath() + ".tmp"); //$NON-NLS-1$
 			String fileName = readRemoteFile(remoteFile, tempFile, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 			if(m_remoteName != null)
 				fileName = m_remoteName;
@@ -110,7 +113,8 @@ public class ArchivePolicy extends AbstractFetchPolicy
 		}
 	}
 
-	protected String readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException
+	protected String readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor)
+			throws CoreException
 	{
 		// Set up the file transfer
 		//
@@ -139,27 +143,29 @@ public class ArchivePolicy extends AbstractFetchPolicy
 			IOUtils.close(output);
 		}
 	}
-	
+
 	/**
-	 * Creates directories in a synchronized block.
-	 * Note: The same method is in the org.eclipse.buckminster.core.helpers.FileUtils class, however, for the dependency hierarchy reasons,
-	 *       this package is not accessible from here. This could be solved by refactoring the dependencies.
+	 * Creates directories in a synchronized block. Note: The same method is in the
+	 * org.eclipse.buckminster.core.helpers.FileUtils class, however, for the dependency hierarchy reasons, this package
+	 * is not accessible from here. This could be solved by refactoring the dependencies.
 	 * 
-	 * @param directory The path for which all directories should be created
-	 * @throws CoreException If the directories cannot be created
+	 * @param directory
+	 *            The path for which all directories should be created
+	 * @throws CoreException
+	 *             If the directories cannot be created
 	 */
 	private static void mkdirs(File directory) throws CoreException
 	{
 		synchronized(THREADLOCK)
 		{
 			if(directory == null || directory.exists() && !directory.isDirectory())
-				throw BuckminsterException.fromMessage("Unable to create directory %s: Not a directory",
-						directory != null
-							? directory
-							: "(null)");
-			
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.error_0_cause_1, NLS.bind(
+						Messages.unable_to_create_directory_0, directory != null
+								? directory
+								: "(null)"), Messages.not_a_directory)); //$NON-NLS-1$
+
 			if(!directory.exists() && !directory.mkdirs())
-				throw BuckminsterException.fromMessage("Unable to create directory %s", directory);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_create_directory_0, directory));
 		}
 	}
 

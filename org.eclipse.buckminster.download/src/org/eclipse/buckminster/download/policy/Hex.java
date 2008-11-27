@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.eclipse.buckminster.download.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author Thomas Hallgren
  * 
@@ -61,7 +64,7 @@ public class Hex
 		}
 
 		if(totRead != buffer.length)
-			throw new IOException("Unable to read " + buffer.length + " hexadecimal characters from " +  name);
+			throw new IOException(NLS.bind(Messages.unable_to_read_0_hex_chars_from_1, String.valueOf(buffer.length),  name));
 
 		return decode(buffer);
 	}

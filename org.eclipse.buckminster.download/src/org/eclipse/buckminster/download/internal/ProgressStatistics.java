@@ -178,11 +178,11 @@ public class ProgressStatistics
 	private static String convert(long amount)
 	{
 		if(amount < 1024)
-			return String.format(Locale.US, "%dB", Long.valueOf(amount));
+			return String.format(Locale.US, "%dB", Long.valueOf(amount)); //$NON-NLS-1$
 
 		if(amount < 1024 * 1024)
-			return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024));
+			return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024)); //$NON-NLS-1$
 
-		return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024)));
+		return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024))); //$NON-NLS-1$
 	}
 }

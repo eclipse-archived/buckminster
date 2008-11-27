@@ -18,15 +18,15 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator
 {
-	public static final String PLUGIN_ID = "org.eclipse.buckminster.download";
+	public static final String PLUGIN_ID = "org.eclipse.buckminster.download"; //$NON-NLS-1$
 
 	private static Activator s_plugin;
 
 	private IContainer m_container;
 
-	public static final String EXPANDERS_POINT = PLUGIN_ID + ".expanders";
+	public static final String EXPANDERS_POINT = PLUGIN_ID + ".expanders"; //$NON-NLS-1$
 
-	public static final String DECOMPRESSORS_POINT = PLUGIN_ID + ".decompressors";
+	public static final String DECOMPRESSORS_POINT = PLUGIN_ID + ".decompressors"; //$NON-NLS-1$
 
 	public void start(BundleContext context) throws Exception
 	{
