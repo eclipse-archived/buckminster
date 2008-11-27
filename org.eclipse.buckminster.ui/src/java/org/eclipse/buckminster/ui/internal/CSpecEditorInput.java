@@ -50,7 +50,7 @@ public class CSpecEditorInput extends SaxableEditorInput
 			bld.append(':');
 			bld.append(version);
 		}
-		bld.append(".cspec");
+		bld.append(".cspec"); //$NON-NLS-1$
 		return bld.toString();
 	}
 

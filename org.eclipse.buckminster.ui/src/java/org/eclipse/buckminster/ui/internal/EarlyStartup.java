@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.ui.internal;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.ui.IStartup;
 
 /**
@@ -22,6 +23,6 @@ public class EarlyStartup implements IStartup
 		// Referencing the CorePlugin will cause it to be loaded
 		// That's all we want here.
 		//
-		CorePlugin.getLogger().debug("Core plugin initialized");
+		CorePlugin.getLogger().debug(Messages.core_plugin_initialized);
 	}
 }

@@ -80,6 +80,10 @@ public class Messages extends NLS
 
 	public static String category;
 
+	public static String certificate_details;
+
+	public static String certificate_details_with_dots;
+
 	public static String command;
 
 	public static String component_name_with_colon;
@@ -97,6 +101,8 @@ public class Messages extends NLS
 	public static String continue_on_error;
 
 	public static String contributor;
+
+	public static String core_plugin_initialized;
 
 	public static String could_not_create_file;
 
@@ -198,6 +204,8 @@ public class Messages extends NLS
 
 	public static String materialization_with_colon;
 
+	public static String materializing;
+
 	public static String move_down;
 
 	public static String move_up;
@@ -294,6 +302,8 @@ public class Messages extends NLS
 
 	public static String resolve_to_wizard;
 
+	public static String resolving_qurey;
+
 	public static String resource_map;
 
 	public static String revision_must_be_a_valid_integer_number;
@@ -335,6 +345,8 @@ public class Messages extends NLS
 	public static String type_with_colon;
 
 	public static String unable_to_open_editor;
+
+	public static String unable_to_resolve_0;
 
 	public static String unable_to_save_file_0;
 

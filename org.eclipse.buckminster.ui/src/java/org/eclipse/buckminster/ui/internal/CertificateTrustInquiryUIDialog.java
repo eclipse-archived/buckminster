@@ -11,6 +11,7 @@ package org.eclipse.buckminster.ui.internal;
 
 import java.security.cert.CertPath;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
@@ -24,7 +25,7 @@ public class CertificateTrustInquiryUIDialog extends MessageDialog
 {
 	public static boolean promptUser(Shell shell, String title, String message, CertPath certPath)
 	{
-		String[] buttonLabels = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, "Certificate details..." };
+		String[] buttonLabels = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, Messages.certificate_details_with_dots };
 		CertificateTrustInquiryUIDialog dlg = new CertificateTrustInquiryUIDialog(shell, title, null, message, WARNING, buttonLabels, 2, certPath);
 		return dlg.open() == 0;
 	}
@@ -44,6 +45,6 @@ public class CertificateTrustInquiryUIDialog extends MessageDialog
 			super.buttonPressed(buttonId);
 		else
 			// TODO: this is not the nicest way to display it...
-			MessageDialog.openInformation(this.getShell(), "Certificate details", m_certPath.toString());
+			MessageDialog.openInformation(this.getShell(), Messages.certificate_details, m_certPath.toString());
 	}
 }

@@ -21,12 +21,14 @@ import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.wizards.QueryWizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -44,7 +46,7 @@ public class ResolveJob extends Job
 
 	public ResolveJob(ComponentQuery query, boolean materialize, IWorkbenchPartSite site, boolean continueOnError) throws CoreException
 	{
-		super("Resolving query");
+		super(Messages.resolving_qurey);
 		m_resolver = new MainResolver(new ResolutionContext(query));
 		m_resolver.getContext().setContinueOnError(continueOnError);
 		m_materialize = materialize;
@@ -79,7 +81,7 @@ public class ResolveJob extends Job
 				if(status.getSeverity() == IStatus.ERROR)
 					return status;
 				if(!bom.isFullyResolved(query))
-					throw BuckminsterException.fromMessage("Unable to resolve %s", rootRequest);
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_resolve_0, rootRequest));
 			}
 			CorePlugin.logWarningsAndErrors(status);
 
@@ -99,7 +101,7 @@ public class ResolveJob extends Job
 			{
 				if(bom.isFullyResolved() || ctx.isContinueOnError())
 				{
-					setName("Materializing");
+					setName(Messages.materializing);
 					
 					// Just create a default mspec that materializes to the current
 					// workspace
