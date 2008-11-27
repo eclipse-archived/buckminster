@@ -44,29 +44,6 @@ public class SvnReaderType extends CatalogReaderType
 		return null;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
-		return new SvnRemoteFileReader(this, providerMatch, monitor);
-	}
-
-	@Override
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
-		monitor.beginTask(null, 1);
-		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
-		try
-		{
-			return session.getLastTimestamp();
-		}
-		finally
-		{
-			session.close();
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
-	}
-
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
@@ -91,14 +68,14 @@ public class SvnReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
 			throws CoreException
 	{
 		monitor.beginTask(null, 1);
 		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
 		try
 		{
-			return session.getLastChangeNumber();
+			return session.getLastTimestamp();
 		}
 		finally
 		{
@@ -133,6 +110,29 @@ public class SvnReaderType extends CatalogReaderType
 			MonitorUtils.worked(monitor, 1);
 			monitor.done();
 		}
+	}
+
+	@Override
+	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
+			throws CoreException
+	{
+		monitor.beginTask(null, 1);
+		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
+		try
+		{
+			return session.getLastChangeNumber();
+		}
+		finally
+		{
+			session.close();
+			MonitorUtils.worked(monitor, 1);
+			monitor.done();
+		}
+	}
+
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
+	{
+		return new SvnRemoteFileReader(this, providerMatch, monitor);
 	}
 
 	@Override

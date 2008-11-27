@@ -31,7 +31,8 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
-		m_session = new SvnSession(provider.getURI(query.getProperties()), null, query.getRevision(), query.getTimestamp(), query.getContext());
+		m_session = new SvnSession(provider.getURI(query.getProperties()), null, query.getRevision(), query
+				.getTimestamp(), query.getContext());
 	}
 
 	@Override
@@ -39,7 +40,8 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	{
 		NodeQuery query = getQuery();
 		String uri = getProvider().getURI(query.getProperties());
-		SvnSession checkerSession = new SvnSession(uri, versionMatch.getBranchOrTag(), versionMatch.getRevision(), versionMatch.getTimestamp(), query.getContext());
+		SvnSession checkerSession = new SvnSession(uri, versionMatch.getBranchOrTag(), versionMatch.getRevision(),
+				versionMatch.getTimestamp(), query.getContext());
 		try
 		{
 			// We list the folder rather then just obtaining the entry since the listing
@@ -61,12 +63,12 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 		{
 			if(!m_session.hasTrunkStructure())
 				return Collections.emptyList();
-				
+
 			SVNUrl url = m_session.getSVNRootUrl(branches);
 			ISVNDirEntry[] list = m_session.listFolder(url, MonitorUtils.subMonitor(monitor, 150));
 			if(list.length == 0)
 				return Collections.emptyList();
-	
+
 			ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
 			for(ISVNDirEntry e : list)
 				entries.add(new RevisionEntry(e.getPath(), null, e.getLastChangedRevision().getNumber()));
@@ -82,6 +84,8 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
 		ISVNDirEntry entry = m_session.getRootEntry(monitor);
-		return entry == null ? null : new RevisionEntry(null, null, entry.getLastChangedRevision().getNumber());
+		return entry == null
+				? null
+				: new RevisionEntry(null, null, entry.getLastChangedRevision().getNumber());
 	}
 }

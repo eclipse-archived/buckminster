@@ -52,8 +52,8 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is interpreted as no
  * <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. The URL used as the
  * repository identifier must contain the path element trunk. Anything that follows the <code>trunk</code> element in
- * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in
- * turn may have four different flags:
+ * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in turn
+ * may have four different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
  * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
@@ -71,19 +71,23 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
 public class SvnRemoteFileReader extends AbstractRemoteReader
 {
 	private final SvnSession m_session;
+
 	private final ISVNDirEntry[] m_topEntries;
+
 	/**
 	 * @param readerType
 	 * @param rInfo
 	 * @param withResolvedBranch
 	 * @throws CoreException
 	 */
-	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor)
+			throws CoreException
 	{
 		super(readerType, rInfo);
 		VersionMatch vm = rInfo.getVersionMatch();
 		VersionSelector branchOrTag = vm.getBranchOrTag();
-		m_session = new SvnSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo.getNodeQuery().getContext());
+		m_session = new SvnSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo
+				.getNodeQuery().getContext());
 		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
 		if(m_topEntries.length == 0)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_0, m_session));
@@ -93,47 +97,6 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	public void close()
 	{
 		m_session.close();
-	}
-
-	@Override
-	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-	throws CoreException, IOException
-	{
-		ArrayList<String> names = null;
-		for(ISVNDirEntry dirEntry : m_topEntries)
-		{
-			String fileName = dirEntry.getPath();
-			if(pattern.matcher(fileName).matches())
-			{
-				if(names == null)
-					names = new ArrayList<String>();
-				names.add(fileName);
-			}
-		}
-		if(names == null)
-			return;
-
-		if(names.size() == 1)
-			files.add(innerGetContents(names.get(0), monitor));
-		else
-		{
-			monitor.beginTask(null, names.size() * 100);
-			for(String name : names)
-				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
-			monitor.done();
-		}
-	}
-
-	@Override
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
-	{
-		for(ISVNDirEntry dirEntry : m_topEntries)
-		{
-			String fileName = dirEntry.getPath();
-			if(dirEntry.getNodeKind() == SVNNodeKind.DIR && ! fileName.endsWith("/")) //$NON-NLS-1$
-				fileName = fileName + "/"; //$NON-NLS-1$
-			files.add(fileName);
-		}
 	}
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
@@ -182,7 +145,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				Thread.sleep(500);
 				if(workAmount < 10)
 				{
-	    			MonitorUtils.worked(monitor, 1);
+					MonitorUtils.worked(monitor, 1);
 					++workAmount;
 				}
 			}
@@ -218,8 +181,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	}
 
 	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException,
-			IOException
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
 	{
 		Logger logger = CorePlugin.getLogger();
 		IPath path = Path.fromPortableString(fileName);
@@ -276,7 +238,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				bytesRead = input.read(buf);
 				if(ticksLeft > 0)
 				{
-	    			MonitorUtils.worked(monitor, 1);
+					MonitorUtils.worked(monitor, 1);
 					--ticksLeft;
 				}
 				else
@@ -300,7 +262,8 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			else
 			{
 				String lcMsg = msg.toLowerCase();
-				if(lcMsg.contains(Messages.file_not_found) || lcMsg.contains(Messages.path_not_found) || lcMsg.contains(Messages.unable_to_find_repository_location))
+				if(lcMsg.contains(Messages.file_not_found) || lcMsg.contains(Messages.path_not_found)
+						|| lcMsg.contains(Messages.unable_to_find_repository_location))
 				{
 					if(logger.isDebugEnabled())
 						logger.debug(NLS.bind(Messages.remote_file_not_found, key));
@@ -318,8 +281,49 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			if(destFile != null)
 				destFile.delete();
 			if(ticksLeft > 0)
-    			MonitorUtils.worked(monitor, ticksLeft);
+				MonitorUtils.worked(monitor, ticksLeft);
 			monitor.done();
+		}
+	}
+
+	@Override
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
+			throws CoreException, IOException
+	{
+		ArrayList<String> names = null;
+		for(ISVNDirEntry dirEntry : m_topEntries)
+		{
+			String fileName = dirEntry.getPath();
+			if(pattern.matcher(fileName).matches())
+			{
+				if(names == null)
+					names = new ArrayList<String>();
+				names.add(fileName);
+			}
+		}
+		if(names == null)
+			return;
+
+		if(names.size() == 1)
+			files.add(innerGetContents(names.get(0), monitor));
+		else
+		{
+			monitor.beginTask(null, names.size() * 100);
+			for(String name : names)
+				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
+			monitor.done();
+		}
+	}
+
+	@Override
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+		for(ISVNDirEntry dirEntry : m_topEntries)
+		{
+			String fileName = dirEntry.getPath();
+			if(dirEntry.getNodeKind() == SVNNodeKind.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
+				fileName = fileName + "/"; //$NON-NLS-1$
+			files.add(fileName);
 		}
 	}
 }
