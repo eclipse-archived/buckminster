@@ -16,6 +16,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Remote service provide utils
@@ -42,10 +43,10 @@ public class ProviderUtil
 	 */
 	public static final String buildURLString(String protocol, String host, String port, String path)
 	{
-		return protocol + "://" + host + (port == null
-				? ""
-				: (":" + port)) + (path == null
-				? ""
+		return protocol + "://" + host + (port == null //$NON-NLS-1$
+				? "" //$NON-NLS-1$
+				: (":" + port)) + (path == null //$NON-NLS-1$
+				? "" //$NON-NLS-1$
 				: path);
 	}
 
@@ -66,7 +67,7 @@ public class ProviderUtil
 		if((provider = s_serviceCache.get(providerID)) != null)
 			return provider;
 
-		throw new NoSuchProviderException("Provider '" + providerID + "' was not found");
+		throw new NoSuchProviderException(NLS.bind(Messages.getString("ProviderUtil.provider_0_not_found"), providerID)); //$NON-NLS-1$
 	}
 
 	/**
@@ -118,7 +119,8 @@ public class ProviderUtil
 		if(s_serviceCache.get(provider.getId()) == null)
 			s_serviceCache.put(provider.getId(), provider);
 		else
-			throw BuckminsterException.fromMessage("A provider with ID %s is already registered", provider.getId());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages
+					.getString("ProviderUtil.provider_0_already_registered"), provider.getId())); //$NON-NLS-1$
 	}
 
 	private static void scanExtensionRegistry()
