@@ -36,6 +36,8 @@ public class Messages extends NLS
 
 	public static String dependencies;
 
+	public static String designator_with_colon;
+
 	public static String duplicate_0_found_in_plugin_1;
 
 	public static String duplicity_of_key_0;
@@ -43,6 +45,8 @@ public class Messages extends NLS
 	public static String edit;
 
 	public static String edit_property;
+
+	public static String equal_to_version;
 
 	public static String error_during_action_perform;
 
@@ -57,6 +61,18 @@ public class Messages extends NLS
 	public static String file_does_not_exist;
 
 	public static String file_with_colon;
+
+	public static String from_excl_to_excl_version;
+
+	public static String from_excl_to_incl_version;
+
+	public static String from_incl_to_excl_version;
+
+	public static String from_incl_to_incl_version;
+
+	public static String from_to_with_colon;
+
+	public static String grater_or_equal_to_version;
 
 	public static String internal_problem_when_generating_opml_xml;
 
@@ -89,6 +105,8 @@ public class Messages extends NLS
 	public static String the_entered_file_name_is_not_valid;
 
 	public static String the_file_0_already_exists_overwrite_question;
+
+	public static String type_with_colon;
 
 	public static String unable_to_open_editor;
 

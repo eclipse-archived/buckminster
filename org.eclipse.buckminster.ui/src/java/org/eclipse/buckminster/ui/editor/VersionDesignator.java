@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.ui.ChangeAdapter;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.simple.Widgetin;
 import org.eclipse.core.runtime.CoreException;
@@ -49,7 +50,7 @@ public class VersionDesignator extends Widgetin
 			@Override
 			public String toString()
 			{
-				return "? == Version";
+				return Messages.equal_to_version;
 			}
 
 			@Override
@@ -67,7 +68,7 @@ public class VersionDesignator extends Widgetin
 			@Override
 			public String toString()
 			{
-				return "? >= Version";
+				return Messages.grater_or_equal_to_version;
 			}
 
 			@Override
@@ -85,7 +86,7 @@ public class VersionDesignator extends Widgetin
 			@Override
 			public String toString()
 			{
-				return "From <= ? < To";
+				return Messages.from_incl_to_excl_version;
 			}
 
 			@Override
@@ -100,7 +101,7 @@ public class VersionDesignator extends Widgetin
 			@Override
 			public String toString()
 			{
-				return "From <= ? <= To";
+				return Messages.from_incl_to_incl_version;
 			}
 
 			@Override
@@ -115,7 +116,7 @@ public class VersionDesignator extends Widgetin
 			@Override
 			public String toString()
 			{
-				return "From < ? < To";
+				return Messages.from_excl_to_excl_version;
 			}
 
 			@Override
@@ -130,7 +131,7 @@ public class VersionDesignator extends Widgetin
 			@Override
 			public String toString()
 			{
-				return "From < ? <= To";
+				return Messages.from_excl_to_incl_version;
 			}
 
 			@Override
@@ -203,7 +204,7 @@ public class VersionDesignator extends Widgetin
 	{
 		m_parentComposite = parent;
 
-		m_versionDsTypeLabel = UiUtils.createGridLabel(m_parentComposite, "Designator:", 1, 0, SWT.NONE);
+		m_versionDsTypeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.designator_with_colon, 1, 0, SWT.NONE);
 
 		SelectionListener versionDSListener = new SelectionAdapter()
 		{
@@ -220,7 +221,7 @@ public class VersionDesignator extends Widgetin
 		m_versionDsType.addSelectionListener(m_notifier);
 		UiUtils.createEmptyLabel(m_parentComposite);
 
-		m_rangeLabel = UiUtils.createGridLabel(m_parentComposite, "Version:", 1, 0, SWT.NONE);
+		m_rangeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.version_with_colon, 1, 0, SWT.NONE);
 
 		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, SWT.NONE, m_notifier);
 		
@@ -233,14 +234,14 @@ public class VersionDesignator extends Widgetin
 
 		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, SWT.NONE, m_notifier);
 		
-		UiUtils.createGridLabel(m_parentComposite, "Type:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(m_parentComposite, Messages.type_with_colon, 1, 0, SWT.NONE);
 		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
 		String[] versionTypes = CorePlugin.getDefault().getExtensionIds(CorePlugin.VERSION_TYPES_POINT);
 
 		m_versionType.setItems(versionTypes);
-		m_versionType.select(m_versionType.indexOf("OSGi"));
+		m_versionType.select(m_versionType.indexOf("OSGi")); //$NON-NLS-1$
 		m_versionType.addSelectionListener(m_notifier);
 		UiUtils.createEmptyLabel(m_parentComposite);
 
@@ -329,8 +330,8 @@ public class VersionDesignator extends Widgetin
 		}
 		else
 		{
-			m_fromVersion.setText("");
-			m_toVersion.setText("");
+			m_fromVersion.setText(""); //$NON-NLS-1$
+			m_toVersion.setText(""); //$NON-NLS-1$
 			m_versionType.select(-1);
 		}
 	}
@@ -363,11 +364,11 @@ public class VersionDesignator extends Widgetin
 			{
 				if(idx < 2)
 				{
-					m_rangeLabel.setText("Version:");
+					m_rangeLabel.setText(Messages.version_with_colon);
 				}
 				else
 				{
-					m_rangeLabel.setText("From - To:");
+					m_rangeLabel.setText(Messages.from_to_with_colon);
 				}
 			}
 			m_toStackLayout.topControl = toBe;
