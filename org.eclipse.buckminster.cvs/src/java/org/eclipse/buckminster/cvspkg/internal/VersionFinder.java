@@ -27,7 +27,7 @@ import org.eclipse.team.internal.ccvs.core.client.Command;
 @SuppressWarnings("restriction")
 public class VersionFinder extends AbstractSCCSVersionFinder
 {
-	public static final Command.LocalOption HEADERS_ONLY = new CVSReaderType.MyLocalOption("-h");
+	public static final Command.LocalOption HEADERS_ONLY = new CVSReaderType.MyLocalOption("-h"); //$NON-NLS-1$
 
 	private RepositoryMetaData m_metaData;
 	private final CVSSession m_session;

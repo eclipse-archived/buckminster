@@ -14,17 +14,18 @@ import java.io.Closeable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.cvspkg.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolderSandbox;
-
 
 /**
  * @author Thomas Hallgren
@@ -33,24 +34,30 @@ import org.eclipse.team.internal.ccvs.core.resources.RemoteFolderSandbox;
 public class CVSSession implements Closeable
 {
 	private final ICVSRepositoryLocation m_location;
+
 	private final String m_moduleName;
+
 	private Session m_readerSession;
 
 	public CVSSession(String repositoryURI) throws CoreException
 	{
-		StringTokenizer tokenizer = new StringTokenizer(repositoryURI, ",");
+		StringTokenizer tokenizer = new StringTokenizer(repositoryURI, ","); //$NON-NLS-1$
 		try
 		{
 			String repo = tokenizer.nextToken();
 			m_location = CVSReaderType.getLocationFromString(repo);
-			String module = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
-			if(module != null && module.startsWith("/"))
+			String module = tokenizer.hasMoreTokens()
+					? tokenizer.nextToken()
+					: null;
+			if(module != null && module.startsWith("/")) //$NON-NLS-1$
 				module = module.substring(1);
 			m_moduleName = module;
 		}
 		catch(NoSuchElementException e)
 		{
-			throw BuckminsterException.fromMessage("Repository URI not in <cvs root>,<module> format");
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.repository_URI_not_in_0_format, "<" //$NON-NLS-1$
+					+ Messages.cvs_root + ">,<" //$NON-NLS-1$
+					+ Messages.cvs_module + ">")); //$NON-NLS-1$
 		}
 	}
 
@@ -94,8 +101,7 @@ public class CVSSession implements Closeable
 		return m_moduleName;
 	}
 
-	synchronized Session getReaderSession(IProgressMonitor monitor)
-	throws CoreException
+	synchronized Session getReaderSession(IProgressMonitor monitor) throws CoreException
 	{
 		if(m_readerSession == null)
 		{
@@ -111,4 +117,3 @@ public class CVSSession implements Closeable
 		return new RemoteFolderSandbox(null, this.getLocation(), this.getModuleName(), tag);
 	}
 }
-

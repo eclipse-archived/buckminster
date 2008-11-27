@@ -34,26 +34,29 @@ import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.cvspkg.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 
 /**
- * Provides access to single files in a CVS repository using a URL. The URL
- * must be formatted in the following way:<pre>
+ * Provides access to single files in a CVS repository using a URL. The URL must be formatted in the following way:
+ * 
+ * <pre>
  * 
  * cvs://[user@]&lt;host&gt;/&lt;path to file&gt;?repository=&lt;repository path&gt;[protocol=&lt;cvs protocol&gt;][#&lt;tag&gt;]
  * 
  * </pre>
- *
+ * 
  * @author Thomas Hallgren
  */
 public class Handler extends AbstractURLStreamHandlerService
 {
-	public static final String PROTOCOL = "cvs";
+	public static final String PROTOCOL = "cvs"; //$NON-NLS-1$
 
 	@Override
 	public URLConnection openConnection(URL url) throws IOException
@@ -85,43 +88,40 @@ public class Handler extends AbstractURLStreamHandlerService
 
 				String host = uri.getHost();
 				if(host == null)
-					throw new MalformedURLException("The host of a cvs URL cannot be empty");
+					throw new MalformedURLException(Messages.cvs_URL_host_cannot_be_empty);
 
 				String rootStr = uri.getPath();
 				if(rootStr == null)
-					throw new MalformedURLException("The path of a cvs URL cannot be empty");
+					throw new MalformedURLException(Messages.cvs_URL_path_cannot_be_empty);
 
 				IPath rootPath = new Path(rootStr);
 				if(!rootPath.isAbsolute())
-					throw new MalformedURLException("The path of a cvs URL must be absolute");
+					throw new MalformedURLException(Messages.cvs_URL_path_must_be_absolute);
 				if(rootPath.segmentCount() < 1)
-					throw new MalformedURLException("The path of a cvs URL must have at least 1 segment");
+					throw new MalformedURLException(Messages.cvs_URL_path_must_have_segment);
 				if(rootPath.hasTrailingSeparator())
-					throw new MalformedURLException(
-						"The path of a cvs URL must not have a trailing separator");
+					throw new MalformedURLException(Messages.cvs_URL_path_must_not_have_trailing_separator);
 
 				String moduleStr = uri.getFragment();
 				if(moduleStr == null)
-					throw new MalformedURLException(
-						"A cvs URL must end with #<module path>");
+					throw new MalformedURLException(NLS.bind(Messages.cvs_URL_must_end_with_0, "#<" //$NON-NLS-1$
+							+ Messages.cvs_URL_module_path + ">")); //$NON-NLS-1$
 
 				IPath modulePath = new Path(moduleStr);
 				if(!modulePath.isAbsolute())
-					throw new MalformedURLException("The module of a cvs URL must be an absolute path");
+					throw new MalformedURLException(Messages.cvs_URL_module_must_be_absolute);
 				if(modulePath.segmentCount() < 1)
-					throw new MalformedURLException(
-						"The module of a cvs URL must have at least 1 segment");
+					throw new MalformedURLException(Messages.cvs_URL_module_must_have_segment);
 				if(modulePath.hasTrailingSeparator())
-					throw new MalformedURLException(
-						"The module of a cvs URL must not have a trailing separator");
+					throw new MalformedURLException(Messages.cvs_URL_module_must_not_have_trailing_separator);
 
 				String user = uri.getUserInfo();
 				if(user == null)
-					user = "anonymous";
+					user = "anonymous"; //$NON-NLS-1$
 
-				String cvsProto = params.get("method");
+				String cvsProto = params.get("method"); //$NON-NLS-1$
 				if(cvsProto == null)
-					cvsProto = "pserver";
+					cvsProto = "pserver"; //$NON-NLS-1$
 
 				m_fileName = modulePath.lastSegment();
 				modulePath = modulePath.removeLastSegments(1);
@@ -141,17 +141,20 @@ public class Handler extends AbstractURLStreamHandlerService
 				}
 
 				CorePlugin plugin = CorePlugin.getDefault();
-				String versionSelector = params.get("version");
-				IReaderType cvsReaderType = plugin.getReaderType("cvs");
-				VersionMatch vm = versionSelector == null ? null : new VersionMatch(null, VersionSelector.fromString(versionSelector), -1, null, null);
+				String versionSelector = params.get("version"); //$NON-NLS-1$
+				IReaderType cvsReaderType = plugin.getReaderType("cvs"); //$NON-NLS-1$
+				VersionMatch vm = versionSelector == null
+						? null
+						: new VersionMatch(null, VersionSelector.fromString(versionSelector), -1, null, null);
 				IProgressMonitor nullMon = new NullProgressMonitor();
-				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString(), null);
+				Provider provider = new Provider("cvs", new String[] { IComponentType.UNKNOWN }, bld.toString(), null); //$NON-NLS-1$
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 				cqBld.getRootRequestBuilder().setName(m_fileName);
 				if(vm == null)
 					vm = VersionMatch.DEFAULT;
-				m_reader = (ICatalogReader)cvsReaderType.getReader(provider, plugin.getComponentType(IComponentType.UNKNOWN), new ResolutionContext(
-					cqBld.createComponentQuery()).getRootNodeQuery(), vm, nullMon);
+				m_reader = (ICatalogReader)cvsReaderType.getReader(provider, plugin
+						.getComponentType(IComponentType.UNKNOWN), new ResolutionContext(cqBld.createComponentQuery())
+						.getRootNodeQuery(), vm, nullMon);
 			}
 			catch(URISyntaxException e)
 			{
@@ -183,8 +186,8 @@ public class Handler extends AbstractURLStreamHandlerService
 			{
 				return m_reader.readFile(m_fileName, new IStreamConsumer<InputStream>()
 				{
-					public InputStream consumeStream(IComponentReader reader, String streamName,
-						InputStream stream, IProgressMonitor monitor) throws IOException
+					public InputStream consumeStream(IComponentReader reader, String streamName, InputStream stream,
+							IProgressMonitor monitor) throws IOException
 					{
 						final AccessibleByteArrayOutputStream builder = new AccessibleByteArrayOutputStream();
 						FileUtils.copyFile(stream, builder, monitor);

@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.cvspkg.Messages;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IResource;
@@ -31,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
@@ -136,7 +138,7 @@ public class CVSReader extends AbstractCatalogReader
 		// Build the local options
 		//
 		monitor.beginTask(null, 1000);
-		monitor.subTask("Retrieving " + fileName);
+		monitor.subTask(NLS.bind(Messages.retrieving_0, fileName));
 
 		InputStream in = null;
 		OutputStream out = null;
@@ -214,8 +216,8 @@ public class CVSReader extends AbstractCatalogReader
 			for(ICVSRemoteResource child : m_flatRoot.getChildren())
 			{
 				String name = child.getName();
-				if(child.isFolder() && !name.endsWith("/"))
-					name = name + "/";
+				if(child.isFolder() && !name.endsWith("/")) //$NON-NLS-1$
+					name = name + "/"; //$NON-NLS-1$
 				files.add(child.getName());
 			}
 		}
@@ -287,7 +289,7 @@ public class CVSReader extends AbstractCatalogReader
 		}
 
 		if(!(cvsFile instanceof ICVSRemoteFile))
-			throw new FileNotFoundException(fileName + " appears to be a folder");
+			throw new FileNotFoundException(NLS.bind(Messages.file_0_appears_to_be_folder, fileName));
 
 		return (ICVSRemoteFile)cvsFile;
 	}
@@ -298,7 +300,7 @@ public class CVSReader extends AbstractCatalogReader
 		// Build the local options
 		//
 		monitor.beginTask(null, 1000);
-		monitor.subTask("Retrieving " + fileName);
+		monitor.subTask(NLS.bind(Messages.retrieving_0, fileName));
 
 		InputStream in = null;
 		try

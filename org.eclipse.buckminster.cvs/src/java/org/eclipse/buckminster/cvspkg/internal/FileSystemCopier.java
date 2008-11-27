@@ -20,10 +20,12 @@ import java.util.Date;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.cvspkg.Messages;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.ICVSFile;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
@@ -39,19 +41,19 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 public class FileSystemCopier implements ICVSResourceVisitor
 {
 	/** the famous CVS meta directory name */
-	public static final String CVS_DIRNAME = "CVS";
+	public static final String CVS_DIRNAME = "CVS"; //$NON-NLS-1$
 
 	// CVS meta files located in the CVS subdirectory
 	//
-	public static final String REPOSITORY = "Repository";
+	public static final String REPOSITORY = "Repository"; //$NON-NLS-1$
 
-	public static final String ROOT = "Root";
+	public static final String ROOT = "Root"; //$NON-NLS-1$
 
-	public static final String STATIC = "Entries.Static";
+	public static final String STATIC = "Entries.Static"; //$NON-NLS-1$
 
-	public static final String TAG = "Tag";
+	public static final String TAG = "Tag"; //$NON-NLS-1$
 
-	public static final String ENTRIES = "Entries";
+	public static final String ENTRIES = "Entries"; //$NON-NLS-1$
 
 	private final IPath m_fsRoot;
 	private final ICVSFolder m_cvsRoot;
@@ -151,7 +153,7 @@ public class FileSystemCopier implements ICVSResourceVisitor
 				// write CVS/Entries.Static
 				// the existence of the file is all that matters
 				//
-				writeLines(cvsFolder, STATIC, "");
+				writeLines(cvsFolder, STATIC, ""); //$NON-NLS-1$
 		}
 	}
 
@@ -247,7 +249,7 @@ public class FileSystemCopier implements ICVSResourceVisitor
 	{
 		File dir = parentFolder.toFile();
 		if(!dir.mkdirs() && !dir.exists())
-			throw new CVSException("Unable to create directory " + dir);
+			throw new CVSException(NLS.bind(Messages.unable_to_create_directory_0, dir));
 		return parentFolder;
 	}
 

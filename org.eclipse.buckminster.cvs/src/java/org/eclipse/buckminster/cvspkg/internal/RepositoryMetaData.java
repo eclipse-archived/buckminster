@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.buckminster.cvspkg.CVSPlugin;
+import org.eclipse.buckminster.cvspkg.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
@@ -35,6 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.client.Command;
@@ -138,7 +140,7 @@ public class RepositoryMetaData implements Serializable
 		}
 
 		monitor.beginTask(null, 100);
-		monitor.subTask("Obtaining meta data for repository " + repository);
+		monitor.subTask(NLS.bind(Messages.obtaining_meta_data_for_repository_0, repository));
 		Session session = cvsSession.getReaderSession(MonitorUtils.subMonitor(monitor, 10));
 
 		try
@@ -148,7 +150,7 @@ public class RepositoryMetaData implements Serializable
 
 			if(result == null)
 			{
-				logger.debug("Initial metadata fetch for %s", repository);
+				logger.debug("Initial metadata fetch for %s", repository); //$NON-NLS-1$
 				if(fixedTag != null && !fixedTag.equals(CVSTag.DEFAULT))
 					opts.add(RLog.getCurrentTag(fixedTag));
 			}
@@ -172,7 +174,7 @@ public class RepositoryMetaData implements Serializable
 						break;
 					}
 				}
-				logger.debug("Metadata refetch from " + result.getTimestamp() + " for " + repository);
+				logger.debug("Metadata refetch from " + result.getTimestamp() + " for " + repository); //$NON-NLS-1$ //$NON-NLS-2$
 				opts.add(RLog.makeTagOption(new CVSTag(result.getTimestamp()), new CVSTag(now)));
 				opts.add(RLog.ONLY_INCLUDE_CHANGES);
 			}
@@ -188,7 +190,7 @@ public class RepositoryMetaData implements Serializable
 			if(result == null)
 			{
 				if(collector.getLastModificationTime() == null)
-					throw new CVSException("Found no metadata for " + repository);
+					throw new CVSException(NLS.bind(Messages.found_no_metadata_for_0, repository));
 				result = new RepositoryMetaData(collector, now);
 			}
 			else

@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.cvspkg.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -61,7 +62,7 @@ import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
 @SuppressWarnings("restriction")
 public class CVSReaderType extends CatalogReaderType
 {
-	public static final String LOCAL_LINE_END = System.getProperty("line.separator");
+	public static final String LOCAL_LINE_END = System.getProperty("line.separator"); //$NON-NLS-1$
 
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
 	{
@@ -78,17 +79,17 @@ public class CVSReaderType extends CatalogReaderType
 		}
 	}
 
-	public static final Command.LocalOption STDOUT = new MyLocalOption("-p");
+	public static final Command.LocalOption STDOUT = new MyLocalOption("-p"); //$NON-NLS-1$
 
 	@Override
 	public String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName) throws CoreException
 	{
-		String cvsRoot = fetchFactoryLocator.get("cvsRoot");
+		String cvsRoot = fetchFactoryLocator.get("cvsRoot"); //$NON-NLS-1$
 		if(cvsRoot == null)
-			throw BuckminsterException.fromMessage("Illegal fetch factory locator");
+			throw BuckminsterException.fromMessage(Messages.illegal_fetch_factory_locator);
 
 		StringBuilder locator = new StringBuilder(cvsRoot);
-		String path = fetchFactoryLocator.get("path");
+		String path = fetchFactoryLocator.get("path"); //$NON-NLS-1$
 		locator.append(',');
 		if(path != null)
 			locator.append(path);
@@ -108,25 +109,25 @@ public class CVSReaderType extends CatalogReaderType
 			
 			StringBuilder query = new StringBuilder();
 			String method = location.getMethod().getName();
-			if(!method.equals("pserver"))
+			if(!method.equals("pserver")) //$NON-NLS-1$
 			{
-				query.append("method=");
+				query.append("method="); //$NON-NLS-1$
 				query.append(method);
 			}
 			if(versionSelector != null)
 			{
 				if(query.length() > 0)
 					query.append('&');
-				query.append("version");
+				query.append("version"); //$NON-NLS-1$
 				query.append(versionSelector.toString());
 			}
 
 			String user = location.getUsername();
-			if("anonymous".equals(user))
+			if("anonymous".equals(user)) //$NON-NLS-1$
 				user = null;
 
 			IPath modulePath = new Path(session.getModuleName()).makeAbsolute();
-			URI uri = new URI("cvs", user, location.getHost(), -1, location.getRootDirectory(), query.toString(),
+			URI uri = new URI("cvs", user, location.getHost(), -1, location.getRootDirectory(), query.toString(), //$NON-NLS-1$
 					modulePath.toPortableString());
 			return uri.toURL();
 		}
@@ -147,9 +148,9 @@ public class CVSReaderType extends CatalogReaderType
 			{
 				String knownMethod = known.getMethod().getName();
 				String wantedMethod = wanted.getMethod().getName();
-				if(knownMethod.equals(wantedMethod) || ("extssh".equals(knownMethod) && "pserver".equals(wantedMethod)))
+				if(knownMethod.equals(wantedMethod) || ("extssh".equals(knownMethod) && "pserver".equals(wantedMethod))) //$NON-NLS-1$ //$NON-NLS-2$
 				{
-					if(wantedUser == null || "anonymous".equals(wantedUser) || wantedUser.equals(known.getUsername()))
+					if(wantedUser == null || "anonymous".equals(wantedUser) || wantedUser.equals(known.getUsername())) //$NON-NLS-1$
 						return (CVSRepositoryLocation)known;
 				}
 			}

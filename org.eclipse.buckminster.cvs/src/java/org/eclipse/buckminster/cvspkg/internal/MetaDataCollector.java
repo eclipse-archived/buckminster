@@ -55,7 +55,7 @@ public class MetaDataCollector extends CommandOutputListener
 	//
 	private static final String NOTHING_KNOWN_ABOUT = "nothing known about "; //$NON-NLS-1$
 
-	private static final Pattern s_revDataExpr = Pattern.compile("^date:\\s*([^;]+);\\s*author:[^;]+;\\s*state:\\s*([^;]+);.*$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern s_revDataExpr = Pattern.compile("^date:\\s*([^;]+);\\s*author:[^;]+;\\s*state:\\s*([^;]+);.*$", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
 
 	private static final int SYMBOLIC_NAMES = 2;
 
@@ -111,20 +111,20 @@ public class MetaDataCollector extends CommandOutputListener
 		switch(m_state)
 		{
 		case BEGIN:
-			if(line.startsWith("RCS file:"))
+			if(line.startsWith("RCS file:")) //$NON-NLS-1$
 				m_state = HEADER;
 			break;
 		case NEXT_REV_OR_BEGIN:
 		case HEADER:
-			if(line.startsWith("RCS file:"))
+			if(line.startsWith("RCS file:")) //$NON-NLS-1$
 				m_state = HEADER;
-			else if(line.startsWith("revision "))
+			else if(line.startsWith("revision ")) //$NON-NLS-1$
 				m_state = REVISION;
-			else if(line.startsWith("symbolic names:"))
+			else if(line.startsWith("symbolic names:")) //$NON-NLS-1$
 				m_state = SYMBOLIC_NAMES;
 			break;
 		case SYMBOLIC_NAMES:
-			if(line.startsWith("keyword substitution:"))
+			if(line.startsWith("keyword substitution:")) //$NON-NLS-1$
 				m_state = HEADER;
 			else
 				this.symbolicName(line);
@@ -196,7 +196,7 @@ public class MetaDataCollector extends CommandOutputListener
 		Matcher matcher = s_revDataExpr.matcher(line);
 		if(matcher.matches())
 		{
-			Date date = convertFromLogTime(matcher.group(1) + " GMT");
+			Date date = convertFromLogTime(matcher.group(1) + " GMT"); //$NON-NLS-1$
 			if(m_lastModificationTime == null || m_lastModificationTime.compareTo(date) < 0)
 				m_lastModificationTime = date;
 		}
