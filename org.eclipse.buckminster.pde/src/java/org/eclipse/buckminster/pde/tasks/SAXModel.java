@@ -34,7 +34,7 @@ public abstract class SAXModel implements ISaxable
 
 	public static void endElement(ContentHandler receiver, String tag) throws SAXException
 	{
-		receiver.endElement("", "", tag);
+		receiver.endElement("", "", tag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public static void startElement(ContentHandler receiver, String tag) throws SAXException
@@ -44,6 +44,6 @@ public abstract class SAXModel implements ISaxable
 
 	public static void startElement(ContentHandler receiver, String tag, Attributes attrs) throws SAXException
 	{
-		receiver.startElement("", "", tag, attrs);
+		receiver.startElement("", "", tag, attrs); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

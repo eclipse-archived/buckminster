@@ -116,7 +116,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 			for(File file : m_features)
 			{
 				String leafName = file.getName();
-				if(!leafName.endsWith(".jar"))
+				if(!leafName.endsWith(".jar")) //$NON-NLS-1$
 					continue;
 
 				JarFile jarFile = null;
@@ -181,7 +181,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		//
 		String verStr = feature.getVersion();
 		if(verStr == null || verStr.length() == 0)
-			verStr = "0.0.0";
+			verStr = "0.0.0"; //$NON-NLS-1$
 		SiteFeatureReferenceModel model = null;
 		Site site = m_saxableSite.getSite();
 		for(SiteFeatureReferenceModel oldModel : site.getFeatureReferenceModels())

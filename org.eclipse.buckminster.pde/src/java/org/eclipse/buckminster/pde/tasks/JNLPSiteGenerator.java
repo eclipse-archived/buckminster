@@ -49,7 +49,7 @@ public class JNLPSiteGenerator
 		if(folderVersions == null)
 			return;
 
-		File versionsFile = new File(folder, "version.xml");
+		File versionsFile = new File(folder, "version.xml"); //$NON-NLS-1$
 		OutputStream output = null;
 		try
 		{
@@ -113,7 +113,7 @@ public class JNLPSiteGenerator
 				else
 				{
 					String leafName = file.getName();
-					if(!leafName.endsWith(".jar"))
+					if(!leafName.endsWith(".jar")) //$NON-NLS-1$
 						continue;
 
 					JarFile jarFile = null;
@@ -139,7 +139,7 @@ public class JNLPSiteGenerator
 				generateFromFeature(folderVersions, featuresFolder, feature);
 			}
 
-			File launcherJar = new File(m_directory, "startup.jar");
+			File launcherJar = new File(m_directory, "startup.jar"); //$NON-NLS-1$
 			if(launcherJar.exists())
 			{
 				String version;
@@ -160,11 +160,11 @@ public class JNLPSiteGenerator
 					// The equinox launcher starts at 1.0.0 and would have had
 					// a version in its manifest. So this is prior to that
 					//
-					version = "0.1.0";
+					version = "0.1.0"; //$NON-NLS-1$
 
 				if(folderVersions == null)
 					folderVersions = new JNLPVersionModel();
-				folderVersions.addResource("startup.jar", "startup.jar", version);
+				folderVersions.addResource("startup.jar", "startup.jar", version); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			emitFolderVersions(m_directory, folderVersions);
@@ -178,7 +178,7 @@ public class JNLPSiteGenerator
 			for(File file : files)
 			{
 				String leafName = file.getName();
-				if(!leafName.endsWith(".jar"))
+				if(!leafName.endsWith(".jar")) //$NON-NLS-1$
 					continue;
 
 				JarFile jarFile = null;
@@ -225,7 +225,7 @@ public class JNLPSiteGenerator
 
 		String version = a.getValue(Constants.BUNDLE_VERSION);
 		if(version == null)
-			version = "0.0.0";
+			version = "0.0.0"; //$NON-NLS-1$
 
 		/*
 		 * We don't do this now since the requests lack os/arch information for some reason.
@@ -236,7 +236,7 @@ public class JNLPSiteGenerator
 		 * 
 		 * String arch = jnlpResource.getArch(); if(arch != null) resource.addArch(arch); }
 		 */
-		folderVersions.addResource(file, id + ".jar", version);
+		folderVersions.addResource(file, id + ".jar", version); //$NON-NLS-1$
 	}
 
 	private void generateFromFeature(JNLPVersionModel folderVersions, File featuresFolder, IFeature feature)
@@ -244,9 +244,9 @@ public class JNLPSiteGenerator
 	{
 		String id = feature.getId();
 		String version = feature.getVersion();
-		String file = id + '_' + version + ".jnlp";
+		String file = id + '_' + version + ".jnlp"; //$NON-NLS-1$
 
-		JNLPVersionModel.Resource resource = folderVersions.addResource(file, id + ".jnlp", version);
+		JNLPVersionModel.Resource resource = folderVersions.addResource(file, id + ".jnlp", version); //$NON-NLS-1$
 		String os = feature.getOS();
 		if(os == null)
 			os = feature.getWS();
