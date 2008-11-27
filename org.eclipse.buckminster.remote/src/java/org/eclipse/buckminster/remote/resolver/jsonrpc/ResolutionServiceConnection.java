@@ -29,12 +29,14 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.remote.IAuthenticatedConnection;
 import org.eclipse.buckminster.remote.IProgressInfo;
 import org.eclipse.buckminster.remote.IServiceProvider;
+import org.eclipse.buckminster.remote.Messages;
 import org.eclipse.buckminster.remote.ProviderUtil;
 import org.eclipse.buckminster.remote.resolver.IResolutionServiceConnection;
 import org.eclipse.buckminster.remote.resolver.service.IRemoteResolutionService;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.jabsorb.client.Client;
 import org.jabsorb.client.ErrorResponse;
 import org.jabsorb.client.HTTPSession;
@@ -48,13 +50,13 @@ import org.jabsorb.client.TransportRegistry;
  */
 public class ResolutionServiceConnection implements IResolutionServiceConnection, IAuthenticatedConnection
 {
-	private static final String ENCRYPT_ALGORITHM = "SHA-256";
+	private static final String ENCRYPT_ALGORITHM = "SHA-256"; //$NON-NLS-1$
 
 	private static final int DEFAULT_TIMEOUT = 60000;
 
 	private static String encrypt(String input, String algorithmName)
 	{
-		String md5val = "";
+		String md5val = ""; //$NON-NLS-1$
 		MessageDigest algorithm = null;
 
 		try
@@ -63,7 +65,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(NoSuchAlgorithmException nsae)
 		{
-			throw new IllegalArgumentException("Unknown encrypt algorithm: " + algorithmName);
+			throw new IllegalArgumentException(NLS.bind(Messages
+					.getString("ResolutionServiceConnection.unknown_encrypt_algorithm_0"), algorithmName)); //$NON-NLS-1$
 		}
 
 		byte[] defaultBytes = input.getBytes();
@@ -89,7 +92,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	{
 		if(providerID == null || providerID.length() == 0)
 		{
-			throw BuckminsterException.fromMessage("Remote service provider is not set");
+			throw BuckminsterException.fromMessage(Messages
+					.getString("ResolutionServiceConnection.remote_service_provider_not_set")); //$NON-NLS-1$
 		}
 
 		return ProviderUtil.findProvider(providerID);
@@ -127,7 +131,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	{
 		if(provider == null)
 		{
-			throw BuckminsterException.fromMessage("Remote service provider is not set");
+			throw BuckminsterException.fromMessage(Messages
+					.getString("ResolutionServiceConnection.remote_service_provider_not_set")); //$NON-NLS-1$
 		}
 
 		m_serviceProvider = provider;
@@ -156,7 +161,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cancel operation failed");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_cancel")); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -191,7 +197,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException.fromMessage(e, "Remote resolution service error - BOM resolution failed");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_BOM")); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -215,7 +222,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cannot get progress info");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_progress_info")); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -240,8 +248,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException
-					.fromMessage(e, "Remote resolution service error - cannot get resolution results");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_resolution_result")); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -259,7 +267,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 
 			IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
 
-			return parser.parse("byte image", bomInStream);
+			return parser.parse("byte image", bomInStream); //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{
@@ -282,10 +290,9 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 			method = new GetMethod(m_initializationURL);
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
-				throw BuckminsterException
-						.fromMessage(
-								"Setup did not succeed - make sure the RemoteResolutionServiceServlet servlet is running on %s",
-								m_serviceURL);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages
+						.getString("ResolutionServiceConnection.setup_fail_check_service_on_0"), //$NON-NLS-1$
+						m_serviceURL));
 		}
 		catch(Exception e)
 		{
@@ -308,7 +315,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 
 		Client jsonClient = new Client(session);
 
-		m_remoteResolutionService = (IRemoteResolutionService)jsonClient.openProxy("resolutionService",
+		m_remoteResolutionService = (IRemoteResolutionService)jsonClient.openProxy("resolutionService", //$NON-NLS-1$
 				IRemoteResolutionService.class);
 
 		m_isCancelSent = false;
@@ -319,9 +326,9 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		{
 			int result = login(m_login, m_password);
 			if(result == IAuthenticatedConnection.LOGIN_FAILED)
-				throw new RuntimeException("Login to remote resolution service provided by "
-						+ m_serviceProvider.getName()
-						+ " failed, check query resolver login and password in Buckminster preferences");
+				throw new RuntimeException(NLS.bind(Messages
+						.getString("ResolutionServiceConnection.login_to_service_by_provider_0_failed"), //$NON-NLS-1$
+						m_serviceProvider.getName())); //$NON-NLS-1$
 		}
 	}
 
@@ -346,7 +353,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException.fromMessage(e, "Remote resolution service error - cannot get login info");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_login_info")); //$NON-NLS-1$
 		}
 
 		return result;
@@ -374,7 +382,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException.fromMessage(e, "Remote resolution service error - login operation failed");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_login_failed")); //$NON-NLS-1$
 		}
 
 		if(result == IRemoteResolutionService.LOGIN_OK)
@@ -393,7 +402,8 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 		}
 		catch(ErrorResponse e)
 		{
-			throw BuckminsterException.fromMessage(e, "Remote resolution service error - logout operation failed");
+			throw BuckminsterException.fromMessage(e, Messages
+					.getString("ResolutionServiceConnection.remote_res_error_logout_failed")); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -428,6 +438,7 @@ public class ResolutionServiceConnection implements IResolutionServiceConnection
 	private void checkInitialization() throws CoreException
 	{
 		if(m_remoteResolutionService == null)
-			throw BuckminsterException.fromMessage("Remote resolution service is not initialized");
+			throw BuckminsterException.fromMessage(Messages
+					.getString("ResolutionServiceConnection.remote_res_service_not_initialized")); //$NON-NLS-1$
 	}
 }
