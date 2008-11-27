@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
@@ -88,11 +89,11 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	@Override
 	public void fillStack(Composite stackComposite)
 	{
-		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Properties", createPropertiesStackLayer(stackComposite));
-		addStackMapping("Products", createProductsStackLayer(stackComposite));
-		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
-		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
+		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
+		addStackMapping(Messages.properties, createPropertiesStackLayer(stackComposite));
+		addStackMapping(Messages.products, createProductsStackLayer(stackComposite));
+		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
+		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -103,42 +104,42 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		layout.marginHeight = layout.marginWidth = 0;
 		geComposite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(geComposite, "General", 2);
+		EditorUtils.createHeaderLabel(geComposite, Messages.general, 2);
 
-		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.name_with_colon, 1, 0, SWT.NONE);
 		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
 
-		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
 
-		UiUtils.createGridLabel(geComposite, "Actor Name:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.actor_name_with_colon, 1, 0, SWT.NONE);
 		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_actorNameText.addModifyListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(geComposite, "Always:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.always_with_colon, 1, 0, SWT.NONE);
 		m_alwaysCheck = UiUtils.createCheckButton(geComposite, null, null);
 		m_actorNameText.addSelectionListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(geComposite, "Assign Console Support:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.assign_console_support_with_colon, 1, 0, SWT.NONE);
 		m_assignConsoleSupportCheck = UiUtils.createCheckButton(geComposite, null, null);
 		m_assignConsoleSupportCheck.addSelectionListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(geComposite, "Filter:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.filter_with_colon, 1, 0, SWT.NONE);
 		m_actionFilter = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_actionFilter.addSelectionListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(geComposite, "Prerequisites Alias:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.prerequisites_alias_with_colon, 1, 0, SWT.NONE);
 		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_prereqNameText.addModifyListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(geComposite, "Prerequisites Rebase Path:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.prerequisites_rebase_path_with_colon, 1, 0, SWT.NONE);
 		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_prereqRebasePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
 		
-		Label label = UiUtils.createGridLabel(geComposite, "Prerequisites:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(geComposite, Messages.prerequisites_with_colon, 1, 0, SWT.NONE);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
 		label.setLayoutData(gridData);
@@ -154,7 +155,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				geComposite,
 				preTable,
 				null,
-				"Action - Prerequisite",
+				Messages.action_prerequisite_with_dash,
 				null,
 				null,
 				SWT.NONE);
@@ -163,7 +164,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		gridData.horizontalSpan = 2;
 		m_prerequisitesEditor.setLayoutData(gridData);
 
-		geComposite.setData("focusControl", getNameText());
+		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 
 		return geComposite;
 	}
@@ -176,13 +177,13 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		layout.marginHeight = layout.marginWidth = 0;
 		composite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(composite, "Products", 2);
+		EditorUtils.createHeaderLabel(composite, Messages.products, 2);
 
-		UiUtils.createGridLabel(composite, "Product Alias:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(composite, Messages.product_alias_with_colon, 1, 0, SWT.NONE);
 		m_prodAliasText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
 		m_prodAliasText.addModifyListener(FIELD_LISTENER);
 
-		UiUtils.createGridLabel(composite, "Product Base Path:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(composite, Messages.product_base_path_with_colon, 1, 0, SWT.NONE);
 		m_prodBaseText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
 		m_prodBaseText.addModifyListener(FIELD_LISTENER);
 		
@@ -190,7 +191,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createEmptyLabel(composite);
 		
 		m_pathsButton = new Button(composite, SWT.RADIO);
-		m_pathsButton.setText("Product Paths:");
+		m_pathsButton.setText(Messages.product_paths_with_colon);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
 		m_pathsButton.setLayoutData(gridData);
@@ -211,7 +212,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				composite,
 				table,
 				null,
-				"Action - Product Path",
+				Messages.action_product_path_with_dash,
 				null,
 				null,
 				SWT.NONE);
@@ -224,7 +225,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createEmptyLabel(composite);
 		
 		m_artifactsButton = new Button(composite, SWT.RADIO);
-		m_artifactsButton.setText("Product Artifacts:");
+		m_artifactsButton.setText(Messages.product_artifacts);
 		gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
 		m_artifactsButton.setLayoutData(gridData);
@@ -253,7 +254,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				artifactsTable,
 				false,
 				null,
-				"Action - Product Artifact",
+				Messages.action_product_artifact_with_dash,
 				null,
 				null,
 				SWT.NONE);
@@ -261,7 +262,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		gridData.horizontalSpan = 2;
 		m_productArtifactsEditor.setLayoutData(gridData);
 
-		composite.setData("focusControl", m_prodAliasText);
+		composite.setData("focusControl", m_prodAliasText); //$NON-NLS-1$
 
 		return composite;
 	}
@@ -274,7 +275,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		layout.marginHeight = layout.marginWidth = 0;
 		composite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(composite, "General Properties", 1);
+		EditorUtils.createHeaderLabel(composite, Messages.general_properties, 1);
 
 		PropertiesTable table = new PropertiesTable(m_properties);
 		table.addTableModifyListener(FIELD_LISTENER);
@@ -283,14 +284,14 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				composite,
 				table,
 				null,
-				"Action - Properties",
+				Messages.action_properties,
 				null,
 				null,
 				SWT.NONE);
 
 		UiUtils.createEmptyLabel(composite);
 		
-		EditorUtils.createHeaderLabel(composite, "Actor Properties", 1);
+		EditorUtils.createHeaderLabel(composite, Messages.actor_properties, 1);
 
 		table = new PropertiesTable(m_actorProperties);
 		table.addTableModifyListener(FIELD_LISTENER);
@@ -299,7 +300,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				composite,
 				table,
 				null,
-				"Action - Actor Properties",
+				Messages.action_actor_properties_with_dash,
 				null,
 				null,
 				SWT.NONE);

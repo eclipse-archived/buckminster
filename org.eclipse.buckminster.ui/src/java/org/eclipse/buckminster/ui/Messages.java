@@ -10,15 +10,33 @@ public class Messages extends NLS
 
 	public static String about_buckminster;
 
+	public static String action_actor_properties_with_dash;
+
 	public static String action_error;
+
+	public static String action_prerequisite_with_dash;
+
+	public static String action_product_artifact_with_dash;
+
+	public static String action_product_path_with_dash;
+
+	public static String action_properties_with_dash;
 
 	public static String action_properties;
 
 	public static String actions_of;
 
+	public static String actor_name_with_colon;
+
+	public static String actor_properties;
+
 	public static String add_opml_bookmarks_to_rss_reader;
 
+	public static String always_with_colon;
+
 	public static String an_error_occured_when_creating_the_file;
+
+	public static String assign_console_support_with_colon;
 
 	public static String bad_file_name;
 
@@ -37,6 +55,8 @@ public class Messages extends NLS
 	public static String dependencies;
 
 	public static String designator_with_colon;
+
+	public static String documentation;
 
 	public static String duplicate_0_found_in_plugin_1;
 
@@ -62,6 +82,8 @@ public class Messages extends NLS
 
 	public static String file_with_colon;
 
+	public static String filter_with_colon;
+
 	public static String from_excl_to_excl_version;
 
 	public static String from_excl_to_incl_version;
@@ -72,7 +94,13 @@ public class Messages extends NLS
 
 	public static String from_to_with_colon;
 
+	public static String general;
+
+	public static String general_properties;
+
 	public static String grater_or_equal_to_version;
+
+	public static String installer_hints;
 
 	public static String internal_problem_when_generating_opml_xml;
 
@@ -81,6 +109,8 @@ public class Messages extends NLS
 	public static String key_with_colon;
 
 	public static String name;
+
+	public static String name_with_colon;
 
 	public static String new_label;
 
@@ -98,9 +128,29 @@ public class Messages extends NLS
 
 	public static String please_enter_a_valid_url;
 
+	public static String prerequisites_alias_with_colon;
+
+	public static String prerequisites_rebase_path_with_colon;
+
+	public static String prerequisites_with_colon;
+
+	public static String product_alias_with_colon;
+
+	public static String product_artifacts;
+
+	public static String product_base_path_with_colon;
+
+	public static String product_paths_with_colon;
+
+	public static String products;
+
+	public static String properties;
+
+	public static String public_with_colon;
+
 	public static String remove;
 
-	public static String SplashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
+	public static String splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
 
 	public static String the_entered_file_name_is_not_valid;
 

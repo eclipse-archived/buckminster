@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class SplashScreen
 {
-	private final String CLOSE_TEXT = Messages.SplashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
+	private final String CLOSE_TEXT = Messages.splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
 	
 	private final Shell m_splashShell;
 	
