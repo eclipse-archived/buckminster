@@ -71,7 +71,7 @@ public class LoggerAdaptor extends MarkerIgnoringBase
 
 	public String getName()
 	{
-		return "buckminster";
+		return "buckminster"; //$NON-NLS-1$
 	}
 
 	public void info(String msg)
