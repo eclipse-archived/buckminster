@@ -46,15 +46,15 @@ public class NewResourceMapWizard extends NewBMFileWizard implements INewWizard
 	{
 		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
 		PrintStream contents = new PrintStream(bld);
-		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		contents.println("<rmap");
-		contents.println("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-		contents.println("\txmlns=\"http://www.eclipse.org/buckminster/RMap-1.0\"");
-		contents.println("\txmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"");
-		contents.println("\txmlns:mp=\"http://www.eclipse.org/buckminster/MavenProvider-1.0\"");
-		contents.println("\txmlns:pp=\"http://www.eclipse.org/buckminster/PDEMapProvider-1.0\">");
-		contents.println("\t<!-- Place your RMAP content here -->");
-		contents.println("</rmap>\n");
+		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
+		contents.println("<rmap"); //$NON-NLS-1$
+		contents.println("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""); //$NON-NLS-1$
+		contents.println("\txmlns=\"http://www.eclipse.org/buckminster/RMap-1.0\""); //$NON-NLS-1$
+		contents.println("\txmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\""); //$NON-NLS-1$
+		contents.println("\txmlns:mp=\"http://www.eclipse.org/buckminster/MavenProvider-1.0\""); //$NON-NLS-1$
+		contents.println("\txmlns:pp=\"http://www.eclipse.org/buckminster/PDEMapProvider-1.0\">"); //$NON-NLS-1$
+		contents.println("\t<!-- Place your RMAP content here -->"); //$NON-NLS-1$
+		contents.println("</rmap>\n"); //$NON-NLS-1$
 		contents.flush();
 		return bld.getInputStream();
 	}
