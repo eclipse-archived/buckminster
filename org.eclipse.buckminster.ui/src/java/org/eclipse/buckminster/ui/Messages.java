@@ -26,6 +26,8 @@ public class Messages extends NLS
 
 	public static String could_not_create_file;
 
+	public static String dependencies;
+
 	public static String duplicate_0_found_in_plugin_1;
 
 	public static String error_during_action_perform;
@@ -43,6 +45,8 @@ public class Messages extends NLS
 	public static String name;
 
 	public static String no_component_is_selected;
+
+	public static String no_ompl;
 
 	public static String not_yet_implemented;
 

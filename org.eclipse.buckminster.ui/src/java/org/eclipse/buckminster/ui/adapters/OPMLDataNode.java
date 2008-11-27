@@ -12,13 +12,14 @@ import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.opml.IBody;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.IOutline;
+import org.eclipse.buckminster.ui.Messages;
 
 public class OPMLDataNode extends BasicTreeParentDataNode
 {
 
 	public OPMLDataNode(IOPML data)
 	{
-		super(data == null ? "no opml" : data);
+		super(data == null ? Messages.no_ompl : data);
 		IBody body = data.getBody();
 		for(IOutline outline : body.getOutlines())
 		{

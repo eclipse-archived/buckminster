@@ -13,13 +13,14 @@ import java.util.Map.Entry;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
+import org.eclipse.buckminster.ui.Messages;
 
 public class DependenciesDataNode extends BasicTreeParentDataNode
 {
 
 	public DependenciesDataNode(Map<String, ComponentRequest> dependencies)
 	{
-		super("Dependencies");
+		super(Messages.dependencies);
 		for(Entry<String, ComponentRequest> d : dependencies.entrySet())
 		{
 			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getKey(), d.getValue(), 
