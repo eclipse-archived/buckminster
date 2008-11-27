@@ -46,39 +46,39 @@ public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard
 	{
 		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
 		PrintStream contents = new PrintStream(bld);
-		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		contents.println("<cspecExtension");
-		contents.println("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-		contents.println("\txmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\"");
-		contents.println("\txmlns=\"http://www.eclipse.org/buckminster/CSpec-1.0\">");
-		contents.println("\t<dependencies>");
-		contents.println("\t\t<!-- Place your Dependencies here -->");
-		contents.println("\t</dependencies>");
-		contents.println("\t<generators>");
-		contents.println("\t\t<!-- Place your Generators here -->");
-		contents.println("\t</generators>");
-		contents.println("\t<artifacts>");
-		contents.println("\t\t<!-- Place your Artifacts here -->");
-		contents.println("\t</artifacts>");
-		contents.println("\t<actions>");
-		contents.println("\t\t<!-- Place your Actions here -->");
-		contents.println("\t</actions>");
-		contents.println("\t<groups>");
-		contents.println("\t\t<!-- Place your Groups here -->");
-		contents.println("\t</groups>");
-		contents.println("\t<alterDependencies>");
-		contents.println("\t\t<!-- Place your Dependency alterations here -->");
-		contents.println("\t</alterDependencies>");
-		contents.println("\t<alterArtifacts>");
-		contents.println("\t\t<!-- Place your Artifact alterations here -->");
-		contents.println("\t</alterArtifacts>");
-		contents.println("\t<alterActions>");
-		contents.println("\t\t<!-- Place your Action alterations here -->");
-		contents.println("\t</alterActions>");
-		contents.println("\t<alterGroups>");
-		contents.println("\t\t<!-- Place your Group alterations here -->");
-		contents.println("\t</alterGroups>");
-		contents.println("</cspecExtension>");
+		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
+		contents.println("<cspecExtension"); //$NON-NLS-1$
+		contents.println("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""); //$NON-NLS-1$
+		contents.println("\txmlns:bc=\"http://www.eclipse.org/buckminster/Common-1.0\""); //$NON-NLS-1$
+		contents.println("\txmlns=\"http://www.eclipse.org/buckminster/CSpec-1.0\">"); //$NON-NLS-1$
+		contents.println("\t<dependencies>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Dependencies here -->"); //$NON-NLS-1$
+		contents.println("\t</dependencies>"); //$NON-NLS-1$
+		contents.println("\t<generators>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Generators here -->"); //$NON-NLS-1$
+		contents.println("\t</generators>"); //$NON-NLS-1$
+		contents.println("\t<artifacts>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Artifacts here -->"); //$NON-NLS-1$
+		contents.println("\t</artifacts>"); //$NON-NLS-1$
+		contents.println("\t<actions>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Actions here -->"); //$NON-NLS-1$
+		contents.println("\t</actions>"); //$NON-NLS-1$
+		contents.println("\t<groups>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Groups here -->"); //$NON-NLS-1$
+		contents.println("\t</groups>"); //$NON-NLS-1$
+		contents.println("\t<alterDependencies>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Dependency alterations here -->"); //$NON-NLS-1$
+		contents.println("\t</alterDependencies>"); //$NON-NLS-1$
+		contents.println("\t<alterArtifacts>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Artifact alterations here -->"); //$NON-NLS-1$
+		contents.println("\t</alterArtifacts>"); //$NON-NLS-1$
+		contents.println("\t<alterActions>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Action alterations here -->"); //$NON-NLS-1$
+		contents.println("\t</alterActions>"); //$NON-NLS-1$
+		contents.println("\t<alterGroups>"); //$NON-NLS-1$
+		contents.println("\t\t<!-- Place your Group alterations here -->"); //$NON-NLS-1$
+		contents.println("\t</alterGroups>"); //$NON-NLS-1$
+		contents.println("</cspecExtension>"); //$NON-NLS-1$
 		contents.flush();
 
 		return bld.getInputStream();
