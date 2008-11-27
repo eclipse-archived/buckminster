@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
@@ -125,7 +126,7 @@ public class BuckminsterView extends ViewPart
 				}
 				catch(CoreException e)
 				{
-					UiUtils.openError(getViewSite().getShell(), "Unable to get child nodes", e);
+					UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
 				}
 			}
 			return null;
@@ -173,9 +174,9 @@ public class BuckminsterView extends ViewPart
 
 		public NavigatorLabelProvider()
 		{
-			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage();
-			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage();
-			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage();
+			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
+			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage(); //$NON-NLS-1$
+			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
 		}
 
 		public Image getImage(Object element)
@@ -232,9 +233,9 @@ public class BuckminsterView extends ViewPart
 	// TODO use extension point to get files for BM view
 	class BuckminsterFileFilter
 	{
-		public static final String CONTENT_TYPES_POINT = "org.eclipse.core.runtime.contentTypes";
+		public static final String CONTENT_TYPES_POINT = "org.eclipse.core.runtime.contentTypes"; //$NON-NLS-1$
 
-		public static final String BUCKMINSTER_CORE_PLUGIN = "org.eclipse.buckminster.core";
+		public static final String BUCKMINSTER_CORE_PLUGIN = "org.eclipse.buckminster.core"; //$NON-NLS-1$
 
 		private List<String> m_fileExts = new ArrayList<String>();
 
@@ -247,13 +248,13 @@ public class BuckminsterView extends ViewPart
 			{
 				if(BuckminsterFileFilter.BUCKMINSTER_CORE_PLUGIN.equals(elem.getContributor().getName()))
 				{
-					String[] fileExt = elem.getAttribute("file-extensions").split(",");
+					String[] fileExt = elem.getAttribute("file-extensions").split(","); //$NON-NLS-1$ //$NON-NLS-2$
 					m_fileExts.addAll(Arrays.asList(fileExt));
 				}
 			}
 
 			//TODO remove
-			m_fileExts.add("cquery");
+			m_fileExts.add("cquery"); //$NON-NLS-1$
 		}
 
 		public boolean matchesFile(IFile member)
@@ -272,9 +273,9 @@ public class BuckminsterView extends ViewPart
 
 	static class BuckminsterPreferences
 	{
-		final private static String BUCKMINSTER_PLUGIN_PREFIX = "org.eclipse.buckminster";
+		final private static String BUCKMINSTER_PLUGIN_PREFIX = "org.eclipse.buckminster"; //$NON-NLS-1$
 		
-		final private static String PREFERENCES_POINT = "org.eclipse.ui.preferencePages";
+		final private static String PREFERENCES_POINT = "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
 		
 		private static List<String> s_preferenceIds;
 		
@@ -290,7 +291,7 @@ public class BuckminsterView extends ViewPart
 				String contributor = elem.getContributor().getName();
 				if(contributor.startsWith(BuckminsterPreferences.BUCKMINSTER_PLUGIN_PREFIX))
 				{
-					s_preferenceIds.add(elem.getAttribute("id"));
+					s_preferenceIds.add(elem.getAttribute("id")); //$NON-NLS-1$
 				}
 			}
 		}
@@ -333,7 +334,7 @@ public class BuckminsterView extends ViewPart
 		
 		public String getName()
 		{
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 	
@@ -382,7 +383,7 @@ public class BuckminsterView extends ViewPart
 			
 				for(IResource resource : m_project.members())
 				{
-					if(resource instanceof IFile && resource.getName().endsWith("cquery"))
+					if(resource instanceof IFile && resource.getName().endsWith("cquery")) //$NON-NLS-1$
 					{
 						child = new CqueryNode((IFile) resource);
 						child.setParent(this);
@@ -400,7 +401,7 @@ public class BuckminsterView extends ViewPart
 			}
 			catch(CoreException e)
 			{
-				UiUtils.openError(getViewSite().getShell(), "Unable to get child nodes", e);
+				UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
 			}
 			
 			return children.toArray(new TreeNode[0]);
@@ -438,7 +439,7 @@ public class BuckminsterView extends ViewPart
 		@Override
 		public String getName()
 		{
-			return "Component Specification";
+			return Messages.component_specification;
 		}
 	}
 	
@@ -460,7 +461,7 @@ public class BuckminsterView extends ViewPart
 		@Override
 		public String getName()
 		{
-			return "Component Query";
+			return Messages.component_query;
 		}
 	}
 	
@@ -483,7 +484,7 @@ public class BuckminsterView extends ViewPart
 			}
 			catch(CoreException e)
 			{
-				UiUtils.openError(getViewSite().getShell(), "Unable to get child nodes", e);
+				UiUtils.openError(getViewSite().getShell(), Messages.unable_to_get_child_nodes, e);
 			}
 			return null;
 		}
@@ -497,7 +498,7 @@ public class BuckminsterView extends ViewPart
 		@Override
 		public String getName()
 		{
-			return "Actions";
+			return Messages.actions;
 		}
 	}
 	
@@ -546,7 +547,7 @@ public class BuckminsterView extends ViewPart
 		});
 
 		m_fileFilter = new BuckminsterFileFilter();
-		m_bmImage = UiPlugin.getImageDescriptor("images/buckminster_logo.png").createImage();
+		m_bmImage = UiPlugin.getImageDescriptor("images/buckminster_logo.png").createImage(); //$NON-NLS-1$
 	}
 
 	@Override
@@ -566,11 +567,11 @@ public class BuckminsterView extends ViewPart
 		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		CTabItem navigatorTab = new CTabItem(m_tabFolder, SWT.NONE);
-		navigatorTab.setText("Navigator");
+		navigatorTab.setText(Messages.navigator);
 		navigatorTab.setControl(getNavigatorTabControl(m_tabFolder));
 
 		CTabItem repositoryTab = new CTabItem(m_tabFolder, SWT.NONE);
-		repositoryTab.setText("Repository");
+		repositoryTab.setText(Messages.repository);
 		repositoryTab.setControl(getRepositoryTabControl(m_tabFolder));
 
 		m_tabFolder.setSelection(navigatorTab);
@@ -598,13 +599,13 @@ public class BuckminsterView extends ViewPart
 		Composite tabComposite = getTabComposite(parent);
 
 		Link newAccountLink = new Link(tabComposite, SWT.NONE);
-		newAccountLink.setText("<A>Create new repository identity</A>");
+		newAccountLink.setText("<A>" + Messages.create_new_repository_identity + "</A");
 		newAccountLink.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				Program.launch("www.cloudsmith.com");
+				Program.launch("www.cloudsmith.com"); //$NON-NLS-1$
 			}
 		});
 		
@@ -625,7 +626,7 @@ public class BuckminsterView extends ViewPart
 	// TODO Most of the actions should come here from extension point
 	private void createActions()
 	{
-		m_openEditorAction = new Action("Open")
+		m_openEditorAction = new Action(Messages.open)
 		{
 			@Override
 			public void run() 
@@ -649,14 +650,14 @@ public class BuckminsterView extends ViewPart
 					}
 					catch(PartInitException e)
 					{
-						UiUtils.openError(getViewSite().getShell(), "Unable to open editor", e);
+						UiUtils.openError(getViewSite().getShell(), Messages.unable_to_open_editor, e);
 					}
 				}
 
 			}
 		};
 		
-		m_viewCSpecAction = new Action("View the CSpec of a Component")
+		m_viewCSpecAction = new Action(Messages.view_the_cspec_of_a_component)
 		{
 			@Override
 			public void run()
@@ -668,9 +669,9 @@ public class BuckminsterView extends ViewPart
 				action.dispose();
 			}
 		};
-		m_viewCSpecAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cspec.png"));
+		m_viewCSpecAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cspec.png")); //$NON-NLS-1$
 		
-		m_openCQueryAction = new Action("Open a Component Query")
+		m_openCQueryAction = new Action(Messages.open_a_component_query)
 		{
 			@Override
 			public void run()
@@ -682,9 +683,9 @@ public class BuckminsterView extends ViewPart
 				action.dispose();
 			}
 		};
-		m_openCQueryAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cquery.png"));
+		m_openCQueryAction.setImageDescriptor(UiPlugin.getImageDescriptor("icons/cquery.png")); //$NON-NLS-1$
 		
-		m_viewPreferencesAction = new Action("Preferences")
+		m_viewPreferencesAction = new Action(Messages.preferences)
 		{
 			@Override
 			public void run()
@@ -698,7 +699,7 @@ public class BuckminsterView extends ViewPart
 			}
 		};		
 
-		m_viewAboutAction = new Action("About")
+		m_viewAboutAction = new Action(Messages.about)
 		{
 			@Override
 			public void run()
@@ -708,7 +709,7 @@ public class BuckminsterView extends ViewPart
 			}
 		};
 		
-		m_invokeActionAction = new Action("Invoke Action")
+		m_invokeActionAction = new Action(Messages.invoke_action)
 		{
 			@Override
 			public void run()
@@ -720,7 +721,7 @@ public class BuckminsterView extends ViewPart
 			}			
 		};
 
-		m_viewCspecAction = new Action("View CSpec")
+		m_viewCspecAction = new Action(Messages.view_cspec)
 		{
 			@Override
 			public void run()
@@ -734,11 +735,11 @@ public class BuckminsterView extends ViewPart
 			@Override
 			public ImageDescriptor getImageDescriptor()
 			{
-				return UiPlugin.getImageDescriptor("icons/cspec.png");
+				return UiPlugin.getImageDescriptor("icons/cspec.png"); //$NON-NLS-1$
 			}
 		};
 		
-		m_publishAction = new Action("Publish")
+		m_publishAction = new Action(Messages.publish)
 		{
 			@Override
 			public void run()
@@ -749,11 +750,11 @@ public class BuckminsterView extends ViewPart
 			@Override
 			public ImageDescriptor getImageDescriptor()
 			{
-				return UiPlugin.getImageDescriptor("icons/publish.png");
+				return UiPlugin.getImageDescriptor("icons/publish.png"); //$NON-NLS-1$
 			}
 		};
 		
-		m_resolveToWizardAction = new Action("Resolve to Wizard")
+		m_resolveToWizardAction = new Action(Messages.resolve_to_wizard)
 		{
 			@Override
 			public void run()
@@ -764,11 +765,11 @@ public class BuckminsterView extends ViewPart
 			@Override
 			public ImageDescriptor getImageDescriptor()
 			{
-				return UiPlugin.getImageDescriptor("icons/resolve.png");
+				return UiPlugin.getImageDescriptor("icons/resolve.png"); //$NON-NLS-1$
 			}
 		};
 		
-		m_resolveAndMaterializeAction = new Action("Resolve and Materialize")
+		m_resolveAndMaterializeAction = new Action(Messages.resolve_and_materialize)
 		{
 			@Override
 			public void run()
@@ -779,7 +780,7 @@ public class BuckminsterView extends ViewPart
 			@Override
 			public ImageDescriptor getImageDescriptor()
 			{
-				return UiPlugin.getImageDescriptor("icons/resolve.png");
+				return UiPlugin.getImageDescriptor("icons/resolve.png"); //$NON-NLS-1$
 			}
 		};
 	}
@@ -837,7 +838,7 @@ public class BuckminsterView extends ViewPart
 	{
 		IResource resource = getResourceSelection();
 		
-		String info = "";
+		String info = ""; //$NON-NLS-1$
 		
 		if(resource != null)
 		{
@@ -853,10 +854,10 @@ public class BuckminsterView extends ViewPart
 		
 		if(knownProject)
 		{
-			return "Buckminster understands project metadata";
+			return Messages.buckminster_understands_project_metadata;
 		}
 
-		return "Buckminster does not understand project metadata";
+		return Messages.buckminster_does_not_understand_project_metadata;
 	}
 	
 	private boolean isProjectKnown(IProject project)
@@ -867,7 +868,7 @@ public class BuckminsterView extends ViewPart
 			
 			for(String natureId : natureIds)
 			{
-				if(natureId.endsWith("PluginNature") || natureId.endsWith("FeatureNature"))
+				if(natureId.endsWith("PluginNature") || natureId.endsWith("FeatureNature")) //$NON-NLS-1$ //$NON-NLS-2$
 				{
 					return true;
 				}
@@ -875,7 +876,7 @@ public class BuckminsterView extends ViewPart
 		}
 		catch(CoreException e)
 		{
-			UiUtils.openError(getViewSite().getShell(), "Project is not open", e);
+			UiUtils.openError(getViewSite().getShell(), Messages.project_is_not_open, e);
 		}
 		
 		return false;
@@ -883,7 +884,7 @@ public class BuckminsterView extends ViewPart
 	
 	private void createInfo(Composite parent)
 	{
-		Label label = UiUtils.createGridLabel(parent, "Info:", 0, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(parent, Messages.info_with_colon, 0, 0, SWT.NONE);
 		label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 		m_infoText = UiUtils.createGridText(parent, 0, 0, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
 		//m_projectInfoText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
@@ -926,7 +927,7 @@ public class BuckminsterView extends ViewPart
 		{
 			menuMgr.add(m_openEditorAction);			
 			
-			MenuManager subMenuMgr = new MenuManager("Open With");
+			MenuManager subMenuMgr = new MenuManager(Messages.open_with);
 			OpenWithMenu openWithMenu = new OpenWithMenu(getWorkbenchWindow().getActivePage(), selectedResource);
 			subMenuMgr.add(openWithMenu);
 			menuMgr.add(subMenuMgr);
@@ -934,14 +935,14 @@ public class BuckminsterView extends ViewPart
 			String fileExt = ((IFile) selectedResource).getFileExtension();
 			
 			// TODO Action (or it's wrapper) should have it's own filter test
-			if(Arrays.asList(new String[] {"cspec", "cquery", "bom"}).contains(fileExt))
+			if(Arrays.asList(new String[] {"cspec", "cquery", "bom"}).contains(fileExt)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			{
 				menuMgr.add(new Separator());
 				menuMgr.add(m_publishAction);
 			}
 			
 			// TODO Action (or it's wrapper) should have it's own filter test
-			if(Arrays.asList(new String[] {"cquery"}).contains(fileExt))
+			if(Arrays.asList(new String[] {"cquery"}).contains(fileExt)) //$NON-NLS-1$
 			{
 				menuMgr.add(m_resolveToWizardAction);
 				menuMgr.add(m_resolveAndMaterializeAction);
@@ -994,7 +995,7 @@ public class BuckminsterView extends ViewPart
 			{
 				String defaultName = file.getName();
 				if(defaultName.startsWith(BlankQueryAction.TEMP_FILE_PREFIX))
-					defaultName = "";
+					defaultName = ""; //$NON-NLS-1$
 				else
 				{
 					int lastDot = defaultName.lastIndexOf('.');
@@ -1012,11 +1013,11 @@ public class BuckminsterView extends ViewPart
 				}
 				catch(Exception e)
 				{
-					UiUtils.openError(getViewSite().getShell(), "Unable to read query", e);
+					UiUtils.openError(getViewSite().getShell(), Messages.unable_to_read_cquery, e);
 				}
 			}
 
-			if("cquery".equalsIgnoreCase(resource.getFileExtension()))
+			if("cquery".equalsIgnoreCase(resource.getFileExtension())) //$NON-NLS-1$
 			{
 				try
 				{

@@ -8,6 +8,8 @@ public class Messages extends NLS
 
 	public static String a_0_property_will_not_be_added;
 
+	public static String about;
+
 	public static String about_buckminster;
 
 	public static String action_actor_properties_with_dash;
@@ -78,11 +80,15 @@ public class Messages extends NLS
 
 	public static String browse_with_dots;
 
+	public static String buckminster_does_not_understand_project_metadata;
+
 	public static String buckminster_extensions;
 
 	public static String buckminster_preferences;
 
 	public static String buckminster_project_folder;
+
+	public static String buckminster_understands_project_metadata;
 
 	public static String cannot_get_attribute_names_for_the_selected_component;
 
@@ -104,7 +110,11 @@ public class Messages extends NLS
 
 	public static String component_information;
 
+	public static String component_query;
+
 	public static String component_specification;
+
+	public static String component_specification_and_cspec_in_paranthesis;
 
 	public static String component_type;
 
@@ -131,6 +141,8 @@ public class Messages extends NLS
 	public static String could_not_create_file;
 
 	public static String cquery_context_url_set_to_0;
+
+	public static String create_new_repository_identity;
 
 	public static String cspec_editor_dependency;
 
@@ -214,11 +226,15 @@ public class Messages extends NLS
 
 	public static String groups;
 
+	public static String info_with_colon;
+
 	public static String installer_hints;
 
 	public static String internal_problem_when_generating_opml_xml;
 
 	public static String invalid_input;
+
+	public static String invoke_action;
 
 	public static String key;
 
@@ -254,6 +270,8 @@ public class Messages extends NLS
 
 	public static String name_with_colon;
 
+	public static String navigator;
+
 	public static String new_label;
 
 	public static String new_property;
@@ -271,6 +289,12 @@ public class Messages extends NLS
 	public static String nothing_to_display_with_dot;
 
 	public static String ok;
+
+	public static String open;
+
+	public static String open_a_component_query;
+
+	public static String open_with;
 
 	public static String opml_format_error;
 
@@ -296,6 +320,8 @@ public class Messages extends NLS
 
 	public static String please_enter_a_valid_url;
 
+	public static String preferences;
+
 	public static String prerequisites_alias_with_colon;
 
 	public static String prerequisites_rebase_path_with_colon;
@@ -314,6 +340,8 @@ public class Messages extends NLS
 
 	public static String products;
 
+	public static String project_is_not_open;
+
 	public static String properties;
 
 	public static String properties_with_colon;
@@ -324,6 +352,8 @@ public class Messages extends NLS
 
 	public static String public_with_colon;
 
+	public static String publish;
+
 	public static String read_only_in_paranthesis;
 
 	public static String refresh_meta_data;
@@ -333,6 +363,8 @@ public class Messages extends NLS
 	public static String remove;
 
 	public static String remove_with_arrow_right;
+
+	public static String repository;
 
 	public static String resolution_scope;
 
@@ -394,7 +426,11 @@ public class Messages extends NLS
 
 	public static String type_with_colon;
 
+	public static String unable_to_get_child_nodes;
+
 	public static String unable_to_open_editor;
+
+	public static String unable_to_read_cquery;
 
 	public static String unable_to_resolve_0;
 
@@ -417,6 +453,10 @@ public class Messages extends NLS
 	public static String version_designator;
 
 	public static String version_with_colon;
+
+	public static String view_cspec;
+
+	public static String view_the_cspec_of_a_component;
 
 	public static String wiki_with_colon;
 

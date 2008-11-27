@@ -246,7 +246,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			
 		if(element instanceof ICSpecData)
 		{
-			return new StyledString(Messages.component_specification);
+			return new StyledString(Messages.component_specification_and_cspec_in_paranthesis);
 		}
 		if(element instanceof IOPML)
 		{
