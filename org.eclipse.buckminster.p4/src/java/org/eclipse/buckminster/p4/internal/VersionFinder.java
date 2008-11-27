@@ -80,7 +80,7 @@ class VersionFinder extends AbstractSCCSVersionFinder
 			return null;
 
 		IPath depotPath = m_depotURI.getDepotPath();
-		DepotFolder[] folders = m_connection.getFolders(depotPath.append("*"), FileSpec.HEAD);
+		DepotFolder[] folders = m_connection.getFolders(depotPath.append("*"), FileSpec.HEAD); //$NON-NLS-1$
 		if(folders.length == 0)
 			return Collections.emptyList();
 
@@ -97,7 +97,7 @@ class VersionFinder extends AbstractSCCSVersionFinder
 	private List<RevisionEntry> getTags(IProgressMonitor monitor) throws CoreException
 	{
 		IPath depotPath = m_depotURI.getDepotPath();
-		Label[] labels = m_connection.getLabels(depotPath.append("..."));
+		Label[] labels = m_connection.getLabels(depotPath.append("...")); //$NON-NLS-1$
 		if(labels.length == 0)
 			return Collections.emptyList();
 

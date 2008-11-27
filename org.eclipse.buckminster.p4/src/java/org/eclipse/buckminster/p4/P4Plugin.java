@@ -22,10 +22,10 @@ import org.osgi.service.url.URLStreamHandlerService;
 
 public class P4Plugin extends LogAwarePlugin
 {
-	public static final String PROP_DEFAULT_SERVER_MAP_PREFIX = "buckminster.p4.server.";
-	public static final String DEFAULT_SERVER = "default";
+	public static final String PROP_DEFAULT_SERVER_MAP_PREFIX = "buckminster.p4.server."; //$NON-NLS-1$
+	public static final String DEFAULT_SERVER = "default"; //$NON-NLS-1$
 
-	public static final String PLUGIN_ID = Buckminster.NAMESPACE + ".p4";
+	public static final String PLUGIN_ID = Buckminster.NAMESPACE + ".p4"; //$NON-NLS-1$
 
 	private static P4Plugin s_plugin;
 
@@ -72,7 +72,7 @@ public class P4Plugin extends LogAwarePlugin
 	 */
 	public String getP4Binary()
 	{
-		return "p4";
+		return "p4"; //$NON-NLS-1$
 	}
 
 	/**

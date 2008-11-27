@@ -29,6 +29,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.p4.P4Plugin;
 import org.eclipse.buckminster.p4.internal.DepotObject.ViewEntry;
 import org.eclipse.buckminster.p4.preferences.Client;
@@ -37,6 +38,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 
 
@@ -51,11 +53,11 @@ public class Connection extends PropertyScope
 	 */
 	public static final int ARG_FILE_TRESHOLD = 32;
 
-	private static DateFormat s_dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private static DateFormat s_dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); //$NON-NLS-1$
 
-	private static Pattern s_depotPattern = Pattern.compile("^Depot (\\w+) .*");
+	private static Pattern s_depotPattern = Pattern.compile("^Depot (\\w+) .*"); //$NON-NLS-1$
 
-	private static Pattern s_tzPattern = Pattern.compile("(-?)(\\d{1,2}):?(\\d{2})$");
+	private static Pattern s_tzPattern = Pattern.compile("(-?)(\\d{1,2}):?(\\d{2})$"); //$NON-NLS-1$
 
 	private final String m_address;
 
@@ -83,7 +85,7 @@ public class Connection extends PropertyScope
 		if(serverDate == null)
 			return TimeZone.getDefault();
 
-		String[] dateSplit = serverDate.split("\\s+");
+		String[] dateSplit = serverDate.split("\\s+"); //$NON-NLS-1$
 		if(dateSplit.length != 4)
 			return TimeZone.getDefault();
 
@@ -92,7 +94,7 @@ public class Connection extends PropertyScope
 		if(!tzMatch.matches())
 			return TimeZone.getDefault();
 
-		boolean negative = "-".equals(tzMatch.group(1));
+		boolean negative = "-".equals(tzMatch.group(1)); //$NON-NLS-1$
 		int hours = Integer.parseInt(tzMatch.group(2));
 		int minutes = Integer.parseInt(tzMatch.group(3));
 		int seconds = hours * 3600 + minutes * 60;
@@ -159,34 +161,34 @@ public class Connection extends PropertyScope
 
 		// argv.add("C:\\tools\\eclipse\\plugins\\com.perforce.p4api_2004.2.3122\\win32exec.exe");
 		argv.add(P4Plugin.getDefault().getP4Binary());
-		argv.add("-G");
-		argv.add("-p");
+		argv.add("-G"); //$NON-NLS-1$
+		argv.add("-p"); //$NON-NLS-1$
 		argv.add(m_address);
 
 		String tmp = this.expand(m_clientPrefs.getName());
 		if(tmp != null)
 		{
-			argv.add("-c");
+			argv.add("-c"); //$NON-NLS-1$
 			argv.add(tmp);
 		}
 
 		tmp = this.expand(m_clientPrefs.getServer().getUser());
 		if(tmp != null)
 		{
-			argv.add("-u");
+			argv.add("-u"); //$NON-NLS-1$
 			argv.add(tmp);
 		}
 
 		tmp = m_clientPrefs.getServer().getPassword();
 		if(tmp != null)
 		{
-			argv.add("-P");
+			argv.add("-P"); //$NON-NLS-1$
 			argv.add(tmp);
 		}
 
 		if(m_charset != null)
 		{
-			argv.add("-C");
+			argv.add("-C"); //$NON-NLS-1$
 			argv.add(m_charset);
 		}
 		if(args == null)
@@ -201,7 +203,7 @@ public class Connection extends PropertyScope
 			PrintWriter writer = null;
 			try
 			{
-				argsFile = File.createTempFile("p4", ".tmp");
+				argsFile = File.createTempFile("p4", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 				argsFile.deleteOnExit();
 
 				writer = new PrintWriter(new FileWriter(argsFile));
@@ -210,7 +212,7 @@ public class Connection extends PropertyScope
 				writer.close();
 				writer = null;
 
-				argv.add("-x");
+				argv.add("-x"); //$NON-NLS-1$
 				argv.add(argsFile.getPath());
 				argv.add(cmd);
 				return this.exec(argv, cmdInput);
@@ -235,12 +237,12 @@ public class Connection extends PropertyScope
 
 	public ClientSpec getClientSpec() throws CoreException
 	{
-		List<Map<String,String>> info = this.exec("info");
+		List<Map<String,String>> info = this.exec("info"); //$NON-NLS-1$
 		if(info.size() != 1)
-			throw BuckminsterException.fromMessage("p4 info failed");
+			throw BuckminsterException.fromMessage(Messages.p4_info_failed);
 		Map<String,String> clientInfo = info.get(0);
 
-		ClientSpec clientSpec = new ClientSpec(this, this.exec("client", new String[] { "-o" }).get(0));
+		ClientSpec clientSpec = new ClientSpec(this, this.exec("client", new String[] { "-o" }).get(0)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Perforce will create a new client for us if no client existed. That client
 		// will have a default entry that reflects the complete depot. We do not
@@ -249,7 +251,7 @@ public class Connection extends PropertyScope
 		IPath clientRoot = clientSpec.getRoot();
 		String localRoot = this.expand(m_clientPrefs.getLocalRoot());
 		IPath expectedRoot = (localRoot == null) ? null : new Path(localRoot);
-		if("*unknown*".equals(clientInfo.get("clientName")))			
+		if("*unknown*".equals(clientInfo.get("clientName")))			 //$NON-NLS-1$ //$NON-NLS-2$
 		{
 			// This is a freshly created ClientSpec
 			//
@@ -300,7 +302,7 @@ public class Connection extends PropertyScope
 		if(m_info != null)
 			return m_info;
 
-		List<Map<String, String>> info = this.exec("info", null, null);
+		List<Map<String, String>> info = this.exec("info", null, null); //$NON-NLS-1$
 		int numInfo = info.size();
 		if(numInfo == 0)
 			return null;
@@ -313,23 +315,23 @@ public class Connection extends PropertyScope
 		String date = null;
 
 		Map<String, String> firstInfo = info.get(0);
-		if("stat".equals(firstInfo.get("code")))
+		if("stat".equals(firstInfo.get("code"))) //$NON-NLS-1$ //$NON-NLS-2$
 		{
 			for(Map.Entry<String, String> entry : firstInfo.entrySet())
 			{
 				String key = entry.getKey();
 				String value = entry.getValue();
-				if(key.equals("userName"))
+				if(key.equals("userName")) //$NON-NLS-1$
 					user = value;
-				else if(key.equals("clientName"))
+				else if(key.equals("clientName")) //$NON-NLS-1$
 					client = value;
-				else if(key.equals("clientRoot"))
+				else if(key.equals("clientRoot")) //$NON-NLS-1$
 					root = value;
-				else if(key.equals("serverAddress"))
+				else if(key.equals("serverAddress")) //$NON-NLS-1$
 					port = value;
-				else if(key.equals("serverDate"))
+				else if(key.equals("serverDate")) //$NON-NLS-1$
 					date = value;
-				else if(key.equals("security") && value.equals("enabled"))
+				else if(key.equals("security") && value.equals("enabled")) //$NON-NLS-1$ //$NON-NLS-2$
 					secure = true;
 			}
 		}
@@ -337,7 +339,7 @@ public class Connection extends PropertyScope
 		{
 			for(Map<String, String> map : info)
 			{
-				String data = map.get("data");
+				String data = map.get("data"); //$NON-NLS-1$
 				if(data != null)
 				{
 					int idx = data.indexOf(':');
@@ -345,17 +347,17 @@ public class Connection extends PropertyScope
 					{
 						String key = data.substring(0, idx);
 						String value = data.substring(idx + 1);
-						if(key.equals("User name"))
+						if(key.equals("User name")) //$NON-NLS-1$
 							user = value;
-						else if(key.equals("Client name"))
+						else if(key.equals("Client name")) //$NON-NLS-1$
 							client = value;
-						else if(key.equals("Client root"))
+						else if(key.equals("Client root")) //$NON-NLS-1$
 							root = value;
-						else if(key.equals("Server address"))
+						else if(key.equals("Server address")) //$NON-NLS-1$
 							port = value;
-						else if(key.equals("Server date"))
+						else if(key.equals("Server date")) //$NON-NLS-1$
 							date = value;
-						else if(key.equals("security") && value.equals("enabled"))
+						else if(key.equals("security") && value.equals("enabled")) //$NON-NLS-1$ //$NON-NLS-2$
 							secure = true;
 					}
 				}
@@ -367,16 +369,16 @@ public class Connection extends PropertyScope
 
 	public DepotFolder[] getDepots() throws CoreException
 	{
-		List<Map<String, String>> depotsData = this.exec("depots");
+		List<Map<String, String>> depotsData = this.exec("depots"); //$NON-NLS-1$
 		int numDepots = depotsData.size();
 		ArrayList<DepotFolder> depots = new ArrayList<DepotFolder>(numDepots);
 		for(int idx = 0; idx < numDepots; ++idx)
 		{
 			Map<String,String> dataMap = depotsData.get(idx);
-			String name = dataMap.get("name");
+			String name = dataMap.get("name"); //$NON-NLS-1$
 			if(name == null)
 			{
-				String data = dataMap.get("data");
+				String data = dataMap.get("data"); //$NON-NLS-1$
 				if(data != null)
 				{
 					Matcher matcher = s_depotPattern.matcher(data);
@@ -387,7 +389,7 @@ public class Connection extends PropertyScope
 			if(name != null)
 			{
 				depots.add(new DepotFolder(this,
-					Collections.<String, String>singletonMap("dir", "//" + name), FileSpec.HEAD));
+					Collections.<String, String>singletonMap("dir", "//" + name), FileSpec.HEAD)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		return depots.toArray(new DepotFolder[depots.size()]);
@@ -409,7 +411,7 @@ public class Connection extends PropertyScope
 		while(--idx >= 0)
 			pathStrings[idx] = paths[idx].toString();
 
-		return this.getFiles(this.exec("fstat", pathStrings), includeDeleted);
+		return this.getFiles(this.exec("fstat", pathStrings), includeDeleted); //$NON-NLS-1$
 	}
 
 	/**
@@ -423,14 +425,14 @@ public class Connection extends PropertyScope
 	 */
 	public long getLastChangeNumber(IPath path, String qualifier) throws CoreException
 	{
-		String stringPath = path.append("...").toString();
+		String stringPath = path.append("...").toString(); //$NON-NLS-1$
 		if(qualifier != null && qualifier.length() > 0)
 			stringPath += '@' + qualifier;
 
-		List<Map<String, String>> data = this.exec("changes", new String[] { "-m", "1", "-s", "submitted", stringPath });
+		List<Map<String, String>> data = this.exec("changes", new String[] { "-m", "1", "-s", "submitted", stringPath }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		if(data.size() == 1)
 		{
-			String change = data.get(0).get("change");
+			String change = data.get(0).get("change"); //$NON-NLS-1$
 			if(change != null)
 				return Long.parseLong(change);
 		}
@@ -439,7 +441,7 @@ public class Connection extends PropertyScope
 
 	public DepotFolder[] getFolders(IPath path, FileSpec.Specifier revision) throws CoreException
 	{
-		List<Map<String, String>> data = this.exec("dirs", new String[] { path.toString() });
+		List<Map<String, String>> data = this.exec("dirs", new String[] { path.toString() }); //$NON-NLS-1$
 		int numDepots = data.size();
 		DepotFolder depots[] = new DepotFolder[numDepots];
 		for(int idx = 0; idx < numDepots; ++idx)
@@ -449,7 +451,7 @@ public class Connection extends PropertyScope
 
 	public Label getLabel(String labelName) throws CoreException
 	{
-		List<Map<String, String>> data = this.exec("label", new String[] { "-o", labelName });
+		List<Map<String, String>> data = this.exec("label", new String[] { "-o", labelName }); //$NON-NLS-1$ //$NON-NLS-2$
 		if(data.size() == 1)
 		{
 			Label label = new Label(this, data.get(0));
@@ -461,7 +463,7 @@ public class Connection extends PropertyScope
 
 	public Label[] getLabels(IPath path) throws CoreException
 	{
-		List<Map<String, String>> data = this.exec("labels", new String[] { path.toString() });
+		List<Map<String, String>> data = this.exec("labels", new String[] { path.toString() }); //$NON-NLS-1$
 		int numLabels = data.size();
 		Label labels[] = new Label[numLabels];
 		for(int idx = 0; idx < numLabels; ++idx)
@@ -471,9 +473,9 @@ public class Connection extends PropertyScope
 			// P4 stupidity. The "labels" command returns a map with "label"
 			// but the "label" command returns "Label". Sigh...
 			//
-			String label = entry.remove("label");
+			String label = entry.remove("label"); //$NON-NLS-1$
 			if(label != null)
-				entry.put("Label", label);
+				entry.put("Label", label); //$NON-NLS-1$
 			labels[idx] = new Label(this, entry);
 		}
 		return labels;
@@ -506,13 +508,13 @@ public class Connection extends PropertyScope
 
 	public void setClientSpec(Map<String, String> values) throws CoreException
 	{
-		this.exec("client", new String[] { "-i" }, values);
+		this.exec("client", new String[] { "-i" }, values); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public String[] where(IPath path) throws CoreException
 	{
-		Map<String, String> result = this.exec("where", new String[] { path.toString() }).get(0);
-		String data = result.get("data");
+		Map<String, String> result = this.exec("where", new String[] { path.toString() }).get(0); //$NON-NLS-1$
+		String data = result.get("data"); //$NON-NLS-1$
 		String paths[] = new String[3];
 		if(data != null)
 		{
@@ -520,13 +522,13 @@ public class Connection extends PropertyScope
 
 			// Locate second path that starts with '//'
 			//
-			int second = data.indexOf("//", 2);
+			int second = data.indexOf("//", 2); //$NON-NLS-1$
 			if(second < 0)
-				throw BuckminsterException.fromMessage("weird respons from p4 where: %s", data);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.weird_responds_from_p4_where_0, data));
 
 			int secondEnd = data.indexOf(' ', second);
 			if(secondEnd < 0)
-				throw BuckminsterException.fromMessage("weird respons from p4 where: %s", data);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.weird_responds_from_p4_where_0, data));
 
 			int third = secondEnd + 1;
 			while(Character.isWhitespace(data.charAt(third)))
@@ -543,9 +545,9 @@ public class Connection extends PropertyScope
 		}
 		else
 		{
-			paths[0] = result.get("depotFile");
-			paths[1] = result.get("clientFile");
-			paths[2] = result.get("path");
+			paths[0] = result.get("depotFile"); //$NON-NLS-1$
+			paths[1] = result.get("clientFile"); //$NON-NLS-1$
+			paths[2] = result.get("path"); //$NON-NLS-1$
 		}
 		return paths;
 	}
@@ -555,10 +557,10 @@ public class Connection extends PropertyScope
 		ArrayList<DepotFile> files = new ArrayList<DepotFile>(fileInfos.size());
 		for(Map<String, String> fileInfo : fileInfos)
 		{
-			String depotPath = fileInfo.get("depotFile");
+			String depotPath = fileInfo.get("depotFile"); //$NON-NLS-1$
 			if(depotPath != null)
 			{
-				if(includeDeleted || !"delete".equals(fileInfo.get("headAction")))
+				if(includeDeleted || !"delete".equals(fileInfo.get("headAction"))) //$NON-NLS-1$ //$NON-NLS-2$
 					files.add(new DepotFile(this, fileInfo));
 			}
 		}
@@ -631,7 +633,7 @@ public class Connection extends PropertyScope
 				try
 				{
 					procErr = process.getErrorStream();
-					InputStreamReader rdr = new InputStreamReader(procErr, "US-ASCII");
+					InputStreamReader rdr = new InputStreamReader(procErr, "US-ASCII"); //$NON-NLS-1$
 					char[] buf = new char[1024];
 					int errCnt = rdr.read(buf);
 					if(errCnt > 0)
@@ -675,13 +677,13 @@ public class Connection extends PropertyScope
 		{
 			for(Map<String, String> result : results)
 			{
-				if("error".equals(result.get("code")))
-					throw BuckminsterException.fromMessage(result.get("data").toString());
+				if("error".equals(result.get("code"))) //$NON-NLS-1$ //$NON-NLS-2$
+					throw BuckminsterException.fromMessage(result.get("data").toString()); //$NON-NLS-1$
 			}
 
 			String error = errorBuilder.toString();
 			if(error.length() == 0)
-				throw BuckminsterException.fromMessage("Process died with exit code %s", Integer.valueOf(exitCode));
+				throw BuckminsterException.fromMessage(Messages.process_died_with_exit_code_0, Integer.valueOf(exitCode));
 
 			throw BuckminsterException.fromMessage(error);
 		}

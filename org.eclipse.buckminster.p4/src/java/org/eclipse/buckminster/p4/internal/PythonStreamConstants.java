@@ -15,7 +15,7 @@ package org.eclipse.buckminster.p4.internal;
  */
 public interface PythonStreamConstants
 {
-	static final String ENCODING = "UTF-8";	// TODO: I guess...
+	static final String ENCODING = "UTF-8";	// TODO: I guess... //$NON-NLS-1$
 	static final char TYPE_NULL     = '0';
 	static final char TYPE_NONE     = 'N';
 	static final char TYPE_ELLIPSIS = '.';

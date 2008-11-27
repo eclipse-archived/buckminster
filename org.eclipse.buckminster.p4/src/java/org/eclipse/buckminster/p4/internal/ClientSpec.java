@@ -15,11 +15,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * The P4 Client specification.
@@ -100,14 +102,14 @@ public class ClientSpec extends DepotObject
 		for(ViewEntry entry : entries)
 		{
 			if(DepotURI.pathEquals(depotPath, entry.getDepotPath()))
-				throw BuckminsterException.fromMessage("Depot path %s is already mapped to %s in client %s",
-						depotPath, entry.getLocalPath(), getClient());
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.depot_path_0_is_already_mapped_to_1_in_client_2,
+						new Object[] {depotPath, entry.getLocalPath(), getClient()}));
 
 			newEntries.add(entry);
 		}
 
 		IPath root = getRoot();
-		IPath clientRoot = new Path("//" + getClient());
+		IPath clientRoot = new Path("//" + getClient()); //$NON-NLS-1$
 		IPath clientPath = null;
 		if(root == null)
 			clientPath = clientRoot.append(localPath.makeRelative());
@@ -129,9 +131,9 @@ public class ClientSpec extends DepotObject
 		}
 
 		if(clientPath == null)
-			throw BuckminsterException.fromMessage("Local path %s is not a root or altroot of client %s", localPath, getClient());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.local_path_0_is_not_a_root_or_altroot_of_client_1, localPath, getClient()));
 
-		newEntries.add(new ViewEntry(depotPath.append("..."), clientPath.append("...")));
+		newEntries.add(new ViewEntry(depotPath.append("..."), clientPath.append("..."))); //$NON-NLS-1$ //$NON-NLS-2$
 		setView(newEntries.toArray(new ViewEntry[newEntries.size()]));
 		return true;
 	}
@@ -169,7 +171,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public Date getAccess() throws CoreException
 	{
-		return getParsedDate("Access");
+		return getParsedDate("Access"); //$NON-NLS-1$
 	}
 
 	/**
@@ -180,7 +182,7 @@ public class ClientSpec extends DepotObject
 	public IPath[] getAltRoots()
 	{
 		IPath[] altRoots;
-		String ars = get("AltRoots");
+		String ars = get("AltRoots"); //$NON-NLS-1$
 		if(ars == null)
 			return Trivial.EMPTY_PATH_ARRAY;
 
@@ -199,7 +201,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getClient()
 	{
-		return get("Client");
+		return get("Client"); //$NON-NLS-1$
 	}
 
 	/**
@@ -209,7 +211,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getDescription()
 	{
-		return get("Description");
+		return get("Description"); //$NON-NLS-1$
 	}
 
 	/**
@@ -220,7 +222,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getHost()
 	{
-		return get("Host");
+		return get("Host"); //$NON-NLS-1$
 	}
 
 	/**
@@ -230,7 +232,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public LineEnd getLineEnd()
 	{
-		return LineEnd.valueOf(get("LineEnd"));
+		return LineEnd.valueOf(get("LineEnd")); //$NON-NLS-1$
 	}
 
 	/**
@@ -266,7 +268,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public String getOwner()
 	{
-		return get("Owner");
+		return get("Owner"); //$NON-NLS-1$
 	}
 
 	/**
@@ -277,8 +279,8 @@ public class ClientSpec extends DepotObject
 	 */
 	public IPath getRoot()
 	{
-		String root = get("Root");
-		return (root == null || root.equals("null"))
+		String root = get("Root"); //$NON-NLS-1$
+		return (root == null || root.equals("null")) //$NON-NLS-1$
 				? null
 				: new Path(root);
 	}
@@ -288,7 +290,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public Date getUpdate() throws CoreException
 	{
-		return getParsedDate("Update");
+		return getParsedDate("Update"); //$NON-NLS-1$
 	}
 
 	/**
@@ -309,7 +311,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isAllWrite()
 	{
-		return isOption("allwrite");
+		return isOption("allwrite"); //$NON-NLS-1$
 	}
 
 	/**
@@ -320,7 +322,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isClobber()
 	{
-		return isOption("clobber");
+		return isOption("clobber"); //$NON-NLS-1$
 	}
 
 	/**
@@ -331,7 +333,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isCompress()
 	{
-		return isOption("compress");
+		return isOption("compress"); //$NON-NLS-1$
 	}
 
 	/**
@@ -342,7 +344,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isLocked()
 	{
-		return isOption("locked");
+		return isOption("locked"); //$NON-NLS-1$
 	}
 
 	/**
@@ -353,7 +355,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isModTime()
 	{
-		return isOption("modtime");
+		return isOption("modtime"); //$NON-NLS-1$
 	}
 
 	/**
@@ -364,7 +366,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public boolean isRmDir()
 	{
-		return isOption("rmdir");
+		return isOption("rmdir"); //$NON-NLS-1$
 	}
 
 	/**
@@ -375,7 +377,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setAllWrite(boolean flag)
 	{
-		setOption("allwrite", "noallwrite", flag);
+		setOption("allwrite", "noallwrite", flag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -394,11 +396,11 @@ public class ClientSpec extends DepotObject
 	{
 		if(altRoots == null || altRoots.length == 0)
 		{
-			m_dirty = (remove("AltRoots") != null);
+			m_dirty = (remove("AltRoots") != null); //$NON-NLS-1$
 			return;
 		}
 		if(altRoots.length > 2)
-			throw new IllegalArgumentException("Max 2 paths allowed for AltRoots");
+			throw new IllegalArgumentException(Messages.max_2_paths_allowed_for_AltRoots);
 
 		StringBuilder bld = new StringBuilder();
 		boolean first = true;
@@ -420,7 +422,7 @@ public class ClientSpec extends DepotObject
 				bld.append(path);
 		}
 		String newRoots = bld.toString();
-		m_dirty = !newRoots.equals(put("AltRoots", newRoots));
+		m_dirty = !newRoots.equals(put("AltRoots", newRoots)); //$NON-NLS-1$
 	}
 
 	/**
@@ -432,7 +434,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setClobber(boolean flag)
 	{
-		setOption("clobber", "noclobber", flag);
+		setOption("clobber", "noclobber", flag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -443,7 +445,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setCompress(boolean flag)
 	{
-		setOption("compress", "nocompress", flag);
+		setOption("compress", "nocompress", flag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -455,9 +457,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setDescription(String description)
 	{
 		if(description == null || description.length() == 0)
-			m_dirty = (remove("Description") != null);
+			m_dirty = (remove("Description") != null); //$NON-NLS-1$
 		else
-			m_dirty = !description.equals(put("Description", description));
+			m_dirty = !description.equals(put("Description", description)); //$NON-NLS-1$
 	}
 
 	/**
@@ -473,9 +475,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setHost(String host)
 	{
 		if(host == null || host.length() == 0)
-			m_dirty = (remove("Host") != null);
+			m_dirty = (remove("Host") != null); //$NON-NLS-1$
 		else
-			m_dirty = !host.equals(put("Host", host));
+			m_dirty = !host.equals(put("Host", host)); //$NON-NLS-1$
 	}
 
 	/**
@@ -487,7 +489,7 @@ public class ClientSpec extends DepotObject
 	{
 		if(lineEnd == null)
 			lineEnd = LineEnd.local;
-		m_dirty = !lineEnd.name().equals(put("LineEnd", lineEnd.name()));
+		m_dirty = !lineEnd.name().equals(put("LineEnd", lineEnd.name())); //$NON-NLS-1$
 	}
 
 	/**
@@ -501,7 +503,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setLocked(boolean flag)
 	{
-		setOption("locked", "unlocked", flag);
+		setOption("locked", "unlocked", flag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -520,7 +522,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setModTime(boolean flag)
 	{
-		setOption("modtime", "nomodtime", flag);
+		setOption("modtime", "nomodtime", flag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -530,9 +532,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setOwner(String owner)
 	{
 		if(owner == null || owner.length() == 0)
-			m_dirty = (remove("Owner") != null);
+			m_dirty = (remove("Owner") != null); //$NON-NLS-1$
 		else
-			m_dirty = !owner.equals(put("Owner", owner));
+			m_dirty = !owner.equals(put("Owner", owner)); //$NON-NLS-1$
 	}
 
 	/**
@@ -543,7 +545,7 @@ public class ClientSpec extends DepotObject
 	 */
 	public void setRmDir(boolean flag)
 	{
-		setOption("rmdir", "normdir", flag);
+		setOption("rmdir", "normdir", flag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -555,9 +557,9 @@ public class ClientSpec extends DepotObject
 	public synchronized void setRoot(IPath root) throws BuckminsterException
 	{
 		if(root == null || !root.isAbsolute())
-			throw new IllegalArgumentException("root cannot be null or relative");
+			throw new IllegalArgumentException(Messages.root_cannot_be_null_or_relative);
 		String osName = root.toOSString();
-		m_dirty = !osName.equals(put("Root", osName));
+		m_dirty = !osName.equals(put("Root", osName)); //$NON-NLS-1$
 	}
 
 	/**
@@ -573,13 +575,13 @@ public class ClientSpec extends DepotObject
 		while(idx < top)
 		{
 			String newView = view[idx].toString();
-			String oldView = put("View" + Integer.toString(idx), newView);
+			String oldView = put("View" + Integer.toString(idx), newView); //$NON-NLS-1$
 			if(!m_dirty && !newView.equals(oldView))
 				m_dirty = true;
 			++idx;
 		}
 
-		while(remove("View" + Integer.toString(idx)) != null)
+		while(remove("View" + Integer.toString(idx)) != null) //$NON-NLS-1$
 		{
 			m_dirty = true;
 			++idx;
@@ -607,7 +609,7 @@ public class ClientSpec extends DepotObject
 
 	private String[] getSplitOptions()
 	{
-		return get("Options").split("\\s+");
+		return get("Options").split("\\s+"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private boolean isOption(String enabled)
@@ -673,7 +675,7 @@ public class ClientSpec extends DepotObject
 		}
 
 		if(!found)
-			throw new IllegalArgumentException("No such option: " + enabled);
+			throw new IllegalArgumentException(NLS.bind(Messages.no_such_option_0, enabled));
 
 		if(changed)
 		{
@@ -684,7 +686,7 @@ public class ClientSpec extends DepotObject
 				bld.append(' ');
 				bld.append(options[idx]);
 			}
-			put("Options", bld.toString());
+			put("Options", bld.toString()); //$NON-NLS-1$
 		}
 		m_dirty = changed;
 	}

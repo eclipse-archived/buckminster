@@ -27,6 +27,7 @@ import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
 import org.eclipse.buckminster.p4.preferences.Server;
 import org.eclipse.buckminster.p4.preferences.ServerParser;
@@ -34,22 +35,23 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 public class P4Settings extends AbstractCommand
 {
-	static private final OptionDescriptor REMOVE = new OptionDescriptor('R', "remove", OptionValueType.REQUIRED);
+	static private final OptionDescriptor REMOVE = new OptionDescriptor('R', Messages.remove, OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor LIST = new OptionDescriptor('L', "list", OptionValueType.NONE);
+	static private final OptionDescriptor LIST = new OptionDescriptor('L', Messages.list, OptionValueType.NONE);
 
-	static private final OptionDescriptor IMPORT = new OptionDescriptor('I', "import", OptionValueType.NONE);
+	static private final OptionDescriptor IMPORT = new OptionDescriptor('I', Messages.importLabel, OptionValueType.NONE);
 
-	static private final OptionDescriptor EXPORT = new OptionDescriptor('E', "export", OptionValueType.REQUIRED);
+	static private final OptionDescriptor EXPORT = new OptionDescriptor('E', Messages.export, OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor OVERWRITE = new OptionDescriptor('O', "overwrite", OptionValueType.NONE);
+	static private final OptionDescriptor OVERWRITE = new OptionDescriptor('O', Messages.overwrite, OptionValueType.NONE);
 
-	static private final OptionDescriptor DEFAULT = new OptionDescriptor('D', "default", OptionValueType.REQUIRED);
+	static private final OptionDescriptor DEFAULT = new OptionDescriptor('D', Messages.defaultLabel, OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor CURRENT = new OptionDescriptor('C', "current", OptionValueType.NONE);
+	static private final OptionDescriptor CURRENT = new OptionDescriptor('C', Messages.current, OptionValueType.NONE);
 
 	private final ArrayList<String> m_unparsed = new ArrayList<String>();
 
@@ -80,7 +82,7 @@ public class P4Settings extends AbstractCommand
 		if(option.is(EXPORT) || option.is(REMOVE) || option.is(DEFAULT))
 		{
 			if(m_selectedOption != null)
-				throw new UsageException("Only one action per invocation please");
+				throw new UsageException(Messages.only_one_action_per_invocation_please);
 
 			m_serverName = option.getValue();
 			m_selectedOption = option;
@@ -90,7 +92,7 @@ public class P4Settings extends AbstractCommand
 		if(option.is(IMPORT) || option.is(LIST))
 		{
 			if(m_selectedOption != null)
-				throw new UsageException("Only one action per invocation please");
+				throw new UsageException(Messages.only_one_action_per_invocation_please);
 
 			m_selectedOption = option;
 			return;
@@ -102,7 +104,7 @@ public class P4Settings extends AbstractCommand
 		if(option.is(CURRENT))
 			m_current = true;
 		else
-			throw new UsageException("Unknown option");
+			throw new UsageException(Messages.unknown_option);
 	}
 
 	@Override
@@ -116,18 +118,18 @@ public class P4Settings extends AbstractCommand
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		if(m_selectedOption == null)
-			throw new UsageException("No action was specified");
+			throw new UsageException(Messages.no_action_was_specified);
 		
 		if(m_overwrite && !m_selectedOption.is(IMPORT))
-			throw new UsageException("--overwrite can only be used with --import");
+			throw new UsageException(Messages.overwrite_can_only_be_used_with_import);
 		
 		if(m_current && !m_selectedOption.is(IMPORT))
-			throw new UsageException("--default can only be used with --import");
+			throw new UsageException(Messages.default_can_only_be_used_with_import);
 
 		if((m_selectedOption.is(EXPORT) || m_selectedOption.is(IMPORT)) && m_unparsed.size() == 1)
 			m_file = new File(m_unparsed.get(0));
 		else if(m_unparsed.size() > 0)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.too_many_arguments);
 
 		if(m_selectedOption.is(LIST))
 			this.list();
@@ -161,12 +163,12 @@ public class P4Settings extends AbstractCommand
 		Server[] servers = prefs.getServers();
 		if(servers.length == 0)
 		{
-			out.println("No p4 servers have been configured");
+			out.println(Messages.no_p4_servers_have_been_configured);
 			return;
 		}
 		for(Server server : prefs.getServers())
 		{
-			out.print(server.isDefaultServer() ? "* " : "  ");
+			out.print(server.isDefaultServer() ? "* " : "  "); //$NON-NLS-1$ //$NON-NLS-2$
 			out.println(server.getName());
 		}
 	}
@@ -188,7 +190,7 @@ public class P4Settings extends AbstractCommand
 			if(m_file == null)
 			{
 				input = System.in;
-				fileName = "stdin";
+				fileName = "stdin"; //$NON-NLS-1$
 			}
 			else
 			{
@@ -217,7 +219,7 @@ public class P4Settings extends AbstractCommand
 		P4Preferences prefs = P4Preferences.getInstance();
 		Server server = prefs.getServer(m_serverName);
 		if(server == null)
-			throw BuckminsterException.fromMessage("No such P4 server: %s", m_serverName);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.no_such_P4_server_0, m_serverName));
 		return server;
 	}
 
