@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -73,13 +74,13 @@ public class UiPlugin extends AbstractUIPlugin
 	//
 	static private final String s_id = "org.eclipse.buckminster.ui"; //$NON-NLS-1$
 
-	static public final String s_themeId = s_id + ".theme";
+	static public final String s_themeId = s_id + ".theme"; //$NON-NLS-1$
 
-	public static final String BUILDER_EDITORS_POINT = s_id + ".incrementalBuilderEditors";
+	public static final String BUILDER_EDITORS_POINT = s_id + ".incrementalBuilderEditors"; //$NON-NLS-1$
 
-	public static final String EPOINT_OPEN_FEED = s_id + ".OpenFeedAction";
+	public static final String EPOINT_OPEN_FEED = s_id + ".OpenFeedAction"; //$NON-NLS-1$
 
-	public static final String ATT_CLASS = "class";
+	public static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
 	static public String getID()
 	{
@@ -247,9 +248,8 @@ public class UiPlugin extends AbstractUIPlugin
 					{
 						// duplicate
 						getLog().log(new Status(IStatus.ERROR, this.getBundle().getSymbolicName(),
-								"Duplicate OpenFeedAction found in plugin: "
-								+ configElement.getDeclaringExtension().getNamespaceIdentifier()
-								+ ". (duplicate ignored)."));
+								NLS.bind(Messages.duplicate_0_found_in_plugin_1, "OpenFeedAction", //$NON-NLS-1$
+								configElement.getDeclaringExtension().getNamespaceIdentifier())));
 					}
 					s_openRssFeedActionHandle = new OpenRssFeedActionHandle(configElement);
 				}
