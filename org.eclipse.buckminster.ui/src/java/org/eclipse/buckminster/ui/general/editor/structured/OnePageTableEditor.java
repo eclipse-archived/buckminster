@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.general.editor.structured;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -98,7 +99,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 		layout.marginWidth = layout.marginHeight = 0;
 		buttonBox1.setLayout(layout);
 
-		setNewButton(UiUtils.createPushButton(buttonBox1, "New", new SelectionAdapter()
+		setNewButton(UiUtils.createPushButton(buttonBox1, Messages.new_label, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -107,7 +108,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			}
 		}));
 
-		setRemoveButton(UiUtils.createPushButton(buttonBox1, "Remove", new SelectionAdapter()
+		setRemoveButton(UiUtils.createPushButton(buttonBox1, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -125,7 +126,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			layout.marginWidth = layout.marginHeight = 0;
 			buttonBox2.setLayout(layout);
 
-			setMoveUpButton(UiUtils.createPushButton(buttonBox2, "Move up", new SelectionAdapter()
+			setMoveUpButton(UiUtils.createPushButton(buttonBox2, Messages.move_up, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -134,7 +135,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 				}
 			}));
 
-			setMoveDownButton(UiUtils.createPushButton(buttonBox2, "Move down", new SelectionAdapter()
+			setMoveDownButton(UiUtils.createPushButton(buttonBox2, Messages.move_down, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -190,7 +191,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 			{
 				if(activator != null)
 					activator.activate();
-				MessageDialog.openError(getShell(), "Error", e.getMessage());
+				MessageDialog.openError(getShell(), Messages.error, e.getMessage());
 				getTableViewer().getTable().select(getLastSelectedRow());
 				return false;
 			}

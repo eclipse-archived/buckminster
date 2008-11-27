@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.ui.general.editor.structured;
 
 import org.eclipse.buckminster.ui.DynamicTableLayout;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -71,7 +72,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		{
 			Object field = m_table.getTableViewerField((T)element, columnIndex);
 			return field == null
-					? ""
+					? "" //$NON-NLS-1$
 					: field.toString();
 		}
 	}
@@ -263,7 +264,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 	{
 		Composite buttonBox = createTableButtonsComposite(parent);
 
-		m_newButton = UiUtils.createPushButton(buttonBox, "New", new SelectionAdapter()
+		m_newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -272,7 +273,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			}
 		});
 
-		m_editButton = UiUtils.createPushButton(buttonBox, "Edit", new SelectionAdapter()
+		m_editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -281,7 +282,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			}
 		});
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, "Remove", new SelectionAdapter()
+		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -292,7 +293,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 		if(m_swapButtonsFlag)
 		{
-			m_moveUpButton = UiUtils.createPushButton(buttonBox, "Move up", new SelectionAdapter()
+			m_moveUpButton = UiUtils.createPushButton(buttonBox, Messages.move_up, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -301,7 +302,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 				}
 			});
 
-			m_moveDownButton = UiUtils.createPushButton(buttonBox, "Move down", new SelectionAdapter()
+			m_moveDownButton = UiUtils.createPushButton(buttonBox, Messages.move_down, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -463,7 +464,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected void focusStackComposite()
 	{
-		Control focusControl = (Control) m_stackLayout.topControl.getData("focusControl");
+		Control focusControl = (Control) m_stackLayout.topControl.getData("focusControl"); //$NON-NLS-1$
 		if(focusControl != null)
 		{
 			focusControl.setFocus();
