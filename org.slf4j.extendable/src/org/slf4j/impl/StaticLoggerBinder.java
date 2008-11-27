@@ -24,7 +24,9 @@
 
 package org.slf4j.impl;
 
+import org.eclipse.osgi.util.NLS;
 import org.slf4j.ILoggerFactory;
+import org.slf4j.Messages;
 
 public class StaticLoggerBinder
 {
@@ -40,7 +42,7 @@ public class StaticLoggerBinder
 	public ILoggerFactory getLoggerFactory()
 	{
 		if(m_loggerFactory == null)
-			throw new UnsupportedOperationException("No ILoggerFactory has been provided");
+			throw new UnsupportedOperationException(NLS.bind(Messages.no_0_has_been_provided, "ILoggerFactory")); //$NON-NLS-1$
 		return m_loggerFactory;
 	}
 
