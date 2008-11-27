@@ -144,7 +144,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		
 		final IWidgetin widgetin = new WidgetWrapper(text);
 		
-		String stringValue = value == null ? "" : value.toString();
+		String stringValue = value == null ? "" : value.toString(); //$NON-NLS-1$
 		
 		text.setText(stringValue);
 		text.setData(stringValue);
@@ -202,7 +202,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		
 		combo.setItems(items);
 		
-		String stringValue = value == null ? "" : value.toString();
+		String stringValue = value == null ? "" : value.toString(); //$NON-NLS-1$
 
 		combo.setText(stringValue);
 		combo.setData(stringValue);
@@ -228,7 +228,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		
 		for(int i = 0; i < getColumns(); i++)
 		{
-			UiUtils.createGridLabel(parent, getColumnHeaders()[i] + ":", 1, 0, SWT.NONE);
+			UiUtils.createGridLabel(parent, getColumnHeaders()[i] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
 			widgetins[i] = getWidgetin(parent, i, fieldValues[i]);
 		}
 		

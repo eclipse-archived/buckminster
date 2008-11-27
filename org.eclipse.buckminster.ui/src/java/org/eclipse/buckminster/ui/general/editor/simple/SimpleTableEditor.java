@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.ui.general.editor.simple;
 
 import org.eclipse.buckminster.ui.DynamicTableLayout;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -71,7 +72,7 @@ public class SimpleTableEditor<T> extends Composite
 		public String getColumnText(Object element, int columnIndex)
 		{
 			Object field = m_table.getEditorField((T)element, columnIndex);
-			return field == null ? "" : field.toString();
+			return field == null ? "" : field.toString(); //$NON-NLS-1$
 		}
 	}
 
@@ -151,7 +152,7 @@ public class SimpleTableEditor<T> extends Composite
 		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
 		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-		m_newButton = UiUtils.createPushButton(buttonBox, "New", new SelectionAdapter()
+		m_newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -160,7 +161,7 @@ public class SimpleTableEditor<T> extends Composite
 			}
 		});
 
-		m_editButton = UiUtils.createPushButton(buttonBox, "Edit", new SelectionAdapter()
+		m_editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -169,7 +170,7 @@ public class SimpleTableEditor<T> extends Composite
 			}
 		});
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, "Remove", new SelectionAdapter()
+		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
