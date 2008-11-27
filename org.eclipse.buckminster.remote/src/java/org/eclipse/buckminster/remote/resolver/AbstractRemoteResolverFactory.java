@@ -39,13 +39,13 @@ public abstract class AbstractRemoteResolverFactory extends AbstractExtension im
 {
 	private static final IEclipsePreferences s_prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
 
-	public static final String PROVIDER_PARAM = "provider";
+	public static final String PROVIDER_PARAM = "provider"; //$NON-NLS-1$
 
-	public static final String PRIORITY_ATTRIBUTE = "priority";
+	public static final String PRIORITY_ATTRIBUTE = "priority"; //$NON-NLS-1$
 
-	public static final String LOGIN_PARAM = "login";
+	public static final String LOGIN_PARAM = "login"; //$NON-NLS-1$
 
-	public static final String PASSWORD_PARAM = "password";
+	public static final String PASSWORD_PARAM = "password"; //$NON-NLS-1$
 
 	public static void addListener(IPreferenceChangeListener listener)
 	{
@@ -83,8 +83,8 @@ public abstract class AbstractRemoteResolverFactory extends AbstractExtension im
 
 			if(provider.isLoginSupported())
 				return new PreferenceDescriptor[] {
-						new PreferenceDescriptor(LOGIN_PARAM, PreferenceType.String, "Login"),
-						new PreferenceDescriptor(PASSWORD_PARAM, PreferenceType.Password, "Password") };
+						new PreferenceDescriptor(LOGIN_PARAM, PreferenceType.String, "Login"), //$NON-NLS-1$
+						new PreferenceDescriptor(PASSWORD_PARAM, PreferenceType.Password, "Password") }; //$NON-NLS-1$
 		}
 		catch(NoSuchProviderException e)
 		{
