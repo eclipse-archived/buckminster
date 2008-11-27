@@ -20,7 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.ui.Messages;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -32,7 +34,7 @@ public class ExportOPMLAction extends AbstractOPMLAction
 	protected void run(OPML opml, Shell shell)
 	{
 		FileDialog saveAs = new FileDialog(getShell(), SWT.SAVE);
-		saveAs.setFileName("component.opml");
+		saveAs.setFileName("component.opml"); //$NON-NLS-1$
 		String path = saveAs.open();
 		
 		if(path == null)
@@ -41,11 +43,11 @@ public class ExportOPMLAction extends AbstractOPMLAction
 		URI fileURI;
 		try
 		{
-			fileURI = new URI("file", path, null);
+			fileURI = new URI("file", path, null); //$NON-NLS-1$
 		}
 		catch(URISyntaxException e)
 		{
-			this.showError("Bad File Name", "The entered file name is not valid", e);
+			this.showError(Messages.bad_file_name, Messages.the_entered_file_name_is_not_valid, e);
 			return;
 		}
 		// Check if file exists
@@ -55,14 +57,13 @@ public class ExportOPMLAction extends AbstractOPMLAction
 		{
 			if(!file.createNewFile())
 			{
-				if(!showConfirm("Confirm Overwrite", "The file '"+file.toString()+"'"
-						+" already exist. Do you want to overwrite?"))
+				if(!showConfirm(Messages.confirm_overwrite, NLS.bind(Messages.the_file_0_already_exists_overwrite_question, file.toString())))
 					return;
 			}
 		}
 		catch(IOException e)
 		{
-			showError("Could not create file", "An error occured when creating the file", e);
+			showError(Messages.could_not_create_file, Messages.an_error_occured_when_creating_the_file, e);
 			return;
 		}
 
@@ -76,11 +77,11 @@ public class ExportOPMLAction extends AbstractOPMLAction
 		}
 		catch(FileNotFoundException e)
 		{
-			showError("Write Error", "Error while opening file for writing",e);
+			showError(Messages.write_error, Messages.error_while_opening_file_for_writing,e);
 		}
 		catch(SAXException e)
 		{
-			showError("OPML Format Error", "Internal problem when generating OPML XML",e);
+			showError(Messages.opml_format_error, Messages.internal_problem_when_generating_opml_xml,e);
 		}
 	}
 }
