@@ -22,6 +22,7 @@ import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.PendingTreeDataNode;
 import org.eclipse.buckminster.generic.ui.model.tree.UISafeTreeRootDataNode;
 import org.eclipse.buckminster.generic.ui.providers.TreeDataNodeContentProvider;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.adapters.ResolutionDataNode;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -78,12 +79,12 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			if(size == 0)
 			{
 				ITreeDataNode[] empty = new ITreeDataNode[1];
-				empty[0] = new BasicTreeDataNode("No components found");
+				empty[0] = new BasicTreeDataNode(Messages.no_components_found);
 				return empty;
 			}
 			ITreeDataNode[] result = new ITreeDataNode[2];
-			ITreeParentDataNode ws = new BasicTreeParentDataNode("Workspace Components");
-			ITreeParentDataNode tp = new BasicTreeParentDataNode("Target Platform Components");  
+			ITreeParentDataNode ws = new BasicTreeParentDataNode(Messages.workspace_components);
+			ITreeParentDataNode tp = new BasicTreeParentDataNode(Messages.target_platform_components);  
 			result[0] = ws;
 			result[1] = tp;
 			
@@ -107,7 +108,7 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 	@Override
 	protected void initialize()
 	{		
-		UISafeTreeRootDataNode hiddenRoot = new UISafeTreeRootDataNode("resolutions");
+		UISafeTreeRootDataNode hiddenRoot = new UISafeTreeRootDataNode(Messages.resolutions);
 		setHiddenRoot(hiddenRoot);
 	}
 	
@@ -165,11 +166,11 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			{
 				AllResolutionsNode pending = new ResolutionsTreeContentProvider.AllResolutionsNode();
 				root.addChild(pending);
-				pending.schedule("getting resolutions");
+				pending.schedule(Messages.getting_resolutions);
 			}
 			else
 			{
-				root.addChild(new BasicTreeDataNode("Nothing to display."));
+				root.addChild(new BasicTreeDataNode(Messages.nothing_to_display_with_dot));
 			}
 		}
 	}

@@ -21,6 +21,7 @@ import org.eclipse.buckminster.generic.ui.utils.UiUtils;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.IOutline;
 import org.eclipse.buckminster.opml.OutlineType;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.adapters.ComponentReference;
 import org.eclipse.core.resources.IFile;
@@ -59,55 +60,55 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 	private Image getProjectImage()
 	{
 		if(m_projectImage == null)
-			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage();
+			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
 		return m_projectImage;
 	}
 	private Image getFolderImage()
 	{
 		if(m_folderImage == null)
-			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage();
+			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage(); //$NON-NLS-1$
 		return m_folderImage;
 	}
 	private Image getFileImage()
 	{
 		if(m_fileImage == null)
-			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage();
+			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
 		return m_fileImage;
 	}
 	private Image getCspecImage()
 	{
 		if(m_cspecImage == null)
-			m_cspecImage = UiPlugin.getImageDescriptor("icons/cspec.png").createImage();
+			m_cspecImage = UiPlugin.getImageDescriptor("icons/cspec.png").createImage(); //$NON-NLS-1$
 		return m_cspecImage;
 	}
 	private Image getComponentImage()
 	{
 		if(m_componentImage == null)
-			m_componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage();
+			m_componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage(); //$NON-NLS-1$
 		return m_componentImage;
 	}
 	private Image getRssImage()
 	{
 		if(m_rssImage == null)
-			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage();
+			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage(); //$NON-NLS-1$
 		return m_rssImage;
 	}
 	private Image getHtmlImage()
 	{
 		if(m_htmlImage == null)
-			m_htmlImage = 	UiUtils.getImageDescriptor("file.html").createImage();
+			m_htmlImage = 	UiUtils.getImageDescriptor("file.html").createImage(); //$NON-NLS-1$
 		return m_htmlImage;
 	}
 	private Image getDependantImage()
 	{
 		if(m_dependantImage == null)
-			m_dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage();
+			m_dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage(); //$NON-NLS-1$
 		return m_dependantImage;
 	}
 	private Image getDependencyImage()
 	{
 		if(m_dependencyImage == null)
-			m_dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage();
+			m_dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage(); //$NON-NLS-1$
 		return m_dependencyImage;
 	}
 	
@@ -214,13 +215,13 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			String type = r.getComponentTypeId();
 			if(type != null)
 			{
-				bld.append(" : ", StyledString.DECORATIONS_STYLER);
+				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(type, StyledString.DECORATIONS_STYLER);
 			}
 			IVersion version = r.getVersion();
 			if(version != null)
 			{
-				bld.append(" - ", StyledString.DECORATIONS_STYLER);
+				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(version.toString(), StyledString.DECORATIONS_STYLER);
 			}
 			return bld;
@@ -232,12 +233,12 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			ComponentRequest req = ref.getComponentRequest();
 			if(req.getComponentTypeID() != null)
 			{
-				bld.append(" : ", StyledString.DECORATIONS_STYLER);
+				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(req.getComponentTypeID(), StyledString.DECORATIONS_STYLER);
 			}
 			if(req.getVersionDesignator() != null)
 			{
-				bld.append(" - ", StyledString.DECORATIONS_STYLER);
+				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(req.getVersionDesignator().toString(), StyledString.DECORATIONS_STYLER);
 			}
 			return bld;
@@ -245,11 +246,11 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			
 		if(element instanceof ICSpecData)
 		{
-			return new StyledString("Component Specification (CSpec)");
+			return new StyledString(Messages.component_specification);
 		}
 		if(element instanceof IOPML)
 		{
-			return new StyledString("Component Information");
+			return new StyledString(Messages.component_information);
 		}
 		if(element instanceof IOutline)
 		{

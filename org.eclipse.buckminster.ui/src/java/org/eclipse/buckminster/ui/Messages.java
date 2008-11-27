@@ -102,6 +102,10 @@ public class Messages extends NLS
 
 	public static String component;
 
+	public static String component_information;
+
+	public static String component_specification;
+
 	public static String component_type;
 
 	public static String component_type_with_colon;
@@ -200,6 +204,8 @@ public class Messages extends NLS
 
 	public static String generators;
 
+	public static String getting_resolutions;
+
 	public static String grater_or_equal_to_version;
 
 	public static String group;
@@ -256,9 +262,13 @@ public class Messages extends NLS
 
 	public static String no_component_is_selected;
 
+	public static String no_components_found;
+
 	public static String no_ompl;
 
 	public static String not_yet_implemented;
+
+	public static String nothing_to_display_with_dot;
 
 	public static String ok;
 
@@ -328,6 +338,8 @@ public class Messages extends NLS
 
 	public static String resolution_service_with_colon;
 
+	public static String resolutions;
+
 	public static String resolve_and_materialize;
 
 	public static String resolve_to_wizard;
@@ -359,6 +371,8 @@ public class Messages extends NLS
 	public static String special_requirements;
 
 	public static String splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
+
+	public static String target_platform_components;
 
 	public static String target_platform_with_colon;
 
@@ -405,6 +419,8 @@ public class Messages extends NLS
 	public static String version_with_colon;
 
 	public static String wiki_with_colon;
+
+	public static String workspace_components;
 
 	public static String workspace_with_colon;
 
