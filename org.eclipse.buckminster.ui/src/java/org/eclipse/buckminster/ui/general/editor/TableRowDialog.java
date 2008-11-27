@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.general.editor;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.events.HelpEvent;
@@ -91,13 +92,13 @@ public abstract class TableRowDialog extends TitleAreaDialog
 		
 		if(m_newRow)
 		{
-			setTitle("New Row");
-			setMessage("Enter new row fields.");
+			setTitle(Messages.new_row);
+			setMessage(Messages.enter_new_row_fields);
 		}
 		else
 		{
-			setTitle("Edit Row");
-			setMessage("Edit row fields.");
+			setTitle(Messages.edit_row);
+			setMessage(Messages.edit_row_fields);
 		}
 
 		return contents;

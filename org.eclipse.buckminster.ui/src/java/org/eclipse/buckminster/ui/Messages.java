@@ -124,6 +124,12 @@ public class Messages extends NLS
 
 	public static String edit_property;
 
+	public static String edit_row;
+
+	public static String edit_row_fields;
+
+	public static String enter_new_row_fields;
+
 	public static String equal_to_version;
 
 	public static String error_during_action_perform;
@@ -213,6 +219,8 @@ public class Messages extends NLS
 	public static String new_label;
 
 	public static String new_property;
+
+	public static String new_row;
 
 	public static String no_component_is_selected;
 
