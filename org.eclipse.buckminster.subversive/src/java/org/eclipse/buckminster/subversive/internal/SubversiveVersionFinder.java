@@ -30,7 +30,8 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 	public SubversiveVersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
-		m_session = new SubversiveSession(provider.getURI(query.getProperties()), null, query.getRevision(), query.getTimestamp(), query.getContext());
+		m_session = new SubversiveSession(provider.getURI(query.getProperties()), null, query.getRevision(), query
+				.getTimestamp(), query.getContext());
 	}
 
 	@Override
@@ -44,7 +45,8 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 	{
 		NodeQuery query = getQuery();
 		String uri = getProvider().getURI(query.getProperties());
-		SubversiveSession checkerSession = new SubversiveSession(uri, versionMatch.getBranchOrTag(), versionMatch.getRevision(), versionMatch.getTimestamp(), query.getContext());
+		SubversiveSession checkerSession = new SubversiveSession(uri, versionMatch.getBranchOrTag(), versionMatch
+				.getRevision(), versionMatch.getTimestamp(), query.getContext());
 		try
 		{
 			// We list the folder rather then just obtaining the entry since the listing
@@ -63,7 +65,7 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 	{
 		if(!m_session.hasTrunkStructure())
 			return Collections.emptyList();
-			
+
 		URI url = m_session.getSVNRootUrl(branches);
 		SVNEntry[] list = m_session.listFolder(url, monitor);
 		if(list.length == 0)
@@ -79,6 +81,8 @@ public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
 		SVNEntry entry = m_session.getRootEntry(monitor);
-		return entry == null ? null : new RevisionEntry(null, null, entry.revision);
+		return entry == null
+				? null
+				: new RevisionEntry(null, null, entry.revision);
 	}
 }

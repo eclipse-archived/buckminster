@@ -47,14 +47,49 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  */
 public class SubversiveReaderType extends CatalogReaderType
 {
+	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor)
+	{
+		IPath location = Path.fromOSString(workingCopy.toString());
+		IPath checkedPath = workingCopy.isFile()
+				? location.removeLastSegments(1)
+				: location;
+		if(!checkedPath.append(SVNUtility.getSVNFolderName()).toFile().exists())
+			return null;
+
+		ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+		try
+		{
+			SVNChangeStatus[] st = SVNUtility.status(proxy, location.toString(), Depth.IMMEDIATES,
+					ISVNConnector.Options.INCLUDE_UNCHANGED, new SVNNullProgressMonitor());
+			if(st == null || st.length == 0)
+				return null;
+
+			SVNUtility.reorder(st, true);
+			return st[0];
+		}
+		catch(Exception ex)
+		{
+			return null;
+		}
+		finally
+		{
+			proxy.dispose();
+			MonitorUtils.complete(monitor);
+		}
+	}
+
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
 	{
 		return null;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
+	@Override
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		return new SubversiveRemoteFileReader(this, providerMatch, monitor);
+		SVNChangeStatus localInfo = getLocalInfo(workingCopy, monitor);
+		return localInfo == null
+				? null
+				: new Date(localInfo.lastChangedDate);
 	}
 
 	@Override
@@ -77,22 +112,12 @@ public class SubversiveReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
+	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
 		SVNChangeStatus localInfo = getLocalInfo(workingCopy, monitor);
 		return localInfo == null
-			? null
-			: new Date(localInfo.lastChangedDate);
-	}
-
-	@Override
-	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
-		MonitorUtils.complete(monitor);
-		return info == null
-				? null
-				: info.url;
+				? -1
+				: localInfo.lastChangedRevision;
 	}
 
 	@Override
@@ -114,38 +139,19 @@ public class SubversiveReaderType extends CatalogReaderType
 		}
 	}
 
-	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor)
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
-		IPath location = Path.fromOSString(workingCopy.toString());
-		IPath checkedPath = workingCopy.isFile() ? location.removeLastSegments(1) : location;
-		if(!checkedPath.append(SVNUtility.getSVNFolderName()).toFile().exists())
-			return null;
-
-		ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-		try
-		{
-			SVNChangeStatus[] st = SVNUtility.status(proxy, location.toString(), Depth.IMMEDIATES, ISVNConnector.Options.INCLUDE_UNCHANGED, new SVNNullProgressMonitor());
-			if(st == null || st.length == 0)
-				return null;
-
-			SVNUtility.reorder(st, true);
-			return st[0];
-		}
-		catch (Exception ex)
-		{
-			return null;
-		}
-		finally
-		{
-			proxy.dispose();
-			MonitorUtils.complete(monitor);
-		}
+		return new SubversiveRemoteFileReader(this, providerMatch, monitor);
 	}
+
 	@Override
-	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		SVNChangeStatus localInfo = getLocalInfo(workingCopy, monitor);
-		return localInfo == null ? -1 : localInfo.lastChangedRevision;
+		SVNEntryInfo info = SVNUtility.getSVNInfo(workingCopy);
+		MonitorUtils.complete(monitor);
+		return info == null
+				? null
+				: info.url;
 	}
 
 	@Override
@@ -165,7 +171,7 @@ public class SubversiveReaderType extends CatalogReaderType
 	 */
 	@Override
 	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		SubversiveSession.createCommonRoots(context);
 		VersionMatch vm = cr.getVersionMatch();

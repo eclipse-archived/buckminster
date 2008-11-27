@@ -53,15 +53,17 @@ import org.eclipse.team.svn.core.svnstorage.SVNRepositoryLocation.BaseCredential
 import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
- * <p>The Subversive repository will be able to use reader checks if a repository contains the three recommended directories
- * <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is
- * interpreted as no <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. In
- * order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must
- * contain the path element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path
- * will be considered a <code>module</code> path. If no <code>trunk</code> element is present in the path, the
- * last element will be considered the <code>module</code></p>
- * <p>The repository URL may also contain a query part that in turn may
- * have four different flags:
+ * <p>
+ * The Subversive repository will be able to use reader checks if a repository contains the three recommended
+ * directories <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory
+ * is interpreted as no <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. In
+ * order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must contain the
+ * path element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path will be considered
+ * a <code>module</code> path. If no <code>trunk</code> element is present in the path, the last element will be
+ * considered the <code>module</code>
+ * </p>
+ * <p>
+ * The repository URL may also contain a query part that in turn may have four different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
  * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
@@ -71,7 +73,8 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
- * </dl></p>
+ * </dl>
+ * </p>
  * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
@@ -126,6 +129,11 @@ public class SubversiveSession implements Closeable
 					&& Trivial.equalsAllowNull(m_password, that.m_password);
 		}
 
+		public String getPassword()
+		{
+			return m_password;
+		}
+
 		public URI getSvnURL()
 		{
 			return m_svnURL;
@@ -134,11 +142,6 @@ public class SubversiveSession implements Closeable
 		public String getUser()
 		{
 			return m_user;
-		}
-
-		public String getPassword()
-		{
-			return m_password;
 		}
 
 		@Override
@@ -185,6 +188,31 @@ public class SubversiveSession implements Closeable
 			return m_password;
 		}
 
+		public String getProxyHost()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyHost();
+		}
+
+		public String getProxyPassword()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPassword();
+		}
+
+		public int getProxyPort()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPort();
+		}
+
+		public String getProxyUserName()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyUserName();
+		}
+
+		public String getRealmToSave()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getRealmToSave();
+		}
+
 		public int getSSHPort()
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPort();
@@ -215,31 +243,6 @@ public class SubversiveSession implements Closeable
 			return m_username;
 		}
 
-		public String getProxyHost()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyHost();
-		}
-
-		public String getProxyPassword()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPassword();
-		}
-
-		public int getProxyPort()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPort();
-		}
-
-		public String getProxyUserName()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyUserName();
-		}
-
-		public String getRealmToSave()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getRealmToSave();
-		}
-
 		public boolean isProxyAuthenticationEnabled()
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isProxyAuthenticationEnabled();
@@ -248,6 +251,16 @@ public class SubversiveSession implements Closeable
 		public boolean isProxyEnabled()
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isProxyEnabled();
+		}
+
+		public boolean isSaveCredentialsEnabled()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveCredentialsEnabled();
+		}
+
+		public boolean isSaveProxyPassword()
+		{
+			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveProxyPassword();
 		}
 
 		public boolean isSSHPrivateKeyPassphraseSaved()
@@ -268,16 +281,6 @@ public class SubversiveSession implements Closeable
 		public boolean isSSLSavePassphrase()
 		{
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSLSavePassphrase();
-		}
-
-		public boolean isSaveCredentialsEnabled()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveCredentialsEnabled();
-		}
-
-		public boolean isSaveProxyPassword()
-		{
-			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveProxyPassword();
 		}
 
 		public boolean prompt(Object arg0, String arg1)
@@ -306,34 +309,6 @@ public class SubversiveSession implements Closeable
 
 	private static SVNEntry[] s_emptyFolder = new SVNEntry[0];
 
-	private final VersionSelector m_branchOrTag;
-
-	private IRepositoryLocation m_repositoryLocation;
-
-	private final ISVNConnector m_proxy;
-
-	private final IPath m_module;
-
-	private final boolean m_moduleAfterBranch;
-
-	private final boolean m_moduleAfterTag;
-
-	private final boolean m_moduleBeforeBranch;
-
-	private final boolean m_moduleBeforeTag;
-
-	private final boolean m_trunkStructure;
-
-	private final String m_password;
-
-	private final SVNRevision m_revision;
-
-	private final IPath m_subModule;
-
-	private final String m_urlLeadIn;
-
-	private final String m_username;
-
 	public static SVNRevision getSVNRevision(long revision, Date timestamp)
 	{
 		if(revision == -1)
@@ -348,47 +323,115 @@ public class SubversiveSession implements Closeable
 		return SVNRevision.fromNumber(revision);
 	}
 
-	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
-
-	private static final String UNKNOWN_ROOT_PREFIX = SubversiveSession.class.getPackage().getName() + ".root."; //$NON-NLS-1$
-
-	private static void addUnknownRoot(Map<String,String> properties, RepositoryAccess ra)
+	public static URI getURIParent(URI uri)
 	{
-		synchronized(properties)
+		if(uri == null)
+			return null;
+
+		String path = uri.toString();
+		if(path == null)
+			return null;
+
+		int lastSlash = path.lastIndexOf('/');
+		if(lastSlash == path.length() - 1 && lastSlash > 0)
 		{
-			int maxNum = -1;
-			String raStr = ra.toString();
-			for(Map.Entry<String, String> entries : properties.entrySet())
-			{
-				String key = entries.getKey();
-				if(key.startsWith(UNKNOWN_ROOT_PREFIX))
-				{
-					int lastDot = key.lastIndexOf('.');
-					if(lastDot < 0)
-						continue;
-					
-					try
-					{
-						int keyNum = Integer.parseInt(key.substring(lastDot + 1));
-						if(maxNum < keyNum)
-							maxNum = keyNum;
-					}
-					catch(NumberFormatException e)
-					{
-						continue;
-					}
-					if(entries.getValue().equals(raStr))
-						//
-						// Entry is already present. Don't recreate
-						//
-						return;
-				}
-			}	
-			properties.put(UNKNOWN_ROOT_PREFIX + (maxNum + 1), raStr);
+			path = path.substring(0, path.length() - 1);
+			lastSlash = path.lastIndexOf('/');
+		}
+		if(lastSlash < 0)
+			return null;
+
+		String parentPath = path.substring(0, lastSlash);
+		try
+		{
+			return new URI(parentPath);
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
 		}
 	}
 
-	private static void clearUnknownRoots(Map<String,String> properties)
+	/**
+	 * Create a string in the form &quot;url[revision]&quot;
+	 * 
+	 * @param url
+	 *            The url to append
+	 * @param revision
+	 *            The revision to append
+	 * @return A string representation denoting an explicit revision of the URL
+	 */
+	static String cacheKey(URI url, SVNRevision revision)
+	{
+		StringBuilder bld = new StringBuilder();
+		String protocol = url.getScheme();
+		int port = url.getPort();
+		bld.append(protocol);
+		bld.append("://"); //$NON-NLS-1$
+		if(url.getHost() != null)
+		{
+			bld.append(url.getHost());
+			if(port != -1)
+			{
+				bld.append(":"); //$NON-NLS-1$
+				bld.append(port);
+			}
+		}
+
+		bld.append(url.getPath());
+		bld.append('#');
+		bld.append(revision);
+		return bld.toString();
+	}
+
+	static void createCommonRoots(RMContext context) throws CoreException
+	{
+		List<RepositoryAccess> unknownRoots = getUnknownRoots(context.getBindingProperties());
+		if(unknownRoots.size() == 0)
+			return;
+
+		Collection<RepositoryAccess> sourceRoots = unknownRoots;
+		if(unknownRoots.size() > 1)
+		{
+			// Get all common roots with a segment count of at least 1
+			//
+			for(;;)
+			{
+				Collection<RepositoryAccess> commonRoots = getCommonRootsStep(sourceRoots);
+				if(commonRoots == sourceRoots)
+					break;
+
+				// Common roots were found. Iterate again to find commons
+				// amongst the commons
+				//
+				sourceRoots = commonRoots;
+			}
+		}
+
+		// Create the needed repositories so that Subclipse doesn't create every single
+		// root for us.
+		//
+		SVNRemoteStorage storage = SVNRemoteStorage.instance();
+		for(RepositoryAccess root : sourceRoots)
+		{
+			IRepositoryLocation location = storage.newRepositoryLocation();
+			location.setUrl(root.getSvnURL().toString());
+			location.setPassword(root.getPassword());
+			location.setUsername(root.getUser());
+			storage.addRepositoryLocation(location);
+		}
+		try
+		{
+			storage.saveConfiguration();
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		clearUnknownRoots(context.getBindingProperties());
+	}
+
+	private static void clearUnknownRoots(Map<String, String> properties)
 	{
 		synchronized(properties)
 		{
@@ -402,7 +445,169 @@ public class SubversiveSession implements Closeable
 		}
 	}
 
-	private static List<RepositoryAccess> getUnknownRoots(Map<String,String> properties)
+	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source)
+			throws CoreException
+	{
+		Collection<RepositoryAccess> commonRoots = null;
+		for(RepositoryAccess repoAccess : source)
+		{
+			URI url = repoAccess.getSvnURL();
+			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
+			for(RepositoryAccess repoAccessCmp : source)
+			{
+				if(repoAccess == repoAccessCmp)
+					continue;
+
+				URI cmp = repoAccessCmp.getSvnURL();
+				if(!(Trivial.equalsAllowNull(url.getHost(), cmp.getHost())
+						&& Trivial.equalsAllowNull(url.getScheme(), cmp.getScheme()) && url.getPort() == cmp.getPort()))
+					continue;
+
+				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
+				int maxSegs = urlSegs.length;
+				if(maxSegs > cmpSegs.length)
+					maxSegs = cmpSegs.length;
+
+				int idx;
+				for(idx = 0; idx < maxSegs; ++idx)
+					if(!urlSegs[idx].equals(cmpSegs[idx]))
+						break;
+
+				if(idx < 1)
+					continue;
+
+				String user = repoAccess.getUser();
+				String cmpUser = repoAccessCmp.getUser();
+				if(user == null)
+					user = cmpUser;
+				else
+				{
+					if(!(cmpUser == null || user.equals(cmpUser)))
+						continue;
+				}
+
+				String password = repoAccess.getPassword();
+				String cmpPassword = repoAccessCmp.getPassword();
+				if(password == null)
+					password = cmpPassword;
+				else
+				{
+					if(!(cmpPassword == null || password.equals(cmpPassword)))
+						continue;
+				}
+
+				StringBuilder bld = new StringBuilder();
+				bld.append(url.getScheme());
+				bld.append("://"); //$NON-NLS-1$
+				if(url.getHost() != null)
+				{
+					bld.append(url.getHost());
+					if(url.getPort() != -1)
+					{
+						bld.append(":"); //$NON-NLS-1$
+						bld.append(url.getPort());
+					}
+				}
+				for(int pdx = 0; pdx < idx; ++pdx)
+				{
+					String seg = urlSegs[pdx];
+					bld.append('/');
+					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						//
+						// Assume that common root is above this folder
+						//
+						break;
+
+					bld.append(seg);
+				}
+				try
+				{
+					if(commonRoots == null)
+						commonRoots = new HashSet<RepositoryAccess>();
+					commonRoots.add(new RepositoryAccess(new URI(bld.toString()), user, password));
+				}
+				catch(URISyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+		}
+
+		if(commonRoots == null)
+			//
+			// No common roots found
+			//
+			return source;
+
+		// Add all SVNUrl's for which we don't have a common root
+		//
+		Set<RepositoryAccess> rogueRoots = null;
+		for(RepositoryAccess repoAccess : source)
+		{
+			boolean found = false;
+			URI url = repoAccess.getSvnURL();
+			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
+			for(RepositoryAccess repoAccessCmp : commonRoots)
+			{
+				URI cmp = repoAccessCmp.getSvnURL();
+				if(!(Trivial.equalsAllowNull(url.getHost(), cmp.getHost())
+						&& Trivial.equalsAllowNull(url.getScheme(), cmp.getScheme()) && url.getPort() == cmp.getPort()))
+					continue;
+
+				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
+				int maxSegs = cmpSegs.length;
+				if(maxSegs > urlSegs.length)
+					continue;
+
+				int idx;
+				for(idx = 0; idx < maxSegs; ++idx)
+					if(!urlSegs[idx].equals(cmpSegs[idx]))
+						break;
+
+				if(idx < maxSegs)
+					continue;
+
+				String user = repoAccess.getUser();
+				String cmpUser = repoAccessCmp.getUser();
+				if(!(user == null || cmpUser == null || user.equals(cmpUser)))
+					continue;
+
+				String password = repoAccess.getPassword();
+				String cmpPassword = repoAccessCmp.getPassword();
+				if(!(password == null || cmpPassword == null || password.equals(cmpPassword)))
+					continue;
+
+				found = true;
+				break;
+			}
+			if(found)
+				continue;
+
+			if(rogueRoots == null)
+				rogueRoots = new HashSet<RepositoryAccess>();
+			rogueRoots.add(repoAccess);
+		}
+		if(rogueRoots != null)
+			commonRoots.addAll(rogueRoots);
+		return commonRoots;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Map<String, SVNEntry[]> getListCache(Map<UUID, Object> ctxUserCache)
+	{
+		synchronized(ctxUserCache)
+		{
+			Map<String, SVNEntry[]> listCache = (Map<String, SVNEntry[]>)ctxUserCache.get(CACHE_KEY_LIST_CACHE);
+			if(listCache == null)
+			{
+				listCache = Collections.synchronizedMap(new HashMap<String, SVNEntry[]>());
+				ctxUserCache.put(CACHE_KEY_LIST_CACHE, listCache);
+			}
+			return listCache;
+		}
+	}
+
+	private static List<RepositoryAccess> getUnknownRoots(Map<String, String> properties)
 	{
 		synchronized(properties)
 		{
@@ -433,18 +638,71 @@ public class SubversiveSession implements Closeable
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Map<String, SVNEntry[]> getListCache(Map<UUID, Object> ctxUserCache)
+	private final VersionSelector m_branchOrTag;
+
+	private IRepositoryLocation m_repositoryLocation;
+
+	private final ISVNConnector m_proxy;
+
+	private final IPath m_module;
+
+	private final boolean m_moduleAfterBranch;
+
+	private final boolean m_moduleAfterTag;
+
+	private final boolean m_moduleBeforeBranch;
+
+	private final boolean m_moduleBeforeTag;
+
+	private final boolean m_trunkStructure;
+
+	private final String m_password;
+
+	private final SVNRevision m_revision;
+
+	private final IPath m_subModule;
+
+	private final String m_urlLeadIn;
+
+	private final String m_username;
+
+	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
+
+	private static final String UNKNOWN_ROOT_PREFIX = SubversiveSession.class.getPackage().getName() + ".root."; //$NON-NLS-1$
+
+	private static void addUnknownRoot(Map<String, String> properties, RepositoryAccess ra)
 	{
-		synchronized(ctxUserCache)
+		synchronized(properties)
 		{
-			Map<String, SVNEntry[]> listCache = (Map<String, SVNEntry[]>)ctxUserCache.get(CACHE_KEY_LIST_CACHE);
-			if(listCache == null)
+			int maxNum = -1;
+			String raStr = ra.toString();
+			for(Map.Entry<String, String> entries : properties.entrySet())
 			{
-				listCache = Collections.synchronizedMap(new HashMap<String, SVNEntry[]>());
-				ctxUserCache.put(CACHE_KEY_LIST_CACHE, listCache);
+				String key = entries.getKey();
+				if(key.startsWith(UNKNOWN_ROOT_PREFIX))
+				{
+					int lastDot = key.lastIndexOf('.');
+					if(lastDot < 0)
+						continue;
+
+					try
+					{
+						int keyNum = Integer.parseInt(key.substring(lastDot + 1));
+						if(maxNum < keyNum)
+							maxNum = keyNum;
+					}
+					catch(NumberFormatException e)
+					{
+						continue;
+					}
+					if(entries.getValue().equals(raStr))
+						//
+						// Entry is already present. Don't recreate
+						//
+						return;
+				}
 			}
-			return listCache;
+			properties.put(UNKNOWN_ROOT_PREFIX + (maxNum + 1), raStr);
 		}
 	}
 
@@ -615,9 +873,8 @@ public class SubversiveSession implements Closeable
 				if(rank > 200 && !repoIsSSH)
 					continue;
 
-				if(!(repoProto.equals(ourProto)
-				|| (repoProto.equals("svn") && ourProto.equals("http")) //$NON-NLS-1$ //$NON-NLS-2$
-				|| (repoProto.equals("http") && ourProto.equals("svn")) //$NON-NLS-1$ //$NON-NLS-2$
+				if(!(repoProto.equals(ourProto) || (repoProto.equals("svn") && ourProto.equals("http")) //$NON-NLS-1$ //$NON-NLS-2$
+						|| (repoProto.equals("http") && ourProto.equals("svn")) //$NON-NLS-1$ //$NON-NLS-2$
 				|| ((ourProto.equals("svn") || ourProto.equals("http")) && repoIsSSH))) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 
@@ -676,22 +933,23 @@ public class SubversiveSession implements Closeable
 			synchronized(userCache)
 			{
 				m_proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-			    m_proxy.setTouchUnresolved(false);
-			    m_proxy.setCommitMissingFiles(false);
-			    m_proxy.setSSLCertificateCacheEnabled(true);
-			    m_proxy.setUsername(m_username);
-			    m_proxy.setPassword(m_password);
-			    m_proxy.setCredentialsCacheEnabled(true);
+				m_proxy.setTouchUnresolved(false);
+				m_proxy.setCommitMissingFiles(false);
+				m_proxy.setSSLCertificateCacheEnabled(true);
+				m_proxy.setUsername(m_username);
+				m_proxy.setPassword(m_password);
+				m_proxy.setCredentialsCacheEnabled(true);
 				if(bestMatch == null)
 				{
-				    addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username, m_password));
+					addUnknownRoot(context.getBindingProperties(),
+							new RepositoryAccess(ourRoot, m_username, m_password));
 				}
 				else
 				{
 					SVNUtility.configureProxy(m_proxy, m_repositoryLocation);
 					IOptionProvider optionProvider = SVNTeamPlugin.instance().getOptionProvider();
-				    ISVNCredentialsPrompt externalPrompt = optionProvider.getCredentialsPrompt();
-				    if (externalPrompt != null)
+					ISVNCredentialsPrompt externalPrompt = optionProvider.getCredentialsPrompt();
+					if(externalPrompt != null)
 						m_proxy.setPrompt(new BaseCredentialsPromptWrapper(externalPrompt, m_repositoryLocation));
 				}
 			}
@@ -712,11 +970,6 @@ public class SubversiveSession implements Closeable
 	public void close()
 	{
 		m_proxy.dispose();
-	}
-
-	ISVNConnector getSVNProxy()
-	{
-		return m_proxy;
 	}
 
 	public long getLastChangeNumber() throws CoreException
@@ -772,6 +1025,38 @@ public class SubversiveSession implements Closeable
 		{
 			return super.toString();
 		}
+	}
+
+	SVNEntry getDirEntry(URI uri, SVNRevision revision, IProgressMonitor monitor) throws CoreException
+	{
+		URI parent = getURIParent(uri);
+		if(parent == null)
+			return null;
+
+		String path = uri.getPath();
+		String entryPath = path.substring(path.lastIndexOf('/') + 1);
+		SVNEntry[] entries = listFolder(parent, monitor);
+		for(SVNEntry entry : entries)
+		{
+			if(entryPath.equals(entry.path))
+				return entry;
+		}
+		return null;
+	}
+
+	IRepositoryLocation getRepositoryLocation()
+	{
+		return m_repositoryLocation;
+	}
+
+	SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException
+	{
+		return getDirEntry(getSVNUrl(null), m_revision, monitor);
+	}
+
+	ISVNConnector getSVNProxy()
+	{
+		return m_proxy;
 	}
 
 	/**
@@ -884,57 +1169,6 @@ public class SubversiveSession implements Closeable
 		}
 	}
 
-	SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException
-	{
-		return getDirEntry(getSVNUrl(null), m_revision, monitor);
-	}
-
-	SVNEntry getDirEntry(URI uri, SVNRevision revision, IProgressMonitor monitor) throws CoreException
-	{
-		URI parent = getURIParent(uri);
-		if(parent == null)
-			return null;
-
-		String path = uri.getPath();
-		String entryPath = path.substring(path.lastIndexOf('/') + 1);
-		SVNEntry[] entries = listFolder(parent, monitor);
-		for(SVNEntry entry : entries)
-		{
-			if(entryPath.equals(entry.path))
-				return entry;
-		}
-		return null;
-	}
-
-	public static URI getURIParent(URI uri)
-	{
-		if(uri == null)
-			return null;
-
-		String path = uri.toString();
-		if(path == null)
-			return null;
-
-		int lastSlash = path.lastIndexOf('/');
-		if(lastSlash == path.length() - 1 && lastSlash > 0)
-		{
-			path = path.substring(0, path.length() - 1);
-			lastSlash = path.lastIndexOf('/');
-		}
-		if(lastSlash < 0)
-			return null;
-
-		String parentPath = path.substring(0, lastSlash);
-		try
-		{
-			return new URI(parentPath);
-		}
-		catch(URISyntaxException e)
-		{
-			return null;
-		}
-	}
-
 	SVNEntry[] listFolder(URI url, IProgressMonitor monitor) throws CoreException
 	{
 		// Synchronizing on an interned string should make it impossible for two
@@ -952,7 +1186,8 @@ public class SubversiveSession implements Closeable
 			try
 			{
 				logger.debug(Messages.listing_remote_folder_0, key);
-				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision), ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
+				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision),
+						ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 				if(list == null || list.length == 0)
 				{
 					logger.debug(Messages.remote_folder_had_no_entries_0, key);
@@ -967,7 +1202,8 @@ public class SubversiveSession implements Closeable
 				if(msg != null)
 				{
 					msg = msg.toLowerCase();
-					if(msg.contains(Messages.exception_part_non_existent) || msg.contains(Messages.exception_part_not_found))
+					if(msg.contains(Messages.exception_part_non_existent)
+							|| msg.contains(Messages.exception_part_not_found))
 					{
 						logger.debug(Messages.remote_folder_does_not_exist_0, key);
 						return s_emptyFolder;
@@ -980,235 +1216,5 @@ public class SubversiveSession implements Closeable
 				monitor.done();
 			}
 		}
-	}
-
-	/**
-	 * Create a string in the form &quot;url[revision]&quot;
-	 * 
-	 * @param url
-	 *            The url to append
-	 * @param revision
-	 *            The revision to append
-	 * @return A string representation denoting an explicit revision of the URL
-	 */
-	static String cacheKey(URI url, SVNRevision revision)
-	{
-		StringBuilder bld = new StringBuilder();
-		String protocol = url.getScheme();
-		int port = url.getPort();
-		bld.append(protocol);
-		bld.append("://"); //$NON-NLS-1$
-		if(url.getHost() != null)
-		{
-			bld.append(url.getHost());
-			if(port != -1)
-			{
-				bld.append(":"); //$NON-NLS-1$
-				bld.append(port);
-			}
-		}
-
-		bld.append(url.getPath());
-		bld.append('#');
-		bld.append(revision);
-		return bld.toString();
-	}
-
-	IRepositoryLocation getRepositoryLocation()
-	{
-		return m_repositoryLocation;
-	}
-
-	static void createCommonRoots(RMContext context) throws CoreException
-	{
-		List<RepositoryAccess> unknownRoots = getUnknownRoots(context.getBindingProperties());
-		if(unknownRoots.size() == 0)
-			return;
-
-		Collection<RepositoryAccess> sourceRoots = unknownRoots;
-		if(unknownRoots.size() > 1)
-		{
-			// Get all common roots with a segment count of at least 1
-			//
-			for(;;)
-			{
-				Collection<RepositoryAccess> commonRoots = getCommonRootsStep(sourceRoots);
-				if(commonRoots == sourceRoots)
-					break;
-
-				// Common roots were found. Iterate again to find commons
-				// amongst the commons
-				//
-				sourceRoots = commonRoots;
-			}
-		}
-
-		// Create the needed repositories so that Subclipse doesn't create every single
-		// root for us.
-		//
-		SVNRemoteStorage storage = SVNRemoteStorage.instance();
-		for(RepositoryAccess root : sourceRoots)
-		{
-			IRepositoryLocation location = storage.newRepositoryLocation();
-			location.setUrl(root.getSvnURL().toString());
-			location.setPassword(root.getPassword());
-			location.setUsername(root.getUser());
-			storage.addRepositoryLocation(location);
-		}
-		try
-		{
-			storage.saveConfiguration();
-		}
-		catch(Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		clearUnknownRoots(context.getBindingProperties());
-	}
-
-	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source) throws CoreException
-	{
-		Collection<RepositoryAccess> commonRoots = null;
-		for(RepositoryAccess repoAccess : source)
-		{
-			URI url = repoAccess.getSvnURL();
-			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
-			for(RepositoryAccess repoAccessCmp : source)
-			{
-				if(repoAccess == repoAccessCmp)
-					continue;
-
-				URI cmp = repoAccessCmp.getSvnURL();
-				if(!(Trivial.equalsAllowNull(url.getHost(),cmp.getHost()) && Trivial.equalsAllowNull(url.getScheme(),cmp.getScheme()) 
-						&& url.getPort() == cmp.getPort()))
-					continue;
-
-				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
-				int maxSegs = urlSegs.length;
-				if(maxSegs > cmpSegs.length)
-					maxSegs = cmpSegs.length;
-
-				int idx;
-				for(idx = 0; idx < maxSegs; ++idx)
-					if(!urlSegs[idx].equals(cmpSegs[idx]))
-						break;
-
-				if(idx < 1)
-					continue;
-
-				String user = repoAccess.getUser();
-				String cmpUser = repoAccessCmp.getUser();
-				if(user == null)
-					user = cmpUser;
-				else
-				{
-					if(!(cmpUser == null || user.equals(cmpUser)))
-						continue;
-				}
-
-				String password = repoAccess.getPassword();
-				String cmpPassword = repoAccessCmp.getPassword();
-				if(password == null)
-					password = cmpPassword;
-				else
-				{
-					if(!(cmpPassword == null || password.equals(cmpPassword)))
-						continue;
-				}
-
-				StringBuilder bld = new StringBuilder();
-				bld.append(url.getScheme());
-				bld.append("://"); //$NON-NLS-1$
-				if(url.getHost() != null)
-				{
-					bld.append(url.getHost());
-					if(url.getPort() != -1)
-					{
-						bld.append(":"); //$NON-NLS-1$
-						bld.append(url.getPort());
-					}
-				}
-				for(int pdx = 0; pdx < idx; ++pdx)
-				{
-					String seg = urlSegs[pdx];
-					bld.append('/');
-					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						//
-						// Assume that common root is above this folder
-						//
-						break;
-
-					bld.append(seg);
-				}
-				try
-				{
-					if(commonRoots == null)
-						commonRoots = new HashSet<RepositoryAccess>();
-					commonRoots.add(new RepositoryAccess(new URI(bld.toString()), user, password));
-				}
-				catch(URISyntaxException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			}
-		}
-
-		if(commonRoots == null)
-			//
-			// No common roots found
-			//
-			return source;
-
-		// Add all SVNUrl's for which we don't have a common root
-		//
-		Set<RepositoryAccess> rogueRoots = null;
-		for(RepositoryAccess repoAccess : source)
-		{
-			boolean found = false;
-			URI url = repoAccess.getSvnURL();
-			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
-			for(RepositoryAccess repoAccessCmp : commonRoots)
-			{
-				URI cmp = repoAccessCmp.getSvnURL();
-				if(!(Trivial.equalsAllowNull(url.getHost(),cmp.getHost()) && Trivial.equalsAllowNull(url.getScheme(),cmp.getScheme()) 
-						&& url.getPort() == cmp.getPort()))
-					continue;
-
-				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
-				int maxSegs = cmpSegs.length;
-				if(maxSegs > urlSegs.length)
-					continue;
-
-				int idx;
-				for(idx = 0; idx < maxSegs; ++idx)
-					if(!urlSegs[idx].equals(cmpSegs[idx]))
-						break;
-
-				if(idx < maxSegs)
-					continue;
-
-				String user = repoAccess.getUser();
-				String cmpUser = repoAccessCmp.getUser();
-				if(!(user == null || cmpUser == null || user.equals(cmpUser)))
-					continue;
-
-				String password = repoAccess.getPassword();
-				String cmpPassword = repoAccessCmp.getPassword();
-				if(!(password == null || cmpPassword == null || password.equals(cmpPassword)))
-					continue;
-
-				found = true;
-				break;
-			}
-			if(found)
-				continue;
-
-			if(rogueRoots == null)
-				rogueRoots = new HashSet<RepositoryAccess>();
-			rogueRoots.add(repoAccess);
-		}
-		if(rogueRoots != null)
-			commonRoots.addAll(rogueRoots);
-		return commonRoots;
 	}
 }

@@ -52,8 +52,8 @@ import org.eclipse.team.svn.core.operation.file.GetFileContentOperation;
  * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is interpreted as no
  * <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. The URL used as the
  * repository identifier must contain the path element trunk. Anything that follows the <code>trunk</code> element in
- * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in
- * turn may have four different flags:
+ * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in turn
+ * may have four different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
  * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
@@ -71,19 +71,23 @@ import org.eclipse.team.svn.core.operation.file.GetFileContentOperation;
 public class SubversiveRemoteFileReader extends AbstractRemoteReader
 {
 	private final SubversiveSession m_session;
+
 	private final SVNEntry[] m_topEntries;
+
 	/**
 	 * @param readerType
 	 * @param rInfo
 	 * @param withResolvedBranch
 	 * @throws CoreException
 	 */
-	public SubversiveRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	public SubversiveRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor)
+			throws CoreException
 	{
 		super(readerType, rInfo);
 		VersionMatch vm = rInfo.getVersionMatch();
 		VersionSelector branchOrTag = vm.getBranchOrTag();
-		m_session = new SubversiveSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo.getNodeQuery().getContext());
+		m_session = new SubversiveSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(),
+				rInfo.getNodeQuery().getContext());
 		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
 		if(m_topEntries.length == 0)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, m_session));
@@ -103,7 +107,9 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 12);
 		try
 		{
-			m_session.getSVNProxy().checkout(new SVNEntryRevisionReference(m_session.getSVNUrl(null).toString(), null, m_session.getRevision()), destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.IGNORE_EXTERNALS, svnMon);
+			m_session.getSVNProxy().checkout(
+					new SVNEntryRevisionReference(m_session.getSVNUrl(null).toString(), null, m_session.getRevision()),
+					destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.IGNORE_EXTERNALS, svnMon);
 			success = true;
 		}
 		catch(SVNConnectorException e)
@@ -134,8 +140,102 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 	}
 
 	@Override
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		Logger logger = CorePlugin.getLogger();
+		IPath path = Path.fromPortableString(fileName);
+		String topEntry = path.segment(0);
+
+		boolean found = false;
+		for(SVNEntry dirEntry : m_topEntries)
+		{
+			if(topEntry.equals(dirEntry.path))
+			{
+				found = true;
+				break;
+			}
+		}
+
+		URI url = m_session.getSVNUrl(fileName);
+		SVNRevision revision = m_session.getRevision();
+		String key = SubversiveSession.cacheKey(url, revision);
+		if(!found)
+			throw new FileNotFoundException(key);
+
+		File destFile = null;
+		OutputStream output = null;
+		InputStream input = null;
+
+		MonitorUtils.begin(monitor, 200);
+		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(MonitorUtils.subMonitor(monitor, 180), 100);
+
+		try
+		{
+			logger.debug(NLS.bind(Messages.reading_remote_file_0, key));
+			ISVNConnector proxy = m_session.getSVNProxy();
+			destFile = this.createTempFile();
+			output = new FileOutputStream(destFile);
+			proxy.streamFileContent(new SVNEntryRevisionReference(url.toString(), null, revision),
+					GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
+			IOUtils.close(output);
+
+			if(destFile.length() == 0)
+			{
+				// Suspect file not found
+				//
+				if(m_session.getDirEntry(url, revision, MonitorUtils.subMonitor(monitor, 20)) == null)
+				{
+					logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
+					throw new FileNotFoundException(url.toString());
+				}
+			}
+			else
+				MonitorUtils.worked(monitor, 20);
+
+			FileHandle fh = new FileHandle(fileName, destFile, true);
+			destFile = null;
+			return fh;
+		}
+		catch(SVNConnectorException e)
+		{
+			// Unwind until we get a message and create an IOException.
+			//
+			Throwable p = e;
+			Throwable t;
+			String msg = e.getMessage();
+			while(msg == null && (t = p.getCause()) != null)
+				p = t;
+			if(msg == null)
+				msg = e.toString();
+			else
+			{
+				String lcMsg = msg.toLowerCase();
+				if(lcMsg.contains(Messages.exception_part_file_not_found)
+						|| lcMsg.contains(Messages.exception_part_path_not_found)
+						|| lcMsg.contains(Messages.exception_part_unable_to_find_repository_location))
+				{
+					if(logger.isDebugEnabled())
+						logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
+					throw new FileNotFoundException(key);
+				}
+			}
+			IOException ioe = new IOException(msg);
+			ioe.initCause(p);
+			throw ioe;
+		}
+		finally
+		{
+			IOUtils.close(input);
+			IOUtils.close(output);
+			if(destFile != null)
+				destFile.delete();
+			monitor.done();
+		}
+	}
+
+	@Override
 	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-	throws CoreException, IOException
+			throws CoreException, IOException
 	{
 		ArrayList<String> names = null;
 		for(SVNEntry dirEntry : m_topEntries)
@@ -171,98 +271,6 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 			if(dirEntry.nodeKind == Kind.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
 				fileName = fileName + "/"; //$NON-NLS-1$
 			files.add(fileName);
-		}
-	}
-
-	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException,
-			IOException
-	{
-		Logger logger = CorePlugin.getLogger();
-		IPath path = Path.fromPortableString(fileName);
-		String topEntry = path.segment(0);
-
-		boolean found = false;
-		for(SVNEntry dirEntry : m_topEntries)
-		{
-			if(topEntry.equals(dirEntry.path))
-			{
-				found = true;
-				break;
-			}
-		}
-
-		URI url = m_session.getSVNUrl(fileName);
-		SVNRevision revision = m_session.getRevision();
-		String key = SubversiveSession.cacheKey(url, revision);
-		if(!found)
-			throw new FileNotFoundException(key);
-
-		File destFile = null;
-		OutputStream output = null;
-		InputStream input = null;
-
-		MonitorUtils.begin(monitor, 200);
-		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(MonitorUtils.subMonitor(monitor, 180), 100);
-
-		try
-		{
-			logger.debug(NLS.bind(Messages.reading_remote_file_0, key));
-			ISVNConnector proxy = m_session.getSVNProxy();
-			destFile = this.createTempFile();
-			output = new FileOutputStream(destFile);
-			proxy.streamFileContent(new SVNEntryRevisionReference(url.toString(), null, revision), GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
-			IOUtils.close(output);
-			
-			if(destFile.length() == 0)
-			{
-				// Suspect file not found
-				//
-				if(m_session.getDirEntry(url, revision, MonitorUtils.subMonitor(monitor, 20)) == null)
-				{
-					logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
-					throw new FileNotFoundException(url.toString());
-				}
-			}
-			else
-				MonitorUtils.worked(monitor, 20);
-
-			FileHandle fh = new FileHandle(fileName, destFile, true);
-			destFile = null;
-			return fh;
-		}
-		catch(SVNConnectorException e)
-		{
-			// Unwind until we get a message and create an IOException.
-			//
-			Throwable p = e;
-			Throwable t;
-			String msg = e.getMessage();
-			while(msg == null && (t = p.getCause()) != null)
-				p = t;
-			if(msg == null)
-				msg = e.toString();
-			else
-			{
-				String lcMsg = msg.toLowerCase();
-				if(lcMsg.contains(Messages.exception_part_file_not_found) || lcMsg.contains(Messages.exception_part_path_not_found) || lcMsg.contains(Messages.exception_part_unable_to_find_repository_location))
-				{
-					if(logger.isDebugEnabled())
-						logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
-					throw new FileNotFoundException(key);
-				}
-			}
-			IOException ioe = new IOException(msg);
-			ioe.initCause(p);
-			throw ioe;
-		}
-		finally
-		{
-			IOUtils.close(input);
-			IOUtils.close(output);
-			if(destFile != null)
-				destFile.delete();
-			monitor.done();
 		}
 	}
 }

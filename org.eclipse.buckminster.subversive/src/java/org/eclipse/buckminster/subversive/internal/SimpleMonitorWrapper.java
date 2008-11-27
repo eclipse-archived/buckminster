@@ -19,6 +19,15 @@ import org.eclipse.team.svn.core.utility.SubProgressMonitorWithInfo;
  */
 public class SimpleMonitorWrapper implements ISVNProgressMonitor
 {
+	public static ISVNProgressMonitor beginTask(IProgressMonitor monitor, int ticks)
+	{
+		if(monitor == null)
+			return new SVNNullProgressMonitor();
+
+		monitor.beginTask(null, ticks);
+		return new SimpleMonitorWrapper(monitor, ticks);
+	}
+
 	private final SubProgressMonitorWithInfo m_monitor;
 
 	private SimpleMonitorWrapper(IProgressMonitor monitor, int ticks)
@@ -41,14 +50,5 @@ public class SimpleMonitorWrapper implements ISVNProgressMonitor
 		}
 		else
 			m_monitor.unknownProgress(current);
-	}
-
-	public static ISVNProgressMonitor beginTask(IProgressMonitor monitor, int ticks)
-	{
-		if(monitor == null)
-			return new SVNNullProgressMonitor();
-
-		monitor.beginTask(null, ticks);
-		return new SimpleMonitorWrapper(monitor, ticks);
 	}
 }
