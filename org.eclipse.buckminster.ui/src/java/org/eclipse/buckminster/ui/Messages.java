@@ -24,6 +24,8 @@ public class Messages extends NLS
 
 	public static String action_properties;
 
+	public static String action;
+
 	public static String actions_of;
 
 	public static String actor_name_with_colon;
@@ -35,6 +37,8 @@ public class Messages extends NLS
 	public static String always_with_colon;
 
 	public static String an_error_occured_when_creating_the_file;
+
+	public static String artifact;
 
 	public static String assign_console_support_with_colon;
 
@@ -100,6 +104,8 @@ public class Messages extends NLS
 
 	public static String grater_or_equal_to_version;
 
+	public static String group;
+
 	public static String installer_hints;
 
 	public static String internal_problem_when_generating_opml_xml;
@@ -136,6 +142,8 @@ public class Messages extends NLS
 
 	public static String product_alias_with_colon;
 
+	public static String product_artifact;
+
 	public static String product_artifacts;
 
 	public static String product_base_path_with_colon;
@@ -146,15 +154,21 @@ public class Messages extends NLS
 
 	public static String properties;
 
+	public static String public_label;
+
 	public static String public_with_colon;
 
 	public static String remove;
+
+	public static String show_details;
 
 	public static String splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
 
 	public static String the_entered_file_name_is_not_valid;
 
 	public static String the_file_0_already_exists_overwrite_question;
+
+	public static String type;
 
 	public static String type_with_colon;
 

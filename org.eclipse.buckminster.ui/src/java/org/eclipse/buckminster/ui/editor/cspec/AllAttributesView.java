@@ -20,6 +20,7 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.editor.cspec.CSpecEditor.CSpecEditorTab;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -84,26 +85,26 @@ public class AllAttributesView extends Composite
 				case 2:
 					return Boolean.valueOf(((TopLevelAttributeBuilder)element).isPublic()).toString();
 				default:
-					return "";
+					return ""; //$NON-NLS-1$
 			}
 		}
 
 		private String getAttributeType(TopLevelAttributeBuilder builder)
 		{
 			if (builder instanceof ActionBuilder)
-				return "Action";
+				return Messages.action;
 			else if(builder instanceof ActionArtifactBuilder)
-				return "Product Artifact";
+				return Messages.product_artifact;
 			else if(builder instanceof ArtifactBuilder)
-				return "Artifact";
+				return Messages.artifact;
 			else if(builder instanceof GroupBuilder)
-				return "Group";
+				return Messages.group;
 			
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 
-	private static final String[] TABLE_TITLES = {"Name", "Type", "Public"};
+	private static final String[] TABLE_TITLES = {Messages.name, Messages.type, Messages.public_label};
 	
 	private static final int[] TABLE_WEIGHTS = {60, 20, 20};
 
@@ -136,7 +137,7 @@ public class AllAttributesView extends Composite
 				| SWT.FULL_SELECTION);
 		
 		Button detailButton = new Button(this, SWT.PUSH);
-		detailButton.setText("Show Details");
+		detailButton.setText(Messages.show_details);
 		detailButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		detailButton.addSelectionListener(new SelectionAdapter()
 		{
@@ -249,11 +250,11 @@ public class AllAttributesView extends Composite
 	{
 		if(builder instanceof ActionBuilder)
 		{			
-			if(m_cspecEditor.getActionsEditor().show(((ActionBuilder)builder), "General"))
+			if(m_cspecEditor.getActionsEditor().show(((ActionBuilder)builder), Messages.general))
 				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
 		} else if(builder instanceof ActionArtifactBuilder)
 		{
-			if(m_cspecEditor.getActionsEditor().show(m_aaMap.get(builder), "Products"))
+			if(m_cspecEditor.getActionsEditor().show(m_aaMap.get(builder), Messages.products))
 			{	
 				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
 				m_cspecEditor.getActionsTable().showProductArtifact((ActionArtifactBuilder)builder);
@@ -261,12 +262,12 @@ public class AllAttributesView extends Composite
 		}
 		else if(builder instanceof ArtifactBuilder)
 		{
-			if(m_cspecEditor.getArtifactsEditor().show(((ArtifactBuilder)builder), "General"))
+			if(m_cspecEditor.getArtifactsEditor().show(((ArtifactBuilder)builder), Messages.general))
 				m_cspecEditor.switchTab(CSpecEditorTab.ARTIFACTS);
 		}
 		else if(builder instanceof GroupBuilder)
 		{
-			if(m_cspecEditor.getGroupsEditor().show(((GroupBuilder)builder), "General"))
+			if(m_cspecEditor.getGroupsEditor().show(((GroupBuilder)builder), Messages.general))
 				m_cspecEditor.switchTab(CSpecEditorTab.GROUPS);
 		}
 	}
