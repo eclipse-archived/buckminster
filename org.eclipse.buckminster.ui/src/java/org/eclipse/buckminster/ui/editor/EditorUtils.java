@@ -94,7 +94,7 @@ public class EditorUtils
 		
 		File cspecFile = null;
 		
-		if(protocol == null || "file".equals(protocol))
+		if(protocol == null || "file".equals(protocol)) //$NON-NLS-1$
 		{
 			cspecFile = new File(uri);
 		}

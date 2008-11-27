@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.dialogs.Property;
 import org.eclipse.buckminster.ui.dialogs.PropertyDialog;
@@ -29,6 +30,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -192,7 +194,7 @@ public class Properties extends Composite
 		{
 			if(prop.getKey().compareTo(key) == 0)
 			{
-				throw BuckminsterException.fromMessage("Duplicity of key '%s'", key);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.duplicity_of_key_0, key));
 			}
 			if(prop.getKey().compareTo(key) > 0)
 			{
@@ -213,7 +215,7 @@ public class Properties extends Composite
 
 	private void addPropertyErrorDialog(Throwable e)
 	{
-		MessageDialog.openError(this.getShell(), "Error", e.getMessage() + " - property will not be added");
+		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added, e.getMessage()));
 	}
 
 	private void createButtonBox(Composite parent)
@@ -222,7 +224,7 @@ public class Properties extends Composite
 		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
 		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-		m_newButton = UiUtils.createPushButton(buttonBox, "New", new SelectionAdapter()
+		m_newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -231,7 +233,7 @@ public class Properties extends Composite
 			}
 		});
 
-		m_editButton = UiUtils.createPushButton(buttonBox, "Edit", new SelectionAdapter()
+		m_editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -240,7 +242,7 @@ public class Properties extends Composite
 			}
 		});
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, "Remove", new SelectionAdapter()
+		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -284,7 +286,7 @@ public class Properties extends Composite
 
 		table.setHeaderVisible(false);
 
-		String[] columnNames = new String[] { "Key", "Value" };
+		String[] columnNames = new String[] { Messages.key, Messages.value };
 		int[] columnWeights = new int[] { 5, 15 };
 
 		table.setHeaderVisible(true);
