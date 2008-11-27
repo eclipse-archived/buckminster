@@ -7,7 +7,7 @@ public class TagRule extends MultiLineRule
 
 	public TagRule(IToken token)
 	{
-		super("<", ">", token);
+		super("<", ">", token); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
