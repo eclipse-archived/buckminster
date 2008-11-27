@@ -66,6 +66,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -290,7 +291,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		catch(InvocationTargetException e)
 		{
 			CoreException t = BuckminsterException.wrap(e);
-			String msg = Messages.unable_to_save_file_0 + path;
+			String msg = NLS.bind(Messages.unable_to_save_file_0, path);
 			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getSite().getShell(), null, msg, t.getStatus());
 		}

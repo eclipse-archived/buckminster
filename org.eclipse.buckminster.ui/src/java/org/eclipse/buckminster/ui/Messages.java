@@ -36,9 +36,13 @@ public class Messages extends NLS
 
 	public static String add_opml_bookmarks_to_rss_reader;
 
+	public static String advisor_nodes;
+
 	public static String alias;
 
 	public static String all_attributes;
+
+	public static String allow_circular_dependency_with_colon;
 
 	public static String always_with_colon;
 
@@ -58,15 +62,23 @@ public class Messages extends NLS
 
 	public static String attribute_installer_hints_with_dash;
 
+	public static String attribute_qualification;
+
+	public static String attributes_with_colon;
+
 	public static String bad_file_name;
 
 	public static String base_path_with_colon;
+
+	public static String branch_or_tag_path_with_colon;
 
 	public static String browse_with_dots;
 
 	public static String buckminster_extensions;
 
 	public static String cannot_get_attribute_names_for_the_selected_component;
+
+	public static String category;
 
 	public static String command;
 
@@ -82,9 +94,13 @@ public class Messages extends NLS
 
 	public static String confirm_overwrite;
 
+	public static String continue_on_error;
+
 	public static String contributor;
 
 	public static String could_not_create_file;
+
+	public static String cquery_context_url_set_to_0;
 
 	public static String cspec_editor_dependency;
 
@@ -130,6 +146,8 @@ public class Messages extends NLS
 
 	public static String filter_with_colon;
 
+	public static String folder_with_colon;
+
 	public static String from_excl_to_excl_version;
 
 	public static String from_excl_to_incl_version;
@@ -170,11 +188,25 @@ public class Messages extends NLS
 
 	public static String main;
 
+	public static String matched_component_type_with_colon;
+
+	public static String materialization_with_colon;
+
+	public static String move_down;
+
+	public static String move_up;
+
+	public static String mutable_level_with_colon;
+
 	public static String name;
 
 	public static String name_cannnot_be_empty;
 
 	public static String name_or_component_has_to_be_entered;
+
+	public static String name_pattern;
+
+	public static String name_pattern_with_colon;
 
 	public static String name_with_colon;
 
@@ -193,6 +225,16 @@ public class Messages extends NLS
 	public static String opml_format_error;
 
 	public static String optional;
+
+	public static String overlay_folder;
+
+	public static String overlay_folder_for_prototyping;
+
+	public static String override;
+
+	public static String override_version;
+
+	public static String overwrite_existing_node_with_same_pattern;
 
 	public static String path;
 
@@ -222,6 +264,10 @@ public class Messages extends NLS
 
 	public static String properties;
 
+	public static String properties_with_colon;
+
+	public static String prune_according_to_attributes_with_colon;
+
 	public static String public_label;
 
 	public static String public_with_colon;
@@ -232,17 +278,49 @@ public class Messages extends NLS
 
 	public static String remove;
 
+	public static String resolution_scope;
+
+	public static String resolution_service_with_colon;
+
+	public static String resolve_and_materialize;
+
+	public static String resolve_to_wizard;
+
+	public static String resource_map;
+
+	public static String revision_must_be_a_valid_integer_number;
+
+	public static String revision_with_colon;
+
+	public static String rmap_url_with_colon;
+
+	public static String selection_criteria;
+
 	public static String short_description_with_colon;
 
 	public static String show_details;
 
+	public static String skip_component_with_colon;
+
+	public static String source_level_with_colon;
+
+	public static String special_requirements;
+
 	public static String splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
+
+	public static String target_platform_with_colon;
 
 	public static String the_component_must_have_a_name;
 
 	public static String the_entered_file_name_is_not_valid;
 
 	public static String the_file_0_already_exists_overwrite_question;
+
+	public static String the_name_pattern_cannot_be_empty;
+
+	public static String timestamp_must_conform_to_format_with_colon;
+
+	public static String timestamp_with_colon;
 
 	public static String type;
 
@@ -256,6 +334,10 @@ public class Messages extends NLS
 
 	public static String url_for_query_with_colon;
 
+	public static String use_resource_map;
+
+	public static String user_properties;
+
 	public static String value;
 
 	public static String value_with_colon;
@@ -267,6 +349,8 @@ public class Messages extends NLS
 	public static String version_with_colon;
 
 	public static String wiki_with_colon;
+
+	public static String workspace_with_colon;
 
 	public static String write_error;
 
