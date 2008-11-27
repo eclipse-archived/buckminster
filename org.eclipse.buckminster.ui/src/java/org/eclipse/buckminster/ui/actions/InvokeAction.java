@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -65,7 +66,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class InvokeAction extends AbstractCSpecAction
 {
-	private static final String LAST_ACTION_PROPERTIES_FILE = "lastActionPropertiesFile";
+	private static final String LAST_ACTION_PROPERTIES_FILE = "lastActionPropertiesFile"; //$NON-NLS-1$
 
 	private static Comparator<Attribute> s_attributeComparator = new Comparator<Attribute>()
 	{
@@ -123,7 +124,7 @@ public class InvokeAction extends AbstractCSpecAction
 				@Override
 				public String getText(Object element)
 				{
-					return element == null ? "" : ((Attribute)element).getName();
+					return element == null ? "" : ((Attribute)element).getName(); //$NON-NLS-1$
 				}
 			});
 			m_viewer.addSelectionChangedListener(new ISelectionChangedListener()
@@ -137,13 +138,13 @@ public class InvokeAction extends AbstractCSpecAction
 			m_viewer.setInput(m_attributes);
 
 			Group propertiesGroup = new Group(composite, SWT.NONE);
-			propertiesGroup.setText("Action properties");
+			propertiesGroup.setText(Messages.action_properties);
 			GridLayout layout = new GridLayout(3, false);
 			layout.marginHeight = 0;
 			layout.marginWidth = 3;
 			propertiesGroup.setLayout(layout);
 			propertiesGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-			m_propertiesFileText = UiUtils.createLabeledText(propertiesGroup, "File:", SWT.NONE, new ModifyListener()
+			m_propertiesFileText = UiUtils.createLabeledText(propertiesGroup, Messages.file_with_colon, SWT.NONE, new ModifyListener()
 			{
 				public void modifyText(ModifyEvent e)
 				{
@@ -151,7 +152,7 @@ public class InvokeAction extends AbstractCSpecAction
 					if(txt == null || new File(txt).exists())
 						setErrorMessage(null);
 					else
-						setErrorMessage("File does not exist");
+						setErrorMessage(Messages.file_does_not_exist);
 					m_propertiesFile = txt;
 				}
 			});
@@ -160,14 +161,14 @@ public class InvokeAction extends AbstractCSpecAction
 
 			m_propertiesFileBrowseButton = new Button(propertiesGroup, SWT.PUSH);
 			m_propertiesFileBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-			m_propertiesFileBrowseButton.setText("Browse...");
+			m_propertiesFileBrowseButton.setText(Messages.browse_with_dots);
 			m_propertiesFileBrowseButton.addSelectionListener(new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent se)
 				{
 					FileDialog dlg = new FileDialog(getShell());
-					dlg.setFilterExtensions(new String[] { "*.properties" });
+					dlg.setFilterExtensions(new String[] { "*.properties" }); //$NON-NLS-1$
 					m_propertiesFileText.setText(TextUtils.notNullString(dlg.open()));
 				}
 			});
@@ -264,7 +265,7 @@ public class InvokeAction extends AbstractCSpecAction
 				{
 					public void run()
 					{
-						ErrorDialog.openError(null, "Action error", null, status);
+						ErrorDialog.openError(null, Messages.action_error, null, status);
 					}	
 				});
 				return Status.OK_STATUS;
@@ -282,7 +283,7 @@ public class InvokeAction extends AbstractCSpecAction
 		}
 		catch(CoreException e)
 		{
-			UiUtils.openError(shell, "Errors during action perform", e);
+			UiUtils.openError(shell, Messages.error_during_action_perform, e);
 			return;
 		}
 
@@ -292,7 +293,7 @@ public class InvokeAction extends AbstractCSpecAction
 			m_propertiesFile = null;
 
 		Collections.sort(viableAttributes, s_attributeComparator);
-		ActionsDialog dialog = new ActionsDialog(shell, "Actions of " + cspec.getName(),
+		ActionsDialog dialog = new ActionsDialog(shell, Messages.actions_of + cspec.getName(),
 			viableAttributes);
 		if(dialog.open() != Window.OK)
 			return;
