@@ -70,7 +70,7 @@ public abstract class SelectionHelper
 		if(vr != null)
 		{
 			String vrs = vr.toString();
-			if(!"0.0.0".equals(vrs))
+			if(!"0.0.0".equals(vrs)) //$NON-NLS-1$
 			{
 				try
 				{
