@@ -13,6 +13,7 @@ package org.eclipse.buckminster.ui.actions;
 import java.io.File;
 
 import org.eclipse.buckminster.ui.ExternalFileEditorInput;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class BlankQueryAction implements IObjectActionDelegate
 {
-	public static final String TEMP_FILE_PREFIX = "bmqtmp-";
+	public static final String TEMP_FILE_PREFIX = "bmqtmp-"; //$NON-NLS-1$
 
 	private IWorkbenchPart m_targetPart;
 
@@ -39,16 +40,16 @@ public class BlankQueryAction implements IObjectActionDelegate
 	{
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchPartSite site = m_targetPart.getSite();
-		IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery");
+		IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery"); //$NON-NLS-1$
 		try
 		{
-			File tempFile = File.createTempFile(TEMP_FILE_PREFIX, ".cquery");
+			File tempFile = File.createTempFile(TEMP_FILE_PREFIX, ".cquery"); //$NON-NLS-1$
 			tempFile.deleteOnExit();
 			site.getPage().openEditor(new ExternalFileEditorInput(tempFile), ed.getId());
 		}
 		catch(Exception e)
 		{
-			UiUtils.openError(site.getShell(), "Unable to open editor", e);
+			UiUtils.openError(site.getShell(), Messages.unable_to_open_editor, e);
 		}
 	}
 

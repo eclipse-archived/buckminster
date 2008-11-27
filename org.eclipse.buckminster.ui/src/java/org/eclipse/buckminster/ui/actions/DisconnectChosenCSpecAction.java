@@ -12,6 +12,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
@@ -40,7 +41,7 @@ public class DisconnectChosenCSpecAction extends AbstractChosenCSpecAction
 		}
 		catch(CoreException e)
 		{
-			UiUtils.openError(page.getWorkbenchWindow().getShell(), "Unable to open editor", e);
+			UiUtils.openError(page.getWorkbenchWindow().getShell(), Messages.unable_to_open_editor, e);
 		}
 	}
 }

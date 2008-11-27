@@ -22,6 +22,8 @@ public class Messages extends NLS
 
 	public static String SplashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
 
+	public static String unable_to_open_editor;
+
 	public static String unknown_0_derivate;
 
 	public static String version;
