@@ -433,7 +433,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 	public RetrieveAndBindPage()
 	{
 		super("");
-		setDescription(UiPlugin.getResourceString("RetrieveAndBindPage.description")); //$NON-NLS-1$
+		setDescription("All specifications resolved");
 	}
 
 	@Override

@@ -11,13 +11,12 @@
 package org.eclipse.buckminster.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.ui.UiPlugin;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,6 +25,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -83,18 +83,15 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate
 					if(t instanceof CoreException)
 					{
 						CoreException ce = (CoreException)t;
-						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(), UiPlugin
-								.getResourceString("CreateNewBuckminsterProject.error.title"), null, ce.getStatus()); //$NON-NLS-1$
+						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(), Messages.an_error_occured_during_creation_of_the_project, null, ce.getStatus());
 					}
 					else
 					{
-						String title = UiPlugin.getResourceString("CreateNewBuckminsterProject.error.title"); //$NON-NLS-1$
+						String title = Messages.an_error_occured_during_creation_of_the_project;
 						String rawMsg = t.getLocalizedMessage();
 						if(rawMsg == null)
 							rawMsg = t.toString();
-						String msg = MessageFormat.format(UiPlugin
-								.getResourceString("CreateNewBuckminsterProject.error.msg"), new Object[] { rawMsg }); //$NON-NLS-1$
-						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, msg);
+						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, NLS.bind(Messages.internal_error_0, rawMsg));
 					}
 				}
 			}

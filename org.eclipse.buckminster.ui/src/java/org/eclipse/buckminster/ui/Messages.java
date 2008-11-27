@@ -8,6 +8,8 @@ public class Messages extends NLS
 
 	public static String a_0_property_will_not_be_added;
 
+	public static String a_selected_specification_is_unresolved;
+
 	public static String about;
 
 	public static String about_buckminster;
@@ -50,6 +52,8 @@ public class Messages extends NLS
 
 	public static String always_with_colon;
 
+	public static String an_error_occured_during_creation_of_the_project;
+
 	public static String an_error_occured_when_creating_the_file;
 
 	public static String ant_logger_level_with_colon;
@@ -79,6 +83,8 @@ public class Messages extends NLS
 	public static String branch_or_tag_path_with_colon;
 
 	public static String browse_with_dots;
+
+	public static String buckminster_component_query;
 
 	public static String buckminster_does_not_understand_project_metadata;
 
@@ -117,6 +123,8 @@ public class Messages extends NLS
 	public static String component_specification;
 
 	public static String component_specification_and_cspec_in_paranthesis;
+
+	public static String component_specification_selection;
 
 	public static String component_type;
 
@@ -160,6 +168,8 @@ public class Messages extends NLS
 
 	public static String dependencies;
 
+	public static String dependencies_in_0;
+
 	public static String dependency_name_cannot_be_empty;
 
 	public static String designator_with_colon;
@@ -197,6 +207,8 @@ public class Messages extends NLS
 	public static String extensions;
 
 	public static String external_save_as;
+
+	public static String external_save_bom;
 
 	public static String feed;
 
@@ -253,6 +265,8 @@ public class Messages extends NLS
 	public static String info_with_colon;
 
 	public static String installer_hints;
+
+	public static String internal_error_0;
 
 	public static String internal_problem_when_generating_opml_xml;
 
@@ -398,6 +412,8 @@ public class Messages extends NLS
 
 	public static String publish;
 
+	public static String re_resolve;
+
 	public static String read_only_in_paranthesis;
 
 	public static String refresh;
@@ -418,6 +434,8 @@ public class Messages extends NLS
 
 	public static String resolution_service_with_colon;
 
+	public static String resolution_tree;
+
 	public static String resolutions;
 
 	public static String resolve_and_materialize;
@@ -436,6 +454,8 @@ public class Messages extends NLS
 
 	public static String rmap_url_with_colon;
 
+	public static String save_bom;
+
 	public static String select_new_file_container;
 
 	public static String selection_criteria;
@@ -443,6 +463,8 @@ public class Messages extends NLS
 	public static String short_description_with_colon;
 
 	public static String show_details;
+
+	public static String show_target_platform_components;
 
 	public static String site_name;
 
@@ -488,6 +510,8 @@ public class Messages extends NLS
 
 	public static String unknown_0_derivate;
 
+	public static String unresolved_node;
+
 	public static String url_for_query_with_colon;
 
 	public static String use_resource_map;
@@ -509,6 +533,8 @@ public class Messages extends NLS
 	public static String view_the_cspec_of_a_component;
 
 	public static String wiki_with_colon;
+
+	public static String wizard_not_yet_initialized_with_bom;
 
 	public static String workspace_components;
 

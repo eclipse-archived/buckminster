@@ -10,9 +10,6 @@
 
 package org.eclipse.buckminster.ui;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.plugin.PluginClassHandle;
@@ -55,8 +52,6 @@ import org.osgi.framework.BundleContext;
 public class UiPlugin extends AbstractUIPlugin
 {
 	private static UiPlugin s_plugin;
-
-	private ResourceBundle m_resourceBundle;
 
 	private ScopedPreferenceStore m_preferenceStore;
 
@@ -148,7 +143,6 @@ public class UiPlugin extends AbstractUIPlugin
 		
 		super.stop(context);
 		s_plugin = null;
-		m_resourceBundle = null;
 	}
 
 	/**
@@ -157,41 +151,6 @@ public class UiPlugin extends AbstractUIPlugin
 	public static UiPlugin getDefault()
 	{
 		return s_plugin;
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
-	 */
-	public static String getResourceString(String key)
-	{
-		ResourceBundle bundle = UiPlugin.getDefault().getResourceBundle();
-		try
-		{
-			return (bundle != null)
-					? bundle.getString(key)
-					: key;
-		}
-		catch(MissingResourceException e)
-		{
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle()
-	{
-		try
-		{
-			if(m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.ui.UiPluginResources"); //$NON-NLS-1$
-		}
-		catch(MissingResourceException x)
-		{
-			m_resourceBundle = null;
-		}
-		return m_resourceBundle;
 	}
 
 	public IPreferenceStore getBuckminsterPreferenceStore()

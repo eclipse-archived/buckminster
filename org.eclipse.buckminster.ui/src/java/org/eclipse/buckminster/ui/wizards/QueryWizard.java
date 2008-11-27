@@ -20,7 +20,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.ui.UiPlugin;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -86,7 +86,7 @@ public class QueryWizard extends Wizard implements INewWizard
 
 	public void init(IWorkbench workbench, IStructuredSelection selection)
 	{
-		String title = UiPlugin.getResourceString("NewQueryWizard.title"); //$NON-NLS-1$
+		String title = Messages.buckminster_component_query;
 
 		setNeedsProgressMonitor(true);
 
@@ -148,14 +148,14 @@ public class QueryWizard extends Wizard implements INewWizard
 	BillOfMaterials getBOM()
 	{
 		if(m_bom == null)
-			throw new IllegalStateException("Wizard not yet initialized with BOM");
+			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
 		return m_bom;
 	}
 
 	ResolutionContext getContext()
 	{
 		if(m_context == null)
-			throw new IllegalStateException("Wizard not yet initialized with BOM");
+			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
 		return m_context;
 	}
 

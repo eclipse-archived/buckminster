@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.SaveRunnable;
@@ -51,6 +52,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardContainer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -95,7 +97,7 @@ public class ResolverNodePage extends AbstractQueryPage
 				break;
 			case 1:
 				IVersionDesignator vd = rq.getVersionDesignator();
-				lbl = vd == null ? "" : vd.toString();
+				lbl = vd == null ? "" : vd.toString(); //$NON-NLS-1$
 				break;
 			default:
 				lbl = rq.getComponentTypeID();
@@ -136,16 +138,16 @@ public class ResolverNodePage extends AbstractQueryPage
 
 	public ResolverNodePage()
 	{
-		super("");
+		super(""); //$NON-NLS-1$
 
-		m_redDotImage = UiPlugin.getImageDescriptor("images/red_dot_16x16.bmp").createImage();
-		m_greenDotImage = UiPlugin.getImageDescriptor("images/green_dot_16x16.bmp").createImage();
-		m_yellowDotImage = UiPlugin.getImageDescriptor("images/yellow_dot_16x16.bmp").createImage();
-		m_grayDotImage = UiPlugin.getImageDescriptor("images/gray_dot_16x16.bmp").createImage();
+		m_redDotImage = UiPlugin.getImageDescriptor("images/red_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		m_greenDotImage = UiPlugin.getImageDescriptor("images/green_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		m_yellowDotImage = UiPlugin.getImageDescriptor("images/yellow_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		m_grayDotImage = UiPlugin.getImageDescriptor("images/gray_dot_16x16.bmp").createImage(); //$NON-NLS-1$
 		m_grayDotWithRedExclamationImage = UiPlugin.getImageDescriptor(
-			"images/gray_dot_with_red_exclamation_16x16.bmp").createImage();
+			"images/gray_dot_with_red_exclamation_16x16.bmp").createImage(); //$NON-NLS-1$
 
-		setDescription(UiPlugin.getResourceString("DepNodePage.description")); //$NON-NLS-1$
+		setDescription(Messages.resolution_tree);
 	}
 
 	@Override
@@ -225,12 +227,12 @@ public class ResolverNodePage extends AbstractQueryPage
 			{
 				ICSpecData cspec = resolution.getCSpec();
 				m_dependenciesTable.setInput(cspec.getDependencies().values());
-				m_detailGroup.setText("Dependencies in " + node.getViewName() + ":");
+				m_detailGroup.setText(NLS.bind(Messages.dependencies_in_0, node.getViewName()));
 			}
 			else
 			{
 				m_dependenciesTable.setInput(null);
-				m_detailGroup.setText("");
+				m_detailGroup.setText(""); //$NON-NLS-1$
 			}
 			BillOfMaterials bom = getQueryWizard().getBOM();
 			m_reresolveButton.setEnabled(!bom.isFullyResolved());
@@ -309,7 +311,7 @@ public class ResolverNodePage extends AbstractQueryPage
 	void saveBOMInFileSystem()
 	{
 		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.bom" });
+		dlg.setFilterExtensions(new String[] { "*.bom" }); //$NON-NLS-1$
 		String location = dlg.open();
 		if(location == null)
 			return;
@@ -428,7 +430,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		buttons.setLayout(new GridLayout(3, false));
 		buttons.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
 
-		Button saveButton = UiUtils.createPushButton(buttons, "Save BOM", new SelectionAdapter()
+		Button saveButton = UiUtils.createPushButton(buttons, Messages.save_bom, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -438,7 +440,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		});
 		saveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, true, false));
 
-		Button extSaveButton = UiUtils.createPushButton(buttons, "External Save BOM", new SelectionAdapter()
+		Button extSaveButton = UiUtils.createPushButton(buttons, Messages.external_save_bom, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -459,7 +461,7 @@ public class ResolverNodePage extends AbstractQueryPage
 
 		Table table = new Table(m_detailGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 
-		String[] columnNames = new String[] { "Name", "Version designator", "Category" };
+		String[] columnNames = new String[] { Messages.name, Messages.version_designator, Messages.category };
 		int[] columnWeights = new int[] { 20, 10, 10 };
 
 		table.setHeaderVisible(true);
@@ -483,7 +485,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		Group masterGroup = new Group(parent, SWT.NONE);
 		masterGroup.setLayout(new GridLayout(3, false));
 		masterGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		masterGroup.setText("Component specification selection:");
+		masterGroup.setText(Messages.component_specification_selection);
 
 		m_masterTreeComposite = new Composite(masterGroup, SWT.NONE);
 		m_masterTreeComposite.setLayout(new GridLayout());
@@ -517,7 +519,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		modifiersComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
 		m_showTargetPlatformButton = UiUtils.createCheckButton(modifiersComposite,
-			"Show target platform components", new SelectionAdapter()
+			Messages.show_target_platform_components, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent se)
@@ -526,7 +528,7 @@ public class ResolverNodePage extends AbstractQueryPage
 				}
 			});
 
-		m_reresolveButton = UiUtils.createPushButton(modifiersComposite, "Re-resolve", new SelectionAdapter()
+		m_reresolveButton = UiUtils.createPushButton(modifiersComposite, Messages.re_resolve, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
@@ -535,7 +537,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			}
 		});
 
-		m_unresolveButton = UiUtils.createPushButton(modifiersComposite, "Unresolve node", new SelectionAdapter()
+		m_unresolveButton = UiUtils.createPushButton(modifiersComposite, Messages.unresolved_node, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
@@ -594,7 +596,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		catch(Exception e)
 		{
 			CoreException t = BuckminsterException.wrap(e);
-			String msg = "Unable to save file " + path;
+			String msg = NLS.bind(Messages.unable_to_save_file_0, path);
 			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
 		}
@@ -621,7 +623,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			displayException(e);
 		}
 		if(!complete)
-			errorMsg = "A selected specification is unresolved";
+			errorMsg = Messages.a_selected_specification_is_unresolved;
 		setPageComplete(complete);
 		setErrorMessage(errorMsg);
 	}
